@@ -41,22 +41,22 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     public void changeListView() {
-        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
         itemChangeView.onChangeList();
     }
 
     public void changeDoubleGridView() {
-        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
         itemChangeView.onChangeDoubleGrid();
     }
 
     public void changeSingleGridView() {
-        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
         itemChangeView.onChangeSingleGrid();
     }
 
     public int getTitleTypeRecyclerView() {
-        switch (getTypeFactory().getRecyclerViewItem()) {
+        switch (typeFactory.getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_LIST:
                 return R.string.list;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
@@ -69,7 +69,7 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     public int getIconTypeRecyclerView() {
-        switch (getTypeFactory().getRecyclerViewItem()) {
+        switch (typeFactory.getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_LIST:
                 return R.drawable.search_ic_list;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
@@ -82,7 +82,7 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     public SearchConstant.ViewType getCurrentLayoutType() {
-        switch (getTypeFactory().getRecyclerViewItem()) {
+        switch (typeFactory.getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_LIST:
                 return SearchConstant.ViewType.LIST;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
@@ -180,16 +180,8 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     private boolean checkDataSize(int position) {
-        return getItemList() != null && getItemList().size() > 0
-                && position > -1 && position < getItemList().size();
-    }
-
-    private List<Visitable> getItemList() {
-        return list;
-    }
-
-    private ProductListTypeFactory getTypeFactory() {
-        return typeFactory;
+        return list != null && list.size() > 0
+                && position > -1 && position < list.size();
     }
 
     public boolean isProductItem(int position) {
@@ -221,16 +213,16 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     public void showEmptyState(Context context, boolean isFilterActive) {
         clearData();
         if (globalNavViewModel != null) {
-            getItemList().add(globalNavViewModel);
+            list.add(globalNavViewModel);
         }
-        getItemList().add(mapEmptySearch(context, isFilterActive, globalNavViewModel == null));
+        list.add(mapEmptySearch(context, isFilterActive, globalNavViewModel == null));
         notifyDataSetChanged();
     }
 
     public void clearData() {
         int itemSizeBeforeCleared = getItemCount();
 
-        getItemList().clear();
+        list.clear();
 
         notifyItemRangeRemoved(0, itemSizeBeforeCleared);
     }
@@ -257,7 +249,7 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     public boolean isListEmpty() {
-        return getItemList().isEmpty();
+        return list.isEmpty();
     }
 
     public interface OnItemChangeView {

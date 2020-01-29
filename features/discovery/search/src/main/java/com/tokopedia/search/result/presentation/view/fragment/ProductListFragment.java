@@ -392,32 +392,35 @@ public class ProductListFragment
 
     @Override
     public void setupSearchNavigation() {
-        searchNavigationListener
-                .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
-                    @Override
-                    public void onFilterClick() {
-                        openFilterActivity();
-                    }
-
-                    @Override
-                    public void onSortClick() {
-                        openSortActivity();
-                    }
-
-                    @Override
-                    public void onChangeGridClick() {
-                        switchLayoutType();
-                    }
-                }, true);
+        searchNavigationListener.setupSearchNavigation(createSearchNavigationClickListener(), true);
         refreshMenuItemGridIcon();
     }
 
+    private SearchNavigationListener.ClickListener createSearchNavigationClickListener() {
+        return new SearchNavigationListener.ClickListener() {
+            @Override
+            public void onFilterClick() {
+                openFilterActivity();
+            }
+
+            @Override
+            public void onSortClick() {
+                openSortActivity();
+            }
+
+            @Override
+            public void onChangeGridClick() {
+                switchLayoutType();
+            }
+        };
+    }
+
     private void switchLayoutType() {
-        if (!getUserVisibleHint() || getAdapter() == null) {
+        if (!getUserVisibleHint() || adapter == null) {
             return;
         }
 
-        switch (getAdapter().getCurrentLayoutType()) {
+        switch (adapter.getCurrentLayoutType()) {
             case LIST:
                 switchLayoutTypeTo(BIG_GRID);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
@@ -434,22 +437,22 @@ public class ProductListFragment
     }
 
     private void switchLayoutTypeTo(SearchConstant.ViewType layoutType) {
-        if (!getUserVisibleHint() || getAdapter() == null) {
+        if (!getUserVisibleHint() || adapter == null) {
             return;
         }
 
         switch (layoutType) {
             case LIST:
                 staggeredGridLayoutManager.setSpanCount(1);
-                getAdapter().changeListView();
+                adapter.changeListView();
                 break;
             case SMALL_GRID:
                 staggeredGridLayoutManager.setSpanCount(2);
-                getAdapter().changeDoubleGridView();
+                adapter.changeDoubleGridView();
                 break;
             case BIG_GRID:
                 staggeredGridLayoutManager.setSpanCount(1);
-                getAdapter().changeSingleGridView();
+                adapter.changeSingleGridView();
                 break;
         }
 
@@ -457,9 +460,9 @@ public class ProductListFragment
     }
 
     private void refreshMenuItemGridIcon() {
-        if(searchNavigationListener == null || getAdapter() == null) return;
+        if(searchNavigationListener == null || adapter == null) return;
 
-        searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
+        searchNavigationListener.refreshMenuItemGridIcon(adapter.getTitleTypeRecyclerView(), adapter.getIconTypeRecyclerView());
     }
 
     private void openFilterActivity() {
@@ -1254,10 +1257,6 @@ public class ProductListFragment
 
     private void onSwipeToRefresh() {
         reloadData();
-    }
-
-    private ProductListAdapter getAdapter() {
-        return adapter;
     }
 
     @Override
