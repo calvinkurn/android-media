@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
+                <com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout
                     android:id="@+id/tablayout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl7"
@@ -52,6 +52,13 @@
                     app:tabMode="scrollable"
                     app:layout_collapseMode="pin"
                     app:tabIndicatorColor="@color/Purple_P600" />
+
+                <include
+                    android:id="@+id/view_category_tab_loading"
+                    layout="@layout/view_brandlist_category_loading"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"  />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">brandlist</string>
+    <string name="bl_query_search">Cari di Official Store</string>
 </resources>
