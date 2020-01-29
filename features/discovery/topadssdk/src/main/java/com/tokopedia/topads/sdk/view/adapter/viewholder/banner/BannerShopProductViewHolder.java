@@ -118,12 +118,12 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         rating3.setImageResource(getRatingDrawable(rating >= 3));
         rating4.setImageResource(getRatingDrawable(rating >= 4));
         rating5.setImageResource(getRatingDrawable(rating >= 5));
-        rating1.setVisibility((isVisible) ? View.VISIBLE : View.GONE);
-        rating2.setVisibility((isVisible) ? View.VISIBLE : View.GONE);
-        rating3.setVisibility((isVisible) ? View.VISIBLE : View.GONE);
-        rating4.setVisibility((isVisible) ? View.VISIBLE : View.GONE);
-        rating5.setVisibility((isVisible) ? View.VISIBLE : View.GONE);
-        reviewCountTxt.setVisibility((isVisible) ? View.VISIBLE : View.GONE);
+        rating1.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        rating2.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        rating3.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        rating4.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        rating5.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        reviewCountTxt.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
     }
 
     private int getRatingDrawable(Boolean isActive) {

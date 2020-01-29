@@ -22,7 +22,7 @@ class MarkReadNotificationUpdateItemUseCase @Inject constructor(
 ){
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources
-                , R.raw.mutation_mark_read_notification_update_item)
+                , R.raw.mutation_mark_read_notification_item)
         val graphqlRequest = GraphqlRequest(query,
                 NotificationUpdateActionResponse::class.java, requestParams)
 

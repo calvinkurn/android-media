@@ -45,7 +45,7 @@ class MoveProductToEtalaseUseCase @Inject constructor(private val restRepository
                 .setRequestType(RequestType.POST)
                 .setBody(bodyMap)
                 .build()
-        data = restRepository.getResponse(restRequest).getData()
+        data = (restRepository.getResponse(restRequest).getData() as DataResponse<ProductActionSubmit>).data
         if (!data.getIsSuccess()) {
             throw IOException()
         }

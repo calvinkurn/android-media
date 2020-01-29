@@ -49,7 +49,8 @@ class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickCancel() {
-        onSuccessCancelPromo()
+        super.onClickCancel()
+        promoCheckoutDetailHotelPresenter.cancelPromo()
     }
 
     override fun onSuccessCheckPromo(data: DataUiModel) {

@@ -189,7 +189,6 @@ import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
-import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
@@ -984,20 +983,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
-    public void init() {
-        ShakeDetectManager.getShakeDetectManager().init();
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName, activity);
-    }
-
-    @Override
-    public void unregisterShake() {
-        ShakeDetectManager.getShakeDetectManager().unregisterShake();
-    }
-
     @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
         return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
@@ -1461,12 +1446,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
         return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
     }
-
-    @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-        ShakeDetectManager.getShakeDetectManager().onDestroy(screenName, baseActivity);
-    }
-
 
     @Override
     public String getDeviceId(Context context) {

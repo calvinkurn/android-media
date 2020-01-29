@@ -290,7 +290,6 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         } else {
             ticker_view.visibility = View.GONE
         }
-
     }
 
     override fun getAdapterTypeFactory(): VoucherGameListAdapterFactory {

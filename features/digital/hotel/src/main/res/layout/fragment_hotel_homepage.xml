@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:clipToPadding="false"
+    android:paddingBottom="@dimen/dp_16">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -214,10 +216,10 @@
                 android:paddingRight="@dimen/dp_16">
 
                 <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_hotel_last_search_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/tv_hotel_last_search_title"
                     android:text="@string/hotel_homepage_last_search_title"
                     app:fontSize="title"
                     app:textViewTheme="lightPrimary"

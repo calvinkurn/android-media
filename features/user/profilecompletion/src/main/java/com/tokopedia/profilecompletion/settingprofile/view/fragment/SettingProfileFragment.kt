@@ -23,6 +23,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
+import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTracker
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
@@ -203,6 +204,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
                 }
             }
+            else -> {
+                when(requestCode) {
+                    REQUEST_CODE_ADD_PHONE -> {
+                        AddPhoneNumberTracker().viewPersonalDataPage(false)
+                    }
+                }
+            }
         }
     }
 
@@ -266,6 +274,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 }
             }
             refreshProfile()
+            AddPhoneNumberTracker().viewPersonalDataPage(true)
         }
     }
 
