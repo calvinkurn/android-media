@@ -19,10 +19,18 @@ class BrandlistActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-//        return BrandlistContainerFragment.createInstance()
-        return BrandlistContainerFragment.createInstance(
-                intent.getStringExtra(CATEGORY_EXTRA_APPLINK)
-        )
+        val categoryId: String
+        val bundle = intent.extras
+        val uri = intent.data
+
+        if (uri != null && uri.pathSegments.size > 1)  {
+            val uriSegment = uri.pathSegments
+            categoryId = uriSegment[uriSegment.size - 1]
+        } else {
+            categoryId = bundle.getString(CATEGORY_EXTRA_APPLINK)
+        }
+
+        return BrandlistContainerFragment.createInstance(categoryId)
     }
 
     companion object {
@@ -31,7 +39,6 @@ class BrandlistActivity : BaseSimpleActivity() {
     }
 
     object DeeplinkIntents {
-//        @DeepLink(ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH, ApplinkConst.BRAND_LIST_CATEGORY)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             return Intent(context, BrandlistActivity::class.java)
