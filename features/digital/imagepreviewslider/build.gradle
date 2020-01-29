@@ -28,7 +28,7 @@ dependencies {
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.playServicesDependencies.analytics
 
-    implementation 'com.github.stfalcon:stfalcon-imageviewer:0.1.0'
+    implementation rootProject.ext.miscDependencies.stfalconImageViewer
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore

@@ -205,7 +205,3 @@ public protected *;
 }
 
 -keep class com.google.firebase.perf.FirebasePerformance
-
--keep class com.stfalcon.imageviewer.StfalconImageViewer
--keep class com.stfalcon.imageviewer.viewer.dialog.ImageViewerDialog
--keep class com.stfalcon.imageviewer.viewer.view.ImageViewerView
