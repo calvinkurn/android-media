@@ -247,8 +247,10 @@ class ShopPageFragment :
         })
 
         shopViewModel.shopBadgeResp.observe(this, Observer { reputation ->
-            reputation?.let {
-                shopPageFragmentHeaderViewHolder.showShopReputationBadges(it.second)
+            if (!isOfficialStore) {
+                reputation?.let {
+                    shopPageFragmentHeaderViewHolder.showShopReputationBadges(it.second)
+                }
             }
         })
 
