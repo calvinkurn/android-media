@@ -53,8 +53,8 @@
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
-/features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
-/features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-dave
+/features/top_ads/top_ads_autoads/     @tokopedia/minion-darth
+/features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-darth
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
@@ -79,6 +79,8 @@
 /features/digital/flight_orderlist                      @tokopedia/minion-mark
 /features/digital/rechargeocr                           @tokopedia/minion-mark
 /features/digital/recharge_general                      @tokopedia/minion-mark
+/features/digital/event                 				@tokopedia/minion-mark
+/features/digital/digital_deals         				@tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -128,9 +130,7 @@
 /features/user/attachvoucher/                           @tokopedia/minion-kevin
 /features/user/attachcommon/                            @tokopedia/minion-kevin
 
-/features/digital/event                 				@tokopedia/minion-darth
 /features/operational/contact_us        				@tokopedia/minion-darth
-/features/digital/digital_deals         				@tokopedia/minion-darth
 
 /features/fintech/wallet                				@tokopedia/minion-solo
 /features/fintech/common_wallet         				@tokopedia/minion-solo
