@@ -647,14 +647,12 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (shopInfo == null) {
-            savedInstanceState?.let {
-                selectedEtalaseId = it.getString(SAVED_SELECTED_ETALASE_ID) ?: ""
-                selectedEtalaseName = it.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
-                shopId = it.getString(SAVED_SHOP_ID)
-                isGoldMerchant = it.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT)
-                isOfficialStore = it.getBoolean(SAVED_SHOP_IS_OFFICIAL)
-            }
+        savedInstanceState?.let {
+            selectedEtalaseId = it.getString(SAVED_SELECTED_ETALASE_ID) ?: ""
+            selectedEtalaseName = it.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
+            shopId = it.getString(SAVED_SHOP_ID)
+            isGoldMerchant = it.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT)
+            isOfficialStore = it.getBoolean(SAVED_SHOP_IS_OFFICIAL)
         }
         initRecyclerView(view)
         super.onViewCreated(view, savedInstanceState)
