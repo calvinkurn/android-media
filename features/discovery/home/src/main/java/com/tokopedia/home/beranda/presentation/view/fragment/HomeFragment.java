@@ -1636,7 +1636,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
 //                Pair.create(root.findViewById(R.id.item_play_background), getString(R.string.home_transition_root)),
-                Pair.create(root.findViewById(R.id.video_player), getString(R.string.home_transition_video))
+                Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
         );
         startActivity(intent, options.toBundle());
     }
