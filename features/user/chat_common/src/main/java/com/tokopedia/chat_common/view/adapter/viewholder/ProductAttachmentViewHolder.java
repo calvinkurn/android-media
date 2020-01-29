@@ -279,7 +279,11 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private void bindWishListView(ProductAttachmentViewModel element) {
-
+        Drawable loveDrawable = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_attachproduct_wishlist);
+        if (loveDrawable == null) return;
+        loveDrawable.mutate();
+        ivWishList.setImageDrawable(loveDrawable);
+        updateWishListIconState(element);
     }
 
     private void bindClickAddToWishList(ProductAttachmentViewModel element) {
@@ -288,9 +292,29 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             if (element.isWishListed()) {
                 viewListener.onClickRemoveFromWishList(productId);
             } else {
-                viewListener.onClickAddToWishList(productId);
+                viewListener.onClickAddToWishList(
+                        productId,
+                        () -> {
+                            onSuccessAddToWishList(element);
+                            return null;
+                        }
+                );
             }
         });
+    }
+
+    private void onSuccessAddToWishList(ProductAttachmentViewModel element) {
+        element.setWishList(true);
+        updateWishListIconState(element);
+    }
+
+    private void updateWishListIconState(ProductAttachmentViewModel element) {
+        if (element.isWishListed()) {
+            int color = ContextCompat.getColor(itemView.getContext(), R.color.chatcommon_wishlist_selected);
+            ivWishList.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        } else {
+            ivWishList.clearColorFilter();
+        }
     }
 
     private void setUIValue(View productContainer, int id, String value) {

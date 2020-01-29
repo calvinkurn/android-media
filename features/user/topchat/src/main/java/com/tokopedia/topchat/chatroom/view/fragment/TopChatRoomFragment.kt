@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -922,20 +921,34 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return childFragmentManager
     }
 
-    override fun onClickAddToWishList(productId: String) {
+    override fun onClickAddToWishList(productId: String, success: () -> Unit) {
         presenter.addToWishList(productId, session.userId, object : WishListActionListener {
-
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+            override fun onSuccessRemoveWishlist(productId: String?) {}
             override fun onSuccessAddWishlist(productId: String?) {
-                Toast.makeText(context, "Success add Wishlist", Toast.LENGTH_SHORT).show()
+                success()
+                view?.let {
+                    val successMessage = it.context.getString(R.string.title_topchat_success_atw)
+                    Toaster.make(
+                            it,
+                            successMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_NORMAL
+                    )
+                }
             }
 
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                Toast.makeText(context, "Error add Wishlist", Toast.LENGTH_SHORT).show()
+                if (errorMessage == null) return
+                view?.let {
+                    Toaster.make(
+                            it,
+                            errorMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                    )
+                }
             }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) { }
-
-            override fun onSuccessRemoveWishlist(productId: String?) { }
         })
     }
 
