@@ -84,12 +84,14 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.0.0'
-    unifyComponentsVersion = '1.1.0'
+    unifyComponentsVersion = '1.1.8-beta-1'
     unifyCoachMarkVersion = '1.2.0'
-    unifyCalendarVersion = '1.0.0'
-    unifyBannerVersion = '1.0.0'
+    unifyCalendarVersion = '1.0.2'
+    unifyBannerVersion = '1.0.3'
     unifyDialogVersion = '1.0.0'
-    unifyDatePickerVersion = '0.0.1'
+    unifyDatePickerVersion = '1.0.2'
+    unifyEmptyStateVersion = '1.0.2'
+    unifyGlobalErrorVersion = '1.0.6'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -221,7 +223,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:2.0.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
@@ -310,13 +312,15 @@ ext {
     ]
 
     unifyDependencies = [
-       icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-       principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-       components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
-       coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
-       calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
-       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
-       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
-       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar"
+        icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
+        principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
+        components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
+        coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
+        calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
+        banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
+        dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+        datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
+        empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+        global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
     ]
 }

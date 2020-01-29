@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
 import com.tokopedia.core.ManageGeneral
 import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
+import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
@@ -45,7 +46,7 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
 //        inflateView(R.layout.sh_activity_simple_fragment)
         if (savedInstanceState != null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, SellerDashboardFragment.newInstance(), TAG)
+                    .replace(R.id.container, SellerHomeFragment.newInstance(), TAG)
                     .commit()
         }
 
