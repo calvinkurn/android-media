@@ -100,8 +100,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         compositeSubscription.unsubscribe()
         addWishListUseCase?.unsubscribe()
         removeWishListUseCase?.unsubscribe()
-        getRecentViewUseCase?.unsubscribe()
-        getWishlistUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
         removeInsuranceProductUsecase?.unsubscribe()
@@ -263,7 +261,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 it.showProgressLoading()
             }
 
-            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList() ?: emptyList())
+            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList()
+                    ?: emptyList())
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
@@ -892,14 +891,22 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun processGetRecentViewData() {
         try {
             val userId = Integer.parseInt(userSessionInterface.userId)
-            getRecentViewUseCase?.createObservable(userId, GetRecentViewSubscriber(view))
+            val requestParams = RequestParams.create()
+            requestParams.putInt(GetRecentViewUseCase.PARAM_USER_ID, userId)
+            compositeSubscription.add(
+                    getRecentViewUseCase?.createObservable(requestParams)
+                            ?.subscribe(GetRecentViewSubscriber(view))
+            )
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
     }
 
     override fun processGetWishlistData() {
-        getWishlistUseCase?.createObservable(RequestParams.EMPTY)?.subscribe(GetWishlistSubscriber(view, this))
+        compositeSubscription.add(
+                getWishlistUseCase?.createObservable(RequestParams.EMPTY)
+                        ?.subscribe(GetWishlistSubscriber(view, this))
+        )
     }
 
     override fun processGetRecommendationData(page: Int, allProductIds: List<String>) {
