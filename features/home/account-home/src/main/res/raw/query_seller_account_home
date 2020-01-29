@@ -60,16 +60,7 @@ query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
           status
           message
           data {
-              isPowerWD
               isPowerMerchant
-              shopID
-              accNum
-              bankID
-              userID
-              status
-              program
-              wdPoints
-              statusInt
               copywriting {
                   title
                   subtitle
