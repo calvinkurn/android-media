@@ -54,7 +54,7 @@ class DiscoveryFragment : Fragment() {
     }
 
     private fun setUpObserver() {
-        discoveryViewModel.getDiscoveryResponse().observe(this, Observer {
+        discoveryViewModel.getDiscoveryResponse().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val list = ArrayList<ComponentsItem>()

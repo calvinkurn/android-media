@@ -50,6 +50,9 @@ data class DataItem(
         @SerializedName("notification_description")
         val notificationDescription: String? = "",
 
+        @SerializedName("description")
+        val description: String? = "",
+
         @SerializedName("start_date")
         val startDate: String? = "",
 
