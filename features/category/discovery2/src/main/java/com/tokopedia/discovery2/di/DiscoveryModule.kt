@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.discovery.categoryrevamp.di.DiscoveryScope
 import com.tokopedia.discovery2.repository.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.PushStatusRepository
 import com.tokopedia.tradein_common.repository.BaseRepository

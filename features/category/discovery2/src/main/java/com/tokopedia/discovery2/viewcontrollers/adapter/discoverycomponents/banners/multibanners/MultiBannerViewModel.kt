@@ -8,9 +8,9 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery.categoryrevamp.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.utils.Utils
