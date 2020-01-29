@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.banklist.view.fragment
 
+import android.os.Bundle
 import androidx.annotation.RestrictTo
 import com.tokopedia.settingbank.banklist.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
@@ -19,6 +20,15 @@ class DebugSettingBankFragment : SettingBankFragment() {
     fun reInitInjector(component: SettingBankComponent){
         component.inject(this)
         presenter.attachView(this)
+    }
+
+    override fun onErrorGetListBank(errorMessage: String) {
+        FetchingIdlingResource.complete()
+        super.onErrorGetListBank(errorMessage)
+    }
+    override fun onErrorGetListBankFirstTime(errorMessage: String) {
+        FetchingIdlingResource.complete()
+        super.onErrorGetListBankFirstTime(errorMessage)
     }
 
     override fun onSuccessGetListBank(bankAccountList: BankAccountListViewModel) {

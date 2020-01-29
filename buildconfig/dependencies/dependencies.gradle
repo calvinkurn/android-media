@@ -236,7 +236,7 @@ ext {
             retrofitMock       : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
             retrofitMockWebser : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker           : 'com.google.dexmaker:dexmaker:1.2',
-            dexMakerMockito    : 'com.google.dexmaker:dexmaker-mockito:1.2',
+            dexMakerMockito    : 'com.linkedin.dexmaker:dexmaker-mockito:2.25.1',
             assertJ            : "org.assertj:assertj-core:1.7.1",
             assertJCore        : 'org.assertj:assertj-core:3.8.0',
             powerMock          : "org.powermock:powermock:$powerMockVersion",
