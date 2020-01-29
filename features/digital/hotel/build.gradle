@@ -22,8 +22,8 @@ dependencies {
     implementation project(rootProject.ext.features.travelPassenger)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
-    implementation project(rootProject.ext.features.imagePreviewSlider)
 
+    implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.analytics)

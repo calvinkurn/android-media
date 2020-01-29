@@ -36,4 +36,4 @@ project.ext {
     artifactName ="imagepreviewslider-release"
 }
 
-apply from: '../../../publish_local.gradle'
+apply from: '../../publish_local.gradle'
