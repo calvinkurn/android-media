@@ -1,14 +1,12 @@
 package com.tokopedia.topads.dashboard.view.listener
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.dashboard.data.model.DashboardPopulateResponse
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.TotalAd
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-
-import java.util.Date
 
 /**
  * Created by hadi.putra on 23/04/18.

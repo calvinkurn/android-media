@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.R
@@ -14,9 +13,8 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.view_vg_input_dropdown_bottom_sheet.view.*
-import kotlinx.android.synthetic.main.view_vg_input_dropdown_bottom_sheet_item.view.*
-import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
+import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet.view.*
+import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet_item.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -52,7 +50,7 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
     }
 
     open fun getLayout(): Int {
-        return R.layout.view_vg_input_dropdown_bottom_sheet
+        return R.layout.view_topup_bills_input_dropdown_bottom_sheet
     }
 
     fun setData(data: List<TopupBillsInputDropdownData>) {
@@ -78,7 +76,7 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
 
     inner class TopupBillsInputDropdownAdapter(var items: List<TopupBillsInputDropdownData>): RecyclerView.Adapter<TopupBillsInputDropdownViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopupBillsInputDropdownViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.view_vg_input_dropdown_bottom_sheet_item, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.view_topup_bills_input_dropdown_bottom_sheet_item, parent, false)
             return TopupBillsInputDropdownViewHolder(view)
         }
 
