@@ -67,6 +67,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     }
 
     override fun onResume() {
+        super.onResume()
         loadData()
     }
 
