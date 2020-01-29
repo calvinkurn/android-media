@@ -7,22 +7,21 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -42,7 +41,6 @@ import com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEM
 import com.tokopedia.home.account.data.util.NotifPreference
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity
-import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
@@ -220,11 +218,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
             SettingConstant.SETTING_TNC_ID -> {
                 accountAnalytics.eventClickSetting(TERM_CONDITION)
-                gotoWebviewActivity(SettingConstant.Url.PATH_TERM_CONDITION, getString(R.string.title_tnc_setting))
+                RouteManager.route(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK + SettingConstant.Url.BASE_MOBILE + SettingConstant.Url.PATH_TERM_CONDITION)
             }
             SettingConstant.SETTING_PRIVACY_ID -> {
                 accountAnalytics.eventClickSetting(PRIVACY_POLICY)
-                gotoWebviewActivity(SettingConstant.Url.PATH_PRIVACY_POLICY, getString(R.string.title_privacy_setting))
+                RouteManager.route(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK + SettingConstant.Url.BASE_MOBILE + SettingConstant.Url.PATH_PRIVACY_POLICY)
             }
             SettingConstant.SETTING_APP_REVIEW_ID -> {
                 accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
@@ -379,18 +377,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     private fun isItemSelected(key: String, defaultValue: Boolean): Boolean {
         val settings = PreferenceManager.getDefaultSharedPreferences(activity)
         return settings.getBoolean(key, defaultValue)
-    }
-
-    private fun gotoWebviewActivity(path: String, title: String) {
-        val intent: Intent
-        val url = String.format("%s%s", SettingConstant.Url.BASE_MOBILE, path)
-        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            intent = SettingWebViewActivity.createIntent(activity, url, title)
-        } else {
-            intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
-        }
-        startActivity(intent)
     }
 
     private fun goToApplicationDetailActivity() {
