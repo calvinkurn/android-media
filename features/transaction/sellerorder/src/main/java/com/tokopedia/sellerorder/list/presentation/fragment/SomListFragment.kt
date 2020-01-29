@@ -22,6 +22,9 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
@@ -83,6 +86,22 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkSearch: CoachMarkItem by lazy {
+        CoachMarkItem(rl_search_filter, getString(R.string.coachmark_search), getString(R.string.coachmark_search_info))
+    }
+
+    private val coachMarkProduct: CoachMarkItem by lazy {
+        CoachMarkItem(order_list_rv, getString(R.string.coachmark_product), getString(R.string.coachmark_product_info))
+    }
+
+    private val coachMarkFilter: CoachMarkItem by lazy {
+        CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
+    }
+
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private val ANIMATION_DURATION_IN_MILIS = 250L
@@ -111,6 +130,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     companion object {
+        private val TAG_COACHMARK = "coachMark"
         private const val REQUEST_FILTER = 2888
 
         @JvmStatic
@@ -385,9 +405,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 currentIndex = index
                 filterItem.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green)
                 filterItem.isSelected = true
-                if (it.key.equals(STATUS_ALL_ORDER, true) ||
-                        it.key.equals(STATUS_DONE, true) ||
-                        it.key.equals(STATUS_ORDER_CANCELLED, true)) {
+                if (tabActive.equals(STATUS_ALL_ORDER, true) ||
+                        tabActive.equals(STATUS_DONE, true) ||
+                        tabActive.equals(STATUS_ORDER_CANCELLED, true)) {
                     paramOrder.sortBy = SORT_DESCENDING
                 } else {
                     paramOrder.sortBy = SORT_ASCENDING
@@ -476,6 +496,20 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             scrollListener.updateStateAfterGetData()
         }
         somListItemAdapter.notifyDataSetChanged()
+
+        showCoachMark()
+    }
+
+    private fun showCoachMark(){
+
+            if(order_list_rv.visibility == View.GONE){
+                coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
+
+            }
+            else {
+                coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+            }
+
     }
 
     private fun renderFilterEmpty(title: String, desc: String) {
