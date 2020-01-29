@@ -27,6 +27,7 @@ import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.min
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -395,6 +396,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
+        when (viewType) {
+            CartRecommendationViewHolder.LAYOUT -> {
+                val layoutParams = (holder as CartRecommendationViewHolder).itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+                layoutParams.isFullSpan = false
+            }
+            else -> {
+                val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+                layoutParams.isFullSpan = true
+            }
+        }
         when {
             viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData

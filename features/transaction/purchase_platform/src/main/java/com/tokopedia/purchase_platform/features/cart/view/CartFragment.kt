@@ -16,11 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.readystatesoftware.chuck.Chuck
@@ -422,9 +418,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setupRecyclerView() {
-        val gridLayoutManager = GridLayoutManager(context, 2)
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         cartRecyclerView.apply {
-            layoutManager = gridLayoutManager
+            layoutManager = staggeredGridLayoutManager
             adapter = cartAdapter
             addItemDecoration(cartItemDecoration)
             addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -459,17 +455,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             })
 
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-            gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return if (position != RecyclerView.NO_POSITION) {
-                        if (position < cartAdapter.itemCount && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT) {
-                            1
-                        } else 2
-                    } else 0
-                }
-            }
 
-            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     if (hasLoadRecommendation) {
                         dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.currentPage, cartAdapter.allCartItemProductId)
