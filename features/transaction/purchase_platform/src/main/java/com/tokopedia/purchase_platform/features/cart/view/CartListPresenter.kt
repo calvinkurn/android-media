@@ -899,7 +899,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun processGetWishlistData() {
-        getWishlistUseCase?.createObservable(GetWishlistSubscriber(view, this))
+        getWishlistUseCase?.createObservable(RequestParams.EMPTY)?.subscribe(GetWishlistSubscriber(view, this))
     }
 
     override fun processGetRecommendationData(page: Int, allProductIds: List<String>) {

@@ -67,7 +67,7 @@ class CartModule {
     @Provides
     @CartScope
     fun provideGetWishlistUseCase(@ApplicationContext context: Context): GetWishlistUseCase {
-        return GetWishlistUseCase(context)
+        return GetWishlistUseCase(context, GraphqlUseCase())
     }
 
     @Provides
