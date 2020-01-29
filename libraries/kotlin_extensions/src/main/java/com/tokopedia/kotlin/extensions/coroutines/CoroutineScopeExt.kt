@@ -10,8 +10,6 @@ fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext
     launch (context){
         try{
             block()
-
-
         } catch (t: Throwable){
             try {
                 onError(t)
