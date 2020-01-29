@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.data.multibannerresponse
+package com.tokopedia.discovery2.data.notifier
 
 import com.google.gson.annotations.SerializedName
 

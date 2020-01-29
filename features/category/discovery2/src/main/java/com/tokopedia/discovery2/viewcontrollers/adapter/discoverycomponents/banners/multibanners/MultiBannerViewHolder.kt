@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners
 
 import android.content.Context
 import android.view.View
@@ -13,6 +13,8 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.utils.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.BannerItem
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
 class MultiBannerViewHolder(customItemView: View) : AbstractViewHolder(customItemView) {
