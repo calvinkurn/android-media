@@ -221,6 +221,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
     }
 
     override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
+        this.shopBasicDataModel = shopBasicDataModel
         setupView(shopBasicDataModel)
         hideSubmitLoading()
     }
