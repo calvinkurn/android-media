@@ -329,42 +329,42 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             if (getArguments() != null
                     && getArguments().getBoolean(InboxReputationFormActivity.ARGS_IS_EDIT)) {
 
-                    presenter.editReview(
-                            getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
-                            review.getText().toString(),
-                            rating.getRating(),
-                            adapter.getList(),
-                            adapter.getDeletedList(),
-                            shareFbSwitch.isChecked(),
-                            anomymousSwitch.isChecked(),
-                            getArguments().getString(InboxReputationFormActivity
-                                    .ARGS_PRODUCT_NAME),
-                            getArguments().getString(InboxReputationFormActivity
-                                    .ARGS_PRODUCT_AVATAR),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_UTM_SOURCE));
-                } else {
-                    presenter.sendReview(
-                            getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
-                            review.getText().toString(),
-                            rating.getRating(),
-                            adapter.getList(),
-                            adapter.getDeletedList(),
-                            shareFbSwitch.isChecked(),
-                            anomymousSwitch.isChecked(),
-                            getArguments().getString(InboxReputationFormActivity
-                                    .ARGS_PRODUCT_NAME),
-                            getArguments().getString(InboxReputationFormActivity
-                                    .ARGS_PRODUCT_AVATAR),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_UTM_SOURCE));
-                }
+                presenter.editReview(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                        review.getText().toString(),
+                        rating.getRating(),
+                        adapter.getList(),
+                        adapter.getDeletedList(),
+                        shareFbSwitch.isChecked(),
+                        anomymousSwitch.isChecked(),
+                        getArguments().getString(InboxReputationFormActivity
+                                .ARGS_PRODUCT_NAME),
+                        getArguments().getString(InboxReputationFormActivity
+                                .ARGS_PRODUCT_AVATAR),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_UTM_SOURCE));
+            } else {
+                presenter.sendReview(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                        review.getText().toString(),
+                        rating.getRating(),
+                        adapter.getList(),
+                        adapter.getDeletedList(),
+                        shareFbSwitch.isChecked(),
+                        anomymousSwitch.isChecked(),
+                        getArguments().getString(InboxReputationFormActivity
+                                .ARGS_PRODUCT_NAME),
+                        getArguments().getString(InboxReputationFormActivity
+                                .ARGS_PRODUCT_AVATAR),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_UTM_SOURCE));
+            }
         });
 
         tipsHeader.setOnClickListener(view -> setTips());
