@@ -2,5 +2,6 @@
 <resources>
     <color name="textColorDeny">#7031353b</color>
     <color name="dividerColor">#e5e7e9</color>
+    <color name="clr_ff8000">#ff8000</color>
 
 </resources>
