@@ -85,7 +85,6 @@ import com.tokopedia.purchase_platform.features.cart.view.di.DaggerCartComponent
 import com.tokopedia.purchase_platform.features.cart.view.mapper.PromoMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -321,11 +320,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val cartItemDataList = getAllSelectedCartDataList()
             activity?.let {
                 if (hasChanges && cartItemDataList?.isNotEmpty() == true && !FLAG_BEGIN_SHIPMENT_PROCESS) {
-                    val service = Intent(it, UpdateCartIntentService::class.java)
-                    service.putParcelableArrayListExtra(
-                            UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, ArrayList(cartAdapter.selectedCartItemData)
-                    )
-                    it.startService(service)
+                    dPresenter.processUpdateCartData(true)
                 }
             }
         } catch (e: IllegalStateException) {
@@ -584,7 +579,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         cartAdapter.selectedInsuranceProductId,
                         cartAdapter.selectedInsuranceProductTitle)
             }
-            dPresenter.processUpdateCartData()
+            dPresenter.processUpdateCartData(false)
         } else {
             showToastMessageRed(message)
             sendAnalyticsOnButtonCheckoutClickedFailed()

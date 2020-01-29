@@ -36,7 +36,7 @@ interface ICartListPresenter {
 
     fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, appliedPromoCodeList: ArrayList<String>?, addWishList: Boolean, removeInsurance: Boolean)
 
-    fun processUpdateCartData()
+    fun processUpdateCartData(fireAndForget: Boolean)
 
     fun processUpdateCartDataPromoMerchant(cartItemDataList: List<CartItemData>, shopGroupAvailableData: ShopGroupAvailableData)
 
