@@ -60,7 +60,10 @@ open class GetExistingChatMapper @Inject constructor() {
                 interlocutor.thumbnail,
                 interlocutor.status.timestampStr,
                 interlocutor.status.isOnline,
-                interlocutor.shopId
+                interlocutor.shopId,
+                interlocutor.isOfficial,
+                interlocutor.isGold,
+                interlocutor.badge
         )
     }
 
