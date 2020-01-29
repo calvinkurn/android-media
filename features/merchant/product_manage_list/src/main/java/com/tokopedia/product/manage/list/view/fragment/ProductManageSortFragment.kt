@@ -6,14 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tkpd.library.ui.view.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_SORT_SELECTED
 import com.tokopedia.product.manage.list.constant.option.SortProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageSortModel
@@ -81,7 +80,7 @@ class ProductManageSortFragment : BaseDaggerFragment(), ProductManageSortViewHol
 
         rv_sort_data.apply {
             context?.let {
-                layoutManager = LinearLayoutManager(it, LinearLayout.VERTICAL, false)
+                layoutManager = LinearLayoutManager(it, RecyclerView.VERTICAL, false)
                 adapter = productSortAdapter
             }
         }

@@ -1,8 +1,7 @@
 package com.tokopedia.product.manage.list.utils
 
 import android.text.TextUtils
-import com.tokopedia.core.analytics.AppEventTracking
-import com.tokopedia.core.analytics.nishikino.model.EventTracking
+import com.tokopedia.product.manage.list.analytics.EventTracking
 import com.tokopedia.product.manage.list.constant.*
 import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
@@ -48,7 +47,7 @@ object ProductManageTracking {
     }
 
     fun eventDraftClick(label: String) {
-        eventProductManage(AppEventTracking.Action.CLICK, label)
+        eventProductManage(CLICK, label)
     }
 
     fun trackingFilter(productManageFilterModel: ProductManageFilterModel) {

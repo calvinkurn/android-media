@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import com.tkpd.library.utils.legacy.MethodChecker
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
