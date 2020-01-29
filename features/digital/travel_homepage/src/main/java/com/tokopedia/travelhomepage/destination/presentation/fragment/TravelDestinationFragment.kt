@@ -1,59 +1,57 @@
 package com.tokopedia.travelhomepage.destination.presentation.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Point
 import android.graphics.PorterDuff
+import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window.ID_ANDROID_CONTENT
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.travelhomepage.R
+import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingUtil
 import com.tokopedia.travelhomepage.destination.di.TravelDestinationComponent
 import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
 import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
+import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.EXTRA_DESTINATION_WEB_URL
-import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelDestinationTypeFactory
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_travel_homepage_destination.*
-import javax.inject.Inject
-import com.tokopedia.travelhomepage.R
-import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
-import com.tokopedia.travelhomepage.destination.widget.DestinationImageViewPager
-import kotlinx.android.synthetic.main.layout_image_slider.view.*
-import android.widget.LinearLayout
-import android.graphics.Point
-import android.os.Build
-import android.widget.ImageView
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingUtil
-import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.PARAM_CITY_ID
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_DEALS_ORDER
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_EVENT_ORDER
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_RECOMMENDATION_ORDER
+import com.tokopedia.travelhomepage.destination.widget.DestinationImageViewPager
+import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelDestinationTypeFactory
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_travel_homepage_destination.*
+import kotlinx.android.synthetic.main.layout_image_slider.view.*
 import kotlinx.android.synthetic.main.layout_travel_destination_shimmering.*
 import kotlinx.android.synthetic.main.layout_travel_destination_summary.*
-import android.view.Window.ID_ANDROID_CONTENT
-import android.graphics.Rect
-import android.util.DisplayMetrics
-import android.view.Window
-import androidx.fragment.app.FragmentActivity
-import kotlinx.android.synthetic.main.travel_homepage_order_section_list_without_subtitle_item.*
+import javax.inject.Inject
 
 
 /**
@@ -135,10 +133,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         indicator_banner_container.removeAllViews()
         for (count in 0 until imageCount) {
             val pointView = ImageView(context)
-            pointView.setPadding(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5),
-                    resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60),
-                    resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5),
-                    resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60))
+            pointView.setPadding(5, 60, 5, 60)
             if (count == 0) pointView.setImageResource(getIndicatorFocus())
             else pointView.setImageResource(getIndicator())
 

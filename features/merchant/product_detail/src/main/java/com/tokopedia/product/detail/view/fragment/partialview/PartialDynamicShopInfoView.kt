@@ -22,8 +22,7 @@ class PartialDynamicShopInfoView(val view: View, private val clickListener: View
     fun renderShop(shop: ShopInfo, isOwned: Boolean = false) {
         with(view) {
             shop_name.text = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(shop.shopCore.name)
-            ImageHandler.loadImage2(shop_ava, shop.shopAssets.avatar,
-                    R.drawable.ic_shop_default_empty)
+            ImageHandler.LoadImage(shop_ava, shop.shopAssets.avatar)
 
             var templateLocOnline = "${shop.location} "
             if (shop.shopLastActive.isNotBlank()) {
@@ -84,7 +83,7 @@ class PartialDynamicShopInfoView(val view: View, private val clickListener: View
     }
 
     fun renderShopBadge(shopBadge: ShopBadge) {
-        ImageHandler.loadImage2(view.l_medal, shopBadge.badge, R.drawable.ic_loading_image)
+        ImageHandler.LoadImage(view.l_medal, shopBadge.badge)
     }
 
     fun renderShopFeature(shopFeatureData: ShopFeatureData) {

@@ -181,7 +181,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.FIND:
                     screenName = AppScreen.SCREEN_FIND;
                     DeepLinkChecker.openFind(uriData.toString(), context);
-                    context.finish();
                     break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogDetail(linkSegment);
@@ -214,8 +213,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.ACCOUNTS:
                     if (!uriData.getPath().contains("activation")) {
                         prepareOpenWebView(uriData);
-                    } else {
-                        context.finish();
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
@@ -264,12 +261,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.PROMO_DETAIL:
                     DeepLinkChecker.openPromoDetail(uriData.toString(), context, defaultBundle);
-                    context.finish();
                     screenName = "";
                     break;
                 case DeepLinkChecker.PROMO_LIST:
                     DeepLinkChecker.openPromoList(uriData.toString(), context, defaultBundle);
-                    context.finish();
                     screenName = "";
                     break;
                 case DeepLinkChecker.SALE:
@@ -310,6 +305,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
             }
             sendCampaignGTM(activity, uriData.toString(), screenName);
+            context.finish();
         }
     }
 
@@ -365,7 +361,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
         intent.putExtras(bundle);
         context.startActivity(intent);
-        context.finish();
     }
 
     private void openDigitalPage(String applink) {
@@ -406,9 +401,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     replace(SLUG_PARAM, linkSegment.get(1));
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(applink));
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(bundle);
         context.startActivity(intent);
         context.finish();
@@ -733,7 +725,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
         if (linkSegment.size() > 1) {
             RouteManager.route(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + linkSegment.get(1)));
-            context.finish();
         }
     }
 
@@ -744,7 +735,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(defaultBundle);
         context.startActivity(intent);
-        context.finish();
     }
 
     private void openDiscoveryPage(String url, Bundle bundle) {
@@ -771,7 +761,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
         intent.putExtras(bundle);
         context.startActivity(intent);
-        context.finish();
     }
 
     private void openCategory(String uriData, Bundle bundle) {
@@ -785,7 +774,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         } else {
             RouteManager.route(context, bundle, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, urlParser.getDepIDfromURI(context));
         }
-        context.finish();
     }
 
     private void openBrowseProduct(List<String> linkSegment, Uri uriData, Bundle defaultBundle) {
@@ -803,7 +791,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtras(bundle);
             intent.putExtras(defaultBundle);
             context.startActivity(intent);
-            context.finish();
         } else {
             IntermediaryActivity.moveToClear(context, departmentId);
         }

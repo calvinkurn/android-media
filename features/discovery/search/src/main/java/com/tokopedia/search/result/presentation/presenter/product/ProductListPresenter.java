@@ -3,9 +3,11 @@ package com.tokopedia.search.result.presentation.presenter.product;
 import android.net.Uri;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
@@ -28,7 +30,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
-import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
+import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -63,7 +65,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Advertisin
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
 final class ProductListPresenter
-        extends SearchSectionPresenter<ProductListSectionContract.View>
+        extends BaseDaggerPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
 
     private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
@@ -95,6 +97,11 @@ final class ProductListPresenter
     @Inject
     @Named(SearchConstant.Advertising.ADVERTISING_LOCAL_CACHE)
     LocalCacheHandler advertisingLocalCache;
+    @Inject
+    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
+    public UseCase<DynamicFilterModel> getDynamicFilterUseCase;
+    @Inject
+    public SearchLocalCacheHandler searchLocalCacheHandler;
 
     private boolean enableGlobalNavWidget = true;
     private boolean changeParamRow = false;
@@ -936,7 +943,6 @@ final class ProductListPresenter
         }
 
         getView().removeLoading();
-        clearData();
         getView().setProductList(list);
         getView().showFreeOngkirShowCase(isExistsFreeOngkirBadge(list));
 
@@ -1095,9 +1101,45 @@ final class ProductListPresenter
         }
     }
 
+    protected void enrichWithAdditionalParams(RequestParams requestParams,
+                                              Map<String, String> additionalParams) {
+        requestParams.putAllString(additionalParams);
+    }
+
+    protected Subscriber<DynamicFilterModel> getDynamicFilterSubscriber(final boolean shouldSaveToLocalDynamicFilterDb) {
+        return new Subscriber<DynamicFilterModel>() {
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) {
+                if(e != null) {
+                    e.printStackTrace();
+                }
+
+                getView().renderFailRequestDynamicFilter();
+            }
+
+            @Override
+            public void onNext(DynamicFilterModel dynamicFilterModel) {
+                if(dynamicFilterModel == null) {
+                    getView().renderFailRequestDynamicFilter();
+                    return;
+                }
+
+                if(shouldSaveToLocalDynamicFilterDb && searchLocalCacheHandler != null) {
+                    searchLocalCacheHandler.saveDynamicFilterModelLocally(getView().getScreenNameId(), dynamicFilterModel);
+                }
+
+                getView().renderDynamicFilter(dynamicFilterModel);
+            }
+        };
+    }
+
     @Override
     public void detachView() {
         super.detachView();
+        if(getDynamicFilterUseCase != null) getDynamicFilterUseCase.unsubscribe();
         if(searchProductFirstPageUseCase != null) searchProductFirstPageUseCase.unsubscribe();
         if(searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
         if(productWishlistUrlUseCase != null) productWishlistUrlUseCase.unsubscribe();

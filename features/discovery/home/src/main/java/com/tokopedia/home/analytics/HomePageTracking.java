@@ -1247,14 +1247,14 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickProductChannelMix(Context context,
+    public static void eventClickProductChannelMix(String type,
                                                    DynamicHomeChannel.Channels bannerChannel,
                                                    boolean isFreeOngkir,
                                                    int gridPosition) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir)
+                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir, type)
             );
         }
     }

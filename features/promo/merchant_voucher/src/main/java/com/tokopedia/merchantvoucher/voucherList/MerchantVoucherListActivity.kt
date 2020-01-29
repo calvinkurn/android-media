@@ -12,7 +12,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 /**
  * Created by hendry on 21/09/18.
@@ -71,8 +71,8 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
 
     override fun enableShare(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
-        this.shopName = shopInfo.info.shopName
-        title = MethodChecker.fromHtml(getString(R.string.merchant_voucher_x, shopName))
+        this.shopName = shopInfo.shopCore.name
+        title = MethodChecker.fromHtml( getString(R.string.merchant_voucher_x, shopName))
         supportActionBar?.title = title
         invalidateOptionsMenu()
     }
@@ -83,8 +83,8 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
             shopInfo?.let {
                 merchantVoucherTracking.clickShare()
                 (application as MerchantVoucherModuleRouter).goToShareShop(this@MerchantVoucherListActivity,
-                        shopId, it.info.shopUrl, getString(R.string.shop_label_share_formatted,
-                        MethodChecker.fromHtml(it.info.shopName).toString(), it.info.shopLocation))
+                shopId, shopInfo.shopCore.url, getString(R.string.shop_label_share_formatted,
+                MethodChecker.fromHtml(shopInfo.shopCore.name).toString(), shopInfo.location))
             }
         }
     }

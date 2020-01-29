@@ -14,8 +14,14 @@ class ChatroomViewModel(val listChat: ArrayList<Visitable<*>> = ArrayList(),
                         val replyable: Boolean = false,
                         var blockedStatus: BlockedStatus = BlockedStatus()) {
 
+    val role get() = headerModel.role.toLowerCase(Locale.getDefault())
+
     fun isSeller(): Boolean {
-        return headerModel.role.toLowerCase(Locale.getDefault()) == ChatRoomHeaderViewModel.Companion.ROLE_USER
+        return role == ChatRoomHeaderViewModel.Companion.ROLE_USER
+    }
+
+    fun isChattingWithSeller(): Boolean {
+        return role.contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)
     }
 
 }
