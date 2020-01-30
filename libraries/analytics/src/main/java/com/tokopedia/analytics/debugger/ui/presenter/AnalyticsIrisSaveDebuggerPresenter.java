@@ -2,33 +2,31 @@ package com.tokopedia.analytics.debugger.ui.presenter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.analytics.debugger.AnalyticsDebuggerConst;
-import com.tokopedia.analytics.debugger.domain.DeleteGtmLogUseCase;
-import com.tokopedia.analytics.debugger.domain.GetGtmLogUseCase;
+import com.tokopedia.analytics.debugger.domain.DeleteGtmErrorLogUseCase;
+import com.tokopedia.analytics.debugger.domain.DeleteIrisSaveLogUseCase;
+import com.tokopedia.analytics.debugger.domain.DeleteIrisSendLogUseCase;
+import com.tokopedia.analytics.debugger.domain.GetGtmErrorLogUseCase;
+import com.tokopedia.analytics.debugger.domain.GetIrisSaveLogUseCase;
 import com.tokopedia.analytics.debugger.ui.AnalyticsDebugger;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
 
-/**
- * @author okasurya on 5/16/18.
- */
-public class AnalyticsDebuggerPresenter implements AnalyticsDebugger.Presenter {
-    private GetGtmLogUseCase getGtmLogUseCase;
-    private DeleteGtmLogUseCase deleteGtmLogUseCase;
+public class AnalyticsIrisSaveDebuggerPresenter implements AnalyticsDebugger.Presenter {
+    private GetIrisSaveLogUseCase getUseCase;
+    private DeleteIrisSaveLogUseCase deleteUseCase;
     private AnalyticsDebugger.View view;
 
     private String keyword = "";
     private int page = 0;
     private RequestParams requestParams;
 
-    public AnalyticsDebuggerPresenter(GetGtmLogUseCase getGtmLogUseCase,
-                                      DeleteGtmLogUseCase deleteGtmLogUseCase) {
-        this.getGtmLogUseCase = getGtmLogUseCase;
-        this.deleteGtmLogUseCase = deleteGtmLogUseCase;
+    public AnalyticsIrisSaveDebuggerPresenter(GetIrisSaveLogUseCase getUseCase,
+                                              DeleteIrisSaveLogUseCase deleteUseCase) {
+        this.getUseCase = getUseCase;
+        this.deleteUseCase = deleteUseCase;
         requestParams = RequestParams.create();
     }
 
@@ -39,32 +37,32 @@ public class AnalyticsDebuggerPresenter implements AnalyticsDebugger.Presenter {
 
     @Override
     public void detachView() {
-        getGtmLogUseCase.unsubscribe();
-        deleteGtmLogUseCase.unsubscribe();
+        getUseCase.unsubscribe();
+        deleteUseCase.unsubscribe();
         view = null;
     }
 
     @Override
     public void loadMore() {
         setRequestParams(page++, keyword);
-        getGtmLogUseCase.execute(requestParams, loadMoreSubscriber());
+        getUseCase.execute(requestParams, loadMoreSubscriber());
     }
 
     @Override
     public void search(String text) {
         setRequestParams(page = 0, keyword = text);
-        getGtmLogUseCase.execute(requestParams, reloadSubscriber());
+        getUseCase.execute(requestParams, reloadSubscriber());
     }
 
     @Override
     public void reloadData() {
         setRequestParams(page = 0, keyword = "");
-        getGtmLogUseCase.execute(requestParams, reloadSubscriber());
+        getUseCase.execute(requestParams, reloadSubscriber());
     }
 
     @Override
     public void deleteAll() {
-        deleteGtmLogUseCase.execute(new Subscriber<Boolean>() {
+        deleteUseCase.execute(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 

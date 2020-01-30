@@ -3,6 +3,7 @@ package com.tokopedia.iris.data
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import com.tokopedia.analytics.debugger.IrisLogger
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -33,8 +34,9 @@ class TrackingRepository(
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
         try {
-            trackingDao.insert(Tracking(data, session.getUserId(),
-                session.getDeviceId() ?: ""))
+            val tracking = Tracking(data, session.getUserId(), session.getDeviceId())
+            trackingDao.insert(tracking)
+            IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
             val dbCount = trackingDao.getCount()
             if (dbCount >= 250) {
@@ -101,6 +103,9 @@ class TrackingRepository(
             val requestBody = ApiService.parse(request)
             val response = apiService.sendMultiEventAsync(requestBody)
             if (response.isSuccessful && response.code() == 200) {
+                IrisLogger.getInstance(context).putSendIrisEvent(data.size.toString() +
+                    " - " +
+                    requestBody.toString())
                 delete(data)
                 totalSentData += data.size
                 // no need to loop, because it is already less than max row

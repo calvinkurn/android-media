@@ -68,7 +68,7 @@ class TrackingMapper {
         fun reformatEvent(event: String, sessionId: String, userId: String) : JSONObject {
             return try {
                 val item = JSONObject(event)
-                if (item.get("event") != null) {
+                if (item.has("event") && item.get("event") != null) {
                     item.put("event_ga", item.get("event"))
                     item.remove("event")
                 }
@@ -76,7 +76,7 @@ class TrackingMapper {
                 item.put("container", KEY_CONTAINER)
                 item.put("event", KEY_EVENT)
                 item.put("hits_time", Calendar.getInstance().timeInMillis)
-                if (item.get("userId") == null) {
+                if (!item.has("userId")) {
                     item.put("userId", userId)
                 }
                 item
