@@ -17,6 +17,11 @@ import java.util.Objects;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
+ *
+ * applink
+ * tokopedia://digital/form?category_id=48&client_number=0817818600&product_id=2245&operator_id=685
+ * or
+ * @sample emoney = RouteManager.route(this, ApplinkConsInternalDigital.DIGITAL_PRODUCT, "34", "578")
  */
 
 public class DigitalProductActivity extends BaseSimpleActivity
