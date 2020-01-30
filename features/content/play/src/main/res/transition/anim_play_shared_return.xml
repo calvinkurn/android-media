@@ -6,6 +6,5 @@
             <target android:targetId="@+id/rfl_video_wrapper" />
         </targets>
         <changeBounds/>
-        <changeTransform/>
     </transitionSet>
 </transitionSet>
