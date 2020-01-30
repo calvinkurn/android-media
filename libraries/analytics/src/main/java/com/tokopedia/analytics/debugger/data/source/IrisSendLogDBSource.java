@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 public class IrisSendLogDBSource {
 
@@ -31,9 +32,12 @@ public class IrisSendLogDBSource {
     }
 
     public Observable<Boolean> insertAll(IrisSendLogDB irisSendLogDB) {
-        return Observable.fromCallable(() ->{
-            irisLogSendDao.insertAll(irisSendLogDB);
-            return true;
+        return Observable.just(irisSendLogDB).map(new Func1<IrisSendLogDB, Boolean>() {
+            @Override
+            public Boolean call(IrisSendLogDB irisSendLogDB) {
+                irisLogSendDao.insertAll(irisSendLogDB);
+                return true;
+            }
         });
     }
 

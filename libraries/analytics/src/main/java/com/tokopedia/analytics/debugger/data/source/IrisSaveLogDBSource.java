@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 public class IrisSaveLogDBSource {
 
@@ -31,9 +32,12 @@ public class IrisSaveLogDBSource {
     }
 
     public Observable<Boolean> insertAll(IrisSaveLogDB irisSaveLogDB) {
-        return Observable.fromCallable(() ->{
-            irisLogSaveDao.insertAll(irisSaveLogDB);
-            return true;
+        return Observable.just(irisSaveLogDB).map(new Func1<IrisSaveLogDB, Boolean>() {
+            @Override
+            public Boolean call(IrisSaveLogDB saveLogDB) {
+                irisLogSaveDao.insertAll(saveLogDB);
+                return true;
+            }
         });
     }
 

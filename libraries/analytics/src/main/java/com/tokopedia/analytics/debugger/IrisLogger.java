@@ -1,30 +1,16 @@
 package com.tokopedia.analytics.debugger;
 
-import android.app.Activity;
 import android.content.Context;
-import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.analytics.database.GtmErrorLogDB;
 import com.tokopedia.analytics.database.IrisSaveLogDB;
 import com.tokopedia.analytics.database.IrisSendLogDB;
-import com.tokopedia.analytics.debugger.data.source.GtmErrorLogDBSource;
-import com.tokopedia.analytics.debugger.data.source.GtmLogDBSource;
 import com.tokopedia.analytics.debugger.data.source.IrisSaveLogDBSource;
 import com.tokopedia.analytics.debugger.data.source.IrisSendLogDBSource;
-import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
-import com.tokopedia.analytics.debugger.ui.activity.AnalyticsDebuggerActivity;
 import com.tokopedia.analytics.debugger.ui.activity.AnalyticsIrisSaveDebuggerActivity;
 import com.tokopedia.analytics.debugger.ui.activity.AnalyticsIrisSendDebuggerActivity;
 
-import java.net.URLDecoder;
-import java.util.Map;
-
 import rx.Subscriber;
-import rx.schedulers.Schedulers;
 
 public class IrisLogger implements IrisLoggerInterface {
 
