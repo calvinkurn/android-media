@@ -21,8 +21,8 @@ include "features:content:kol"
 include "features:content:kol_common"
 include "features:content:profile"
 
-include "features:digital:common_digital"
-include "features:digital:digitalproduct"
+include "features:recharge:common_digital"
+include "features:recharge:digitalproduct"
 
 include "features:discovery:discovery_common"
 include "features:discovery:category_common"
