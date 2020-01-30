@@ -6,24 +6,20 @@ open class ProfileListViewModel(val profileModelList: List<ProfileViewModel> = l
                                 val totalSearchCount: Int = 0) {
 
     fun getListTrackingObject() : List<Any> {
-        return profileModelList.createTrackingListFromProfileViewModelList {
-            it.getTrackingObject()
+        val listTracking = arrayListOf<Any>()
+
+        for(profileModel in profileModelList) {
+            listTracking.add(profileModel.getTrackingObject())
         }
+
+        return listTracking
     }
 
     fun getRecommendationListTrackingObject() : List<Any> {
-        return recommendationProfileModelList.createTrackingListFromProfileViewModelList {
-            it.getRecommendationTrackingObject()
-        }
-    }
-
-    private fun List<ProfileViewModel>.createTrackingListFromProfileViewModelList(
-            trackingObject: (profileViewModel: ProfileViewModel) -> Any
-    ): List<Any> {
         val listTracking = arrayListOf<Any>()
 
-        for(profileModel in this) {
-            listTracking.add(trackingObject)
+        for(profileModel in recommendationProfileModelList) {
+            listTracking.add(profileModel.getRecommendationTrackingObject())
         }
 
         return listTracking
