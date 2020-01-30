@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.toolbar
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
@@ -15,13 +16,14 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 09/12/19
  */
-class ToolbarComponent(
+open class ToolbarComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<PlayToolbarInteractionEvent>, ToolbarView.Listener, CoroutineScope by coroutineScope {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
         launch {
@@ -37,7 +39,7 @@ class ToolbarComponent(
                                 uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.show()
-                            is ScreenStateEvent.NoActionMore -> uiView.hideActionMore()
+                            is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
                             is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)
                         }
                     }
@@ -76,6 +78,6 @@ class ToolbarComponent(
         }
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             ToolbarView(container, this)
 }

@@ -45,6 +45,6 @@ sealed class ScreenStateEvent : ComponentEvent {
 
     data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
 
-    object NoActionMore : ScreenStateEvent()
+    object OnNoMoreAction : ScreenStateEvent()
     object ShowOneTapOnboarding : ScreenStateEvent()
 }

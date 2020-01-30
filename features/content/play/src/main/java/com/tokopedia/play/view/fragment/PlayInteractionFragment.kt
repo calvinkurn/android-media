@@ -195,7 +195,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
-                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.NoActionMore)
+                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
         }
     }
 
