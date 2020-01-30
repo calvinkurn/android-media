@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
@@ -151,7 +152,7 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
     }
 
     class LegoItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imageView: SquareImageView = view.findViewById(R.id.image)
+        val imageView: AppCompatImageView = view.findViewById(R.id.image)
         val context: Context
             get() = itemView.context
     }
