@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.list.presentation.activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
