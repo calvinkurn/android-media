@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.immersivebox
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
@@ -13,13 +14,14 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 13/12/19
  */
-class ImmersiveBoxComponent(
+open class ImmersiveBoxComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<ImmersiveBoxInteractionEvent>, CoroutineScope by coroutineScope, ImmersiveBoxView.Listener {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
         launch {
@@ -48,6 +50,6 @@ class ImmersiveBoxComponent(
         }
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             ImmersiveBoxView(container, this)
 }
