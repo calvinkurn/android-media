@@ -36,11 +36,11 @@ interface ICartListPresenter {
 
     fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, appliedPromoCodeList: ArrayList<String>?, addWishList: Boolean, removeInsurance: Boolean)
 
-    fun processToUpdateCartData(cartItemDataList: List<CartItemData>)
+    fun processUpdateCartData()
 
     fun processUpdateCartDataPromoMerchant(cartItemDataList: List<CartItemData>, shopGroupAvailableData: ShopGroupAvailableData)
 
-    fun processUpdateCartDataPromoStacking(cartItemDataList: List<CartItemData>, promoStackingData: PromoStackingData, goToDetail: Int)
+    fun processUpdateCartDataPromoGlobal(cartItemDataList: List<CartItemData>, promoStackingData: PromoStackingData, goToDetail: Int)
 
     fun processToUpdateAndReloadCartData(cartId: String)
 
@@ -74,7 +74,7 @@ interface ICartListPresenter {
 
     fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener)
 
-    fun setHasPerformChecklistChange()
+    fun setHasPerformChecklistChange(hasChangeState: Boolean)
 
     fun getHasPerformChecklistChange(): Boolean
 
