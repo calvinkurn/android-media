@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.multidex.MultiDexApplication;
 
-import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.FirebaseApp;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.config.GlobalConfig;
@@ -31,7 +30,6 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     @Override
     public void onCreate() {
-        SplitCompat.install(this);
         FirebaseApp.initializeApp(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);

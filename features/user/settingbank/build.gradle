@@ -41,6 +41,20 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
+        exclude('META-INF/androidx.legacy_legacy-support-core-ui.version')
+        exclude('META-INF/androidx.*.version')
+    }
 }
 
 dependencies {
@@ -85,7 +99,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     androidTestImplementation 'androidx.test:rules:1.1.0'
-    androidTestImplementation rootProject.ext.playServicesDependencies.core
+    androidTestImplementation project(rootProject.ext.libraries.playCore)
     androidTestImplementation rootProject.ext.firebase.core
     androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     // For espresso test cases
