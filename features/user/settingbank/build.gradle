@@ -43,16 +43,6 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/license.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/notice.txt'
-        exclude 'META-INF/ASL2.0'
-        exclude("META-INF/*.kotlin_module")
-        exclude('META-INF/androidx.legacy_legacy-support-core-ui.version')
         exclude('META-INF/androidx.*.version')
     }
 }
@@ -98,12 +88,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
-    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation project(rootProject.ext.libraries.playCore)
     androidTestImplementation rootProject.ext.firebase.core
     androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     // For espresso test cases
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
@@ -112,9 +102,9 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
     // For recycler view actions
-    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.0') {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoContrib) {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude module: 'recyclerview-v7'
@@ -122,7 +112,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
-    debugImplementation ('androidx.test.espresso:espresso-idling-resource:3.1.0'){
+    debugImplementation (rootProject.ext.testDependencies.espressoIdlingResource){
         exclude group: 'androidx.lifecycle', module: 'lifecycle-common'
     }
 }

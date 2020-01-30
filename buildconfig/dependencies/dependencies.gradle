@@ -231,6 +231,7 @@ ext {
     ]
 
     testDependencies = [
+            androidxTest       : 'androidx.test.ext:junit:1.1.1',
             junit              : "junit:junit:4.12",
             junitJupiterApi    : "org.junit.jupiter:junit-jupiter-api:$JunitJupiterVersion",
             junitJupiterEngine : "org.junit.jupiter:junit-jupiter-engine:$JunitJupiterVersion",
@@ -244,6 +245,7 @@ ext {
             androidRulesVersion: "androidx.test:rules:$rulesVersion",
             espressoIntents    : "androidx.test.espresso:espresso-intents:$espressoVersion",
             espressoContrib    : "androidx.test.espresso:espresso-contrib:$espressoVersion",
+            espressoIdlingResource : "androidx.test.espresso:espresso-idling-resource:$espressoVersion",
             retrofitMock       : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
             retrofitMockWebser : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker           : 'com.google.dexmaker:dexmaker:1.2',
