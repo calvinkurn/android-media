@@ -130,11 +130,11 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDat
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 

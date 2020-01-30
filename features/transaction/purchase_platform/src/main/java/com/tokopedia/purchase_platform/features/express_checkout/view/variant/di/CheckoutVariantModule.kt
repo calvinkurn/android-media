@@ -18,7 +18,7 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.Ch
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantPresenter
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.FragmentUiModel
 import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
@@ -54,8 +54,8 @@ class CheckoutVariantModule {
 
     @CheckoutVariantScope
     @Provides
-    fun provideFragmentViewModel(): FragmentViewModel {
-        return FragmentViewModel()
+    fun provideFragmentViewModel(): FragmentUiModel {
+        return FragmentUiModel()
     }
 
     @CheckoutVariantScope

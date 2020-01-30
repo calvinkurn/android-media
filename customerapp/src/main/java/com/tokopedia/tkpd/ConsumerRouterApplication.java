@@ -21,6 +21,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -294,11 +295,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ResolutionRouter,
         ProductDetailRouter,
-        KYCRouter {
+        KYCRouter,
+        CustomerRouter.IrisInstallRouter {
 
     private static final String EXTRA = "extra";
     public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
+    public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
+    public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -333,6 +337,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        ResourceDownloadManager.Companion.getManager().initialize(this, R.raw.url_list);
     }
 
     private void initDaggerInjector() {
@@ -1044,7 +1049,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareEvent(Context context, String uri, String name, String imageUrl,String desktopUrl) {
+    public void shareEvent(Context context, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType("")
                 .setName(name)
@@ -1530,6 +1535,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
+    }
+
+    @Override
+    public void sendIrisInstallEvent() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_INSTALL);
+        mIris.sendEvent(map);
     }
 
     @Override
