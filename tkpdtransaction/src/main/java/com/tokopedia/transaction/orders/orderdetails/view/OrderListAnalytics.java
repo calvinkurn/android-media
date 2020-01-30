@@ -134,7 +134,7 @@ public class OrderListAnalytics {
 
     }
 
-    private void sendDownloadEventData(String eventLabel){
+    public void sendDownloadEventData(String eventLabel){
         sendGtmDataDetails(EVENT_ACTION_DOWNLOAD_INVOICE, eventLabel);
     }
 
