@@ -105,7 +105,7 @@ class TrackingRepository(
             if (response.isSuccessful && response.code() == 200) {
                 IrisLogger.getInstance(context).putSendIrisEvent(data.size.toString() +
                     " - " +
-                    requestBody.toString())
+                    request)
                 delete(data)
                 totalSentData += data.size
                 // no need to loop, because it is already less than max row

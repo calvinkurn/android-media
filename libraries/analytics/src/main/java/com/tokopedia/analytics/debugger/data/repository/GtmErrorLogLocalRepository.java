@@ -49,10 +49,10 @@ public class GtmErrorLogLocalRepository{
                         viewModel.setName("");
                         viewModel.setCategory("");
                         viewModel.setData(gtmErrorLogDB.getData());
-                        if(gtmErrorLogDB.getData().length() > 27) {
-                            viewModel.setDataExcerpt(gtmErrorLogDB.getData().substring(0,27) + "...");
+                        if(gtmErrorLogDB.getData().length() > 100) {
+                            viewModel.setDataExcerpt(gtmErrorLogDB.getData().replaceAll("\\s+", " ").substring(0,100) + "...");
                         } else {
-                            viewModel.setDataExcerpt(gtmErrorLogDB.getData());
+                            viewModel.setDataExcerpt(gtmErrorLogDB.getData().replaceAll("\\s+", " "));
                         }
 
                         viewModel.setTimestamp(dateFormat.format(new Date(gtmErrorLogDB.getTimestamp())));

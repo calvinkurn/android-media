@@ -58,6 +58,7 @@ public class AnalyticsIrisSaveDebuggerPresenter implements AnalyticsDebugger.Pre
     public void reloadData() {
         setRequestParams(page = 0, keyword = "");
         getUseCase.execute(requestParams, reloadSubscriber());
+
     }
 
     @Override

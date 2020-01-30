@@ -47,10 +47,10 @@ public class IrisSaveLogLocalRepository {
                         viewModel.setName("");
                         viewModel.setCategory("");
                         viewModel.setData(logDB.getData());
-                        if(logDB.getData().length() > 27) {
-                            viewModel.setDataExcerpt(logDB.getData().substring(0,27) + "...");
+                        if(logDB.getData().length() > 100) {
+                            viewModel.setDataExcerpt(logDB.getData().replaceAll("\\s+", " ").substring(0,100) + "...");
                         } else {
-                            viewModel.setDataExcerpt(logDB.getData());
+                            viewModel.setDataExcerpt(logDB.getData().replaceAll("\\s+", " "));
                         }
 
                         viewModel.setTimestamp(dateFormat.format(new Date(logDB.getTimestamp())));

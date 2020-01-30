@@ -83,7 +83,7 @@ public class IrisLogger implements IrisLoggerInterface {
     }
 
     @Override
-    public void putSendIrisEvent(String data) {
+    public void putSaveIrisEvent(String data) {
         IrisSaveLogDB irisSaveLogDB = new IrisSaveLogDB();
         irisSaveLogDB.setData(data);
         irisSaveLogDB.setTimestamp(System.currentTimeMillis());
@@ -92,7 +92,7 @@ public class IrisLogger implements IrisLoggerInterface {
     }
 
     @Override
-    public void putSaveIrisEvent(String data) {
+    public void putSendIrisEvent(String data) {
         IrisSendLogDB irisSendLogDB = new IrisSendLogDB();
         irisSendLogDB.setData(data);
         irisSendLogDB.setTimestamp(System.currentTimeMillis());
