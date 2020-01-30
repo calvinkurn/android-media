@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.sort.di.component.DaggerShopProductSortComponent;
 import com.tokopedia.shop.sort.di.module.ShopProductSortModule;
@@ -88,6 +89,18 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
             sortName = getArguments().getString(ShopProductSortActivity.SORT_NAME);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getRecyclerView(view).setPadding(
+                0,
+                getResources().getDimensionPixelOffset(R.dimen.dp_16),
+                0,
+                0
+        );
+        getRecyclerView(view).setClipToPadding(false);
     }
 
     @Override
