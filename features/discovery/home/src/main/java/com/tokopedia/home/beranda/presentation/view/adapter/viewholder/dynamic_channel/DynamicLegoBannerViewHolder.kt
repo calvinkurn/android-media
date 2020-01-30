@@ -91,8 +91,8 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                              private val parentPosition: Int) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
         companion object{
-            private const val LEGO_SQUARE = R.layout.layout_lego_item
-            private const val LEGO_LANDSCAPE = R.layout.layout_lego_landscape
+            private val LEGO_SQUARE = R.layout.layout_lego_item
+            private val LEGO_LANDSCAPE = R.layout.layout_lego_landscape
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
             val layout = if(legoBannerType == TYPE_FOUR_GRID_LEGO) LEGO_LANDSCAPE else LEGO_SQUARE
