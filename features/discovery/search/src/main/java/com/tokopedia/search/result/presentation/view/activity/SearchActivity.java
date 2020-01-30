@@ -322,13 +322,10 @@ public class SearchActivity extends BaseActivity
             }
 
             @Override
-            public void onShow() {
-                hideBottomNavigation();
-            }
+            public void onShow() { }
 
             @Override
             public void onHide() {
-                showBottomNavigation();
                 sendBottomSheetHideEventForProductList();
             }
 
@@ -363,6 +360,7 @@ public class SearchActivity extends BaseActivity
         searchNavContainer.setVisibility(View.GONE);
     }
 
+    @Override
     public void showBottomNavigation() {
         searchNavContainer.setVisibility(View.VISIBLE);
     }
@@ -741,25 +739,6 @@ public class SearchActivity extends BaseActivity
     public void removeSearchPageLoading() {
         showLoadingView(false);
         showContainer(true);
-        showBottomNavigationForActiveTab();
-    }
-
-    private void showBottomNavigationForActiveTab() {
-        if (isCurrentActiveTabIsNotProfile()) {
-            showBottomNavigation();
-        }
-    }
-
-    private boolean isCurrentActiveTabIsNotProfile() {
-        return !getCurrentActivePageTitle().equals(profileTabTitle);
-    }
-
-    private String getCurrentActivePageTitle() {
-        if (searchSectionPagerAdapter != null) {
-            return searchSectionPagerAdapter.getPageTitle(viewPager.getCurrentItem()).toString();
-        }
-
-        return "";
     }
 
     @Override

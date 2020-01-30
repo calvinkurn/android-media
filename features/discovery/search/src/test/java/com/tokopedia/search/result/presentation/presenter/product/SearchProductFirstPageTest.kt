@@ -65,6 +65,9 @@ internal class SearchProductFirstPageTest: Spek({
 
                     verifyProcessingData(productListView)
 
+                    productListView.showBottomNavigation()
+                    productListView.updateScrollListener()
+
                     verifyHideLoading(productListView)
                 }
 
@@ -186,6 +189,9 @@ internal class SearchProductFirstPageTest: Spek({
                     verifyShowLoading(productListView)
 
                     verifyProcessingData(productListView)
+
+                    productListView.showBottomNavigation()
+                    productListView.updateScrollListener()
 
                     verifySendTrackingOnFirstTimeLoad(productListView, GeneralSearchTrackingModel(
                             searchProductModelCommon.searchProduct.query,
