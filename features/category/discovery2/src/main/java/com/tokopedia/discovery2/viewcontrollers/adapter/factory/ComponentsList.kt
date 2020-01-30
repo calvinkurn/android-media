@@ -13,5 +13,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     BrandRecommendation(R.layout.brand_recommendation_layout, "brand_recommendation"),
     BrandRecommendationItem(R.layout.brand_recommendation_layout_item, "brand_recommendation_item"),
     CarouselBanner(R.layout.carousel_banner_layout, "carousel_banner"),
-    CarouselBannerItemView(R.layout.carousel_banner_item_layout, "carousel_banner_item")
+    CarouselBannerItemView(R.layout.carousel_banner_item_layout, "carousel_banner_item"),
+    SliderBanner(R.layout.slider_banner_layout, "slider_banner"),
+    SliderBannerItemView(R.layout.slider_banner_item_layout, "slider_banner_item")
 }

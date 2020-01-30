@@ -1,16 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner
 
 import android.view.View
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CarouselBannerView
+import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewState
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
@@ -33,16 +31,20 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun setUpObservers() {
-        carouselBannerViewModel.componentData.observe(fragment.viewLifecycleOwner, Observer { item ->
-            if (!item.title.isNullOrEmpty()) {
-                carouselBannerTitle.show()
-                setTitle(item.title)
-            } else {
-                carouselBannerTitle.hide()
+        carouselBannerViewModel.getTitleLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            when (item) {
+                is CustomViewState.ShowText -> {
+                    carouselBannerTitle.show()
+                    setTitle(item.value.toString())
+                }
+
+                is CustomViewState.HideView -> {
+                    carouselBannerTitle.hide()
+                }
             }
         })
 
-        carouselBannerViewModel.listData.observe(fragment.viewLifecycleOwner, Observer { item ->
+        carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             carouselBannerRecycleAdapter.setDataList(item)
             carouselBannerView.setDataItems(item)
             carouselBannerView.buildView()

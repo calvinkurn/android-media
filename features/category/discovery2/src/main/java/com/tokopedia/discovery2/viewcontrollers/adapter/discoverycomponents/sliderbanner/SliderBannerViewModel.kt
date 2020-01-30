@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -12,9 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class CarouselBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class SliderBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private val carouselBannerTitle: MutableLiveData<CustomViewState> = MutableLiveData()
+    private val sliderBannerTitle: MutableLiveData<CustomViewState> = MutableLiveData()
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     override val coroutineContext: CoroutineContext
@@ -27,9 +27,9 @@ class CarouselBannerViewModel(val application: Application, components: Componen
 
     private fun getTitleData(components: ComponentsItem) {
         if (!components.title.isNullOrEmpty()) {
-            carouselBannerTitle.value = CustomViewState.ShowText(components.title)
+            sliderBannerTitle.value = CustomViewState.ShowText(components.title)
         } else {
-            carouselBannerTitle.value = CustomViewState.HideView
+            sliderBannerTitle.value = CustomViewState.HideView
         }
     }
 
@@ -37,7 +37,7 @@ class CarouselBannerViewModel(val application: Application, components: Componen
         val list = ArrayList<ComponentsItem>()
         components.data?.forEach {
             val componentsItem = ComponentsItem()
-            componentsItem.name = "carousel_banner_item"
+            componentsItem.name = "slider_banner_item"
             val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem
@@ -47,11 +47,12 @@ class CarouselBannerViewModel(val application: Application, components: Componen
     }
 
     fun getTitleLiveData(): LiveData<CustomViewState> {
-        return carouselBannerTitle
+        return sliderBannerTitle
     }
 
     fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return listData
     }
+
 
 }

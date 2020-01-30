@@ -64,7 +64,9 @@ class DiscoveryFragment : Fragment() {
                     it.data.components?.get(2)?.let { it1 -> list.add(it1) }
                     it.data.components?.get(9)?.let { it1 -> list.add(it1) }
                     it.data.components?.get(3)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(7)?.let { it1 -> list.add(it1) }
                     it.data.components?.get(4)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(7)?.let { it1 -> list.add(it1) }
                     it.data.components?.get(5)?.let { it1 -> list.add(it1) }
                     it.data.components?.get(2)?.let { it1 -> list.add(it1) }
                     it.data.components?.get(3)?.let { it1 -> list.add(it1) }

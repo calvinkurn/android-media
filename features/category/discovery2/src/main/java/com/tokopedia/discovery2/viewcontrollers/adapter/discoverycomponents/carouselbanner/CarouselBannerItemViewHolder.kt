@@ -9,8 +9,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewState
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
@@ -22,15 +22,22 @@ class CarouselBannerItemViewHolder(itemView: View, private val fragment: Fragmen
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         carouselBannerItemViewModel = discoveryBaseViewModel as CarouselBannerItemViewModel
-        carouselBannerItemViewModel.componentData.observe(fragment.viewLifecycleOwner, Observer { item ->
+        carouselBannerItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             val itemData = item.data?.get(0)
-            ImageHandler.LoadImage(promoImage, item.data?.get(0)?.imageUrlMobile)
+            ImageHandler.LoadImage(promoImage, itemData?.imageUrlMobile)
             setClick(itemData?.applinks)
-            if (!itemData?.description.isNullOrBlank()) {
-                promoText.show()
-                promoText.text = itemData?.description
-            }else{
-                promoText.hide()
+        })
+
+        carouselBannerItemViewModel.getDescriptionLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            when (item) {
+                is CustomViewState.ShowText -> {
+                    promoText.show()
+                    promoText.text = item.value.toString()
+                }
+
+                is CustomViewState.HideView -> {
+                    promoText.hide()
+                }
             }
         })
 

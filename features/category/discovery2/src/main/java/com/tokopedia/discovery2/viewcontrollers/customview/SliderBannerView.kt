@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -18,45 +17,51 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlin.collections.ArrayList
 
 private const val SLIDE_DELAY: Long = 5000
 private const val SAVED = "instance state BannerView.class"
 private const val SAVE_STATE_AUTO_SCROLL_ON_PROGRESS = "auto_scroll_on_progress"
 
-class CarouselBannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class SliderBannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var bannerHandler: Handler? = null
     private var runnableScrollBanner: Runnable? = null
     private var bannerRecyclerView: RecyclerView? = null
     private var bannerIndicator: ViewGroup? = null
-    private var bannerSeeAll: TextView? = null
+    private var autoScrollEnabled: Boolean = false
     private var autoScrollOnProgress = false
-
-    private var onPromoAllClickListener: OnPromoAllClickListener? = null
 
     private var indicatorItems = ArrayList<ImageView>()
     private var impressionStatusList = ArrayList<Boolean>()
-    private var carouselDataItems: ArrayList<ComponentsItem> = ArrayList()
+    private var sliderDataItems: ArrayList<ComponentsItem> = ArrayList()
     private var currentPosition = 0
-    private var carouselBannerAdapter: DiscoveryRecycleAdapter? = null
+    private var sliderBannerAdapter: DiscoveryRecycleAdapter? = null
 
     init {
-        val view = View.inflate(context, R.layout.widget_carousel_banner, this)
-        bannerRecyclerView = view.findViewById(R.id.banner_carousel_recyclerview)
+        val view = View.inflate(context, R.layout.widget_slider_banner, this)
+        bannerRecyclerView = view.findViewById(R.id.banner_slider_recyclerview)
         bannerIndicator = view.findViewById(R.id.indicator_banner_container)
-        bannerSeeAll = view.findViewById(R.id.promo_link)
         indicatorItems = ArrayList()
         impressionStatusList = ArrayList()
-        carouselDataItems = ArrayList()
+        sliderDataItems = ArrayList()
+        getDataFromAttrs(attrs)
+    }
+
+    private fun getDataFromAttrs(attrs: AttributeSet?) {
+        attrs?.let {
+            context.theme.obtainStyledAttributes(attrs, R.styleable.SliderBannerView, 0, 0).apply {
+                try {
+                    autoScrollEnabled = getBoolean(R.styleable.SliderBannerView_autoScroll, false)
+                } finally {
+                    recycle()
+                }
+            }
+        }
     }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        bannerSeeAll.let {
-            it?.setOnClickListener { onPromoAllClickListener?.onPromoAllClick() }
-        }
         invalidate()
         requestLayout()
     }
@@ -103,11 +108,11 @@ class CarouselBannerView @JvmOverloads constructor(context: Context, attrs: Attr
         this.bannerIndicator?.removeAllViews()
         val layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
         this.bannerRecyclerView?.layoutManager = layoutManager
-        this.bannerRecyclerView?.adapter = carouselBannerAdapter
-        for (item in carouselDataItems) {
+        this.bannerRecyclerView?.adapter = sliderBannerAdapter
+        for (item in sliderDataItems) {
             val pointView = ImageView(this.context)
             pointView.setPadding(5, 0, 5, 0)
-            if (carouselDataItems.indexOf(item) == 0) {
+            if (sliderDataItems.indexOf(item) == 0) {
                 pointView.setImageResource(this.getIndicatorFocus())
             } else {
                 pointView.setImageResource(this.getIndicator())
@@ -121,23 +126,23 @@ class CarouselBannerView @JvmOverloads constructor(context: Context, attrs: Attr
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (recyclerView.layoutManager != null) {
-                    this@CarouselBannerView.currentPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findFirstCompletelyVisibleItemPosition()
+                    this@SliderBannerView.currentPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findFirstCompletelyVisibleItemPosition()
                 }
 
-                this@CarouselBannerView.setCurrentIndicator()
-                if (!this@CarouselBannerView.isCurrentPositionHasImpression(this@CarouselBannerView.currentPosition)) {
-                    this@CarouselBannerView.impressionStatusList[this@CarouselBannerView.currentPosition] = true
+                this@SliderBannerView.setCurrentIndicator()
+                if (!this@SliderBannerView.isCurrentPositionHasImpression(this@SliderBannerView.currentPosition)) {
+                    this@SliderBannerView.impressionStatusList[this@SliderBannerView.currentPosition] = true
                 }
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == 1 && recyclerView.isInTouchMode) {
-                    this@CarouselBannerView.stopAutoScrollBanner()
+                    this@SliderBannerView.stopAutoScrollBanner()
                 }
             }
         })
-        if (this.carouselDataItems.size == 1) {
+        if (this.sliderDataItems.size == 1) {
             this.bannerIndicator?.hide()
         }
 
@@ -149,30 +154,29 @@ class CarouselBannerView @JvmOverloads constructor(context: Context, attrs: Attr
 
             this.runnableScrollBanner = object : Runnable {
                 override fun run() {
-                    if (this@CarouselBannerView.bannerRecyclerView != null && this@CarouselBannerView.bannerRecyclerView?.adapter != null) {
-                        if (this@CarouselBannerView.currentPosition == this@CarouselBannerView.bannerRecyclerView?.adapter?.itemCount!! - 1) {
-                            this@CarouselBannerView.currentPosition = -1
+                    if (this@SliderBannerView.bannerRecyclerView != null && this@SliderBannerView.bannerRecyclerView?.adapter != null) {
+                        if (this@SliderBannerView.currentPosition == this@SliderBannerView.bannerRecyclerView?.adapter?.itemCount!! - 1) {
+                            this@SliderBannerView.currentPosition = -1
                         }
-                        this@CarouselBannerView.bannerRecyclerView?.smoothScrollToPosition(this@CarouselBannerView.currentPosition + 1)
-                        this@CarouselBannerView.bannerHandler?.postDelayed(this, SLIDE_DELAY)
+                        this@SliderBannerView.bannerRecyclerView?.smoothScrollToPosition(this@SliderBannerView.currentPosition + 1)
+                        this@SliderBannerView.bannerHandler?.postDelayed(this, SLIDE_DELAY)
                     }
                 }
             }
 
             this.startAutoScrollBanner()
         }
-
     }
 
     private fun startAutoScrollBanner() {
-        if (bannerHandler != null && runnableScrollBanner != null && !isAutoScrollOnProgress()) {
+        if (autoScrollEnabled && bannerHandler != null && runnableScrollBanner != null && !isAutoScrollOnProgress()) {
             setAutoScrollOnProgress(true)
             bannerHandler?.postDelayed(runnableScrollBanner, SLIDE_DELAY)
         }
     }
 
     private fun stopAutoScrollBanner() {
-        if (bannerHandler != null && runnableScrollBanner != null) {
+        if (autoScrollEnabled && bannerHandler != null && runnableScrollBanner != null) {
             setAutoScrollOnProgress(false)
             bannerHandler?.removeCallbacks(runnableScrollBanner)
         }
@@ -206,7 +210,7 @@ class CarouselBannerView @JvmOverloads constructor(context: Context, attrs: Attr
 
     private fun resetImpressionStatus() {
         impressionStatusList.clear()
-        for (i in carouselDataItems.indices) {
+        for (i in sliderDataItems.indices) {
             impressionStatusList.add(false)
         }
     }
@@ -221,23 +225,13 @@ class CarouselBannerView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     fun setAdapter(recycleAdapter: DiscoveryRecycleAdapter) {
-        carouselBannerAdapter = recycleAdapter
-    }
-
-    fun setOnAllPromoClickListener(onPromoAllClickListener: OnPromoAllClickListener) {
-        this.onPromoAllClickListener = onPromoAllClickListener
-
+        sliderBannerAdapter = recycleAdapter
     }
 
     fun setDataItems(item: ArrayList<ComponentsItem>?) {
         item?.let {
-            carouselDataItems = item
+            sliderDataItems = item
         }
 
     }
-
-    interface OnPromoAllClickListener {
-        fun onPromoAllClick()
-    }
-
 }

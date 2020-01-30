@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_8">
+    android:background="@color/white">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/banner_carousel_recyclerview"
@@ -20,7 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/banner_carousel_recyclerview" />
 
@@ -29,10 +33,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="false"
-        android:padding="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:text="@string/lihat_semua"
         android:textColor="@color/greenColor"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/banner_carousel_recyclerview"
         app:typographyType="heading_6"
