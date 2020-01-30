@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.saldodetails.presenter.SaldoHistoryViewModel
 import com.tokopedia.saldodetails.viewmodels.MerchantSaldoPriorityViewModel
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import dagger.Binds
@@ -30,4 +31,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MerchantSaldoPriorityViewModel::class)
     internal abstract fun MerchantSPViewModel(viewModel: MerchantSaldoPriorityViewModel): ViewModel
+
+    @SaldoDetailsScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(SaldoHistoryViewModel::class)
+    internal abstract fun SaldoHistoryViewModel(viewModel: SaldoHistoryViewModel): ViewModel
 }

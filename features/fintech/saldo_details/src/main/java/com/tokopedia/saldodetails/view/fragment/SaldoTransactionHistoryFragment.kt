@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -22,7 +22,10 @@ import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter
+import com.tokopedia.saldodetails.presenter.SaldoHistoryViewModel
+import com.tokopedia.saldodetails.utils.ErrorType
+import com.tokopedia.saldodetails.utils.IN_VALID_DATE_ERROR
+import com.tokopedia.saldodetails.utils.NORMAL
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import java.util.*
@@ -40,7 +43,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     private var endDateTV: TextView? = null
 
     @Inject
-    lateinit var saldoHistoryPresenter: SaldoHistoryPresenter
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val saldoHistoryViewModel: SaldoHistoryViewModel by  lazy { ViewModelProviders.of(this, viewModelFactory).get(SaldoHistoryViewModel::class.java) }
 
     private var datePicker: SaldoDatePickerUtil? = null
 
@@ -61,6 +66,21 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         super.onViewCreated(view, savedInstanceState)
         initialVar()
         initListeners()
+        addObserver()
+    }
+
+    private fun addObserver() {
+        saldoHistoryViewModel.errors.observe(this, androidx.lifecycle.Observer {
+            it?.let {
+                if (it is ErrorType<*>){
+                    val message = if (it.data is Int) getString(it.data) else it.data.toString()
+                    when(it.type){
+                        NORMAL -> showErrorMessage(message)
+                        IN_VALID_DATE_ERROR -> showInvalidDateError(message)
+                    }
+                }
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -70,8 +90,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     private fun getInitialdata() {
         setActionsEnabled(false)
-        saldoHistoryPresenter.setFirstDateParameter()
-        saldoHistoryPresenter.getSummaryDeposit()
+        saldoHistoryViewModel.setFirstDateParameter(this)
+        saldoHistoryViewModel.getSummaryDeposit()
     }
 
     private fun initViews(view: View) {
@@ -105,19 +125,19 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
         allSaldoHistoryTabItem = SaldoHistoryTabItem()
         allSaldoHistoryTabItem!!.title = "Semua"
-        allSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryPresenter)
+        allSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryViewModel,this)
 
         saldoTabItems.add(allSaldoHistoryTabItem!!)
 
         buyerSaldoHistoryTabItem = SaldoHistoryTabItem()
         buyerSaldoHistoryTabItem!!.title = "Refund"
-        buyerSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_BUYER, saldoHistoryPresenter)
+        buyerSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_BUYER, saldoHistoryViewModel, this)
 
         saldoTabItems.add(buyerSaldoHistoryTabItem!!)
 
         sellerSaldoHistoryTabItem = SaldoHistoryTabItem()
         sellerSaldoHistoryTabItem!!.title = "Penghasilan"
-        sellerSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_SELLER, saldoHistoryPresenter)
+        sellerSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_SELLER, saldoHistoryViewModel, this)
 
         saldoTabItems.add(sellerSaldoHistoryTabItem!!)
 
@@ -146,10 +166,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
             }
         })
         startDateLayout!!.setOnClickListener {
-            saldoHistoryPresenter.onStartDateClicked(datePicker!!)
+            saldoHistoryViewModel.onStartDateClicked(datePicker!!,this)
         }
         endDateLayout!!.setOnClickListener {
-            saldoHistoryPresenter.onEndDateClicked(datePicker!!)
+            saldoHistoryViewModel.onEndDateClicked(datePicker!!, this)
         }
 
     }
@@ -171,9 +191,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         endDateLayout!!.isEnabled = isEnabled
     }
 
-    override fun setLoading() {
-
-    }
 
     override fun refresh() {
 
@@ -181,24 +198,24 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     override fun showEmptyState() {
         setActionsEnabled(false)
-        NetworkErrorHelper.showEmptyState(activity, view) { saldoHistoryPresenter.getSummaryDeposit() }
+        NetworkErrorHelper.showEmptyState(activity, view) { saldoHistoryViewModel.getSummaryDeposit() }
     }
 
     override fun setRetry() {
         setActionsEnabled(false)
-        NetworkErrorHelper.createSnackbarWithAction(activity) { saldoHistoryPresenter.getSummaryDeposit() }.showRetrySnackbar()
+        NetworkErrorHelper.createSnackbarWithAction(activity) { saldoHistoryViewModel.getSummaryDeposit() }.showRetrySnackbar()
     }
 
     override fun showEmptyState(error: String) {
         setActionsEnabled(false)
         NetworkErrorHelper.showEmptyState(activity, view, error
-        ) { saldoHistoryPresenter.getSummaryDeposit() }
+        ) { saldoHistoryViewModel.getSummaryDeposit() }
     }
 
     override fun setRetry(error: String) {
         setActionsEnabled(false)
         NetworkErrorHelper.createSnackbarWithAction(activity, error
-        ) { saldoHistoryPresenter.getSummaryDeposit() }.showRetrySnackbar()
+        ) { saldoHistoryViewModel.getSummaryDeposit() }.showRetrySnackbar()
     }
 
     override fun setStartDate(date: String) {
@@ -217,27 +234,27 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         return endDateTV!!.text.toString()
     }
 
-    override fun getDefaultEmptyViewModel(): Visitable<*>? {
-        return EmptyModel()
-    }
+//    override fun getDefaultEmptyViewModel(): Visitable<*>? {
+//        return EmptyModel()
+//    }
 
-    override fun finishLoading() {
-        if (getSingleTabAdapter() != null) {
-            getSingleTabAdapter()!!.hideLoading()
-        }
-
-        if (getAllHistoryAdapter() != null) {
-            getAllHistoryAdapter()!!.hideLoading()
-        }
-
-        if (getBuyerHistoryAdapter() != null) {
-            getBuyerHistoryAdapter()!!.hideLoading()
-        }
-
-        if (getSellerHistoryAdapter() != null) {
-            getSellerHistoryAdapter()!!.hideLoading()
-        }
-    }
+//    override fun finishLoading() {
+//        if (getSingleTabAdapter() != null) {
+//            getSingleTabAdapter()!!.hideLoading()
+//        }
+//
+//        if (getAllHistoryAdapter() != null) {
+//            getAllHistoryAdapter()!!.hideLoading()
+//        }
+//
+//        if (getBuyerHistoryAdapter() != null) {
+//            getBuyerHistoryAdapter()!!.hideLoading()
+//        }
+//
+//        if (getSellerHistoryAdapter() != null) {
+//            getSellerHistoryAdapter()!!.hideLoading()
+//        }
+//    }
 
     override fun showErrorMessage(s: String) {
         NetworkErrorHelper.showRedCloseSnackbar(activity, s)
@@ -247,24 +264,24 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         NetworkErrorHelper.showRedCloseSnackbar(activity, errorMessage)
     }
 
-    override fun removeError() {
-        if (getSingleTabAdapter() != null) {
-            getSingleTabAdapter()!!.removeErrorNetwork()
-        }
-
-        if (getAllHistoryAdapter() != null) {
-            getAllHistoryAdapter()!!.removeErrorNetwork()
-        }
-
-        if (getBuyerHistoryAdapter() != null) {
-            getBuyerHistoryAdapter()!!.removeErrorNetwork()
-        }
-
-        if (getSellerHistoryAdapter() != null) {
-            getSellerHistoryAdapter()!!.removeErrorNetwork()
-        }
-
-    }
+//    override fun removeError() {
+//        if (getSingleTabAdapter() != null) {
+//            getSingleTabAdapter()!!.removeErrorNetwork()
+//        }
+//
+//        if (getAllHistoryAdapter() != null) {
+//            getAllHistoryAdapter()!!.removeErrorNetwork()
+//        }
+//
+//        if (getBuyerHistoryAdapter() != null) {
+//            getBuyerHistoryAdapter()!!.removeErrorNetwork()
+//        }
+//
+//        if (getSellerHistoryAdapter() != null) {
+//            getSellerHistoryAdapter()!!.removeErrorNetwork()
+//        }
+//
+//    }
 
     override fun getSingleTabAdapter(): SaldoDepositAdapter? {
         return if (singleTabItem != null) {
@@ -319,22 +336,18 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         return SaldoDepositAdapter(SaldoDetailTransactionFactory())
     }
 
-    override fun getAdapter(): SaldoDepositAdapter? {
-        if (activePosition == 0) {
-            return (allSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
-        } else if (activePosition == 1) {
-            return (buyerSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
-        } else if (activePosition == 2) {
-            return (sellerSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
-        }
+//    override fun getAdapter(): SaldoDepositAdapter? {
+//        if (activePosition == 0) {
+//            return (allSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
+//        } else if (activePosition == 1) {
+//            return (buyerSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
+//        } else if (activePosition == 2) {
+//            return (sellerSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
+//        }
+//
+//        return SaldoDepositAdapter(SaldoDetailTransactionFactory())
+//    }
 
-        return SaldoDepositAdapter(SaldoDetailTransactionFactory())
-    }
-
-    override fun onDestroy() {
-        saldoHistoryPresenter.detachView()
-        super.onDestroy()
-    }
 
     override fun getScreenName(): String? {
         return null
@@ -344,7 +357,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         try {
             val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(activity!!.application)
             saldoDetailsComponent!!.inject(this)
-            saldoHistoryPresenter.attachView(this)
         } catch (e: NullPointerException) {
 
         }
@@ -352,7 +364,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     }
 
     fun onRefresh() {
-        saldoHistoryPresenter.onRefresh()
+        saldoHistoryViewModel.onRefresh()
     }
 
     companion object {

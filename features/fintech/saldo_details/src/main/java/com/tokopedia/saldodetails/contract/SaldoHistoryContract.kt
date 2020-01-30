@@ -19,13 +19,13 @@ class SaldoHistoryContract {
 
         fun getEndDate(): String?
 
-        fun getDefaultEmptyViewModel(): Visitable<*>?
+//        fun getDefaultEmptyViewModel(): Visitable<*>?
 
         fun getActivity(): Activity?
 
         fun getSellerSaldoHistoryTabItem(): SaldoHistoryTabItem?
 
-        fun getAdapter(): SaldoDepositAdapter?
+//        fun getAdapter(): SaldoDepositAdapter?
 
         fun getAllHistoryAdapter(): SaldoDepositAdapter?
 
@@ -39,7 +39,7 @@ class SaldoHistoryContract {
 
         fun getSingleTabAdapter(): SaldoDepositAdapter?
 
-        fun finishLoading()
+//        fun finishLoading()
 
         fun showErrorMessage(s: String)
 
@@ -47,11 +47,11 @@ class SaldoHistoryContract {
 
         fun getString(resId: Int): String
 
-        fun removeError()
+//        fun removeError()
 
         fun setActionsEnabled(isEnabled: Boolean?)
 
-        fun setLoading()
+//        fun setLoading()
 
         fun refresh()
 
@@ -67,16 +67,16 @@ class SaldoHistoryContract {
 
     }
 
-    interface Presenter : CustomerPresenter<SaldoHistoryContract.View> {
-        fun setFirstDateParameter()
+    interface Presenter {
+        fun setFirstDateParameter(view : View)
 
-        fun onSearchClicked()
+        fun onSearchClicked(startDate : String?,endDate : String?)
 
-        fun onEndDateClicked(datePicker: SaldoDatePickerUtil)
+        fun onEndDateClicked(datePicker: SaldoDatePickerUtil,view : View)
 
-        fun onStartDateClicked(datePicker: SaldoDatePickerUtil)
+        fun onStartDateClicked(datePicker: SaldoDatePickerUtil,view : View)
 
-        fun loadMore(lastItemPosition: Int, visibleItem: Int)
+//        fun loadMore(lastItemPosition: Int, visibleItem: Int)
 
         fun getSummaryDeposit()
 

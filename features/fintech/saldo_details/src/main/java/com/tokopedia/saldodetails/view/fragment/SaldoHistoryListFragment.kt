@@ -1,20 +1,25 @@
 package com.tokopedia.saldodetails.view.fragment
 
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
-import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter
+import com.tokopedia.saldodetails.contract.SaldoHistoryContract
+import com.tokopedia.saldodetails.presenter.SaldoHistoryViewModel
+import com.tokopedia.saldodetails.response.model.DepositActivityResponse
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
+import com.tokopedia.saldodetails.utils.*
 import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_ALL
 import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_BUYER
 import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_SELLER
@@ -29,31 +34,83 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
         private val BUYER_SALDO = 0
         private val ALL_SALDO = 2
 
-        fun createInstance(type: String, saldoHistoryPresenter: SaldoHistoryPresenter): SaldoHistoryListFragment {
+        fun createInstance(type: String, saldoHistoryViewModel: SaldoHistoryViewModel, saldoHistoryFragrmnt : SaldoHistoryContract.View ): SaldoHistoryListFragment {
             val saldoHistoryListFragment = SaldoHistoryListFragment()
             val bundle = Bundle()
             bundle.putString(TRANSACTION_TYPE, type)
             saldoHistoryListFragment.arguments = bundle
-            saldoHistoryListFragment.setPresenter(saldoHistoryPresenter)
+            saldoHistoryListFragment.viewModel = saldoHistoryViewModel
+            saldoHistoryListFragment.saldoHistoryFragrmnt = saldoHistoryFragrmnt
             return saldoHistoryListFragment
         }
     }
 
     private var recyclerView: RecyclerView? = null
     private var adapter: SaldoDepositAdapter? = null
-    private var presenter: SaldoHistoryPresenter? = null
+    lateinit var saldoHistoryFragrmnt: SaldoHistoryContract.View
+    lateinit var viewModel: SaldoHistoryViewModel
     private var transactionType: String? = null
 
-    private fun setPresenter(saldoHistoryPresenter: SaldoHistoryPresenter) {
-        this.presenter = saldoHistoryPresenter
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_history_list, container, false)
         initViews(view)
         initialVar()
+        addObserver()
         return view
     }
+
+    private fun addObserver() {
+        when (transactionType) {
+            FOR_ALL -> addAllTransactionObserver()
+            FOR_BUYER -> buyerObserver()
+            FOR_SELLER -> sellerObserver()
+        }
+    }
+
+    private fun sellerObserver() = viewModel.sellerResponseLiveData.observe(this, Observer {
+        it?.let {
+            setData(it)
+        }
+    })
+
+    private fun setData(it: Resources<DepositActivityResponse>) {
+        when (it) {
+            is Loading -> {
+                saldoHistoryFragrmnt.setActionsEnabled(false)
+                getAdapter()?.showLoading()
+            }
+            is Success -> {
+                getAdapter()?.clearAllElements()
+                onSuccess(it.data)
+            }
+            is ErrorMessage<*,*> -> onError(if (it.data is Int) getString(it.data) else it.data.toString())
+            is AddElements -> onSuccess(it.data)
+        }
+    }
+
+    private fun onError(data : String?){
+        saldoHistoryFragrmnt.setActionsEnabled(true)
+        if (getAdapter() != null && getAdapter()?.itemCount == 0) {
+            data?.let {saldoHistoryFragrmnt.showEmptyState(data) } ?: saldoHistoryFragrmnt.showEmptyState()
+        } else {
+            data?.let {  saldoHistoryFragrmnt.setRetry(data) }  ?: saldoHistoryFragrmnt.setRetry()
+        }
+    }
+
+    private fun onSuccess(data : DepositActivityResponse){
+        saldoHistoryFragrmnt.setActionsEnabled(true)
+        getAdapter()?.hideLoading()
+        getAdapter()?.addElement(data.depositHistoryList)
+        updateScrollListenerState(data.isHaveNextPage)
+        if (getAdapter()?.itemCount == 0) {
+            getAdapter()?.addElement(getDefaultEmptyViewModel())
+        }
+    }
+
+    private fun buyerObserver() = viewModel.buyerResponseLiveData.observe(this, Observer { it?.let { setData(it) } })
+
+    private fun addAllTransactionObserver() = viewModel.allDepositResponseLiveData.observe(this, Observer { it?.let { setData(it) } })
 
     private fun initViews(view: View) {
         recyclerView = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_history_recycler_view)
@@ -87,9 +144,9 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 when (transactionType) {
-                    FOR_ALL -> presenter!!.loadMoreAllTransaction(page, ALL_SALDO)
-                    FOR_BUYER -> presenter!!.loadMoreBuyerTransaction(page, BUYER_SALDO)
-                    FOR_SELLER -> presenter!!.loadMoreSellerTransaction(page, SELLER_SALDO)
+                    FOR_ALL -> viewModel!!.loadMoreAllTransaction(page, ALL_SALDO)
+                    FOR_BUYER -> viewModel!!.loadMoreBuyerTransaction(page, BUYER_SALDO)
+                    FOR_SELLER -> viewModel!!.loadMoreSellerTransaction(page, SELLER_SALDO)
                 }
             }
         }
@@ -118,5 +175,9 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     override fun getScreenName(): String? {
         return null
+    }
+
+     fun getDefaultEmptyViewModel(): Visitable<*>? {
+        return EmptyModel()
     }
 }
