@@ -31,9 +31,7 @@ class BrandlistFragment : BaseDaggerFragment() {
         return ""
     }
 
-    override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun initInjector() { }
 
     private fun loadData(isRefresh: Boolean = false) {
         if (!isFirstDataLoaded || isRefresh) {
