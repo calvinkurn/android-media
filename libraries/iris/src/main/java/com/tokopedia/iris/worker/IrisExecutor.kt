@@ -10,7 +10,7 @@ import java.util.concurrent.Executors
 object IrisExecutor{
     val handler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, ex ->
-            // no op
+            IrisService.isRunning = false
         }
     }
 

@@ -1,16 +1,20 @@
 package com.tokopedia.iris.data
 
 import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
+import com.tokopedia.iris.util.Cache
+import com.tokopedia.iris.util.DEFAULT_MAX_ROW
+import com.tokopedia.iris.util.MAX_ROW
+import com.tokopedia.iris.util.Session
+import com.tokopedia.iris.worker.IrisService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
-import android.net.ConnectivityManager
-import com.tokopedia.iris.util.*
 import timber.log.Timber
 
 
@@ -29,17 +33,15 @@ class TrackingRepository(
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
         try {
-            val dBSize = getSizeDBInKB()
-            // if size is over 2MB, flush it
-            if (dBSize >= 2000F) {
-                trackingDao.flush()
-            }
             trackingDao.insert(Tracking(data, session.getUserId(),
                 session.getDeviceId() ?: ""))
 
-            if (dBSize >= 500F) {
-                // if size already 500KB or more, send it
-                sendRemainingEvent(DEFAULT_MAX_ROW)
+            val dbCount = trackingDao.getCount()
+            if (dbCount >= 250) {
+                // if size already 250 lines, send it
+                val i = Intent(context, IrisService::class.java)
+                i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
+                IrisService.enqueueWork(context, i)
             }
         } catch (e: Throwable) {
             Timber.e("P2#IRIS#saveEvent %s", e.toString())
@@ -64,18 +66,8 @@ class TrackingRepository(
     suspend fun sendSingleEvent(data: String, session: Session): Boolean {
         val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
         val requestBody = ApiService.parse(dataRequest)
-        val request = apiService.sendSingleEventAsync(requestBody)
-        val response = request.await()
+        val response = apiService.sendSingleEventAsync(requestBody)
         return response.isSuccessful
-    }
-
-    private fun getSizeDBInKB(): Float {
-        val f: File? = context.getDatabasePath(DATABASE_NAME)
-        return if (f != null) {
-            (f.length() / 1_000F)
-        } else {
-            0F
-        }
     }
 
     /**
@@ -88,7 +80,7 @@ class TrackingRepository(
             return -1
 
         var counterLoop = 0
-        val maxLoop = 10
+        val maxLoop = 5
         var totalSentData = 0
 
         var lastSuccessSent = true
@@ -107,7 +99,7 @@ class TrackingRepository(
             // transform and send the data to server
             val request: String = TrackingMapper().transformListEvent(data)
             val requestBody = ApiService.parse(request)
-            val response = apiService.sendMultiEventAsync(requestBody).await()
+            val response = apiService.sendMultiEventAsync(requestBody)
             if (response.isSuccessful && response.code() == 200) {
                 delete(data)
                 totalSentData += data.size

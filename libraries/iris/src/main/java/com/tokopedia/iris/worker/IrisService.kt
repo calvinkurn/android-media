@@ -40,7 +40,7 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
         }
     }
 
-    private fun startService(maxRow: Int) {
+    fun startService(maxRow: Int) {
         launch(coroutineContext) {
             try {
                 if (isRunning) {
@@ -55,9 +55,10 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
                         IrisAnalytics.getInstance(applicationContext).setAlarm(false)
                     }
                 }
-                isRunning = false
             } catch (e: Exception) {
                 Timber.e("P2#IRIS#startService %s", e.toString())
+            } finally {
+                isRunning = false
             }
         }
     }
