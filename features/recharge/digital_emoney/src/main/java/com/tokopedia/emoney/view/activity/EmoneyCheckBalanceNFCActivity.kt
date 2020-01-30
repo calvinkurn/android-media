@@ -46,6 +46,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import id.co.bri.sdk.Brizzi
 import javax.inject.Inject
 
+/**
+ * applink
+ * tokopedia-android-internal://digital/smartcard/emoneybrizzi
+ * or
+ * RouteManager.route(this, ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI)
+ */
+
 class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListener, BrizziActionListener {
 
     private lateinit var tapETollCardView: TapETollCardView
