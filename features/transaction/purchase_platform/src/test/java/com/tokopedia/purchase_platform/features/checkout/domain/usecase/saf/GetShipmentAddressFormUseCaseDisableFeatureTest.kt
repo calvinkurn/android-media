@@ -217,7 +217,7 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             }
         }
 
-        Scenario("Disable donation") {
+        Scenario("Disable Donation") {
 
             val result by lazy { subscriber.onNextEvents[0] }
 
