@@ -58,7 +58,6 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    // TODO available channelId: 1543 > VOD, 1591, 1387
     private var channelId = ""
 
     @Inject
