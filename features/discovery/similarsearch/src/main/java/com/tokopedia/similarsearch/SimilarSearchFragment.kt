@@ -2,13 +2,17 @@ package com.tokopedia.similarsearch
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -50,6 +54,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private var similarSearchAdapter: SimilarSearchAdapter? = null
     private var recyclerViewLayoutManager: RecyclerView.LayoutManager? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var recyclerViewVerticalScrollDistance = 0
 
     override fun getScreenName(): String {
         return "/searchproduct - product"
@@ -148,16 +153,48 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun initRecyclerViewAnimateOriginalProductViewListener() {
-        val animateOriginalProductViewListener = createAnimateOriginalProductViewListener()
-        recyclerViewSimilarSearch?.addOnScrollListener(animateOriginalProductViewListener)
+        val recyclerViewOnScrollListener = createRecyclerViewOnScrollListener()
+        recyclerViewSimilarSearch?.addOnScrollListener(recyclerViewOnScrollListener)
     }
 
-    private fun createAnimateOriginalProductViewListener(): RecyclerView.OnScrollListener {
+    private fun createRecyclerViewOnScrollListener(): RecyclerView.OnScrollListener {
         return object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                recyclerViewVerticalScrollDistance += dy
+
+                applyToolbarElevation()
                 originalProductView?.animateBasedOnScroll(dy)
             }
         }
+    }
+
+    private fun applyToolbarElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (recyclerViewVerticalScrollDistance >= 10) {
+                toolbar.applyElevation()
+            }
+            else {
+                toolbar.removeElevation()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun Toolbar.applyElevation() {
+        if (this.elevation == 0f) {
+            this.elevation = 6f.toPx()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun Toolbar.removeElevation() {
+        if (this.elevation > 0f) {
+            toolbar.elevation = 0f
+        }
+    }
+
+    private fun Float.toPx(): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, resources.displayMetrics)
     }
 
     private fun createSimilarSearchItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
