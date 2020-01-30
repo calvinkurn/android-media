@@ -52,9 +52,9 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
             val jobName = getString(R.string.app_name) + " Document"
             val printAdapter: PrintDocumentAdapter
             printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                webView.createPrintDocumentAdapter(jobName)
+                it.createPrintDocumentAdapter(jobName)
             } else {
-                webView.createPrintDocumentAdapter()
+                it.createPrintDocumentAdapter()
             }
             val builder = PrintAttributes.Builder()
             builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
