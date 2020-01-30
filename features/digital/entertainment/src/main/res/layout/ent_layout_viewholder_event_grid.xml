@@ -7,7 +7,7 @@
     android:padding="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography6"
+        android:id="@+id/ent_title_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/ent_black_text"
@@ -23,6 +23,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography6" />
+        app:layout_constraintTop_toBottomOf="@+id/ent_title_card" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

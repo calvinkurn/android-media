@@ -22,26 +22,16 @@
         app:siv_search_hint="@string/cari_kegiatan_atau_lokasi"
         app:siv_search_icon="@drawable/ent_ic_search" />
 
-    <com.tokopedia.banner.Banner
-        android:id="@+id/banner_home_ent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingLeft="@dimen/spacing_lvl4"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner_home_ent" />
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

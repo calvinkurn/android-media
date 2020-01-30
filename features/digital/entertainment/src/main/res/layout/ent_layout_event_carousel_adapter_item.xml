@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/image"
+            android:id="@+id/event_image"
             android:layout_width="match_parent"
             android:layout_height="140dp"
             android:adjustViewBounds="true"
@@ -40,32 +40,34 @@
         </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography2"
+            android:id="@+id/event_location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
             android:layout_marginTop="@dimen/dp_4"
             android:singleLine="true"
+            android:paddingRight="8dp"
             android:textColor="@color/ent_black_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/typography3"
-            app:layout_constraintTop_toBottomOf="@+id/image"
+            app:layout_constraintStart_toEndOf="@+id/event_date"
+            app:layout_constraintTop_toBottomOf="@+id/event_image"
             app:typographyType="heading_6"
             tools:text="Grand Galaxy Convention Hall" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography4"
+            android:id="@+id/event_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
             android:singleLine="true"
+            android:paddingRight="8dp"
             android:textColor="@color/ent_black_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/typography3"
-            app:layout_constraintTop_toBottomOf="@+id/typography2"
-            app:typographyType="heading_3"
+            app:layout_constraintStart_toEndOf="@+id/event_date"
+            app:layout_constraintTop_toBottomOf="@+id/event_location"
+            app:typographyType="heading_4"
             tools:text="Bekasi Wedding Exhibiti…" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -73,25 +75,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/ent_black_text"
-            app:layout_constraintStart_toEndOf="@+id/typography3"
-            app:layout_constraintTop_toBottomOf="@+id/typography3"
+            app:layout_constraintBottom_toBottomOf="@+id/event_price"
+            app:layout_constraintStart_toStartOf="@+id/event_title"
+            app:layout_constraintTop_toTopOf="@+id/event_price"
             app:typographyType="body_3"
-            tools:text="Mulai dari" />
+            android:text="Mulai dari" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/event_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_5"
+            android:paddingRight="8dp"
             android:textColor="@color/ent_black_text"
-            app:layout_constraintBottom_toBottomOf="@+id/typography5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/typography5"
-            app:layout_constraintTop_toTopOf="@+id/typography5"
-            app:typographyType="heading_3"
+            app:layout_constraintTop_toBottomOf="@+id/event_title"
+            app:typographyType="heading_4"
             tools:text="Rp1.289.000" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography3"
+            android:id="@+id/event_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -99,7 +103,7 @@
             android:paddingRight="18dp"
             android:textColor="#689c9e"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/typography2"
+            app:layout_constraintTop_toTopOf="@+id/event_location"
             app:typographyType="heading_2"
             tools:text="20\nSEP" />
 
