@@ -91,7 +91,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             if (item.dataObject.listLabelOrder.isNotEmpty()) {
                 itemView.rv_detail_order_label?.visibility = View.VISIBLE
                 itemView.rv_detail_order_label?.apply {
-                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, true)
+                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                     adapter = somDetailLabelInfoAdapter
                     setRecycledViewPool(viewPool)
                 }
