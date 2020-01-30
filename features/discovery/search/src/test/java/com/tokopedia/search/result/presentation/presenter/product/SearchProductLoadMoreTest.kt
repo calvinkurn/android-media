@@ -15,7 +15,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
 
-internal class LoadMoreDataTest: Spek({
+internal class SearchProductLoadMoreTest: Spek({
 
     Feature("Load More Data") {
         createTestInstance()

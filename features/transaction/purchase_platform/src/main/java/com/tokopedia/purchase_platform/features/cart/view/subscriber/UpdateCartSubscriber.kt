@@ -1,10 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
@@ -16,9 +13,7 @@ import rx.Subscriber
  */
 
 class UpdateCartSubscriber(private val view: ICartListView?,
-                           private val presenter: ICartListPresenter?,
-                           private val cartListData: CartListData?,
-                           private val cartItemDataList: List<CartItemData>) : Subscriber<UpdateCartData>() {
+                           private val presenter: ICartListPresenter?) : Subscriber<UpdateCartData>() {
 
     override fun onCompleted() {
 
@@ -28,13 +23,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
         view?.let {
             e.printStackTrace()
             it.hideProgressLoading()
-            var errorMessage = e.message
-            if (e !is CartResponseErrorException) {
-                errorMessage = ErrorHandler.getErrorMessage(it.getActivityObject(), e)
-            }
-            it.renderErrorToShipmentForm(errorMessage ?: "")
-            // Todo : Remove this
-            presenter?.processInitialGetCartData(it.getCartId(), cartListData == null, false)
+            it.renderErrorToShipmentForm(e)
         }
     }
 
@@ -45,11 +34,12 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                 it.renderErrorToShipmentForm(data.message ?: "")
             } else {
                 val checklistCondition = getChecklistCondition()
-                it.renderToShipmentFormSuccess(
-                        presenter?.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_1) ?: hashMapOf(),
-                        cartItemDataList,
-                        isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
-                        checklistCondition)
+                val cartItemDataList = it.getAllSelectedCartDataList()
+                cartItemDataList?.let { data ->
+                    it.renderToShipmentFormSuccess(
+                            presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1) ?: hashMapOf(),
+                            data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
+                }
             }
         }
     }
@@ -76,13 +66,13 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                         allSelectedItemShopCount++
                     } else {
                         var selectedItem = 0
-                        cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let {
-                            for (cartItemHolderData in it) {
+                        cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let { cartItemHolderDataList ->
+                            for (cartItemHolderData in cartItemHolderDataList) {
                                 if (!cartItemHolderData.isSelected) {
                                     selectedItem++
                                 }
                             }
-                            if (!selectPartialShopAndItem && selectedItem != it.size) {
+                            if (!selectPartialShopAndItem && selectedItem != cartItemHolderDataList.size) {
                                 selectPartialShopAndItem = true
                             }
                         }
@@ -90,7 +80,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                 }
                 if (selectPartialShopAndItem) {
                     checklistCondition = CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM
-                } else if (allSelectedItemShopCount < cartShopHolderDataList.size) {
+                } else if (allSelectedItemShopCount < it.size) {
                     checklistCondition = CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP
                 }
             }

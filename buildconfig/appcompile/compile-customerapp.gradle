@@ -33,7 +33,6 @@ include "features:recharge:digital_emoney"
 include "features:recharge:digital_homepage"
 include "features:recharge:rechargeocr"
 
-include "features:digital:imagepreviewslider"
 include "features:digital:travel_homepage"
 include "features:digital:travel_country_code"
 include "features:digital:travel_passenger"

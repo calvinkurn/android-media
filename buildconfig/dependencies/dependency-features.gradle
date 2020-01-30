@@ -49,7 +49,6 @@ ext {
             travelCountryCode               : ":features:digital:travel_country_code",
             travelPassenger                 : ":features:digital:travel_passenger",
             digitalBrowse                   : ":features:digital:digital_browse",
-            imagePreviewSlider              : ":features:digital:imagepreviewslider",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
