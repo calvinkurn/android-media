@@ -33,7 +33,7 @@ class GetCategoryLevelOneUseCase
     override fun createObservable(requestParams: RequestParams?): Observable<CategoryAllList> {
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.category_list), Data::class.java, requestParams!!.parameters, false)
+                R.raw.category_list), Data::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
@@ -45,7 +45,5 @@ class GetCategoryLevelOneUseCase
 
             CategoryListOneModelMapper().transform((it.getData(Data::class.java)) as Data)
         }
-
     }
-
 }

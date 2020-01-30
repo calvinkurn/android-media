@@ -11,13 +11,11 @@ import java.util.HashMap
 
 class CategoryAnalytics {
 
-    val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
-    val LAUNCH_PAGE_HOME = "belanja/home"
-
-    val pageName = "/kategori-belanja"
-    val nameWithPageName = "$pageName - %s"
+    private val pageName = "/kategori-belanja"
+    private val nameWithPageName = "$pageName - %s"
 
     companion object {
+        private const val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
         fun createInstance(): CategoryAnalytics {
             return CategoryAnalytics()
         }

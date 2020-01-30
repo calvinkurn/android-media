@@ -2,7 +2,6 @@ package com.tokopedia.browse.homepage.di
 
 import com.tokopedia.browse.common.di.DigitalBrowseComponent
 import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity
-import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 
 import dagger.Component
@@ -15,7 +14,7 @@ import dagger.Component
 @Component(modules = arrayOf(DigitalBrowseHomeModule::class), dependencies = arrayOf(DigitalBrowseComponent::class))
 interface DigitalBrowseHomeComponent {
 
-    fun inject(digitalBrowseMarketplaceFragment: DigitalBrowseMarketplaceFragment)
+   // fun inject(digitalBrowseMarketplaceFragment: DigitalBrowseMarketplaceFragment)
 
     fun inject(digitalBrowseServiceFragment: DigitalBrowseServiceFragment)
 
