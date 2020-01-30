@@ -19,6 +19,7 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
