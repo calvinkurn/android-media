@@ -299,7 +299,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.DEALS_PAGE;
                     break;
-                case DeeplinkChecker.TRAVEL_HOMEPAGE:
+                case DeepLinkChecker.TRAVEL_HOMEPAGE:
                     openTravelHomepage(uriData, defaultBundle);
                     screenName = "";
                     break;
