@@ -7,14 +7,14 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentView
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -28,10 +28,10 @@ import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-29.
+ * Created by Irfan Khoirul on 2020-01-30.
  */
 
-object CartListRecentViewTest : Spek({
+object CartListPresenterRecommendationTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -53,7 +53,7 @@ object CartListRecentViewTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("get recent view test") {
+    Feature("get recommendation test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -71,91 +71,89 @@ object CartListRecentViewTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get recent view success") {
+        Scenario("get recommendation success") {
 
-            val response = GqlRecentViewResponse().apply {
-                gqlRecentView = GqlRecentView().apply {
-                    recentViewList = mutableListOf<RecentView>().apply {
-                        add(RecentView())
+            val response = mutableListOf<RecommendationWidget>().apply {
+                add(RecommendationWidget().apply {
+                    recommendationItemList = mutableListOf<RecommendationItem>().apply {
+                        add(RecommendationItem())
                     }
-                }
+                })
             }
 
             Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
+                every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("user session") {
-                every { userSessionInterface.userId } returns "1"
+            Given("request params") {
+                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
+            When("process get recommendation") {
+                cartListPresenter.processGetRecommendationData(1, emptyList())
             }
 
-            Then("should render recent view") {
+            Then("should render recommendation") {
                 verify {
-                    view.renderRecentView(response.gqlRecentView?.recentViewList)
+                    view.renderRecommendation(response[0])
                 }
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadRecentView()
+                    view.setHasTriedToLoadRecommendation()
                     view.stopAllCartPerformanceTrace()
                 }
             }
 
         }
 
-        Scenario("get recent view empty") {
+        Scenario("get recommendation empty") {
 
-            val response = GqlRecentViewResponse().apply {
-                gqlRecentView = GqlRecentView().apply {
-                    recentViewList = mutableListOf<RecentView>().apply {
-                        add(RecentView())
-                    }
-                }
+            val response = mutableListOf<RecommendationWidget>().apply {
+                add(RecommendationWidget().apply {
+                    recommendationItemList = mutableListOf<RecommendationItem>()
+                })
             }
 
-            Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
+            Given("empty response") {
+                every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("user session") {
-                every { userSessionInterface.userId } returns "1"
+            Given("request params") {
+                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
+            When("process get recommendation") {
+                cartListPresenter.processGetRecommendationData(1, emptyList())
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadRecentView()
+                    view.setHasTriedToLoadRecommendation()
                     view.stopAllCartPerformanceTrace()
                 }
             }
 
         }
 
-        Scenario("get recent view error") {
+        Scenario("get recommendation empty") {
 
             Given("error response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+                every { getRecommendationUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
-            Given("user session") {
-                every { userSessionInterface.userId } returns "1"
+            Given("request params") {
+                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
+            When("process get recommendation") {
+                cartListPresenter.processGetRecommendationData(1, emptyList())
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadRecentView()
+                    view.setHasTriedToLoadRecommendation()
                     view.stopAllCartPerformanceTrace()
                 }
             }

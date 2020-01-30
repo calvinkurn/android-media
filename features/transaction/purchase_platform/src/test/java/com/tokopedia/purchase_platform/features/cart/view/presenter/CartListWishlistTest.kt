@@ -27,6 +27,10 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
+/**
+ * Created by Irfan Khoirul on 2020-01-29.
+ */
+
 object CartListWishlistTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
@@ -49,7 +53,7 @@ object CartListWishlistTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("clear promo test") {
+    Feature("get wishlist test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(

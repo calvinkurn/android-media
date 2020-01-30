@@ -45,6 +45,8 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -913,7 +915,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.showItemLoading()
         val requestParam = getRecommendationUseCase?.getRecomParams(
                 page, "recom_widget", "cart", allProductIds, "")
-        getRecommendationUseCase?.execute(requestParam, GetRecommendationSubscriber(view, this))
+        getRecommendationUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
+                ?.subscribeOn(schedulers.io)
+                ?.observeOn(schedulers.main)
+                ?.subscribe(GetRecommendationSubscriber(view))
     }
 
     override fun processAddToCart(productModel: Any) {
