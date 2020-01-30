@@ -2,6 +2,7 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
@@ -217,15 +218,15 @@ object DeeplinkMapper {
 
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()
-        return Uri.parse(ApplinkConstInternalMarketplace.CREATE_REVIEW)
+        val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId)
+        val uri = Uri.parse(newUri)
                 .buildUpon()
-                .appendPath(reputationId)
-                .appendPath(productId)
-                .appendPath("")
                 .appendQueryParameter(paramRating, rating)
                 .appendQueryParameter(paramUtmSource, utmSource)
                 .build()
                 .toString()
+        Log.v("DEEPLINKMAPPER", uri)
+        return uri
     }
 
     /**

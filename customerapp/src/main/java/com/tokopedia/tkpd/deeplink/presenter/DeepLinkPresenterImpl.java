@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -345,16 +346,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             } else {
                 utmSource = "";
             }
-
-            String uriReview = Uri.parse(ApplinkConstInternalMarketplace.CREATE_REVIEW)
+            String newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId);
+            String uriReview = Uri.parse(newUri)
                     .buildUpon()
-                    .appendPath(reputationId)
-                    .appendPath(productId)
-                    .appendPath("")
                     .appendQueryParameter(PARAM_EXTRA_REVIEW, rating)
                     .appendQueryParameter(PARAM_EXTRA_UTM_SOURCE, utmSource)
                     .build()
                     .toString();
+            Log.e("DEEPLINKPRESENTERIMPL", uriReview);
             Intent intent = RouteManager.getIntent(
                     context,
                     uriReview);
