@@ -8,6 +8,8 @@ import com.tokopedia.imagepreviewslider.presentation.view.ImagePreviewViewer
 
 /**
  * @author by jessica on 2019-12-16
+ * Android OS < 19 will use ImagePreviewSliderActivity
+ * Android OS >= 19 will use ImagePreviewViewer with pinch image feature (zoom)
  */
 
 class ImagePreviewSlider {
