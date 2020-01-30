@@ -1,7 +1,7 @@
 package com.banklist.di.test;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.home.account.SettingBankActivityTest;
+import com.tokopedia.settingbank.SettingBankActivityTest;
 import com.tokopedia.settingbank.banklist.di.SettingBankComponent;
 import com.tokopedia.settingbank.banklist.di.SettingBankScope;
 

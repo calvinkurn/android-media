@@ -1,4 +1,4 @@
-package com.tokopedia.home.account;
+package com.tokopedia.settingbank;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -45,16 +45,6 @@ public class SettingBankActivityTest {
     private void setContentView(final int layoutId) throws Throwable {
         final Activity activity = mActivityRule.getActivity();
         mActivityRule.runOnUiThread(() -> activity.setContentView(layoutId));
-    }
-
-    @Test
-    public void test() {
-        Assert.assertEquals(
-                //new JSONObject(A.INSTANCE.getTest2()).toString(),
-                new Gson().toJson(A.INSTANCE.getTest2()),
-                A.INSTANCE.getTest2().toString()
-
-        );
     }
 
     @Before
