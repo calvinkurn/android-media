@@ -741,9 +741,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) {
-        for (viewModel: Visitable<*> in viewModels) {
-            if (viewModel is com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProfileUiModel) {
-                viewModel.isFirstTimeShowProfile = isOnboardingStateHasNotShown(activity)
+        for (uiModel: Visitable<*> in viewModels) {
+            if (uiModel is com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProfileUiModel) {
+                uiModel.isFirstTimeShowProfile = isOnboardingStateHasNotShown(activity)
                 break
             }
         }
