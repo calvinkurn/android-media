@@ -140,6 +140,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
+    private static final String DEFAULT_UTM_SOURCE = "home_notif";
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
@@ -1553,7 +1554,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             String newAppLink = Uri.parse(applink)
                     .buildUpon()
                     .appendQueryParameter(REVIEW_CLICK_AT, String.valueOf(clickReviewAt))
-                    .appendQueryParameter(UTM_SOURCE, "home_notif")
+                    .appendQueryParameter(UTM_SOURCE, DEFAULT_UTM_SOURCE)
                     .build().toString();
             Intent intent = RouteManager.getIntent(getContext(), newAppLink);
             startActivityForResult(intent, REQUEST_CODE_REVIEW);

@@ -34,13 +34,15 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
-        val rating = uri?.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
-        val utmSource = uri?.getQueryParameter(PARAM_UTM_SOURCE) ?: DEFAULT_UTM_SOURCE
+        var rating = DEFAULT_PRODUCT_RATING
+        var utmSource = DEFAULT_UTM_SOURCE
 
         if (uri != null && uri.pathSegments.size > 0) {
             val uriSegment = uri.pathSegments
             productId = uri.lastPathSegment ?: ""
             reputationId = uriSegment[uriSegment.size - 2]
+            rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
+            utmSource = uri.getQueryParameter(PARAM_UTM_SOURCE) ?: DEFAULT_UTM_SOURCE
         } else {
             productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
