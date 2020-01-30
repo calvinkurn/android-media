@@ -17,8 +17,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -279,9 +281,13 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun displayShopDescription(shopInfo: ShopInfoData) {
-        shopInfoDescription.text = MethodChecker
-                .fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
-
+        if (TextUtils.isEmpty(shopInfo.tagLine) && TextUtils.isEmpty(shopInfo.description)) {
+            shopInfoDescription.hide()
+        } else {
+            shopInfoDescription.show()
+            shopInfoDescription.text = MethodChecker
+                    .fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
+        }
         shopInfoLocation.text = shopInfo.location
         shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
     }
