@@ -206,5 +206,5 @@ public protected *;
 
 -keep class com.google.firebase.perf.FirebasePerformance
 
--dontwarn class com.google.android.exoplayer2.audio.AudioAttributes { *; }
--dontwarn class com.google.android.exoplayer2.mediacodec.MediaCodecUtil { *; }
+-dontwarn class com.google.android.exoplayer2.audio.AudioAttributes
+-dontwarn class com.google.android.exoplayer2.mediacodec.MediaCodecUtil
