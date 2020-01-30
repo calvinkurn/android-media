@@ -13,7 +13,13 @@ import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
 
 /**
  * Created by resakemal on 12/08/19.
- */
+ *
+ * applink
+ * tokopedia://digital/form?category_id=6&menu_id=4&template=voucher
+ * or
+ * @sample voucherGame = RouteManager.route(this, ApplinkConsInternalDigital.PRODUCT_TEMPLATE, "6", "4", "voucher")
+*/
+
 class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherGameListComponent> {
 
     override fun getNewFragment(): Fragment {
