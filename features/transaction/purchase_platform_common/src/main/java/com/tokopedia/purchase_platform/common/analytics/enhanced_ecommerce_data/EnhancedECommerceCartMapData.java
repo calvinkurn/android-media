@@ -15,7 +15,7 @@ public class EnhancedECommerceCartMapData {
     public static final String REMOVE_ACTION = "remove";
 
     private static final String KEY_CURRENCY = "currencyCode";
-    private static final String KEY_PRODUCTS = "products";
+    public static final String KEY_PRODUCTS = "products";
     private static final String KEY_IMPRESSIONS = "impressions";
     private static final String KEY_CLICK = "click";
 
