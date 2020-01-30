@@ -32,12 +32,9 @@ public class IrisSaveLogDBSource {
     }
 
     public Observable<Boolean> insertAll(IrisSaveLogDB irisSaveLogDB) {
-        return Observable.just(irisSaveLogDB).map(new Func1<IrisSaveLogDB, Boolean>() {
-            @Override
-            public Boolean call(IrisSaveLogDB saveLogDB) {
-                irisLogSaveDao.insertAll(saveLogDB);
-                return true;
-            }
+        return Observable.fromCallable(() ->{
+            irisLogSaveDao.insertAll(irisSaveLogDB);
+            return true;
         });
     }
 

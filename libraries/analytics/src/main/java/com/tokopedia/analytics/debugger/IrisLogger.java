@@ -11,6 +11,7 @@ import com.tokopedia.analytics.debugger.ui.activity.AnalyticsIrisSaveDebuggerAct
 import com.tokopedia.analytics.debugger.ui.activity.AnalyticsIrisSendDebuggerActivity;
 
 import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 public class IrisLogger implements IrisLoggerInterface {
 
@@ -86,7 +87,8 @@ public class IrisLogger implements IrisLoggerInterface {
         IrisSaveLogDB irisSaveLogDB = new IrisSaveLogDB();
         irisSaveLogDB.setData(data);
         irisSaveLogDB.setTimestamp(System.currentTimeMillis());
-        irisSaveLogDBSource.insertAll(irisSaveLogDB);
+        irisSaveLogDBSource.insertAll(irisSaveLogDB)
+                .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
     }
 
     @Override
@@ -94,7 +96,8 @@ public class IrisLogger implements IrisLoggerInterface {
         IrisSendLogDB irisSendLogDB = new IrisSendLogDB();
         irisSendLogDB.setData(data);
         irisSendLogDB.setTimestamp(System.currentTimeMillis());
-        irisSendLogDBSource.insertAll(irisSendLogDB);
+        irisSendLogDBSource.insertAll(irisSendLogDB)
+                .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
     }
 
     @Override

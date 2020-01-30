@@ -80,7 +80,15 @@ public class GtmLogger implements AnalyticsLogger {
         GtmErrorLogDB gtmErrorLogDB = new GtmErrorLogDB();
         gtmErrorLogDB.setData(errorData);
         gtmErrorLogDB.setTimestamp(System.currentTimeMillis());
-        dbErrorSource.insertAll(gtmErrorLogDB);
+        if(cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)) {
+            AnalyticsLogData data = new AnalyticsLogData();
+            data.setCategory("");
+            data.setName("error GTM v5");
+            data.setData(errorData);
+            NotificationHelper.show(context, data);
+        }
+        dbErrorSource.insertAll(gtmErrorLogDB).subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
     }
 
     @Override

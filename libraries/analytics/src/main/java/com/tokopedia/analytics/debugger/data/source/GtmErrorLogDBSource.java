@@ -37,12 +37,9 @@ public class GtmErrorLogDBSource {
     }
 
     public Observable<Boolean> insertAll(GtmErrorLogDB gtmErrorLogDB) {
-        return Observable.just(gtmErrorLogDB).map(new Func1<GtmErrorLogDB, Boolean>() {
-            @Override
-            public Boolean call(GtmErrorLogDB gtmErrorLogDB) {
-                gtmErrorLogDao.insertAll(gtmErrorLogDB);
-                return true;
-            }
+        return Observable.fromCallable(() ->{
+            gtmErrorLogDao.insertAll(gtmErrorLogDB);
+            return true;
         });
     }
 
