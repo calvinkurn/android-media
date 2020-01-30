@@ -117,6 +117,7 @@ class ShopPageFragment :
         fun createInstance() = ShopPageFragment()
     }
 
+    private var initialFloatingChatButtonMarginBottom: Int = 0
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var shopViewModel: ShopPageViewModel
@@ -217,6 +218,12 @@ class ShopPageFragment :
         }
         mainLayout.requestFocus()
         initStickyLogin(view)
+        getChatButtonInitialMargin()
+    }
+
+    private fun getChatButtonInitialMargin() {
+        val buttonChatLayoutParams = (button_chat.layoutParams as ViewGroup.MarginLayoutParams)
+        initialFloatingChatButtonMarginBottom = buttonChatLayoutParams.bottomMargin
     }
 
     private fun openShopProductSortPage() {
@@ -306,6 +313,7 @@ class ShopPageFragment :
         stickyLoginView.setOnDismissListener(View.OnClickListener {
             stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
             stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
+            updateFloatingChatButtonMargin()
         })
         updateStickyContent()
     }
@@ -827,6 +835,17 @@ class ShopPageFragment :
         )
     }
 
+    private fun updateFloatingChatButtonMargin() {
+        val buttonChatLayoutParams = (button_chat.layoutParams as ViewGroup.MarginLayoutParams)
+        buttonChatLayoutParams.setMargins(
+                buttonChatLayoutParams.leftMargin,
+                buttonChatLayoutParams.topMargin,
+                buttonChatLayoutParams.rightMargin,
+                initialFloatingChatButtonMarginBottom + stickyLoginView.height
+        )
+        button_chat.layoutParams = buttonChatLayoutParams
+    }
+
     private fun updateStickyState() {
         if (this.tickerDetail == null) {
             stickyLoginView.hide()
@@ -854,5 +873,6 @@ class ShopPageFragment :
         } else {
             viewPager.setPadding(0, 0, 0, 0)
         }
+        updateFloatingChatButtonMargin()
     }
 }
