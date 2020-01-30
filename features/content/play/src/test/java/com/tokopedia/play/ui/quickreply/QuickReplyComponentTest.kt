@@ -6,6 +6,7 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.QuickReplyUiModel
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -51,18 +52,21 @@ class QuickReplyComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetQuickReply(mockQuickReply))
         verify { component.uiView.setQuickReply(mockQuickReply) }
+        confirmVerified(component.uiView)
     }
 
     @Test
     fun `test when keyboard is shown`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(true))
         verify { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     @Test
     fun `test when keyboard is hidden`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(false))
         verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -71,6 +75,7 @@ class QuickReplyComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
         verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     class QuickReplyComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : QuickReplyComponent(container, bus, coroutineScope) {

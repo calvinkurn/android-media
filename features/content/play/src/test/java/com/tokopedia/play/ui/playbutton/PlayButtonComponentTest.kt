@@ -7,6 +7,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -53,6 +54,7 @@ class PlayButtonComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
         verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -64,6 +66,7 @@ class PlayButtonComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
         verify { component.uiView.showPlayButton() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -75,17 +78,19 @@ class PlayButtonComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
         verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     @Test
     fun `test when Live is pause`() = runBlockingTest(testDispatcher) {
         val mockVideoProperty = VideoPropertyUiModel(
-                type = PlayChannelType.VOD,
+                type = PlayChannelType.Live,
                 state = TokopediaPlayVideoState.Pause
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
         verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -97,6 +102,7 @@ class PlayButtonComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
         verify { component.uiView.showRepeatButton() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -108,6 +114,7 @@ class PlayButtonComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
         verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     class PlayButtonComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : PlayButtonComponent(container, bus, coroutineScope) {

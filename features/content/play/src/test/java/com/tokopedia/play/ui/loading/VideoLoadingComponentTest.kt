@@ -46,10 +46,8 @@ class VideoLoadingComponentTest {
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verifyOrder {
-            component.uiView.hide()
-            component.uiView.show()
-        }
+        verify { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -60,10 +58,8 @@ class VideoLoadingComponentTest {
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verifyOrder {
-            component.uiView.hide()
-            component.uiView.show()
-        }
+        verify { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -75,7 +71,7 @@ class VideoLoadingComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
         verify { component.uiView.hide() }
-        verify(exactly = 0) { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -87,7 +83,7 @@ class VideoLoadingComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
         verify { component.uiView.hide() }
-        verify(exactly = 0) { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     class VideoLoadingComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoLoadingComponent(container, bus, coroutineScope) {

@@ -11,6 +11,7 @@ import com.tokopedia.play.view.uimodel.PartnerInfoUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -57,6 +58,7 @@ class ToolbarComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
         verify { component.uiView.setLiveBadgeVisibility(mockVideoProp.type.isLive) }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -64,6 +66,7 @@ class ToolbarComponentTest {
         val channelTitle = "Channel Title"
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetChannelTitle(channelTitle))
         verify { component.uiView.setTitle(channelTitle) }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -77,6 +80,7 @@ class ToolbarComponentTest {
         )
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPartnerInfo(mockPartnerInfo))
         verify { component.uiView.setPartnerInfo(mockPartnerInfo) }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -88,6 +92,7 @@ class ToolbarComponentTest {
         )
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
         verify { component.uiView.setLiveBadgeVisibility(mockVideoStream.channelType.isLive) }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -95,7 +100,7 @@ class ToolbarComponentTest {
         val keyboardState = true
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(keyboardState))
         verify { component.uiView.hide() }
-        verify(exactly = 0) { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -103,7 +108,7 @@ class ToolbarComponentTest {
         val keyboardState = false
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(keyboardState))
         verify { component.uiView.show() }
-        verify(exactly = 0) { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -111,13 +116,14 @@ class ToolbarComponentTest {
         val mockEvent = PlayRoomEvent.Freeze("", "", "", "")
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockEvent))
         verify { component.uiView.show() }
-        verify(exactly = 0) { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     @Test
     fun `test when no more action`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
         verify { component.uiView.hideActionMore() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -125,6 +131,7 @@ class ToolbarComponentTest {
         val shouldFollowPartner = true
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.FollowPartner(shouldFollowPartner))
         verify { component.uiView.setFollowStatus(shouldFollowPartner) }
+        confirmVerified(component.uiView)
     }
 
     class ToolbarComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ToolbarComponent(container, bus, coroutineScope) {

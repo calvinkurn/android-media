@@ -9,6 +9,7 @@ import com.tokopedia.play.view.uimodel.PlayChatUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -57,9 +58,8 @@ class ChatListComponentTest {
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.IncomingChat(mockChat))
-        verify {
-            component.uiView.showChat(mockChat)
-        }
+        verify { component.uiView.showChat(mockChat) }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -71,6 +71,7 @@ class ChatListComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
         verify { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -82,6 +83,7 @@ class ChatListComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
         verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -94,6 +96,7 @@ class ChatListComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
         verify { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -106,6 +109,7 @@ class ChatListComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
         verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     class ChatListComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ChatListComponent(container, bus, coroutineScope) {

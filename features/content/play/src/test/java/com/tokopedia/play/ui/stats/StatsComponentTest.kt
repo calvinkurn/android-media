@@ -7,6 +7,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.TotalLikeUiModel
 import com.tokopedia.play.view.uimodel.TotalViewUiModel
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -53,7 +54,7 @@ class StatsComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetTotalViews(mockTotalView))
         verify { component.uiView.setTotalViews(mockTotalView) }
-        verify(exactly = 0) { component.uiView.setTotalLikes(any()) }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -65,7 +66,7 @@ class StatsComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetTotalLikes(mockTotalLike))
         verify { component.uiView.setTotalLikes(mockTotalLike) }
-        verify(exactly = 0) { component.uiView.setTotalViews(any()) }
+        confirmVerified(component.uiView)
     }
 
     @Test
@@ -73,31 +74,22 @@ class StatsComponentTest {
         val mockEvent = PlayRoomEvent.Freeze("", "", "", "")
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockEvent))
-        verify(exactly = 1) { component.uiView.hide() }
-        verify(exactly = 0) { component.uiView.show() }
-    }
-
-    @Test
-    fun `test when user is banned`() = runBlockingTest(testDispatcher) {
-        val mockEvent = PlayRoomEvent.Banned("", "", "")
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockEvent))
-        verify(exactly = 0) { component.uiView.hide() }
-        verify(exactly = 0) { component.uiView.show() }
+        verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     @Test
     fun `test when keyboard is hidden`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(false))
-        verify(exactly = 0) { component.uiView.hide() }
-        verify(exactly = 1) { component.uiView.show() }
+        verify { component.uiView.show() }
+        confirmVerified(component.uiView)
     }
 
     @Test
     fun `test when keyboard is shown`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(true))
-        verify(exactly = 1) { component.uiView.hide() }
-        verify(exactly = 0) { component.uiView.show() }
+        verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
     }
 
     class StatsComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : StatsComponent(container, bus, coroutineScope) {
