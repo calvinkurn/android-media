@@ -12,6 +12,6 @@
 
     <include layout="@layout/sah_partial_shimmering_list_widget" />
 
-    <include layout="@layout/sah_partial_error_load_data" />
+    <include layout="@layout/sah_partial_list_widget_error" />
 
 </androidx.cardview.widget.CardView>

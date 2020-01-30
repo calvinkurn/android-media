@@ -1,14 +1,15 @@
 package com.tokopedia.sellerhome.view.viewholder
 
 import android.view.View
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.model.ProgressUiModel
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
-import kotlinx.android.synthetic.main.sah_partial_error_load_data.view.*
 import kotlinx.android.synthetic.main.sah_partial_progress_widget.view.*
+import kotlinx.android.synthetic.main.sah_partial_progress_widget_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_shimmering_progress_widget.view.*
 
 /**
@@ -30,6 +31,8 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         itemView.postDelayed({
             showSuccessState(element)
         }, 10000)
+
+        createListeners()
     }
 
     private fun showLoadingState() {
@@ -51,6 +54,19 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         }
 
         showProgressLayout()
+    }
+
+    private fun createListeners() {
+        itemView.iv_info.setOnClickListener { showBottomSheet() }
+        itemView.tv_see_details.setOnClickListener { goToDetails() }
+    }
+
+    private fun showBottomSheet() {
+        Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun goToDetails() {
+        Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
     }
 
     private fun showErrorState(element: ProgressUiModel) {

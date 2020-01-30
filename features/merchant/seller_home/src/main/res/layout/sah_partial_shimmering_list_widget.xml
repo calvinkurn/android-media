@@ -42,7 +42,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="156dp"
         android:layout_height="16dp"
-        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:layout_marginTop="30dp"
         app:corners="10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
