@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.view.model.CarouselState
 import com.tokopedia.sellerhome.view.model.CarouselWidgetUiModel
 import kotlinx.android.synthetic.main.sah_carousel_widget.view.*
 import timber.log.Timber
@@ -15,29 +16,31 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
 
     companion object {
         val RES_LAYOUT = R.layout.sah_carousel_widget
-        const val STATE_LOADING = 0
-        const val STATE_NORMAL = 1
-        const val STATE_ERROR = 2
-        const val STATE_IMPERFECT_WITHOUT_SEE_ALL = 3
-        const val STATE_IMPERFECT_WITHOUT_BOTTOM_ITEM = 4
     }
 
-    var isSeeAllVisible = true
-    var isBottomItemVisible = true
+    private var isSeeAllVisible = true
+    private var isBottomItemVisible = true
 
     override fun bind(element: CarouselWidgetUiModel) {
-        val state = 1
+        val elementDataUi = element.data?.data
+        var imageList: List<String> = emptyList()
+
+        elementDataUi?.let { dataUi ->
+            imageList = dataUi.map { it.featuredMediaURL }
+        }
 
         with(itemView) {
             tvBannerTitle.text = element.title
-            renderBanners(bannerImages, emptyList())
-            setVisibilityState(state, itemView)
+            renderBanners(bannerImages, imageList)
+            element.data?.let {
+                setVisibilityState(it.state, itemView)
+            }
         }
     }
 
-    private fun setVisibilityState(state: Int, itemView: View) {
+    private fun setVisibilityState(state: CarouselState, itemView: View) {
         when (state) {
-            STATE_LOADING -> {
+            CarouselState.LOADING -> {
                 itemView.tvBannerTitle.visibility = View.GONE
                 itemView.bannerImages.visibility = View.GONE
                 itemView.bannerImagesShimmering.visibility = View.VISIBLE
@@ -45,7 +48,7 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
                 isSeeAllVisible = true
                 isBottomItemVisible = true
             }
-            STATE_NORMAL -> {
+            CarouselState.NORMAL -> {
                 itemView.tvBannerTitle.visibility = View.VISIBLE
                 itemView.bannerImages.visibility = View.VISIBLE
                 itemView.bannerImagesShimmering.visibility = View.GONE
@@ -53,7 +56,7 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
                 isSeeAllVisible = true
                 isBottomItemVisible = true
             }
-            STATE_ERROR -> {
+            CarouselState.ERROR -> {
                 itemView.tvBannerTitle.visibility = View.VISIBLE
                 itemView.bannerImages.visibility = View.GONE
                 itemView.bannerImagesShimmering.visibility = View.GONE
@@ -61,7 +64,7 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
                 isSeeAllVisible = true
                 isBottomItemVisible = true
             }
-            STATE_IMPERFECT_WITHOUT_SEE_ALL -> {
+            CarouselState.IMPERFECT_WITHOUT_SEE_ALL -> {
                 itemView.tvBannerTitle.visibility = View.VISIBLE
                 itemView.bannerImages.visibility = View.VISIBLE
                 itemView.bannerImagesShimmering.visibility = View.GONE
@@ -69,7 +72,7 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
                 isSeeAllVisible = false
                 isBottomItemVisible = true
             }
-            STATE_IMPERFECT_WITHOUT_BOTTOM_ITEM -> {
+            CarouselState.IMPERFECT_WITHOUT_BOTTOM_ITEM -> {
                 itemView.tvBannerTitle.visibility = View.VISIBLE
                 itemView.bannerImages.visibility = View.VISIBLE
                 itemView.bannerImagesShimmering.visibility = View.GONE
@@ -77,16 +80,14 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
                 isSeeAllVisible = false
                 isBottomItemVisible = false
             }
-            else -> {
-            }
         }
     }
 
-    private fun renderBanners(banner: BannerCarousel, data: List<String>) {
+    private fun renderBanners(banner: BannerCarousel, imageList: List<String>) {
 
-        if (data.isNotEmpty()) {
+        if (imageList.isNotEmpty()) {
             with(banner) {
-                setPromoList(data)
+                setPromoList(imageList)
                 setOnPromoClickListener { Timber.e(it.toString()) }
                 setOnPromoScrolledListener { Timber.e(it.toString()) }
                 setOnPromoAllClickListener { Timber.e("Lihat Semua") }

@@ -127,10 +127,10 @@ class GetLayoutUseCase(
                         data = CarouselDataUiModel(
                                 data = listOf(
                                         CarouselDataModel(
-                                                id = "",
-                                                url = "http://placekitten.com/300/100",
-                                                applink = "",
-                                                featuredMediaURL = "http://placekitten.com/300/101"
+                                                id = "asasd",
+                                                url = "http://tokopedia.com/blablablaal",
+                                                applink = "https://seller.tokopedia.com/edu/cara-melihat-promosi-affiliate/",
+                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg"
                                         ),
                                         CarouselDataModel(
                                                 id = "",
@@ -144,7 +144,8 @@ class GetLayoutUseCase(
                                                 applink = "",
                                                 featuredMediaURL = "http://placekitten.com/300/103"
                                         )
-                                )
+                                ),
+                                state = CarouselState.NORMAL
                         )
                 )
         )
