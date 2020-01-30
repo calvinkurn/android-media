@@ -24,11 +24,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
         view?.let {
             it.hideProgressLoading()
             e.printStackTrace()
-            var errorMessage = e.message
-            if (e !is CartResponseErrorException) {
-                errorMessage = ErrorHandler.getErrorMessage(it.getActivityObject(), e)
-            }
-            it.showToastMessageRed(errorMessage ?: "")
+            it.showToastMessageRed(e)
         }
     }
 
