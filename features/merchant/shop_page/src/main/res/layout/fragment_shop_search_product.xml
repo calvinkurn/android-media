@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ly_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -61,11 +62,11 @@
                     android:id="@+id/editTextSearchProduct"
                     style="@style/EditText"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
                     android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/dp_4"
                     android:layout_weight="1"
                     android:background="@null"
                     android:ellipsize="end"
@@ -73,24 +74,35 @@
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textColor="@color/clr_ae31353b"
                     android:textSize="@dimen/sp_14" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/shopPageMainSortIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_shop_sort" />
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_shop_sort"
+                    tools:visibility="visible" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_view_clear_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_shop_page_clear_button"
+                    tools:visibility="visible" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textCancel"
-                app:typographyType="body_2"
-                android:textColor="@color/clr_ae31353b"
                 style="@style/TextView.Small"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:text="@string/button_cancel" />
+                android:text="@string/button_cancel"
+                android:textColor="@color/bg_button_green_border_outline"
+                app:typographyType="body_2" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

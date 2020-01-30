@@ -15,21 +15,40 @@
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:background="@android:color/white">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                app:layout_anchor="@id/app_bar_layout_etalase_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:descendantFocusability="blocksDescendants"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingLeft="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingEnd="@dimen/dp_12"
+                android:paddingRight="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_8"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout_etalase_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:theme="@style/AppBarNoBottomShadow">
+                android:theme="@style/AppBarNoBottomShadow"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:background="@drawable/card_shadow_bottom">
 
                 <LinearLayout
                     android:id="@+id/vg_etalase_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_4"
-                    android:layout_marginBottom="@dimen/dp_4"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:visibility="gone"
@@ -43,10 +62,9 @@
                         android:layout_weight="1"
                         android:clipToPadding="false"
                         android:paddingLeft="@dimen/dp_16"
-                        android:paddingRight="@dimen/dp_16"
                         android:paddingTop="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
-                        />
+                        android:paddingRight="@dimen/dp_16"
+                        android:paddingBottom="@dimen/dp_8" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/v_etalase_more"
@@ -71,20 +89,6 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:descendantFocusability="blocksDescendants"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:paddingStart="@dimen/dp_12"
-                android:paddingLeft="@dimen/dp_12"
-                android:paddingEnd="@dimen/dp_12"
-                android:paddingRight="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_8"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

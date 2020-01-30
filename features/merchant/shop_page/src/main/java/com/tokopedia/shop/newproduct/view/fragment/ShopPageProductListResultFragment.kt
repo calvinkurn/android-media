@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -65,6 +66,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.android.synthetic.main.fragment_shop_product_list_new.*
+import kotlinx.android.synthetic.main.fragment_shop_product_list_new.recycler_view_etalase
+import kotlinx.android.synthetic.main.fragment_shop_product_list_new.v_etalase_more
+import kotlinx.android.synthetic.main.fragment_shop_product_list_new.vg_etalase_list
+import kotlinx.android.synthetic.main.fragment_shop_product_list_result_new.*
 import javax.inject.Inject
 
 class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -294,6 +299,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 animator.supportsChangeAnimations = false
             }
         }
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = (recyclerView.layoutManager as? StaggeredGridLayoutManager)
+                val firstCompletelyVisibleItem = linearLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.get(0) ?:  0
+                app_bar_layout_etalase_list.background = if (firstCompletelyVisibleItem != 0) {
+                    MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+                } else {
+                    null
+                }
+            }
+        })
     }
 
 
@@ -495,7 +512,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     fun clickSortButton() {
-        shopInfo?.let{
+        shopInfo?.let {
             shopPageTracking?.clickSort(
                     viewModel.isMyShop(it.shopCore.shopID),
                     CustomDimensionShopPage.create(
@@ -509,9 +526,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun openShopProductSortPage() {
-        context?.let{
-        val intent = ShopProductSortActivity.createIntent(it, sortValue)
-        startActivityForResult(intent, ShopPageProductListResultFragment.REQUEST_CODE_SORT)
+        context?.let {
+            val intent = ShopProductSortActivity.createIntent(it, sortValue)
+            startActivityForResult(intent, ShopPageProductListResultFragment.REQUEST_CODE_SORT)
         }
     }
 
