@@ -12,11 +12,15 @@ object ApplinkConstInternalTravel {
     val HOST_HOTEL = "hotel"
     @JvmField
     val HOST_FLIGHT = "pesawat"
+    @JvmField
+    val HOST_TRAVEL_HOMEPAGE = "travelentertainment"
 
     @JvmField
     val INTERNAL_HOTEL = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_HOTEL"
     @JvmField
     val INTERNAL_FLIGHT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FLIGHT"
+    @JvmField
+    val INTERNAL_TRAVEL_HOMEPAGE = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_TRAVEL_HOMEPAGE"
 
     @JvmField
     val DASHBOARD_HOTEL = "$INTERNAL_HOTEL/dashboard"
@@ -25,5 +29,8 @@ object ApplinkConstInternalTravel {
     val DASHBOARD_FLIGHT = "$INTERNAL_FLIGHT/dashboard"
     @JvmField
     val CANCELLATION_FLIGHT = "$INTERNAL_FLIGHT/cancel"
+
+    @JvmField
+    val CITY_PAGE_TRAVEL_HOMEPAGE = "$INTERNAL_TRAVEL_HOMEPAGE/city"
 
 }
