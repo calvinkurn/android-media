@@ -3,7 +3,6 @@ package com.tokopedia.tradein.view.viewcontrollers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -28,6 +27,7 @@ import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.common_tradein.model.TradeInParams;
@@ -39,7 +39,11 @@ import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 import timber.log.Timber;
+
+import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
 
 public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessRequestListener {
 
@@ -167,6 +171,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvGoToProductDetails.setText(closeButtonText);
                         mTvGoToProductDetails.setOnClickListener(v -> {
                             sendGoToProductDetailGTM();
+                            sendGeneralEvent(clickEvent,
+                                    category,
+                                    TradeInGTMConstants.ACTION_KEMBALI_KE_DETAIL_PRODUK,
+                                    String.format("phone type : %s - min price : %s - max price : %s",
+                                            tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), homeResult.minPrice, homeResult.maxPrice));
                             finish();
                         });
 
@@ -181,8 +190,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvModelName.setText(homeResult.getDeviceDisplayName());
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(R.string.moneyin_sell_now);
-                        mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal());
-                        goToHargaFinal();
+                        if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
+                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                        }
+                        mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal(homeResult.getDeviceDisplayName()));
+                        goToHargaFinal(homeResult.getDeviceDisplayName());
                         break;
                     case NOT_DIAGNOSED:
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -192,9 +204,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                             sendGeneralEvent(clickEvent,
                                     category,
                                     TradeInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
-                                    "");
+                                    String.format("phone type : %s - min price : %s - max price : %s",
+                                            tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), homeResult.minPrice, homeResult.maxPrice));
 
                         });
+                        if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
+                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                        }
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
                     case MONEYIN_ERROR:
@@ -229,10 +245,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 label);
     }
 
-    private void goToHargaFinal() {
+    private void goToHargaFinal(String deviceDisplayName) {
         Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
         TradeInParams params = tradeInHomeViewModel.getTradeInParams();
         finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), params);
+        if(deviceDisplayName!=null)
+            finalPriceIntent.putExtra(PARAM_TRADEIN_PHONE_TYPE, deviceDisplayName.toLowerCase());
         finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_TYPE);
         navigateToActivityRequest(finalPriceIntent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE);
     }
@@ -432,4 +450,16 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         } else {
         }
     }
+
+    private void sendIrisEvent(Integer maxPrice, Integer minPrice){
+        HashMap<String, Object> values = new HashMap<>();
+        values.put("event", TradeInGTMConstants.ACTION_VIEW_TRADEIN_IRIS);
+        values.put("eventCategory", TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE);
+        values.put("eventAction", TradeInGTMConstants.VIEW_PRICE_RANGE_PAGE);
+        values.put("eventLabel",  String.format("phone type : %s - min price : %s - max price : %s", tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), minPrice, maxPrice));
+        values.put("productId",  tradeInHomeViewModel.getTradeInParams().getProductId());
+
+        IrisAnalytics.getInstance(this).sendEvent(values);
+    }
+
 }
