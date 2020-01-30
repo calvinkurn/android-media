@@ -77,6 +77,7 @@ internal class SearchShopViewModel(
     private val routePageEventLiveData = MutableLiveData<Event<String>>()
     private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
+    private val bottomNavigationVisibilityEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         setSearchParameterUniqueId()
@@ -179,18 +180,20 @@ internal class SearchShopViewModel(
     private fun processSearchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
-        updateIsSearchShopEmpty(searchShopModel)
-        updateTotalSearchShopRetrieved(searchShopModel)
-        updateIsHasNextPage(searchShopModel)
+        updateSearchShopStatus(searchShopModel)
 
         val visitableList = createVisitableListFromModel(searchShopModel)
 
         updateSearchShopListWithNewData(visitableList)
         updateSearchShopLiveDataStateToSuccess()
 
-        postImpressionTrackingEvent(searchShopModel, visitableList)
-        postEmptySearchTrackingEvent()
-        postRecommendationImpressionTrackingEvent(searchShopModel, visitableList)
+        postLiveDataEventsAfterSearchShop(searchShopModel, visitableList)
+    }
+
+    private fun updateSearchShopStatus(searchShopModel: SearchShopModel) {
+        updateIsSearchShopEmpty(searchShopModel)
+        updateTotalSearchShopRetrieved(searchShopModel)
+        updateIsHasNextPage(searchShopModel)
     }
 
     private fun updateIsSearchShopEmpty(searchShopModel: SearchShopModel) {
@@ -349,6 +352,13 @@ internal class SearchShopViewModel(
         searchShopLiveData.postValue(Success(searchShopMutableList))
     }
 
+    private fun postLiveDataEventsAfterSearchShop(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
+        postImpressionTrackingEvent(searchShopModel, visitableList)
+        postEmptySearchTrackingEvent()
+        postRecommendationImpressionTrackingEvent(searchShopModel, visitableList)
+        postBottomNavigationVisibilityEvent()
+    }
+
     private fun postImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
         if (!searchShopModel.hasShopList()) return
 
@@ -407,6 +417,15 @@ internal class SearchShopViewModel(
         }
 
         return dataLayerShopItemProductList
+    }
+
+    private fun postBottomNavigationVisibilityEvent() {
+        if (isEmptySearchShop) {
+            bottomNavigationVisibilityEventLiveData.postValue(Event(false))
+        }
+        else {
+            bottomNavigationVisibilityEventLiveData.postValue(Event(true))
+        }
     }
 
     private fun endSearchShopFirstPagePerformanceMonitoring() {
@@ -715,4 +734,7 @@ internal class SearchShopViewModel(
 
     fun getClickProductRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>> =
             clickProductRecommendationItemTrackingEventLiveData
+
+    fun getBottomNavigationVisibilityEventLiveData(): LiveData<Event<Boolean>> =
+            bottomNavigationVisibilityEventLiveData
 }

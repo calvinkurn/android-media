@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -127,6 +128,8 @@ public class SearchActivity extends BaseActivity
 
     @Nullable
     SearchViewModel searchViewModel;
+    @Nullable
+    SearchShopViewModel searchShopViewModel;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -404,15 +407,15 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initViewModel() {
-        ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
-
         searchViewModel = ViewModelProviders.of(this, searchViewModelFactory).get(SearchViewModel.class);
+        searchShopViewModel = ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
     }
 
     private void observeViewModel() {
         observeAutoCompleteEvent();
         observeHideLoadingEvent();
         observeChildViewVisibilityChangedEvent();
+        observeBottomNavigationVisibility();
     }
 
     private void observeAutoCompleteEvent() {
@@ -456,6 +459,19 @@ public class SearchActivity extends BaseActivity
                             childViewVisibilityChangedModel.isSortEnabled()
                     );
                 }
+            }
+        });
+    }
+
+    private void observeBottomNavigationVisibility() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getBottomNavigationVisibilityLiveData().observe(this, isVisible -> {
+            if (isVisible) {
+                showBottomNavigation();
+            }
+            else {
+                hideBottomNavigation();
             }
         });
     }
