@@ -11,6 +11,13 @@ import com.tokopedia.digital.home.di.DigitalHomePageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageFragment
 import com.tokopedia.graphql.data.GraphqlClient
 
+/**
+ * applink
+ * tokopedia://recharge/home
+ * or
+ * RouteManager.route(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+ */
+
 class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePageComponent> {
 
     private lateinit var travelHomepageComponent: DigitalHomePageComponent
