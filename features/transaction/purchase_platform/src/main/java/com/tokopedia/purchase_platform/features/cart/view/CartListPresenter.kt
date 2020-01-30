@@ -34,7 +34,7 @@ import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECom
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartData
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartProductData
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.*
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase

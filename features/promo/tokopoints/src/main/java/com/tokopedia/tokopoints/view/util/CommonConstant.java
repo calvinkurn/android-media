@@ -1,10 +1,12 @@
 package com.tokopedia.tokopoints.view.util;
 
+import com.tokopedia.session.data.viewmodel.login.ShopReputationDomain;
+
 import static com.tokopedia.tokopoints.view.util.CommonConstant.BaseUrl.WEB_DOMAIN_MOBILE;
 
 public interface CommonConstant {
-     String UTF_ENCODING = "UTF-8";
-     String COUPON_MIME_TYPE = "text/html";
+    String UTF_ENCODING = "UTF-8";
+    String COUPON_MIME_TYPE = "text/html";
     String FRAGMENT_DETAIL_TOKOPOINT = "sendFragment";
     String PREF_TOKOPOINTS = "pref_tokopoints";
     String PREF_KEY_ON_BOARDED = "pref_key_on_boarded";
@@ -128,5 +130,9 @@ public interface CommonConstant {
         String TP_GQL_COUPON_DETAIL = "tp_gql_coupon_detail";
         String TP_GQL_REFETCH_REAL_CODE = "tp_gql_refetch_real_code";
         String TP_GQL_SWIPE_COUPON = "tp_gql_swipe_coupon";
+        String TP_GQL_COUPON_FILTER = "tp_gql_coupon_filter";
+        String TP_GQL_COUPON_LISTING_STACK ="tp_gql_coupon_listing_stack";
+        String TP_GQL_COUPON_IN_STACK = "tp_gql_coupon_in_stack";
+        String TP_GQL_USER_INFO = "tp_gql_user_info";
     }
 }

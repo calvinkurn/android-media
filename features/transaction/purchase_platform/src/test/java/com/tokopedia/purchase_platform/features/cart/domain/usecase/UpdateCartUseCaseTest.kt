@@ -29,12 +29,13 @@ object UpdateCartUseCaseTest : Spek({
 
         lateinit var subscriber: AssertableSubscriber<UpdateCartData>
 
-
         Scenario("success") {
+
+            val response = UpdateCartDataResponse(data = Data(status = true), status = "OK")
 
             Given("mock response") {
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(UpdateCartGqlResponse::class.java to UpdateCartGqlResponse(
-                        UpdateCartDataResponse(data = null, status = "OK"))), null, false))
+                        response)), null, false))
             }
 
             When("create observable") {

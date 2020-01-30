@@ -14,8 +14,8 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.Updat
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,7 +25,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable

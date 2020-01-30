@@ -85,7 +85,8 @@ import com.tokopedia.purchase_platform.features.cart.view.di.DaggerCartComponent
 import com.tokopedia.purchase_platform.features.cart.view.mapper.PromoMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget

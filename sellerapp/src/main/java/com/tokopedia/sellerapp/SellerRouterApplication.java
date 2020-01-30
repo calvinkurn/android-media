@@ -1043,11 +1043,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-
-    }
-
-    @Override
     public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
 
     }

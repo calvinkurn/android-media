@@ -73,7 +73,6 @@
 /features/digital/travel_passenger                      @tokopedia/minion-mark
 /features/digital/voucher_game                          @tokopedia/minion-mark
 /features/digital/digital_emoney                        @tokopedia/minion-mark
-/features/digital/imagepreviewslider                    @tokopedia/minion-mark
 /features/salam/umrah                                   @tokopedia/minion-mark
 /features/digital/digital_topup_bills                   @tokopedia/minion-mark
 /features/digital/flight_orderlist                      @tokopedia/minion-mark
@@ -196,6 +195,7 @@
 /libraries/webview/										@tokopedia/core-team
 /libraries/williamchart/								@tokopedia/core-team
 /libraries/youtubeutil/									@tokopedia/core-team
+/libraries/imagepreviewslider                           @tokopedia/core-team
 
 /tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team

@@ -48,5 +48,10 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
             putObject(PARAM_SHOP_FIELDS, fields)
             putString(PARAM_SHOP_DOMAIN, shopDomain)
         }
+
+        @JvmStatic
+        fun getDefaultShopFields(): List<String> {
+            return DEFAULT_SHOP_FIELDS
+        }
     }
 }

@@ -36,7 +36,6 @@ include "features:digital:event"
 include "features:digital:flight"
 include "features:digital:flight_orderlist"
 include "features:digital:hotel"
-include "features:digital:imagepreviewslider"
 include "features:digital:travel_homepage"
 include "features:digital:travel_country_code"
 include "features:digital:travel_passenger"
@@ -192,6 +191,7 @@ include "features:discovery:smart_recycler_diffutil_helper"
 include "features:user:seamless_login"
 
 include 'features:fcm_common'
+include 'features:user:campaign_shake_landing'
 
 include 'tkpdcore'
 include 'tkpdinbox'

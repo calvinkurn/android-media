@@ -189,7 +189,6 @@ import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
-import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
@@ -295,11 +294,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ResolutionRouter,
         ProductDetailRouter,
-        KYCRouter {
+        KYCRouter,
+        CustomerRouter.IrisInstallRouter {
 
     private static final String EXTRA = "extra";
     public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
+    public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
+    public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -984,20 +986,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
-    public void init() {
-        ShakeDetectManager.getShakeDetectManager().init();
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName, activity);
-    }
-
-    @Override
-    public void unregisterShake() {
-        ShakeDetectManager.getShakeDetectManager().unregisterShake();
-    }
-
     @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
         return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
@@ -1463,12 +1451,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-        ShakeDetectManager.getShakeDetectManager().onDestroy(screenName, baseActivity);
-    }
-
-
-    @Override
     public String getDeviceId(Context context) {
         return TradeInUtils.getDeviceId(context);
     }
@@ -1551,6 +1533,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
+    }
+
+    @Override
+    public void sendIrisInstallEvent() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_INSTALL);
+        mIris.sendEvent(map);
     }
 
     @Override

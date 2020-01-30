@@ -7,7 +7,7 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.CartHorizontalItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartWishlistAdapter
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistHolderData
 import kotlinx.android.synthetic.main.item_cart_wishlist.view.*
 
 /**

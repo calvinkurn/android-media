@@ -22,7 +22,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopG
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.*
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
