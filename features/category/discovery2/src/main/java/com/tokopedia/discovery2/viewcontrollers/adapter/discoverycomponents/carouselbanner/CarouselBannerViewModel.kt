@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -14,23 +13,15 @@ import kotlin.coroutines.CoroutineContext
 
 class CarouselBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private val carouselBannerTitle: MutableLiveData<CustomViewState> = MutableLiveData()
+    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
     init {
-        getTitleData(components)
+        componentData.value = components
         listData.value = convertToComponentList(components)
-    }
-
-    private fun getTitleData(components: ComponentsItem) {
-        if (!components.title.isNullOrEmpty()) {
-            carouselBannerTitle.value = CustomViewState.ShowText(components.title)
-        } else {
-            carouselBannerTitle.value = CustomViewState.HideView
-        }
     }
 
     private fun convertToComponentList(components: ComponentsItem): ArrayList<ComponentsItem> {
@@ -46,12 +37,16 @@ class CarouselBannerViewModel(val application: Application, components: Componen
         return list
     }
 
-    fun getTitleLiveData(): LiveData<CustomViewState> {
-        return carouselBannerTitle
+    fun getComponentLiveData(): LiveData<ComponentsItem> {
+        return componentData
     }
 
     fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return listData
+    }
+
+    override fun initDaggerInject() {
+
     }
 
 }

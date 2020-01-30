@@ -8,9 +8,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CarouselBannerView
-import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewState
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 
 class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), CarouselBannerView.OnPromoAllClickListener {
@@ -31,17 +29,8 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun setUpObservers() {
-        carouselBannerViewModel.getTitleLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            when (item) {
-                is CustomViewState.ShowText -> {
-                    carouselBannerTitle.show()
-                    setTitle(item.value.toString())
-                }
-
-                is CustomViewState.HideView -> {
-                    carouselBannerTitle.hide()
-                }
-            }
+        carouselBannerViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            carouselBannerTitle.setTextAndCheckShow(item.title)
         })
 
         carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
@@ -49,10 +38,6 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
             carouselBannerView.setDataItems(item)
             carouselBannerView.buildView()
         })
-    }
-
-    private fun setTitle(title: String) {
-        carouselBannerTitle.text = title
     }
 
     override fun onPromoAllClick() {

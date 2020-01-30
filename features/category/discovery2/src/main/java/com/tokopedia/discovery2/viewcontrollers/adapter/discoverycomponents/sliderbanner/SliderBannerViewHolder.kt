@@ -7,10 +7,8 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewState
 import com.tokopedia.discovery2.viewcontrollers.customview.SliderBannerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 
 class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
@@ -30,17 +28,8 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
     }
 
     private fun setUpObservers() {
-        sliderBannerViewModel.getTitleLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            when (item) {
-                is CustomViewState.ShowText -> {
-                    sliderBannerTitle.show()
-                    setTitle(item.value.toString())
-                }
-
-                is CustomViewState.HideView -> {
-                    sliderBannerTitle.hide()
-                }
-            }
+        sliderBannerViewModel.getComponentsLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            sliderBannerTitle.setTextAndCheckShow(item.title)
         })
 
         sliderBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
@@ -48,10 +37,6 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
             sliderBannerView.setDataItems(item)
             sliderBannerView.buildView()
         })
-    }
-
-    private fun setTitle(title: String) {
-        sliderBannerTitle.text = title
     }
 
 }

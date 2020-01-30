@@ -9,9 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewState
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 
 class CarouselBannerItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
@@ -26,19 +24,7 @@ class CarouselBannerItemViewHolder(itemView: View, private val fragment: Fragmen
             val itemData = item.data?.get(0)
             ImageHandler.LoadImage(promoImage, itemData?.imageUrlMobile)
             setClick(itemData?.applinks)
-        })
-
-        carouselBannerItemViewModel.getDescriptionLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            when (item) {
-                is CustomViewState.ShowText -> {
-                    promoText.show()
-                    promoText.text = item.value.toString()
-                }
-
-                is CustomViewState.HideView -> {
-                    promoText.hide()
-                }
-            }
+            promoText.setTextAndCheckShow(itemData?.description)
         })
 
     }

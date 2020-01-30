@@ -18,4 +18,8 @@ class SliderBannerItemViewModel(val application: Application, components: Compon
         return componentData
     }
 
+    override fun initDaggerInject() {
+
+    }
+
 }
