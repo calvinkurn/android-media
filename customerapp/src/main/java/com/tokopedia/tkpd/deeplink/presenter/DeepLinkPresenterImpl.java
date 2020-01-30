@@ -353,7 +353,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     .appendQueryParameter(PARAM_EXTRA_UTM_SOURCE, utmSource)
                     .build()
                     .toString();
-            Log.e("DEEPLINKPRESENTERIMPL", uriReview);
             Intent intent = RouteManager.getIntent(
                     context,
                     uriReview);

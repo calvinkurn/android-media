@@ -2,7 +2,6 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
@@ -225,7 +224,6 @@ object DeeplinkMapper {
                 .appendQueryParameter(paramUtmSource, utmSource)
                 .build()
                 .toString()
-        Log.v("DEEPLINKMAPPER", uri)
         return uri
     }
 
