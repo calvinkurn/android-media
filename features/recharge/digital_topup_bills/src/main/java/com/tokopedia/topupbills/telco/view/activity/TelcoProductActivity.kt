@@ -7,16 +7,23 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 
 /**
  * Created by nabillasabbaha on 11/04/19.
+ *
+ * applink
+ * tokopedia-android-internal://digital/telco
+ * or
+ * RouteManager.route(this, ApplinkConsInternalDigital.TELCO_DIGITAL)
  */
+
 class TelcoProductActivity : BaseTelcoActivity() {
 
     override fun getNewFragment(): Fragment {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
-        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID) ?: ""
+        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID) ?: TelcoComponentType.TELCO_PREPAID.toString()
         digitalTelcoExtraParam.categoryId = bundle?.getString(PARAM_CATEGORY_ID) ?: ""
         digitalTelcoExtraParam.productId = bundle?.getString(PARAM_PRODUCT_ID) ?: ""
         digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER) ?: ""
