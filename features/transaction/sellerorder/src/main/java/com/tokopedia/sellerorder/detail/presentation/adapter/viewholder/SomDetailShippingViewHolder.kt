@@ -132,17 +132,9 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             }
         }
 
-        val coachMarkBooking = CoachMarkItem(itemView.rl_booking_code,
-                itemView.context.getString(R.string.coachmark_booking),
-                itemView.context.getString(R.string.coachmark_booking_info))
-
         val coachmarkShipping = CoachMarkItem(itemView,
                 itemView.context.getString(R.string.coachmark_shipping),
                 itemView.context.getString(R.string.coachmark_shipping_info))
-
-        actionListener.onAddedCoachMarkBookingCode(
-                coachMarkBooking
-        )
 
         actionListener.onAddedCoachMarkShipping(
                 coachmarkShipping

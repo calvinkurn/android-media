@@ -13,7 +13,6 @@ import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,9 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.datepicker.DatePickerUnify
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
@@ -93,7 +90,6 @@ import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailProductsCardAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
@@ -109,7 +105,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.*
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
@@ -118,16 +113,12 @@ import kotlinx.android.synthetic.main.bottomsheet_cancel_order_penalty.view.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
-import kotlinx.android.synthetic.main.detail_label_info_item.*
-import kotlinx.android.synthetic.main.detail_product_card_item.*
 import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
-import kotlinx.android.synthetic.main.fragment_som_list.*
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -140,7 +131,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val coachMarkDetail: CoachMark by lazy {
+    private val coachMark: CoachMark by lazy {
         CoachMarkBuilder().build()
     }
 
@@ -253,10 +244,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         coachMarkItems.add(coachMarkItemProduct)
     }
 
-    override fun onAddedCoachMarkBookingCode(coachMarkItemBooking: CoachMarkItem) {
-//        coachMarkItems.add(coachMarkItemBooking)
-    }
-
     override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
         coachMarkItems.add(coachMarkItemShipping)
         addedCoachMark()
@@ -365,18 +352,19 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun addedCoachMark(){
-        coachMarkItems.add(coachMarkEdit)
-        coachMarkItems.add(coachMarkAccept)
-        Log.d("COACHMARKJUMLAK", coachMarkItems.size.toString())
-        showCoachMark()
-
+        if(detailResponse.button.isNotEmpty()){
+            coachMarkItems.add(coachMarkEdit)
+            coachMarkItems.add(coachMarkAccept)
+            showCoachMark()
+        } else {
+            showCoachMark()
+        }
     }
 
     private fun showCoachMark(){
-        if(!coachMarkDetail.hasShown(activity, TAG_COACHMARK_DETAIL)){
-            coachMarkDetail.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
+        if(!coachMark.hasShown(activity, TAG_COACHMARK_DETAIL)){
+            coachMark.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
         }
-        coachMarkDetail.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
     }
 
     private fun renderHeader() {
@@ -508,8 +496,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         } else {
             rl_btn_detail?.visibility = View.GONE
         }
-
-//        showCoachMark()
     }
 
     private fun setActionSeeComplaint(url: String) {

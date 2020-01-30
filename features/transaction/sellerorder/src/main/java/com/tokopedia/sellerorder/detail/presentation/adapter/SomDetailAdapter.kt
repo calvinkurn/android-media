@@ -37,7 +37,6 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onCopiedAddress(address: String, str: String)
         fun onAddedCoachMarkHeader(coachMark: CoachMarkItem)
         fun onAddedCoachMarkProducts(coachMark: CoachMarkItem)
-        fun onAddedCoachMarkBookingCode(coachMark: CoachMarkItem)
         fun onAddedCoachMarkShipping(coachMark: CoachMarkItem)
     }
 
