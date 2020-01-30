@@ -47,7 +47,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/avatar_thumb_size"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/flPhotoContainer"
         android:layout_toRightOf="@+id/flPhotoContainer"
