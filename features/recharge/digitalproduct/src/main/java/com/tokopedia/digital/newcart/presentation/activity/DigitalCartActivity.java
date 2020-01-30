@@ -23,6 +23,12 @@ import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealN
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.user.session.UserSession;
 
+/**
+ * applink
+ * tokopedia://digital/cart
+ * tokopedia-android-internal://digital/cart
+ */
+
 public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>,
         DigitalCartDefaultFragment.InteractionListener,
         DigitalCartDealsFragment.InteractionListener,
