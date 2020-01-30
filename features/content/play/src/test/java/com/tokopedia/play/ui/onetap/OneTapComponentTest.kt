@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.like
+package com.tokopedia.play.ui.onetap
 
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -22,9 +22,9 @@ import org.junit.Test
 /**
  * Created by jegul on 30/01/20
  */
-class LikeComponentTest {
+class OneTapComponentTest {
 
-    private lateinit var component: LikeComponent
+    private lateinit var component: OneTapComponent
     private val owner = mockk<LifecycleOwner>(relaxed = true)
 
     private val testDispatcher = TestCoroutineDispatcher()
@@ -35,7 +35,7 @@ class LikeComponentTest {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
 
-        component = LikeComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
+        component = OneTapComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
     @After
@@ -44,30 +44,10 @@ class LikeComponentTest {
     }
 
     @Test
-    fun `test when keyboard is shown`() = runBlockingTest(testDispatcher) {
-        val isKeyboardShown = true
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(isKeyboardShown))
+    fun `test when show one tap`() = runBlockingTest(testDispatcher) {
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowOneTapOnboarding)
 
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when keyboard is hidden`() = runBlockingTest(testDispatcher) {
-        val isKeyboardShown = false
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(isKeyboardShown))
-
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when like content`() = runBlockingTest(testDispatcher) {
-        val shouldLike = true
-        val animate = false
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.LikeContent(shouldLike, animate))
-
-        verify { component.uiView.playLikeAnimation(shouldLike, animate) }
+        verify { component.uiView.showAnimated() }
         confirmVerified(component.uiView)
     }
 
@@ -80,8 +60,8 @@ class LikeComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class LikeComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : LikeComponent(container, bus, coroutineScope) {
-        override fun initView(container: ViewGroup): LikeView {
+    class OneTapComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OneTapComponent(container, bus, coroutineScope) {
+        override fun initView(container: ViewGroup): OneTapView {
             return mockk(relaxed = true)
         }
     }
