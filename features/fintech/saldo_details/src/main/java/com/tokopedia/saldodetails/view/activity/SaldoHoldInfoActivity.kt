@@ -167,7 +167,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     private fun initBottomSheet() {
         helpdialog = CloseableBottomSheetDialog.createInstanceRounded(this)
         val view = LayoutInflater.from(this).inflate(R.layout.saldo_info_help_bottomsheet, null)
-        helpdialog.setContentView(view)
+        helpdialog.setCustomContentView(view, "", false)
         view.btn1.setOnClickListener {
             RouteManager.route(this, String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL))
