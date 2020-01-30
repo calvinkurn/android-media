@@ -10,10 +10,10 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*

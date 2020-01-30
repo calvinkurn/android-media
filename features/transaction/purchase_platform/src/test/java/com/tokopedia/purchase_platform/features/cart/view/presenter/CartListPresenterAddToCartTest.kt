@@ -13,9 +13,9 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartL
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
