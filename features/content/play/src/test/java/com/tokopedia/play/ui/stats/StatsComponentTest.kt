@@ -46,7 +46,7 @@ class StatsComponentTest {
     }
 
     @Test
-    fun testSetTotalViews() = runBlockingTest(testDispatcher) {
+    fun `test set total views`() = runBlockingTest(testDispatcher) {
         val mockTotalView = TotalViewUiModel(
                 totalView = "1.5k"
         )
@@ -57,7 +57,7 @@ class StatsComponentTest {
     }
 
     @Test
-    fun testSetTotalLikes() = runBlockingTest(testDispatcher) {
+    fun `test set total likes`() = runBlockingTest(testDispatcher) {
         val mockTotalLike = TotalLikeUiModel(
                 totalLike = 1300,
                 totalLikeFormatted = "1.3k likes"
@@ -69,7 +69,7 @@ class StatsComponentTest {
     }
 
     @Test
-    fun testStatsOnChannelFreeze() = runBlockingTest(testDispatcher) {
+    fun `test when channel freeze`() = runBlockingTest(testDispatcher) {
         val mockEvent = PlayRoomEvent.Freeze("", "", "", "")
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockEvent))
@@ -78,7 +78,7 @@ class StatsComponentTest {
     }
 
     @Test
-    fun testStatsOnChannelBanned() = runBlockingTest(testDispatcher) {
+    fun `test when user is banned`() = runBlockingTest(testDispatcher) {
         val mockEvent = PlayRoomEvent.Banned("", "", "")
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockEvent))
@@ -87,14 +87,14 @@ class StatsComponentTest {
     }
 
     @Test
-    fun testStatsOnKeyboardHidden() = runBlockingTest(testDispatcher) {
+    fun `test when keyboard is hidden`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(false))
         verify(exactly = 0) { component.uiView.hide() }
         verify(exactly = 1) { component.uiView.show() }
     }
 
     @Test
-    fun testStatsOnKeyboardShown() = runBlockingTest(testDispatcher) {
+    fun `test when keyboard is shown`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(true))
         verify(exactly = 1) { component.uiView.hide() }
         verify(exactly = 0) { component.uiView.show() }

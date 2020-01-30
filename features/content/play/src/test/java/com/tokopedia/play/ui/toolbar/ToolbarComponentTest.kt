@@ -49,7 +49,7 @@ class ToolbarComponentTest {
     }
 
     @Test
-    fun testOnVideoPropChanged() = runBlockingTest(testDispatcher) {
+    fun `test when video property changed`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
                 state = TokopediaPlayVideoState.Buffering
@@ -60,14 +60,14 @@ class ToolbarComponentTest {
     }
 
     @Test
-    fun testSetChannelTitle() = runBlockingTest(testDispatcher) {
+    fun `test set channel title`() = runBlockingTest(testDispatcher) {
         val channelTitle = "Channel Title"
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetChannelTitle(channelTitle))
         verify { component.uiView.setTitle(channelTitle) }
     }
 
     @Test
-    fun testSetPartnerInfo() = runBlockingTest(testDispatcher) {
+    fun `test set partner info`() = runBlockingTest(testDispatcher) {
         val mockPartnerInfo = PartnerInfoUiModel(
                 id = 1,
                 name = "Toko",
@@ -80,7 +80,7 @@ class ToolbarComponentTest {
     }
 
     @Test
-    fun testOnVideoStreamChanged() = runBlockingTest(testDispatcher) {
+    fun `test on video stream changed`() = runBlockingTest(testDispatcher) {
         val mockVideoStream = VideoStreamUiModel(
                 uriString = "https://www.google.com/video.mp4",
                 channelType = PlayChannelType.VOD,
@@ -91,7 +91,7 @@ class ToolbarComponentTest {
     }
 
     @Test
-    fun testOnKeyboardStateShown() = runBlockingTest(testDispatcher) {
+    fun `test when keyboard is shown`() = runBlockingTest(testDispatcher) {
         val keyboardState = true
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(keyboardState))
         verify { component.uiView.hide() }
@@ -99,7 +99,7 @@ class ToolbarComponentTest {
     }
 
     @Test
-    fun testOnKeyboardStateHidden() = runBlockingTest(testDispatcher) {
+    fun `test when keyboard is hidden`() = runBlockingTest(testDispatcher) {
         val keyboardState = false
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(keyboardState))
         verify { component.uiView.show() }
@@ -107,7 +107,7 @@ class ToolbarComponentTest {
     }
 
     @Test
-    fun testOnChannelFreeze() = runBlockingTest(testDispatcher) {
+    fun `test when channel freeze`() = runBlockingTest(testDispatcher) {
         val mockEvent = PlayRoomEvent.Freeze("", "", "", "")
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockEvent))
         verify { component.uiView.show() }
@@ -115,13 +115,13 @@ class ToolbarComponentTest {
     }
 
     @Test
-    fun testOnNoMoreAction() = runBlockingTest(testDispatcher) {
+    fun `test when no more action`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
         verify { component.uiView.hideActionMore() }
     }
 
     @Test
-    fun testFollowUnfollowPartner() = runBlockingTest(testDispatcher) {
+    fun `test follow and unfollow partner`() = runBlockingTest(testDispatcher) {
         val shouldFollowPartner = true
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.FollowPartner(shouldFollowPartner))
         verify { component.uiView.setFollowStatus(shouldFollowPartner) }

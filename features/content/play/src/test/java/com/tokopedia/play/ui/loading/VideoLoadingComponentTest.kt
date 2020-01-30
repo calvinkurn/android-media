@@ -39,7 +39,7 @@ class VideoLoadingComponentTest {
     }
 
     @Test
-    fun testLoadingVODBuffer() = runBlockingTest(testDispatcher) {
+    fun `test when VOD is buffering`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
                 state = TokopediaPlayVideoState.Buffering
@@ -53,7 +53,7 @@ class VideoLoadingComponentTest {
     }
 
     @Test
-    fun testLoadingLiveBuffer() = runBlockingTest(testDispatcher) {
+    fun `test when Live is buffering`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
                 state = TokopediaPlayVideoState.Buffering
@@ -67,7 +67,7 @@ class VideoLoadingComponentTest {
     }
 
     @Test
-    fun testPlayingVOD() = runBlockingTest(testDispatcher) {
+    fun `test when VOD is playing`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
                 state = TokopediaPlayVideoState.Playing
@@ -79,7 +79,7 @@ class VideoLoadingComponentTest {
     }
 
     @Test
-    fun testPlayingLive() = runBlockingTest(testDispatcher) {
+    fun `test when Live is playing`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
                 state = TokopediaPlayVideoState.Playing
