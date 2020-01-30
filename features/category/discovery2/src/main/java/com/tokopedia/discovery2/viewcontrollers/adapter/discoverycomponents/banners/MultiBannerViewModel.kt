@@ -6,12 +6,15 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.categoryrevamp.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.usecase.MultiBannerDataUseCase
+import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
+import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.utils.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,6 +22,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class MultiBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
@@ -26,7 +30,8 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
-
+    @Inject lateinit var checkPushStatusUseCase:CheckPushStatusUseCase
+    @Inject lateinit var subScribeToUseCase: SubScribeToUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -35,8 +40,15 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
         bannerData.value = components
         pushBannerStatus.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
         pushBannerSubscription.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
+        initDaggerInject()
     }
 
+    override fun initDaggerInject() {
+        DaggerDiscoveryComponent.builder()
+                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
     fun getComponentData() = bannerData
     fun getPushBannerStatusData() = pushBannerStatus
     fun getshowLoginData() = showLogin
@@ -66,10 +78,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
     private fun subscribeUserForPushNotification(position: Int) {
         if (isUserLoggedIn()) {
             launchCatchError(block = {
-                val campaignMap = HashMap<String, Int>()
-                campaignMap["campaignID"] = getCampaignId(position)
-                val pushSubscriptionResponse = MultiBannerDataUseCase(application.resources)
-                        .subscribeToPush(campaignMap)
+                val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(getCampaignId(position))
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
                 pushBannerStatus.value = position
             }
@@ -96,11 +105,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
 
     private fun checkUserPushStatus(position: Int) {
         launchCatchError(block = {
-            val campaignMap = HashMap<String, Int>()
-            campaignMap["campaignID"] = getCampaignId(position)
-            val pushSubscriptionResponse = MultiBannerDataUseCase(application.resources)
-                    .checkPushStatus(GraphqlHelper.loadRawString(application.resources, R.raw.check_push_reminder_gql), campaignMap)
-
+            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
             if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
                 pushBannerSubscription.value = position
             }
@@ -111,7 +116,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
 
     private fun getCampaignId(position: Int): Int {
         val parameterList: List<String>? = bannerData.value?.data?.get(position)?.paramsMobile?.split("=")
-        if (parameterList != null && parameterList.size > 2) {
+        if (parameterList != null && parameterList.size >= 2) {
             return parameterList[1].toInt()
         }
         return 0
@@ -119,10 +124,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
 
     private fun checkUserLocalPushStatus(position: Int) {
         launchCatchError(block = {
-            val campaignMap = HashMap<String, Int>()
-            campaignMap["campaignID"] = getCampaignId(position)
-            val pushSubscriptionResponse = MultiBannerDataUseCase(application.resources)
-                    .checkPushStatus(GraphqlHelper.loadRawString(application.resources, R.raw.check_push_reminder_gql), campaignMap)
+            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
             if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
                 pushBannerSubscription.value = position
             }

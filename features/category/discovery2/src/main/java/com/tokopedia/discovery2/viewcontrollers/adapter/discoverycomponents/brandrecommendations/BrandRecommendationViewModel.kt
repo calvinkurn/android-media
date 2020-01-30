@@ -38,4 +38,8 @@ class BrandRecommendationViewModel(val application: Application, components: Com
     }
 
 
+    override fun initDaggerInject() {
+    }
+
+
 }

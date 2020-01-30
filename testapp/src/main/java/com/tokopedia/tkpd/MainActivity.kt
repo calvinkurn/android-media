@@ -8,7 +8,6 @@ import android.widget.EditText
 import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                     "grant_type" to "password"))
                     .map { tokenModel ->
                         if (tokenModel == null || tokenModel.accessToken.isNullOrEmpty()) {
-                            throw RuntimeException("Error user pass")
+                            throw (RuntimeException("Error user pass"))
                         } else {
                             tokenModel
                         }
@@ -188,7 +187,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goTo() {
-        RouteManager.route(this, "tokopedia://discovery/test-disco")
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
