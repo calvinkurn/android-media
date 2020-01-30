@@ -32,7 +32,6 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         webView.settings.displayZoomControls
         val data = intent?.extras?.getString(KEY_URL, "defaultKey")
         webView.loadUrl(data)
-        Log.d("KEY_URL", data)
         onPrintClicked(webView)
 
     }
