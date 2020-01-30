@@ -174,6 +174,7 @@ internal class ShopListFragment:
         observeTrackingClickShopRecommendation()
         observeTrackingClickProductItem()
         observeTrackingClickProductRecommendation()
+        observeBottomNavigationVisibilityEvent()
     }
 
     private fun observeSearchShopLiveData() {
@@ -429,6 +430,12 @@ internal class ShopListFragment:
     private fun trackEventClickProductRecommendation(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
         SearchTracking.trackEventClickShopRecommendationProductPreview(shopItemProduct.getShopRecommendationProductPreviewAsObjectDataLayer(), keyword)
+    }
+
+    private fun observeBottomNavigationVisibilityEvent() {
+        searchShopViewModel?.getBottomNavigationVisibilityEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isVisible ->
+            searchViewModel?.changeBottomNavigationVisibility(isVisible)
+        })
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

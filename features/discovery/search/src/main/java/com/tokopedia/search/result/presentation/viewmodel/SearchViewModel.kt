@@ -14,6 +14,7 @@ internal class SearchViewModel(
     private val showAutoCompleteEventLiveData = MutableLiveData<Event<Boolean>>()
     private val hideLoadingEventLiveData = MutableLiveData<Event<Boolean>>()
     private val childViewVisibleEventLiveData = MutableLiveData<Event<ChildViewVisibilityChangedModel>>()
+    private val bottomNavigationVisibilityLiveData = MutableLiveData<Boolean>()
 
     fun showAutoCompleteView() {
         showAutoCompleteEventLiveData.postValue(Event(true))
@@ -31,6 +32,10 @@ internal class SearchViewModel(
         }
     }
 
+    fun changeBottomNavigationVisibility(isVisible: Boolean) {
+        bottomNavigationVisibilityLiveData.postValue(isVisible)
+    }
+
     fun getShowAutoCompleteViewEventLiveData(): LiveData<Event<Boolean>> {
         return showAutoCompleteEventLiveData
     }
@@ -41,5 +46,9 @@ internal class SearchViewModel(
 
     fun getChildViewVisibleEventLiveData(): LiveData<Event<ChildViewVisibilityChangedModel>> {
         return childViewVisibleEventLiveData
+    }
+
+    fun getBottomNavigationVisibilityLiveData(): LiveData<Boolean> {
+        return bottomNavigationVisibilityLiveData
     }
 }

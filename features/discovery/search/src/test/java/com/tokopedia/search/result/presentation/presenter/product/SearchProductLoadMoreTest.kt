@@ -15,7 +15,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
 
-internal class LoadMoreDataTest: Spek({
+internal class SearchProductLoadMoreTest: Spek({
 
     Feature("Load More Data") {
         createTestInstance()
@@ -79,6 +79,9 @@ internal class LoadMoreDataTest: Spek({
                     verifyShowLoading(productListView)
 
                     verifyProcessingData(productListView)
+
+                    productListView.showBottomNavigation()
+                    productListView.updateScrollListener()
 
                     verifyHideLoading(productListView)
 
@@ -148,6 +151,9 @@ internal class LoadMoreDataTest: Spek({
                     verifyShowLoading(productListView)
 
                     verifyProcessingData(productListView)
+
+                    productListView.showBottomNavigation()
+                    productListView.updateScrollListener()
 
                     verifyHideLoading(productListView)
 
