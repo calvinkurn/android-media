@@ -35,7 +35,7 @@ class OnboardingAnalytics @Inject constructor() {
 
     fun sendScreen(position: Int) {
         val screenName = String.format(SCREEN_ONBOARDING, position.toString())
-        Timber.w("P2screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                 + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
                 + " | " + Build.TAGS)
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)

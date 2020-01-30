@@ -3,7 +3,7 @@ package com.tokopedia.flight.country.data
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.flight.country.FlightCountryListMapper
 import com.tokopedia.flight.country.database.FlightAirportCountryDao

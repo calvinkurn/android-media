@@ -3,6 +3,7 @@ package com.tokopedia.events.view.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.Gson;
@@ -11,16 +12,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
-import com.tokopedia.events.domain.model.NsqMessage;
-import com.tokopedia.events.domain.model.NsqServiceModel;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
-import com.tokopedia.events.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFilterActivity;
@@ -34,13 +30,11 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY;
@@ -104,13 +98,13 @@ public class EventSearchPresenter
         getSearchEventsListRequestUseCase.execute(requestParams, new Subscriber<SearchDomainModel>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
                 mView.hideProgressBar();
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(),
                         mView.getRootView(), () -> getEventsListBySearch(highlight, shouldFireEvent));
@@ -121,7 +115,7 @@ public class EventSearchPresenter
                 mView.setSuggestions(processSearchResponse(searchDomainModel), highlight, showCards, shouldFireEvent);
                 checkIfToLoad(mView.getLayoutManager());
                 mView.hideProgressBar();
-                CommonUtils.dumper("enter onNext");
+                Timber.d("enter onNext");
             }
         });
     }

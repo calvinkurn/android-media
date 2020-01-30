@@ -283,6 +283,9 @@ public class ShippingDurationBottomsheet extends BottomSheets
         }
         if (promoViewModel != null) {
             mPromoTracker.eventViewPromoLogisticTicker(promoViewModel.getPromoCode());
+            if(promoViewModel.getDisabled()){
+                mPromoTracker.eventViewPromoLogisticTickerDisable(promoViewModel.getPromoCode());
+            }
         }
     }
 

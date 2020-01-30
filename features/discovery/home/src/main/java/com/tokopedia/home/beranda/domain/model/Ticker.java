@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Ticker {
     @SerializedName("tickers")
     @Expose
-    ArrayList<Tickers> tickers;
+    ArrayList<Tickers> tickers = new ArrayList<>();
 
     public ArrayList<Tickers> getTickers() {
         return tickers;

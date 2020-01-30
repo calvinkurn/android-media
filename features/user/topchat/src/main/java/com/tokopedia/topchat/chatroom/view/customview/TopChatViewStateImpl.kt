@@ -1,16 +1,14 @@
 package com.tokopedia.topchat.chatroom.view.customview
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,22 +20,23 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * @author : Steven 29/11/18
@@ -45,7 +44,7 @@ import com.tokopedia.topchat.common.util.Utils
 
 class TopChatViewStateImpl(
         @NonNull override val view: View,
-        typingListener: TypingListener,
+        private val typingListener: TypingListener,
         private val sendListener: SendButtonListener,
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
@@ -59,7 +58,7 @@ class TopChatViewStateImpl(
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
-    private var attachmentPreviewContainer: ConstraintLayout = view.findViewById(R.id.cl_attachment_preview)
+    private var attachmentPreviewContainer: FrameLayout = view.findViewById(R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
@@ -67,6 +66,8 @@ class TopChatViewStateImpl(
     lateinit var chatRoomViewModel: ChatroomViewModel
 
     var isShopFollowed: Boolean = false
+
+    var roomMenu = LongClickMenu()
 
     init {
         initView()
@@ -91,9 +92,18 @@ class TopChatViewStateImpl(
         templateRecyclerView.setHasFixedSize(true)
         templateRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         templateRecyclerView.adapter = templateAdapter
-        templateRecyclerView.visibility = View.GONE
+        templateRecyclerView.hide()
 
         initProductPreviewLayout()
+        initHeaderLayout()
+    }
+
+    private fun initHeaderLayout() {
+        setupHeaderHamburgerBtn()
+    }
+
+    private fun setupHeaderHamburgerBtn() {
+        headerMenuButton.setImageResource(R.drawable.ic_topchat_hamburger_menu_grey)
     }
 
     private fun initProductPreviewLayout() {
@@ -111,16 +121,26 @@ class TopChatViewStateImpl(
     }
 
     private fun hideProductPreviewLayout() {
-        attachmentPreviewContainer.animate()
-                .translationY(attachmentPreviewContainer.height.toFloat())
-                .setDuration(300)
-                .alpha(0f)
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        attachmentPreviewContainer.visibility = View.GONE
-                    }
-                })
+        attachmentPreviewContainer.hide()
+        setChatTemplatesBottomPadding(0)
+    }
+
+    private fun setChatTemplatesBottomPadding(bottomPadding: Int) {
+        if (!templateRecyclerView.isVisible) return
+        addBottomPaddingTemplateChat(bottomPadding)
+    }
+
+    private fun addBottomPaddingTemplateChat(bottomPadding: Int) {
+        templateRecyclerView.post {
+            with(templateRecyclerView) {
+                setPadding(
+                        paddingLeft,
+                        paddingTop,
+                        paddingRight,
+                        bottomPadding
+                )
+            }
+        }
     }
 
     override fun onSetCustomMessage(customMessage: String) {
@@ -151,7 +171,6 @@ class TopChatViewStateImpl(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
-        checkShowQuickReply(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
                 .blockedStatus, onUnblockChatClicked)
 
@@ -199,52 +218,66 @@ class TopChatViewStateImpl(
     }
 
     private fun showHeaderMenuBottomSheet(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
-        val headerMenu = Menus(view.context)
+        if (roomMenu.isAdded) return
+        roomMenu.apply {
+            setItemMenuList(createRoomMenu(chatroomViewModel))
+            setOnItemMenuClickListener { itemMenus, _ ->
+                handleRoomMenuClick(itemMenus, chatroomViewModel, headerMenuListener, alertDialog)
+                dismiss()
+            }
+        }.show(sendListener.getSupportChildFragmentManager(), LongClickMenu.TAG)
+    }
+
+
+    private fun createRoomMenu(userChatRoom: ChatroomViewModel): MutableList<Menus.ItemMenus> {
         val listMenu = ArrayList<Menus.ItemMenus>()
 
-        if (chatroomViewModel.headerModel.role.toLowerCase()
-                        .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
-            val profileText = if (isShopFollowed) {
-                view.context.getString(R.string.already_follow_store)
+        if (userChatRoom.isChattingWithSeller()) {
+            val followStatusTitle: String
+            @DrawableRes val followStatusDrawable: Int
+
+            if (isShopFollowed) {
+                followStatusTitle = view.context.getString(R.string.already_follow_store)
+                followStatusDrawable = R.drawable.ic_topchat_check_bold_grey
             } else {
-                view.context.getString(R.string.follow_store)
+                followStatusTitle = view.context.getString(R.string.follow_store)
+                followStatusDrawable = R.drawable.ic_topchat_add_bold_grey
             }
-            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_system_action_plus_normal_24))
+            val followMenu = Menus.ItemMenus(followStatusTitle, followStatusDrawable)
+            listMenu.add(followMenu)
         }
 
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings))
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_chat_report))
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash))
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable.ic_topchat_chat_setting_bold_grey))
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
+        return listMenu
+    }
 
-        headerMenu.itemMenuList = listMenu
-        headerMenu.setActionText(view.context.getString(R.string.cancel_bottom_sheet))
-        headerMenu.setOnActionClickListener { headerMenu.dismiss() }
-        headerMenu.setOnItemMenuClickListener { itemMenus, pos ->
-            run {
-                when {
-                    itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
-                        showDeleteChatDialog(headerMenuListener, alertDialog)
-                    }
-                    itemMenus.title == view.context.getString(R.string.follow_store) -> {
-                        headerMenuListener.followUnfollowShop(true)
-                    }
-                    itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
-                        headerMenuListener.followUnfollowShop(false)
-                    }
-                    itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
-                        headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)
-                    }
-                    itemMenus.title == view.context.getString(R.string.chat_report_user) -> {
-                        headerMenuListener.onGoToReportUser()
-                    }
-                    else -> {
-                    }
-                }
-                headerMenu.dismiss()
+    private fun handleRoomMenuClick(
+            itemMenus: Menus.ItemMenus,
+            chatroomViewModel: ChatroomViewModel,
+            headerMenuListener: HeaderMenuListener,
+            alertDialog: Dialog
+    ) {
+        when {
+            itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
+                showDeleteChatDialog(headerMenuListener, alertDialog)
+            }
+            itemMenus.title == view.context.getString(R.string.follow_store) -> {
+                headerMenuListener.followUnfollowShop(true)
+            }
+            itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
+                headerMenuListener.followUnfollowShop(false)
+            }
+            itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
+                headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)
+            }
+            itemMenus.title == view.context.getString(R.string.chat_report_user) -> {
+                headerMenuListener.onGoToReportUser()
+            }
+            else -> {
             }
         }
-        headerMenu.show()
-
     }
 
     override fun getLastItem(): Parcelable? {
@@ -349,9 +382,8 @@ class TopChatViewStateImpl(
         updateChatroomBlockedStatus(it)
 
         showReplyBox(chatRoomViewModel.replyable)
-        templateRecyclerView.visibility = View.VISIBLE
+        templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
         chatBlockLayout.visibility = View.GONE
-
     }
 
     private fun transform(item: BaseChatViewModel): Parcelable? {
@@ -384,14 +416,14 @@ class TopChatViewStateImpl(
         }
     }
 
-    private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
-    }
-
     fun setTemplate(listTemplate: List<Visitable<Any>>?) {
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            templateRecyclerView.visibility = View.VISIBLE
+            templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
+            if (attachmentPreviewContainer.isVisible) {
+                addBottomPaddingTemplateChat(8.toPx())
+            }
         }
     }
 
@@ -408,13 +440,9 @@ class TopChatViewStateImpl(
         getAdapter().showRetryFor(it, retry)
     }
 
-    fun onSendProductAttachment(item: ProductAttachmentViewModel) {
-        getAdapter().addElement(item)
-        scrollDownWhenInBottom()
-    }
-
-    override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         attachmentPreviewContainer.show()
+        setChatTemplatesBottomPadding(8.toPx())
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }
 

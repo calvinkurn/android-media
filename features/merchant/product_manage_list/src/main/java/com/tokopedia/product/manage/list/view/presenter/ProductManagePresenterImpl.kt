@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductU
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase
+import com.tokopedia.product.manage.list.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.list.domain.EditPriceUseCase
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.list.view.listener.ProductManageView
@@ -27,8 +28,12 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -41,7 +46,8 @@ class ProductManagePresenterImpl @Inject constructor(
         private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
         private val getProductListUseCase: GetProductListUseCase,
         val productListMapperView: ProductListMapperView,
-        private val bulkUpdateProductUseCase: BulkUpdateProductUseCase
+        private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
+        private val editFeaturedProductUseCase: EditFeaturedProductUseCase
 ) : BaseDaggerPresenter<ProductManageView>(), ProductManagePresenter {
 
     override fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
@@ -49,13 +55,22 @@ class ProductManagePresenterImpl @Inject constructor(
 
     override fun getGoldMerchantStatus() {
         val getProductListJob: Job = SupervisorJob()
-        CoroutineScope(Dispatchers.Main + getProductListJob).launch {
+        CoroutineScope(Dispatchers.Main + getProductListJob).launchCatchError(block = {
             val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
             gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
             val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
+            val isGoldMerchant: Boolean? = shopInfo.goldOS.isGold == 1
+            val isOfficialStore: Boolean? = shopInfo.goldOS.isOfficial == 1
+            val shopDomain: String? = shopInfo.shopCore.domain
             if (isViewAttached) {
-                view.onSuccessGetShopInfo(shopInfo.goldOS.isGold == 1, shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.domain)
+                view.onSuccessGetShopInfo(
+                        isGoldMerchant ?: false,
+                        isOfficialStore ?: false,
+                        shopDomain ?: ""
+                )
             }
+        }) {
+            it.printStackTrace()
         }
     }
 
@@ -239,6 +254,27 @@ class ProductManagePresenterImpl @Inject constructor(
                     }
 
                 })
+    }
+
+    override fun setFeaturedProduct(productId: String, status: Int) {
+        //loading animation
+        view.showLoadingProgress()
+
+        editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
+                object : Subscriber<Unit>() {
+                    override fun onNext(unit: Unit) {
+                        view.onSuccessChangeFeaturedProduct(productId, status)
+                    }
+
+                    override fun onCompleted() {
+                        //No OP
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        view.onFailedChangeFeaturedProduct(throwable)
+                    }
+                })
+
     }
 
     private fun getShopIdInteger(): Int {

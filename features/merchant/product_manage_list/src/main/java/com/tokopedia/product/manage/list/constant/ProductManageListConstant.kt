@@ -36,4 +36,7 @@ object ProductManageListConstant {
     const val FILTER_PREORDER_VALUE = "preorder"
     const val FILTER_ALL_SHOWCASE_VALUE = "etalase"
 
+    const val FEATURED_PRODUCT_REMOVE_STATUS = 0
+    const val FEATURED_PRODUCT_ADD_STATUS = 1
+
 }

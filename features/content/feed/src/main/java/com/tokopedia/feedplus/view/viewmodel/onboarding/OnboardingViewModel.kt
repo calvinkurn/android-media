@@ -16,7 +16,7 @@ data class OnboardingViewModel(
         override val titleFull: String = "",
         override val instruction: String = "",
         override val buttonCta: String = "",
-        override var dataList : List<InterestPickDataViewModel> = ArrayList())
+        override var dataList : MutableList<InterestPickDataViewModel> = mutableListOf())
     : InterestPickViewModel, Visitable<FeedPlusTypeFactory> {
     override fun type(typeFactory: FeedPlusTypeFactory): Int {
         return typeFactory.type(this)

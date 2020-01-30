@@ -3,13 +3,12 @@ package com.tokopedia.recentview.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.recentview.data.api.RecentViewApi;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.user.session.UserSession;

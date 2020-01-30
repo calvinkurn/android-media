@@ -37,11 +37,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
                     .override(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
                     .submit(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
                     .get(imageSizeAndTimeout.seconds, TimeUnit.SECONDS)
-        } catch (e: CancellationException) {
-        } catch (e: ExecutionException) {
-        } catch (e: InterruptedException) {
-        } catch (e: TimeoutException) {
-        } catch (e: IOException) {
+        } catch (e: Exception) {
         }
         return null
     }
@@ -62,7 +58,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
         } catch (e: Exception) {
         } finally {
             try {
-                fos!!.close()
+                fos?.close()
             } catch (e: IOException) {
             }
         }

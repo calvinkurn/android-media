@@ -30,7 +30,6 @@ import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
-    private static GraphqlApi sGraphqlApi = null;
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
 
@@ -45,11 +44,6 @@ public class GraphqlClient {
             TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
             tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
-            tkpdOkHttpBuilder.addInterceptor(chain -> {
-                Request.Builder newRequest = chain.request().newBuilder();
-                newRequest.addHeader("User-Agent", getUserAgent());
-                return chain.proceed(newRequest.build());
-            });
 
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));

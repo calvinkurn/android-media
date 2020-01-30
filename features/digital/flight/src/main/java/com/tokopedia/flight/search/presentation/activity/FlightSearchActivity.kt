@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
+import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -118,23 +118,23 @@ open class FlightSearchActivity : BaseFlightActivity(),
         setupSearchToolbar()
     }
 
-    override fun selectFlight(selectedFlightID: String, flightPriceViewModel: FlightPriceViewModel,
+    override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
                               isBestPairing: Boolean, isCombineDone: Boolean) {
         if (passDataViewModel.isOneWay) {
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
                 startActivityForResult(FlightBookingActivity
-                        .getCallingIntent(this, passDataViewModel, selectedFlightID,
+                        .getCallingIntent(this, passDataViewModel, selectedFlightID, selectedTerm,
                                 flightPriceViewModel),
                         REQUEST_CODE_BOOKING)
             } else {
-                startActivityForResult(com.tokopedia.flight.booking.view.activity.FlightBookingActivity
+                startActivityForResult(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
                         .getCallingIntent(this, passDataViewModel, selectedFlightID,
                                 flightPriceViewModel),
                         REQUEST_CODE_BOOKING)
             }
         } else {
             startActivityForResult(FlightSearchReturnActivity
-                    .getCallingIntent(this, passDataViewModel, selectedFlightID,
+                    .getCallingIntent(this, passDataViewModel, selectedFlightID, selectedTerm,
                             isBestPairing, flightPriceViewModel, isCombineDone),
                     REQUEST_CODE_RETURN)
         }

@@ -4,17 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import android.text.TextUtils;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.core2.R;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
@@ -23,7 +23,7 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
  * Created by Alifa on 1/10/2017.
  */
 
-public class TopPicksWebView extends TkpdCoreWebViewActivity implements DeepLinkWebViewHandleListener {
+public class TopPicksWebView extends TkpdCoreWebViewActivity {
 
     private static final int IS_WEBVIEW = 1;
     private static final String URL = "url";
@@ -70,12 +70,6 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements DeepLink
             fragmentTransaction.commit();
         }
 
-    }
-
-    @Override
-    public void catchToWebView(String url) {
-        BaseSessionWebViewFragment fragment = BaseSessionWebViewFragment.newInstance(url);
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override

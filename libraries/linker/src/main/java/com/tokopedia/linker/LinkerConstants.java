@@ -49,6 +49,7 @@ public interface LinkerConstants {
     int EVENT_ITEM_VIEW = 6;
     int EVENT_ADD_TO_WHISHLIST =7;
     int EVENT_ADD_TO_CART = 8;
+    int EVENT_PURCHASE_FLIGHT = 9;
 
 
     String KEY_ANDROID_DEEPLINK_PATH = "$android_deeplink_path";
@@ -70,6 +71,7 @@ public interface LinkerConstants {
     String USER_ID = "userId";
     String EVENT_LOGIN_LABLE = "login";
     String EVENT_REGISTER_LABLE = "sign_up";
+    String EVENT_FLIGHT_PURCHASE = "FLIGHT_PURCHASE ";
 
     int ERROR_INIT_FAILED = 101;
     int ERROR_REQUEST_NOT_SUCCESSFUL = 102;
@@ -82,5 +84,9 @@ public interface LinkerConstants {
     String DESCRIPTION = "description";
     String SHOP_ID = "shop_id";
     String CURRENCY = "currency";
+    String PRODUCT_CATEGORY = "product_category";
+    String PRODUCT_NAME = "product_name";
+    String JOURNEY_ID = "journey_id";
+    String INVOICE_ID = "invoice_id";
 
 }

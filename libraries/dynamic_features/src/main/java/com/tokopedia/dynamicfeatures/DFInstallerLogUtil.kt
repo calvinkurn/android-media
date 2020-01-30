@@ -77,11 +77,13 @@ object DFInstallerLogUtil {
                            errorCode: List<String>? = null,
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false) {
+
         GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ ->  }) {
             val messageStringBuilder = StringBuilder()
-            messageStringBuilder.append("P1$tag{$modulesName};")
-            messageStringBuilder.append("times_dl:{$downloadTimes};")
-
+            messageStringBuilder.append("$tag {$modulesName};")
+            if (downloadTimes > 0) {
+                messageStringBuilder.append("times_dl:{$downloadTimes};")
+            }
             if (errorCode?.isNotEmpty() == true) {
                 messageStringBuilder.append("err:{${errorCode.joinToString("|")}};")
             }
@@ -118,9 +120,8 @@ object DFInstallerLogUtil {
                     context.packageManager.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0)
                 )
                 messageStringBuilder.append("play_srv:{$playServiceVersion}")
-            } catch (e: Exception) {
-            }
-            Timber.w(messageStringBuilder.toString())
+            } catch (e: Exception) { }
+            Timber.w("P1#DFM#$messageStringBuilder")
         }
     }
 }

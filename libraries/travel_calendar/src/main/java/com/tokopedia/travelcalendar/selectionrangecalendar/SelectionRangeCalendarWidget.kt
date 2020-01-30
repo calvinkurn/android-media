@@ -155,6 +155,9 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         yesterday.set(Calendar.SECOND, 0)
         yesterday.set(Calendar.MILLISECOND, 0)
 
+        minDate?.let { if (it.before(yesterday.time) || it.after(nextYear.time)) minDate = yesterday.time }
+        maxDate?.let { if (minDate != null && (it.before(yesterday.time) || it.after(nextYear.time))) maxDate = yesterday.time }
+
         minDate?.let { minDate ->
             maxDate?.let { maxDate ->
                     calendar.init(yesterday.time, nextYear.time, legends)
