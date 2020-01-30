@@ -1228,12 +1228,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
-        boolean enableOsNative = getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OFFICIAL_STORE_OS, true);
-        if (enableOsNative) {
-            return OfficialHomeContainerFragment.newInstance(bundle);
-        } else {
-            return ReactNativeOfficialStoreFragment.Companion.createInstance();
-        }
+        return OfficialHomeContainerFragment.newInstance(bundle);
     }
 
     @Override
