@@ -210,16 +210,15 @@ public class ProductListFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupBeforeLoadData(view);
+        initViews(view);
 
         if (presenter != null) {
             presenter.onViewCreated();
         }
     }
 
-    private void setupBeforeLoadData(@NonNull View view) {
-        bindView(view);
-
+    private void initViews(@NonNull View view) {
+        initRecyclerView(view);
         initLayoutManager();
         initSwipeToRefresh(view);
         initTopAdsConfig();
@@ -234,7 +233,7 @@ public class ProductListFragment
         }
     }
 
-    private void bindView(View rootView) {
+    private void initRecyclerView(View rootView) {
         recyclerView = rootView.findViewById(R.id.recyclerview);
     }
 
