@@ -777,7 +777,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (getActivity() != null) {
             ShareBottomSheets.Companion.newInstance(packageName -> {
 
-            }, "", imageUrl, url, description, title,"");
+            }, "", imageUrl, url, description, title,"").show(getActivity().getSupportFragmentManager());
         }
     }
 
