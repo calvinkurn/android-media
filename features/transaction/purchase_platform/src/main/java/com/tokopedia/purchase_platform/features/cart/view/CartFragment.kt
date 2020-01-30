@@ -59,7 +59,6 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
@@ -85,7 +84,6 @@ import com.tokopedia.purchase_platform.features.cart.view.di.DaggerCartComponent
 import com.tokopedia.purchase_platform.features.cart.view.mapper.PromoMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -547,9 +545,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (toBeDeletedCartItemDataList.isNotEmpty()) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false, true)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateCartDataAnalytics(
-                                    toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-                            )
+                            dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
                     )
                 }
                 dialog.dismiss()
@@ -653,9 +649,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (cartItemDatas.isNotEmpty()) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
-                            dPresenter.generateCartDataAnalytics(
-                                    cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
-                            )
+                            dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
                 }
                 dialog.dismiss()
@@ -664,9 +658,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (cartItemDatas.size > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateCartDataAnalytics(
-                                    cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
-                            )
+                            dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
                 }
                 dialog.dismiss()
@@ -678,9 +670,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (cartItemDatas.size > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateCartDataAnalytics(
-                                    cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
-                            )
+                            dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
                 }
                 dialog.dismiss()
@@ -2344,17 +2334,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 break
             }
         }
-        sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
-                allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-        ))
+        sendAnalyticsOnClickRemoveCartConstrainedProduct(
+                dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
+        )
 
         dialog?.setPrimaryCTAClickListener {
             if (allDisabledCartItemDataList.size > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, null, false, false)
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
-                        dPresenter.generateCartDataAnalytics(
-                                allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-                        )
+                        dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
                 )
             }
             dialog.dismiss()
@@ -2379,7 +2367,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dialog?.setPrimaryCTAClickListener {
             dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, null, false, false)
             sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                    dPresenter.generateCartDataAnalytics(cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION)
+                    dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
             )
             dialog.dismiss()
         }

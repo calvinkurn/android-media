@@ -52,7 +52,7 @@ interface ICartListPresenter {
 
     fun processApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
 
-    fun generateCartDataAnalytics(cartItemDataList: List<CartItemData>, enhancedECommerceAction: String): Map<String, Any>
+    fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
 
     fun generateRecommendationDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 

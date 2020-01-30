@@ -611,7 +611,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         removeWishListUseCase?.createObservable(productId, userId, wishListActionListener)
     }
 
-    override fun generateCartDataAnalytics(cartItemDataList: List<CartItemData>, enhancedECommerceAction: String): Map<String, Any> {
+    override fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any> {
         val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
             for (cartItemData in cartItemDataList) {
                 val enhancedECommerceProductCartMapData = getEnhancedECommerceProductCartMapData(cartItemData)
@@ -619,7 +619,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
 
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-            setAction(enhancedECommerceAction)
+            setAction(EnhancedECommerceCartMapData.REMOVE_ACTION)
         }
         return enhancedECommerceCartMapData.cartMap
     }
