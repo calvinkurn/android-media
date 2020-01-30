@@ -10,6 +10,8 @@ import com.tokopedia.play.view.uimodel.*
  */
 sealed class ScreenStateEvent : ComponentEvent {
 
+    object Init : ScreenStateEvent()
+
     /**
      * Setter
      */

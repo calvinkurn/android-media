@@ -26,6 +26,7 @@ class OneTapComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.show()
                             ScreenStateEvent.ShowOneTapOnboarding -> uiView.showAnimated()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }

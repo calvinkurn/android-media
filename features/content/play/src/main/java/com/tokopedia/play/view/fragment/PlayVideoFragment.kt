@@ -154,6 +154,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         val oneTapComponent = initOneTapComponent(container)
         val overlayVideoComponent = initOverlayVideoComponent(container)
 
+        sendInitState()
+
         layoutView(
                 container = container,
                 videoComponentId = videoComponent.getContainerId(),
@@ -180,6 +182,15 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
     }
     //endregion
+
+    private fun sendInitState() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner).emit(
+                    ScreenStateEvent::class.java,
+                    ScreenStateEvent.Init
+            )
+        }
+    }
 
     //region layouting
     private fun layoutView(
@@ -254,6 +265,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         layoutOneTap(container , oneTapComponentId)
         layoutOverlayVideo(container, overlayVideoComponentId)
     }
+    //endregion
 
     private fun delegateVideoProperty(prop: VideoPropertyUiModel) {
         launch {

@@ -26,12 +26,11 @@ class PinnedComponent(
     private var isKeyboardShown: Boolean = false
 
     init {
-        uiView.hide()
-
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetPinned -> {
                                 shouldShow = if (it.pinnedMessage.shouldRemove) {
                                     uiView.hide()

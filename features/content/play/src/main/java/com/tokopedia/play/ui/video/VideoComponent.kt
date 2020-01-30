@@ -33,6 +33,7 @@ open class VideoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
                             is ScreenStateEvent.KeyboardStateChanged -> uiView.setCornerRadius(if (it.isShown) cornerRadius else 0f)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
