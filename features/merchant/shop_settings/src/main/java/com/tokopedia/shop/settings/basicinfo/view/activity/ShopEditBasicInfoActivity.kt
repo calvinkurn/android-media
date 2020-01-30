@@ -64,6 +64,8 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
                 .inject(this)
         updateShopSettingsInfoPresenter.attachView(this)
 
+        supportActionBar?.title = getString(R.string.shop_settings_information_edit)
+
         parentTvBrowseFile.setBackground(MethodChecker
                 .getDrawable(parentTvBrowseFile.getContext(), com.tokopedia.design.R.drawable.ic_balloon_gray))
 
@@ -87,6 +89,10 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         vgRoot.requestFocus()
 
         onSuccessGetShopBasicData(shopBasicDataModel)
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     private fun onSaveButtonClicked() {
