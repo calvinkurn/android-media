@@ -458,7 +458,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Success -> {
                     orderList = it.data
                     nextOrderId = orderList.cursorOrderId
-                    if (orderList.orders.isNotEmpty()) renderOrderList()
+                    if (orderList.orders.isNotEmpty()) {
+                        renderOrderList()
+                        showCoachMarkProducts()
+                    }
+
                     else {
                         if (isFilterApplied) {
                             if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
@@ -474,6 +478,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             }
                         } else {
                             renderCekPeluang()
+                            showCoachMarkProductsEmpty()
                         }
                     }
                 }
@@ -500,9 +505,15 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 //        showCoachMark()
     }
 
-    private fun showCoachMark(){
+    private fun showCoachMarkProducts(){
         if(!coachMark.hasShown(activity, TAG_COACHMARK)){
             coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+        }
+    }
+
+    private fun showCoachMarkProductsEmpty(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
         }
     }
 
