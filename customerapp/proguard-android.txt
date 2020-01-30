@@ -208,3 +208,4 @@ public protected *;
 
 -dontwarn class com.google.android.exoplayer2.audio.AudioAttributes
 -dontwarn class com.google.android.exoplayer2.mediacodec.MediaCodecUtil
+-dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
