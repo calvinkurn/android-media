@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.gradientbg
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -13,13 +14,14 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 10/01/20
  */
-class GradientBackgroundComponent(
+open class GradientBackgroundComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
         launch {
@@ -42,6 +44,6 @@ class GradientBackgroundComponent(
         return emptyFlow()
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             GradientBackgroundView(container)
 }
