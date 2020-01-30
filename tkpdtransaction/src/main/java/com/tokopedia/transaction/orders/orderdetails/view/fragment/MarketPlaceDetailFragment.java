@@ -303,14 +303,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         lihat.setOnClickListener(view -> {
             orderListAnalytics.sendViewInvoiceClickEvent();
             orderListAnalytics.sendLihatInvoiceClick(status.status());
-            try {
-                Intent intent = new Intent(getActivity(), SeeInvoiceActivity.class);
-                intent.putExtra(ConstantKt.KEY_URL, URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING));
-                intent.putExtra(ConstantKt.KEY_TITLE, getResources().getString(R.string.title_invoice));
-                startActivity(intent);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            Intent intent = new Intent(getActivity(), SeeInvoiceActivity.class);
+            intent.putExtra(ConstantKt.KEY_URL, invoice.invoiceUrl());
+            intent.putExtra(ConstantKt.KEY_TITLE, getResources().getString(R.string.title_invoice));
+            startActivity(intent);
         });
     }
 

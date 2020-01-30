@@ -14,6 +14,7 @@ import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.transaction.R
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_URL
+import java.net.URLEncoder
 
 class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
 
@@ -32,7 +33,6 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         val data = intent?.extras?.getString(KEY_URL, "defaultKey")
         webView.loadUrl(data)
         Log.d("KEY_URL", data)
-        Log.d("KEY_URL_2", KEY_URL)
         onPrintClicked(webView)
 
     }
