@@ -89,7 +89,7 @@ object DeeplinkDFMapper {
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
     @JvmField
-    val DFM_FACE_DETECTION = "liveness"
+    val DFM_FACE_DETECTION = "df_user_liveness"
     private val DFM_MERCHANT_BUYER = "df_merchant_buyer"
     private val DFM_OPERATIONAL = "df_operational"
     private val DFM_PAYMENT = "df_payment"
