@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
@@ -29,7 +28,7 @@ interface ICartListView : CustomerView {
 
     fun getAllAvailableCartDataList(): List<CartItemData>
 
-    fun getActivityObject(): FragmentActivity?
+    fun getAllSelectedCartDataList(): List<CartItemData>?
 
     fun getCartId(): String
 
@@ -41,7 +40,7 @@ interface ICartListView : CustomerView {
 
     fun renderInitialGetCartListDataSuccess(cartListData: CartListData?)
 
-    fun renderErrorInitialGetCartListData(message: String)
+    fun renderErrorInitialGetCartListData(throwable: Throwable)
 
     fun renderToShipmentFormSuccess(eeCheckoutData: Map<String, Any>,
                                     cartItemDataList: List<CartItemData>,
@@ -50,11 +49,15 @@ interface ICartListView : CustomerView {
 
     fun renderErrorToShipmentForm(message: String)
 
+    fun renderErrorToShipmentForm(throwable: Throwable)
+
     fun renderDetailInfoSubTotal(qty: String, subtotalPrice: String, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
 
     fun updateCashback(cashback: Double)
 
     fun showToastMessageRed(message: String)
+
+    fun showToastMessageRed(throwable: Throwable)
 
     fun showToastMessageGreen(message: String)
 
@@ -107,6 +110,12 @@ interface ICartListView : CustomerView {
     fun renderInsuranceCartData(insuranceCartResponse: InsuranceCartResponse?, isRecommendation: Boolean)
 
     fun removeInsuranceProductItem(productId: List<Long>)
+
+    fun showMessageRemoveInsuranceProductSuccess()
+
+    fun showMessageUpdateInsuranceProductSuccess()
+
+    fun getAdsId(): String?
 
     fun goToLite(url: String)
 }
