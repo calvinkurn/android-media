@@ -33,6 +33,7 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
@@ -791,16 +792,11 @@ public class ProductListFragment
 
     @Override
     public void onLongClick(ProductItemViewModel item, int adapterPosition) {
-        if(getSearchParameter() == null) return;
+        if(getSearchParameter() == null || getActivity() == null) return;
+
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
-        startSimilarSearch(item.getProductID());
-    }
 
-    private void startSimilarSearch(String productId) {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
-        intent.putExtra(SearchConstant.SimilarSearch.QUERY, getQueryKey());
-
-        startActivity(intent);
+        SimilarSearchManager.startSimilarSearch(getActivity(), item.getProductID(), getQueryKey());
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
