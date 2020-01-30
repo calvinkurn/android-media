@@ -42,6 +42,7 @@ public class OrderListAnalytics {
     private static final String EVENT_ACTION_LIHAT_STATUS = "click lihat on status order";
     private static final String EVENT_TICKER_CLICK_ACTION = "click see more on ticker";
     private static final String EVENT_TICKER_CLICK_LINK_ACTION = "click link on ticker";
+    private static final String EVENT_ACTION_DOWNLOAD_INVOICE = "click button download invoice";
     private static final String TEVENT_TICKER_CLOSE_ACTION = "click x on ticker";
 
     private static final String SEARCH_EVENT_ACTION = "submit search";
@@ -133,6 +134,10 @@ public class OrderListAnalytics {
 
     }
 
+    private void sendDownloadEventData(String eventLabel){
+        sendGtmDataDetails(EVENT_ACTION_DOWNLOAD_INVOICE, eventLabel);
+    }
+
     public void sendHelpEventData(String eventLabel) {
         sendGtmDataDetails(EVENT_ACTION_CLICK_HELP, eventLabel);
     }
@@ -197,6 +202,7 @@ public class OrderListAnalytics {
 
         sendGtmData(LOAD_MORE_EVENT_ACTION, eventLabel);
     }
+
 
     public void sendViewTickerEvent() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(TICKER_EVENT_NAME, PRODUCT_EVENT_CATEGORY, TICKER_EVENT_ACTION, ""));
