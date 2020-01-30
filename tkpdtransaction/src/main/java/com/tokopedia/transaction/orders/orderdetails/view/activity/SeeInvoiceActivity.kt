@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.transaction.R
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_URL
@@ -30,6 +31,8 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         webView.settings.displayZoomControls
         val data = intent?.extras?.getString(KEY_URL, "defaultKey")
         webView.loadUrl(data)
+        Log.d("KEY_URL", data)
+        Log.d("KEY_URL_2", KEY_URL)
         onPrintClicked(webView)
 
     }
