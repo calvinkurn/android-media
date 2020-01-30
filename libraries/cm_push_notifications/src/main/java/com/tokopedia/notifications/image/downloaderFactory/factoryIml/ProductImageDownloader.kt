@@ -12,7 +12,7 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.productInfoList.forEach { productInfo ->
             productInfo.productImage.run {
-                if (startsWith("http") || startsWith("www")) {
+                if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                     baseNotificationModel.status = NotificationStatus.COMPLETED
                     baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
                     baseNotificationModel.productInfoList.clear()

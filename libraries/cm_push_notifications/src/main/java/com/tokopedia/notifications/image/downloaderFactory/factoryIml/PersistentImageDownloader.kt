@@ -10,7 +10,7 @@ import com.tokopedia.notifications.model.NotificationStatus
 class PersistentImageDownloader(baseNotificationModel: BaseNotificationModel) : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.persistentButtonList?.forEach { persistentButton ->
-            if (null == persistentButton.icon || persistentButton.icon!!.startsWith("http") || persistentButton.icon!!.startsWith("www")) {
+            if (null == persistentButton.icon || persistentButton.icon!!.startsWith(CMConstant.HTTP) || persistentButton.icon!!.startsWith(CMConstant.WWW)) {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
                 return

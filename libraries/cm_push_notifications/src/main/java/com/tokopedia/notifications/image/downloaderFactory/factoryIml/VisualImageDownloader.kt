@@ -10,14 +10,14 @@ import com.tokopedia.notifications.model.NotificationStatus
 class VisualImageDownloader(baseNotificationModel: BaseNotificationModel) : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.visualCollapsedImageUrl?.run {
-            if (startsWith("http") || startsWith("www")) {
+            if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
                 return
             }
         }
         baseNotificationModel.visualExpandedImageUrl?.run {
-            if (startsWith("http") || startsWith("www")) {
+            if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
             }

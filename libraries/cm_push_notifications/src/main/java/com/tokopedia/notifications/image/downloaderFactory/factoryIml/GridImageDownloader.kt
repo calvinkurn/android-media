@@ -10,7 +10,7 @@ class GridImageDownloader(baseNotificationModel: BaseNotificationModel) : Notifi
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.gridList.forEach { grid ->
             grid.img?.run {
-                if (startsWith("http") || startsWith("www")) {
+                if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                     baseNotificationModel.type = CMConstant.NotificationType.GENERAL
                     baseNotificationModel.gridList.clear()
                     return

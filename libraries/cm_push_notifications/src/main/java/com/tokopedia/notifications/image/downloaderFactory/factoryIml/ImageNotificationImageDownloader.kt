@@ -10,7 +10,7 @@ class ImageNotificationImageDownloader(baseNotificationModel: BaseNotificationMo
 
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.media?.run {
-            if (mediumQuality.startsWith("http") || mediumQuality.startsWith("www")) {
+            if (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW)) {
                     baseNotificationModel.media = null
                     baseNotificationModel.type = CMConstant.NotificationType.GENERAL
             }

@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.image.downloaderFactory.factoryIml
 
 import android.content.Context
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -10,7 +11,7 @@ class ActionButtonImageDownloader(baseNotificationModel: BaseNotificationModel)
 
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.media?.run {
-            if (mediumQuality.startsWith("http") || mediumQuality.startsWith("www"))
+            if (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW))
                 baseNotificationModel.media = null
         }
     }

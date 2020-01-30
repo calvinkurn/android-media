@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.image.downloaderFactory.factoryIml
 
 import android.content.Context
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -8,7 +9,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 class BigBannerImageDownloader(baseNotificationModel: BaseNotificationModel) : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.media?.run {
-            (mediumQuality.startsWith("http") || mediumQuality.startsWith("www")).let {
+            (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW)).let {
                 if(it) {
                     baseNotificationModel.media = null
                 }
