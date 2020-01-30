@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/layout_lvl1"
+    android:descendantFocusability="blocksDescendants"
     app:cardCornerRadius="@dimen/layout_lvl1"
     app:contentPadding="@dimen/layout_lvl2">
 
@@ -11,6 +12,6 @@
 
     <include layout="@layout/sah_partial_shimmering_list_widget" />
 
-    <include layout="@layout/sah_partial_error_load_data"/>
+    <include layout="@layout/sah_partial_error_load_data" />
 
 </androidx.cardview.widget.CardView>
