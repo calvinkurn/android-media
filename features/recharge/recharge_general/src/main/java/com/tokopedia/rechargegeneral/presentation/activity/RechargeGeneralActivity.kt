@@ -10,6 +10,12 @@ import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
 
+/**
+ * applink
+ * tokopedia://digital/form?category_id=5&menu_id=120&template=general
+ * or
+ * @sample airPDAM = RouteManager.route(this, ApplinkConsInternalDigital.PRODUCT_TEMPLATE, "5", "120", "general")
+ */
 
 class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGeneralComponent> {
 
