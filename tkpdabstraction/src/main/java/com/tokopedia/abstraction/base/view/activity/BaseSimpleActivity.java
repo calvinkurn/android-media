@@ -30,11 +30,6 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
         }
     }
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-    }
-
     protected void inflateFragment() {
         Fragment newFragment = getNewFragment();
         if (newFragment == null) {
