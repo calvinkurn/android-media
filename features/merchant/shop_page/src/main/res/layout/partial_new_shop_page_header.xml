@@ -54,6 +54,7 @@
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:lines="1"
+            android:textColor="@color/clr_f531353b"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@+id/shop_page_follow_unfollow_button"
             app:layout_constraintHorizontal_bias="0"
