@@ -5,15 +5,14 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.model.PlayLiveDynamicChannelEntity
 import com.tokopedia.home.beranda.data.query.PlayLiveDynamicChannelQuery
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Named
 
 class PlayRemoteDataSource(
         private val graphqlRepository: GraphqlRepository,
-        @Named("dispatchersIO") private val dispatchers: CoroutineDispatcher
+        private val dispatchers: HomeDispatcherProvider
 ) {
     companion object{
         private const val PARAM_PAGE = "page"
@@ -27,7 +26,7 @@ class PlayRemoteDataSource(
     }
     suspend fun getPlayData(
             source: String = DEFAULT_SOURCE, page: Int = DEFAULT_PAGE, limit: Int = DEFAULT_LIMIT
-    ) = withContext(dispatchers) {
+    ) = withContext(dispatchers.io()) {
         val cacheStrategy =
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
