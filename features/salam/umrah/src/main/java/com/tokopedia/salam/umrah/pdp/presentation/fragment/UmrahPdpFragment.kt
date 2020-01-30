@@ -25,7 +25,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahPdpTrackingUserAction
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
@@ -287,9 +287,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
                 override fun onClick(position: Int) {
                     umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.CLICK_PACKAGE_PHOTOS)
                     context?.run {
-                        startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                                this, umrahProduct.title, umrahPdpImageViewPagerAdapter.imageUrls, umrahPdpImageViewPagerAdapter.imageUrls, position
-                        ))
+                        ImagePreviewSlider.instance.start(this, umrahProduct.title,
+                                umrahPdpImageViewPagerAdapter.imageUrls, umrahPdpImageViewPagerAdapter.imageUrls, position, null)
                     }
                 }
             }
@@ -383,9 +382,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
                     override fun onImageClicked(itemPosition: Int, position: Int) {
                         umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.CLICK_HOTEL_PHOTOS)
                         context?.run {
-                            startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                                    this, hotels[itemPosition].name, hotels[itemPosition].imageUrls, hotels[itemPosition].imageUrls, position
-                            ))
+                            ImagePreviewSlider.instance.start(this, hotels[itemPosition].name,
+                                    hotels[itemPosition].imageUrls, hotels[itemPosition].imageUrls, position, null)
                         }
                     }
                 }
