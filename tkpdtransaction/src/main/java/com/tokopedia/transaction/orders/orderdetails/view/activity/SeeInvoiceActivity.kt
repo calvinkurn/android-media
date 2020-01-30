@@ -19,7 +19,8 @@ import javax.inject.Inject
 class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
 
     @Inject
-    var orderListAnalytics: OrderListAnalytics? = null
+    lateinit var orderListAnalytics: OrderListAnalytics
+
     private var status: Status? = null
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
