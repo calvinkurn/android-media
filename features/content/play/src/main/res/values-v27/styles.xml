@@ -10,14 +10,13 @@
 
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
 
-<!--        <item name="android:windowActivityTransitions">true</item>-->
         <item name="android:windowSharedElementsUseOverlay">false</item>
         <item name="android:windowContentTransitions">true</item>
 
         <item name="android:windowSharedElementEnterTransition">@transition/anim_play_shared_enter</item>
         <item name="android:windowSharedElementExitTransition">@transition/anim_play_shared_return</item>
 
-        <item name="android:windowEnterTransition">@transition/activity_enter</item>
-        <item name="android:windowExitTransition">@transition/activity_return</item>
+<!--        <item name="android:windowEnterTransition">@transition/activity_enter</item>-->
+<!--        <item name="android:windowExitTransition">@transition/activity_return</item>-->
     </style>
 </resources>

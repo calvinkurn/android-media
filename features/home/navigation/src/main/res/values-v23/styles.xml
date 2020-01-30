@@ -7,6 +7,6 @@
         <!--   Activity Main transition     -->
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
-<!--        <item name="android:windowActivityTransitions">true</item>-->
+
     </style>
 </resources>
