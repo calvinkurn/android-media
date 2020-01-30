@@ -599,9 +599,9 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     }
 
     private fun onGoToPdp(productId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             val intent: Intent? = getProductIntent(productId)
-            this@InboxTalkFragment.startActivity(intent)
+            startActivity(intent)
         }
     }
 
@@ -615,13 +615,13 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfile()
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", userId))
         }
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }

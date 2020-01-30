@@ -50,8 +50,12 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
             }
         }
 
-        // Set recent item data
-        if (enquiryData.value.isNotEmpty()) inputView.setInputText(enquiryData.value)
+        // Set item data
+        if (enquiryData.value.isNotEmpty()) {
+            inputView.setInputText(enquiryData.value)
+            // Hide dropdown icon
+            inputView.toggleDropdownIcon(false)
+        }
     }
 
     private fun verifyField(fieldValidation: List<CatalogProductInput.Validation>,

@@ -72,6 +72,7 @@ ext {
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
-            traceroute              : ":libraries:traceroute"
+            traceroute              : ":libraries:traceroute",
+            imagePreviewSlider      : ":libraries:imagepreviewslider",
     ]
 }
