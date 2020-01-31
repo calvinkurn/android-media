@@ -22,7 +22,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -30,7 +29,6 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.product_card_layout_v2_skeleton.view.*
 
 /**
  * This abstract class provides a basis for Custom View Product Card.
