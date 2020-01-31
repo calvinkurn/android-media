@@ -27,7 +27,6 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
                 return mapToIncomingChat()
             }
             PlaySocketType.PinnedMessage.value -> {
-                //TODO("check if the default behaviour is really to be called twice (one for remove, one for new)")
                 return mapToPinnedMessage()
             }
             PlaySocketType.QuickReply.value -> {

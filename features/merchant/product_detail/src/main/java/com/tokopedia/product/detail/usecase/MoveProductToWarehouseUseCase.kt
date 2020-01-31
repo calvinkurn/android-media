@@ -38,7 +38,7 @@ class MoveProductToWarehouseUseCase @Inject constructor(private val restReposito
                 .setRequestType(RequestType.POST)
                 .setBody(bodyMap)
                 .build()
-        data = restRepository.getResponse(restRequest).getData()
+        data = (restRepository.getResponse(restRequest).getData() as DataResponse<ProductActionSubmit>).data
         if (!data.getIsSuccess()) {
             throw IOException()
         }

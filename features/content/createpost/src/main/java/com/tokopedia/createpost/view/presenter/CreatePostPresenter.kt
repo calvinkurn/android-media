@@ -17,7 +17,6 @@ import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface

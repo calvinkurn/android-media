@@ -16,8 +16,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.glide.loadImage
-import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
+import com.tokopedia.home.beranda.helper.glide.FPM_PRODUCT_ORGANIC_CHANNEL
 import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
@@ -110,7 +109,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
         override fun onBindViewHolder(holder: OrganicViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                holder.channelImage1.loadImageRounded(grid.imageUrl, 8)
+                holder.channelImage1.loadImageRounded(grid.imageUrl, 8, FPM_PRODUCT_ORGANIC_CHANNEL)
                 holder.channelName.displayTextOrHide(grid.name)
                 holder.channelPrice1.displayTextOrHide(grid.price)
                 holder.channelDiscount1.displayTextOrHide(grid.discount)

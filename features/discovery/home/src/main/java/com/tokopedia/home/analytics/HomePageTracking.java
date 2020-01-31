@@ -1246,7 +1246,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickProductChannelMix(Context context,
+    public static void eventClickProductChannelMix(String type,
                                                    DynamicHomeChannel.Channels bannerChannel,
                                                    boolean isFreeOngkir,
                                                    int gridPosition) {

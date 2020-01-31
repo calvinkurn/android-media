@@ -86,4 +86,6 @@ interface HomeCategoryListener {
     fun putEEToIris(data: HashMap<String, Any>)
 
     fun getWindowWidth(): Int
+
+    fun addRecyclerViewScrollImpressionListener(adapterPosition: Int, onImpressionListener: ()->Unit)
 }

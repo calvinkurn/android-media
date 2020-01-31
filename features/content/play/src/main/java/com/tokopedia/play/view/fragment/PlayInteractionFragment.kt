@@ -974,8 +974,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openLoginPage() {
-//        val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-//        startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
         openPageByApplink(ApplinkConst.LOGIN)
     }
 

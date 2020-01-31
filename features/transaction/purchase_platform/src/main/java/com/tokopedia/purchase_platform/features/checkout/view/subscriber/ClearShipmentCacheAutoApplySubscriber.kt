@@ -1,10 +1,8 @@
 package com.tokopedia.purchase_platform.features.checkout.view.subscriber
 
 import android.text.TextUtils
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import rx.Subscriber
 
 /**
@@ -15,7 +13,7 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
                                             val presenter: ShipmentContract.Presenter,
                                             val voucherType: String,
                                             val shopIndex: Int,
-                                            val ignoreAPIResponse: Boolean) : Subscriber<GraphqlResponse>() {
+                                            val ignoreAPIResponse: Boolean) : Subscriber<ClearCacheAutoApplyStackResponse>() {
 
     override fun onCompleted() {
 
@@ -29,16 +27,15 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
         }
     }
 
-    override fun onNext(response: GraphqlResponse) {
+    override fun onNext(response: ClearCacheAutoApplyStackResponse) {
         view?.hideLoading()
-        val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (ignoreAPIResponse) {
-            if (responseData.successData.success) {
-                onSuccess(responseData)
+            if (response.successData.success) {
+                onSuccess(response)
             }
         } else {
-            if (responseData.successData.success) {
-                onSuccess(responseData)
+            if (response.successData.success) {
+                onSuccess(response)
             } else {
                 view?.onFailedClearPromoStack(ignoreAPIResponse)
             }
