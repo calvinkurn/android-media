@@ -69,8 +69,6 @@ public interface HomeContract {
 
         boolean needToShowGeolocationComponent();
 
-        void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition);
-
         TrackingQueue getTrackingQueue();
     }
 

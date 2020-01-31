@@ -1540,11 +1540,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition) {
-//        adapter.setPlayData(playContentBanner, adapterPosition);
-    }
-
-    @Override
     public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
         this.tickerDetail = tickerDetail;
         updateStickyState();
