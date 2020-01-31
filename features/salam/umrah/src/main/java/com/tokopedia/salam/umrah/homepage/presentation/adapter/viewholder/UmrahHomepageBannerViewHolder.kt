@@ -46,6 +46,9 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
 
                 }
 
+            } else if (element.isLoaded && element.umrahBanners.isEmpty()) {
+                umrah_banner_shimmering.gone()
+                banner_umrah_home_page.gone()
             } else {
                 umrah_banner_shimmering.show()
                 iv_umrah_banner_salam.apply {
