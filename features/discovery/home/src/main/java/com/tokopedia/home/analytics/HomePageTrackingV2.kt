@@ -133,13 +133,13 @@ object HomePageTrackingV2 {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.IMPRESSION.format(LEGO_BANNER_4_IMAGE_NAME),
                 eventLabel = Label.NONE,
-                promotions = channel.grids.map {
+                promotions = channel.grids.mapIndexed { index, grid ->
                     Promotion(
-                            id = "%s-%s".format(channel.id, it.id),
-                            creative = it.attribution,
-                            creativeUrl = it.imageUrl,
+                            id = "%s-%s".format(channel.id, grid.id),
+                            creative = grid.attribution,
+                            creativeUrl = grid.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
-                            position = position
+                            position = index + 1
                     )
                 }
         )
