@@ -9,6 +9,7 @@ object HomePageTrackingV2 {
         val KEY = "event"
         val CLICK = "click"
         val IMPRESSION = "impression"
+        val CLICK_HOMEPAGE = "clickHomepage"
         val PROMO_VIEW = "promoView"
         val PROMO_VIEW_IRIS = "promoViewIris"
     }
@@ -21,7 +22,7 @@ object HomePageTrackingV2 {
     private object Action{
         const val KEY = "eventAction"
         const val IMPRESSION = "%s impression"
-        const val CLICK = "%s CLICK"
+        const val CLICK = "%s click"
     }
 
     private object Label{
@@ -162,5 +163,15 @@ object HomePageTrackingV2 {
                     )
                 }
         )
+
+        fun getLegoBannerFourImageSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
+            return DataLayer.mapOf(
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME) + " view all",
+                Label.KEY, channel.header.name,
+                Label.CHANNEL_LABEL, channel.id
+            ) as HashMap<String, Any>
+        }
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
+import com.google.android.gms.analytics.Tracker
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
@@ -19,6 +20,7 @@ import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
+import com.tokopedia.track.TrackApp
 
 /**
  * Created by devarafikry on 12/08/19.
@@ -49,7 +51,7 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
             TYPE_SIX_GRID_LEGO -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
                     context, applink, channel.id)
             TYPE_THREE_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(context, channel.header.name, channel.id)
-            TYPE_FOUR_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(context, channel.header.name, channel.id)
+            TYPE_FOUR_GRID_LEGO -> TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channel))
             else -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
                     context, applink, channel.id)
         }
