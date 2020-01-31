@@ -84,7 +84,7 @@ class PinnedComponentTest {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(false))
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
 
-        verifyAll {
+        verifyOrder {
             component.uiView.hide()
             component.uiView.setPinnedMessage(mockPinnedMessage)
             component.uiView.show()
@@ -104,9 +104,87 @@ class PinnedComponentTest {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(true))
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
 
-        verify {
+        verifyOrder {
             component.uiView.hide()
             component.uiView.setPinnedMessage(mockPinnedMessage)
+        }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `test show keyboard when pinned is set`() = runBlockingTest(testDispatcher) {
+        val mockPinnedMessage = PinnedMessageUiModel(
+                applink = null,
+                partnerName = "My Shop",
+                title = "Dibeli dibeli",
+                shouldRemove = false
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(true))
+
+        verifyOrder {
+            component.uiView.setPinnedMessage(mockPinnedMessage)
+            component.uiView.show()
+            component.uiView.hide()
+        }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `test hide keyboard when pinned is set`() = runBlockingTest(testDispatcher) {
+        val mockPinnedMessage = PinnedMessageUiModel(
+                applink = null,
+                partnerName = "My Shop",
+                title = "Dibeli dibeli",
+                shouldRemove = false
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(false))
+
+        verifyOrder {
+            component.uiView.setPinnedMessage(mockPinnedMessage)
+            component.uiView.show()
+            component.uiView.show()
+        }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `test show keyboard when pinned is not set`() = runBlockingTest(testDispatcher) {
+        val mockPinnedMessage = PinnedMessageUiModel(
+                applink = null,
+                partnerName = "My Shop",
+                title = "Dibeli dibeli",
+                shouldRemove = true
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(true))
+
+        verifyOrder {
+            component.uiView.hide()
+            component.uiView.hide()
+        }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `test hide keyboard when pinned is not set`() = runBlockingTest(testDispatcher) {
+        val mockPinnedMessage = PinnedMessageUiModel(
+                applink = null,
+                partnerName = "My Shop",
+                title = "Dibeli dibeli",
+                shouldRemove = true
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(false))
+
+        verifyOrder {
+            component.uiView.hide()
+            component.uiView.hide()
         }
         confirmVerified(component.uiView)
     }
