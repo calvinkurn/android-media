@@ -31,6 +31,7 @@
                     />
 
                 <include
+                    android:layout_marginTop="@dimen/dp_8"
                     android:id="@+id/partial_umrah_checkout_header"
                     layout="@layout/partial_umrah_checkout_header"
                     android:layout_width="match_parent"
