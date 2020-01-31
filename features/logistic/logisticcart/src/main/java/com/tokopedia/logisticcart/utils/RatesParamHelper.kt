@@ -54,6 +54,6 @@ internal object RatesParamHelper {
         val gson = Gson()
         val json = gson.toJson(shipping.products)
         return json.replace("\n", "")
-//                .replace("\"", "\\\"")
     }
+
 }
