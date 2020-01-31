@@ -44,7 +44,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         contentFrame?.resizeMode = resizeMode
 
         surfaceView = TextureView(context)
-//        surfaceView?.transitionName = context.getString(R.string.home_transition_video)
         surfaceView?.id = R.id.home_play_texture
         val params = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
