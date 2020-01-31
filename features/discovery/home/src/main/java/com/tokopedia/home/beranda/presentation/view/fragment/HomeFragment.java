@@ -487,8 +487,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onResume() {
         super.onResume();
         sendScreen();
+        adapter.onResume();
         presenter.onResume();
-
         if (activityStateListener != null) {
             activityStateListener.onResume();
         }
@@ -497,7 +497,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPause() {
         super.onPause();
-
+        adapter.onPause();
         trackingQueue.sendAll();
         if (activityStateListener != null) {
             activityStateListener.onPause();
@@ -507,6 +507,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
+        adapter.onDestroy();
         presenter.onDestroy();
         presenter.detachView();
         homeRecyclerView.setAdapter(null);
@@ -709,7 +710,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build();
         adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<HomeVisitable>());
-        getLifecycle().addObserver(adapter);
         homeRecyclerView.setAdapter(adapter);
     }
 

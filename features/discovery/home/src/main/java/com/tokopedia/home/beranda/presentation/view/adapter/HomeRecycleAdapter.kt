@@ -1,11 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,25 +33,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         super.onAttachedToRecyclerView(recyclerView)
         mRecyclerView = recyclerView
         mLayoutManager = mRecyclerView?.layoutManager as LinearLayoutManager
-    }
-
-    private fun onSelectedItemChanged(newSelected: Int) {
-        if(currentSelected != -1) {
-            pausePlayerByPosition(currentSelected)
-        }
-        if(newSelected != -1) {
-            prepareAndPlayByPosition(newSelected)
-        }
-        currentSelected = newSelected
-    }
-
-    private fun prepareAndPlayByPosition(position: Int) {
-        val newPlayer: HomePlayWidgetHelper? = getExoPlayerByPosition(position)
-        newPlayer?.preparePlayer()
-    }
-
-    private fun pausePlayerByPosition(position: Int) {
-        getExoPlayerByPosition(position)?.playerPause()
     }
 
     private fun getExoPlayerByPosition(firstVisible: Int): HomePlayWidgetHelper? {
