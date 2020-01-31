@@ -9,11 +9,10 @@ import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
-import com.tokopedia.iris.util.Cache
-import com.tokopedia.iris.util.DEFAULT_MAX_ROW
-import com.tokopedia.iris.util.MAX_ROW
-import com.tokopedia.iris.util.Session
+import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisService
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -28,9 +27,20 @@ class TrackingRepository(
 
     private val cache: Cache = Cache(context)
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
+    private var firebaseRemoteConfig: RemoteConfig? = null
     private val apiService by lazy {
         ApiService(context).makeRetrofitService()
     }
+
+    fun getRemoteConfig(): RemoteConfig {
+        if (firebaseRemoteConfig == null) {
+            firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        }
+        return firebaseRemoteConfig!!
+    }
+
+    private fun getLineDBFlush() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_FLUSH)
+    private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND)
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
         try {
@@ -39,11 +49,11 @@ class TrackingRepository(
             IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
             val dbCount = trackingDao.getCount()
-            if (dbCount >= 2000) {
+            if (dbCount >= getLineDBFlush()) {
                 Timber.e("P2#IRIS#dbCount 2000 lines")
                 trackingDao.flush()
             }
-            if (dbCount >= 400) {
+            if (dbCount >= getLineDBSend()) {
                 // if the line is big, send it
                 val i = Intent(context, IrisService::class.java)
                 i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
