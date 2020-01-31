@@ -922,6 +922,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickAddToWishList(productId: String, success: () -> Unit) {
+        analytics.eventClickAddToWishList(productId)
         presenter.addToWishList(productId, session.userId, object : WishListActionListener {
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
             override fun onSuccessRemoveWishlist(productId: String?) {}
@@ -953,6 +954,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
+        analytics.eventClickRemoveFromWishList(productId)
         presenter.removeFromWishList(productId, session.userId, object : WishListActionListener {
             override fun onSuccessAddWishlist(productId: String?) { }
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) { }
