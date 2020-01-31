@@ -10,7 +10,7 @@ import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationTradeInDropOffData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesApiGqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.GraphqlHelper
 import rx.Observable
@@ -24,7 +24,7 @@ class GetRatesApiUseCase @Inject constructor(
 
     fun execute(param: RatesParam): Observable<ShippingRecommendationData> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3api)
-        val gqlRequest = GraphqlRequest(query, GetRatesCourierRecommendationTradeInDropOffData::class.java, mapOf(
+        val gqlRequest = GraphqlRequest(query, RatesApiGqlResponse::class.java, mapOf(
                 "param" to param.toMap())
         )
 
@@ -32,12 +32,12 @@ class GetRatesApiUseCase @Inject constructor(
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
                 .map { graphqlResponse: GraphqlResponse ->
-                    val response: GetRatesCourierRecommendationTradeInDropOffData? =
-                            graphqlResponse.getData<GetRatesCourierRecommendationTradeInDropOffData>(GetRatesCourierRecommendationTradeInDropOffData::class.java)
+                    val response: RatesApiGqlResponse? =
+                            graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
                     response?.let {
                         converter.convertModel(it.ratesData)
                     } ?: throw MessageErrorException(
-                            graphqlResponse.getError(GetRatesCourierRecommendationTradeInDropOffData::class.java)[0].message
+                            graphqlResponse.getError(RatesApiGqlResponse::class.java)[0].message
                     )
                 }
                 .subscribeOn(scheduler.io())

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Irfan Khoirul on 2019-11-13.
  */
 
-data class GetRatesCourierRecommendationTradeInDropOffData(
+data class RatesApiGqlResponse(
         @SerializedName("ratesV3Api")
         val ratesData: RatesData
 )

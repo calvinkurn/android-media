@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName;
  * Created by Irfan Khoirul on 08/08/18.
  */
 
-public class GetRatesCourierRecommendationData implements Parcelable {
+public class RatesGqlResponse implements Parcelable {
 
     @SerializedName("ratesV3")
     @Expose
     private RatesData ratesData;
 
-    public GetRatesCourierRecommendationData() {
+    public RatesGqlResponse() {
     }
 
-    protected GetRatesCourierRecommendationData(Parcel in) {
+    protected RatesGqlResponse(Parcel in) {
         ratesData = in.readParcelable(RatesData.class.getClassLoader());
     }
 
@@ -33,15 +33,15 @@ public class GetRatesCourierRecommendationData implements Parcelable {
         return 0;
     }
 
-    public static final Creator<GetRatesCourierRecommendationData> CREATOR = new Creator<GetRatesCourierRecommendationData>() {
+    public static final Creator<RatesGqlResponse> CREATOR = new Creator<RatesGqlResponse>() {
         @Override
-        public GetRatesCourierRecommendationData createFromParcel(Parcel in) {
-            return new GetRatesCourierRecommendationData(in);
+        public RatesGqlResponse createFromParcel(Parcel in) {
+            return new RatesGqlResponse(in);
         }
 
         @Override
-        public GetRatesCourierRecommendationData[] newArray(int size) {
-            return new GetRatesCourierRecommendationData[size];
+        public RatesGqlResponse[] newArray(int size) {
+            return new RatesGqlResponse[size];
         }
     };
 
