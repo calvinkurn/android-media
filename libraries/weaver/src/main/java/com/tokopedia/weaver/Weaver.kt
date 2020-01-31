@@ -3,7 +3,7 @@ package com.tokopedia.weaver
 class Weaver{
     companion object {
         fun <KEY_TYPE, ACS_HLPR> executeWeave(weaverInterface: WeaveInterface, weaverConditionCheckProvider: WeaverConditionCheckProvider<KEY_TYPE, ACS_HLPR>, weaveAsyncProvider: WeaveAsyncProvider) {
-            if (true) {
+            if (weaverConditionCheckProvider.checkCondition()) {
                 weaveAsyncProvider.executeAsync(weaverInterface)
             }else{
                 weaverInterface.execute()
