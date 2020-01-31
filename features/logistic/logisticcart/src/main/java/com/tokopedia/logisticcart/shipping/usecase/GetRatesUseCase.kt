@@ -9,6 +9,8 @@ import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.GraphqlHelper
 import rx.Observable
@@ -20,9 +22,9 @@ class GetRatesUseCase @Inject constructor(
         private val gql: GraphqlUseCase,
         private val scheduler: SchedulerProvider) {
 
-    fun execute(param: RatesParam): Observable<RatesModel> {
+    fun execute(param: RatesParam): Observable<ShippingRecommendationData> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3)
-        val gqlRequest = GraphqlRequest(query, RatesGqlResponse::class.java, mapOf(
+        val gqlRequest = GraphqlRequest(query, GetRatesCourierRecommendationData::class.java, mapOf(
                 "param" to param.toMap())
         )
 
@@ -30,9 +32,9 @@ class GetRatesUseCase @Inject constructor(
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
                 .map { graphqlResponse: GraphqlResponse ->
-                    val response: RatesGqlResponse =
-                            graphqlResponse.getData<RatesGqlResponse>(RatesGqlResponse::class.java)
-                                    ?: throw MessageErrorException(graphqlResponse.getError(RatesGqlResponse::class.java)[0].message)
+                    val response: GetRatesCourierRecommendationData =
+                            graphqlResponse.getData<GetRatesCourierRecommendationData>(GetRatesCourierRecommendationData::class.java)
+                                    ?: throw MessageErrorException(graphqlResponse.getError(GetRatesCourierRecommendationData::class.java)[0].message)
                     converter.convertModel(response.ratesData)
                 }
                 .subscribeOn(scheduler.io())
