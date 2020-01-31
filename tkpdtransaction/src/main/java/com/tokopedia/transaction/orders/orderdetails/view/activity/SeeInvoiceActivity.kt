@@ -16,7 +16,7 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
 
-class SeeInvoiceActivity @Inject constructor(orderListAnalytics: OrderListAnalytics): BaseSimpleWebViewActivity(){
+class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
 
     var orderListAnalytics: OrderListAnalytics? = null
         @Inject set
