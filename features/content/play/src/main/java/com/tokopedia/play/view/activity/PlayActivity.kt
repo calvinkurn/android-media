@@ -1,7 +1,9 @@
 package com.tokopedia.play.view.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -53,16 +55,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
                 .commit()
     }
 
-    override fun onBackPressed() {
-        if (isTaskRoot) {
-            val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-            startActivity(intent)
-            finish()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
     private fun inject() {
         DaggerPlayComponent.builder()
                 .baseAppComponent(
@@ -84,6 +76,20 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     private fun setupView(channelId: String?) {
         if (supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG) == null) {
             onNewChannel(channelId)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (isTaskRoot) {
+            val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+            startActivity(intent)
+            finish()
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                supportFinishAfterTransition()
+            } else {
+                super.onBackPressed()
+            }
         }
     }
 }

@@ -642,7 +642,10 @@ class HomePresenter(private val userSession: UserSessionInterface,
         launchCatchError(coroutineDispatcher, block = {
             playCardHomeUseCase.execute().collect {
                 // If no data && no cover url don't show play widget
-                if (it.isEmpty() || it.first().coverUrl.isEmpty()) return@collect
+                if (it.isEmpty() || it.first().coverUrl.isEmpty()) {
+                    clearPlayBanner()
+                    return@collect
+                }
                 _requestImageTestLiveData.value = Event(playBanner.copy(playCardHome = it.first()))
             }
         })

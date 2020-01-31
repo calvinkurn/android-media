@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.transition.Explode;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +28,7 @@ import androidx.annotation.RestrictTo;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.RecyclerView;
@@ -234,8 +234,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().getWindow().setEnterTransition(new Explode());
-        getActivity().getWindow().setExitTransition(new Explode());
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
@@ -1634,9 +1632,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onOpenPlayActivity(@NotNull View videoPlayer, String channelId) {
+    public void onOpenPlayActivity(@NotNull View root, String channelId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), videoPlayer, ANIMATION_TRANSITION_NAME);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
+        );
         startActivity(intent, options.toBundle());
     }
 
