@@ -43,7 +43,6 @@ class HomeRepositoryImpl @Inject constructor(
     override fun sendGeolocationInfo(): Observable<Response<String>> = homeDataSource.sendGeolocationInfo()
 
     override fun getPlayChannel(): Flow<PlayLiveDynamicChannelEntity> = flow {
-//        emit(PlayLiveDynamicChannelEntity(PlayDynamicData(PlayData(listOf(PlayChannel(channelId = "2016", coverUrl = "https://ecs7.tokopedia.net/img/cache/1400/attachment/2020/1/23/1579775662378/1579775662378_4dbbcd10-9f8c-4b7d-baf2-b1e25becb948.png", videoStream = VideoStream(config = Config(streamUrl = "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4"))))))))
         emit(playRemoteDataSource.getPlayData(page = 1))
     }
 }
