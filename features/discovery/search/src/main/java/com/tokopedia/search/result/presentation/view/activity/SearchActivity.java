@@ -18,10 +18,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -55,7 +55,6 @@ import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
-import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -129,6 +128,8 @@ public class SearchActivity extends BaseActivity
 
     @Nullable
     SearchViewModel searchViewModel;
+    @Nullable
+    SearchShopViewModel searchShopViewModel;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -317,17 +318,14 @@ public class SearchActivity extends BaseActivity
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
             public void onApplyFilter(Map<String, String> queryParams) {
-                applyFilter(queryParams);
+                applyBottomSheetFilter(queryParams);
             }
 
             @Override
-            public void onShow() {
-                hideBottomNavigation();
-            }
+            public void onShow() { }
 
             @Override
             public void onHide() {
-                showBottomNavigation();
                 sendBottomSheetHideEventForProductList();
             }
 
@@ -338,12 +336,12 @@ public class SearchActivity extends BaseActivity
         });
     }
 
-    private void applyFilter(Map<String, String> queryParams) {
+    private void applyBottomSheetFilter(Map<String, String> queryParams) {
         if (isViewPagerCurrentItemPositionIsInvalid()) return;
 
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-        if (fragmentItem instanceof SearchSectionFragment) {
-            SearchSectionFragment selectedFragment = (SearchSectionFragment) fragmentItem;
+        if (fragmentItem instanceof ProductListFragment) {
+            ProductListFragment selectedFragment = (ProductListFragment) fragmentItem;
 
             selectedFragment.refreshSearchParameter(queryParams);
             selectedFragment.refreshFilterController(new HashMap<>(queryParams));
@@ -362,6 +360,7 @@ public class SearchActivity extends BaseActivity
         searchNavContainer.setVisibility(View.GONE);
     }
 
+    @Override
     public void showBottomNavigation() {
         searchNavContainer.setVisibility(View.VISIBLE);
     }
@@ -406,15 +405,15 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initViewModel() {
-        ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
-
         searchViewModel = ViewModelProviders.of(this, searchViewModelFactory).get(SearchViewModel.class);
+        searchShopViewModel = ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
     }
 
     private void observeViewModel() {
         observeAutoCompleteEvent();
         observeHideLoadingEvent();
         observeChildViewVisibilityChangedEvent();
+        observeBottomNavigationVisibility();
     }
 
     private void observeAutoCompleteEvent() {
@@ -458,6 +457,19 @@ public class SearchActivity extends BaseActivity
                             childViewVisibilityChangedModel.isSortEnabled()
                     );
                 }
+            }
+        });
+    }
+
+    private void observeBottomNavigationVisibility() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getBottomNavigationVisibilityLiveData().observe(this, isVisible -> {
+            if (isVisible) {
+                showBottomNavigation();
+            }
+            else {
+                hideBottomNavigation();
             }
         });
     }
@@ -645,7 +657,11 @@ public class SearchActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         configureButtonCart();
-        unregisterShake();
+    }
+
+    @Override
+    public boolean isAllowShake() {
+        return false;
     }
 
     private void configureButtonCart() {
@@ -723,25 +739,6 @@ public class SearchActivity extends BaseActivity
     public void removeSearchPageLoading() {
         showLoadingView(false);
         showContainer(true);
-        showBottomNavigationForActiveTab();
-    }
-
-    private void showBottomNavigationForActiveTab() {
-        if (isCurrentActiveTabIsNotProfile()) {
-            showBottomNavigation();
-        }
-    }
-
-    private boolean isCurrentActiveTabIsNotProfile() {
-        return !getCurrentActivePageTitle().equals(profileTabTitle);
-    }
-
-    private String getCurrentActivePageTitle() {
-        if (searchSectionPagerAdapter != null) {
-            return searchSectionPagerAdapter.getPageTitle(viewPager.getCurrentItem()).toString();
-        }
-
-        return "";
     }
 
     @Override

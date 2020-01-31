@@ -98,7 +98,7 @@ import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewMod
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -151,7 +151,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
-        OnboardingAdapter.InterestPickItemListener,
+        InterestPickAdapter.InterestPickItemListener,
         EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
         RetryViewHolder.RetryViewHolderListener,
         EmptyFeedViewHolder.EmptyFeedListener{
@@ -1134,16 +1134,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onShareClick(positionInFeed: Int, id: Int, title: String,
                               description: String, url: String,
                               imageUrl: String) {
-        if (activity != null) {
-            ShareBottomSheets().show(activity!!.supportFragmentManager,
-                    ShareBottomSheets.constructShareData("", imageUrl, url, description, title),
-                    object : ShareBottomSheets.OnShareItemClickListener {
-                        override fun onShareItemClicked(packageName: String) {
+        activity?.let {
 
-                        }
-                    })
+            ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
+                override fun onShareItemClicked(packageName: String) {
+
+                }
+            },"", imageUrl, url, description, title)
+        }.also {
+            fragmentManager?.run {
+                it?.show(this)
+            }
         }
-
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
     }
 

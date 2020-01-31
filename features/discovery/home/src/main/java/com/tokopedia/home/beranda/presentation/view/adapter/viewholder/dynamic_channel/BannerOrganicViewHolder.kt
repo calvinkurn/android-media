@@ -190,7 +190,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
         val channel = element?.channel
         val blankSpaceConfig = computeBlankSpaceConfig(channel)
 
@@ -215,7 +216,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,
                                              blankSpaceConfig: BlankSpaceConfig): MutableList<Visitable<BannerMixTypeFactory>> {
         val visitables: MutableList<Visitable<BannerMixTypeFactory>> = channel.grids.map {
-            ProductBannerMixDataModel(it, channel, blankSpaceConfig)
+            ProductBannerMixDataModel(it, channel, getLayoutType(channel), blankSpaceConfig)
         }.toMutableList()
 
         if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {

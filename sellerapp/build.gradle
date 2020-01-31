@@ -124,6 +124,7 @@ android {
 
     buildTypes {
         debug {
+            defaultConfig.minSdkVersion project.property("minSdkVersionDebug")
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false

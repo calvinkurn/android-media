@@ -53,8 +53,9 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @Provides
@@ -181,11 +182,11 @@ class CartModule {
                                   seamlessLoginUsecase: SeamlessLoginUsecase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
-                updateCartUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper,
-                compositeSubscription, addWishListUseCase, removeWishListUseCase,
-                updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
-                getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
-                addToCartUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                updateCartUseCase, checkPromoStackingCodeUseCase, compositeSubscription,
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                getInsuranceCartUseCase, removeInsuranceProductUsecase,
                 updateInsuranceProductDataUsecase, seamlessLoginUsecase, schedulers
         )
     }

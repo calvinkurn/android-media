@@ -1,8 +1,8 @@
 package com.tokopedia.mitratoppers.preapprove.data.source.cloud;
 
-import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
 import com.tokopedia.mitratoppers.preapprove.data.source.cloud.api.MitraToppersApi;
+import com.tokopedia.network.mapper.DataResponseMapper;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;

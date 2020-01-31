@@ -2,12 +2,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
 import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
@@ -60,6 +59,20 @@ abstract class DynamicChannelViewHolder(itemView: View,
         return TYPE_CURATED
     }
 
+    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
+        val channel = element.channel
+
+        if (payloads.isNotEmpty()) {
+            payloads.forEach { payload->
+                if (payload is Bundle && !payload.getBoolean(DynamicChannelViewModel.HOME_RV_DC_IMPRESSED)) {
+                    channel?.let {
+                        setViewPortImpression(element, channel)
+                    }
+                }
+            }
+        }
+    }
+
     override fun bind(element: DynamicChannelViewModel) {
         try {
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
@@ -71,18 +84,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             val channelHeaderName = element.channel?.header?.name
 
             channel?.let { channel->
-                /**
-                 * Requirement:
-                 * Only hit impression tracker when get data from cloud
-                 */
-                if (!element.isCache) {
-                    itemView.addOnImpressionListener(channel, OnItemImpressedListener(
-                            channel,
-                            listener,
-                            adapterPosition,
-                            getLayoutType(channel),
-                            element.isCache))
-                }
+                setViewPortImpression(element, channel)
 
                 /**
                  * Requirement:
@@ -143,6 +145,18 @@ abstract class DynamicChannelViewHolder(itemView: View,
         }
     }
 
+    private fun setViewPortImpression(element: DynamicChannelViewModel, channel: DynamicHomeChannel.Channels) {
+        /**
+         * Requirement:
+         * Only hit impression tracker when get data from cloud
+         */
+        if (!element.isCache && !channel.isInvoke) {
+            listener.addRecyclerViewScrollImpressionListener(adapterPosition) {
+                sendIrisTracker(getLayoutType(channel), channel, adapterPosition)
+            }
+        }
+    }
+
     fun isHasSeeMoreApplink(channel: DynamicHomeChannel.Channels): Boolean {
         return !TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.header))
     }
@@ -165,70 +179,58 @@ abstract class DynamicChannelViewHolder(itemView: View,
         return channel.header.expiredTime != null && !TextUtils.isEmpty(channel.header.expiredTime)
     }
 
-    /**
-     * Impression listener, list of all dynamic channel tracker impression both for Iris or GTM
-     */
-    class OnItemImpressedListener(val channel: DynamicHomeChannel.Channels,
-                                  val listener: HomeCategoryListener,
-                                  val position: Int,
-                                  private val layoutType: Int,
-                                  val isCache: Boolean) : ViewHintListener {
-        override fun onViewHint() {
-            if (!isCache) sendIrisTracker(layoutType)
-        }
+    private fun sendIrisTracker(layoutType: Int, channel: DynamicHomeChannel.Channels, position: Int) {
+        when(layoutType) {
+            TYPE_SPRINT_SALE -> {
+                listener.putEEToIris(
+                        HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
+                                channel.id, channel.grids, position
+                        )
+                )
+            }
 
-        private fun sendIrisTracker(layoutType: Int) {
-            when(layoutType) {
-                TYPE_SPRINT_SALE -> {
-                    listener.putEEToIris(
-                            HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
-                                    channel.id, channel.grids, position
-                            )
-                    )
+            TYPE_SPRINT_LEGO, TYPE_ORGANIC -> {
+                listener.putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
+                                channel.id, channel.grids, channel.header.name
+                        )
+                )
+            }
+            TYPE_SIX_GRID_LEGO -> {
+                listener.putEEToIris(
+                        HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
+                                channel.id, channel.grids, channel.header.name, position
+                        )
+                )
+            }
+            TYPE_THREE_GRID_LEGO -> {
+                listener.putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
+                                channel.id, channel.grids, channel.header.name, position
+                        )
+                )
+            }
+            TYPE_GIF_BANNER -> {
+                listener.putEEToIris(
+                        HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel)
+                )
+            }
+            TYPE_BANNER, TYPE_BANNER_CAROUSEL -> {
+                val bannerType = when(layoutType) {
+                    TYPE_BANNER -> BannerOrganicViewHolder.TYPE_NON_CAROUSEL
+                    TYPE_BANNER_CAROUSEL -> BannerOrganicViewHolder.TYPE_CAROUSEL
+                    else -> BannerOrganicViewHolder.TYPE_NON_CAROUSEL
                 }
-
-                TYPE_SPRINT_LEGO, TYPE_ORGANIC -> {
-                    listener.putEEToIris(
-                            HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
-                                    channel.id, channel.grids, channel.header.name
-                            )
-                    )
-                }
-                TYPE_SIX_GRID_LEGO -> {
-                    listener.putEEToIris(
-                            HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
-                                    channel.id, channel.grids, channel.header.name, position
-                            )
-                    )
-                }
-                TYPE_THREE_GRID_LEGO -> {
-                    listener.putEEToIris(
-                            HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
-                                    channel.id, channel.grids, channel.header.name, position
-                            )
-                    )
-                }
-                TYPE_GIF_BANNER -> {
-                    listener.putEEToIris(
-                            HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel)
-                    )
-                }
-                TYPE_BANNER, TYPE_BANNER_CAROUSEL -> {
-                    val bannerType = when(layoutType) {
-                        TYPE_BANNER -> BannerOrganicViewHolder.TYPE_NON_CAROUSEL
-                        TYPE_BANNER_CAROUSEL -> BannerOrganicViewHolder.TYPE_CAROUSEL
-                        else -> BannerOrganicViewHolder.TYPE_NON_CAROUSEL
-                    }
-                    listener.putEEToIris(
-                            HomePageTracking.getEnhanceImpressionProductChannelMix(
-                                    channel, bannerType
-                            )
-                    )
-                    listener.putEEToIris(
-                            HomePageTracking.getIrisEnhanceImpressionBannerChannelMix(channel)
-                    )
-                }
+                listener.putEEToIris(
+                        HomePageTracking.getEnhanceImpressionProductChannelMix(
+                                channel, bannerType
+                        )
+                )
+                listener.putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionBannerChannelMix(channel)
+                )
             }
         }
+        channel.invoke()
     }
 }

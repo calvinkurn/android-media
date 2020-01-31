@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.google.gson.Gson
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -34,6 +35,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private var isAlarmOn: Boolean = false
     private var lastAlarmChange: Long = 0L
 
+    private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
 
     override val coroutineContext: CoroutineContext by lazy {
@@ -92,8 +94,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
                 // convert map to json then save as string
-                val event = JSONObject(map).toString()
-                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId(), session.getUserId())
+                val event = gson.toJson(map)
+                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
                 trackingRepository.saveEvent(resultEvent.toString(), session)
                 setAlarm(true)
             }
@@ -104,7 +106,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
-                trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
+                trackingRepository.sendSingleEvent(gson.toJson(map), session)
             }
         }
     }

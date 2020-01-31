@@ -10,7 +10,6 @@ import android.view.View;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
@@ -62,6 +61,7 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by baghira on 09/05/18.
@@ -150,7 +150,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper("error occured" + e);
+                    Timber.d("error occured" + e);
                     getView().hideProgressBar();
                 }
             }
@@ -236,7 +236,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                     @Override
                     public void onError(Throwable e) {
-                        CommonUtils.dumper("error occured" + e);
+                        Timber.d("error occured" + e);
                     }
 
                     @Override
@@ -459,7 +459,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs(),details.contactUs().helpUrl());
+        getView().setContactUs(details.contactUs(),details.getHelpLink());
 
         if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
@@ -518,7 +518,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                             @Override
                                             public void onError(Throwable e) {
                                                 if (getView() != null && getView().getAppContext() != null) {
-                                                    CommonUtils.dumper(e.getStackTrace());
+                                                    Timber.d(e);
                                                     getView().showErrorMessage(e.getMessage());
                                                     getView().hideProgressBar();
                                                     getView().finishOrderDetail();
@@ -570,7 +570,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper(e.getStackTrace());
+                    Timber.d(e);
                     getView().hideProgressBar();
                     getView().showErrorMessage(e.getMessage());
                     getView().finishOrderDetail();
@@ -710,6 +710,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
         }
         return null;
+    }
+
+    public String getFirstProductId() {
+        if (details != null && details.getItems() != null && !details.getItems().isEmpty()) {
+            return String.valueOf(details.getItems().get(0).getId());
+        }
+        return "";
     }
 
     public void showRetryButtonToaster(String message) {
