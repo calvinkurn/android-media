@@ -8,7 +8,7 @@ data class ProgressDataUiModel(
         val barTitle: String,
         @SerializedName("valueTxt")
         val valueTxt: String,
-        @SerializedName("maxValuetext")
+        @SerializedName("maxValueTxt")
         val maxValueTxt: String,
         @SerializedName("value")
         val value: Int,

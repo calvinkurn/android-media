@@ -8,16 +8,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.SellerHomeWidgetListener
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
+import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
 import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhome.view.model.TooltipUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -31,7 +37,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>() {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetListener {
 
     companion object {
         @JvmStatic
@@ -83,7 +89,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory()
+        return SellerHomeAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -92,6 +98,32 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     override fun loadData(page: Int) {
 
+    }
+
+    override fun onInfoTooltipClicked(tooltip: TooltipUiModel) {
+        showTooltip(tooltip)
+    }
+
+    private fun showTooltip(tooltip: TooltipUiModel) {
+        hideSoftKeyboardIfPresent()
+
+        val bottomSheet = BottomSheetUnify()
+        bottomSheet.setTitle(tooltip.title)
+        bottomSheet.clearClose(false)
+        bottomSheet.clearHeader(false)
+        bottomSheet.setCloseClickListener { bottomSheet.dismiss() }
+        
+        val bottomSheetContentView = SellerHomeBottomSheetContent(context!!)
+        bottomSheetContentView.setTooltipData(tooltip)
+
+        bottomSheet.setChild(bottomSheetContentView)
+        bottomSheet.show(childFragmentManager, "Seller Home Bottom Sheet")
+    }
+
+    private fun hideSoftKeyboardIfPresent() {
+        activity?.let {
+            CommonUtils.hideKeyboard(it, it.currentFocus)
+        }
     }
 
     private fun getWidgetsLayout() {
