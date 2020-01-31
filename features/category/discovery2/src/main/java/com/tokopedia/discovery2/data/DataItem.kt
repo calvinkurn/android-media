@@ -8,6 +8,9 @@ data class DataItem(
         @SerializedName("end_date")
         val endDate: String? = "",
 
+        @SerializedName("button_applink")
+        val buttonApplink: String? = "",
+
         @SerializedName("code")
         val code: String? = "",
 

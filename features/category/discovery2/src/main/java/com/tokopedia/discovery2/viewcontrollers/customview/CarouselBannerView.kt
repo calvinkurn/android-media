@@ -115,7 +115,7 @@ class CarouselBannerView @JvmOverloads constructor(context: Context, attrs: Attr
             this.indicatorItems.add(pointView)
             this.bannerIndicator?.addView(pointView)
         }
-
+        setTextAndCheckShow(carouselDataItems[0].data?.get(0)?.buttonApplink)
         this.bannerRecyclerView?.clearOnScrollListeners()
         this.bannerRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -162,6 +162,16 @@ class CarouselBannerView @JvmOverloads constructor(context: Context, attrs: Attr
             this.startAutoScrollBanner()
         }
 
+    }
+
+    private fun setTextAndCheckShow(buttonApplink: String?) {
+        buttonApplink?.let {
+            if (it.isNotEmpty()) {
+                bannerSeeAll?.show()
+            } else {
+                bannerSeeAll?.hide()
+            }
+        }
     }
 
     private fun startAutoScrollBanner() {
