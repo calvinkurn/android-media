@@ -3,12 +3,14 @@ package com.tokopedia.transaction.orders.orderdetails.view.activity
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintDocumentAdapter
 import android.print.PrintManager
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.transaction.R
 import com.tokopedia.transaction.orders.orderdetails.data.Status
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
@@ -22,6 +24,13 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
         @Inject set
 
     private lateinit var status: Status
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        DaggerOrderDetailsComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
