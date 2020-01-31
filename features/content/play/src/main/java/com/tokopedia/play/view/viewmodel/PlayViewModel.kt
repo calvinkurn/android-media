@@ -301,7 +301,7 @@ class PlayViewModel @Inject constructor(
         playSocket.connect(onMessageReceived = { response ->
             launch {
                 val result = withContext(dispatchers.io) {
-                    val socketMapper = PlaySocketMapper(response)
+                    val socketMapper = PlaySocketMapper(response, amountStringStepArray)
                     socketMapper.mapping()
                 }
                 when (result) {
