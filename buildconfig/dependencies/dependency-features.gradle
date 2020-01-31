@@ -75,7 +75,6 @@ ext {
             productCardOptions              : ":features:discovery:productcard_options",
             carouselProductCard             : ":features:discovery:carousel_productcard",
             filter                          : ":features:discovery:filter",
-            imageSearch                     : ":features:discovery:image_search",
             similarSearch                   : ":features:discovery:similarsearch",
             autocomplete                    : ":features:discovery:autocomplete",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",

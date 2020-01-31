@@ -55,8 +55,6 @@ class HomeMainToolbar : MainToolbar {
     override fun init(context: Context, attrs: AttributeSet?) {
         super.init(context, attrs)
 
-        initImageSearch()
-
         showShadow()
 
         setBackgroundAlpha(0f)
@@ -66,14 +64,6 @@ class HomeMainToolbar : MainToolbar {
         initToolbarIcon()
 
         switchToLightToolbar()
-    }
-
-    private fun initImageSearch() {
-        val imageViewImageSearch = findViewById<ImageView>(R.id.imageview_image_search)
-
-        imageViewImageSearch.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT)
-        }
     }
 
     private fun initToolbarIcon() {
