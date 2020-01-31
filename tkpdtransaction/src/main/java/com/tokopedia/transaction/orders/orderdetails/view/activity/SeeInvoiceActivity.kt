@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.webkit.WebView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.transaction.R
+import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent
 import com.tokopedia.transaction.orders.orderdetails.data.Status
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 import com.tokopedia.webview.BaseSimpleWebViewActivity
