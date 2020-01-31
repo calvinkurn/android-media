@@ -76,9 +76,6 @@ class TrackingMapper {
                 item.put("container", KEY_CONTAINER)
                 item.put("event", KEY_EVENT)
                 item.put("hits_time", Calendar.getInstance().timeInMillis)
-                if (!item.has("userId")) {
-                    item.put("userId", userId)
-                }
                 item
             } catch (e: JSONException) {
                 JSONObject()

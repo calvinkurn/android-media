@@ -2,6 +2,7 @@ package com.tokopedia.iris.worker
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.asCoroutineDispatcher
+import timber.log.Timber
 import java.util.concurrent.Executors
 
 /**
@@ -11,6 +12,7 @@ object IrisExecutor{
     val handler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, ex ->
             IrisService.isRunning = false
+            Timber.e("P2#IRIS#CoroutineExceptionHandler %s", ex.toString())
         }
     }
 
