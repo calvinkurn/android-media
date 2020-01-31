@@ -61,15 +61,14 @@ class PlayCardViewHolder(
         get() = masterJob + Dispatchers.IO
 
     override fun bind(element: PlayCardViewModel) {
-        playCardViewModel = element
         container.hide()
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
-        playCardViewModel = element
         if(playCardViewModel != null) {
             if (container.visibility == View.GONE) container.show()
             initView(playCardViewModel!!)
+            playCardViewModel = element
             playCardViewModel!!.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
         }
     }
