@@ -22,7 +22,7 @@ import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.presenter.SaldoHistoryViewModel
+import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 import com.tokopedia.saldodetails.utils.ErrorType
 import com.tokopedia.saldodetails.utils.IN_VALID_DATE_ERROR
 import com.tokopedia.saldodetails.utils.NORMAL

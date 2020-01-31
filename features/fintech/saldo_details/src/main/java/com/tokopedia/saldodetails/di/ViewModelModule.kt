@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.saldodetails.presenter.SaldoHistoryViewModel
+import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 import com.tokopedia.saldodetails.viewmodels.MerchantSaldoPriorityViewModel
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import dagger.Binds

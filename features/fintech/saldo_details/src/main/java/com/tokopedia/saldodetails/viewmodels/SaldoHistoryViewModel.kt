@@ -1,44 +1,32 @@
-package com.tokopedia.saldodetails.presenter
+package com.tokopedia.saldodetails.viewmodels
 
+import android.content.ContentValues.TAG
 import android.util.Log
-
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
+import com.tokopedia.saldodetails.response.model.DepositActivityResponse
 import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam
 import com.tokopedia.saldodetails.usecase.GetAllTransactionUsecase
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase
-
+import com.tokopedia.saldodetails.utils.*
+import kotlinx.coroutines.Dispatchers
+import rx.Subscriber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.GregorianCalendar
-import java.util.Locale
-
+import java.util.*
 import javax.inject.Inject
 
-import rx.Subscriber
-
-import android.content.ContentValues.TAG
-import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.response.model.DepositActivityResponse
-import com.tokopedia.saldodetails.utils.*
-import kotlinx.coroutines.Dispatchers
-
-class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Main), SaldoHistoryContract.Presenter {
-
-    @Inject
-    internal lateinit var getDepositSummaryUseCase: GetDepositSummaryUseCase
-    @Inject
-    internal lateinit var getAllTransactionUsecase: GetAllTransactionUsecase
+class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: GetDepositSummaryUseCase, val getAllTransactionUsecase: GetAllTransactionUsecase) : BaseViewModel(Dispatchers.Main), SaldoHistoryContract.Presenter {
 
     val buyerResponseLiveData = MutableLiveData<Resources<DepositActivityResponse>>()
     val sellerResponseLiveData = MutableLiveData<Resources<DepositActivityResponse>>()
@@ -94,7 +82,7 @@ class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Ma
         }
 
 
-    override fun setFirstDateParameter(view : SaldoHistoryContract.View) {
+    override fun setFirstDateParameter(view: SaldoHistoryContract.View) {
         val dateFormat = SimpleDateFormat(DATE_FORMAT_VIEW)
         val date = Date()
         val cal = GregorianCalendar()
@@ -108,7 +96,7 @@ class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Ma
         paramEndDate = endDate
     }
 
-    override fun onSearchClicked(startDate : String?,endDate : String?) {
+    override fun onSearchClicked(startDate: String?, endDate: String?) {
         paramStartDate = startDate
         paramEndDate = endDate
         getSummaryDeposit()
@@ -124,7 +112,7 @@ class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Ma
     }
 
     private fun setData(data: GqlCompleteTransactionResponse?) {
-        if ( data == null) {
+        if (data == null) {
             return
         }
 
@@ -138,7 +126,7 @@ class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Ma
     }
 
 
-    override fun onEndDateClicked(datePicker: SaldoDatePickerUtil,view : SaldoHistoryContract.View) {
+    override fun onEndDateClicked(datePicker: SaldoDatePickerUtil, view: SaldoHistoryContract.View) {
         val date = dateFormatter(view.getEndDate())
         datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
         datePicker.DatePickerCalendar { year, month, day ->
@@ -149,7 +137,7 @@ class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Ma
         }
     }
 
-    override fun onStartDateClicked(datePicker: SaldoDatePickerUtil,view : SaldoHistoryContract.View) {
+    override fun onStartDateClicked(datePicker: SaldoDatePickerUtil, view: SaldoHistoryContract.View) {
         val date = dateFormatter(view.getStartDate())
         datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
         datePicker.DatePickerCalendar { year, month, day ->
@@ -210,39 +198,29 @@ class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Ma
 //        }
 //    }
 
-    private fun canLoadMore(): Boolean {
-        return !getDepositSummaryUseCase.isRequesting
-    }
+//    private fun canLoadMore(): Boolean {
+//        return !getDepositSummaryUseCase.isRequesting
+//    }
 
     private fun isOnLastPosition(lastItemPosition: Int, visibleItem: Int): Boolean {
         return lastItemPosition == visibleItem
     }
 
     override fun getSummaryDeposit() {
-        if (isValid) {
-            showLoading()
-            getDepositSummaryUseCase.isRequesting = true
-            getDepositSummaryUseCase.setRequestVariables(summaryDepositParam)
+        launchCatchError(block = {
+            if (isValid) {
+                showLoading()
+                onDepositSummaryFetched(getDepositSummaryUseCase.execute(summaryDepositParam))
 
-            getDepositSummaryUseCase.execute(object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-                    getDepositSummaryUseCase.isRequesting = false
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, e.toString())
-                    this@SaldoHistoryViewModel.onError(e)
-                }
-
-                override fun onNext(graphqlResponse: GraphqlResponse) {
-                    onDepositSummaryFetched(graphqlResponse)
-                }
-            })
-
+            }
+        }) {
+            Log.e(TAG, it.toString())
+            this@SaldoHistoryViewModel.onError(it)
         }
+
     }
 
-    private fun onError(e: Throwable){
+    private fun onError(e: Throwable) {
         if (e is UnknownHostException || e is SocketTimeoutException) {
             allDepositResponseLiveData.value = ErrorMessage(null)
             buyerResponseLiveData.value = ErrorMessage(null)
@@ -254,31 +232,22 @@ class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Ma
         }
     }
 
-    private fun onDepositSummaryFetched(graphqlResponse: GraphqlResponse?) {
-        if (graphqlResponse?.getData<Any>(GqlAllDepositSummaryResponse::class.java) != null) {
+    private fun onDepositSummaryFetched(gqlDepositSummaryResponse: GqlAllDepositSummaryResponse) {
+        if (!gqlDepositSummaryResponse.allDepositHistory!!.isHaveError) {
+            setData(gqlDepositSummaryResponse)
+        } else {
+            if (gqlDepositSummaryResponse.allDepositHistory != null) {
+                allDepositResponseLiveData.value = ErrorMessage(gqlDepositSummaryResponse.allDepositHistory!!.message!!)
 
-            val gqlDepositSummaryResponse = graphqlResponse.getData<GqlAllDepositSummaryResponse>(GqlAllDepositSummaryResponse::class.java)
-
-            if (gqlDepositSummaryResponse != null && !gqlDepositSummaryResponse.allDepositHistory!!.isHaveError) {
-
-                setData(gqlDepositSummaryResponse)
-            } else {
-                if (gqlDepositSummaryResponse?.allDepositHistory != null) {
-                    allDepositResponseLiveData.value = ErrorMessage(gqlDepositSummaryResponse.allDepositHistory!!.message!!)
-
-                }
-
-                if (gqlDepositSummaryResponse?.buyerDepositHistory != null) {
-                    buyerResponseLiveData.value = ErrorMessage(gqlDepositSummaryResponse.buyerDepositHistory!!.message!!)
-                }
-
-                if (gqlDepositSummaryResponse?.sellerDepositHistory != null) {
-                    sellerResponseLiveData.value = ErrorMessage(gqlDepositSummaryResponse.sellerDepositHistory!!.message!!)
-                }
             }
 
-        } else {
-            allDepositResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
+            if (gqlDepositSummaryResponse.buyerDepositHistory != null) {
+                buyerResponseLiveData.value = ErrorMessage(gqlDepositSummaryResponse.buyerDepositHistory!!.message!!)
+            }
+
+            if (gqlDepositSummaryResponse.sellerDepositHistory != null) {
+                sellerResponseLiveData.value = ErrorMessage(gqlDepositSummaryResponse.sellerDepositHistory!!.message!!)
+            }
         }
     }
 
@@ -311,132 +280,82 @@ class SaldoHistoryViewModel @Inject constructor() : BaseViewModel(Dispatchers.Ma
     }
 
     fun loadMoreAllTransaction(lastItemPosition: Int, type: Int) {
-        if (isValid) {
-            showLoading()
-            getAllTransactionUsecase.setRequesting(true)
-            getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type))
-            getAllTransactionUsecase.execute(object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-                    getAllTransactionUsecase.setRequesting(false)
-                }
+        launchCatchError(block = {
+            if (isValid) {
+                allDepositResponseLiveData.value = Loading()
+                onAllTransactionsFetched(getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, type)), lastItemPosition)
+            }
 
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, e.toString())
-                    if (e is UnknownHostException || e is SocketTimeoutException) {
-                        allDepositResponseLiveData.value = ErrorMessage(null)
-                    } else {
-                        allDepositResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
-                    }
-                }
-
-                override fun onNext(graphqlResponse: GraphqlResponse) {
-                    onAllTransactionsFetched(graphqlResponse, lastItemPosition)
-                }
-
-            })
-
+        }) {
+            Log.e(TAG, it.toString())
+            if (it is UnknownHostException || it is SocketTimeoutException) {
+                allDepositResponseLiveData.value = ErrorMessage(null)
+            } else {
+                allDepositResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
+            }
         }
+
     }
 
-    private fun onAllTransactionsFetched(graphqlResponse: GraphqlResponse?, page: Int) {
-
-        if (graphqlResponse?.getData<Any>(GqlCompleteTransactionResponse::class.java) != null) {
-
-            val gqlCompleteTransactionResponse = graphqlResponse.getData<GqlCompleteTransactionResponse>(GqlCompleteTransactionResponse::class.java)
-
-            if (gqlCompleteTransactionResponse != null && !gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
-                setData(gqlCompleteTransactionResponse)
-            } else {
-                if (gqlCompleteTransactionResponse?.allDepositHistory != null) {
-                    allDepositResponseLiveData.value = ErrorMessage(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
-                }
-            }
+    private fun onAllTransactionsFetched(gqlCompleteTransactionResponse: GqlCompleteTransactionResponse, page: Int) {
+        if (!gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
+            setData(gqlCompleteTransactionResponse)
         } else {
-            allDepositResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
+            if (gqlCompleteTransactionResponse.allDepositHistory != null) {
+                allDepositResponseLiveData.value = ErrorMessage(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
+            }
         }
     }
 
     fun loadMoreSellerTransaction(lastItemPosition: Int, type: Int) {
-        if (isValid) {
-            showLoading()
-            getAllTransactionUsecase.setRequesting(true)
-            getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type))
-            getAllTransactionUsecase.execute(object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-                    getAllTransactionUsecase.setRequesting(false)
-                }
+        launchCatchError(block = {
+            if (isValid) {
+                sellerResponseLiveData.value = Loading()
+                val gqlCompleteTransactionResponse = getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, type))
 
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, e.toString())
-                    if (e is UnknownHostException || e is SocketTimeoutException) {
-                        sellerResponseLiveData.value = ErrorMessage(null)
+                if (!gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
+                    sellerResponseLiveData.value = AddElements(gqlCompleteTransactionResponse.allDepositHistory!!)
 
-                    } else {
-                        sellerResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
+                } else {
+                    if (gqlCompleteTransactionResponse.allDepositHistory != null) {
+                        sellerResponseLiveData.value = ErrorMessage(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
                     }
                 }
+            }
 
-                override fun onNext(graphqlResponse: GraphqlResponse?) {
-                    if (graphqlResponse?.getData<Any>(GqlAllDepositSummaryResponse::class.java) != null) {
-
-                        val gqlCompleteTransactionResponse = graphqlResponse.getData<GqlCompleteTransactionResponse>(GqlCompleteTransactionResponse::class.java)
-
-                        if (gqlCompleteTransactionResponse != null && !gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
-                            sellerResponseLiveData.value = AddElements(gqlCompleteTransactionResponse.allDepositHistory!!)
-
-                        } else {
-                            if (gqlCompleteTransactionResponse?.allDepositHistory != null) {
-                                sellerResponseLiveData.value = ErrorMessage(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
-                            }
-                        }
-                    } else {
-                        sellerResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
-                    }
-                }
-
-            })
-
+        }) {
+            Log.e(TAG, it.toString())
+            if (it is UnknownHostException || it is SocketTimeoutException) {
+                sellerResponseLiveData.value = ErrorMessage(null)
+            } else {
+                sellerResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
+            }
         }
     }
 
     fun loadMoreBuyerTransaction(lastItemPosition: Int, type: Int) {
-        if (isValid) {
-            buyerResponseLiveData.value = Loading()
-            getAllTransactionUsecase.setRequesting(true)
-            getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type))
-            getAllTransactionUsecase.execute(object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-                    getAllTransactionUsecase.setRequesting(false)
-                }
+        launchCatchError(block = {
+            if (isValid) {
+                buyerResponseLiveData.value = Loading()
+                val gqlCompleteTransactionResponse = getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, type))
 
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, e.toString())
-                    if (e is UnknownHostException || e is SocketTimeoutException) {
-                        buyerResponseLiveData.value = ErrorMessage(null)
-                    } else {
-                        buyerResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
+                if (!gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
+                    buyerResponseLiveData.value = AddElements(gqlCompleteTransactionResponse.allDepositHistory!!)
+
+                } else {
+                    if (gqlCompleteTransactionResponse.allDepositHistory != null) {
+                        buyerResponseLiveData.value = ErrorMessage(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
                     }
                 }
+            }
 
-                override fun onNext(graphqlResponse: GraphqlResponse?) {
-                    if (graphqlResponse?.getData<Any>(GqlCompleteTransactionResponse::class.java) != null) {
-
-                        val gqlCompleteTransactionResponse = graphqlResponse.getData<GqlCompleteTransactionResponse>(GqlCompleteTransactionResponse::class.java)
-
-                        if (gqlCompleteTransactionResponse != null && !gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
-                            buyerResponseLiveData.value = AddElements(gqlCompleteTransactionResponse.allDepositHistory!!)
-                        } else {
-                            if (gqlCompleteTransactionResponse?.allDepositHistory != null) {
-                                buyerResponseLiveData.value = ErrorMessage(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
-                            }
-                        }
-                    } else {
-                        buyerResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
-                    }
-                }
-
-            })
-
+        }) {
+            Log.e(TAG, it.toString())
+            if (it is UnknownHostException || it is SocketTimeoutException) {
+                buyerResponseLiveData.value = ErrorMessage(null)
+            } else {
+                buyerResponseLiveData.value = ErrorMessage(R.string.sp_empty_state_error)
+            }
         }
     }
 

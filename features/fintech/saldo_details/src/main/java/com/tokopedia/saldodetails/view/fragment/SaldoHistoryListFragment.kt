@@ -16,7 +16,7 @@ import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
-import com.tokopedia.saldodetails.presenter.SaldoHistoryViewModel
+import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 import com.tokopedia.saldodetails.response.model.DepositActivityResponse
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
 import com.tokopedia.saldodetails.utils.*
@@ -144,9 +144,9 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 when (transactionType) {
-                    FOR_ALL -> viewModel!!.loadMoreAllTransaction(page, ALL_SALDO)
-                    FOR_BUYER -> viewModel!!.loadMoreBuyerTransaction(page, BUYER_SALDO)
-                    FOR_SELLER -> viewModel!!.loadMoreSellerTransaction(page, SELLER_SALDO)
+                    FOR_ALL -> viewModel.loadMoreAllTransaction(page, ALL_SALDO)
+                    FOR_BUYER -> viewModel.loadMoreBuyerTransaction(page, BUYER_SALDO)
+                    FOR_SELLER -> viewModel.loadMoreSellerTransaction(page, SELLER_SALDO)
                 }
             }
         }

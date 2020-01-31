@@ -6,44 +6,27 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.saldodetails.data.GqlUseCaseWrapper
+import com.tokopedia.saldodetails.di.GqlQueryModule
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse
 import rx.Subscriber
 import javax.inject.Inject
+import javax.inject.Named
 
 class GetAllTransactionUsecase @Inject
-constructor(@ApplicationContext val context: Context) {
-    private val graphqlUseCase = GraphqlUseCase()
-    private var isRequesting: Boolean = false
+constructor(@Named(GqlQueryModule.DEPOSITE_ALL_TRANSACTION_QUERY) val query: String, private val graphqlUseCase : GqlUseCaseWrapper) {
     private var variables: Map<String, Any>? = null
 
     // TODO: 27/12/19 remove context from usecase
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
 
     fun setRequestVariables(variables: Map<String, Any>) {
         this.variables = variables
     }
 
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        graphqlUseCase.clearRequest()
-        setRequesting(true)
-        val query = GraphqlHelper.loadRawString(context.resources,
-                com.tokopedia.saldodetails.R.raw.query_deposit_all_transaction)
+    suspend fun execute(variables: Map<String, Any>) : GqlCompleteTransactionResponse {
+        return graphqlUseCase.getResponse( GqlCompleteTransactionResponse::class.java, query,
+                variables)
 
-        val graphqlRequest = GraphqlRequest(query, GqlCompleteTransactionResponse::class.java,
-                variables, GET_SUMMARY_DEPOSIT, false)
-
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
     }
 
-    fun setRequesting(isRequesting: Boolean) {
-        this.isRequesting = isRequesting
-    }
-
-    companion object {
-        private val GET_SUMMARY_DEPOSIT = "DepositActivityQuery"
-    }
 }
