@@ -25,8 +25,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -35,6 +38,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
@@ -47,6 +51,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
@@ -75,6 +81,9 @@ public class ImageUploadPreviewFragment extends BaseDaggerFragment
     PreviewImageViewPagerAdapter viewPagerAdapter;
     int currentPosition = 0;
 
+    @Inject
+    PersistentCacheManager persistentCacheManager;
+
     public static Fragment createInstance(ArrayList<String> fileLoc, boolean isUpdate, int position) {
         ImageUploadPreviewFragment fragment = new ImageUploadPreviewFragment();
         Bundle bundle = new Bundle();
@@ -87,7 +96,13 @@ public class ImageUploadPreviewFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent();
+        DaggerReputationComponent reputationComponent =
+                (DaggerReputationComponent) DaggerReputationComponent
+                        .builder()
+                        .baseAppComponent(baseAppComponent)
+                        .build();
+        reputationComponent.inject(this);
     }
 
     @Override
@@ -143,7 +158,7 @@ public class ImageUploadPreviewFragment extends BaseDaggerFragment
     }
 
     private void initialPresenter() {
-        presenter = new ImageUploadFragmentPresenterImpl(this, getActivity().getBaseContext());
+        presenter = new ImageUploadFragmentPresenterImpl(this, persistentCacheManager);
     }
 
     private int getFragmentLayout() {

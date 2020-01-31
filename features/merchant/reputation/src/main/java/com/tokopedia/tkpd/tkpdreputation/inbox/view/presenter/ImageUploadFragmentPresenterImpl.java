@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,11 +38,12 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
     SetReviewFormCacheUseCase setReviewFormCacheUseCase;
     List<ImageUpload> deletedImageUploads;
     String cameraFileLoc;
+    PersistentCacheManager persistentCacheManager;
 
-    public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener, Context context) {
+    public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener, PersistentCacheManager persistentCacheManager) {
         this.viewListener = viewListener;
         this.deletedImageUploads = new ArrayList<>();
-        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(context);
+        this.persistentCacheManager = persistentCacheManager;
         this.getSendReviewFormUseCase = new GetSendReviewFormUseCase(persistentCacheManager);
         this.setReviewFormCacheUseCase = new SetReviewFormCacheUseCase(persistentCacheManager);
     }
