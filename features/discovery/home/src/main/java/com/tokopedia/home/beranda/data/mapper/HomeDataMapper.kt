@@ -118,22 +118,12 @@ class HomeDataMapper(
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
                         }
-                        DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> {
+                        DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
                             list.add(mappingDynamicChannel(
                                     channel,
                                     null,
                                     channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
                                     true,
-                                    isCache))
-                            HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
-                                    list.size, channel)
-                        }
-                        DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
-                            list.add(mappingDynamicChannel(
-                                    channel,
-                                    HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(channel, position, false),
-                                    null,
-                                    false,
                                     isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)

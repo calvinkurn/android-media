@@ -82,7 +82,7 @@ object HomePageTrackingV2 {
         }
     }
 
-    class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: Int)
+    class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String)
 
     private fun getBasicPromotionView(
         event: String,
@@ -136,11 +136,11 @@ object HomePageTrackingV2 {
                 eventLabel = Label.NONE,
                 promotions = channel.grids.mapIndexed { index, grid ->
                     Promotion(
-                            id = "%s-%s".format(channel.id, grid.id),
+                            id = "%s_%s".format(channel.id, grid.id),
                             creative = grid.attribution,
                             creativeUrl = grid.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
-                            position = index + 1
+                            position = (index + 1).toString()
                     )
                 }
         )
@@ -156,11 +156,11 @@ object HomePageTrackingV2 {
                 shopId = channel.brandId,
                 promotions = channel.grids.map {
                     Promotion(
-                            id = "%s-%s".format(channel.id, it.id),
+                            id = "%s_%s".format(channel.id, it.id),
                             creative = it.attribution,
                             creativeUrl = it.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
-                            position = position
+                            position = position.toString()
                     )
                 }
         )
