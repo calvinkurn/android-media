@@ -24,7 +24,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
     }
     private val componentListener: ComponentListener
-    private var contentFrame: FrameLayout? = null
+    private var contentFrame: AspectRatioFrameLayout? = null
     private var player: Player? = null
     private var surfaceView: TextureView? = null
     private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
@@ -41,6 +41,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         // Content frame.
         contentFrame = findViewById(R.id.exo_content_frame)
+        contentFrame?.resizeMode = resizeMode
 
         surfaceView = TextureView(context)
         surfaceView?.id = R.id.home_play_texture
@@ -79,6 +80,15 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         val matrix = Matrix()
         matrix.preScale(scaleFactor.x, scaleFactor.y, pivotX, pivotY)
         textureView.setTransform(matrix)
+        contentFrame?.setAspectRatio(viewWidth / viewHeight)
+    }
+
+    fun applyZoom(){
+        contentFrame?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+    }
+
+    fun resetZoom(){
+        contentFrame?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
     }
 
     fun getSurfaceView() = surfaceView

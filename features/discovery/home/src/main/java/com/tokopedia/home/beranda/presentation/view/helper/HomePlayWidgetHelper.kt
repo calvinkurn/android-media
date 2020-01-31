@@ -116,12 +116,10 @@ class HomePlayWidgetHelper(
     }
 
     override fun playerPlayWithDelay() {
-        if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && mPlayer?.isPlaying == false){
-            masterJob.cancelChildren()
-            launch(coroutineContext){
-                delay(DELAY_PLAYING)
-                playManager.resumeCurrentVideo()
-            }
+        masterJob.cancelChildren()
+        launch(coroutineContext){
+            delay(DELAY_PLAYING)
+            playManager.resumeCurrentVideo()
         }
     }
 

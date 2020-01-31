@@ -114,12 +114,14 @@ class PlayCardViewHolder(
 
     private fun goToPlayChannel(model: PlayCardViewModel){
         if(isClickable){
+            videoPlayer?.applyZoom()
             listener.onOpenPlayActivity(frameLayout, model.playCardHome?.channelId)
             HomePageTracking.eventClickPlayBanner(model)
         }
     }
 
     fun resume(){
+        videoPlayer?.resetZoom()
         thumbnailView.show()
         helper?.onActivityResume()
     }

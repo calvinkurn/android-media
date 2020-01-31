@@ -172,11 +172,9 @@ class PlayViewModel @Inject constructor(
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
-            /**
-             * If Live => start web socket
-             */
-            getTotalLikes(channel.contentId, channel.contentType)
-            getIsLike(channel.contentId, channel.contentType)
+
+            launch { getTotalLikes(channel.contentId, channel.contentType) }
+            launch { getIsLike(channel.contentId, channel.contentType) }
 
             // TODO("remove, for testing")
 //            channel.videoStream = VideoStream(
@@ -185,9 +183,13 @@ class PlayViewModel @Inject constructor(
 //                    true,
 //                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
+            /**
+             * If Live => start web socket
+             */
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayChannelType.Live.value, true))
                 startWebSocket(channelId, channel.gcToken, channel.settings)
+
             playVideoStream(channel)
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
@@ -200,7 +202,6 @@ class PlayViewModel @Inject constructor(
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = mapEvent(channel)
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
-
         }) {
             if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
@@ -245,19 +246,23 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun getTotalLikes(contentId: Int, contentType: Int) {
-        val totalLike = withContext(dispatchers.io) {
-            getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
-            getTotalLikeUseCase.executeOnBackground()
-        }
-        _observableTotalLikes.value = mapTotalLikes(totalLike)
+        try {
+            val totalLike = withContext(dispatchers.io) {
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
+                getTotalLikeUseCase.executeOnBackground()
+            }
+            _observableTotalLikes.value = mapTotalLikes(totalLike)
+        } catch (e: Exception) {}
     }
 
     private suspend fun getIsLike(contentId: Int, contentType: Int) {
-        val isLiked = withContext(dispatchers.io) {
-            getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
-            getIsLikeUseCase.executeOnBackground()
-        }
-        _observableIsLikeContent.value = isLiked
+        try {
+            val isLiked = withContext(dispatchers.io) {
+                getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
+                getIsLikeUseCase.executeOnBackground()
+            }
+            _observableIsLikeContent.value = isLiked
+        } catch (e: Exception) {}
     }
 
     private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
