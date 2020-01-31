@@ -17,7 +17,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
     private val componentList: ArrayList<ComponentsItem> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return DiscoveryHomeFactory.createViewHolder(parent, viewType) as AbstractViewHolder
+        return DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
