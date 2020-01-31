@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
+import com.tokopedia.discovery.common.State
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.TestException
-import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel

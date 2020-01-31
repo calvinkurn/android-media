@@ -6,7 +6,7 @@ import android.widget.CompoundButton
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.InsuranceUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.purchase_platform.R
 import kotlinx.android.synthetic.main.item_insurance_detail_product_page.view.*
@@ -15,13 +15,13 @@ import kotlinx.android.synthetic.main.item_insurance_detail_product_page.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class InsuranceViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceViewModel>(view) {
+class InsuranceViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_insurance_detail_product_page
     }
 
-    override fun bind(element: InsuranceViewModel?) {
+    override fun bind(element: InsuranceUiModel?) {
         if (element != null) {
             if (element.isVisible && element.insuranceLongInfo.isNotEmpty()) {
                 if (element.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
