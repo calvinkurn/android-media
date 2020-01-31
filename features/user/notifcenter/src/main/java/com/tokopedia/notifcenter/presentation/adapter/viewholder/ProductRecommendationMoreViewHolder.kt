@@ -23,7 +23,7 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
         val productData = products[position]
         val more = getMoreProductCount(products, totalProducts)
 
-        ImageHandler.loadImage2(thumbnail, productData.imageUrl, R.drawable.ic_loading_toped_new)
+        ImageHandler.loadImage2(thumbnail, productData.imageUrl, R.drawable.ic_notifcenter_loading_toped)
         moreCount.text = more
 
         itemView.setOnClickListener {

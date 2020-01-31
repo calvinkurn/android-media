@@ -68,6 +68,7 @@ dependencies {
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.productCardOptions)
     //Fintech
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
@@ -100,6 +101,7 @@ dependencies {
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.kyccentralized)
+    implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
 }

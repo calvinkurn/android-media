@@ -7,7 +7,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepositor
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.view.presenter.ProductDraftPresenterImpl;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -23,11 +23,11 @@ public class ProductDraftModule {
     @ProductAddScope
     @Provides
     ProductDraftPresenterImpl productDraftPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                        GetShopInfoUseCase getShopInfoUseCase,
+                                                        GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
                                                         UserSessionInterface userSession,
                                                         FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                                         FetchDraftProductUseCase fetchDraftProductUseCase){
-        return new ProductDraftPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, fetchDraftProductUseCase);
+        return new ProductDraftPresenterImpl(saveDraftProductUseCase, gqlGetShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, fetchDraftProductUseCase);
     }
 
     @ProductAddScope

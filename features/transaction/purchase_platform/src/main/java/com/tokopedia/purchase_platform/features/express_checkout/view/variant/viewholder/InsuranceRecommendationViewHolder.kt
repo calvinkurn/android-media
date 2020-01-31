@@ -19,22 +19,22 @@ import com.tokopedia.purchase_platform.common.insurance.utils.*
 import com.tokopedia.purchase_platform.common.view.model.InsuranceApplicationValueViewModel
 import com.tokopedia.purchase_platform.common.view.model.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceRecommendationViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.InsuranceRecommendationUiModel
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*
 
 
-class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationViewModel>(view) {
+class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationUiModel>(view) {
 
     private var datePicker: SaldoDatePickerUtil? = null
     private var errorMessage: String = ""
-    private var originalData = InsuranceRecommendationViewModel()
+    private var originalData = InsuranceRecommendationUiModel()
 
     companion object {
         val LAYOUT = R.layout.item_insurance_recommendation_product_page
     }
 
-    override fun bind(element: InsuranceRecommendationViewModel?) {
+    override fun bind(element: InsuranceRecommendationUiModel?) {
 
         if (element != null &&
                 !element.cartShopsList.isNullOrEmpty() &&

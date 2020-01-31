@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 
 class SmallBannerNotificationViewHolder(
         itemView: View,
@@ -17,7 +18,7 @@ class SmallBannerNotificationViewHolder(
 
     override fun bindNotificationPayload(element: NotificationItemViewBean) {
         val imageUrl = element.contentUrl
-        ImageHandler.loadImage2(contentImage, imageUrl, R.drawable.ic_loading_toped_new)
+        ImageHandler.loadImage2(contentImage, imageUrl, R.drawable.ic_notifcenter_loading_toped)
     }
 
     companion object {
