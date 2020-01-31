@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
@@ -29,6 +30,8 @@ import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
     private val somDetailLabelInfoAdapter = SomDetailLabelInfoAdapter()
     private val viewPool = RecyclerView.RecycledViewPool()
+
+    val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
 
     @SuppressLint("Range")
     override fun bind(item: SomDetailData, position: Int) {
@@ -144,5 +147,14 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 itemView.ticker_invalid_resi?.visibility = View.GONE
             }
         }
+
+        val coachmarkHeader = CoachMarkItem(itemView,
+                itemView.context.getString(R.string.coachmark_header),
+                itemView.context.getString(R.string.coachmark_header_info))
+
+        actionListener.onAddedCoachMarkHeader(
+                coachmarkHeader
+        )
+
     }
 }
