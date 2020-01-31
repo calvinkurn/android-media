@@ -137,6 +137,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initGqlNWClient();
         Weaver.Companion.executeWeaveCoRoutine(this::executePostCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
         Weaver.Companion.executeWeaveCoRoutine(this::loadFontsInBg, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
+        ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
+            @Override
+            public void onShakeDetected(boolean isLongShake) {
+                openShakeDetectCampaignPage(isLongShake);
+            }
+        });
+        registerActivityLifecycleCallbacks(shakeSubscriber);
     }
 
     @NotNull
@@ -210,14 +217,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeAbTestVariant();
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
-
-        ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
-            @Override
-            public void onShakeDetected(boolean isLongShake) {
-                openShakeDetectCampaignPage(isLongShake);
-            }
-        });
-        registerActivityLifecycleCallbacks(shakeSubscriber);
         return true;
     }
 
