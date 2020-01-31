@@ -31,6 +31,8 @@ object ApplinkConstInternalTravel {
     val CANCELLATION_FLIGHT = "$INTERNAL_FLIGHT/cancel"
 
     @JvmField
-    val CITY_PAGE_TRAVEL_HOMEPAGE = "$INTERNAL_TRAVEL_HOMEPAGE/city"
+    val HOME_TRAVEL_HOMEPAGE = "$INTERNAL_TRAVEL_HOMEPAGE/home"
+    @JvmField
+    val CITY_PAGE_TRAVEL_HOMEPAGE = "$INTERNAL_TRAVEL_HOMEPAGE/home/city"
 
 }

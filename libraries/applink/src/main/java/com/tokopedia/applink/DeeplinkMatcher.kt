@@ -86,6 +86,7 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 2, mapOf(0 to "fm", 1 to "modal-toko")) to OTHER)
             add(Pattern(EQ, 1, mapOf(0 to "hotel")) to HOTEL)
             add(Pattern(EQ, 1, mapOf(0 to "travel-entertainment")) to TRAVEL_HOMEPAGE)
+            add(Pattern(EQ, 2, mapOf(0 to "travel-entertainment")) to TRAVEL_HOMEPAGE)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 4, mapOf(0 to "product-review")) to PRODUCT_REVIEW)
