@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.google.gson.Gson
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -33,7 +34,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private var cache: Cache = Cache(context)
     private var configuration: Configuration? = null
     private var isAlarmOn: Boolean = false
-
+    private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
 
     override val coroutineContext: CoroutineContext by lazy {
@@ -96,7 +97,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             launch(coroutineContext + Dispatchers.IO) {
                 val trackingRepository = TrackingRepository(context)
                 // convert map to json then save as string
-                val event = JSONObject(map).toString()
+                val event = gson.toJson(map)
                 val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
                 trackingRepository.saveEvent(resultEvent.toString(), session)
                 setAlarm(true)
@@ -108,7 +109,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (cache.isEnabled()) {
             launch(coroutineContext + Dispatchers.IO) {
                 val trackingRepository = TrackingRepository(context)
-                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
+                val isSuccess = trackingRepository.sendSingleEvent(gson.toJson(map), session)
                 if (isSuccess && BuildConfig.DEBUG) {
                     logIris(cache, "Success Send Single Event")
                 }

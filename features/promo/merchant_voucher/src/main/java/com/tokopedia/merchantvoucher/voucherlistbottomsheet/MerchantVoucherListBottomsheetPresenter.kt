@@ -9,7 +9,6 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -23,8 +22,7 @@ import javax.inject.Inject
 
 class MerchantVoucherListBottomsheetPresenter @Inject constructor(
         private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
-        private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-        private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper
+        private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase
 ) : BaseDaggerPresenter<MerchantVoucherListBottomsheetContract.View>(), MerchantVoucherListBottomsheetContract.Presenter {
     private val paramMerchant = "merchant"
     private val statusOK = "OK"
@@ -128,6 +126,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         getMerchantVoucherListUseCase.unsubscribe()
+        checkPromoStackingCodeUseCase.unsubscribe()
     }
 
 }

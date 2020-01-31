@@ -11,8 +11,8 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartI
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePriceData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,6 +46,7 @@ object CartListPresenterTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
 
     Feature("calculate subtotal") {
 
@@ -187,12 +188,13 @@ object CartListPresenterTest : Spek({
 
         val cartShops by memoized { arrayListOf(firstShop, secondShop) }
 
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
+
         Scenario("no item selected") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
                         it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
@@ -216,8 +218,6 @@ object CartListPresenterTest : Spek({
 
         Scenario("some item selected") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("check some items") {
                 firstItemFirst.isSelected = true
                 firstShop.isPartialSelected = true
@@ -226,8 +226,7 @@ object CartListPresenterTest : Spek({
                 secondShop.isPartialSelected = true
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
                         it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
@@ -251,8 +250,6 @@ object CartListPresenterTest : Spek({
 
         Scenario("some item error") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("error in unselected items") {
                 firstItemFirst.isSelected = true
                 secondItemFirstData.isError = true
@@ -261,8 +258,7 @@ object CartListPresenterTest : Spek({
                 secondShopData.isError = true
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
                         it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
@@ -286,8 +282,6 @@ object CartListPresenterTest : Spek({
 
         Scenario("all item selected") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
@@ -298,8 +292,7 @@ object CartListPresenterTest : Spek({
                 secondShop.isAllSelected = true
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
                         it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
@@ -323,8 +316,6 @@ object CartListPresenterTest : Spek({
 
         Scenario("all item selected with wholesale price") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
@@ -344,8 +335,7 @@ object CartListPresenterTest : Spek({
                 firstItemFirstUpdatedData.quantity = 10
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
                         it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
@@ -369,8 +359,6 @@ object CartListPresenterTest : Spek({
 
         Scenario("all item selected with invalid wholesale price") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
@@ -389,8 +377,7 @@ object CartListPresenterTest : Spek({
                 firstItemFirstOriginData.wholesalePriceData = arrayListOf(wholesalePriceData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
                         it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
@@ -414,8 +401,6 @@ object CartListPresenterTest : Spek({
 
         Scenario("all item selected with product variant") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
@@ -433,8 +418,7 @@ object CartListPresenterTest : Spek({
                 secondItemFirstOriginData.productCashBack = firstItemFirstOriginData.productCashBack
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
                         it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
@@ -458,8 +442,6 @@ object CartListPresenterTest : Spek({
 
         Scenario("all item selected with same priced product variant") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
@@ -478,8 +460,7 @@ object CartListPresenterTest : Spek({
                 secondItemFirstOriginData.productCashBack = firstItemFirstOriginData.productCashBack
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
                         it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()

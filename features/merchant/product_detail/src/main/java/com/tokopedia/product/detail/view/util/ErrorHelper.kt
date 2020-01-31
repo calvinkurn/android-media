@@ -16,6 +16,9 @@ object ErrorHelper {
 
     private const val CODE_PRODUCT_ERR_NOT_FOUND = "2001"
     private const val CODE_ERR_GENERAL = "1"
+    const val CODE_PRODUCT_ERR_BANNED = "2998"
+    const val CODE_PRODUCT_ERR_DELETED = "3000"
+    const val CODE_PRODUCT_ERR_KELONTONG = "3005"
 
     fun getErrorType(context: Context, t: Throwable): PageErrorDataModel {
         var shouldShowTobacoError = false
@@ -26,8 +29,11 @@ object ErrorHelper {
             is MessageErrorException -> {
                 shouldShowTobacoError = false
                 errorCode = when (t.errorCode) {
-                    CODE_PRODUCT_ERR_NOT_FOUND -> {
+                    CODE_PRODUCT_ERR_NOT_FOUND, CODE_PRODUCT_ERR_DELETED, CODE_PRODUCT_ERR_KELONTONG -> {
                         GlobalError.PAGE_NOT_FOUND.toString()
+                    }
+                    CODE_PRODUCT_ERR_BANNED -> {
+                        CODE_PRODUCT_ERR_BANNED
                     }
                     else -> {
                         CODE_ERR_GENERAL
