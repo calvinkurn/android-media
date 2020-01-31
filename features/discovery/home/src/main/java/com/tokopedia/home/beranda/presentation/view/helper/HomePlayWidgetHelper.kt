@@ -161,15 +161,8 @@ class HomePlayWidgetHelper(
     override fun onActivityResume() {
         if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay()) {
             masterJob.cancelChildren()
-            launch(coroutineContext) {
-                delay(3000)
-                observeVideoPlayer()
-                withContext(Dispatchers.Main) {
-                    exoPlayerView.setPlayer(mPlayer)
-                    muteVideoPlayer()
-                    playManager.safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = true)
-                }
-            }
+            observeVideoPlayer()
+            resumeVideo()
         } else {
             stopVideoPlayer()
         }
