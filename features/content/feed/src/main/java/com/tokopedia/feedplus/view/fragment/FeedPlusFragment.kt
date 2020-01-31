@@ -1134,16 +1134,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onShareClick(positionInFeed: Int, id: Int, title: String,
                               description: String, url: String,
                               imageUrl: String) {
-        if (activity != null) {
-            ShareBottomSheets().show(activity!!.supportFragmentManager,
-                    ShareBottomSheets.constructShareData("", imageUrl, url, description, title),
-                    object : ShareBottomSheets.OnShareItemClickListener {
-                        override fun onShareItemClicked(packageName: String) {
+        activity?.let {
 
-                        }
-                    })
+            ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
+                override fun onShareItemClicked(packageName: String) {
+
+                }
+            },"", imageUrl, url, description, title)
+        }.also {
+            fragmentManager?.run {
+                it?.show(this)
+            }
         }
-
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
     }
 
