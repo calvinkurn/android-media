@@ -191,8 +191,15 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                         int validateResponseCode = 0;
                         if (errorsMessage.length == 1) {
                             String rawString = errorsMessage[0];
-                            title = rawString.split("\\.")[0];
-                            desc = rawString.split("\\.")[1];
+                            String rawTitle = rawString.split("\\.")[0];
+                            String rawDesc = rawString.split("\\.")[1];
+
+                            if (rawTitle != null && rawTitle.length() > 0) {
+                                title = rawTitle;
+                            }
+                            if (rawDesc != null && rawDesc.length() > 0) {
+                                desc = rawDesc;
+                            }
                         }
                         if (errorsMessage.length >= 2) {
                             desc = errorsMessage[1];
