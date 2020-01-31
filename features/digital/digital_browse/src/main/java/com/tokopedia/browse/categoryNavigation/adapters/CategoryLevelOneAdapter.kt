@@ -54,7 +54,10 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
         ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.loading_page)
 
         holder.parentLayout.setOnClickListener {
-            listener.onItemClicked(categoryList[position].id!!, position, categoryList[position].name!!, categoryList[position].applinks)
+            listener.onItemClicked(categoryList[position].id
+                    ?: "", position, categoryList[position].name
+                    ?: "", categoryList[position].applinks)
+
             CategoryAnalytics.createInstance().eventCategoryLevelOneClick(categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
