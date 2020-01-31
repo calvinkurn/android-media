@@ -459,7 +459,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs(),details.contactUs().helpUrl());
+        getView().setContactUs(details.contactUs(),details.getHelpLink());
 
         if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {

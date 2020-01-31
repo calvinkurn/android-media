@@ -54,7 +54,8 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
                 .map {
                     val updateCartGqlResponse = it.getData<UpdateCartGqlResponse>(UpdateCartGqlResponse::class.java)
                     val updateCartData = UpdateCartData()
-                    updateCartData.isSuccess = updateCartGqlResponse.updateCartDataResponse.status == "OK"
+                    updateCartData.isSuccess = updateCartGqlResponse.updateCartDataResponse.status == "OK" &&
+                            updateCartGqlResponse.updateCartDataResponse.data?.status == true
                     updateCartData.message = if (updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty()) {
                         updateCartGqlResponse.updateCartDataResponse.error[0]
                     } else {

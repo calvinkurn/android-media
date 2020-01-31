@@ -25,6 +25,9 @@ object DeeplinkMapperDeals {
             //tokopedia://deals/brand/{slug}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "brand" ->
                 UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL, uri.pathSegments[1])
+            //tokopedia://deals/i/{slug}
+            uri.pathSegments.size == 2 && uri.pathSegments[0] == "i" ->
+                UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.lastPathSegment)
             //tokopedia://deals/allbrands/{isVoucher}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "allbrands"->
                 UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS, uri.pathSegments[1])

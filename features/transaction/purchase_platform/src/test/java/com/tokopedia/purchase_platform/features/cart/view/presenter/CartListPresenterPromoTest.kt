@@ -16,7 +16,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopG
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface

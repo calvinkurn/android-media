@@ -22,7 +22,7 @@ class ChipFilterItemDivider(context: Context?) : RecyclerView.ItemDecoration() {
 
     init {
         context?.let {
-            divider = ContextCompat.getDrawable(it, R.drawable.divider)
+            divider = ContextCompat.getDrawable(it, R.drawable.notifcenter_divider)
         }
     }
 
