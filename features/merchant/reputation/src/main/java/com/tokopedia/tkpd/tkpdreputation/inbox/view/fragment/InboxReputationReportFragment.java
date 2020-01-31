@@ -137,10 +137,12 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     }
 
     private void initProgressDialog() {
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("");
-        progressDialog.setMessage("Loading");
-        progressDialog.setCancelable(false);
+        if(getContext() != null) {
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setTitle("");
+            progressDialog.setMessage(getContext().getString(R.string.progress_dialog_loading));
+            progressDialog.setCancelable(false);
+        }
     }
 
     @Override
@@ -152,7 +154,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        if (!progressDialog.isShowing() && getActivity() != null)
+        if (!progressDialog.isShowing() && getContext() != null && progressDialog != null)
             progressDialog.show();
     }
 
@@ -169,7 +171,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
     @Override
     public void removeLoadingProgress() {
-        if (progressDialog.isShowing())
+        if (progressDialog.isShowing() && getContext() != null && progressDialog != null)
             progressDialog.dismiss();
     }
 }
