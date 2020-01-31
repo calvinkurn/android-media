@@ -151,7 +151,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
             if (!extras.containsKey(EXTRA_TITLE)) {
                 if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_BELANJA) {
                     extras.putString(EXTRA_TITLE, TITLE_BELANJA)
-                    return openNewBelanja(context)
+                    return openBelanjaActivity(context)
                 } else if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_LAYANAN) {
                     intent = Intent(context, DigitalBrowseHomeActivity::class.java)
                     extras.putString(EXTRA_TITLE, TITLE_LAYANAN)
@@ -161,7 +161,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
             return intent.setData(uri.build()).putExtras(extras)
         }
 
-        private fun openNewBelanja(context: Context): Intent {
+        private fun openBelanjaActivity(context: Context): Intent {
             return BaseCategoryBrowseActivity.newIntent(context)
         }
 

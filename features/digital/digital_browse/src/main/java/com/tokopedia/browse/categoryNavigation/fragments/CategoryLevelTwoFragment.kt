@@ -93,7 +93,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     private fun removeShimmer() {
 
-        if (currentPosition != "0") {
+        if (currentPosition != defaultCaseId) {
             label_lihat_semua.visibility = View.VISIBLE
             hotlist.visibility = View.VISIBLE
             hotlist_name.visibility = View.VISIBLE
@@ -208,7 +208,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     fun startShimmer(isStarted: Boolean) {
         if (isStarted) {
-            if (currentPosition == "0") {
+            if (currentPosition == defaultCaseId) {
                 shimmer_layout_default.visibility = View.VISIBLE
                 shimmer_layout.visibility = View.GONE
             } else {

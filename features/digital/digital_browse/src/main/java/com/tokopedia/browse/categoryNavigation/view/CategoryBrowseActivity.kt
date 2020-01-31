@@ -26,10 +26,10 @@ class CategoryBrowseActivity : BaseCategoryBrowseActivity() {
         @JvmStatic
         fun getCategoryBrowseDefaultIntent(context: Context, extras: Bundle): Intent {
             bundle = extras
-            return runNewBelanja(context)
+            return openBelanjaActivity(context)
         }
 
-        private fun runNewBelanja(context: Context): Intent {
+        private fun openBelanjaActivity(context: Context): Intent {
             return Intent(context, CategoryBrowseActivity::class.java)
         }
     }

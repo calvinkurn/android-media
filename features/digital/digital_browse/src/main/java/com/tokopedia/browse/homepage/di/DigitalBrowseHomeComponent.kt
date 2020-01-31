@@ -14,8 +14,6 @@ import dagger.Component
 @Component(modules = arrayOf(DigitalBrowseHomeModule::class), dependencies = arrayOf(DigitalBrowseComponent::class))
 interface DigitalBrowseHomeComponent {
 
-   // fun inject(digitalBrowseMarketplaceFragment: DigitalBrowseMarketplaceFragment)
-
     fun inject(digitalBrowseServiceFragment: DigitalBrowseServiceFragment)
 
     fun inject(digitalBrowseHomeActivity: DigitalBrowseHomeActivity)

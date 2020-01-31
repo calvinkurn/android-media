@@ -38,10 +38,11 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     private var deepLinkCategoryName: String? = null
 
     private var TOOLBAR_NAME = "Belanja"
-    private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
 
     companion object {
+        private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
+
         @JvmStatic
         fun newIntent(context: Context, categoryName: String): Intent {
             val intent = Intent(context, BaseCategoryBrowseActivity::class.java)
@@ -50,8 +51,6 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
             intent.putExtras(bundle)
             return intent
         }
-
-        private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
         @JvmStatic
         fun newIntent(context: Context): Intent {
@@ -67,17 +66,15 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
 
     object DeepLinkIntents {
-        private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
         lateinit var extras: Bundle
-
         @DeepLink(ApplinkConst.CATEGORY_BELANJA)
         @JvmStatic
         fun getCategoryBrowseIntent(context: Context, bundle: Bundle): Intent {
             extras = bundle
-            return runNewBelanja(context)
+            return openBelanjaActivity(context)
         }
 
-        private fun runNewBelanja(context: Context): Intent {
+        private fun openBelanjaActivity(context: Context): Intent {
             val deepLinkCategoryName = extras.getString(EXTRA_CATEGORY_NAME, "0")
             return newIntent(context, deepLinkCategoryName)
         }

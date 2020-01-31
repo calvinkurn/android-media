@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_categorylevel_one.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-
+private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComponent> {
 
     @Inject
@@ -42,7 +42,6 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     private var selectedItemIdentifier: String? = null
 
     companion object {
-        private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
         @JvmStatic
         fun newInstance(categoryName: String?): CategorylevelOneFragment {
             val fragment = CategorylevelOneFragment()
