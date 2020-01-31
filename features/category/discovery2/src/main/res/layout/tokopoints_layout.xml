@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokopoints_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="6sp"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Kupon Toko Flash"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tokopoints_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokopoints_title"
+        tools:listitem="@layout/tokopoints_item_layout"
+        tools:itemCount="2"
+        tools:orientation="horizontal"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
