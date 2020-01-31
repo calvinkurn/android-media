@@ -5,24 +5,14 @@ fun getSearchShopFirstPageQuery(): String {
     val headlineParams = "\$headline_params"
 
     return """
-    query SearchShop($params: String!, $headlineParams: String) {
-        ${getShopDetailQuery()}
-        ${getHeadlineAdsQuery()}
-    }
-    """.trimIndent()
-}
-
-fun getSearchShopLoadMoreQuery(): String {
-    val params = "\$params"
-
-    return """
-        query SearchShop($params : String!) {
-            ${getShopDetailQuery()}
+        query SearchShop($params: String!, $headlineParams: String) {
+            ${getAceSearchShopQuery()}
+            ${getHeadlineAdsQuery()}
         }
     """.trimIndent()
 }
 
-private fun getShopDetailQuery(): String {
+private fun getAceSearchShopQuery(): String {
     val params = "\$params"
 
     return """
@@ -31,52 +21,61 @@ private fun getShopDetailQuery(): String {
             total_shop
             search_url
             paging {
-              uri_next
-              uri_previous
+                uri_next
+                uri_previous
             }
             tab_name
             shops {
-              shop_id
-              shop_name
-              shop_domain
-              shop_url
-              shop_applink
-              shop_image
-              shop_image_300
-              shop_description
-              shop_tag_line
-              shop_location
-              shop_total_transaction
-              shop_total_favorite
-              shop_gold_shop
-              shop_is_owner
-              shop_rate_speed
-              shop_rate_accuracy
-              shop_rate_service
-              shop_status
-              products {
-                id
-                name
-                url
-                applink
-                price
-                price_format
-                image_url
-              }
-              voucher {
-                free_shipping
-                cashback {
-                  cashback_value
-                  is_percentage
-                }
-              }
-              shop_lucky
-              reputation_image_uri
-              reputation_score
-              is_official
-              ga_key
+                ${getShopDetailQuery()}
+            }
+            top_shop {
+                ${getShopDetailQuery()}
             }
         }
+    """.trimIndent()
+}
+
+private fun getShopDetailQuery(): String {
+    return """
+        shop_id
+        shop_name
+        shop_domain
+        shop_url
+        shop_applink
+        shop_image
+        shop_image_300
+        shop_description
+        shop_tag_line
+        shop_location
+        shop_total_transaction
+        shop_total_favorite
+        shop_gold_shop
+        shop_is_owner
+        shop_rate_speed
+        shop_rate_accuracy
+        shop_rate_service
+        shop_status
+        products {
+            id
+            name
+            url
+            applink
+            price
+            price_format
+            image_url
+        }
+        voucher {
+            free_shipping
+            cashback {
+                cashback_value
+                is_percentage
+            }
+        }
+        shop_lucky
+        reputation_image_uri
+        reputation_score
+        is_official
+        ga_key
     """.trimIndent()
 }
 
@@ -149,6 +148,16 @@ private fun getHeadlineAdsQuery(): String {
               }
               applinks
             }
+        }
+    """.trimIndent()
+}
+
+fun getSearchShopLoadMoreQuery(): String {
+    val params = "\$params"
+
+    return """
+        query SearchShop($params : String!) {
+            ${getAceSearchShopQuery()}
         }
     """.trimIndent()
 }

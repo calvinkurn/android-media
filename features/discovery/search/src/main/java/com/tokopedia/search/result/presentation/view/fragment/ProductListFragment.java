@@ -1056,7 +1056,7 @@ public class ProductListFragment
 
     @Override
     public void onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
+        SearchTracking.eventUserClickNewSearchOnEmptySearchProduct(getQueryKey());
         showSearchInputView();
     }
 
@@ -1607,5 +1607,19 @@ public class ProductListFragment
 
     public void onBottomSheetHide() {
         FilterTracking.eventApplyFilter(getFilterTrackingData(), getScreenName(), getSelectedFilter());
+    }
+
+    @Override
+    public void showBottomNavigation() {
+        if (searchNavigationListener != null) {
+            searchNavigationListener.showBottomNavigation();
+        }
+    }
+
+    @Override
+    public void hideBottomNavigation() {
+        if (searchNavigationListener != null) {
+            searchNavigationListener.hideBottomNavigation();
+        }
     }
 }
