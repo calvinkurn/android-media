@@ -39,7 +39,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked() }
         view.shop_page_main_profile_location.text = shopInfo.location
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
-        ImageHandler.loadImage(view.context, view.shop_page_main_profile_background, shopInfo.shopAssets.cover, -1)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
                 listener.onShopCoverClicked(
@@ -96,27 +95,15 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
-        when (shopInfo.statusInfo.shopStatus) {
-            ShopStatusDef.CLOSED -> {
-                shopPageTracking.impressionOpenOperationalShop(CustomDimensionShopPage
-                        .create(shopInfo.shopCore.shopID,
-                                shopInfo.goldOS.isOfficial == 1,
-                                shopInfo.goldOS.isGold == 1))
-                showShopStatusTicker(shopInfo, isMyShop)
-            }
-            ShopStatusDef.MODERATED, ShopStatusDef.MODERATED_PERMANENTLY -> {
-                showShopStatusTicker(shopInfo, isMyShop)
-            }
-            ShopStatusDef.NOT_ACTIVE -> {
-                shopPageTracking.impressionHowToActivateShop(CustomDimensionShopPage
-                        .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
-                                shopInfo.goldOS.isGold == 1))
-                showShopStatusTicker(shopInfo, isMyShop)
-            }
-            else -> {
-                hideShopStatusTicker()
-            }
+        if(shouldShowShopStatusTicker(shopInfo.statusInfo.statusTitle, shopInfo.statusInfo.statusMessage)){
+            showShopStatusTicker(shopInfo, isMyShop)
+        }else{
+            hideShopStatusTicker()
         }
+    }
+
+    private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {
+        return  title.isNotEmpty() && message.isNotEmpty()
     }
 
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
