@@ -11,7 +11,10 @@ import com.tokopedia.sellerhome.view.viewholder.*
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeAdapterTypeFactory : BaseAdapterTypeFactory(), SellerHomeTypeFactory {
+class SellerHomeAdapterTypeFactory(
+        private val cardWidgetListener: CardViewHolder.Listener,
+        private val lineGraphWidgetListener: LineGraphViewHolder.Listener
+) : BaseAdapterTypeFactory(), SellerHomeTypeFactory {
 
     override fun type(cardWidget: CardWidgetUiModel): Int {
         return CardViewHolder.RES_LAYOUT
@@ -44,8 +47,8 @@ class SellerHomeAdapterTypeFactory : BaseAdapterTypeFactory(), SellerHomeTypeFac
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent)
-            CardViewHolder.RES_LAYOUT -> CardViewHolder(parent)
-            LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent)
+            CardViewHolder.RES_LAYOUT -> CardViewHolder(parent, cardWidgetListener)
+            LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, lineGraphWidgetListener)
             CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent)
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
             ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent)

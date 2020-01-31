@@ -9,6 +9,18 @@ object GraphqlQuery {
             "apakah query disimpan di constant atau di raw resource?" +
             "}"
 
+    const val GET_CARD_DATA = "query getCardWidgetData(\$shopID: Int!, \$dataKey: [String!]!, \$startDate: String!, \$endDate: String!) {\n" +
+            "  getCardWidgetData(shopID: \$shopID, dataKey: \$dataKey, startDate: \$startDate, endDate: \$endDate) {\n" +
+            "    data {\n" +
+            "      dataKey\n" +
+            "      value\n" +
+            "      description\n" +
+            "      state\n" +
+            "      errorMsg\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
+
     const val GET_LINE_GRAPH_DATA = "query getLineGraphData(\$shopID: String!, \$dataKey: [String!]!, \$startDate: String!, \$endDate: String!) {\n" +
             "  getLineGraphData(shopID: \$shopID, dataKey: \$dataKey, startDate: \$startDate, endDate: \$endDate) {\n" +
             "    data {\n" +

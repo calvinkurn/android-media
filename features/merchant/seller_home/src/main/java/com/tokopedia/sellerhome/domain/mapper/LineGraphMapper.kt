@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.domain.model.LineGraphDataModel
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.sellerhome.view.model.XYAxisUiModel
@@ -22,14 +23,14 @@ class LineGraphMapper @Inject constructor() {
                         XYAxisUiModel(
                                 xLabel = xyModel.xLabel.orEmpty(),
                                 yLabel = xyModel.yLabel.orEmpty(),
-                                yVal = xyModel.yVal ?: 0L
+                                yVal = xyModel.yVal.orZero()
                         )
                     },
                     yLabels = it.yLabels.orEmpty().map { xyModel ->
                         XYAxisUiModel(
                                 xLabel = xyModel.xLabel.orEmpty(),
                                 yLabel = xyModel.yLabel.orEmpty(),
-                                yVal = xyModel.yVal ?: 0L
+                                yVal = xyModel.yVal.orZero()
                         )
                     }
             )
