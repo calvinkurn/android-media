@@ -187,7 +187,6 @@ class HomeDataMapper(
                 }
             }
         }
-//        list.add(4, PlayCardViewModel(DynamicHomeChannel.Channels(id = "123")))
         return HomeViewModel(homeData.homeFlag, list, isCache)
     }
 

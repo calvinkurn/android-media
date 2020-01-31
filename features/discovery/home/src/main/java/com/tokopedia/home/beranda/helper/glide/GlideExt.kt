@@ -16,12 +16,12 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 
-val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
-val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
-val FPM_THEMATIC_CARD_VIEW = "home_thematic_card"
-val FPM_DYNAMIC_LEGO_BANNER = "home_lego_banner"
-val FPM_USE_CASE_ICON = "home_use_case_icon"
-val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
+const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
+const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
+const val FPM_THEMATIC_CARD_VIEW = "home_thematic_card"
+const val FPM_DYNAMIC_LEGO_BANNER = "home_lego_banner"
+const val FPM_USE_CASE_ICON = "home_use_case_icon"
+const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
@@ -108,32 +108,6 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
             .into(this)
 }
 
-fun ImageView.loadImageRounded(url: String, width: Int, height: Int){
-    Glide.with(context)
-            .load(url)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .override(width, height)
-            .skipMemoryCache(true)
-            .transform(RoundedCorners( 10))
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
-            .placeholder(R.drawable.loading_page)
-            .into(this)
-}
-
-fun ImageView.loadMiniImage(url: String){
-    Glide.with(context)
-            .load(url)
-            .fitCenter()
-            .skipMemoryCache(true)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .override(100)
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
-            .placeholder(R.drawable.loading_page)
-            .into(this)
-}
-
 fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
@@ -170,6 +144,19 @@ fun ImageView.loadImageCenterCrop(url: String){
             .into(this)
 }
 
+fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemoryCache: Boolean = false, placeholder: Int = -1){
+    Glide.with(context)
+            .load(url)
+            .override(width, height)
+            .format(DecodeFormat.PREFER_ARGB_8888)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .skipMemoryCache(skipMemoryCache)
+            .transform(CenterCrop(), RoundedCorners(15))
+            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
+            .placeholder(placeholder)
+            .into(this)
+}
+
 fun ImageView.loadGif(url: String){
     Glide.with(context)
             .asGif()
@@ -185,7 +172,7 @@ fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : Performan
     //FPM only allow max 100 chars, so the url needs to be truncated
     val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
 
-    if (!fpmItemLabel.isEmpty()) {
+    if (fpmItemLabel.isNotEmpty()) {
         performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
     }
@@ -196,26 +183,4 @@ fun handleOnResourceReady(dataSource: DataSource?, resource: Drawable?, performa
     if (dataSource == DataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
     }
-}
-
-fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemory: Boolean = false){
-    Glide.with(context)
-            .load(url)
-            .override(width, height)
-            .skipMemoryCache(skipMemory)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
-            .placeholder(R.drawable.loading_page)
-            .into(this)
-}
-fun ImageView.loadImageWithoutPlaceholder(url: String, width: Int, height: Int, skipMemory: Boolean = false){
-    Glide.with(context)
-            .load(url)
-            .override(width, height)
-            .skipMemoryCache(skipMemory)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
-            .into(this)
 }
