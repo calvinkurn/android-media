@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Tooltip;
 
 /**
