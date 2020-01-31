@@ -333,10 +333,10 @@
     <string name="free_open_shop">Buka Toko Gratis</string>
     <string name="welcome_title">Selamat datang!</string>
     <string name="your_phone_number">Nomor handphonemu</string>
-    <string name="your_fullname">Nama lengkap</string>
+    <string name="your_fullname">Tulis nama lengkapmu</string>
     <string name="phone_id_idn">+62</string>
-    <string name="desc_phone_shop_creation">Pastikan nomor kamu aktif agar proses pendaftaran lebih cepat</string>
-    <string name="desc_name_shop_creation">Kerahasiaan datamu akan kami jaga</string>
+    <string name="desc_phone_shop_creation">Pastikan nomor Kamu aktif agar proses pendaftaran lebih cepat</string>
+    <string name="desc_name_shop_creation">Kami menjaga kerahasiaan datamu</string>
     <string name="btn_continue_shop_creation">Lanjut</string>
     <string name="please_fill_name">Harap isi Nama anda</string>
 

@@ -123,7 +123,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     goToNameShopCreation()
                 } else {
                     if (userSession.hasShop())
-                        goToHomeAccount()
+                        goToShopPage(userSession.shopId)
                     else goToShopName()
                 }
             } else {
@@ -183,9 +183,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun goToHomeAccount() {
+    private fun goToShopPage(shopId: String) {
         activity?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConst.HOME_ACCOUNT_SELLER)
+            val intent = RouteManager.getIntent(activity,
+                    ApplinkConst.SHOP.replace("{shop_id}", shopId))
             it.startActivity(intent)
             it.finish()
         }
@@ -199,7 +200,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                         if(data != null) {
                             data.extras?.run {
                                 if(getBoolean(ApplinkConstInternalGlobal.PARAM_IS_HAVE_STORE, false)) {
-                                    goToHomeAccount()
+                                    goToShopPage(getString(ApplinkConstInternalGlobal.PARAM_SHOP_ID, ""))
                                 } else {
                                     shopCreationViewModel.getUserInfo()
                                 }

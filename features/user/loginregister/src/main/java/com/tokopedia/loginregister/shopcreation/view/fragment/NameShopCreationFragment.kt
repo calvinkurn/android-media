@@ -40,11 +40,14 @@ import javax.inject.Inject
 
 class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
-    lateinit var toolbarShopCreation: Toolbar
-    lateinit var container: View
-    lateinit var phone: String
-    lateinit var buttonContinue: UnifyButton
-    lateinit var textFieldName: TextFieldUnify
+    private lateinit var toolbarShopCreation: Toolbar
+    private lateinit var container: View
+    private lateinit var phone: String
+    private lateinit var buttonContinue: UnifyButton
+    private lateinit var textFieldName: TextFieldUnify
+
+    private var currentState = 0
+    private var state = 0
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -90,31 +93,37 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         textFieldName.textFieldInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) { }
+            override fun afterTextChanged(s: Editable?) {
+                if(state != currentState) {
+                    when(state) {
+                        0 -> {
+                            textFieldName.setMessage(getString(R.string.desc_name_shop_creation))
+                            textFieldName.setError(false)
+                            buttonContinue.isEnabled = true
+                        }
+                        1 -> {
+                            textFieldName.setMessage(getString(R.string.error_minimal_name))
+                            textFieldName.setError(true)
+                            buttonContinue.isEnabled = false
+                        }
+                        2 -> {
+                            textFieldName.setMessage(getString(R.string.error_maximal_name))
+                            textFieldName.setError(true)
+                            buttonContinue.isEnabled = false
+                        }
+                    }
+                    currentState = state
+                }
+            }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                context?.let { context ->
-                    s?.let {
-                        when {
-                            it.length < MINIMUM_LENGTH -> {
-                                textFieldName.setMessage(getString(R.string.error_minimal_name))
-                                textFieldName.setError(true)
-                                buttonContinue.isEnabled = false
-                            }
-                            it.length > MAXIMUM_LENGTH -> {
-                                textFieldName.setMessage(getString(R.string.error_maximal_name))
-                                textFieldName.setError(true)
-                                buttonContinue.isEnabled = false
-                            }
-                            else -> {
-                                textFieldName.setMessage(getString(R.string.desc_name_shop_creation))
-                                textFieldName.setError(false)
-                                textFieldName.textFieldInput.requestFocus()
-                                buttonContinue.isEnabled = true
-                            }
-                        }
+                s?.let {
+                    state = when {
+                        it.length < MINIMUM_LENGTH -> 1
+                        it.length > MAXIMUM_LENGTH -> 2
+                        else -> 0
                     }
                 }
             }
