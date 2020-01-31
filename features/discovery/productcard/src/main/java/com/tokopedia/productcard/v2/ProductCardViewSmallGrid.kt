@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.product_card_layout_v2_small_grid.view.*
 
 /**
  * ProductCardView with Small Grid layout.
@@ -298,5 +299,17 @@ class ProductCardViewSmallGrid: ProductCardView {
         else {
             View.GONE
         }
+    }
+
+    fun setFreeOngkirInvisible(isInvisible: Boolean){
+        imageFreeOngkirPromo?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
+    fun setLebelPreOrderInvisible(isInvisible: Boolean){
+        label_pre_order?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
+    fun setlabelDiscountInvisible(isInvisible: Boolean) {
+        labelDiscount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
     }
 }

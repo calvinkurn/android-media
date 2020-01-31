@@ -13,9 +13,11 @@ import androidx.appcompat.widget.AppCompatRatingBar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
@@ -54,7 +56,7 @@ class ShopProductViewHolder(
     private val qualityRatingBar: AppCompatRatingBar? = null
     private val totalReview: TextView? = null
     private val soldOutView: View? = null
-    lateinit var productCard: ProductCardView
+    lateinit var productCard: ProductCardViewSmallGrid
     private val vgRating: View? = null
     private val badgeContainer: View? = null
 
@@ -83,6 +85,7 @@ class ShopProductViewHolder(
         } else {
             "${shopProductViewModel.discountPercentage}%"
         }
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon!!)
         productCard.setProductModel(
                 ProductCardModel(
                         shopProductViewModel.imageUrl!!,
@@ -101,7 +104,7 @@ class ShopProductViewHolder(
                         totalReview,
                         ProductCardModel.Label(),
                         ProductCardModel.Label(),
-                        ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon!!),
+                        freeOngkirObject,
                         false
                 ).apply {
                     isProductSoldOut = shopProductViewModel.isSoldOut
@@ -120,6 +123,24 @@ class ShopProductViewHolder(
         }
         productCard.setButtonWishlistOnClickListener {
             shopProductClickedListener?.onWishListClicked(shopProductViewModel, shopTrackType)
+        }
+
+        if (shopProductViewModel.isCarousel) {
+            if (shopProductViewModel.rating <= 0 && totalReview <= 0) {
+                productCard.setImageRatingInvisible(true)
+                productCard.setReviewCountInvisible(true)
+            }
+
+            if (!freeOngkirObject.isActive || freeOngkirObject.imageUrl.isEmpty()) {
+                productCard.setFreeOngkirInvisible(true)
+            }
+            if (!shopProductViewModel.isPo && !shopProductViewModel.isWholesale) {
+                productCard.setLebelPreOrderInvisible(true)
+            }
+            if (shopProductViewModel.discountPercentage.toIntOrZero()  <= 0) {
+                productCard.setlabelDiscountInvisible(true)
+                productCard.setSlashedPriceInvisible(true)
+            }
         }
     }
 }

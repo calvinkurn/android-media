@@ -44,7 +44,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
     init {
         shopProductCarouselAdapter = ShopProductAdapter(ShopProductAdapterTypeFactory(null,
                 shopProductClickedListener, null, null, null, null, null,
-                null,false, deviceWidth, shopTrackType))
+                null, false, deviceWidth, shopTrackType))
         findViews(itemView)
         tvTitle!!.text = titleString
     }
@@ -54,11 +54,17 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
 
         if (visitable is ShopProductFeaturedViewModel) {
             shopProductCarouselAdapter.replaceProductList(
-                    visitable.shopProductFeaturedViewModelList)
+                    visitable.shopProductFeaturedViewModelList.onEach {
+                        it.isCarousel = true
+                    }
+            )
             tvSeeAll!!.visibility = View.GONE
         } else if (visitable is EtalaseHighlightCarouselViewModel) {
             shopProductCarouselAdapter.replaceProductList(
-                    visitable.shopProductViewModelList)
+                    visitable.shopProductViewModelList.onEach {
+                        it.isCarousel = true
+                    }
+            )
             val shopEtalaseViewModel = visitable.shopEtalaseViewModel
             tvTitle!!.text = shopEtalaseViewModel.etalaseName
             if (!TextUtils.isEmpty(shopEtalaseViewModel.etalaseBadge)) {

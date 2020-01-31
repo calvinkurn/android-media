@@ -33,6 +33,7 @@ class ShopProductViewModel : BaseShopProductViewModel {
     var isSoldOut: Boolean = false
     var isShowFreeOngkir: Boolean = false
     var freeOngkirPromoIcon: String? = null
+    var isCarousel = false
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
         return typeFactory.type(this)
