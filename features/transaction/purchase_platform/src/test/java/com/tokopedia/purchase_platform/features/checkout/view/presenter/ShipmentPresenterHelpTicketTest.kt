@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.checkout.view.presenter
 
-import com.google.gson.Gson
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
@@ -63,8 +62,6 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener = mockk()
     val shipmentDataConverter = ShipmentDataConverter()
-
-    val gson = Gson()
 
     RxAndroidPlugins.getInstance().reset()
     RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
@@ -170,6 +167,32 @@ object ShipmentPresenterHelpTicketTest : Spek({
             Then("should show toast error") {
                 verify(exactly = 1) {
                     view.showToastError(responseErrorMessage)
+                }
+            }
+        }
+
+        Scenario("Submit Help Ticket Unexpected Fail") {
+
+            Given("mock response") {
+                every {
+                    submitHelpTicketUseCase.createObservable(match {
+                        val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
+                        request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
+                    })
+                } returns Observable.error(Exception())
+            }
+
+            When("process checkout") {
+                presenter.processSubmitHelpTicket(CheckoutData().apply {
+                    jsonResponse = ""
+                    errorMessage = ""
+                    errorReporter = ErrorReporter()
+                })
+            }
+
+            Then("should show toast error") {
+                verify(exactly = 1) {
+                    view.showToastError(any())
                 }
             }
         }
