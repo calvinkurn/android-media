@@ -64,8 +64,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("SyntheticAccessor")
-open class HomePresenter :
-        BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
+open class HomePresenter (private val homeUseCase: HomeUseCase) : BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
     protected var subscription: Subscription? = Subscriptions.empty()
@@ -76,9 +75,6 @@ open class HomePresenter :
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var homeUseCase: HomeUseCase
 
     @Inject
     lateinit var getFeedTabUseCase: GetFeedTabUseCase

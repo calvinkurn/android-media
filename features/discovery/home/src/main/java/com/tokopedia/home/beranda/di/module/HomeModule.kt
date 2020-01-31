@@ -193,8 +193,8 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun homePresenter(): HomePresenter {
-        return HomePresenter()
+    fun homePresenter(homeUseCase: HomeUseCase): HomePresenter {
+        return HomePresenter(homeUseCase)
     }
 
     @Provides
