@@ -1,14 +1,23 @@
-package com.tokopedia.play.util
+package com.tokopedia.kotlin.extensions.view
 
 import kotlin.math.pow
 
 /**
- * Created by jegul on 16/01/20
+ * Created by jegul on 31/01/20
  */
-fun Int.pow(exponent: Int) = toDouble().pow(exponent).toInt()
+
+fun Long?.orZero(): Long = this ?: 0
+
+/**
+ * Using power as Long
+ */
 fun Long.pow(exponent: Int) = toDouble().pow(exponent).toLong()
 
-fun Long.toCompactAmountString(
+/**
+ * Convert long amount to string format
+ * e.g. 1100 -> 1,1rb
+ */
+fun Long.toAmountString(
         ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
         decimalPlaces: Int = 1,
         divider: String = ""
@@ -17,12 +26,15 @@ fun Long.toCompactAmountString(
     val multiplier: Long = 10L.pow(exponent)
     for ((index, suffix) in ascendingSuffix.withIndex()) {
         val nextPowerOfTen = 10.pow(index * exponent) * multiplier
-        if (this >= nextPowerOfTen && this < nextPowerOfTen * multiplier) { return toCompactAmountStringByDivider(nextPowerOfTen, suffix, decimalPlaces, divider) }
+        if (this >= nextPowerOfTen && this < nextPowerOfTen * multiplier) { return toAmountStringByDivider(nextPowerOfTen, suffix, decimalPlaces, divider) }
     }
     return this.toString()
 }
 
-fun Long.toCompactAmountStringByDivider(
+/**
+ * Convert amount to string format given specific denominator
+ */
+fun Long.toAmountStringByDivider(
         denominator: Long,
         suffix: String,
         decimalPlaces: Int = 1,
@@ -43,9 +55,3 @@ fun Long.toCompactAmountStringByDivider(
         append(suffix)
     }
 }
-
-fun Int.toCompactAmountString(
-        ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
-        decimalPlaces: Int = 1,
-        divider: String = ""
-): String = toLong().toCompactAmountString()

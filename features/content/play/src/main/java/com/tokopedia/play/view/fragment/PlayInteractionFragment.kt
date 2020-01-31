@@ -195,7 +195,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
-                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.NoActionMore)
+                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
         }
     }
 
@@ -383,6 +383,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         //play button should be on top of other component so it can be clicked
         playButtonComponent = initPlayButtonComponent(container)
 
+        sendInitState()
+
         layoutView(
                 container = container,
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
@@ -568,6 +570,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return endLiveInfoComponent
     }
     //endregion
+
+    private fun sendInitState() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner).emit(
+                    ScreenStateEvent::class.java,
+                    ScreenStateEvent.Init
+            )
+        }
+    }
 
     //region layouting
     private fun layoutView(
@@ -974,8 +985,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openLoginPage() {
-//        val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-//        startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
         openPageByApplink(ApplinkConst.LOGIN)
     }
 

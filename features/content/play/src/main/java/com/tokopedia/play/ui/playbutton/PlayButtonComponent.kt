@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.playbutton
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
@@ -14,21 +15,21 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 10/12/19
  */
-class PlayButtonComponent(
+open class PlayButtonComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<PlayButtonInteractionEvent>, CoroutineScope by coroutineScope, PlayButtonView.Listener {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
-        uiView.hide()
-
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.type.isVod, it.videoProp.state)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
@@ -53,7 +54,7 @@ class PlayButtonComponent(
         }
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             PlayButtonView(container, this)
 
     private fun handleVideoStateChanged(isVod: Boolean, state: TokopediaPlayVideoState) {

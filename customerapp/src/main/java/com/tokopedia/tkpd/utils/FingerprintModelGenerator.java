@@ -17,8 +17,8 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.device.info.DevicePerformanceInfo;
 import com.tokopedia.device.info.DeviceScreenInfo;
-import com.tokopedia.kotlin.util.DeviceChecker;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -121,9 +121,9 @@ public class FingerprintModelGenerator {
         if(context instanceof UserSessionInterface)
             isNakama = Utilities.isNakama((UserSessionInterface)context);
         String adsId = getGoogleAdId(context);
-        String deviceAvailableProcessor = DeviceChecker.INSTANCE.getAvailableProcessor(context.getApplicationContext());
-        String deviceMemoryClass = DeviceChecker.INSTANCE.getDeviceMemoryClassCapacity(context.getApplicationContext());
-        String deviceDpi = DeviceChecker.INSTANCE.getDeviceDpi(context.getApplicationContext());
+        String deviceAvailableProcessor = DevicePerformanceInfo.INSTANCE.getAvailableProcessor(context.getApplicationContext());
+        String deviceMemoryClass = DevicePerformanceInfo.INSTANCE.getDeviceMemoryClassCapacity(context.getApplicationContext());
+        String deviceDpi = DevicePerformanceInfo.INSTANCE.getDeviceDpi(context.getApplicationContext());
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                 .uniqueId(adsId)

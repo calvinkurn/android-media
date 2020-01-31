@@ -17,8 +17,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_play_back_white"
-            android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingEnd="@dimen/play_back_button_spacing_right"
+            android:paddingRight="@dimen/play_back_button_spacing_right"
             />
 
         <include
@@ -35,8 +35,8 @@
             android:id="@+id/tv_stream_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/dp_22"
             android:layout_marginRight="@dimen/dp_22"
             android:ellipsize="end"
@@ -47,8 +47,8 @@
             app:layout_constraintEnd_toStartOf="@id/iv_more"
             app:layout_constraintStart_toEndOf="@id/live_badge"
             app:layout_constraintTop_toTopOf="@id/live_badge"
-            app:layout_goneMarginLeft="@dimen/dp_16"
-            app:layout_goneMarginStart="@dimen/dp_16"
+            app:layout_goneMarginLeft="@dimen/layout_lvl0"
+            app:layout_goneMarginStart="@dimen/layout_lvl0"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="@string/play_mock_stream_name"

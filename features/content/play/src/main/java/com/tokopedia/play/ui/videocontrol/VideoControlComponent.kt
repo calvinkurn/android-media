@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.videocontrol
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
@@ -15,21 +16,21 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 05/12/19
  */
-class VideoControlComponent(
+open class VideoControlComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
-        uiView.hide()
-
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoPropertyChanged -> {
                                 uiView.run {
                                     if (it.videoProp.type.isLive) uiView.hide()
@@ -43,7 +44,10 @@ class VideoControlComponent(
                                 if (it.videoStream.channelType.isLive) uiView.hide()
                                 else if (it.videoStream.channelType.isVod) uiView.show()
                             }
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
+                                uiView.hide()
+                                uiView.setPlayer(null)
+                            }
                         }
                     }
         }
@@ -62,6 +66,6 @@ class VideoControlComponent(
         return emptyFlow()
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             VideoControlView(container)
 }
