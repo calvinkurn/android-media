@@ -39,8 +39,12 @@ class TrackingRepository(
             IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
             val dbCount = trackingDao.getCount()
-            if (dbCount >= 250) {
-                // if size already 250 lines, send it
+            if (dbCount >= 1000) {
+                Timber.e("P2#IRIS#dbCount 1000 lines")
+                trackingDao.flush()
+            }
+            if (dbCount >= 400) {
+                // if the line is big, send it
                 val i = Intent(context, IrisService::class.java)
                 i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
                 IrisService.enqueueWork(context, i)
@@ -54,6 +58,7 @@ class TrackingRepository(
         return try {
             trackingDao.getFromOldest(maxRow)
         } catch (e: Throwable) {
+            Timber.e("P2#IRIS#getFromOldest %s", e.toString())
             ArrayList()
         }
     }
@@ -62,6 +67,7 @@ class TrackingRepository(
         try {
             trackingDao.delete(data)
         } catch (ignored: Throwable) {
+            Timber.e("P2#IRIS#deletingData %s", ignored.toString())
         }
     }
 
@@ -69,7 +75,11 @@ class TrackingRepository(
         val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
         val requestBody = ApiService.parse(dataRequest)
         val response = apiService.sendSingleEventAsync(requestBody)
-        return response.isSuccessful
+        val isSuccessFul = response.isSuccessful
+        if (!isSuccessFul) {
+            Timber.e("P2#IRIS#sendSingleEventNotSuccess %s", data)
+        }
+        return isSuccessFul
     }
 
     /**

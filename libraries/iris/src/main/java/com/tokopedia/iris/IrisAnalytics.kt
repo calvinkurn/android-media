@@ -32,6 +32,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private var cache: Cache = Cache(context)
     private var configuration: Configuration? = null
     private var isAlarmOn: Boolean = false
+    private var lastAlarmChange: Long = 0L
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -60,7 +61,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         remoteConfig = FirebaseRemoteConfigImpl(context)
         remoteConfig.fetch(remoteConfigListener)
 
-        isAlarmOn = cache.isAlarmOn()
+        isAlarmOn = false
     }
 
     override fun setService(config: String, isEnabled: Boolean) {
@@ -118,7 +119,11 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun setAlarm(isTurnOn: Boolean) {
         if (isTurnOn == isAlarmOn) {
-            return
+            // if alarm last change is more that 2 minutes, we recreate the alarm to make sure the alarm is initialized correctly
+            val offsetLastTimeAlarmChange = System.currentTimeMillis() - lastAlarmChange
+            if (offsetLastTimeAlarmChange < 120_000L) {
+                return
+            }
         }
         val pendingIntent: PendingIntent?
         pendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -142,7 +147,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             }
         }
         isAlarmOn = isTurnOn
-        cache.setEnableAlarm(isAlarmOn)
+        lastAlarmChange = System.currentTimeMillis()
     }
 
     companion object {
