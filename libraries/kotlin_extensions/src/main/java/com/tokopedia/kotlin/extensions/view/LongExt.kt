@@ -1,8 +1,17 @@
 package com.tokopedia.kotlin.extensions.view
 
+import kotlin.math.pow
+
 /**
  * Created by jegul on 31/01/20
  */
+
+fun Long?.orZero(): Long = this ?: 0
+
+/**
+ * Using power as Long
+ */
+fun Long.pow(exponent: Int) = toDouble().pow(exponent).toLong()
 
 /**
  * Convert long amount to string format

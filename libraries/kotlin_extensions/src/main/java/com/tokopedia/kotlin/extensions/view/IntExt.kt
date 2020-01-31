@@ -29,11 +29,6 @@ fun Int?.toZeroIfNull():Int {
 fun Int.pow(exponent: Int) = toDouble().pow(exponent).toInt()
 
 /**
- * Using power as Int
- */
-fun Long.pow(exponent: Int) = toDouble().pow(exponent).toLong()
-
-/**
  * Convert int amount to string format
  * e.g. 1100 -> 1,1rb
  */
@@ -44,9 +39,3 @@ fun Int.toAmountString(
 ): String = toLong().toAmountString(ascendingSuffix, decimalPlaces, divider)
 
 fun Int?.orZero(): Int = this ?: 0
-
-fun Long?.orZero(): Long = this ?: 0
-
-fun Float?.orZero(): Float = this ?: 0f
-
-fun Double?.orZero(): Double = this ?: 0f.toDouble()
