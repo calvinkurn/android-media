@@ -133,7 +133,7 @@ class HomeDataMapper(
                                     channel,
                                     HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(channel, position, false),
                                     null,
-                                    true,
+                                    false,
                                     isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)

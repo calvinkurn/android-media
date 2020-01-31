@@ -11,6 +11,7 @@ object HomePageTrackingV2 {
         val IMPRESSION = "impression"
         val CLICK_HOMEPAGE = "clickHomepage"
         val PROMO_VIEW = "promoView"
+        val PROMO_CLICK = "promoClick"
         val PROMO_VIEW_IRIS = "promoViewIris"
     }
 
@@ -143,10 +144,10 @@ object HomePageTrackingV2 {
                     )
                 }
         )
-        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, isToIris: Boolean = false) = getBasicPromotionClick(
-                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
+        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicPromotionClick(
+                event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = Action.IMPRESSION.format(LEGO_BANNER_4_IMAGE_NAME),
+                eventAction = Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME),
                 eventLabel = grid.attribution,
                 channelId = channel.id,
                 categoryId = channel.categoryPersona,
