@@ -46,9 +46,11 @@
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/chatcommon_60dp"
+        android:layout_marginRight="@dimen/chatcommon_60dp"
         android:layout_toEndOf="@+id/flPhotoContainer"
         android:layout_toRightOf="@+id/flPhotoContainer"
         android:gravity="center_vertical">
@@ -81,10 +83,11 @@
                 android:layout_gravity="center_vertical"
                 android:ellipsize="end"
                 android:includeFontPadding="false"
+                android:maxEms="8"
                 android:maxLines="1"
                 android:textColor="@color/black_70"
                 app:typographyType="heading_4"
-                tools:text="Store name" />
+                tools:text="Really Long text that cuts tasdfasdf" />
 
             <TextView
                 android:id="@id/label"

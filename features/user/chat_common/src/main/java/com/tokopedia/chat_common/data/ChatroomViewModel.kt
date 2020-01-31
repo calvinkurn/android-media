@@ -30,4 +30,12 @@ class ChatroomViewModel(val listChat: ArrayList<Visitable<*>> = ArrayList(),
         return (headerModel.isGold || headerModel.isOfficial) && headerModel.badge.isNotEmpty()
     }
 
+    fun getInterlocutorName(): CharSequence {
+        var name = headerModel.name
+        if (name.length > 21) {
+            name = name.substring(0, 21) + "..."
+        }
+        return name
+    }
+
 }

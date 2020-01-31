@@ -112,7 +112,7 @@ open class BaseChatViewStateImpl(
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         val title = toolbar.findViewById<TextView>(R.id.title)
-        title.text = chatroomViewModel.headerModel.name
+        title.text = chatroomViewModel.getInterlocutorName()
 
         setLabel(chatroomViewModel.headerModel.label)
 
