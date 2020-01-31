@@ -396,7 +396,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openTravelHomepage(Uri uri, Bundle bundle) {
-        RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.TRAVEL_HOMEPAGE));
+        RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.INTERNAL_TRAVEL_HOMEPAGE));
         context.finish();
     }
 
