@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="@integer/animation_duration_enter">
-<!--    <transitionSet>-->
-<!--        <targets>-->
-<!--            <target android:targetId="@+id/rfl_video_wrapper" />-->
-<!--        </targets>-->
-<!--    </transitionSet>-->
     <changeBounds/>
     <changeTransform/>
     <changeImageTransform/>
