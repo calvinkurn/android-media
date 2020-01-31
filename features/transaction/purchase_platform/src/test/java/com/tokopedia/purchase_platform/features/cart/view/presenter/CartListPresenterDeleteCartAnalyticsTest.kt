@@ -3,13 +3,12 @@ package com.tokopedia.purchase_platform.features.cart.view.presenter
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentView
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -19,19 +18,17 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-29.
+ * Created by Irfan Khoirul on 2020-01-31.
  */
 
-object CartListRecentViewTest : Spek({
+object CartListPresenterDeleteCartAnalyticsTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -53,7 +50,7 @@ object CartListRecentViewTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("get recent view test") {
+    Feature("generate delete cart data analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -71,93 +68,22 @@ object CartListRecentViewTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get recent view success") {
+        Scenario("1 item selected") {
 
-            val response = GqlRecentViewResponse().apply {
-                gqlRecentView = GqlRecentView().apply {
-                    recentViewList = mutableListOf<RecentView>().apply {
-                        add(RecentView())
-                    }
-                }
+            lateinit var result: Map<String, Any>
+
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData())
             }
 
-            Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
+            When("generate cart data analytics") {
+                result = cartListPresenter.generateDeleteCartDataAnalytics(cartItemDataList)
             }
 
-            Given("user session") {
-                every { userSessionInterface.userId } returns "1"
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
-            }
-
-            Then("should render recent view") {
-                verify {
-                    view.renderRecentView(response.gqlRecentView?.recentViewList)
-                }
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
-                }
-            }
-
-        }
-
-        Scenario("get recent view empty") {
-
-            val response = GqlRecentViewResponse().apply {
-                gqlRecentView = GqlRecentView().apply {
-                    recentViewList = mutableListOf<RecentView>().apply {
-                        add(RecentView())
-                    }
-                }
-            }
-
-            Given("success response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
-            }
-
-            Given("user session") {
-                every { userSessionInterface.userId } returns "1"
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
-                }
-            }
-
-        }
-
-        Scenario("get recent view error") {
-
-            Given("error response") {
-                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-            }
-
-            Given("user session") {
-                every { userSessionInterface.userId } returns "1"
-            }
-
-            When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
-            }
-
-            Then("should try to stop firebase performance tracker") {
-                verify {
-                    view.setHasTriedToLoadRecentView()
-                    view.stopAllCartPerformanceTrace()
-                }
+            Then("should be containing 1 product") {
+                val action = result[EnhancedECommerceCartMapData.REMOVE_ACTION] as Map<String, Any>
+                val products = action[EnhancedECommerceCartMapData.KEY_PRODUCTS] as List<Any>
+                Assert.assertEquals(1, products.size)
             }
 
         }
