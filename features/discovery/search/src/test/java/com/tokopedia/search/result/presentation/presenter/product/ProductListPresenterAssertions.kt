@@ -61,3 +61,12 @@ fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductList
 
     productListView.hideRefreshLayout()
 }
+
+fun MockKVerificationScope.verifyIsVisible(productListView: ProductListSectionContract.View) {
+    productListView.setupSearchNavigation()
+    productListView.trackScreenAuthenticated()
+}
+
+fun MockKVerificationScope.verifyIsAdded(productListView: ProductListSectionContract.View) {
+    productListView.reloadData()
+}

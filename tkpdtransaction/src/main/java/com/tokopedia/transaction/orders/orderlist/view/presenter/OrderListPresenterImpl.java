@@ -214,9 +214,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         }
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
-
-        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-            variables.put(OrderCategory.KEY_LABEL, orderCategory);
+        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)|| orderCategory.equalsIgnoreCase(OrderCategory.DIGITAL)) {
+          variables.put(OrderCategory.KEY_LABEL, orderCategory);
             variables.put(OrderCategory.PAGE, page);
             variables.put(OrderCategory.PER_PAGE, PER_PAGE_COUNT);
             variables.put(SEARCH, getView().getSearchedString());

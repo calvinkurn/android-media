@@ -5,20 +5,20 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.SummaryViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.SummaryUiModel
 import kotlinx.android.synthetic.main.item_summary_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class SummaryViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<SummaryViewModel>(view) {
+class SummaryViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<SummaryUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_summary_detail_product_page
     }
 
-    override fun bind(element: SummaryViewModel?) {
+    override fun bind(element: SummaryUiModel?) {
         if (element != null) {
             itemView.tv_purchase_summary_item_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.itemPrice, false)
             itemView.tv_purchase_summary_shipping_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.shippingPrice, false)
