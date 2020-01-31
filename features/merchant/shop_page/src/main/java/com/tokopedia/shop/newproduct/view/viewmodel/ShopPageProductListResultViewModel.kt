@@ -113,8 +113,14 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         addWishListUseCase.createObservable(productId, userSession.userId, listener)
     }
 
-    fun clearEtalaseCache(){
+    fun clearCache() {
         getShopEtalaseByShopUseCase.clearCache()
+        clearGetShopProductUseCase()
+
+    }
+
+    fun clearGetShopProductUseCase() {
+        getShopProductUseCase.clearCache()
     }
 
     override fun onCleared() {
