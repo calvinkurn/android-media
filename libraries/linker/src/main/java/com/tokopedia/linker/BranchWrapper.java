@@ -167,6 +167,12 @@ public class BranchWrapper implements WrapperInterface {
                         linkerGenericRequest.getDataObj() instanceof LinkerData){
                     BranchHelper.sendAddToWishListEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
                 }
+                break;
+            case LinkerConstants.EVENT_PURCHASE_FLIGHT:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    BranchHelper.sendFlightPurchaseEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
+                }
         }
     }
 

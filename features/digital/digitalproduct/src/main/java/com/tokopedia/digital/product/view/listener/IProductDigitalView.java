@@ -43,6 +43,8 @@ public interface IProductDigitalView extends IBaseView {
 
     void stopTrace();
 
+    void sendOpenScreenEventTracking(CategoryData categoryData);
+
     void renderErrorTimeoutConnectionProductDigitalData(String message);
 
     CategoryData getCategoryDataState();
@@ -74,8 +76,6 @@ public interface IProductDigitalView extends IBaseView {
     void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber);
 
     void removeCheckPulsaCards();
-
-    void navigateToWebview();
 
     Activity getActivity();
 

@@ -87,7 +87,6 @@ public class AccessTokenRefresh {
     }
 
     private Retrofit getRetrofit() {
-        Gson gson = new Gson();
         return new Retrofit.Builder()
                 .baseUrl(TokopediaUrl.Companion.getInstance().getACCOUNTS())
                 .addConverterFactory(new StringResponseConverter())
@@ -95,11 +94,11 @@ public class AccessTokenRefresh {
                 .build();
     }
 
-    protected Boolean isRequestDenied(String responseString) {
+    private Boolean isRequestDenied(String responseString) {
         return responseString.toLowerCase().contains(FORCE_LOGOUT);
     }
 
-    protected void checkShowForceLogout(String response) throws IOException {
+    private void checkShowForceLogout(String response) throws IOException {
         if (isRequestDenied(response)) {
             ServerErrorHandler.showForceLogoutDialog();
             ServerErrorHandler.sendForceLogoutTokenAnalytics(response);

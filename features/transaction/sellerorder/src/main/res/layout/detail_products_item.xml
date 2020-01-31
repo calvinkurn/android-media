@@ -16,6 +16,7 @@
         android:layout_marginTop="@dimen/dp_16"
         tools:text="Daftar Produk"
         android:text="@string/daftar_produk"
+        android:textColor="@color/Neutral_N700_96"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"

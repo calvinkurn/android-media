@@ -1,16 +1,15 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
@@ -30,6 +29,7 @@ import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.GetLikesResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -43,6 +43,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 ;
 
@@ -97,12 +98,12 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         getDealDetailsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
                 getView().hideCollapsingHeader();
@@ -133,7 +134,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 }else {
                     getView().hideRecomendationDealsView();
                 }
-                CommonUtils.dumper("enter onNext");
+                Timber.d("enter onNext");
 
                 if (!getView().isEnableBuyFromArguments()){
                     getView().hideCheckoutView();
@@ -233,7 +234,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         if (id == com.tokopedia.digital_deals.R.id.action_menu_share) {
             Utils.getSingletonInstance().shareDeal(dealsDetailsResponse.getSeoUrl(),
                     getView().getActivity(), dealsDetailsResponse.getDisplayName(),
-                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getDesktopUrl());
+                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getWebUrl());
         } else {
             getView().getActivity().onBackPressed();
         }
@@ -325,7 +326,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onError(Throwable throwable) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 throwable.printStackTrace();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(),
                         getView().getRootView(), () -> sendNsqEvent(userId, data));
@@ -369,7 +370,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onError(Throwable throwable) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 throwable.printStackTrace();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(),
                         getView().getRootView(), () -> sendNsqTravelEvent(userId, data));

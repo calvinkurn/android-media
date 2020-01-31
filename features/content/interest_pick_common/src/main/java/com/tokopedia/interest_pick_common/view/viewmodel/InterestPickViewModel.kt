@@ -12,5 +12,5 @@ interface InterestPickViewModel {
     val titleFull: String
     val instruction: String
     val buttonCta: String
-    var dataList: List<InterestPickDataViewModel>
+    var dataList: MutableList<InterestPickDataViewModel>
 }

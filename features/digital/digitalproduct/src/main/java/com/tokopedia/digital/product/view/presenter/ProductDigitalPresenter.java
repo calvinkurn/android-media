@@ -7,9 +7,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -20,18 +21,14 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
-import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.Attributes;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
-import com.tokopedia.digital.product.domain.interactor.DigitalGetHelpUrlUseCase;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
@@ -43,8 +40,6 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
@@ -81,7 +76,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
     private static final int MAX_SIM_COUNT = 2;
     //private String currentMobileNumber;
-    private final static String simSlotName[] = {
+    private final static String[] simSlotName = {
             "extra_asus_dial_use_dualsim",
             "com.android.phone.extra.slot",
             "slot",
@@ -106,7 +101,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private RechargeAnalytics rechargeAnalytics;
     private IProductDigitalInteractor productDigitalInteractor;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
-    private DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase;
     private String slotKey = "com.android.phone.force.slot";
     private String accoutHandleKey = "android.telecom.extra.PHONE_ACCOUNT_HANDLE";
     private Handler ussdHandler;
@@ -122,14 +116,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
-            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
             UserSession userSession) {
         super(localCacheHandler, userSession);
         this.digitalAnalytics = digitalAnalytics;
         this.rechargeAnalytics = rechargeAnalytics;
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
-        this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
         this.userSession = userSession;
     }
 
@@ -164,7 +156,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
                 getView().hideInitialProgressLoading();
-
+                getView().sendOpenScreenEventTracking(productDigitalData.getCategoryData());
                 getView().goToCartPage(productDigitalData);
             }
         });
@@ -230,7 +222,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 renderCategoryDataAndBannerToView(
                         categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
                 );
-
+                getView().sendOpenScreenEventTracking(productDigitalData.getCategoryData());
                 digitalAnalytics.sendCategoryScreen(getView().getActivity(), productDigitalData.getCategoryData().getName());
             }
         };
@@ -260,10 +252,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
              code http errornya bisa diambil
              e.getErrorCode */
                 getView().renderErrorHttpProductDigitalData(e.getMessage());
-            } else if (e instanceof ServerErrorException) {
-                getView().clearContentRendered();
-                getView().closeView();
-                ServerErrorHandlerUtil.handleError(e);
             } else {
                 getView().renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
@@ -339,7 +327,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 renderCheckPulsa();
                 getView().showMessageAlert(getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
                         getView().getActivity().getString(R.string.message_ussd_title));
-                digitalAnalytics.eventUssdAttempt( getView().getActivity().getString(R.string.status_failed_label) + getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                digitalAnalytics.eventUssdAttempt(getView().getActivity().getString(R.string.status_failed_label) + getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         } else {
             getView().showAccessibilityAlertDialog();
@@ -394,30 +382,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 if (getView() == null || getView().getActivity() == null) {
                     return;
                 }
-//                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-//                    /* Ini kalau ga ada internet */
-//                    getView().showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-//                } else if (e instanceof SocketTimeoutException) {
-//                    /* Ini kalau timeout */
-//                    getView().showPulsaBalanceError(
-//                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-//                    );
-//                } else if (e instanceof ResponseErrorException) {
-//                    /* Ini kalau error dari API kasih message error */
-//                    getView().showPulsaBalanceError(e.getMessage());
-//                } else if (e instanceof ResponseDataNullException) {
-//                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-//                    getView().showPulsaBalanceError(e.getMessage());
-//                } else if (e instanceof HttpErrorException) {
-//                    /* Ini Http error, misal 403, 500, 404,
-//                    code http errornya bisa diambil
-//                    e.getErrorCode */
-//                    getView().showPulsaBalanceError(e.getMessage());
-//                } else if (e instanceof ServerErrorException) {
-//                    ServerErrorHandlerUtil.handleError(e);
-//                } else {
-//                    getView().showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-//                }
             }
 
             @Override
@@ -642,11 +606,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             getView().renderCheckETollBalance(categoryData.getAdditionalFeature().getText(),
                     categoryData.getAdditionalFeature().getButtonText());
         }
-    }
-
-    @Override
-    public void onHelpMenuClicked() {
-        getView().navigateToWebview();
     }
 
     private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList) {

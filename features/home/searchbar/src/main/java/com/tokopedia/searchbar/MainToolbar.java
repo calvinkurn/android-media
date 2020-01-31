@@ -162,6 +162,7 @@ public class MainToolbar extends Toolbar {
 
         btnNotification.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingNotification(screenName);
+            searchBarAnalytics.eventTrackingNotifCenter();
             if (userSession.isLoggedIn()) {
                 RouteManager.route(context, ApplinkConst.NOTIFICATION);
             } else {

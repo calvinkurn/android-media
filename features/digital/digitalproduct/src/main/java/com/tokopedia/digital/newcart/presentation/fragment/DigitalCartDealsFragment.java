@@ -128,7 +128,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_digital_cart_deals, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_deals_cart, container, false);
         progressBar = view.findViewById(R.id.progress_bar);
         dealTabLayout = view.findViewById(R.id.tab_deal);
         dealViewPager = view.findViewById(R.id.pager_deals);
@@ -328,14 +328,14 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
-                .shadowColorRes(R.color.shadow)
-                .titleTextColorRes(R.color.white)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
-                .nextStringRes(R.string.next)
-                .prevStringRes(R.string.previous)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
+                .titleTextColorRes(com.tokopedia.design.R.color.white)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .nextStringRes(com.tokopedia.showcase.R.string.next)
+                .prevStringRes(com.tokopedia.showcase.R.string.previous)
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)
@@ -357,7 +357,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         checkoutContainer.setVisibility(View.VISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             checkoutContainer.setElevation(60);
-            checkoutContainer.setBackgroundResource(android.R.color.white);
+            checkoutContainer.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
             checkoutContainer.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }

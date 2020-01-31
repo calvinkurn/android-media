@@ -39,6 +39,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(ChangeNameViewModel::class.java) }
 
     private var oldName: String = ""
+    private var chancesChangeName: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -53,6 +54,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         oldName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
+        chancesChangeName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,6 +65,10 @@ class ChangeNameFragment : BaseDaggerFragment() {
             changeNameTextName?.text?.length?.let {
                 changeNameTextName?.setSelection(it)
             }
+        }
+
+        activity?.getString(R.string.change_name_note, chancesChangeName)?.let {
+            changeNameHint -> changeNameTextNote?.text = changeNameHint
         }
 
         initObserver()

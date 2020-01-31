@@ -6,11 +6,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.cardview.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +14,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -39,8 +40,9 @@ import javax.inject.Inject;
 
 public class CheckoutHomeFragment extends BaseDaggerFragment implements CheckoutDealContractor.View, View.OnClickListener {
 
-
+    public static int LOYALTY_ACTIVITY_REQUEST_CODE = 12345;
     private static final String SCREEN_NAME = "/digital/deals/checkout";
+
     private ConstraintLayout clPromoApplied;
     private ConstraintLayout baseMainContent;
     private ConstraintLayout clPromoAmount;
@@ -257,8 +259,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public void showFailureMessageProductExpired() {
-        Utils.getSingletonInstance().showSnackBarDeals(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.product_expired)
+    public void showFailureMessage(String error) {
+        Utils.getSingletonInstance().showSnackBarDeals(error
                 , getContext(), mainContent, false);
     }
 
@@ -306,7 +308,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+        if (requestCode == LOYALTY_ACTIVITY_REQUEST_CODE) {
             hideProgressBar();
             switch (resultCode) {
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE:

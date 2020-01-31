@@ -4,16 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import android.view.View
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
+import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -27,24 +28,23 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import java.util.*
 import kotlin.collections.HashMap
 
+private const val LANDSCAPE_COLUMN_MAIN = 3
+private const val PORTRAIT_COLUMN_MAIN = 2
+
 abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     private lateinit var categoryNavigationListener: CategoryNavigationListener
-
-
     private var gridLayoutManager: GridLayoutManager? = null
     private var linearLayoutManager: LinearLayoutManager? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var spanCount: Int = 0
-
-    private val LANDSCAPE_COLUMN_MAIN = 3
-    private val PORTRAIT_COLUMN_MAIN = 2
 
     protected val filterController: FilterController? = FilterController()
     protected var searchParameter: SearchParameter = SearchParameter()
@@ -54,9 +54,10 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     private var selectedSort: HashMap<String, String> = HashMap()
 
-    private var filterTrackingData: FilterTrackingData? = null;
+    private var filterTrackingData: FilterTrackingData? = null
 
-    var totalCount = ""
+    private var totalCount = ""
+    var totalCountInt = 0
 
 
     private var bottomSheetListener: BottomSheetListener? = null
@@ -74,7 +75,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     fun hideRefreshLayout() {
-        refreshLayout?.setRefreshing(false)
+        refreshLayout?.isRefreshing = false
     }
 
     protected abstract fun getAdapter(): BaseCategoryAdapter?
@@ -92,7 +93,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         initSwipeToRefresh()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
 
         if (context is CategoryNavigationListener) {
@@ -107,12 +108,11 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     private fun initSwipeToRefresh() {
-        refreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+        refreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         refreshLayout?.setOnRefreshListener {
             onSwipeToRefresh()
         }
     }
-
 
     protected fun getGridLayoutManager(): GridLayoutManager? {
         return gridLayoutManager
@@ -127,7 +127,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     protected abstract fun getSortRequestCode(): Int
-
 
     private fun initLayoutManager() {
         linearLayoutManager = LinearLayoutManager(activity)
@@ -171,6 +170,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
             override fun onShareButtonClick() {
                 onShareButtonClicked()
             }
+
             override fun onFilterClick() {
                 openFilterActivity()
             }
@@ -178,8 +178,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
             override fun onSortClick() {
                 openSortActivity()
             }
-
-
         })
     }
 
@@ -194,9 +192,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         } else {
             openFilterPage()
         }
-
     }
-
 
     protected fun openBottomSheetFilter() {
         if (searchParameter == null || getFilters() == null) return
@@ -209,7 +205,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     protected fun openFilterPage() {
         if (searchParameter == null) return
-
         FilterSortManager.openFilterPage(getFilterTrackingData(), this, screenName, searchParameter.getSearchParameterHashMap())
     }
 
@@ -218,15 +213,14 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     private fun openSortActivity() {
-
         if (activity == null) return
-
         if (!FilterSortManager.openSortActivity(this, sort, selectedSort)) {
             NetworkErrorHelper.showSnackbar(activity, activity!!.getString(R.string.error_sort_data_not_ready))
         }
     }
 
     protected fun renderDynamicFilter(data: DataValue) {
+        clearDataFilterSort()
         setFilterData(data.filter)
         setSortData(data.sort)
         if (filterController == null || searchParameter == null
@@ -236,6 +230,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController?.initFilterController(searchParameter?.getSearchParameterHashMap(), initializedFilterList)
         initSelectedSort()
+        updateDimension()
     }
 
     private fun showSortTickIfSelected(): Boolean {
@@ -255,9 +250,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (sorts == null) {
             return
         }
-
         this.sort.addAll(sorts)
-
     }
 
     private fun setFilterData(filters: List<Filter>) {
@@ -265,11 +258,8 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (filters == null) {
             return
         }
-
         this.filters.addAll(filters)
-
     }
-
 
     protected fun getFilters(): ArrayList<Filter>? {
         return filters
@@ -288,9 +278,29 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     fun setSelectedFilter(selectedFilter: HashMap<String, String>) {
         if (filterController == null || getFilters() == null) return
-
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController.initFilterController(selectedFilter, initializedFilterList)
+        updateDimension()
+
+    }
+
+    fun updateDimension() {
+        var param = ""
+        val filterParam = createParametersForQuery(getSelectedFilter())
+        val sortParam = createParametersForQuery(getSelectedSort())
+
+        if (filterParam.isNotEmpty()) {
+            param = filterParam
+        }
+
+        if (sortParam.isNotEmpty()) {
+            if (param.isNotEmpty()) {
+                param = "$param&$sortParam"
+            } else {
+                param = sortParam
+            }
+        }
+        getAdapter()?.setDimension(param)
     }
 
     protected fun addQuickFilter(option: Option, state: Boolean) {
@@ -301,7 +311,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         return if (filterController == null) HashMap() else HashMap(filterController.getActiveFilterMap())
 
     }
-
 
     private fun initSelectedSort() {
         if (sort == null) return
@@ -330,53 +339,45 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
 
     private fun switchCatalogcategory() {
-
         when (getAdapter()?.getCurrentLayoutType()) {
             CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeSingleGridView()
-
             }
             CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeListView()
-
             }
             CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
                 spanCount = 2
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeDoubleGridView()
-
             }
-
         }
-
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object : FilterSortManager.Callback {
-            override fun onFilterResult(queryParams: MutableMap<String, String>?, selectedFilters: MutableMap<String, String>?, selectedOptions: MutableList<Option>?) {
+            override fun onFilterResult(queryParams: Map<String, String>?, selectedFilters: Map<String, String>?, selectedOptions: List<Option>?) {
 
             }
 
-            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?, autoApplyFilter: String?) {
-                setSelectedSort(HashMap(selectedSort))
-                selectedSort.let {
+            override fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?) {
+                setSelectedSort(HashMap(selectedSort?.toMutableMap() ?: mutableMapOf()))
+                selectedSort?.let {
                     searchParameter.getSearchParameterHashMap().putAll(it)
                 }
-
-                clearDataFilterSort()
                 reloadData()
-                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort["ob"]?.toInt())
+                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort?.get("ob")?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
-                        selectedSort["ob"]?.toInt() ?: 0)
+                        selectedSort?.get("ob")?.toInt() ?: 0)
             }
         })
     }
@@ -412,6 +413,11 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         }
     }
 
+    fun setTotalSearchResultCountInteger(count: Int?) {
+        if (count != null)
+            totalCountInt = count
+    }
+
     fun onBottomSheetHide() {
         FilterTracking.eventApplyFilter(getFilterTrackingData(), screenName, getSelectedFilter())
     }
@@ -438,5 +444,59 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     fun resetSortTick() {
         sortAppliedListener?.onSortApplied(showSortTickIfSelected())
+    }
+
+    protected fun removeSelectedFilter(uniqueId: String) {
+        if (filterController == null) return
+
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        removeFilterFromFilterController(option)
+        refreshSearchParameter(filterController.getParameter())
+        refreshFilterController(HashMap(filterController.getParameter()))
+        reloadData()
+    }
+
+    fun removeFilterFromFilterController(option: Option) {
+        if (filterController == null) return
+
+        val optionKey = option.key
+
+        if (Option.KEY_CATEGORY == optionKey) {
+            filterController.setFilter(option, false, true)
+        } else if (Option.KEY_PRICE_MIN == optionKey || Option.KEY_PRICE_MAX == optionKey) {
+            filterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true)
+            filterController.setFilter(generatePriceOption(Option.KEY_PRICE_MAX), false, true)
+        } else {
+            filterController.setFilter(option, false)
+        }
+    }
+
+    private fun generatePriceOption(priceOptionKey: String): Option {
+        val option = Option()
+        option.key = priceOptionKey
+        return option
+    }
+
+    fun refreshSearchParameter(queryParams: Map<String, String>) {
+        if (searchParameter == null) return
+
+        this.searchParameter.getSearchParameterHashMap().clear()
+        this.searchParameter.getSearchParameterHashMap().putAll(queryParams)
+        this.searchParameter.getSearchParameterHashMap()[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+    }
+
+    fun refreshFilterController(queryParams: java.util.HashMap<String, String>) {
+        if (filterController == null || getFilters() == null) return
+
+        val params = java.util.HashMap(queryParams)
+        params[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+
+        val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
+        filterController.initFilterController(params, initializedFilterList)
+    }
+
+    private fun createParametersForQuery(parameters: Map<String, Any>): String {
+        return ParamMapToUrl.generateUrlParamString(parameters)
     }
 }

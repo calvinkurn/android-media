@@ -4,9 +4,9 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
@@ -23,11 +23,12 @@ import com.tokopedia.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import rx.Subscriber
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -189,6 +190,6 @@ class SubmitPostService : JobIntentService() {
     private fun postToTwitter(content: Content) {
         GlobalScope.launchCatchError(Dispatchers.IO, block = {
             twitterManager.postTweet(content.description)
-        }) { it.debugTrace() }
+        }) { Timber.d(it) }
     }
 }

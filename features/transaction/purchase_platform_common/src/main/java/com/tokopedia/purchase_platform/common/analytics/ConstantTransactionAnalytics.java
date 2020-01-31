@@ -10,9 +10,17 @@ public interface ConstantTransactionAnalytics {
         String EVENT_CATEGORY = "eventCategory";
         String EVENT_ACTION = "eventAction";
         String EVENT_LABEL = "eventLabel";
+        String PROMO_ID = "promoId";
         String E_COMMERCE = "ecommerce";
         String PAYMENT_ID = "payment_id";
         String CURRENT_SITE = "currentSite";
+        String PROMOTIONS = "promotions";
+        String ID = "id";
+        String NAME = "name";
+        String CREATIVE = "creative";
+        String POSITION = "position";
+        String PROMO_ID_ = "promo_id";
+        String PROMO_CODE = "promo_code";
     }
 
 
@@ -36,6 +44,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ADDRESS = "clickAddress";
         String PRODUCT_CLICK = "productClick";
         String PRODUCT_VIEW = "productView";
+        String PROMO_VIEW = "promoView";
+        String PROMO_CLICK = "promoClick";
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
@@ -68,15 +78,19 @@ public interface ConstantTransactionAnalytics {
         String RECENT_VIEW = "recent view";
         String RECOMMENDATION_PAGE = "recommendation page";
         String TRACK_SOM = "track seller order management";
+        String FIN_INSURANCE_CART = "fin - cart page";
+        String FIN_INSURANCE_CHECKOUT = "fin - mp checkout";
     }
 
     interface EventAction {
         String CLICK_ALL_COURIER_SELECTED = "click all courier selected";
         String CLICK_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click gunakan kode promo atau kupon";
         String CLICK_GUNAKAN_KODE_PROMO = "click gunakan kode promo";
+        String CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER = "click gunakan from pilih merchant voucher";
+        String CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER = "click gunakan on merchant voucher from pilih merchant voucher";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String CLICK_HAPUS_ON_TOP_RIGHT_CORNER = "click hapus on top right corner";
-        String CLICK_SHOP_NAME = "click shop name";
+        String CLICK_SHOP = "click - shop - login";
         String CLICK_PRODUCT_NAME = "click product name";
         String CLICK_BUTTON_PLUS = "click button +";
         String CLICK_BUTTON_MIN = "click button -";
@@ -135,6 +149,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PILIH_METODE_PEMBAYARAN = "click pilih metode pembayaran";
         String IMPRESSION_CART_EMPTY = "impression cart empty";
         String IMPRESSION_ATC_SUCCESS = "impression atc success";
+        String IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER = "impression merchant voucher from pilih merchant voucher";
+        String CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER = "click merchant voucher from pilih merchant voucher";
         String IMPRESSION_COURIER_SELECTION = "impression courier selection";
         String IMPRESSION_ON_POP_UP_KUPON = "impression on pop up kupon";
         String CLICK_HAPUS_FROM_CLICK_HAPUS = "click hapus from click hapus";
@@ -190,6 +206,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_MORE_LIKE_THIS = "click more like this";
         String CLICK_PRODUCT_WISHLIST_ON_CART_LIST = "click product wishlist on cart list";
         String CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list";
+        String CLICK_DONATION = "click donation";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -297,6 +314,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic";
         String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT = "view information and warning ticker in checkout";
         String VIEW_POP_UP_PRICE_INCREASE = "view pop up price increase";
+        String VIEW_PROMO_LOGISTIC_TICKER_DISABLE = "view promo logistic ticker disable";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
@@ -338,6 +356,14 @@ public interface ConstantTransactionAnalytics {
         String VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO = "view ticker product contain tobacco";
         String CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click hapus button on product contain tobacco";
         String CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click trash icon button on product contain tobacco";
+
+        //Insurance
+        String FIN_INSURANCE_CART_DELETE = "ins - click delete from cart";
+        String FIN_INSURANCE_CART_IMPRESSION = "ins - impression insurance box in cart ";
+        String FIN_INSURANCE_STATE_CHANGE = "ins - click tick insurance for payment";
+        String FIN_INSURANCE_CLICK_BUY = "ins - click buy";
+        String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
+        String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
     }
 
     interface EventLabel {

@@ -151,8 +151,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 REQUEST_CODE_SEE_DETAIL_FLIGHT -> {
                     if (data != null && data.hasExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED)) {
                         val selectedId: String = data.getStringExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED)
+                        val selectedTerm: String = data.getStringExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED_TERM)
                         if (!selectedId.isEmpty()) {
-                            onSelectedFromDetail(selectedId)
+                            onSelectedFromDetail(selectedId, selectedTerm)
                         }
                     }
                 }
@@ -232,6 +233,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     override fun isListEmpty(): Boolean = !adapter.isContainData
 
     open fun getLayout(): Int = R.layout.fragment_search_flight
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
 
     override fun onDestroyView() {
         flightSearchPresenter.unsubscribeAll()
@@ -397,9 +406,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         activity!!.finish()
     }
 
-    override fun navigateToTheNextPage(selectedId: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean) {
+    override fun navigateToTheNextPage(selectedId: String, selectedTerm: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener!!.selectFlight(selectedId, fareViewModel, isBestPairing, isCombineDone)
+            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareViewModel, isBestPairing, isCombineDone)
         }
     }
 
@@ -567,7 +576,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         return emptyResultViewModel
     }
 
-    open fun onSelectedFromDetail(selectedId: String) {
+    open fun onSelectedFromDetail(selectedId: String, selectedTerm: String) {
         flightSearchPresenter.onSearchItemClicked(selectedId = selectedId)
     }
 
@@ -782,7 +791,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     interface OnFlightSearchFragmentListener {
 
-        fun selectFlight(selectedFlightID: String, flightPriceViewModel: FlightPriceViewModel,
+        fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
                          isBestPairing: Boolean, isCombineDone: Boolean)
 
         fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel)

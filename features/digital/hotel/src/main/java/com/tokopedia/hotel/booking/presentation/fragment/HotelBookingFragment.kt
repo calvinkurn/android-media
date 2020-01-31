@@ -29,10 +29,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
-import com.tokopedia.common.travel.presentation.model.TravelContactData
-import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
-import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
@@ -49,9 +45,15 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
+import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataActivity
+import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.presentation.model.TravelContactData
+import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -73,6 +75,8 @@ class HotelBookingFragment : HotelBaseFragment() {
     var promoCode = ""
     internal var destinationType: String = ""
     internal var destinationName: String = ""
+    internal var roomCount: Int = 0
+    internal var guestCount: Int = 0
 
     lateinit var progressDialog: ProgressDialog
 
@@ -92,6 +96,8 @@ class HotelBookingFragment : HotelBaseFragment() {
             hotelBookingPageModel.cartId = it.getString(ARG_CART_ID, "")
             destinationType = it.getString(ARG_DESTINATION_TYPE, "")
             destinationName = it.getString(ARG_DESTINATION_NAME, "")
+            roomCount = it.getInt(ARG_ROOM_COUNT)
+            guestCount = it.getInt(ARG_GUEST_COUNT)
         }
     }
 
@@ -147,7 +153,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         })
 
         bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
-            contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
+            contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
     }
 
@@ -188,6 +194,8 @@ class HotelBookingFragment : HotelBaseFragment() {
                         if (it.hasExtra(COUPON_EXTRA_PROMO_DATA)) {
                             val itemPromoData = it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)
                             promoCode = itemPromoData.promoCode
+                            hotelCart.appliedVoucher.isCoupon = if (itemPromoData.typePromo == PromoData.TYPE_COUPON) 1 else 0
+
                             when (itemPromoData.state) {
                                 TickerCheckoutView.State.EMPTY -> {
                                     promoCode = ""
@@ -244,8 +252,8 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     fun initGuestInfoEditText() {
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv,
-                    arrayListOf(), object: TravelContactArrayAdapter.ContactArrayListener {
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv,
+                    arrayListOf(), object : TravelContactArrayAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return til_guest.editText.text.toString()
                 }
@@ -465,19 +473,36 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
 
                 override fun onResetPromoDiscount() {
-                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
                     promoCode = ""
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
                 }
 
                 override fun onClickDetailPromo() {
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL)
-                    intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
-                    intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
-                    intent.putExtra(COUPON_EXTRA_IS_USE, true)
-                    startActivityForResult(intent, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT)
+                    val intent: Intent
+                    if (promoCode.isNotEmpty()) {
+                        val requestCode: Int
+                        if (hotelCart.appliedVoucher.isCoupon == 1) {
+                            intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL)
+                            intent.putExtra(COUPON_EXTRA_IS_USE, true)
+                            intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
+                            requestCode = REQUEST_CODE_PROMO_DETAIL
+                        } else {
+                            intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                            intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
+                            intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, true)
+                            requestCode = REQUST_CODE_PROMO_LIST
+                        }
+                        intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
+                        startActivityForResult(intent, requestCode)
+                    }
                 }
 
-                override fun onDisablePromoDiscount() { }
+                override fun onDisablePromoDiscount() {
+                    promoCode = ""
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
+                }
             }
         }
     }
@@ -571,7 +596,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
-            trackingHotelUtil.hotelClickNext(hotelCart, destinationType, destinationName,
+            trackingHotelUtil.hotelClickNext(hotelCart, destinationType, destinationName, roomCount, guestCount,
                     hotelBookingPageModel.isForOtherGuest == 0)
 
             hotelBookingPageModel.promoCode = promoCode
@@ -623,10 +648,15 @@ class HotelBookingFragment : HotelBaseFragment() {
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
     }
 
+    private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources,
+            com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
+
     companion object {
         const val ARG_CART_ID = "arg_cart_id"
         const val ARG_DESTINATION_TYPE = "arg_destination_type"
         const val ARG_DESTINATION_NAME = "arg_destination_name"
+        const val ARG_ROOM_COUNT = "arg_room_count"
+        const val ARG_GUEST_COUNT = "arg_guest_count"
         const val EXTRA_HOTEL_BOOKING_MODEL = "extra_hotel_booking_model"
         const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
         const val REQUEST_CODE_CONTACT_DATA = 104
@@ -638,6 +668,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         const val COUPON_EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         const val COUPON_EXTRA_CART_ID = "EXTRA_CART_ID"
+        const val COUPON_EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         const val COUPON_EXTRA_COUPON_CODE = "EXTRA_KUPON_CODE"
         const val COUPON_EXTRA_IS_USE = "EXTRA_IS_USE"
         const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
@@ -647,12 +678,14 @@ class HotelBookingFragment : HotelBaseFragment() {
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
 
 
-        fun getInstance(cartId: String, destinationType: String, destinationName: String): HotelBookingFragment =
+        fun getInstance(cartId: String, destinationType: String, destinationName: String, roomCount: Int, guestCount: Int): HotelBookingFragment =
                 HotelBookingFragment().also {
                     it.arguments = Bundle().apply {
                         putString(ARG_CART_ID, cartId)
                         putString(ARG_DESTINATION_TYPE, destinationType)
                         putString(ARG_DESTINATION_NAME, destinationName)
+                        putInt(ARG_ROOM_COUNT, roomCount)
+                        putInt(ARG_GUEST_COUNT, guestCount)
                     }
                 }
     }

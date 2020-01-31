@@ -34,8 +34,10 @@ object ApplinkConstInternalTopAds {
     @JvmField
     val TOPADS_BUY_CREDIT = "${INTERNAL_TOPADS}/buy"
     @JvmField
+    val TOPADS_HISTORY_CREDIT = "${INTERNAL_TOPADS}/history-credit"
+    @JvmField
     val TOPADS_AUTOADS = "${DeeplinkConstant.SCHEME_SELLERAPP}://${HOST_TOPADS}/autoads"
     @JvmField
-    val TOPADS_KEYWORD_NEW_CHOOSE_GROUP = "${INTERNAL_TOPADS}/keyword-new-choose-group/?is_pos={isPos}&EXTRA_CHOOSEN_GROUP={groupId}"
+    val TOPADS_KEYWORD_NEW_CHOOSE_GROUP = "${INTERNAL_TOPADS}/keyword-new-choose-group?is_pos={isPos}&EXTRA_CHOOSEN_GROUP={groupId}"
 
 }

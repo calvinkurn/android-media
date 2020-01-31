@@ -82,7 +82,7 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected int getHolderLayoutId() {
-        return R.layout.view_holder_category_product_style_1;
+        return R.layout.view_holder_digital_product_style_1;
     }
 
     @Override
@@ -357,6 +357,11 @@ public class CategoryProductStyle1View extends
     @NonNull
     private ClientNumberInputView.ActionListener getActionListenerClientNumberInput() {
         return new ClientNumberInputView.ActionListener() {
+            @Override
+            public void onButtonCameraPickerClicked() {
+
+            }
+
             @Override
             public void onButtonContactPickerClicked() {
                 actionListener.onButtonContactPickerClicked();

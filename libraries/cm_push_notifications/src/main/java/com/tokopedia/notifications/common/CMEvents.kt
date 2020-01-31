@@ -1,12 +1,12 @@
 package com.tokopedia.notifications.common
 
 import android.content.Context
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import timber.log.Timber
 
 /**
  * @author lalit.singh
@@ -31,6 +31,7 @@ object IrisAnalyticsEvents {
     const val PUSH_RECEIVED = "pushReceived"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
+    const val PUSH_DELETED = "pushDeleted"
     const val INAPP_RECEIVED = "inappReceived"
     const val INAPP_CLICKED = "inappClicked"
     const val INAPP_DISMISSED = "inappDismissed"
@@ -51,7 +52,7 @@ object IrisAnalyticsEvents {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, baseNotificationModel)
-            irisAnalytics.sendEvent(values)
+            trackEvent(context, irisAnalytics, values)
         }
     }
 
@@ -63,7 +64,8 @@ object IrisAnalyticsEvents {
                 values[CLICKED_ELEMENT_ID] = elementID
 
             }
-            irisAnalytics.sendEvent(values)
+
+            trackEvent(context, irisAnalytics, values)
         }
 
     }
@@ -92,7 +94,8 @@ object IrisAnalyticsEvents {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, cmInApp)
-            irisAnalytics.sendEvent(values)
+
+            trackEvent(context, irisAnalytics, values)
         }
     }
 
@@ -105,10 +108,15 @@ object IrisAnalyticsEvents {
                 values[CLICKED_ELEMENT_ID] = elementID
             }
 
-
-            irisAnalytics.sendEvent(values)
+            trackEvent(context, irisAnalytics, values)
         }
 
+    }
+
+    private fun trackEvent(context: Context, irisAnalytics: IrisAnalytics, values: HashMap<String, Any>) {
+        if (CMNotificationUtils.isNetworkAvailable(context))
+            irisAnalytics.sendEvent(values)
+        else irisAnalytics.saveEvent(values)
     }
 
     fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
@@ -135,7 +143,7 @@ object CMEvents {
 
     @JvmStatic
     fun postGAEvent(event: String, category: String, action: String, label: String) {
-        CommonUtils.dumper("$TAG-$event&$category&$action&$label")
+        Timber.d("$TAG-$event&$category&$action&$label")
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 event, category, action, label))
     }

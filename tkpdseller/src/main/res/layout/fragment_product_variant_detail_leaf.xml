@@ -46,11 +46,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.tokopedia.seller.common.widget.LabelSwitch
+                <com.tokopedia.product.manage.item.utils.LabelSwitch
                     android:id="@+id/label_switch_product_status"
-                    style="@style/LabelLayout"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:padding="@dimen/dp_16"
                     app:ls_content_color="@color/font_black_primary_70"
                     app:ls_content_text_size="@dimen/sp_16"
                     app:ls_title="@string/product_variant_status"

@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.Nullable;
@@ -19,12 +18,9 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +41,6 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     private RecyclerView rvPromo;
 
     private BannerAdapter bannerAdapter;
-    private DigitalPromoConnector digitalPromoConnector;
 
     private String voucherCodeCopiedState;
 
@@ -54,8 +49,15 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     private List<BannerData> bannerDataList;
     private List<BannerData> otherBannerDataList;
 
-    public static DigitalPromoFragment createInstance() {
-        return new DigitalPromoFragment();
+    public static DigitalPromoFragment createInstance(DigitalPromoConnector digitalPromoConnector) {
+        DigitalPromoFragment fragment = new DigitalPromoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_BANNER_TITLE, digitalPromoConnector.getBannerDataTitle());
+        bundle.putParcelableArrayList(EXTRA_BANNER_LIST, (ArrayList<? extends Parcelable>) digitalPromoConnector.getBannerDataList());
+        bundle.putString(EXTRA_OTHER_BANNER_TITLE, digitalPromoConnector.getOtherBannerDataTitle());
+        bundle.putParcelableArrayList(EXTRA_OTHER_BANNER_LIST, (ArrayList<? extends Parcelable>) digitalPromoConnector.getOtherBannerDataList());
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -67,6 +69,11 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
             bannerDataList = savedInstanceState.getParcelableArrayList(EXTRA_BANNER_LIST);
             otherBannerDataTitle = savedInstanceState.getString(EXTRA_OTHER_BANNER_TITLE);
             otherBannerDataList = savedInstanceState.getParcelableArrayList(EXTRA_OTHER_BANNER_LIST);
+        } else if (getArguments() != null) {
+            bannerDataTitle = getArguments().getString(EXTRA_BANNER_TITLE);
+            bannerDataList = getArguments().getParcelableArrayList(EXTRA_BANNER_LIST);
+            otherBannerDataTitle = getArguments().getString(EXTRA_OTHER_BANNER_TITLE);
+            otherBannerDataList = getArguments().getParcelableArrayList(EXTRA_OTHER_BANNER_LIST);
         }
     }
 
@@ -83,7 +90,6 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
         super.onViewCreated(view, savedInstanceState);
 
         initView();
-        renderData();
     }
 
     @Override
@@ -96,33 +102,20 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
         outState.putParcelableArrayList(EXTRA_OTHER_BANNER_LIST, (ArrayList<? extends Parcelable>) otherBannerDataList);
     }
 
-    public void setDigitalPromoConnector(DigitalPromoConnector digitalPromoConnector) {
-        this.digitalPromoConnector = digitalPromoConnector;
-    }
-
     private void initView() {
         bannerAdapter = new BannerAdapter(getActivity(), this);
         rvPromo.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         rvPromo.setAdapter(bannerAdapter);
+        renderData();
     }
 
     private void renderData() {
-
-        if (bannerDataTitle == null) {
-            bannerDataTitle = digitalPromoConnector.getBannerDataTitle();
+        if (bannerDataTitle != null && bannerDataList != null) {
+            renderBannerListData(bannerDataTitle, bannerDataList);
         }
-        if (bannerDataList == null) {
-            bannerDataList = digitalPromoConnector.getBannerDataList();
+        if (otherBannerDataTitle != null && otherBannerDataList != null) {
+            renderOtherBannerListData(otherBannerDataTitle, otherBannerDataList);
         }
-        if (otherBannerDataTitle == null) {
-            otherBannerDataTitle = digitalPromoConnector.getOtherBannerDataTitle();
-        }
-        if (otherBannerDataList == null) {
-            otherBannerDataList = digitalPromoConnector.getOtherBannerDataList();
-        }
-
-        renderBannerListData(bannerDataTitle, bannerDataList);
-        renderOtherBannerListData(otherBannerDataTitle, otherBannerDataList);
     }
 
     private void renderBannerListData(String title, List<BannerData> bannerDataList) {

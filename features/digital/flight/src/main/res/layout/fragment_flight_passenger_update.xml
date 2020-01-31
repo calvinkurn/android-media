@@ -12,7 +12,7 @@
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment">
+        tools:context=".passenger.view.fragment.FlightBookingPassengerFragment">
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -1,27 +1,28 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -36,7 +37,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.design.drawable.CountDrawable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
@@ -54,17 +54,18 @@ import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
-import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
+import com.tokopedia.search.utils.CountDrawable;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.net.URLEncoder;
 import org.jetbrains.annotations.Nullable;
+
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,6 +107,7 @@ public class SearchActivity extends BaseActivity
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
     private ImageView buttonHome;
+    private ImageView buttonImageSearch;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -115,7 +117,6 @@ public class SearchActivity extends BaseActivity
     private String catalogTabTitle;
     private String autocompleteApplink;
 
-    @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
     @Inject RemoteConfig remoteConfig;
     @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
@@ -137,6 +138,7 @@ public class SearchActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
 
+        setStatusBarColor();
         getExtrasFromIntent(getIntent());
         initActivityOnCreate();
         proceed();
@@ -146,6 +148,15 @@ public class SearchActivity extends BaseActivity
     @Override
     public void startPerformanceMonitoring() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
+    }
+
+    private void setStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            window.setStatusBarColor(getResources().getColor(R.color.white));
+        }
     }
 
     private void getExtrasFromIntent(Intent intent) {
@@ -191,6 +202,7 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
+        buttonImageSearch = findViewById(R.id.search_image_search_button);
     }
 
     protected void prepareView() {
@@ -207,7 +219,6 @@ public class SearchActivity extends BaseActivity
 
     private void initToolbar() {
         configureSupportActionBar();
-        setSearchTextViewDrawableLeft();
         configureToolbarOnClickListener();
     }
 
@@ -221,17 +232,14 @@ public class SearchActivity extends BaseActivity
         }
     }
 
-    private void setSearchTextViewDrawableLeft() {
-        Drawable iconSearch = AppCompatResources.getDrawable(this, R.drawable.search_ic_search);
-        searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
-    }
-
     private void configureToolbarOnClickListener() {
         searchTextView.setOnClickListener(v -> onSearchBarClicked());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
         buttonCart.setOnClickListener(v -> onCartButtonClicked());
         buttonHome.setOnClickListener(v -> moveToHomeActivity());
+        buttonImageSearch.setOnClickListener(v -> onImageSearchButtonClicked());
+
     }
 
     private void onSearchBarClicked() {
@@ -250,7 +258,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onCartButtonClicked() {
-        searchTracking.eventActionClickCartButton(searchParameter.getSearchQuery());
+        SearchTracking.eventActionClickCartButton(searchParameter.getSearchQuery());
 
         if (userSession.isLoggedIn()) {
             RouteManager.route(this, ApplinkConstInternalMarketplace.CART);
@@ -261,8 +269,12 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToHomeActivity() {
-        searchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
+        SearchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
         RouteManager.route(this, ApplinkConst.HOME);
+    }
+
+    private void onImageSearchButtonClicked(){
+            RouteManager.route(this, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT);
     }
 
     private void initViewPager() {
@@ -303,7 +315,7 @@ public class SearchActivity extends BaseActivity
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
             public void onApplyFilter(Map<String, String> queryParams) {
-                applyFilter(queryParams);
+                applyBottomSheetFilter(queryParams);
             }
 
             @Override
@@ -324,12 +336,12 @@ public class SearchActivity extends BaseActivity
         });
     }
 
-    private void applyFilter(Map<String, String> queryParams) {
+    private void applyBottomSheetFilter(Map<String, String> queryParams) {
         if (isViewPagerCurrentItemPositionIsInvalid()) return;
 
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-        if (fragmentItem instanceof SearchSectionFragment) {
-            SearchSectionFragment selectedFragment = (SearchSectionFragment) fragmentItem;
+        if (fragmentItem instanceof ProductListFragment) {
+            ProductListFragment selectedFragment = (ProductListFragment) fragmentItem;
 
             selectedFragment.refreshSearchParameter(queryParams);
             selectedFragment.refreshFilterController(new HashMap<>(queryParams));
@@ -624,15 +636,18 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void startActivityWithApplink(String applink, String... parameter) {
-        Intent intent = RouteManager.getIntent(this, applink, parameter);
-        startActivity(intent);
+        RouteManager.route(this, applink, parameter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         configureButtonCart();
-        unregisterShake();
+    }
+
+    @Override
+    public boolean isAllowShake() {
+        return false;
     }
 
     private void configureButtonCart() {
@@ -698,13 +713,6 @@ public class SearchActivity extends BaseActivity
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER_MODEL);
     }
 
     private void changeGrid() {

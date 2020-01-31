@@ -5,12 +5,13 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.widget.Toolbar;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -18,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.ticker.TouchViewPager2;
 import com.tokopedia.loyalty.R;
-import com.tokopedia.loyalty.applink.LoyaltyAppLink;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
 import com.tokopedia.loyalty.di.component.PromoListActivityComponent;
 import com.tokopedia.loyalty.di.module.PromoListActivityModule;
@@ -42,6 +42,9 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
 
     private static final String EXTRA_AUTO_SELECTED_MENU_ID = "EXTRA_AUTO_SELECTED_MENU_ID";
     private static final String EXTRA_AUTO_SELECTED_CATEGORY_ID = "EXTRA_AUTO_SELECTED_CATEGORY_ID";
+
+    private static final String PROMO_NATIVE_QUERY_CATEGORY_ID = "categoryID";
+    private static final String PROMO_NATIVE_QUERY_MENU_ID = "menuID";
 
     public static final String DEFAULT_AUTO_SELECTED_CATEGORY_ID = "0";
     public static final String DEFAULT_AUTO_SELECTED_MENU_ID = "0";
@@ -89,13 +92,13 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     }
 
     @SuppressWarnings("unused")
-    @DeepLink(ApplinkConst.PROMO_LIST)
+    @DeepLink({ApplinkConst.PROMO_LIST, ApplinkConst.PROMO})
     public static Intent getAppLinkIntent(Context context, Bundle extras) {
         String autoSelectedMenuId = extras.getString(
-                LoyaltyAppLink.PROMO_NATIVE_QUERY_MENU_ID, DEFAULT_AUTO_SELECTED_MENU_ID
+                PROMO_NATIVE_QUERY_MENU_ID, DEFAULT_AUTO_SELECTED_MENU_ID
         );
         String autoSelectedCategoryId = extras.getString(
-                LoyaltyAppLink.PROMO_NATIVE_QUERY_CATEGORY_ID, DEFAULT_AUTO_SELECTED_CATEGORY_ID
+                PROMO_NATIVE_QUERY_CATEGORY_ID, DEFAULT_AUTO_SELECTED_CATEGORY_ID
         );
         return PromoListActivity.newInstance(context, autoSelectedMenuId, autoSelectedCategoryId);
     }

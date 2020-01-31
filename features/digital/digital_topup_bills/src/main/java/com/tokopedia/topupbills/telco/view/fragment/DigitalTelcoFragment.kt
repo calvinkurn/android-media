@@ -1,29 +1,26 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
+import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
-import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalProductSubMenu
-import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
-import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
-import com.tokopedia.common_digital.common.RechargeAnalytics
-import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
-import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topupbills.telco.view.widget.DigitalSubMenuWidget
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_telco.*
-import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -36,6 +33,8 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     lateinit var topupAnalytics: DigitalTopupAnalytics
     @Inject
     lateinit var rechargeAnalytics: RechargeAnalytics
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String? {
         return null
@@ -59,14 +58,16 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     }
 
     fun renderSubMenu() {
-        val listMenuTab = mutableListOf<DigitalTabTelcoItem>()
+        val listMenuTab = mutableListOf<TopupBillsTabItem>()
         arguments?.run {
             val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM_TELCO) as TopupBillsExtraParam
             var prepaidExtraParam = TopupBillsExtraParam()
             var postpaidExtraParam = TopupBillsExtraParam()
+            var labelPage = TelcoComponentName.TELCO_PREPAID
 
             digitalTelcoExtraParam.categoryId.toIntOrNull()?.let {
-                rechargeAnalytics.eventDigitalCategoryScreenLaunch(topupAnalytics.getCategoryName(it), digitalTelcoExtraParam.categoryId)
+                rechargeAnalytics.eventDigitalCategoryScreenLaunch(topupAnalytics.getCategoryName(it),
+                        digitalTelcoExtraParam.categoryId)
                 rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
             }
 
@@ -76,14 +77,18 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
             } else if (digitalTelcoExtraParam.menuId.toInt() == TelcoComponentType.TELCO_POSTPAID) {
                 postpaidExtraParam = digitalTelcoExtraParam
                 posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_RIGHT
+                labelPage = TelcoComponentName.TELCO_POSTPAID
             }
-            listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPrepaidFragment.newInstance(
+            listMenuTab.add(TopupBillsTabItem(DigitalTelcoPrepaidFragment.newInstance(
                     prepaidExtraParam), ""))
-            listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPostpaidFragment.newInstance(
+            listMenuTab.add(TopupBillsTabItem(DigitalTelcoPostpaidFragment.newInstance(
                     postpaidExtraParam), ""))
-            val pagerAdapter = DigitalTelcoProductTabAdapter(listMenuTab, childFragmentManager)
+            val pagerAdapter = TopupBillsProductTabAdapter(listMenuTab, childFragmentManager)
             menu_view_pager.adapter = pagerAdapter
             menu_view_pager.currentItem = posCurrentTabExtraParam
+
+            rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, labelPage,
+                    digitalTelcoExtraParam.categoryId)
         }
 
         val list = mutableListOf<DigitalProductSubMenu>()
@@ -129,7 +134,7 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     }
 
     fun onBackPressed() {
-        val currentFragment = (menu_view_pager.adapter as DigitalTelcoProductTabAdapter).getRegisteredFragment(menu_view_pager.currentItem)
+        val currentFragment = (menu_view_pager.adapter as TopupBillsProductTabAdapter).getRegisteredFragment(menu_view_pager.currentItem)
         (currentFragment as DigitalBaseTelcoFragment).onBackPressed()
     }
 
