@@ -29,9 +29,9 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartI
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
-import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartActionFieldData
-import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartClickData
-import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartData
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceActionFieldData
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceClickData
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartProductData
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
@@ -45,8 +45,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -688,7 +686,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val productsData = ArrayList<Map<String, Any>>().apply {
             add(enhancedECommerceProductCartMapData.product)
         }
-        return getEnhancedECommerceOnClickEmptyCartData(productsData, getActionFieldListStr(isEmptyCart, recommendationItem)).getData()
+        return getEnhancedECommerceOnClickData(productsData, getActionFieldListStr(isEmptyCart, recommendationItem)).getData()
     }
 
     private fun getEnhancedECommerceProductRecommendationMapData(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): EnhancedECommerceProductCartMapData {
@@ -713,20 +711,20 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return enhancedECommerceProductCartMapData
     }
 
-    private fun getEnhancedECommerceOnClickEmptyCartData(productsData: List<Map<String, Any>>, valueSectionName: String): EnhancedECommerceEmptyCartData {
-        val enhancedECommerceEmptyCartActionFieldData = EnhancedECommerceEmptyCartActionFieldData().apply {
+    private fun getEnhancedECommerceOnClickData(productsData: List<Map<String, Any>>, valueSectionName: String): EnhancedECommerceData {
+        val enhancedECommerceActionFieldData = EnhancedECommerceActionFieldData().apply {
             setList(valueSectionName)
         }
 
-        val enhancedECommerceEmptyCartClickData = EnhancedECommerceEmptyCartClickData().apply {
-            setActionField(enhancedECommerceEmptyCartActionFieldData.getData())
+        val enhancedECommerceClickData = EnhancedECommerceClickData().apply {
+            setActionField(enhancedECommerceActionFieldData.getData())
             setProducts(productsData)
         }
 
-        val enhancedECommerceEmptyCart = EnhancedECommerceEmptyCartData().apply {
-            setClickData(enhancedECommerceEmptyCartClickData.getData())
+        val enhancedECommerce = EnhancedECommerceData().apply {
+            setClickData(enhancedECommerceClickData.getData())
         }
-        return enhancedECommerceEmptyCart
+        return enhancedECommerce
     }
 
     private fun getActionFieldListStr(isCartEmpty: Boolean, recommendationItem: RecommendationItem): String {
@@ -1061,7 +1059,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun generateRecentViewProductClickDataLayer(cartRecentViewItemHolderData: CartRecentViewItemHolderData, position: Int): Map<String, Any> {
         val stringObjectMap = HashMap<String, Any>()
         val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setList(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
+            setList(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
         }
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setProductName(cartRecentViewItemHolderData.name)
@@ -1084,7 +1082,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun generateWishlistProductClickDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData, position: Int): Map<String, Any> {
         val stringObjectMap = HashMap<String, Any>()
         val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setList(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST)
+            setList(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_WISHLIST)
         }
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setProductName(cartWishlistItemHolderData.name)
@@ -1114,9 +1112,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
 
             if (isEmptyCart) {
-                setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART)
+                setListName(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART)
             } else {
-                setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
+                setListName(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
             }
 
             setPosition(position.toString())
@@ -1138,8 +1136,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             add(enhancedECommerceEmptyCartProductData.getProduct())
         }
 
-        val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickEmptyCartData(
-                productsData, EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART)
+        val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickData(
+                productsData, EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART)
 
         return enhancedECommerceEmptyCart.getData()
     }
@@ -1154,9 +1152,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
 
             if (isEmptyCart) {
-                setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART)
+                setListName(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART)
             } else {
-                setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST)
+                setListName(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_WISHLIST)
             }
 
             setPosition(position.toString())
@@ -1178,8 +1176,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             add(enhancedECommerceEmptyCartProductData.getProduct())
         }
 
-        val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickEmptyCartData(
-                productsData, EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART)
+        val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickData(
+                productsData, EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART)
 
         return enhancedECommerceEmptyCart.getData()
     }
