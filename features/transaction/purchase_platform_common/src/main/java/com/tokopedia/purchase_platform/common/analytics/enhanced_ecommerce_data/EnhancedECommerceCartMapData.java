@@ -16,7 +16,7 @@ public class EnhancedECommerceCartMapData {
 
     private static final String KEY_CURRENCY = "currencyCode";
     public static final String KEY_PRODUCTS = "products";
-    private static final String KEY_IMPRESSIONS = "impressions";
+    public static final String KEY_IMPRESSIONS = "impressions";
     private static final String KEY_CLICK = "click";
 
     private Map<String, Object> cart = new HashMap<>();
