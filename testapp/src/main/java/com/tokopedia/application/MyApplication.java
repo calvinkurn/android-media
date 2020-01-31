@@ -27,6 +27,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -78,6 +79,7 @@ public class MyApplication extends BaseMainApplication
 
         GraphqlClient.init(this);
         NetworkClient.init(this);
+        registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
@@ -306,6 +308,11 @@ public class MyApplication extends BaseMainApplication
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return false;
+    }
+
+    @Override
+    public void onActivityDestroyed(String screenName, Activity baseActivity) {
+
     }
 
 

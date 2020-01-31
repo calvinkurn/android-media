@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.discovery.common.DispatcherProvider
-import com.tokopedia.search.result.common.Event
+import com.tokopedia.discovery.common.Event
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
 
 internal class SearchViewModel(

@@ -41,6 +41,8 @@ interface SettingBankContract {
 
         fun onSuccessRefresh(bankAccountList: BankAccountListViewModel, resultMessage: String)
 
+        fun getBankList()
+
     }
 
     interface Presenter : CustomerPresenter<View> {

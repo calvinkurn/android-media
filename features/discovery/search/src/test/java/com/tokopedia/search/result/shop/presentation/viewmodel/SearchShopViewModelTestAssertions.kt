@@ -2,8 +2,12 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
-import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.shop.presentation.model.*
+import com.tokopedia.discovery.common.State
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.shouldBe
 
 internal inline fun <reified T> Any?.shouldBeInstanceOf() {
@@ -22,7 +26,7 @@ internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadin
 
     this.shouldHaveCpmViewModel(0)
     this.shouldHaveTotalCountViewModel(1, query, true)
-    this.shouldHaveShopItemViewModel(2, lastIndex - 1)
+    this.shouldHaveShopItemViewModel(2, lastIndex)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
@@ -43,6 +47,7 @@ internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutCpm
 
     this.shouldHaveTotalCountViewModel(0, query, false)
     this.shouldHaveShopItemViewModel(1, lastIndex)
+    this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
 private fun State<List<Visitable<*>>>?.shouldNotBeNull() {

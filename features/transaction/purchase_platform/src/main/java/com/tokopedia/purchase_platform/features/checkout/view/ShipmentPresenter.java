@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -69,6 +68,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
@@ -101,11 +101,11 @@ import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetCour
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetShipmentAddressFormReloadFromMultipleAddressSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.SaveShipmentStateSubscriber;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldTieringModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldTieringModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -246,9 +246,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         if (checkPromoStackingCodeFinalUseCase != null) {
             checkPromoStackingCodeFinalUseCase.unsubscribe();
-        }
-        if (checkPromoStackingCodeUseCase != null) {
-            checkPromoStackingCodeUseCase.unsubscribe();
         }
     }
 
@@ -875,7 +872,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     public void onNext(GraphqlResponse graphqlResponse) {
                         setCouponStateChanged(true);
                         checkPromoStackingCodeMapper.setFinal(true);
-                        ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
+                        ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.map(graphqlResponse);
                         if (!TextUtils.isEmpty(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())) {
                             if (tickerAnnouncementHolderData == null) {
                                 setTickerAnnouncementHolderData(
@@ -1069,61 +1066,63 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             currentApplyCode.setCode(code);
             currentApplyCode.setType(PARAM_LOGISTIC);
             generatedPromo.setCurrentApplyCode(currentApplyCode);
-        }
-        checkPromoStackingCodeUseCase.setParams(generatedPromo);
-        checkPromoStackingCodeUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+            checkPromoStackingCodeUseCase.setParams(generatedPromo);
+            compositeSubscription.add(
+                    checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                            .subscribe(new Subscriber<ResponseGetPromoStackUiModel>() {
+                                @Override
+                                public void onCompleted() {
 
-            }
+                                }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (getView() != null) {
-                    mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
-                    getView().showToastError(e.getMessage());
-                    getView().resetCourier(cartPosition);
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                if (getView() != null) {
-                    checkPromoStackingCodeMapper.setFinal(false);
-                    ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
-                    String errMessage = "";
-
-                    if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
-                        if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
-                        } else {
-                            for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
-                                if (voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
-                                    // reset duration if getting red state
-                                    if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(voucherOrdersItemUiModel.getMessage().getText());
-                                        getView().showToastError(voucherOrdersItemUiModel.getMessage().getText());
+                                @Override
+                                public void onError(Throwable e) {
+                                    e.printStackTrace();
+                                    if (getView() != null) {
+                                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
+                                        getView().showToastError(e.getMessage());
                                         getView().resetCourier(cartPosition);
-                                    } else {
-                                        mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
-                                        getView().renderCheckPromoStackLogisticSuccess(responseGetPromoStack, code);
                                     }
                                 }
-                            }
-                        }
-                    } else {
-                        // reset duration when response error
-                        if (!responseGetPromoStack.getMessage().isEmpty()) {
-                            errMessage = responseGetPromoStack.getMessage().get(0);
-                        }
-                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
-                        getView().showToastError(errMessage);
-                        getView().resetCourier(cartPosition);
-                    }
-                }
-            }
-        });
+
+                                @Override
+                                public void onNext(ResponseGetPromoStackUiModel responseGetPromoStack) {
+                                    if (getView() != null) {
+                                        checkPromoStackingCodeMapper.setFinal(false);
+                                        String errMessage = "";
+
+                                        if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
+                                            if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
+                                                getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
+                                            } else {
+                                                for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
+                                                    if (voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
+                                                        // reset duration if getting red state
+                                                        if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                                                            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(voucherOrdersItemUiModel.getMessage().getText());
+                                                            getView().showToastError(voucherOrdersItemUiModel.getMessage().getText());
+                                                            getView().resetCourier(cartPosition);
+                                                        } else {
+                                                            mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
+                                                            getView().renderCheckPromoStackLogisticSuccess(responseGetPromoStack, code);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            // reset duration when response error
+                                            if (!responseGetPromoStack.getMessage().isEmpty()) {
+                                                errMessage = responseGetPromoStack.getMessage().get(0);
+                                            }
+                                            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
+                                            getView().showToastError(errMessage);
+                                            getView().resetCourier(cartPosition);
+                                        }
+                                    }
+                                }
+                            })
+            );
+        }
     }
 
     @Override
@@ -1142,52 +1141,53 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         promo.setCodes(listCodes);
         checkPromoStackingCodeUseCase.setParams(promo);
-        checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                new Subscriber<GraphqlResponse>() {
-                    @Override
-                    public void onCompleted() {
+        compositeSubscription.add(
+                checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                        .subscribe(new Subscriber<ResponseGetPromoStackUiModel>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (getView() != null) {
-                            if (e instanceof CheckPromoCodeException) {
-                                getView().showToastError(e.getMessage());
-                            } else {
-                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onNext(GraphqlResponse graphqlResponse) {
-                        setCouponStateChanged(true);
-                        checkPromoStackingCodeMapper.setFinal(false);
-                        ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
-                        if (getView() != null) {
-                            if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
-                                if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                                    getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_GLOBAL);
-                                } else {
-                                    if (responseGetPromoStack.getData().getCodes().get(0).equalsIgnoreCase(promoCode)) {
-                                        if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                                            String message = responseGetPromoStack.getData().getMessage().getText();
-                                            getView().renderErrorCheckPromoShipmentData(message);
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                if (getView() != null) {
+                                    if (e instanceof CheckPromoCodeException) {
+                                        getView().showToastError(e.getMessage());
+                                    } else {
+                                        getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onNext(ResponseGetPromoStackUiModel responseGetPromoStack) {
+                                setCouponStateChanged(true);
+                                checkPromoStackingCodeMapper.setFinal(false);
+                                if (getView() != null) {
+                                    if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
+                                        if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
+                                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_GLOBAL);
                                         } else {
-                                            getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
+                                            if (responseGetPromoStack.getData().getCodes().get(0).equalsIgnoreCase(promoCode)) {
+                                                if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                                                    String message = responseGetPromoStack.getData().getMessage().getText();
+                                                    getView().renderErrorCheckPromoShipmentData(message);
+                                                } else {
+                                                    getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        if (!noToast) {
+                                            getView().showToastError(responseGetPromoStack.getMessage().get(0));
                                         }
                                     }
                                 }
-                            } else {
-                                if (!noToast) {
-                                    getView().showToastError(responseGetPromoStack.getMessage().get(0));
-                                }
                             }
-                        }
-                    }
-                });
+                        })
+        );
     }
 
     @Override
@@ -1526,7 +1526,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().showLoading();
             }
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
-            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse));
+            compositeSubscription.add(
+                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+                            .subscribe(new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse))
+            );
         }
     }
 
@@ -1540,7 +1543,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (notEligiblePromoCodes.size() > 0) {
             getView().showLoading();
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), notEligiblePromoCodes);
-            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearNotEligiblePromoSubscriber(getView(), this, checkoutType, notEligiblePromoHolderdataArrayList));
+            compositeSubscription.add(
+                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+                            .subscribe(new ClearNotEligiblePromoSubscriber(getView(), this, checkoutType, notEligiblePromoHolderdataArrayList))
+            );
         }
     }
 
@@ -1550,29 +1556,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         promoCodeList.add(promoCode);
 
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+        compositeSubscription.add(
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearCacheAutoApplyStackResponse>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                // Do nothing
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                ClearCacheAutoApplyStackResponse responseData = graphqlResponse.getData(ClearCacheAutoApplyStackResponse.class);
-                if (getView() != null) {
-                    if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
-                        tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
-                        getView().updateTickerAnnouncementMessage();
                     }
-                    getView().onSuccessClearPromoLogistic();
-                }
-            }
-        });
+
+                    @Override
+                    public void onError(Throwable e) {
+                        // Do nothing
+                    }
+
+                    @Override
+                    public void onNext(ClearCacheAutoApplyStackResponse responseData) {
+                        if (getView() != null) {
+                            if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
+                                tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
+                                getView().updateTickerAnnouncementMessage();
+                            }
+                            getView().onSuccessClearPromoLogistic();
+                        }
+                    }
+                })
+        );
     }
 
     @Override
@@ -1585,9 +1592,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         getView().showLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(),
-                new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
-                        newPromoList, isFromMultipleAddress, isOneClickShipment, corner, isTradeIn, deviceId, type));
+        compositeSubscription.add(
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
+                        new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
+                                newPromoList, isFromMultipleAddress, isOneClickShipment, corner, isTradeIn, deviceId, type)
+                )
+        );
     }
 
     @Override
@@ -1639,8 +1649,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
             getView().showLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
-            checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                    new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this, checkPromoStackingCodeMapper, type, newPromoList.get(0).getCode()));
+            compositeSubscription.add(
+                    checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                            .subscribe(new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this, checkPromoStackingCodeMapper, type, newPromoList.get(0).getCode()))
+            );
         }
     }
 
