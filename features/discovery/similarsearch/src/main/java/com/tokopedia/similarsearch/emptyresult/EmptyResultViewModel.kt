@@ -1,0 +1,3 @@
+package com.tokopedia.similarsearch.emptyresult
+
+internal class EmptyResultViewModel
