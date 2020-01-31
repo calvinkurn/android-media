@@ -1176,11 +1176,8 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventEnhanceImpressionPlayBanner(PlayCardViewModel playCardViewModel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(playCardViewModel.getEnhanceImpressionPlayBanner());
-        }
+    public static void eventEnhanceImpressionPlayBanner(TrackingQueue trackingQueue, PlayCardViewModel playCardViewModel) {
+        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner());
     }
 
     public static void eventClickPlayBanner(PlayCardViewModel playCardViewModel) {
