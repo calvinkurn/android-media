@@ -2263,7 +2263,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             recommendationList?.let {
                 sendAnalyticsOnViewProductRecommendation(
-                        dPresenter.generateRecommendationDataAnalytics(it, FLAG_IS_CART_EMPTY)
+                        dPresenter.generateRecommendationImpressionDataAnalytics(it, FLAG_IS_CART_EMPTY)
                 )
             }
         }

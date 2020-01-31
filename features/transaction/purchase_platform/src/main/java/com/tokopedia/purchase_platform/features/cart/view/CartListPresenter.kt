@@ -622,7 +622,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return enhancedECommerceCartMapData.cartMap
     }
 
-    override fun generateRecommendationDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
+    override fun generateRecommendationImpressionDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
         val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
             var position = 1
             for (cartRecommendationItemHolderData in cartRecommendationItemHolderDataList) {

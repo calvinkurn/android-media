@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.cart.view
+package com.tokopedia.purchase_platform.features.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
@@ -11,6 +11,8 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartI
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePriceData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
+import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
+import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -26,7 +28,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterTest : Spek({
+object CartListPresenterCalculateSubTotalTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()

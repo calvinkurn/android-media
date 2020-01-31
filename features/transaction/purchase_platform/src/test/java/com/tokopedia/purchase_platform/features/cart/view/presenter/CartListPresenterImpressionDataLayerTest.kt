@@ -5,13 +5,11 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -36,7 +34,7 @@ import rx.subscriptions.CompositeSubscription
  * Created by Irfan Khoirul on 2020-01-30.
  */
 
-object CartListPresenterEnhanceEcommerceDataLayerTest : Spek({
+object CartListPresenterImpressionDataLayerTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -58,47 +56,7 @@ object CartListPresenterEnhanceEcommerceDataLayerTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate delete cart data analytics") {
-
-        val cartListPresenter by memoized {
-            CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, compositeSubscription, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase,
-                    seamlessLoginUsecase, TestSchedulers
-            )
-        }
-
-        beforeEachTest {
-            cartListPresenter.attachView(view)
-        }
-
-        Scenario("1 item selected") {
-
-            lateinit var result: Map<String, Any>
-
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData())
-            }
-
-            When("generate cart data analytics") {
-                result = cartListPresenter.generateDeleteCartDataAnalytics(cartItemDataList)
-            }
-
-            Then("should be containing 1 product") {
-                val action = result[EnhancedECommerceCartMapData.REMOVE_ACTION] as Map<String, Any>
-                val products = action[EnhancedECommerceCartMapData.KEY_PRODUCTS] as List<Any>
-                assertEquals(1, products.size)
-            }
-
-        }
-
-    }
-
-    Feature("generate recommendation data analytics") {
+    Feature("generate recommendation impression data analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -125,7 +83,7 @@ object CartListPresenterEnhanceEcommerceDataLayerTest : Spek({
             }
 
             When("generate recommendation data analytics") {
-                result = cartListPresenter.generateRecommendationDataAnalytics(recommendationDataList, false)
+                result = cartListPresenter.generateRecommendationImpressionDataAnalytics(recommendationDataList, false)
             }
 
             Then("should be containing 1 product") {
@@ -149,7 +107,7 @@ object CartListPresenterEnhanceEcommerceDataLayerTest : Spek({
             }
 
             When("generate recommendation data analytics") {
-                result = cartListPresenter.generateRecommendationDataAnalytics(recommendationDataList, true)
+                result = cartListPresenter.generateRecommendationImpressionDataAnalytics(recommendationDataList, true)
             }
 
             Then("should be containing 1 product") {
@@ -166,7 +124,7 @@ object CartListPresenterEnhanceEcommerceDataLayerTest : Spek({
 
     }
 
-    Feature("generate wishlist data analytics") {
+    Feature("generate wishlist impression data analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -234,7 +192,7 @@ object CartListPresenterEnhanceEcommerceDataLayerTest : Spek({
 
     }
 
-    Feature("generate recent view data analytics") {
+    Feature("generate recent view impression data analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -296,70 +254,6 @@ object CartListPresenterEnhanceEcommerceDataLayerTest : Spek({
             Then("key `list` value should be `empty cart`") {
                 val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
                 assertTrue((impression[0][EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
-            }
-
-        }
-
-    }
-
-    Feature("generate recommendation data click analytics") {
-
-        val cartListPresenter by memoized {
-            CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, compositeSubscription, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase,
-                    seamlessLoginUsecase, TestSchedulers
-            )
-        }
-
-        beforeEachTest {
-            cartListPresenter.attachView(view)
-        }
-
-        Scenario("1 item selected and cart is not empty") {
-
-            lateinit var result: Map<String, Any>
-
-            When("generate recommendation data click analytics") {
-                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(), false, 0)
-            }
-
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                assertEquals(1, productList.size)
-            }
-
-            Then("key `list` value should be `cart`") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
-            }
-
-        }
-
-        Scenario("1 item selected and cart is empty") {
-
-            lateinit var result: Map<String, Any>
-
-            When("generate recommendation data click analytics") {
-                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(), true, 0)
-            }
-
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                assertEquals(1, productList.size)
-            }
-
-            Then("key `list` value should be `empty cart`") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_ON_EMPTY_CART)
             }
 
         }
