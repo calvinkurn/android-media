@@ -16,6 +16,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_DYNAMIC_LEGO_BANNER
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
@@ -110,7 +111,11 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
         override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                holder.imageView.loadImageFitCenter(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+                if(legoBannerType == TYPE_FOUR_GRID_LEGO){
+                    holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+                } else {
+                    holder.imageView.loadImageFitCenter(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+                }
                 holder.imageView.setOnClickListener {
                     when(legoBannerType) {
                         TYPE_SIX_GRID_LEGO -> {

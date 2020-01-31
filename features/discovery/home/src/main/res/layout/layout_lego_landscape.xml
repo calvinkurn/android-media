@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
+    android:scaleType="centerCrop"
     android:background="?attr/selectableItemBackground">
 
 </androidx.appcompat.widget.AppCompatImageView>
