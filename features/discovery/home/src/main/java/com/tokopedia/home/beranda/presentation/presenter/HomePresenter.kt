@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.presenter
 
 import android.annotation.SuppressLint
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -644,7 +645,8 @@ open class HomePresenter :
     }
 
     // Load data play from API
-    private fun loadPlayBannerFromNetwork(playBanner: PlayCardViewModel){
+    @VisibleForTesting
+    fun loadPlayBannerFromNetwork(playBanner: PlayCardViewModel){
         launchCatchError(coroutineContext, block = {
             playCardHomeUseCase.execute().collect {
                 // If no data && no cover url don't show play widget

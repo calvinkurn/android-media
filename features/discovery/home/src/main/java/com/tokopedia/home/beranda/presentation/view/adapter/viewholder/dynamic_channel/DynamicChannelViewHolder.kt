@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
@@ -19,8 +18,6 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class DynamicChannelViewHolder(itemView: View,
@@ -114,7 +111,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                         HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
                                 DynamicLinkHelper.getActionLink(channel.header))
-                        onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.getHeader()))
+                        onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
                     }
                 } else {
                     seeAllButton.visibility = View.GONE
