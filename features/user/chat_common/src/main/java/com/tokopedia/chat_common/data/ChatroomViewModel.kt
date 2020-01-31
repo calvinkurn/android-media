@@ -32,8 +32,8 @@ class ChatroomViewModel(val listChat: ArrayList<Visitable<*>> = ArrayList(),
 
     fun getInterlocutorName(): CharSequence {
         var name = headerModel.name
-        if (name.length > 21) {
-            name = name.substring(0, 21) + "..."
+        if (name.length > 16) {
+            name = name.substring(0, 16) + "..."
         }
         return name
     }
