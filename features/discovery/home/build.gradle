@@ -145,7 +145,6 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
 
     // Test
-    kaptTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
