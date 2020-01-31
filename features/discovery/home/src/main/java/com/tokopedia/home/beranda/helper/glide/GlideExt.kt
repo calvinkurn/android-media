@@ -170,6 +170,19 @@ fun ImageView.loadImageCenterCrop(url: String){
             .into(this)
 }
 
+fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemoryCache: Boolean, placeholder: Int = -1){
+    Glide.with(context)
+            .load(url)
+            .override(width, height)
+            .format(DecodeFormat.PREFER_ARGB_8888)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .skipMemoryCache(skipMemoryCache)
+            .transform(CenterCrop(), RoundedCorners(15))
+            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
+            .placeholder(placeholder)
+            .into(this)
+}
+
 fun ImageView.loadGif(url: String){
     Glide.with(context)
             .asGif()

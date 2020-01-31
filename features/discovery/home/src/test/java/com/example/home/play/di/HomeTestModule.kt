@@ -34,7 +34,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineDispatcher
 
 class HomeTestModule : HomeModule() {
     override fun provideHomeDispatcher(): HomeDispatcherProvider {
@@ -57,11 +56,11 @@ class HomeTestModule : HomeModule() {
         return mockk(relaxed = true)
     }
 
-    override fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: CoroutineDispatcher): HomeRemoteDataSource {
+    override fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider): HomeRemoteDataSource {
         return mockk(relaxed = true)
     }
 
-    override fun providePlayRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: CoroutineDispatcher): PlayRemoteDataSource {
+    override fun providePlayRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider): PlayRemoteDataSource {
         return mockk(relaxed = true)
     }
 

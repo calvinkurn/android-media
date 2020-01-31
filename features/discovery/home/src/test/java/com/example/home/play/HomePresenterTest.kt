@@ -16,12 +16,18 @@ class HomePresenterTest : Spek({
         lateinit var homePresenter: HomePresenter
         val mockUserId = "12345"
 
-        Scenario("Get wishlist data success with empty initial wishlist data will add new wishlist data") {
+        Scenario("Get play data success and image valid") {
 
-            Given("Wishlist viewmodel") {
+            Given("home presenter") {
                 val component = DaggerHomeTestComponent.builder()
+
                 homePresenter = createPresenter()
             }
+
+            Given("play data returns success"){
+
+            }
+
 //            Given("Get wishlist data returns wishlist data below recommendation treshold (4)") {
 //                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
 //                        WishlistItem(id = "1"),

@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
@@ -61,6 +61,7 @@ class PlayCardViewHolder(
         get() = masterJob + Dispatchers.IO
 
     override fun bind(element: PlayCardViewModel) {
+        playCardViewModel = element
         container.hide()
     }
 
@@ -80,7 +81,7 @@ class PlayCardViewHolder(
             description.setValue("")
 
             thumbnailView.show()
-            thumbnailView.loadImageWithoutPlaceholder(playChannel.coverUrl, 350, 150, true)
+            thumbnailView.loadImage(playChannel.coverUrl, 350, 150, true)
 
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
