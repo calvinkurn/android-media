@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.pinned
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
@@ -13,13 +14,14 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 03/12/19
  */
-class PinnedComponent(
+open class PinnedComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<PinnedInteractionEvent>, CoroutineScope by coroutineScope, PinnedView.Listener {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     //temp state
     private var shouldShow: Boolean = false
@@ -65,6 +67,6 @@ class PinnedComponent(
         }
     }
 
-    private fun initView(container: ViewGroup): PinnedView =
+    open protected fun initView(container: ViewGroup): PinnedView =
             PinnedView(container, this)
 }
