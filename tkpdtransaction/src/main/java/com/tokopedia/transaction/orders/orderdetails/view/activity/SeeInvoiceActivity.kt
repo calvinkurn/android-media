@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
 
-    lateinit var orderListAnalytics: OrderListAnalytics
+    var orderListAnalytics: OrderListAnalytics? = null
         @Inject set
 
     private var status: Status? = null
