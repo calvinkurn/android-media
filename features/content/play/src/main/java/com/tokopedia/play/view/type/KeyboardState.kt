@@ -5,9 +5,14 @@ package com.tokopedia.play.view.type
  */
 sealed class KeyboardState {
 
-    data class Shown(val estimatedKeyboardHeight: Int) : KeyboardState()
-    object Hidden : KeyboardState()
+    abstract val isPreviousStateSame: Boolean
+
+    data class Shown(val estimatedKeyboardHeight: Int, override val isPreviousStateSame: Boolean) : KeyboardState()
+    data class Hidden(override val isPreviousStateSame: Boolean) : KeyboardState()
 
     val isShown: Boolean
         get() = this is Shown
+
+    val isHidden: Boolean
+        get() = this is Hidden
 }

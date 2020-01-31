@@ -21,6 +21,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -44,7 +45,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     }
 
     fun autofill(lat: Double, long: Double, zoom: Float) {
-        if (AddNewAddressUtils.hasDefaultCoordinate(lat, long) || zoom < ZOOM_LEVEL_THRESHOLD) {
+        Timber.d("Current zoom level : $zoom")
+        if (AddNewAddressUtils.hasDefaultCoordinate(lat, long)) {
             view.showUndetectedDialog()
             return
         }

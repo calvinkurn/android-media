@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.overlayvideo
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -14,21 +15,21 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 20/01/20
  */
-class OverlayVideoComponent(
+open class OverlayVideoComponent(
         container: ViewGroup,
         bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
-        uiView.hide()
-
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.type.isVod, it.videoProp.state)
                         }
                     }
@@ -43,7 +44,7 @@ class OverlayVideoComponent(
         return emptyFlow()
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             OverlayVideoView(container)
 
     private fun handleVideoStateChanged(isVod: Boolean, state: TokopediaPlayVideoState) {

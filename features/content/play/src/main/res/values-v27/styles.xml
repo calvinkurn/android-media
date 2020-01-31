@@ -4,11 +4,17 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowSoftInputMode">stateAlwaysHidden|stateHidden</item>
 
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
 
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="android:windowContentTransitions">true</item>
+
+        <item name="android:windowSharedElementEnterTransition">@transition/anim_play_shared_enter</item>
+        <item name="android:windowSharedElementExitTransition">@transition/anim_play_shared_return</item>
+
     </style>
 </resources>

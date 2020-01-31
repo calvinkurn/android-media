@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.chatlist
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
@@ -15,24 +16,24 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 03/12/19
  */
-class ChatListComponent(
+open class ChatListComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
-        uiView.hide()
-
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
@@ -52,6 +53,6 @@ class ChatListComponent(
         uiView.onDestroy()
     }
 
-    private fun initView(container: ViewGroup): ChatListView =
+    protected open fun initView(container: ViewGroup): ChatListView =
             ChatListView(container)
 }

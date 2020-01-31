@@ -1,46 +1,24 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.beranda.data.model.PlayChannel
-import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
-import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
+import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import java.util.*
 
 class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
-        HomeBaseAdapter<HomeAdapterFactory>(asyncDifferConfig, adapterTypeFactory, visitables), LifecycleObserver{
+        HomeBaseAdapter<HomeAdapterFactory>(asyncDifferConfig, adapterTypeFactory, visitables){
 
-   companion object{
-       //without ticker
-       const val POSITION_HEADER_WITHOUT_TICKER = 1
-
-       //with ticker
-       const val POSITION_HEADER_WITH_TICKER = 2
-
-       const val POSITION_UNDEFINED = -1
-
-   }
    private var mRecyclerView: RecyclerView? = null
    private var currentSelected = -1
-    private var mLayoutManager: LinearLayoutManager? = null
-   private val retryModel: RetryModel = RetryModel()
-
+   private var mLayoutManager: LinearLayoutManager? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -55,193 +33,9 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         super.onAttachedToRecyclerView(recyclerView)
         mRecyclerView = recyclerView
         mLayoutManager = mRecyclerView?.layoutManager as LinearLayoutManager
-        mRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            @SuppressLint("SyntheticAccessor")
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    //find first index visible on screen
-                    val firstIndexVisible = mLayoutManager?.findFirstVisibleItemPosition() ?: -1
-                    val lastIndexVisible = mLayoutManager?.findLastVisibleItemPosition() ?: -1
-                    val positions = getPositionPlay().filter { it in firstIndexVisible..lastIndexVisible }
-
-                    // check if the view is completely visible on first item
-                    if (firstIndexVisible != -1 &&
-                            positions.isNotEmpty() &&
-                            (positions.first() != currentSelected || currentSelected == -1) && //check if we missing currentSelected
-                            getExoPlayerByPosition(positions.first())?.isPlayerPlaying() == false &&
-                            (getViewHolder(positions.first()) as PlayCardViewHolder).wantsToPlay()
-                    ) {
-                        onSelectedItemChanged(positions.first())
-                    }
-
-                    if(positions.isEmpty()) onSelectedItemChanged(-1)
-                }
-            }
-        })
     }
 
-    fun clearItems() {
-        clearExoPlayer()
-        visitables.clear()
-    }
-
-    fun showRetry() {
-        if (visitables.contains(retryModel)) {
-            return
-        }
-        val positionStart = itemCount
-        visitables.add(retryModel)
-        notifyItemRangeInserted(positionStart, 1)
-    }
-
-    fun removeRetry() {
-        val index = visitables.indexOf(retryModel)
-        visitables.remove(retryModel)
-        notifyItemRemoved(index)
-    }
-
-    //mapping another visitable to visitables from home_query
-    fun setItems(visitables: List<Visitable<*>>) {
-        this.visitables.clear()
-        this.visitables.addAll(visitables)
-        notifyDataSetChanged()
-    }
-
-    fun hasReview(): Int {
-        for (i in visitables.indices) {
-            if (visitables[i] is ReviewViewModel) {
-                return i
-            }
-        }
-        return -1
-    }
-
-    fun updateReviewItem(suggestedProductReview: SuggestedProductReview?) {
-        if (visitables[hasReview()] is ReviewViewModel && hasReview() != -1) {
-            (visitables[hasReview()] as ReviewViewModel).suggestedProductReview = suggestedProductReview!!
-            notifyItemChanged(hasReview())
-        }
-    }
-
-    fun updateHomeQueryItems(newVisitable: List<Visitable<*>?>?) {
-        clearItems()
-        visitables = newVisitable
-        notifyDataSetChanged()
-    }
-
-    fun removeGeolocationViewModel() {
-        val removedPosition = removeGeolocation()
-        if (removedPosition != -1) {
-            notifyItemRemoved(removedPosition)
-        }
-    }
-
-    fun removeReviewViewModel() {
-        val reviewPosition = removeReview()
-        if (reviewPosition != -1) {
-            notifyItemRemoved(reviewPosition)
-        }
-    }
-
-    fun setHomeHeaderViewModel(homeHeaderViewModel: HeaderViewModel) {
-        val changedPosition = setHomeHeader(homeHeaderViewModel)
-        if (changedPosition != POSITION_UNDEFINED) {
-            notifyItemChanged(changedPosition)
-        }
-    }
-
-    private fun hasHomeHeaderViewModel(): Int {
-        return if (visitables != null && visitables.size > 0) {
-            if (visitables.size > POSITION_HEADER_WITHOUT_TICKER &&
-                    visitables[POSITION_HEADER_WITHOUT_TICKER] is HeaderViewModel) {
-                POSITION_HEADER_WITHOUT_TICKER
-            } else if (visitables.size > POSITION_HEADER_WITH_TICKER &&
-                    visitables[POSITION_HEADER_WITH_TICKER] is HeaderViewModel) {
-                POSITION_HEADER_WITH_TICKER
-            } else {
-                POSITION_UNDEFINED
-            }
-        } else POSITION_UNDEFINED
-    }
-
-    private fun removeGeolocation(): Int {
-        for (i in visitables.indices) {
-            if (visitables[i] is GeolocationPromptViewModel) {
-                visitables.removeAt(i)
-                return i
-            }
-        }
-        return POSITION_UNDEFINED
-    }
-
-    private fun removeReview(): Int {
-        for (i in visitables.indices) {
-            if (visitables[i] is ReviewViewModel) {
-                visitables.removeAt(i)
-                return i
-            }
-        }
-        return POSITION_UNDEFINED
-    }
-
-    //update and return updated position
-    private fun setHomeHeader(homeHeaderViewModel: HeaderViewModel): Int {
-        when (hasHomeHeaderViewModel()) {
-            POSITION_HEADER_WITH_TICKER -> {
-                visitables[POSITION_HEADER_WITH_TICKER] = homeHeaderViewModel
-                return POSITION_HEADER_WITH_TICKER
-            }
-            POSITION_HEADER_WITHOUT_TICKER -> {
-                visitables[POSITION_HEADER_WITHOUT_TICKER] = homeHeaderViewModel
-                return POSITION_HEADER_WITHOUT_TICKER
-            }
-        }
-        return POSITION_UNDEFINED
-    }
-
-    fun getRecommendationFeedSectionPosition(): Int {
-        return visitables.size - 1
-    }
-
-    private fun clearExoPlayer(){
-        currentSelected = -1
-    }
-
-    fun setPlayData(playContentBanner: PlayChannel?, adapterPosition: Int) {
-        //checking if size list is less than position than do nothing
-        if(visitables.size <= adapterPosition) return
-        playContentBanner?.let { playChannel ->
-            if (visitables[adapterPosition] is PlayCardViewModel) {
-                (visitables[adapterPosition] as PlayCardViewModel).setPlayCardHome(playChannel)
-                notifyItemChanged(adapterPosition, true)
-            }else if(visitables.size > adapterPosition){
-                visitables.add(adapterPosition, PlayCardViewModel().apply { setPlayCardHome(playChannel) })
-                notifyItemChanged(adapterPosition)
-            }
-        }
-    }
-
-    private fun onSelectedItemChanged(newSelected: Int) {
-        if(currentSelected != -1) {
-            pausePlayerByPosition(currentSelected)
-        }
-        if(newSelected != -1) {
-            prepareAndPlayByPosition(newSelected)
-        }
-        currentSelected = newSelected
-    }
-
-    private fun prepareAndPlayByPosition(position: Int) {
-        val newPlayer: TokopediaPlayerHelper? = getExoPlayerByPosition(position)
-        newPlayer?.playerPlay()
-    }
-
-    private fun pausePlayerByPosition(position: Int) {
-        getExoPlayerByPosition(position)?.playerPause()
-    }
-
-    private fun getExoPlayerByPosition(firstVisible: Int): TokopediaPlayerHelper? {
+    private fun getExoPlayerByPosition(firstVisible: Int): HomePlayWidgetHelper? {
         val holder: AbstractViewHolder<out Visitable<*>>? = getViewHolder(firstVisible)
         return if (holder != null && holder is PlayCardViewHolder) {
             holder.getHelper()
@@ -253,14 +47,14 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
         if(holder is PlayCardViewHolder) {
-            holder.getHelper()?.onViewAttach()
+            holder.onViewAttach()
         }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewDetachedFromWindow(holder)
         if(holder is PlayCardViewHolder) {
-            holder.getHelper()?.onViewDetach()
+            holder.onViewDetach()
         }
     }
 
@@ -270,16 +64,16 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
 
     private fun getPositionPlay(): List<Int>{
         val list = mutableListOf<Int>()
-        for (i in visitables.indices) {
-            if(visitables[i] is PlayCardViewModel) list.add(i)
+        for (i in currentList.indices) {
+            if(getItem(i) is PlayCardViewModel) list.add(i)
         }
         return list
     }
 
-    private fun getAllExoPlayers(): ArrayList<TokopediaPlayerHelper> {
-        val list: ArrayList<TokopediaPlayerHelper> = ArrayList()
-        for (i in visitables.indices) {
-            val exoPlayerHelper: TokopediaPlayerHelper? = getExoPlayerByPosition(i)
+    private fun getAllExoPlayers(): ArrayList<HomePlayWidgetHelper> {
+        val list: ArrayList<HomePlayWidgetHelper> = ArrayList()
+        for (i in currentList.indices) {
+            val exoPlayerHelper: HomePlayWidgetHelper? = getExoPlayerByPosition(i)
             if (exoPlayerHelper != null) {
                 list.add(exoPlayerHelper)
             }
@@ -287,23 +81,22 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         return list
     }
 
-    // Activity LifeCycle
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        if(currentSelected != -1 && (getViewHolder(currentSelected) is PlayCardViewHolder)){
+        val positions = getPositionPlay()
+        if(positions.isNotEmpty() && getViewHolder(positions.first()) is PlayCardViewHolder){
+            currentSelected = positions.first()
             (getViewHolder(currentSelected) as PlayCardViewHolder).resume()
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        if (currentSelected != -1 && (getViewHolder(currentSelected) is PlayCardViewHolder)) {
+        val positions = getPositionPlay()
+        if(positions.isNotEmpty() && getViewHolder(positions.first()) is PlayCardViewHolder){
+            currentSelected = positions.first()
             (getViewHolder(currentSelected) as PlayCardViewHolder).pause()
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         for (exoPlayerHelper in getAllExoPlayers()) {
             exoPlayerHelper.onActivityStop()

@@ -9,7 +9,6 @@ import io.mockk.MockKVerificationScope
 
 fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSectionContract.View) {
     productListView.showRefreshLayout()
-    productListView.incrementStart()
 }
 
 fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSectionContract.View) {
@@ -26,7 +25,6 @@ fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSect
     productListView.addLoading()
     productListView.setTotalSearchResultCount(any())
     productListView.stopTracePerformanceMonitoring()
-    productListView.storeTotalData(any())
     productListView.updateScrollListener()
 }
 
@@ -35,13 +33,40 @@ fun MockKVerificationScope.verifyHideLoading(productListView: ProductListSection
 }
 
 fun MockKVerificationScope.verifyShowError(productListView: ProductListSectionContract.View) {
+    productListView.showRefreshLayout()
     productListView.removeLoading()
     productListView.showNetworkError(any())
     productListView.hideRefreshLayout()
+}
+
+fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListSectionContract.View, startRow: Int = 0) {
+    productListView.removeLoading()
+    productListView.hideRefreshLayout()
+    productListView.showNetworkError(startRow)
 }
 
 fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View, generalSearchTrackingModel: GeneralSearchTrackingModel) {
     productListView.sendTrackingEventAppsFlyerViewListingSearch(any(), any(), any())
     productListView.sendTrackingEventMoEngageSearchAttempt(any(), any(), any())
     productListView.sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel)
+}
+
+fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductListSectionContract.View) {
+    productListView.lastProductItemPositionFromCache
+    productListView.saveLastProductItemPositionToCache(8)
+    productListView.removeLoading()
+    productListView.addProductList(any())
+    productListView.addLoading()
+    productListView.updateScrollListener()
+
+    productListView.hideRefreshLayout()
+}
+
+fun MockKVerificationScope.verifyIsVisible(productListView: ProductListSectionContract.View) {
+    productListView.setupSearchNavigation()
+    productListView.trackScreenAuthenticated()
+}
+
+fun MockKVerificationScope.verifyIsAdded(productListView: ProductListSectionContract.View) {
+    productListView.reloadData()
 }

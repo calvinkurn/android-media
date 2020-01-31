@@ -76,8 +76,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     companion object {
 
-        private const val REQUEST_CODE_LOGIN = 55
-
         private const val INVISIBLE_ALPHA = 0f
         private const val VISIBLE_ALPHA = 1f
         private const val VISIBILITY_ANIMATION_DURATION = 200L
@@ -145,6 +143,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
+    override fun onResume() {
+        super.onResume()
+        playViewModel.resume()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
         initComponents(view as ViewGroup)
@@ -192,7 +195,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
-                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.NoActionMore)
+                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
         }
     }
 
@@ -203,12 +206,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             val sizeContainerMarginLp = sizeContainerView.layoutParams as ViewGroup.MarginLayoutParams
             sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
             sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
+            sizeContainerView.layoutParams = sizeContainerMarginLp
 
             val endLiveInfoView = view.findViewById<View>(endLiveInfoComponent.getContainerId())
             endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
 
             insets
         }
+
+        view.requestApplyInsets()
     }
 
     //region observe
@@ -313,7 +319,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
 
-                if (it is KeyboardState.Shown) calculateInteractionHeightOnKeyboardShown(it.estimatedKeyboardHeight)
+                if (it is KeyboardState.Shown && !it.isPreviousStateSame) calculateInteractionHeightOnKeyboardShown(it.estimatedKeyboardHeight)
             }
         })
     }
@@ -377,6 +383,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         //play button should be on top of other component so it can be clicked
         playButtonComponent = initPlayButtonComponent(container)
 
+        sendInitState()
+
         layoutView(
                 container = container,
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
@@ -397,6 +405,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun initSendChatComponent(container: ViewGroup): UIComponent<SendChatInteractionEvent> {
         val sendChatComponent = SendChatComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
 
         launch {
             sendChatComponent.getUserInteractionEvents()
@@ -561,6 +570,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return endLiveInfoComponent
     }
     //endregion
+
+    private fun sendInitState() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner).emit(
+                    ScreenStateEvent::class.java,
+                    ScreenStateEvent.Init
+            )
+        }
+    }
 
     //region layouting
     private fun layoutView(
@@ -967,8 +985,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openLoginPage() {
-//        val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-//        startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
         openPageByApplink(ApplinkConst.LOGIN)
     }
 
@@ -989,7 +1005,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         val quickReplyView = view?.findViewById<View>(quickReplyComponent.getContainerId())
         val quickReplyViewTotalHeight = if (quickReplyView != null && !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
-            val height = if (quickReplyView.height <= 0) view?.findViewById<View>(statsComponent.getContainerId())?.height.orZero() else quickReplyView.height
+            val height = if (quickReplyView.height <= 0) 2 * view?.findViewById<View>(statsComponent.getContainerId())?.height.orZero() else quickReplyView.height
             val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
         } else 0

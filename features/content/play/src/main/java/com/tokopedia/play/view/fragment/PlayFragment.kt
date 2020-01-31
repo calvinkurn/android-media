@@ -4,10 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -29,11 +26,11 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import javax.inject.Inject
-
 
 /**
  * Created by jegul on 29/11/19
@@ -41,7 +38,6 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val MOCK_CHANNEL_ID = "1953"
 
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
 
@@ -61,7 +57,6 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    // TODO available channelId: 1543 > VOD, 1591, 1387
     private var channelId = ""
 
     @Inject
@@ -79,6 +74,8 @@ class PlayFragment : BaseDaggerFragment() {
     private lateinit var flInteraction: FrameLayout
     private lateinit var flGlobalError: FrameLayout
 
+    private val keyboardWatcher = KeyboardWatcher()
+
     override fun getScreenName(): String = "Play"
 
     override fun initInjector() {
@@ -94,7 +91,7 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: MOCK_CHANNEL_ID
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
         PlayAnalytics.sendScreen(channelId)
     }
 
@@ -125,21 +122,6 @@ class PlayFragment : BaseDaggerFragment() {
                     .replace(flGlobalError.id, PlayErrorFragment.newInstance(channelId), ERROR_FRAGMENT_TAG)
                     .commit()
         }
-
-        KeyboardWatcher().listen(view, object : KeyboardWatcher.Listener {
-            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                playViewModel.showKeyboard(estimatedKeyboardHeight)
-                ivClose.visible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
-
-            override fun onKeyboardHidden() {
-                playViewModel.hideKeyboard()
-                ivClose.invisible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-                this@PlayFragment.onKeyboardHidden()
-            }
-        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -148,6 +130,25 @@ class PlayFragment : BaseDaggerFragment() {
 
         observeSocketInfo()
         observeEventUserInfo()
+        observeVideoProperty()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireView().post {
+            registerKeyboardListener(requireView())
+        }
+    }
+
+    override fun onPause() {
+        unregisterKeyboardListener(requireView())
+        super.onPause()
+    }
+
+    fun onNewChannelId(channelId: String?) {
+        if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
+            (activity as PlayNewChannelInteractor).onNewChannel(channelId)
+        }
     }
 
     private fun initView(view: View) {
@@ -219,6 +220,12 @@ class PlayFragment : BaseDaggerFragment() {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
             else if (it.isBanned)
                 showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+        })
+    }
+
+    private fun observeVideoProperty() {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            setWindowSoftInputMode(it.type.isLive)
         })
     }
 
@@ -295,5 +302,33 @@ class PlayFragment : BaseDaggerFragment() {
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(v.windowToken, 0)
         }
+    }
+
+    private fun setWindowSoftInputMode(isLive: Boolean) {
+        requireActivity().window.setSoftInputMode(
+                if (!isLive) WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+                else WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        )
+    }
+
+    private fun registerKeyboardListener(view: View) {
+        keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
+            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                playViewModel.onKeyboardShown(estimatedKeyboardHeight)
+                ivClose.visible()
+                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+
+            override fun onKeyboardHidden() {
+                playViewModel.onKeyboardHidden()
+                ivClose.invisible()
+                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                this@PlayFragment.onKeyboardHidden()
+            }
+        })
+    }
+
+    private fun unregisterKeyboardListener(view: View) {
+        keyboardWatcher.unlisten(view)
     }
 }

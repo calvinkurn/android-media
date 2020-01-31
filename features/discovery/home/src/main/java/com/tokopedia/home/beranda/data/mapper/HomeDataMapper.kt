@@ -8,7 +8,6 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon.DynamicIcon
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
@@ -87,12 +86,12 @@ class HomeDataMapper(
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
                                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC || channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
-                                channel.promoName = String.format(PROMO_NAME_DC_MIX_BANNER, position.toString(), channel.getHeader().getName())
+                                channel.promoName = String.format(PROMO_NAME_DC_MIX_BANNER, position.toString(), channel.header.name)
                                 channel.setPosition(position)
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_REVIEW) {
                                 channel.setPosition(position)
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF) {
-                                channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.getHeader().getName())
+                                channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.header.name)
                                 channel.setPosition(position)
                             }
                         }
@@ -185,11 +184,6 @@ class HomeDataMapper(
                             if (!list.contains(playBanner)) list.add(playBanner)
                         }
                     }
-                }
-            }
-            if(homeData.dynamicHomeChannel.channels.filter { it.layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER }.isEmpty()){
-                if (position == 2 && !isCache){
-                    list.add(PlayCardViewModel())
                 }
             }
         }
@@ -333,9 +327,8 @@ class HomeDataMapper(
     private fun mappingPlayChannel(channel: DynamicHomeChannel.Channels,
                                    trackingData: MutableMap<String, Any>,
                                    isCache: Boolean): Visitable<*> {
-        val playCardViewModel = PlayCardViewModel()
+        val playCardViewModel = PlayCardViewModel(channel, null)
         if (!isCache) {
-            playCardViewModel.setChannel(channel)
             playCardViewModel.setTrackingData(trackingData)
         }
         return playCardViewModel

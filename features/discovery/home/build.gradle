@@ -1,17 +1,22 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'de.mannodermaus.android-junit5'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        jcenter()
         maven { url 'https://hansel.io/maven' }
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -23,9 +28,24 @@ android {
             }
         }
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+    }
 }
 
 dependencies {
+    def newExoPlayerVersion = '2.11.1'
+
     // Feature
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.commonDigital)
@@ -71,6 +91,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.traceroute)
+    implementation project(rootProject.ext.libraries.deviceInfo)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -107,7 +128,6 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.multiDex
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
@@ -122,6 +142,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
 
+    implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
+
     // Test
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -130,6 +152,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
 }
 
 project.ext {

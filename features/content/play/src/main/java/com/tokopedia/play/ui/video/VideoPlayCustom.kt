@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Matrix
 import android.graphics.RectF
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.TextureView
@@ -20,10 +19,8 @@ import com.tokopedia.play.R
 class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
     companion object{
         private val playerLayoutId = R.layout.video_play_custom
-        const val ANIMATION_TRANSITION_NAME = "play_video"
     }
-    private var componentListener: ComponentListener? = null
-    private var overlayFrameLayout: FrameLayout? = null
+    private val componentListener: ComponentListener
     private var bufferingView: View? = null
     private var contentFrame: AspectRatioFrameLayout? = null
     private var player: Player? = null
@@ -46,9 +43,7 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            surfaceView?.transitionName = ANIMATION_TRANSITION_NAME
-        }
+        surfaceView?.id = R.id.fl_texture_view
         val params = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         surfaceView?.layoutParams = params

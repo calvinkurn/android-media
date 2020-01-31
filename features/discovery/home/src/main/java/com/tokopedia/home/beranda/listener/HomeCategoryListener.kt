@@ -41,7 +41,7 @@ interface HomeCategoryListener {
 
     fun openShop()
 
-    fun onOpenPlayActivity(videoPlayer: android.view.View, channelId: String?)
+    fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
     fun actionAppLinkWalletHeader(appLinkBalance: String)
 
@@ -86,4 +86,6 @@ interface HomeCategoryListener {
     fun putEEToIris(data: HashMap<String, Any>)
 
     fun getWindowWidth(): Int
+
+    fun addRecyclerViewScrollImpressionListener(adapterPosition: Int, onImpressionListener: ()->Unit)
 }

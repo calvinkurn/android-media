@@ -4,17 +4,21 @@ import android.content.res.Resources
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.usecase.RequestParams
-import rx.Subscriber
+import com.tokopedia.usecase.UseCase
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
-
-class CheckPromoStackingCodeUseCase(val resources: Resources) : GraphqlUseCase() {
+class CheckPromoStackingCodeUseCase constructor(val resources: Resources,
+                                                val mapper: CheckPromoStackingCodeMapper) : UseCase<ResponseGetPromoStackUiModel>() {
 
     val variables = HashMap<String, Any?>()
 
@@ -26,12 +30,19 @@ class CheckPromoStackingCodeUseCase(val resources: Resources) : GraphqlUseCase()
         variables.put("params", jsonObjectCheckoutRequest)
     }
 
-    override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
+    override fun createObservable(params: RequestParams?): Observable<ResponseGetPromoStackUiModel> {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.check_promo_code_promostacking), ResponseGetPromoStackFirst::class.java, variables)
-        clearRequest()
-        addRequest(graphqlRequest)
-
-        super.execute(requestParams, subscriber)
+        val graphqlUseCase = GraphqlUseCase()
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map {
+                    val responseGetPromoStack = mapper.map(it)
+                    responseGetPromoStack
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
+
 }

@@ -9,6 +9,8 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toAmountString
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -20,9 +22,8 @@ import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.toCompactAmountString
 import com.tokopedia.play.view.type.KeyboardState
-import com.tokopedia.play.view.type.PlayVideoType
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
@@ -80,6 +81,7 @@ class PlayViewModel @Inject constructor(
 
     private val _observableVOD = MutableLiveData<ExoPlayer>()
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
+    private val _observableChanelInfo = MutableLiveData<ChannelInfoUiModel>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
@@ -94,11 +96,11 @@ class PlayViewModel @Inject constructor(
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
-            _observableVideoProperty.value = VideoPropertyUiModel(it.videoType, _observableVideoProperty.value?.state
+            _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
                     ?: TokopediaPlayVideoState.NotConfigured)
         }
         addSource(playManager.getObservablePlayVideoState()) {
-            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayVideoType.Unknown, it)
+            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayChannelType.Unknown, it)
         }
         addSource(observablePartnerInfo) {
             val currentValue = _observablePinnedMessage.value
@@ -121,10 +123,14 @@ class PlayViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
-    var isLive: Boolean = false
-    var contentId: Int = 0
-    var contentType: Int = 0
-    var likeType: Int = 0
+    val isLive: Boolean
+        get() = _observableChanelInfo.value?.isLive ?: false
+    val contentId: Int
+        get() = _observableChanelInfo.value?.contentId.toZeroIfNull()
+    val contentType: Int
+        get() = _observableChanelInfo.value?.contentType.toZeroIfNull()
+    val likeType: Int
+        get() = _observableChanelInfo.value?.likeType.toZeroIfNull()
 
     init {
         //TODO(Remove, ONLY FOR TESTING)
@@ -150,14 +156,14 @@ class PlayViewModel @Inject constructor(
         return playManager.getDurationVideo()
     }
 
-    fun showKeyboard(estimatedKeyboardHeight: Int) {
+    fun onKeyboardShown(estimatedKeyboardHeight: Int) {
         _observableKeyboardState.value =
-                if (_observableVideoStream.value?.videoType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight)
-                else KeyboardState.Hidden
+                if (_observableVideoStream.value?.channelType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight, _observableKeyboardState.value?.isHidden == false)
+                else KeyboardState.Hidden(observableKeyboardState.value?.isShown == false)
     }
 
-    fun hideKeyboard() {
-        _observableKeyboardState.value = KeyboardState.Hidden
+    fun onKeyboardHidden() {
+        _observableKeyboardState.value = KeyboardState.Hidden(observableKeyboardState.value?.isShown == false)
     }
 
     fun getChannelInfo(channelId: String) {
@@ -166,44 +172,43 @@ class PlayViewModel @Inject constructor(
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
+
+            launch { getTotalLikes(channel.contentId, channel.contentType) }
+            launch { getIsLike(channel.contentId, channel.contentType) }
+
+            // TODO("remove, for testing")
+//            channel.videoStream = VideoStream(
+//                    "vertical",
+//                    "live",
+//                    true,
+//                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+
             /**
              * If Live => start web socket
              */
-            getPartnerInfo(channel)
-            // TODO("remove, for testing")
-            channel.videoStream = VideoStream(
-                    "vertical",
-                    "vod",
-                    false,
-                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
-
-            setStateLiveOrVod(channel)
-            setContentIdAndType(channel)
             if (channel.videoStream.isLive
-                    && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
+                    && channel.videoStream.type.equals(PlayChannelType.Live.value, true))
                 startWebSocket(channelId, channel.gcToken, channel.settings)
+
             playVideoStream(channel)
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
+            _observableChanelInfo.value = completeInfoUiModel.channelInfo
             _observableTotalViews.value = completeInfoUiModel.totalView
             _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
             _observableQuickReply.value = completeInfoUiModel.quickReply
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = mapEvent(channel)
-
-            val totalLike = getTotalLikes(channel.contentId, channel.contentType)
-            _observableTotalLikes.value = mapTotalLikes(totalLike)
-
-            if (userSession.isLoggedIn) {
-                val isLiked = getIsLike(channel.contentId, channel.contentType)
-                _observableIsLikeContent.value = isLiked
-            }
-
+            _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
             if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
+    }
+
+    fun resume() {
+        checkIsFollowedShop()
     }
 
     fun destroy() {
@@ -235,48 +240,59 @@ class PlayViewModel @Inject constructor(
             if (finalTotalLike < 0) finalTotalLike = 0
             _observableTotalLikes.value = TotalLikeUiModel(
                     finalTotalLike,
-                    finalTotalLike.toCompactAmountString(amountStringStepArray)
+                    finalTotalLike.toAmountString(amountStringStepArray)
             )
         }
     }
 
-    private suspend fun getTotalLikes(contentId: Int, contentType: Int) = withContext(dispatchers.io) {
-        getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
-        getTotalLikeUseCase.executeOnBackground()
+    private suspend fun getTotalLikes(contentId: Int, contentType: Int) {
+        try {
+            val totalLike = withContext(dispatchers.io) {
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
+                getTotalLikeUseCase.executeOnBackground()
+            }
+            _observableTotalLikes.value = mapTotalLikes(totalLike)
+        } catch (e: Exception) {}
     }
 
-    private suspend fun getIsLike(contentId: Int, contentType: Int) = withContext(dispatchers.io) {
-        getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
-        getIsLikeUseCase.executeOnBackground()
+    private suspend fun getIsLike(contentId: Int, contentType: Int) {
+        try {
+            val isLiked = withContext(dispatchers.io) {
+                getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
+                getIsLikeUseCase.executeOnBackground()
+            }
+            _observableIsLikeContent.value = isLiked
+        } catch (e: Exception) {}
     }
 
-    private fun getPartnerInfo(channel: Channel) {
+    private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
         val partnerType = PartnerType.getTypeByValue(channel.partnerType)
         val partnerId = channel.partnerId
-        if (partnerType == PartnerType.ADMIN) {
-            _observablePartnerInfo.value = PartnerInfoUiModel(
+        return if (partnerType == PartnerType.ADMIN) {
+            PartnerInfoUiModel(
                     id = partnerId,
                     name = channel.moderatorName,
                     type = partnerType,
                     isFollowed = true,
                     isFollowable = false
             )
-            return
         } else {
-            getPartnerInfo(partnerId, partnerType)
+            val shopInfo = getPartnerInfo(partnerId, partnerType)
+            mapPartnerInfoFromShop(shopInfo)
         }
     }
 
-    private fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = launchCatchError(block = {
-        val response = withContext(dispatchers.io) {
+    private fun checkIsFollowedShop() {
+        launchCatchError(block = {
+            val channel = _observableChanelInfo.value?.copy()
+            if (channel != null) _observablePartnerInfo.value = getPartnerInfo(channel)
+        }, onError = {})
+    }
+
+    private suspend fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = withContext(dispatchers.io) {
             getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(partnerId.toInt(), partnerType)
             getPartnerInfoUseCase.executeOnBackground()
         }
-
-        _observablePartnerInfo.value = mapPartnerInfoFromShop(response)
-    }, onError = {
-
-    })
 
     private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
         playSocket.channelId = channelId
@@ -285,7 +301,7 @@ class PlayViewModel @Inject constructor(
         playSocket.connect(onMessageReceived = { response ->
             launch {
                 val result = withContext(dispatchers.io) {
-                    val socketMapper = PlaySocketMapper(response)
+                    val socketMapper = PlaySocketMapper(response, amountStringStepArray)
                     socketMapper.mapping()
                 }
                 when (result) {
@@ -330,16 +346,6 @@ class PlayViewModel @Inject constructor(
         if (channel.isActive) initiateVideo(channel)
     }
 
-    private fun setStateLiveOrVod(channel: Channel) {
-        isLive = channel.videoStream.isLive
-    }
-
-    private fun setContentIdAndType(channel: Channel) {
-        contentId = channel.contentId
-        contentType = channel.contentType
-        likeType = channel.likeType
-    }
-
     private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
             videoStream = mapVideoStream(channel.videoStream, channel.isActive),
@@ -354,7 +360,14 @@ class PlayViewModel @Inject constructor(
     private fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
             id = channel.channelId,
             title = channel.title,
-            description = channel.description
+            description = channel.description,
+            isLive = channel.videoStream.isLive,
+            moderatorName = channel.moderatorName,
+            partnerId = channel.partnerId,
+            partnerType = channel.partnerType,
+            contentId = channel.contentId,
+            contentType = channel.contentType,
+            likeType = channel.likeType
     )
 
     private fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = PinnedMessageUiModel(
@@ -366,9 +379,9 @@ class PlayViewModel @Inject constructor(
 
     private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            videoType = if (videoStream.isLive
-                    && videoStream.type.equals(PlayVideoType.Live.value, true))
-                PlayVideoType.Live else PlayVideoType.VOD,
+            channelType = if (videoStream.isLive
+                    && videoStream.type.equals(PlayChannelType.Live.value, true))
+                PlayChannelType.Live else PlayChannelType.VOD,
             isActive = isActive
     )
 
@@ -414,7 +427,7 @@ class PlayViewModel @Inject constructor(
     private fun doOnChannelFreeze() {
         destroy()
         stopPlayer()
-        hideKeyboard()
+        onKeyboardHidden()
     }
 
     private fun stopPlayer() {

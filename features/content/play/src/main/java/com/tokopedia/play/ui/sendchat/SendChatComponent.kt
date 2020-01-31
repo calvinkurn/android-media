@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.sendchat
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
@@ -13,23 +14,23 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 02/12/19
  */
-class SendChatComponent(
+open class SendChatComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         private val coroutineScope: CoroutineScope
 ) : UIComponent<SendChatInteractionEvent>, SendChatView.Listener, CoroutineScope by coroutineScope {
 
-    private val uiView = initChatFormView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
-        uiView.hide()
-
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.ComposeChat -> uiView.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
                             is ScreenStateEvent.KeyboardStateChanged -> uiView.focusChatForm(it.isShown)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
@@ -58,6 +59,6 @@ class SendChatComponent(
         }
     }
 
-    private fun initChatFormView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             SendChatView(container, this)
 }
