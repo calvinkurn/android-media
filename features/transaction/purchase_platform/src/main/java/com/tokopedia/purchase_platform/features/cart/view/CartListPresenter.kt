@@ -32,7 +32,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceData
-import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartProductData
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -1065,7 +1065,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setProductName(cartRecentViewItemHolderData.name)
             setProductID(cartRecentViewItemHolderData.id)
             setPrice(cartRecentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setCategory(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
+            setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setPosition(position.toString())
@@ -1122,18 +1122,18 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun generateRecentViewProductClickEmptyCartDataLayer(cartRecentViewItemHolderData: CartRecentViewItemHolderData, position: Int): Map<String, Any> {
-        val enhancedECommerceEmptyCartProductData = EnhancedECommerceEmptyCartProductData().apply {
+        val enhancedECommerceProductData = EnhancedECommerceProductData().apply {
             setProductID(cartRecentViewItemHolderData.id)
             setProductName(cartRecentViewItemHolderData.name)
             setPrice(cartRecentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setBrand(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
+            setBrand(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
+            setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setPosition(position.toString())
-            setVariant(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
+            setVariant(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
         }
 
         val productsData = ArrayList<Map<String, Any>>().apply {
-            add(enhancedECommerceEmptyCartProductData.getProduct())
+            add(enhancedECommerceProductData.getProduct())
         }
 
         val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickData(
@@ -1162,14 +1162,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun generateWishlistProductClickEmptyCartDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData, position: Int): Map<String, Any> {
-        val enhancedECommerceEmptyCartProductData = EnhancedECommerceEmptyCartProductData().apply {
+        val enhancedECommerceEmptyCartProductData = EnhancedECommerceProductData().apply {
             setProductID(cartWishlistItemHolderData.id)
             setProductName(cartWishlistItemHolderData.name)
             setPrice(cartWishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setBrand(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
+            setBrand(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(cartWishlistItemHolderData.category)
             setPosition(position.toString())
-            setVariant(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
+            setVariant(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
         }
 
         val productsData = ArrayList<Map<String, Any>>().apply {
