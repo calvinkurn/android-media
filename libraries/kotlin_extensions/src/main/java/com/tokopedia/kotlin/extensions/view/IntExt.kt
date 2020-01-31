@@ -1,5 +1,7 @@
 package com.tokopedia.kotlin.extensions.view
 import android.util.DisplayMetrics
+import kotlin.math.pow
+
 /**
  * @author : Steven 05/07/19
  */
@@ -21,27 +23,25 @@ fun Int?.toZeroIfNull():Int {
     return this?:0
 }
 
+/**
+ * Using power as Int
+ */
+fun Int.pow(exponent: Int) = toDouble().pow(exponent).toInt()
 
-const val INTEGER_MILLION = 1_000_000
-const val INTEGER_THOUSAND = 1_000
+/**
+ * Using power as Int
+ */
+fun Long.pow(exponent: Int) = toDouble().pow(exponent).toLong()
 
-fun Int.toCompactAmountString(): String {
-    return when {
-        this >= INTEGER_MILLION -> toCompactAmountStringByDivider(INTEGER_MILLION, "jt")
-        this >= INTEGER_THOUSAND -> toCompactAmountStringByDivider(INTEGER_THOUSAND, "rb")
-        else -> toString()
-    }
-}
-
-fun Int.toCompactAmountStringByDivider(divider: Int, suffix: String): String {
-    val integerNum = this/divider
-    val nonIntegerNum = this%divider
-    return buildString {
-        append(integerNum)
-        if (nonIntegerNum > 0) append(",${nonIntegerNum.toString()[0]}")
-        append(suffix)
-    }
-}
+/**
+ * Convert int amount to string format
+ * e.g. 1100 -> 1,1rb
+ */
+fun Int.toAmountString(
+        ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
+        decimalPlaces: Int = 1,
+        divider: String = ""
+): String = toLong().toAmountString(ascendingSuffix, decimalPlaces, divider)
 
 fun Int?.orZero(): Int = this ?: 0
 
