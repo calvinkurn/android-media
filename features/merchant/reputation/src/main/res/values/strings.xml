@@ -10,6 +10,7 @@
     <string name="product_quality">Kualitas Produk</string>
     <string name="hint_review">Ulasan Produk</string>
     <string name="upload_image">Upload Gambar Produk</string>
+    <string name="progress_dialog_loading">Loading</string>
     <string name="share_to_facebook">Bagikan ke Facebook</string>
     <string name="anonym">Anonim</string>
     <string name="hint_anonym">Profil ditampilkan sebagai</string>

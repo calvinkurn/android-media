@@ -203,10 +203,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void initProgressDialog() {
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("");
-        progressDialog.setMessage("Loading");
-        progressDialog.setCancelable(false);
+        if(getContext() != null) {
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setTitle("");
+            progressDialog.setMessage(getContext().getString(R.string.progress_dialog_loading));
+            progressDialog.setCancelable(false);
+        }
     }
 
     @Override
@@ -240,15 +242,20 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoading() {
-        adapter.removeLoading();
-        adapter.notifyDataSetChanged();
+        if(progressDialog != null && getActivity() != null) {
+            adapter.removeLoading();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
                                         List<Visitable> list) {
+
         role = inboxReputationItemViewModel.getRole();
-        orderId = ((InboxReputationDetailItemViewModel) list.get(0)).getOrderId();
+        if(!list.isEmpty() && list.get(0) instanceof InboxReputationDetailItemViewModel) {
+            orderId = ((InboxReputationDetailItemViewModel) list.get(0)).getOrderId();
+        }
         setToolbar(inboxReputationItemViewModel.getInvoice(), inboxReputationItemViewModel.getCreateTime());
 
         adapter.clearList();
@@ -334,7 +341,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
                                                List<Visitable> list) {
-        orderId = ((InboxReputationDetailItemViewModel) list.get(0)).getOrderId();
+        if(!list.isEmpty() && list.get(0) instanceof InboxReputationDetailItemViewModel) {
+            orderId = ((InboxReputationDetailItemViewModel) list.get(0)).getOrderId();
+        }
         adapter.clearList();
         adapter.addHeader(createHeaderModel(inboxReputationViewModel));
         adapter.addList(list);

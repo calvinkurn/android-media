@@ -85,8 +85,10 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        InboxReputationDetailFragment fragment = (InboxReputationDetailFragment) getFragment();
-        reputationTracking.onClickBackButtonReputationDetailTracker(Objects.requireNonNull(fragment).getOrderId());
+        if(getFragment() != null && getFragment() instanceof InboxReputationDetailFragment) {
+            InboxReputationDetailFragment fragment = (InboxReputationDetailFragment) getFragment();
+            reputationTracking.onClickBackButtonReputationDetailTracker(Objects.requireNonNull(fragment).getOrderId());
+        }
         return super.onOptionsItemSelected(item);
     }
 }
