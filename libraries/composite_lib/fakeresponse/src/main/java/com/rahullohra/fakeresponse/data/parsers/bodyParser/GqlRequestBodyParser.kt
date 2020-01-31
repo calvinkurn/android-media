@@ -1,15 +1,18 @@
-package com.rahullohra.fakeresponse.data.parsers
+package com.rahullohra.fakeresponse.data.parsers.bodyParser
 
 import android.text.TextUtils
 import android.util.Log
+import com.rahullohra.fakeresponse.data.parsers.GetResultFromDaoUseCase
+import com.rahullohra.fakeresponse.data.parsers.ParserFactory
 import com.rahullohra.fakeresponse.data.parsers.rules.GqlParserRule
 import com.rahullohra.fakeresponse.db.dao.GqlDao
 import com.rahullohra.fakeresponse.domain.repository.LocalRepository
 import org.json.JSONArray
 
-class GqlRequestBodyParser(gqlDao: GqlDao) {
+class GqlRequestBodyParser(gqlDao: GqlDao) : BodyParser {
     val parserFactory = ParserFactory()
-    val useCase = GetResultFromDaoUseCase(LocalRepository(gqlDao))
+    val useCase =
+        GetResultFromDaoUseCase(LocalRepository(gqlDao))
 
     fun parse(requestBody: String, responseBody: String?):String? {
         try {
@@ -25,7 +28,7 @@ class GqlRequestBodyParser(gqlDao: GqlDao) {
                 return fakeResponse
             }
         } catch (ex: Exception) {
-            ex.printStackTrace()
+            Log.e("NooB", ex.message)
         }
         return null
     }
@@ -41,14 +44,13 @@ class GqlRequestBodyParser(gqlDao: GqlDao) {
 
 
     fun getFormattedOperationNameNew(parserFactory: ParserFactory, rawQuery: String): String {
+        var operationName = parserFactory.getMappedParser().parse(rawQuery)
+        if(!TextUtils.isEmpty(operationName)){
+            return operationName
+        }
 
-//        parserFactory.getMappedParser().parse(rawQuery)
-//        if(!TextUtils.isEmpty(operationName)){
-//            return operationName
-//        }
-
-        var operationName = parserFactory.getSimpleParser().parse(rawQuery)
-        if(!TextUtils.isEmpty(operationName) || operationName != "query" || operationName != "mutation"){
+        operationName = parserFactory.getSimpleParser().parse(rawQuery)
+        if(!TextUtils.isEmpty(operationName)){
             return operationName
         }
 

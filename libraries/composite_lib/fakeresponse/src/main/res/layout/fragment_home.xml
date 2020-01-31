@@ -16,7 +16,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="center_horizontal"
             android:padding="10dp"
-            android:text="No Gql records"
+            android:text="No records"
             android:textSize="18sp" />
 
         <androidx.recyclerview.widget.RecyclerView

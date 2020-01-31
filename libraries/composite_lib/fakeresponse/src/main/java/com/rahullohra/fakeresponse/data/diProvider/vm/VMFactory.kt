@@ -3,14 +3,8 @@ package com.rahullohra.fakeresponse.data.diProvider.vm
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.rahullohra.fakeresponse.domain.usecases.AddToDbUseCase
-import com.rahullohra.fakeresponse.domain.usecases.DownloadSqliteUseCase
-import com.rahullohra.fakeresponse.domain.usecases.ShowGqlUseCase
-import com.rahullohra.fakeresponse.domain.usecases.UpdateGqlUseCase
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.AddGqlVM
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.DownloadFragmentVM
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.FakeResponseModel
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.FakeResponseVM
+import com.rahullohra.fakeresponse.domain.usecases.*
+import com.rahullohra.fakeresponse.presentaiton.viewmodels.*
 import kotlinx.coroutines.CoroutineDispatcher
 
 class VMFactory(application: Application, val list: Array<Any>) :
@@ -32,14 +26,19 @@ class VMFactory(application: Application, val list: Array<Any>) :
         } else if (modelClass.isAssignableFrom(FakeResponseVM::class.java)) {
             return FakeResponseVM(
                 list[0] as CoroutineDispatcher,
-                list[1] as ShowGqlUseCase,
+                list[1] as ShowRecordsUseCase,
                 list[2] as DownloadSqliteUseCase
             ) as T
         } else if (modelClass.isAssignableFrom(FakeResponseModel::class.java)) {
             return FakeResponseModel(
                 list[0] as CoroutineDispatcher,
-                list[1] as ShowGqlUseCase,
+                list[1] as ShowRecordsUseCase,
                 list[2] as UpdateGqlUseCase
+            ) as T
+        }else if (modelClass.isAssignableFrom(AddRestVM::class.java)) {
+            return AddRestVM(
+                list[0] as CoroutineDispatcher,
+                list[1] as AddRestDaoUseCase
             ) as T
         }
         return super.create(modelClass)

@@ -3,6 +3,8 @@ package com.rahullohra.fakeresponse.domain.usecases
 import android.text.TextUtils
 import com.rahullohra.fakeresponse.data.models.Either
 import com.rahullohra.fakeresponse.db.entities.FakeGql
+import com.rahullohra.fakeresponse.domain.exceptions.NoGqlNameException
+import com.rahullohra.fakeresponse.domain.exceptions.NoResponseException
 import com.rahullohra.fakeresponse.domain.repository.LocalRepository
 import com.rahullohra.fakeresponse.presentaiton.viewmodels.data.AddGqlData
 import org.json.JSONArray
@@ -23,17 +25,6 @@ class AddToDbUseCase(val repository: LocalRepository) : BaseUseCase<LocalReposit
         }
     }
 
-    private fun isJSONValid(test: String): Either<java.lang.Exception, Boolean> {
-        try {
-            JSONObject(test)
-        } catch (ex: JSONException) {
-            JSONArray(test)
-        } catch (ex1: JSONException) {
-            return Either.Left(ex1)
-        }
-        return Either.Right(true)
-    }
-
 
     protected fun gqlDataToGql(data: AddGqlData): FakeGql {
         val date = Date()
@@ -49,15 +40,5 @@ class AddToDbUseCase(val repository: LocalRepository) : BaseUseCase<LocalReposit
 
         )
         return gql
-    }
-
-    class NoGqlNameException : Exception() {
-        override val message: String?
-            get() = "Either query name or custom name is empty"
-    }
-
-    class NoResponseException : Exception() {
-        override val message: String?
-            get() = "response is empty"
     }
 }

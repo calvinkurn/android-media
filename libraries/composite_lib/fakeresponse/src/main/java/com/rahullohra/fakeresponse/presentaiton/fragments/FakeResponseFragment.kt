@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.Router
@@ -29,7 +28,6 @@ class FakeResponseFragment : BaseFragment() {
 
     lateinit var viewPager: ViewPager
     lateinit var tabLayout: TabLayout
-    lateinit var fab: FloatingActionButton
     lateinit var toolbar: Toolbar
 
     private lateinit var pagerAdapter: PagerAdapter
@@ -51,7 +49,6 @@ class FakeResponseFragment : BaseFragment() {
         toolbar = view.findViewById(R.id.toolbar)
         viewPager = view.findViewById(R.id.viewPager)
         tabLayout = view.findViewById(R.id.tabLayout)
-        fab = view.findViewById(R.id.fab)
         tabLayout.visibility = View.GONE
     }
 
@@ -64,9 +61,6 @@ class FakeResponseFragment : BaseFragment() {
     }
 
     fun setListeners() {
-        fab.setOnClickListener {
-            Router.routeToAddGql(context)
-        }
 
         viewModel.clearSqlRecords.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -88,7 +82,7 @@ class FakeResponseFragment : BaseFragment() {
     fun handleAllRecordsDeleted() {
         if (context is FakeResponseActivity) {
             pagerAdapter.fragmentList.forEach {
-                if (it is GqlFragment) {
+                if (it is HomeFragment) {
                     it.showEmptyUi()
                 }
             }
@@ -122,6 +116,12 @@ class FakeResponseFragment : BaseFragment() {
             }
             R.id.gql_menu_reset -> {
                 viewModel.resetLibrary()
+            }
+            R.id.gql_add_gql_record -> {
+                Router.routeToAddGql(context)
+            }
+            R.id.gql_add_rest_record -> {
+                Router.routeToAddRest(context)
             }
         }
         return true

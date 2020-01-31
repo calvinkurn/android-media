@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rahullohra.fakeresponse.ResponseListData
 import com.rahullohra.fakeresponse.presentaiton.viewholder.ResponseVH
 
-class GqlRvAdapter(val dataList: ArrayList<ResponseListData>, val itemClickCallback: (Int,Boolean) -> Unit) :
+class GqlRvAdapter(val dataList: ArrayList<ResponseListData>, val itemClickCallback: (ResponseListData,Boolean) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

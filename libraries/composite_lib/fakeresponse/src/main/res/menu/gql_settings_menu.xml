@@ -8,5 +8,12 @@
         android:id="@+id/gql_menu_clear_records"
         android:title="@string/gql_clear_records" />
 
+    <item
+        android:id="@+id/gql_add_gql_record"
+        android:title="@string/gql_add_record" />
+
+    <item
+        android:id="@+id/gql_add_rest_record"
+        android:title="@string/gql_add_rest_record" />
 
 </menu>

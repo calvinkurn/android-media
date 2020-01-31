@@ -3,7 +3,7 @@ package com.rahullohra.fakeresponse.presentaiton.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rahullohra.fakeresponse.domain.usecases.DownloadSqliteUseCase
-import com.rahullohra.fakeresponse.domain.usecases.ShowGqlUseCase
+import com.rahullohra.fakeresponse.domain.usecases.ShowRecordsUseCase
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.LiveDataResult
 import com.rahullohra.fakeresponse.presentaiton.livedata.Success
@@ -13,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
 
 class FakeResponseVM constructor(
     val workerDispatcher: CoroutineDispatcher,
-    val usecase: ShowGqlUseCase,
+    val usecase: ShowRecordsUseCase,
     val sqliteUseCase: DownloadSqliteUseCase
 ) : ViewModel(), CoroutineScope {
 
@@ -29,6 +29,7 @@ class FakeResponseVM constructor(
     fun deleteAllGqlRecords() {
         launch {
             try{
+
                 usecase.deleteAllRecords()
                 clearSqlRecords.postValue(Success(true))
             }catch (ex:Exception){

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.ResponseListData
 
-class ResponseVH(itemView: View, val itemClickCallback: (Int, Boolean) -> Unit) :
+class ResponseVH(itemView: View, val itemClickCallback: (ResponseListData, Boolean) -> Unit) :
     RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -31,7 +31,7 @@ class ResponseVH(itemView: View, val itemClickCallback: (Int, Boolean) -> Unit) 
         cb.isChecked = data.isChecked
         cb.setOnCheckedChangeListener(null)
         cb.setOnCheckedChangeListener { buttonView, isChecked ->
-            itemClickCallback.invoke(data.id, isChecked)
+            itemClickCallback.invoke(data, isChecked)
 //            cb.setOnCheckedChangeListener(null)
         }
     }

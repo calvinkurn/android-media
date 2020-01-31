@@ -2,8 +2,9 @@ package com.rahullohra.fakeresponse.presentaiton.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.rahullohra.fakeresponse.ResponseItemType
 import com.rahullohra.fakeresponse.ResponseListData
-import com.rahullohra.fakeresponse.domain.usecases.ShowGqlUseCase
+import com.rahullohra.fakeresponse.domain.usecases.ShowRecordsUseCase
 import com.rahullohra.fakeresponse.domain.usecases.UpdateGqlUseCase
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.LiveDataResult
@@ -16,7 +17,7 @@ import kotlin.coroutines.CoroutineContext
 
 class FakeResponseModel constructor(
     val workerDispatcher: CoroutineDispatcher,
-    val showGqlUseCase: ShowGqlUseCase,
+    val showRecordsUseCase: ShowRecordsUseCase,
     val updateGqlUseCase: UpdateGqlUseCase
 
 ) : ViewModel(), CoroutineScope {
@@ -32,15 +33,14 @@ class FakeResponseModel constructor(
         ex.printStackTrace()
     }
 
-    fun toggleGql(id: Int, isEnabled: Boolean) {
-        if(true)return
+    fun toggleGql(data: ResponseListData, isEnabled: Boolean) {
         launch {
             try {
-                updateGqlUseCase.toggleGql(id, isEnabled)
-                toggleLiveData.postValue(Success(Pair(id, isEnabled)))
+                updateGqlUseCase.toggle(data.id, isEnabled, data.responseType)
+                toggleLiveData.postValue(Success(Pair(data.id, isEnabled)))
             } catch (ex: Exception) {
                 toggleLiveData.postValue(Fail(ex))
-                toggleLiveData.postValue(Success(Pair(id, !isEnabled)))
+                toggleLiveData.postValue(Success(Pair(data.id, !isEnabled)))
             }
         }
 
@@ -48,7 +48,7 @@ class FakeResponseModel constructor(
 
     fun getGql() {
         launch {
-            liveData.postValue(Success(showGqlUseCase.getAllQueries()))
+            liveData.postValue(Success(showRecordsUseCase.getAllQueries()))
         }
     }
 

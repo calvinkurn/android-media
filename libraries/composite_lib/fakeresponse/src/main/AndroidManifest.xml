@@ -7,6 +7,8 @@
             android:theme="@style/FakeNoActionBar" />
         <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity"
             android:theme="@style/FakeNoActionBar" />
+        <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity"
+            android:theme="@style/FakeNoActionBar" />
         <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.FakeResponseActivity"
             android:theme="@style/FakeNoActionBar"
             android:taskAffinity="fakeresponse.gqlTesting"

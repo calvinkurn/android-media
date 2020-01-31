@@ -3,7 +3,7 @@ package com.rahullohra.fakeresponse.presentaiton.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.rahullohra.fakeresponse.presentaiton.fragments.GqlFragment
+import com.rahullohra.fakeresponse.presentaiton.fragments.HomeFragment
 
 class PagerAdapter : FragmentStatePagerAdapter {
 
@@ -12,11 +12,9 @@ class PagerAdapter : FragmentStatePagerAdapter {
 
     constructor(fm: FragmentManager) : super(fm) {
 
-        fragmentList.add(GqlFragment())
-        fragmentList.add(GqlFragment())
+        fragmentList.add(HomeFragment())
         
-        tabTitles.add("FakeGql")
-        tabTitles.add("Custom")
+        tabTitles.add("Records")
     }
 
     override fun getItem(position: Int): Fragment {
