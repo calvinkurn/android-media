@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="@string/host_merchant"
-                    android:path="@string/path_brandlist_search"
+                    android:path="/official-store/brandlist-search/"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
