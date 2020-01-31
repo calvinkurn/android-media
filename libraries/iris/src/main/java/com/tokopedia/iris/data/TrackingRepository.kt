@@ -50,7 +50,7 @@ class TrackingRepository(
 
             val dbCount = trackingDao.getCount()
             if (dbCount >= getLineDBFlush()) {
-                Timber.e("P2#IRIS#dbCount 2000 lines")
+                Timber.e("P2#IRIS#dbCount %d lines", dbCount)
                 trackingDao.flush()
             }
             if (dbCount >= getLineDBSend()) {
