@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import com.tokopedia.analytics.debugger.IrisLogger
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -53,7 +54,7 @@ class TrackingRepository(
 
             val dbCount = trackingDao.getCount()
             if (dbCount >= getLineDBFlush()) {
-                Timber.e("P1#IRIS#dbCount %d lines", dbCount)
+                Timber.e("P1#IRIS#dbCountFlush %d lines", dbCount)
                 trackingDao.flush()
             }
             if (dbCount >= getLineDBSend()) {
@@ -61,6 +62,9 @@ class TrackingRepository(
                 val i = Intent(context, IrisService::class.java)
                 i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
                 IrisService.enqueueWork(context, i)
+
+                IrisAnalytics.getInstance(context).setAlarm(true, force = true)
+                Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
             }
         } catch (e: Throwable) {
             Timber.e("P1#IRIS#saveEvent %s", e.toString())

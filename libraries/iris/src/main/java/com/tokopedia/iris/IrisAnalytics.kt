@@ -33,7 +33,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private var cache: Cache = Cache(context)
     private var configuration: Configuration? = null
     private var isAlarmOn: Boolean = false
-    private var lastAlarmChange: Long = 0L
 
     private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
@@ -95,14 +94,14 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 val trackingRepository = TrackingRepository(context)
 
                 val eventName = map["event"] as? String
-                val eventCategory = map["eventCategory"]  as? String
-                val eventAction = map["eventAction"]  as? String
+                val eventCategory = map["eventCategory"] as? String
+                val eventAction = map["eventAction"] as? String
 
                 // convert map to json then save as string
                 val event = gson.toJson(map)
                 val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
                 trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
-                setAlarm(true)
+                setAlarm(true, force = false)
             }
         }
     }
@@ -124,13 +123,9 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         session.setDeviceId(deviceId)
     }
 
-    override fun setAlarm(isTurnOn: Boolean) {
-        if (isTurnOn == isAlarmOn) {
-            // if alarm last change is more that 2 minutes, we recreate the alarm to make sure the alarm is initialized correctly
-            val offsetLastTimeAlarmChange = System.currentTimeMillis() - lastAlarmChange
-            if (offsetLastTimeAlarmChange < 120_000L) {
-                return
-            }
+    override fun setAlarm(isTurnOn: Boolean, force: Boolean) {
+        if (!force && isTurnOn == isAlarmOn) {
+            return
         }
         val pendingIntent: PendingIntent?
         pendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -154,7 +149,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             }
         }
         isAlarmOn = isTurnOn
-        lastAlarmChange = System.currentTimeMillis()
     }
 
     companion object {
