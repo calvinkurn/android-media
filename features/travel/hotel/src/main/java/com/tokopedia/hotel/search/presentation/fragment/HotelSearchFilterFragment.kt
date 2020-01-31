@@ -127,13 +127,23 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     }
 
     private fun setupRating(filterReview: Filter.FilterReview) {
-        val ratingStep = (filterReview.minReview.toInt()..filterReview.maxReview.toInt()).toList()
+        val ratingStep = (filterReview.minReview.toInt()..filterReview.maxReview.toInt()).toMutableList()
+        ratingStep.add(0, 0)
+
         selectedFilter.reviewScore = if (ratingStep.first() != 0 && selectedFilter.reviewScore == 0) ratingStep.first() else selectedFilter.reviewScore
         rating_seekbar.max = ratingStep.size - 1
-        rating_seekbar.progress = filterReview.maxReview.toInt() - max(selectedFilter.reviewScore, 5)
+
+        if (selectedFilter.reviewScore == 0) rating_seekbar.progress = rating_seekbar.max
+        else rating_seekbar.progress = filterReview.maxReview.toInt() - max(selectedFilter.reviewScore, 5)
+
         ratingStep.forEachIndexed { index, item ->
             val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
-            stepView.findViewById<TextViewCompat>(R.id.title_step).text = String.format("%.1f", item.toFloat())
+
+            when {
+                item > 0 -> stepView.findViewById<TextViewCompat>(R.id.title_step).text = String.format("  %.1f   ", item.toFloat())
+                else -> stepView.findViewById<TextViewCompat>(R.id.title_step).text = getString(R.string.hotel_search_filter_rating_all)
+            }
+
             base_rating_step.addView(stepView)
             if (index < ratingStep.size - 1){
                 val separator = View(context)
@@ -143,9 +153,11 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
                 base_rating_step.addView(separator)
             }
         }
+
         rating_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                selectedFilter.reviewScore = ratingStep[ratingStep.size - p1 - 1]
+                if (p1 == ratingStep.size - 1) selectedFilter.reviewScore = 0
+                else selectedFilter.reviewScore = ratingStep[ratingStep.size - p1 - 1]
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {}

@@ -35,6 +35,7 @@
     <string name="hotel_search_filter_empty_button">Ubah Filter</string>
     <string name="hotel_search_filter_max_string_format_with_plus">Rp%s+</string>
     <string name="hotel_search_filter_max_string_format">Rp%s</string>
+    <string name="hotel_search_filter_rating_all">Semua</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>
