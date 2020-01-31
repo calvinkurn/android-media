@@ -16,9 +16,12 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
 
-class SeeInvoiceActivity @Inject constructor(var orderListAnalytics: OrderListAnalytics): BaseSimpleWebViewActivity(){
+class SeeInvoiceActivity @Inject constructor(orderListAnalytics: OrderListAnalytics): BaseSimpleWebViewActivity(){
 
-    private var status: Status? = null
+    var orderListAnalytics: OrderListAnalytics? = null
+        @Inject set
+
+    private lateinit var status: Status
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
@@ -41,7 +44,7 @@ class SeeInvoiceActivity @Inject constructor(var orderListAnalytics: OrderListAn
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.action_download -> {
-                orderListAnalytics.sendDownloadEventData(status?.status())
+                orderListAnalytics?.sendDownloadEventData(status?.status())
                 doWebPrint()
                 true
             }
