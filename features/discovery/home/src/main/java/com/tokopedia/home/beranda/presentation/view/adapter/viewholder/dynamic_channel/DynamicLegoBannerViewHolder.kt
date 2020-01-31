@@ -128,7 +128,9 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                             )
                         }
                         TYPE_FOUR_GRID_LEGO -> {
-                            HomePageTrackingV2.LegoBanner.getLegoBannerFourImageClick(channels, grid, position + 1)
+                            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                HomePageTrackingV2.LegoBanner.getLegoBannerFourImageClick(channels, grid, position + 1)
+                            )
                         }
                     }
 
