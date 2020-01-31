@@ -51,6 +51,7 @@ class PartialButtonActionView private constructor(private val view: View,
         private const val TOPCHAT_VARIANT_WHITE = "Icon White"
         private const val TOPCHAT_VARIANT_GREEN = "Icon Green"
         private const val TOPCHAT_VARIANT_GREEN_DOT = "Icon Green Dot"
+        private const val KEY_AB_TOPCHAT = "TopChat Icon at PDP 2"
     }
 
     init {
@@ -126,7 +127,7 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun bindAbTestChatButton(imageView: AppCompatImageView) {
-        val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString("TopChat Icon at PDP 2", "")
+        val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(KEY_AB_TOPCHAT, "")
         val drawableRes = when (variant) {
             TOPCHAT_VARIANT_WHITE -> R.drawable.ic_topchat
             TOPCHAT_VARIANT_GREEN -> R.drawable.ic_topchat_variant_green
