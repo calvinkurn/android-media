@@ -118,6 +118,7 @@ class ProductCardViewSmallGrid: ProductCardView {
             labelSoldOut?.background = it
         }
         labelSoldOut?.visibility = if (productSoldOut) View.VISIBLE else View.GONE
+        layout_empty_stock?.visibility = if (productSoldOut) View.VISIBLE else View.GONE
     }
 
     fun setImageShopVisible(isVisible: Boolean) {
