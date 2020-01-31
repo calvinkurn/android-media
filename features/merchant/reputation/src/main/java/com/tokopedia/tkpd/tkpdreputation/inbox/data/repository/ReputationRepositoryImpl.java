@@ -37,105 +37,105 @@ public class ReputationRepositoryImpl implements ReputationRepository {
     }
 
     @Override
-    public Observable<InboxReputationDomain> getInboxReputationFromCloud(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<InboxReputationDomain> getInboxReputationFromCloud(RequestParams requestParams) {
         return reputationFactory
                 .createCloudInboxReputationDataSource()
                 .getInboxReputation(requestParams);
     }
 
     @Override
-    public Observable<InboxReputationDomain> getInboxReputationFromLocal(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<InboxReputationDomain> getInboxReputationFromLocal(RequestParams requestParams) {
         return reputationFactory
                 .createLocalInboxReputationDataSource()
                 .getInboxReputationFromCache(requestParams);
     }
 
     @Override
-    public Observable<ReviewDomain> getReviewFromCloud(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<ReviewDomain> getReviewFromCloud(RequestParams requestParams) {
         return reputationFactory
                 .createCloudInboxReputationDetailDataSource()
                 .getInboxReputationDetail(requestParams);
     }
 
     @Override
-    public Observable<SendSmileyReputationDomain> sendSmiley(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<SendSmileyReputationDomain> sendSmiley(RequestParams requestParams) {
         return reputationFactory
                 .createCloudSendSmileyReputationDataSource()
                 .sendSmiley(requestParams);
     }
 
     @Override
-    public Observable<SendReviewValidateDomain> sendReviewValidation(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<SendReviewValidateDomain> sendReviewValidation(RequestParams requestParams) {
         return reputationFactory
                 .createCloudSendReviewValidationDataSource()
                 .sendReviewValidation(requestParams);
     }
 
     @Override
-    public Observable<SendReviewSubmitDomain> sendReviewSubmit(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<SendReviewSubmitDomain> sendReviewSubmit(RequestParams requestParams) {
         return reputationFactory
                 .createCloudSendReviewSubmitDataSource()
                 .sendReviewSubmit(requestParams);
     }
 
     @Override
-    public Observable<SkipReviewDomain> skipReview(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<SkipReviewDomain> skipReview(RequestParams requestParams) {
         return reputationFactory
                 .createCloudSkipReviewDataSource()
                 .skipReview(requestParams);
     }
 
     @Override
-    public Observable<SendReviewValidateDomain> editReviewValidation(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<SendReviewValidateDomain> editReviewValidation(RequestParams requestParams) {
         return reputationFactory
                 .createCloudSendReviewValidationDataSource()
                 .editReviewValidation(requestParams);
     }
 
     @Override
-    public Observable<SendReviewSubmitDomain> editReviewSubmit(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<SendReviewSubmitDomain> editReviewSubmit(RequestParams requestParams) {
         return reputationFactory
                 .createCloudSendReviewSubmitDataSource()
                 .editReviewSubmit(requestParams);
     }
 
     @Override
-    public Observable<ReportReviewDomain> reportReview(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<ReportReviewDomain> reportReview(RequestParams requestParams) {
         return reputationFactory
                 .createCloudReportReviewDataSource()
                 .reportReview(requestParams);
     }
 
     @Override
-    public Observable<CheckShopFavoriteDomain> checkIsShopFavorited(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<CheckShopFavoriteDomain> checkIsShopFavorited(RequestParams requestParams) {
         return reputationFactory
                 .createCloudCheckShopFavoriteDataSource()
                 .checkShopIsFavorited(requestParams);
     }
 
     @Override
-    public Observable<FavoriteShopDomain> favoriteShop(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<FavoriteShopDomain> favoriteShop(RequestParams requestParams) {
         return reputationFactory
                 .createCloudFaveShopDataSource()
                 .favoriteShop(requestParams);
     }
 
     @Override
-    public Observable<DeleteReviewResponseDomain> deleteReviewResponse(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<DeleteReviewResponseDomain> deleteReviewResponse(RequestParams requestParams) {
         return reputationFactory
                 .createCloudDeleteReviewResponseDataSource()
                 .deleteReviewResponse(requestParams);
     }
 
     @Override
-    public Observable<SendReplyReviewDomain> insertReviewResponse(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<SendReplyReviewDomain> insertReviewResponse(RequestParams requestParams) {
         return reputationFactory
                 .createCloudReplyReviewDataSource()
                 .insertReviewResponse(requestParams);
     }
 
     @Override
-    public Observable<GetLikeDislikeReviewDomain> getLikeDislikeReview(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<GetLikeDislikeReviewDomain> getLikeDislikeReview(RequestParams requestParams) {
         return reputationFactory
                 .createCloudGetLikeDislikeDataSource()
                 .getLikeDislikeReview(requestParams);

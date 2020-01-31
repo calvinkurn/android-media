@@ -37,7 +37,7 @@ public class CloudInboxReputationDataSource {
     }
 
 
-    public Observable<InboxReputationDomain> getInboxReputation(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<InboxReputationDomain> getInboxReputation(RequestParams requestParams) {
         return reputationService.getApi().getInbox(
                 AuthHelper.generateParamsNetwork(
                         userSessionInterface.getUserId(),
