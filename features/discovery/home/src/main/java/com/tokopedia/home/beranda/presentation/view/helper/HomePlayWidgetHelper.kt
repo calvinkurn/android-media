@@ -68,7 +68,6 @@ class HomePlayWidgetHelper(
                 }
                 is PlayConnectionState.Available -> {
                     resumeVideo()
-                    mExoPlayerListener?.onPlayerPlaying()
                 }
             }
         }
