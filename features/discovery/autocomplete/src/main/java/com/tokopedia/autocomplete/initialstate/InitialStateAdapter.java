@@ -1,31 +1,32 @@
-package com.tokopedia.autocomplete.adapter;
+package com.tokopedia.autocomplete.initialstate;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.autocomplete.adapter.SearchTypeFactory;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author erry on 23/02/17.
- */
-
-public class SearchAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
     private final SearchTypeFactory typeFactory;
 
-    public SearchAdapter(SearchTypeFactory typeFactory) {
+    public InitialStateAdapter(SearchTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
         this.list = new ArrayList<>();
     }
 
+    @NotNull
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -43,31 +44,19 @@ public class SearchAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return list.get(position).type(typeFactory);
     }
 
-
     @Override
     public int getItemCount() {
         return list.size();
     }
 
-    public void setList(List<Visitable> list) {
-        this.list = list;
-        notifyDataSetChanged();
-    }
-
-    public void addList(Visitable visitable){
-        this.list.add(visitable);
-        notifyItemInserted(list.size());
-    }
-
     public void addAll(List<Visitable> list) {
-        int positionStart = this.list.size();
         this.list.addAll(list);
-        notifyItemRangeInserted(positionStart, list.size());
+        notifyDataSetChanged();
     }
 
     public void clearData() {
+        int size = this.list.size();
         this.list.clear();
-        notifyDataSetChanged();
+        notifyItemRangeRemoved(0, size);
     }
-
 }
