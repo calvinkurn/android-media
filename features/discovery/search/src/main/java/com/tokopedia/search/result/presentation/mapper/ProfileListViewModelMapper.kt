@@ -11,8 +11,8 @@ class ProfileListViewModelMapper : Mapper<SearchProfileModel, ProfileListViewMod
         source.aceSearchProfile?.profiles ?: return ProfileListViewModel()
 
         val aceSearchProfile = source.aceSearchProfile
-        val profileListViewModel = convertToProvileViewModelList(aceSearchProfile.profiles, false)
-        val recommendationProfileListViewModel = convertToProvileViewModelList(aceSearchProfile.topProfile, true)
+        val profileListViewModel = convertToProfileViewModelList(aceSearchProfile.profiles, false)
+        val recommendationProfileListViewModel = convertToProfileViewModelList(aceSearchProfile.topProfile, true)
 
         return ProfileListViewModel(
             profileListViewModel,
@@ -22,7 +22,7 @@ class ProfileListViewModelMapper : Mapper<SearchProfileModel, ProfileListViewMod
         )
     }
 
-    private fun convertToProvileViewModelList(
+    private fun convertToProfileViewModelList(
             profileList: List<SearchProfileModel.Profile>,
             isRecommendation: Boolean
     ): List<ProfileViewModel> {
