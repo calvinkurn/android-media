@@ -39,8 +39,8 @@ class TrackingRepository(
             IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
             val dbCount = trackingDao.getCount()
-            if (dbCount >= 1000) {
-                Timber.e("P2#IRIS#dbCount 1000 lines")
+            if (dbCount >= 2000) {
+                Timber.e("P2#IRIS#dbCount 2000 lines")
                 trackingDao.flush()
             }
             if (dbCount >= 400) {
