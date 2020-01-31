@@ -68,7 +68,7 @@ class PinnedView(
         if (!pinnedMessage.applink.isNullOrEmpty()) {
             tvPinnedAction.visible()
             tvPinnedAction.setOnClickListener {
-                listener.onPinnedActionClicked(this, pinnedMessage.applink, tvPinnedMessage.text.toString())
+                listener.onPinnedActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
             }
         } else tvPinnedAction.gone()
     }
