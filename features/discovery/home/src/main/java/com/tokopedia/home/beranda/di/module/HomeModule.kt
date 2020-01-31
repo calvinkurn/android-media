@@ -50,47 +50,47 @@ import javax.inject.Named
 
 
 @Module(includes = [TopAdsWishlistModule::class, PlayCardModule::class])
-open class HomeModule {
+class HomeModule {
 
     @HomeScope
     @Provides
-    open fun provideHomeDispatcher(): HomeDispatcherProvider = HomeDispatcherProviderImpl()
+    fun provideHomeDispatcher(): HomeDispatcherProvider = HomeDispatcherProviderImpl()
 
     @HomeScope
     @Provides
-    open fun pagingHandler(): PagingHandler {
+    fun pagingHandler(): PagingHandler {
         return PagingHandler()
     }
 
     @HomeScope
     @Provides
-    open fun provideHomeDatabase(@ApplicationContext context: Context): HomeDatabase = HomeDatabase.buildDatabase(context)
+    fun provideHomeDatabase(@ApplicationContext context: Context): HomeDatabase = HomeDatabase.buildDatabase(context)
 
     @HomeScope
     @Provides
-    open fun provideHomeDao(homeDatabase: HomeDatabase) = homeDatabase.homeDao()
+    fun provideHomeDao(homeDatabase: HomeDatabase) = homeDatabase.homeDao()
 
     @HomeScope
     @Provides
-    open fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = HomeRemoteDataSource(graphqlRepository, dispatcher)
+    fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = HomeRemoteDataSource(graphqlRepository, dispatcher)
 
     @HomeScope
     @Provides
-    open fun providePlayRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = PlayRemoteDataSource(graphqlRepository, dispatcher)
+    fun providePlayRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = PlayRemoteDataSource(graphqlRepository, dispatcher)
 
     @HomeScope
     @Provides
-    open fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
+    fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
 
     @HomeScope
     @Provides
-    open fun provideHomeDataSource(homeAceApi: HomeAceApi?): HomeDataSource {
+    fun provideHomeDataSource(homeAceApi: HomeAceApi?): HomeDataSource {
         return HomeDataSource(homeAceApi)
     }
 
     @HomeScope
     @Provides
-    open fun homeRepository(homeDataSource: HomeDataSource,
+    fun homeRepository(homeDataSource: HomeDataSource,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
                        playRemoteDataSource: PlayRemoteDataSource): HomeRepository {
@@ -99,106 +99,106 @@ open class HomeModule {
 
     @HomeScope
     @Provides
-    open fun homeUsecase(homeRepository: HomeRepository) = HomeUseCase(homeRepository)
+    fun homeUsecase(homeRepository: HomeRepository) = HomeUseCase(homeRepository)
 
     @Provides
-    open fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository?): SendGeolocationInfoUseCase {
+    fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository?): SendGeolocationInfoUseCase {
         return SendGeolocationInfoUseCase(homeRepository)
     }
 
     @Provides
-    open fun provideGetHomeFeedUseCase(@ApplicationContext context: Context?,
+    fun provideGetHomeFeedUseCase(@ApplicationContext context: Context?,
                                             graphqlUseCase: GraphqlUseCase?,
                                             homeFeedMapper: HomeFeedMapper?): GetHomeFeedUseCase {
         return GetHomeFeedUseCase(context, graphqlUseCase, homeFeedMapper)
     }
 
     @Provides
-    open fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
+    fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
                                            graphqlUseCase: GraphqlUseCase?,
                                            feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
         return GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper)
     }
 
     @Provides
-    open fun provideAddWishlistUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
+    fun provideAddWishlistUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
 
     @Provides
-    open fun provideRemoveWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
+    fun provideRemoveWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
 
     @Provides
-    open fun feedTabMapper(): FeedTabMapper {
+    fun feedTabMapper(): FeedTabMapper {
         return FeedTabMapper()
     }
 
     @Provides
-    open fun homeFeedMapper(): HomeFeedMapper {
+    fun homeFeedMapper(): HomeFeedMapper {
         return HomeFeedMapper()
     }
 
     @Provides
-    open fun graphqlUseCase(): GraphqlUseCase {
+    fun graphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
     }
 
     @Provides
-    open fun provideUserSession(
+    fun provideUserSession(
             @ApplicationContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
 
     @HomeScope
     @Provides
-    open fun getKeywordSearchUseCase(@ApplicationContext context: Context?): GetKeywordSearchUseCase {
+    fun getKeywordSearchUseCase(@ApplicationContext context: Context?): GetKeywordSearchUseCase {
         return GetKeywordSearchUseCase(context!!)
     }
 
     @Provides
-    open fun provideGraphqlRepository(): GraphqlRepository {
+    fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @Provides
     @HomeScope
-    open fun provideItemTabBusinessViewModel(graphqlUseCase: GraphqlUseCase?): ItemTabBusinessViewModel {
+    fun provideItemTabBusinessViewModel(graphqlUseCase: GraphqlUseCase?): ItemTabBusinessViewModel {
         return ItemTabBusinessViewModel(graphqlUseCase!!)
     }
 
     @Provides
     @HomeScope
-    open fun providePermissionCheckerHelper(): PermissionCheckerHelper {
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper {
         return PermissionCheckerHelper()
     }
 
     @Provides
     @HomeScope
-    open fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?): HomeVisitableFactory {
+    fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?): HomeVisitableFactory {
         return HomeVisitableFactoryImpl(userSessionInterface!!)
     }
 
     @Provides
     @HomeScope
-    open fun provideStickyLoginUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository?): StickyLoginUseCase {
+    fun provideStickyLoginUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository?): StickyLoginUseCase {
         return StickyLoginUseCase(context.resources, graphqlRepository!!)
     }
 
     @Provides
-    open fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig {
+    fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
 
     @HomeScope
     @Provides
-    open fun homePresenter(): HomePresenter {
+    fun homePresenter(): HomePresenter {
         return HomePresenter()
     }
 
     @Provides
-    open fun homeFeedPresenter(
+    fun homeFeedPresenter(
             getHomeFeedUseCase: GetHomeFeedUseCase?,
             addWishListUseCase: AddWishListUseCase?,
             removeWishListUseCase: RemoveWishListUseCase?,

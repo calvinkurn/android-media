@@ -35,7 +35,8 @@
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name=".register.view.activity.SmartLockActivity"/>
+            android:name=".register.view.activity.SmartLockActivity"
+            android:theme="@style/AppTheme.Dialog"/>
 
         <activity
             android:name=".register.view.activity.CreatePasswordActivity"
