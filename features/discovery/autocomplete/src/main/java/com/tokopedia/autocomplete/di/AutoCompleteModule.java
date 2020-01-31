@@ -2,12 +2,10 @@ package com.tokopedia.autocomplete.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.autocomplete.di.qualifier.AutoCompleteQualifier;
 import com.tokopedia.autocomplete.domain.interactor.SearchMapper;
 import com.tokopedia.autocomplete.network.BrowseApi;
-import com.tokopedia.autocomplete.presentation.presenter.SearchPresenter;
 import com.tokopedia.autocomplete.repository.AutoCompleteDataSource;
 import com.tokopedia.autocomplete.repository.AutoCompleteRepository;
 import com.tokopedia.autocomplete.repository.AutoCompleteRepositoryImpl;
@@ -23,11 +21,6 @@ import dagger.Provides;
 @AutoCompleteScope
 @Module
 public class AutoCompleteModule {
-    @AutoCompleteScope
-    @Provides
-    SearchPresenter provideSearchPresenter(@ApplicationContext Context context) {
-        return new SearchPresenter(context);
-    }
 
     @AutoCompleteScope
     @Provides
