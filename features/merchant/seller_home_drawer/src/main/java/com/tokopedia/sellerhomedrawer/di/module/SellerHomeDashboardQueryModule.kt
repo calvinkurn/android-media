@@ -3,7 +3,7 @@ package com.tokopedia.sellerhomedrawer.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.sellerhomedrawer.R
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeParamConstant
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.sellerhomedrawer.di.SellerHomeDashboardScope
 import dagger.Module
 import dagger.Provides

@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomedrawer.service
+package com.tokopedia.sellerhomedrawer.domain.service
 
 import android.content.Context
 import android.content.Intent

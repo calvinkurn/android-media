@@ -1,9 +1,9 @@
-package com.tokopedia.sellerhomedrawer.drawer
+package com.tokopedia.sellerhomedrawer.presentation.view.drawer
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.sellerhomedrawer.service.SellerDrawerGetNotificationService
+import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService
 
 abstract class BaseSellerReceiverDrawerActivity: SellerDrawerPresenterActivity() {
 

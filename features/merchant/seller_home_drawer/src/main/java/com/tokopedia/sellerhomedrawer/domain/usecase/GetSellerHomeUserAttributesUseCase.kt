@@ -2,7 +2,7 @@ package com.tokopedia.sellerhomedrawer.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeParamConstant
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.sellerhomedrawer.data.SellerUserData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

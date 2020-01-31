@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomedrawer.di.module
 
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeParamConstant
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.sellerhomedrawer.di.SellerHomeDashboardScope
 import com.tokopedia.sellerhomedrawer.domain.usecase.FlashSaleGetSellerStatusUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetSellerHomeUserAttributesUseCase

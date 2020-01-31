@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomedrawer.drawer
+package com.tokopedia.sellerhomedrawer.presentation.view.drawer
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -13,10 +13,10 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhomedrawer.R
-import com.tokopedia.sellerhomedrawer.constant.SellerDrawerActivityBroadcastReceiverConstant
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeFragmentBroadcastReceiverConstant
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
 import com.tokopedia.sellerhomedrawer.data.SellerTokoCashData
+import com.tokopedia.sellerhomedrawer.data.constant.SellerDrawerActivityBroadcastReceiverConstant
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeFragmentBroadcastReceiverConstant
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerDeposit
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile

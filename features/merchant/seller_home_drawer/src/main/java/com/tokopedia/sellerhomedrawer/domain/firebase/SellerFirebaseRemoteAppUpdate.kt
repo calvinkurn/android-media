@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomedrawer.firebase
+package com.tokopedia.sellerhomedrawer.domain.firebase
 
 import android.app.Activity
 import com.google.gson.Gson

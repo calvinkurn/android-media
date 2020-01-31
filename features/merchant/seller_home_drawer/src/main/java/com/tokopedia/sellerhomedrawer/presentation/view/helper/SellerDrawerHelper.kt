@@ -20,8 +20,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.analytics.*
-import com.tokopedia.sellerhomedrawer.constant.SellerBaseUrl
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
+import com.tokopedia.sellerhomedrawer.data.constant.SellerBaseUrl
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.presentation.listener.*

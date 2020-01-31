@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomedrawer.constant
+package com.tokopedia.sellerhomedrawer.data.constant
 
 import com.tokopedia.url.TokopediaUrl
 

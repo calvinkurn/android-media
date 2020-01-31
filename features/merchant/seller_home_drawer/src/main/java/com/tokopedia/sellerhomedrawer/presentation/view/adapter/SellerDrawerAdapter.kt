@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.sellerhomedrawer.R
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 
 class SellerDrawerAdapter(val context: Context,

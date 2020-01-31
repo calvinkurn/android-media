@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomedrawer.di
 
 import com.tokopedia.sellerhomedrawer.di.module.SellerHomeDashboardModule
-import com.tokopedia.sellerhomedrawer.drawer.SellerDrawerPresenterActivity
+import com.tokopedia.sellerhomedrawer.presentation.view.drawer.SellerDrawerPresenterActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.dashboard.SellerDashboardActivity
 import dagger.Component
 

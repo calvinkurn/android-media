@@ -5,7 +5,7 @@ import com.tokopedia.gm.common.constant.GMParamApiContant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeParamConstant
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

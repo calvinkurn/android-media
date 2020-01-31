@@ -8,7 +8,5 @@ interface SellerDrawerDataManager {
 
     fun unsubscribe()
 
-    fun getUserAttributes(userSession: UserSession)
-
     fun getSellerUserAttributes(userSession: UserSession)
 }
