@@ -1219,7 +1219,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onRefresh(view: View?) {
-        println("++ masuk onRefresh!!")
         loadDetail()
     }
 }
