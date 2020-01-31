@@ -200,7 +200,7 @@ android {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel = true
-            minifyEnabled true
+            minifyEnabled false
             zipAlignEnabled true
             if (project.hasProperty("enable-shrinkresource")) {
                 shrinkResources true
