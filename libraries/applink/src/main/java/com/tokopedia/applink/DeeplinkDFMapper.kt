@@ -9,7 +9,6 @@ import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
@@ -122,8 +121,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_BASE, R.string.title_digital_deals))
 
             // Discovery
-            add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) ||
-                    it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_BASE, R.string.title_image_search))
+            add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_BASE, R.string.title_similar_search))
             add(DFP({ it.startsWith(SEARCH_RESULT) ||
                     it.startsWith(AUTOCOMPLETE)}, DFM_BASE, R.string.title_search_result))
 

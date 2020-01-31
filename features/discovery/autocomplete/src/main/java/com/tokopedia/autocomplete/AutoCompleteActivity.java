@@ -38,8 +38,7 @@ import java.util.List;
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
 public class AutoCompleteActivity extends BaseActivity
-        implements SearchBarView.ImageSearchClickListener,
-        SearchBarView.OnQueryTextListener,
+        implements SearchBarView.OnQueryTextListener,
         SuggestionViewUpdateListener,
         InitialStateViewUpdateListener {
 
@@ -149,7 +148,6 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void initSearchBarView() {
         searchBarView.setActivity(this);
-        searchBarView.setOnImageSearchClickListener(this);
         searchBarView.setOnQueryTextListener(this);
     }
 
@@ -266,11 +264,6 @@ public class AutoCompleteActivity extends BaseActivity
             searchBarView.setQuery(results.get(0), false);
             sendVoiceSearchGTM(results.get(0));
         }
-    }
-
-    @Override
-    public void onImageSearchClicked() {
-        RouteManager.route(this, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT);
     }
 
     public void setSearchQuery(String keyword) {
