@@ -138,10 +138,9 @@ class PartialButtonActionView private constructor(private val view: View,
         imageView.setImageResource(drawableRes)
 
         if (variant == TOPCHAT_VARIANT_GREEN) {
-            val greenColor = ContextCompat.getColor(imageView.context, R.color.Green_G500)
-            imageView.setColorFilter(greenColor, PorterDuff.Mode.SRC_ATOP)
+            imageView.setBackgroundResource(R.drawable.variant_topchat_green)
         } else {
-            imageView.clearColorFilter()
+            imageView.setBackgroundResource(R.drawable.white_button_rounded)
         }
     }
 
