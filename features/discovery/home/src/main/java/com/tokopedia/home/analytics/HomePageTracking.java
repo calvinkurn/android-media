@@ -1253,7 +1253,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir, type)
+                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir)
             );
         }
     }
