@@ -93,10 +93,15 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
+
+                val eventName = map["event"] as? String
+                val eventCategory = map["eventCategory"]  as? String
+                val eventAction = map["eventAction"]  as? String
+
                 // convert map to json then save as string
                 val event = gson.toJson(map)
-                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId(), session.getUserId())
-                trackingRepository.saveEvent(resultEvent.toString(), session)
+                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+                trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
                 setAlarm(true)
             }
         }

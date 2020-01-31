@@ -36,7 +36,7 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
             val maxRow = intent.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
             startService(maxRow)
         } catch (e: java.lang.Exception) {
-            Timber.e("P2#IRIS#onHandleWork %s", e.toString())
+            Timber.e("P1#IRIS#onHandleWork %s", e.toString())
         }
     }
 
@@ -56,7 +56,7 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
                     }
                 }
             } catch (e: Exception) {
-                Timber.e("P2#IRIS#startService %s", e.toString())
+                Timber.e("P1#IRIS#startService %s", e.toString())
             } finally {
                 isRunning = false
             }

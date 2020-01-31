@@ -1145,11 +1145,29 @@ public class GTMAnalytics extends ContextAnalytics {
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     log(getContext(), null, it);
+                    logIrisAnalytics(values);
+                    Timber.w("P1#IRIS_COLLECT#");
                     TagManager.getInstance(getContext()).getDataLayer().push(it);
                     pushIris("", it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
+    }
+
+    private void logIrisAnalytics(Map<String, Object> values) {
+        try {
+            if ("clickTopNav".equals(values.get(KEY_EVENT)) &&
+                    values.get(KEY_CATEGORY).toString().startsWith("top nav") &&
+                    "click search box".equals(values.get(KEY_ACTION))) {
+                Timber.w("P1#IRIS_COLLECT#GA_CLICKSEARCHBOX");
+            } else if ("clickPDP".equals(values.get(KEY_EVENT)) &&
+                    "product detail page".equals(values.get(KEY_CATEGORY)) &&
+                    "click - tambah ke keranjang".equals(values.get(KEY_ACTION))){
+                Timber.w("P1#IRIS_COLLECT#GA_PDP_ATC");
+            }
+        } catch (Exception exception) {
+            Timber.e("P1#IRIS#logIrisAnalyticsGA %s", exception.toString());
+        }
     }
 
     public void pushUserId(String userId) {

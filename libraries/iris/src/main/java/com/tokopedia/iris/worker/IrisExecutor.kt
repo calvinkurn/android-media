@@ -12,7 +12,7 @@ object IrisExecutor{
     val handler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, ex ->
             IrisService.isRunning = false
-            Timber.e("P2#IRIS#CoroutineExceptionHandler %s", ex.toString())
+            Timber.e("P1#IRIS#CoroutineExceptionHandler %s", ex.toString())
         }
     }
 

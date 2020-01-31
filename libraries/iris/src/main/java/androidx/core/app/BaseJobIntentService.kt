@@ -14,7 +14,7 @@ abstract class BaseJobIntentService : JobIntentService() {
         try {
             return super.dequeueWork()
         } catch (e: SecurityException) {
-            Timber.e("P2#IRIS#dequeueWork %s", e.toString())
+            Timber.e("P1#IRIS#dequeueWork %s", e.toString())
         }
         return null
     }

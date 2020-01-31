@@ -26,7 +26,7 @@ class IrisBroadcastReceiver : BroadcastReceiver() {
                 }
             }
             .subscribe({}, {
-                Timber.e("P2#IRIS#onReceiver %s", it.toString())
+                Timber.e("P1#IRIS#onReceiver %s", it.toString())
             })
     }
 }

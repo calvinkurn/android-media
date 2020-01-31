@@ -42,15 +42,18 @@ class TrackingRepository(
     private fun getLineDBFlush() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_FLUSH)
     private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND)
 
-    suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
+    suspend fun saveEvent(data: String, session: Session,
+                          eventName:String?, eventCategory:String?, eventAction:String?) =
+        withContext(Dispatchers.IO) {
         try {
             val tracking = Tracking(data, session.getUserId(), session.getDeviceId())
             trackingDao.insert(tracking)
+            logIrisStoreAnalytics(eventName, eventCategory, eventAction)
             IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
             val dbCount = trackingDao.getCount()
             if (dbCount >= getLineDBFlush()) {
-                Timber.e("P2#IRIS#dbCount %d lines", dbCount)
+                Timber.e("P1#IRIS#dbCount %d lines", dbCount)
                 trackingDao.flush()
             }
             if (dbCount >= getLineDBSend()) {
@@ -60,7 +63,22 @@ class TrackingRepository(
                 IrisService.enqueueWork(context, i)
             }
         } catch (e: Throwable) {
-            Timber.e("P2#IRIS#saveEvent %s", e.toString())
+            Timber.e("P1#IRIS#saveEvent %s", e.toString())
+        }
+    }
+
+    private fun logIrisStoreAnalytics(eventName:String?, eventCategory:String?, eventAction:String?) {
+        try {
+            if ("clickTopNav" == eventName &&
+                eventCategory?.startsWith("top nav") == true &&
+                "click search box" == eventAction) {
+                Timber.w("P1#IRIS_COLLECT#IRISSTORE_CLICKSEARCHBOX")
+            } else if ("clickPDP" == eventName && "product detail page" == eventCategory &&
+                "click - tambah ke keranjang" == eventAction) {
+                Timber.w("P1#IRIS_COLLECT#IRISSTORE_PDP_ATC")
+            }
+        }catch (e:Exception) {
+            Timber.e("P1#IRIS#logIrisAnalyticsStore %s", e.toString())
         }
     }
 
@@ -68,7 +86,7 @@ class TrackingRepository(
         return try {
             trackingDao.getFromOldest(maxRow)
         } catch (e: Throwable) {
-            Timber.e("P2#IRIS#getFromOldest %s", e.toString())
+            Timber.e("P1#IRIS#getFromOldest %s", e.toString())
             ArrayList()
         }
     }
@@ -77,7 +95,7 @@ class TrackingRepository(
         try {
             trackingDao.delete(data)
         } catch (ignored: Throwable) {
-            Timber.e("P2#IRIS#deletingData %s", ignored.toString())
+            Timber.e("P1#IRIS#deletingData %s", ignored.toString())
         }
     }
 
@@ -87,7 +105,7 @@ class TrackingRepository(
         val response = apiService.sendSingleEventAsync(requestBody)
         val isSuccessFul = response.isSuccessful
         if (!isSuccessFul) {
-            Timber.e("P2#IRIS#sendSingleEventNotSuccess %s", data)
+            Timber.e("P1#IRIS#sendSingleEventNotSuccess %s", data)
         }
         return isSuccessFul
     }
@@ -128,13 +146,14 @@ class TrackingRepository(
                     request)
                 delete(data)
                 totalSentData += data.size
+
                 // no need to loop, because it is already less than max row
                 if (data.size < maxRow) {
                     break
                 }
             } else {
                 lastSuccessSent = false
-                Timber.e("P2#IRIS#failedSendData %s", requestBody.toString())
+                Timber.e("P1#IRIS#failedSendData %s", requestBody.toString())
                 break
             }
             counterLoop++

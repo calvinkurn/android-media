@@ -6,6 +6,7 @@ import com.tokopedia.iris.util.KEY_EVENT
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -20,7 +21,7 @@ class TrackingMapper {
         val row = JSONObject()
         val event = JSONArray()
 
-        event.put(reformatEvent(track, sessionId, userId))
+        event.put(reformatEvent(track, sessionId))
 
         row.put("device_id", deviceId)
         row.put("user_id", userId)
@@ -40,6 +41,7 @@ class TrackingMapper {
             val item = tracking[i]
             if (!item.event.isBlank() && (item.event.contains("event"))) {
                 val eventObject = JSONObject(item.event)
+                logCertainItems(eventObject)
                 event.put(eventObject)
                 val nextItem: Tracking? = try {
                     tracking[i+1]
@@ -63,9 +65,27 @@ class TrackingMapper {
         return result.toString()
     }
 
+    private fun logCertainItems(item:JSONObject?){
+        val itemEvent = item?.getString("event_ga")
+        val itemCat = item?.getString("eventCategory")
+        val itemAct = item?.getString("eventAction")
+        try {
+            if ("clickTopNav" == itemEvent &&
+                itemCat?.startsWith("top nav") == true &&
+                "click search box" == itemAct) {
+                Timber.w("P1#IRIS_COLLECT#IRISSEND_CLICKSEARCHBOX")
+            } else if ("clickPDP" == itemEvent && "product detail page" == itemCat &&
+                "click - tambah ke keranjang" == itemAct) {
+                Timber.w("P1#IRIS_COLLECT#IRISSEND_PDP_ATC")
+            }
+        }catch (e:Exception) {
+            Timber.e("P1#IRIS#logIrisAnalyticsSend %s", e.toString())
+        }
+    }
+
     companion object {
 
-        fun reformatEvent(event: String, sessionId: String, userId: String) : JSONObject {
+        fun reformatEvent(event: String, sessionId: String) : JSONObject {
             return try {
                 val item = JSONObject(event)
                 if (item.has("event") && item.get("event") != null) {
