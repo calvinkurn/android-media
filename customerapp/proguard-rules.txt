@@ -409,3 +409,7 @@
 -keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
 
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
+
+-dontwarn com.google.android.exoplayer2.audio.AudioAttributes
+-dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
+-dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
