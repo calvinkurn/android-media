@@ -139,9 +139,37 @@ object ShipmentPresenterHelpTicketTest : Spek({
                 })
             }
 
-            Then("should render error reporter dialog") {
+            Then("should render success submit ticket dialog") {
                 verify(exactly = 1) {
-                    view.renderCheckoutCartErrorReporter(any())
+                    view.renderSubmitHelpTicketSuccess(any())
+                }
+            }
+        }
+
+        Scenario("Submit Help Ticket Fail") {
+
+            val responseErrorMessage = "something wrong"
+
+            Given("mock response") {
+                every {
+                    submitHelpTicketUseCase.createObservable(match {
+                        val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
+                        request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
+                    })
+                } returns Observable.just(SubmitTicketResult(status = false, message = responseErrorMessage))
+            }
+
+            When("process checkout") {
+                presenter.processSubmitHelpTicket(CheckoutData().apply {
+                    jsonResponse = ""
+                    errorMessage = ""
+                    errorReporter = ErrorReporter()
+                })
+            }
+
+            Then("should show toast error") {
+                verify(exactly = 1) {
+                    view.showToastError(responseErrorMessage)
                 }
             }
         }
