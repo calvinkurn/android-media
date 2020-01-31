@@ -399,7 +399,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (linkSegment.size() == 1) RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.HOME_TRAVEL_HOMEPAGE));
         else {
             Intent intent = RouteManager.getIntent(context, ApplinkConstInternalTravel.CITY_PAGE_TRAVEL_HOMEPAGE);
-            intent.putExtra("EXTRA_DESTINATION_WEB_URL", uri);
+            intent.putExtra("EXTRA_DESTINATION_WEB_URL", uri.toString());
             context.startActivity(intent);
         }
         context.finish();
