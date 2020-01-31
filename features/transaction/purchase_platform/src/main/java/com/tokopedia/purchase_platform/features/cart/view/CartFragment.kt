@@ -581,7 +581,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onGoToChuck() {
         activity?.let {
-            startActivity(Chucker.getLaunchIntent(it))
+            startActivity(Chucker.getLaunchIntent(it, Chucker.SCREEN_HTTP))
         }
     }
 
