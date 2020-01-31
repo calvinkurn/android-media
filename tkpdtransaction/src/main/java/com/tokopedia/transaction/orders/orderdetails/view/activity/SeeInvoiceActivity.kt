@@ -21,10 +21,12 @@ import javax.inject.Inject
 
 class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
 
+    companion object {
+        const val STATUS = "status"
+    }
+
     var orderListAnalytics: OrderListAnalytics? = null
         @Inject set
-
-    private lateinit var status: Status
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +56,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.action_download -> {
-                orderListAnalytics?.sendDownloadEventData(status?.status())
+                orderListAnalytics?.sendDownloadEventData(intent.getStringExtra(STATUS))
                 doWebPrint()
                 true
             }
