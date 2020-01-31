@@ -36,6 +36,15 @@ class RoomSettingBannerViewHolder(itemView: View?) : AbstractViewHolder<RoomSett
 
             override fun onDismiss() { }
         })
+
+        // Workaround for ticker not wrapping multiline content correctly
+        itemView.tkBanner?.post {
+            itemView.tkBanner?.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            itemView.tkBanner?.requestLayout()
+        }
     }
 
     companion object {
