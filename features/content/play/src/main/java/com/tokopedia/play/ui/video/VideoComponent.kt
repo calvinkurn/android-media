@@ -24,17 +24,16 @@ open class VideoComponent(
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val uiView = initUiView(container)
-
-    private val cornerRadius = 16f.dpToPx()
+    val uiView = initView(container)
 
     init {
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
-                            is ScreenStateEvent.KeyboardStateChanged -> uiView.setCornerRadius(if (it.isShown) cornerRadius else 0f)
+                            is ScreenStateEvent.KeyboardStateChanged -> uiView.showCornerRadius(it.isShown)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
                                 uiView.hide()
                                 uiView.setPlayer(null)
@@ -57,6 +56,6 @@ open class VideoComponent(
         return emptyFlow()
     }
 
-    open fun initUiView(container: ViewGroup): VideoView =
+    protected open fun initView(container: ViewGroup): VideoView =
             VideoView(container)
 }

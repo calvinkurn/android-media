@@ -38,7 +38,6 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val MOCK_CHANNEL_ID = "1953"
 
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
 
@@ -58,7 +57,6 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    // TODO available channelId: 1543 > VOD, 1591, 1387
     private var channelId = ""
 
     @Inject
@@ -93,7 +91,7 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: MOCK_CHANNEL_ID
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
         PlayAnalytics.sendScreen(channelId)
     }
 

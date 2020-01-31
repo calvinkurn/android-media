@@ -170,7 +170,35 @@ fun ImageView.loadImageCenterCrop(url: String){
             .into(this)
 }
 
-fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemoryCache: Boolean, placeholder: Int = -1){
+fun ImageView.loadGif(url: String){
+    Glide.with(context)
+            .asGif()
+            .load(url)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .transform(RoundedCorners(10))
+            .into(this)
+}
+
+fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : PerformanceMonitoring? {
+    var performanceMonitoring : PerformanceMonitoring? = null
+
+    //FPM only allow max 100 chars, so the url needs to be truncated
+    val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
+
+    if (!fpmItemLabel.isEmpty()) {
+        performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
+        performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
+    }
+    return performanceMonitoring
+}
+
+fun handleOnResourceReady(dataSource: DataSource?, resource: Drawable?, performanceMonitoring: PerformanceMonitoring?) {
+    if (dataSource == DataSource.REMOTE) {
+        performanceMonitoring?.stopTrace()
+    }
+}
+
+fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemoryCache: Boolean = false, placeholder: Int = -1){
     Glide.with(context)
             .load(url)
             .override(width, height)
