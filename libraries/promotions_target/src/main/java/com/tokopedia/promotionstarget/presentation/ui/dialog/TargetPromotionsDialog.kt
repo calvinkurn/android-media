@@ -370,11 +370,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     toggleBtnText(false)
                     if (data is GetPopGratificationResponse) {
                         performActionToClaimCoupon(data as GetPopGratificationResponse, activityContext)
-
-                        if (retryCount > 0) {
-                            TargetedPromotionAnalytics.tryAgain()
-                        }
-
                     } else if (data is ClaimPopGratificationResponse) {
                         performActionAfterCouponIsClaimed(activityContext, data as ClaimPopGratificationResponse)
                     } else {
@@ -385,7 +380,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     RouteManager.route(btnAction.context, ApplinkConst.HOME)
                     bottomSheetDialog.dismiss()
 
-                    TargetedPromotionAnalytics.goHomePage()
+                    TargetedPromotionAnalytics.performButtonAction(btnAction.text.toString())
                 }
                 skipBtnAction = true
             }
@@ -477,8 +472,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             }, 300L)
         }
 
-        TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn)
-
+        val applink = data.popGratification?.popGratificationActionButton?.appLink
+        if (retryCount > 0) {
+            TargetedPromotionAnalytics.tryAgain()
+        } else if (TextUtils.isEmpty(applink)) {
+            TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn)
+        } else {
+            TargetedPromotionAnalytics.performButtonAction(btnAction.text.toString())
+        }
     }
 
     private fun initInjections(activityContext: Context) {

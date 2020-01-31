@@ -85,16 +85,14 @@ object TargetedPromotionAnalytics {
         getTracker().sendGeneralEvent(map)
     }
 
-    //13 todo Rahul
-    //Picture 5 and 6
-    //https://tokopedia.atlassian.net/wiki/spaces/G/pages/552405246/PopGratification
-    //https://docs.google.com/spreadsheets/d/17UFj2siq74F-tYN5abYlARx7yNNDQxDNreY8YazdzRA/edit#gid=1542726793
-    fun goHomePage(){
+    //13
+    fun performButtonAction(label: String){
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
-        map[KEY_EVENT_ACTION] = "click go to homepage"
+        map[KEY_EVENT_ACTION] = "click"
+        map[KEY_EVENT_LABEL] = label
         getTracker().sendGeneralEvent(map)
     }
 
