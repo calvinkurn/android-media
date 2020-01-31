@@ -26,6 +26,7 @@ class HomePlayWidgetHelper(
 
     companion object{
         private const val DELAY_PLAYING = 2000L
+        private const val DELAY_BACK = 500L
     }
 
     private var mPlayer: ExoPlayer? = null
@@ -123,7 +124,9 @@ class HomePlayWidgetHelper(
     }
 
     override fun play(url: String){
-        if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+        if(DeviceConnectionInfo.isConnectWifi(context) &&
+                isDeviceHasRequirementAutoPlay() &&
+                (!isPlayerPlaying() || url != videoUri.toString())) {
             videoUri = Uri.parse(url)
             resumeVideo()
         }else{
@@ -161,8 +164,11 @@ class HomePlayWidgetHelper(
     override fun onActivityResume() {
         if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay()) {
             masterJob.cancelChildren()
-            observeVideoPlayer()
-            resumeVideo()
+            launch(coroutineContext){
+                delay(DELAY_BACK)
+                observeVideoPlayer()
+                resumeVideo()
+            }
         } else {
             stopVideoPlayer()
         }

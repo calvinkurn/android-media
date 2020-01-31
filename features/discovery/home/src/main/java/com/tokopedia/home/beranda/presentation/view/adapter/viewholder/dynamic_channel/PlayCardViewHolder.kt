@@ -65,10 +65,10 @@ class PlayCardViewHolder(
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
-        if(playCardViewModel != null) {
+        playCardViewModel = element
+        if(playCardViewModel != null && element?.playCardHome != null) {
             if (container.visibility == View.GONE) container.show()
             initView(playCardViewModel!!)
-            playCardViewModel = element
             playCardViewModel!!.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
         }
     }
