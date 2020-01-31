@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.brandlist_category.presentation.fragment
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.BuildConfig
 import com.tokopedia.brandlist.R
@@ -27,6 +29,7 @@ import com.tokopedia.brandlist.brandlist_category.presentation.activity.Brandlis
 import com.tokopedia.brandlist.brandlist_category.presentation.adapter.BrandlistContainerAdapter
 import com.tokopedia.brandlist.brandlist_category.presentation.viewmodel.BrandlistCategoryViewModel
 import com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout
+import com.tokopedia.brandlist.brandlist_search.presentation.activity.BrandlistSearchActivity
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -136,10 +139,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG) {
-                        it.throwable.printStackTrace()
-                    }
-
                     NetworkErrorHelper.showEmptyState(context, view) {
                         viewModel.getBrandlistCategories()
                     }
@@ -222,7 +221,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
     private fun configMainToolbar(view: View) {
         mainToolbar = view.findViewById(R.id.maintoolbar)
-//        mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
+        mainToolbar?.searchApplink = ApplinkConstInternalMechant.BRANDLIST_SEARCH
         mainToolbar?.setQuerySearch(getString(R.string.bl_query_search))
         mainToolbar?.getBtnWishlist()?.hide()
         mainToolbar?.getBtnInbox()?.hide()

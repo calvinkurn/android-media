@@ -3,6 +3,7 @@
     package="com.tokopedia.brandlist">
 
     <application>
+
         <activity
             android:name=".brandlist_category.presentation.activity.BrandlistActivity"
             android:screenOrientation="portrait">
@@ -11,11 +12,26 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_merchant"
                     android:pathPattern="@string/path_brandlist"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".brandlist_search.presentation.activity.BrandlistSearchActivity"
+            android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_merchant"
+                    android:path="@string/path_brandlist_search"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
