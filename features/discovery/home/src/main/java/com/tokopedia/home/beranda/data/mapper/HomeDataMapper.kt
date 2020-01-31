@@ -180,14 +180,13 @@ class HomeDataMapper(
                             list.add(mappingToReviewViewModel())
                         }
                         DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> if (!isCache) {
-//                            val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
-//                            if (!list.contains(playBanner)) list.add(playBanner)
+                            val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
+                            if (!list.contains(playBanner)) list.add(playBanner)
                         }
                     }
                 }
             }
         }
-        list.add(4, PlayCardViewModel(DynamicHomeChannel.Channels(id = "123")))
         return HomeViewModel(homeData.homeFlag, list, isCache)
     }
 
