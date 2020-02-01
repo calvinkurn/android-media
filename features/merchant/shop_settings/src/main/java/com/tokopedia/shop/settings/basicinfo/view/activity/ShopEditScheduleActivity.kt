@@ -64,6 +64,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
+            title = ""
         }
         if (intent.hasExtra(EXTRA_SHOP_MODEL)) {
             shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
