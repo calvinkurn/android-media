@@ -113,7 +113,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                     date?.text = it.date
                 }
                 is SetInvoice -> {
-                    invoice?.text = it.invoice
+                    setConditionalInvoice(it.invoice)
                 }
                 is SetConditionalInfo -> {
                     setConditionalInfo(it.successConditionalText, it.successCondInfoVisibility, it.color)
@@ -170,6 +170,14 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             paymentAvatar?.show()
         } else {
             paymentAvatar?.invisible()
+        }
+    }
+
+    private fun setConditionalInvoice(invoiceText: String) {
+        if (invoiceText.isNotEmpty()) {
+            invoice?.text = invoiceText
+        } else {
+            invoice?.invisible()
         }
     }
 
