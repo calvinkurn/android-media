@@ -18,7 +18,7 @@ class DFInstaller {
 
     companion object {
         internal var manager: SplitInstallManager? = null
-            private const val TAG_DFM_DEFERRED = "DFM_DEFERRED"
+        private const val TAG_DFM_DEFERRED = "DFM_DEFERRED"
         private const val TAG_LOG_DFM_DEFERRED_INSTALL = "Install"
         private const val TAG_LOG_DFM_DEFERRED_UNINSTALL = "Uninstall"
         @JvmStatic
@@ -43,7 +43,7 @@ class DFInstaller {
                                          onSuccessInstall: (() -> Unit)? = null,
                                          onFailedInstall: (() -> Unit)? = null,
                                          isInitial: Boolean = true,
-                                         additionalTag: String = ""): Boolean {
+                                         message: String = ""): Boolean {
         return withContext(Dispatchers.IO) {
             val applicationContext = context.applicationContext
             if (moduleNames.isEmpty()) {
@@ -71,13 +71,13 @@ class DFInstaller {
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) { suspendCoroutine<Boolean> { continuation ->
                 manager.deferredInstall(moduleNameToDownload).addOnSuccessListener {
-                    logSuccessStatus("$TAG_LOG_DFM_DEFERRED_INSTALL {$additionalTag}", applicationContext, moduleNameToDownload)
+                    logSuccessStatus("$TAG_LOG_DFM_DEFERRED_INSTALL {$message}", applicationContext, moduleNameToDownload)
                     onSuccessInstall?.invoke()
                     continuation.resume(true)
                 }.addOnFailureListener {
                     val errorCode = (it as? SplitInstallException)?.errorCode
                     sessionId = null
-                    logFailedStatus("$TAG_LOG_DFM_DEFERRED_INSTALL {$additionalTag}", applicationContext, moduleNameToDownload, errorCode?.toString()
+                    logFailedStatus("$TAG_LOG_DFM_DEFERRED_INSTALL {$message}", applicationContext, moduleNameToDownload, errorCode?.toString()
                         ?: it.toString())
                     onFailedInstall?.invoke()
                     continuation.resume(false)
@@ -89,10 +89,10 @@ class DFInstaller {
     fun installOnBackground(context: Context, moduleNames: List<String>,
                             onSuccessInstall: (() -> Unit)? = null,
                             onFailedInstall: (() -> Unit)? = null,
-                            additionalTag: String) {
+                            message: String) {
         GlobalScope.launch {
             try {
-                installOnBackgroundDefer(context, moduleNames, onSuccessInstall, onFailedInstall, additionalTag = additionalTag)
+                installOnBackgroundDefer(context, moduleNames, onSuccessInstall, onFailedInstall, message = message)
             } catch (ignored: Exception) {
 
             }
