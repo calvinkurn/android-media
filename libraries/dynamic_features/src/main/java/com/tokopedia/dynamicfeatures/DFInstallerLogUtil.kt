@@ -19,6 +19,7 @@ import java.lang.Exception
  * Created by hendry on 2019-10-03.
  */
 object DFInstallerLogUtil {
+    private const val DFM_TAG = "DFM"
     private const val MEGA_BYTE = 1024 * 1024
     private var storageStatsManager: StorageStatsManager? = null
 
@@ -70,17 +71,18 @@ object DFInstallerLogUtil {
     }
 
     internal fun logStatus(context: Context,
-                           tag: String = "",
+                           message: String = "",
                            modulesName: String,
                            previousFreeSpace: Long = 0,
                            moduleSize: Long = 0,
                            errorCode: List<String>? = null,
                            downloadTimes: Int = 1,
-                           isSuccess: Boolean = false) {
+                           isSuccess: Boolean = false,
+                           tag: String = DFM_TAG) {
 
         GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ ->  }) {
             val messageStringBuilder = StringBuilder()
-            messageStringBuilder.append("$tag {$modulesName};")
+            messageStringBuilder.append("$message {$modulesName};")
             if (downloadTimes > 0) {
                 messageStringBuilder.append("times_dl:{$downloadTimes};")
             }
@@ -121,7 +123,7 @@ object DFInstallerLogUtil {
                 )
                 messageStringBuilder.append("play_srv:{$playServiceVersion}")
             } catch (e: Exception) { }
-            Timber.w("P1#DFM#$messageStringBuilder")
+            Timber.w("P1#$tag#$messageStringBuilder")
         }
     }
 }

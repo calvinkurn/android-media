@@ -3,12 +3,9 @@ package com.tokopedia.dynamicfeatures
 import android.app.Application
 import android.content.Context
 import com.google.android.play.core.splitinstall.*
-import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import com.tokopedia.dynamicfeatures.service.DFDownloader
 import com.tokopedia.dynamicfeatures.track.DFTracking
 import kotlinx.coroutines.*
 import java.lang.Exception
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -21,8 +18,9 @@ class DFInstaller {
 
     companion object {
         internal var manager: SplitInstallManager? = null
-        const val TAG_LOG_DFM_BG = "Deferred Install"
-        const val TAG_LOG_DFM_BG_UNINSTALL = "Deferred Uninstall"
+            private const val TAG_DFM_DEFERRED = "DFM_DEFERRED"
+        private const val TAG_LOG_DFM_DEFERRED_INSTALL = "Install"
+        private const val TAG_LOG_DFM_DEFERRED_UNINSTALL = "Uninstall"
         @JvmStatic
         fun isInstalled(application: Application, moduleName: String): Boolean {
             initManager(application)
@@ -73,13 +71,13 @@ class DFInstaller {
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) { suspendCoroutine<Boolean> { continuation ->
                 manager.deferredInstall(moduleNameToDownload).addOnSuccessListener {
-                    logSuccessStatus("$TAG_LOG_DFM_BG {$additionalTag}", applicationContext, moduleNameToDownload)
+                    logSuccessStatus("$TAG_LOG_DFM_DEFERRED_INSTALL {$additionalTag}", applicationContext, moduleNameToDownload)
                     onSuccessInstall?.invoke()
                     continuation.resume(true)
                 }.addOnFailureListener {
                     val errorCode = (it as? SplitInstallException)?.errorCode
                     sessionId = null
-                    logFailedStatus("$TAG_LOG_DFM_BG {$additionalTag}", applicationContext, moduleNameToDownload, errorCode?.toString()
+                    logFailedStatus("$TAG_LOG_DFM_DEFERRED_INSTALL {$additionalTag}", applicationContext, moduleNameToDownload, errorCode?.toString()
                         ?: it.toString())
                     onFailedInstall?.invoke()
                     continuation.resume(false)
@@ -119,19 +117,19 @@ class DFInstaller {
         if (moduleNameToUninstall.isEmpty()) return
 
         manager.deferredUninstall(moduleNameToUninstall).addOnSuccessListener {
-            logSuccessStatus(TAG_LOG_DFM_BG_UNINSTALL, applicationContext, moduleNameToUninstall)
+            logDeferredStatus(applicationContext, TAG_LOG_DFM_DEFERRED_UNINSTALL, moduleNameToUninstall)
         }.addOnFailureListener {
             val errorCode = (it as? SplitInstallException)?.errorCode
-            logFailedStatus(TAG_LOG_DFM_BG_UNINSTALL, applicationContext, moduleNameToUninstall,
+            logDeferredStatus(applicationContext, TAG_LOG_DFM_DEFERRED_UNINSTALL, moduleNameToUninstall,
                 errorCode?.toString() ?: it.toString())
         }
     }
 
     private fun logSuccessStatus(tag: String, context: Context, moduleNameToDownload: List<String>) {
-        if (tag == TAG_LOG_DFM_BG || tag == DFInstallerActivity.TAG_LOG) {
+        if (tag == TAG_LOG_DFM_DEFERRED_INSTALL || tag == DFInstallerActivity.TAG_LOG) {
             DFTracking.trackDownloadDF(moduleNameToDownload,
                 null,
-                tag == TAG_LOG_DFM_BG)
+                tag == TAG_LOG_DFM_DEFERRED_INSTALL)
         }
         DFInstallerLogUtil.logStatus(context, tag,
             moduleNameToDownload.joinToString(), usableSpaceBeforeDownload, moduleSize, null, 0, false)
@@ -139,13 +137,19 @@ class DFInstaller {
 
     private fun logFailedStatus(tag: String, applicationContext: Context, moduleNameToDownload: List<String>,
                                  errorCode: String = "") {
-        if (tag == TAG_LOG_DFM_BG || tag == DFInstallerActivity.TAG_LOG) {
+        if (tag == TAG_LOG_DFM_DEFERRED_INSTALL || tag == DFInstallerActivity.TAG_LOG) {
             DFTracking.trackDownloadDF(moduleNameToDownload,
                 listOf(errorCode),
-                tag == TAG_LOG_DFM_BG)
+                tag == TAG_LOG_DFM_DEFERRED_INSTALL)
         }
         DFInstallerLogUtil.logStatus(applicationContext,
             tag, moduleNameToDownload.joinToString(), usableSpaceBeforeDownload, moduleSize,
             listOf(errorCode), 0, false)
+    }
+
+    private fun logDeferredStatus(applicationContext: Context, message: String, moduleNameToDownload: List<String>, errorCode: String = ""){
+        DFInstallerLogUtil.logStatus(applicationContext,
+                message, moduleNameToDownload.joinToString(), usableSpaceBeforeDownload, moduleSize,
+                listOf(errorCode), 0, false, TAG_DFM_DEFERRED)
     }
 }
