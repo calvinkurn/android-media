@@ -2,10 +2,10 @@ package com.tokopedia.dynamicfeatures.service
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.service.DFDownloader.DELIMITER
 import com.tokopedia.dynamicfeatures.service.DFDownloader.DELIMITER_2
 import com.tokopedia.dynamicfeatures.service.DFDownloader.KEY_SHARED_PREF_MODULE
-import com.tokopedia.dynamicfeatures.service.DFDownloader.MAX_ATTEMPT_DOWNLOAD
 import com.tokopedia.dynamicfeatures.service.DFDownloader.SHARED_PREF_NAME
 
 object DFQueue {
@@ -121,7 +121,7 @@ object DFQueue {
                 val indexAppendFind = moduleListToAppendList.indexOf(item.first)
                 if (indexAppendFind > -1) {
                     moduleListToAppend?.get(indexAppendFind)?.let {
-                        if (it.second < MAX_ATTEMPT_DOWNLOAD) {
+                        if (it.second < DFRemoteConfig().getConfig(context).downloadInBackgroundMaxRetry) {
                             finalList.add(it)
                         }
                     }
@@ -146,18 +146,20 @@ object DFQueue {
         val list = if (queueList.isEmpty()) {
             moduleListToDownload?.distinct()?.map { Pair(it, 1) } ?: emptyList()
         } else {
-            combineList(moduleListToDownload?.distinct(), queueList)
+            combineList(moduleListToDownload?.distinct(), queueList,
+                    DFRemoteConfig().getConfig(context).downloadInBackgroundMaxRetry)
         }
         putDFModuleList(context, list)
     }
 
     private fun combineList(
         moduleListToDownload: List<String>?,
-        queueList: List<Pair<String, Int>>
+        queueList: List<Pair<String, Int>>,
+        maxAttempDownload: Int
     ): List<Pair<String, Int>> {
         val list = moduleListToDownload?.map { Pair(it, 1) }?.toMutableList() ?: mutableListOf()
         queueList.forEach {
-            if (it.second < MAX_ATTEMPT_DOWNLOAD) {
+            if (it.second < maxAttempDownload) {
                 if (moduleListToDownload?.contains(it.first) != true) {
                     list.add(Pair(it.first, it.second))
                 }

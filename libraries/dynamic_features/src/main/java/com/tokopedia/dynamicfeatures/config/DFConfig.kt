@@ -11,16 +11,28 @@ data class DFConfig(
         @Expose
         val dowloadInBackground: Boolean = false,
         /**
-         * How long it will retry download in background if failed
-         */
-        @SerializedName("retry_dl_in_bg")
-        @Expose
-        val retryDownloadInBackground: Int = 60,
-        /**
          * Excluded android version code to download in background
          */
-        @SerializedName("excl_ver_code_dl_in_bg")
+        @SerializedName("dl_in_bg_excl_ver_code")
         @Expose
-        val excludedVersionCodeDownloadInBackground: List<Int> = emptyList()
+        val downloadInBackgroundExcludedVersionCode: List<Int> = emptyList(),
+        /**
+         * How long it will retry download in background if failed in minute
+         */
+        @SerializedName("dl_in_bg_allow_retry")
+        @Expose
+        val downloadInBackgroundAllowRetry: Boolean = false,
+        /**
+         * How long it will retry download in background if failed in minute
+         */
+        @SerializedName("dl_in_bg_retry")
+        @Expose
+        val downloadInBackgroundRetryTime: Long = 10,
+        /**
+         * Max retry download in background
+         */
+        @SerializedName("dl_in_bg_max_retry")
+        @Expose
+        val downloadInBackgroundMaxRetry: Int = 3
 )
 

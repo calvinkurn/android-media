@@ -76,10 +76,10 @@ class DFInstaller {
 
             usableSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
 
-            val dfConfig = DFRemoteConfig().getDfConfig(applicationContext)
+            val dfConfig = DFRemoteConfig().getConfig(applicationContext)
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) { suspendCoroutine { continuation ->
-                if (dfConfig.dowloadInBackground && !dfConfig.excludedVersionCodeDownloadInBackground.contains(Build.VERSION.SDK_INT)) {
+                if (dfConfig.dowloadInBackground && !dfConfig.downloadInBackgroundExcludedVersionCode.contains(Build.VERSION.SDK_INT)) {
                     registerListener(context, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation, isInitial)
                     manager.startInstall(request).addOnSuccessListener {
                         if (it == 0) {

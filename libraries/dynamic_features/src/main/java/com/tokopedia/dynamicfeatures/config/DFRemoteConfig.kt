@@ -10,7 +10,7 @@ class DFRemoteConfig {
         private const val ANDROID_DF_CONFIG = "android_df_config"
     }
 
-    public fun getDfConfig(context: Context): DFConfig {
+    fun getConfig(context: Context): DFConfig {
         val remoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
         val dfRemoteConfig = remoteConfig.getString(ANDROID_DF_CONFIG)
         dfRemoteConfig?.let {

@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.PersistableBundle
 import androidx.annotation.RequiresApi
 import com.tokopedia.dynamicfeatures.DFInstaller
+import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,20 +23,15 @@ object DFDownloader {
     const val KEY_SHARED_PREF_MODULE = "module_list"
     const val DELIMITER = "#"
     const val DELIMITER_2 = ":"
-    const val MAX_ATTEMPT_DOWNLOAD = 3
-    const val DEFAULT_DELAY = 10L
     const val JOB_ID = 953
 
     var isServiceRunning = false
-
-    private const val REMOTE_CONFIG_ALLOW_RETRY = "android_retry_df_download_bg"
-    private const val REMOTE_CONFIG_DELAY_IN_MINUTE = "android_retry_df_download_bg_delay"
 
     private var defaultDelay = -1L
 
     @SuppressLint("NewApi")
     fun startSchedule(context: Context, moduleListToDownload: List<String>? = null, isImmediate:Boolean = false) {
-        if (!allowRetryFromConfig(context)) {
+        if (!DFRemoteConfig().getConfig(context).downloadInBackgroundAllowRetry) {
             return
         }
         // no changes in module list, so no need to update the queue
@@ -98,15 +94,9 @@ object DFDownloader {
         isServiceRunning = false
     }
 
-    private fun allowRetryFromConfig(context: Context): Boolean {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-        return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_ALLOW_RETRY, false)
-    }
-
     private fun getDefaultDelayFromConfigInMillis(context: Context): Long {
         return if (defaultDelay < 0) {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-            TimeUnit.MINUTES.toMillis(firebaseRemoteConfig.getLong(REMOTE_CONFIG_DELAY_IN_MINUTE, DEFAULT_DELAY))
+            TimeUnit.MINUTES.toMillis(DFRemoteConfig().getConfig(context).downloadInBackgroundRetryTime)
         } else {
             defaultDelay
         }
@@ -114,7 +104,7 @@ object DFDownloader {
 
     suspend fun startJob(applicationContext: Context): Boolean {
         return withContext(Dispatchers.Default) {
-            if (!allowRetryFromConfig(applicationContext)) {
+            if (!DFRemoteConfig().getConfig(applicationContext).downloadInBackgroundAllowRetry) {
                 return@withContext true
             }
             if (isServiceRunning) {
