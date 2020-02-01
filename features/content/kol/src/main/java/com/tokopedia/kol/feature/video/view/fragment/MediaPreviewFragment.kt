@@ -139,7 +139,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         mediaPreviewViewModel.postDetailLive.removeObservers(this)
         mediaPreviewViewModel.postFooterLive.removeObservers(this)
         mediaPreviewViewModel.postTagLive.removeObservers(this)
-        mediaPreviewViewModel.clear()
+        mediaPreviewViewModel.flush()
         super.onDestroy()
     }
 
@@ -333,6 +333,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun onHeaderClicked(header: Header) {
         feedAnalyticTracker.eventMediaDetailClickAvatar(mediaPreviewViewModel.postId)
+        feedAnalyticTracker.eventClickMediaPreviewAvatar(mediaPreviewViewModel.postId, header.followCta.authorType)
         RouteManager.route(activity, header.avatarApplink)
     }
 

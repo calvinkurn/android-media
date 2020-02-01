@@ -755,7 +755,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         val districtRecommendationBottomSheetFragment =
                 DiscomBottomSheetFragment.newInstance()
         districtRecommendationBottomSheetFragment.setActionListener(this)
-        districtRecommendationBottomSheetFragment.show(fragmentManager, "")
+        fragmentManager?.run {
+            districtRecommendationBottomSheetFragment.show(this, "")
+        }
     }
 
     private fun showZipCodes() {
@@ -799,7 +801,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             if (isMismatch) {
                 address1 += "${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address1 = address1
-                saveAddressDataModel?.address2 = ""
+                if (isNullZipcode) {
+                    saveAddressDataModel?.address2 = "$currentLat,$currentLong"
+                } else {
+                    saveAddressDataModel?.address2 = ""
+                }
             } else {
                 address1 += "${saveAddressDataModel?.formattedAddress}"
                 saveAddressDataModel?.address1 = address1

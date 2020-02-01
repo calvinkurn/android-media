@@ -6,6 +6,9 @@
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -69,6 +72,7 @@
             android:padding="@dimen/dp_4"
             android:scaleType="fitXY"
             android:visibility="gone"
+            android:foreground="?attr/selectableItemBackground"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_ic_wishlist"

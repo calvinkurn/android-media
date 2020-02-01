@@ -31,7 +31,7 @@ abstract class ProductCardViewHolder(itemView: View,
                     formattedPrice = productItem.price,
                     productImageUrl = if (isUsingBigImageUrl()) productItem.imageURL700 else productItem.imageURL,
                     isTopAds = productItem.isTopAds,
-                    discountPercentage = productItem.discountPercentage.toString(),
+                    discountPercentage = if (isLabelDiscountVisible(productItem)) "${productItem.discountPercentage}%" else "",
                     reviewCount = productItem.countReview,
                     ratingCount = productItem.rating,
                     shopLocation = productItem.shop.location,
@@ -52,6 +52,11 @@ abstract class ProductCardViewHolder(itemView: View,
         )
         initProductCardContainer(productItem)
         finishBindViewHolder()
+        getProductCardView()?.setButtonWishlistOnClickListener{
+            if (productItem.isWishListEnabled) {
+                productListener.onWishlistButtonClicked(productItem,adapterPosition)
+            }
+        }
     }
 
     protected abstract fun getProductCardView(): ProductCardView?
@@ -67,6 +72,10 @@ abstract class ProductCardViewHolder(itemView: View,
         getProductCardView()?.setOnClickListener {
             productListener.onItemClicked(productItem, adapterPosition)
         }
+    }
+
+    private fun isLabelDiscountVisible(productItem: ProductsItem): Boolean {
+        return productItem.discountPercentage > 0
     }
 
     @Nullable

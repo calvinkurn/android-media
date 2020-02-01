@@ -2,6 +2,8 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailProducts
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
@@ -11,8 +13,8 @@ import kotlinx.android.synthetic.main.detail_products_item.view.*
 /**
  * Created by fwidjaja on 2019-10-04.
  */
-class SomDetailProductsViewHolder(itemView: View) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
-    private val somDetailProductsCardAdapter = SomDetailProductsCardAdapter()
+class SomDetailProductsViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+    private val somDetailProductsCardAdapter = SomDetailProductsCardAdapter(actionListener)
 
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailProducts) {
@@ -27,5 +29,13 @@ class SomDetailProductsViewHolder(itemView: View) : SomDetailAdapter.BaseViewHol
                 itemView.rv_products?.visibility = View.GONE
             }
         }
+
+        val coachmarkProducts = CoachMarkItem(itemView,
+                itemView.context.getString(R.string.coachmark_product),
+                itemView.context.getString(R.string.coachmark_product_info))
+
+        actionListener.onAddedCoachMarkProducts(
+                coachmarkProducts
+        )
     }
 }

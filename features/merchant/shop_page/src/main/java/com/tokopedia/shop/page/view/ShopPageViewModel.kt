@@ -4,13 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
@@ -36,7 +35,7 @@ import javax.inject.Inject
 class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRepository,
                                             private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
                                             private val userSessionInterface: UserSessionInterface,
-                                            private val getShopInfoUseCase: GQLGetShopInfoUseCase,
+                                            private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
@@ -90,9 +89,9 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
     private suspend fun getShopInfoShopReputationDataFeedWhitelist(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfoShopBadgeFeedWhitelist {
         val shopInfoShopBadgeFeedWhitelist = ShopInfoShopBadgeFeedWhitelist()
 
-        getShopInfoUseCase.params = GQLGetShopInfoUseCase
+        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase
                 .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain)
-        val shopInfoRequest = getShopInfoUseCase.request
+        val shopInfoRequest = gqlGetShopInfoUseCase.request
 
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
         val shopReputationRequest = getShopReputationUseCase.request
@@ -222,8 +221,8 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         )
     }
 
-    override fun clear() {
-        super.clear()
+    override fun flush() {
+        super.flush()
         getWhitelistUseCase.unsubscribe()
         toggleFavouriteShopUseCase.unsubscribe()
         getModerateShopUseCase.unsubscribe()

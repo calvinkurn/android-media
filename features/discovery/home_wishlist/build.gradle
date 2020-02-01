@@ -46,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
 
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.diffUtilRecycler)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -91,6 +92,10 @@ project.ext {
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
     artifactName ="home_wishlist-release"
+    unitTestKotlinIncludes = [
+            '**/WishlistViewModel.*'
+    ]
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

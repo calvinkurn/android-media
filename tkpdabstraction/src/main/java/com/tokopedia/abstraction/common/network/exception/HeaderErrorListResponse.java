@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 
 import java.io.IOException;
 

@@ -129,12 +129,17 @@ class NormalCheckoutTracking {
                                cartId: String? = NONE_OTHER,
                                trackerAttribution: String?,
                                trackerListName: String?,
-                               multiOrigin: Boolean, isFreeOngkir: Boolean) {
+                               multiOrigin: Boolean,
+                               isFreeOngkir: Boolean,
+                               reference: String,
+                               customEventLabel: String,
+                               customEventAction: String) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
                 "click - beli on variants page",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
-                trackerAttribution, trackerListName, multiOrigin, "", isFreeOngkir)
+                trackerAttribution, trackerListName, multiOrigin, reference, isFreeOngkir,
+                customEventLabel, customEventAction)
     }
 
     fun eventClickBuyTradeIn(originalProductInfoAndVariant: ProductInfoAndVariant?,

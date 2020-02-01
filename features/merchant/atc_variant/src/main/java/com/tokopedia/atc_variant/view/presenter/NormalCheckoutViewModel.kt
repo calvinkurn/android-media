@@ -32,7 +32,7 @@ import com.tokopedia.atc_variant.di.RawQueryKeyConstant
 import com.tokopedia.atc_variant.domain.usecase.AddInsuranceProductUsecase
 import com.tokopedia.atc_variant.model.*
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceRecommendationGqlResponse
-import com.tokopedia.transaction.insurance.utils.INSURANCE_RECOMMENDATION_PARAM_GQL
+import com.tokopedia.purchase_platform.common.insurance.utils.INSURANCE_RECOMMENDATION_PARAM_GQL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher

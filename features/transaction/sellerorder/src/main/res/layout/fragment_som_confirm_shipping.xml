@@ -83,7 +83,7 @@
             app:layout_constraintTop_toTopOf="@id/courier_label"
             app:layout_constraintBottom_toBottomOf="@id/courier_label"
             tools:ignore="ContentDescription"
-            app:srcCompat="@drawable/ic_chevron_right"/>
+            app:srcCompat="@drawable/ic_som_chevron_right"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_choosen_courier"
@@ -128,7 +128,7 @@
             app:layout_constraintTop_toTopOf="@id/courier_service_label"
             app:layout_constraintBottom_toBottomOf="@id/courier_service_label"
             tools:ignore="ContentDescription"
-            app:srcCompat="@drawable/ic_chevron_right"/>
+            app:srcCompat="@drawable/ic_som_chevron_right"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_choosen_courier_service"

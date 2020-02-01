@@ -76,9 +76,6 @@ public class SearchProductModel {
         @SerializedName("source")
         @Expose
         private String source;
-        @SerializedName("shareUrl")
-        @Expose
-        private String shareUrl;
         @SerializedName("errorMessage")
         @Expose
         private String errorMessage;
@@ -97,6 +94,9 @@ public class SearchProductModel {
         @SerializedName("response_code")
         @Expose
         private String responseCode;
+        @SerializedName("keyword_process")
+        @Expose
+        private String keywordProcess;
         @SerializedName("count_text")
         @Expose
         private String countText;
@@ -133,10 +133,6 @@ public class SearchProductModel {
             return source;
         }
 
-        public String getShareUrl() {
-            return shareUrl;
-        }
-
         public boolean isFilter() {
             return isFilter;
         }
@@ -159,6 +155,10 @@ public class SearchProductModel {
 
         public String getResponseCode() {
             return responseCode;
+        }
+
+        public String getKeywordProcess() {
+            return keywordProcess;
         }
 
         public String getCountText() {
@@ -212,11 +212,11 @@ public class SearchProductModel {
     public static class Related {
         @SerializedName("related_keyword")
         @Expose
-        private String relatedKeyword;
+        private String relatedKeyword = "";
 
         @SerializedName("other_related")
         @Expose
-        private List<OtherRelated> otherRelated;
+        private List<OtherRelated> otherRelated = new ArrayList<>();
 
         public String getRelatedKeyword() {
             return relatedKeyword;

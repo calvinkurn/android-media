@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.list.presentation.fragment
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -7,37 +9,51 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
+import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DONE
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
+import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
@@ -64,29 +80,57 @@ import kotlin.collections.HashMap
 /**
  * Created by fwidjaja on 2019-08-23.
  */
-class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
+class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
         SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var somListItemAdapter: SomListItemAdapter
-    private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
-    private var orderList: List<SomListOrder.Data.OrderList.Order> = listOf()
-    private var mapOrderStatus = HashMap<String, List<Int>>()
-    private var paramOrder =  SomListOrderParam()
-    private var refreshHandler: RefreshHandler? = null
-    private var isLoading = false
-    private var tabActive = ""
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkSearch: CoachMarkItem by lazy {
+        CoachMarkItem(rl_search_filter, getString(R.string.coachmark_search), getString(R.string.coachmark_search_info))
+    }
+
+    private val coachMarkProduct: CoachMarkItem by lazy {
+        CoachMarkItem(order_list_rv, getString(R.string.coachmark_product), getString(R.string.coachmark_product_info))
+    }
+
+    private val coachMarkFilter: CoachMarkItem by lazy {
+        CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
+    }
+
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
-    private val FLAG_CONFIRM_SHIPPING = 3555
+    private val ANIMATION_DURATION_IN_MILIS = 250L
+    private val ANIMATION_TYPE = "translationY"
+    private val TRANSLATION_LENGTH = 500f
+
+    private lateinit var somListItemAdapter: SomListItemAdapter
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
+    private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
+    private var orderList: SomListOrder.Data.OrderList = SomListOrder.Data.OrderList()
+    private var mapOrderStatus = HashMap<String, List<Int>>()
+    private var paramOrder = SomListOrderParam()
+    private var refreshHandler: RefreshHandler? = null
+    private var tabActive = ""
+    private var tabStatus = ""
+    private var filterStatusId = 0
+    private var isFilterApplied = false
+    private var defaultStartDate = ""
+    private var defaultEndDate = ""
+    private var nextOrderId = 0
+    private var onLoadMore = false
+    private var isFilterButtonAnimating = false
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
     }
 
     companion object {
+        private val TAG_COACHMARK = "coachMark"
         private const val REQUEST_FILTER = 2888
 
         @JvmStatic
@@ -94,6 +138,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             return SomListFragment().apply {
                 arguments = Bundle().apply {
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
+                    putString(TAB_STATUS, bundle.getString(TAB_STATUS))
+                    putInt(FILTER_STATUS_ID, bundle.getInt(FILTER_STATUS_ID))
                 }
             }
         }
@@ -109,8 +155,11 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
+            tabStatus = arguments?.getString(TAB_STATUS).toString()
+            filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
         }
-        loadInitial()
+        loadTicker()
+        loadFilterList()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -125,17 +174,87 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         setInitialValue()
         observingTicker()
         observingFilter()
+        observingStatusList()
         observingOrders()
     }
 
     private fun prepareLayout() {
-        refreshHandler = RefreshHandler(activity, view, this)
+        refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
         somListItemAdapter = SomListItemAdapter()
         somListItemAdapter.setActionListener(this)
+        addEndlessScrollListener()
+    }
+
+    private fun addEndlessScrollListener() {
         order_list_rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
+            scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    onLoadMore = true
+                    if (nextOrderId != 0) {
+                        loadOrderList(nextOrderId)
+                    }
+                }
+            }
+            addOnScrollListener(scrollListener)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) {
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
+                            }
+                        }
+                    } else if (dy < 0) {
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
+                            }
+                        }
+                    }
+                }
+            })
+
         }
     }
 
@@ -145,33 +264,34 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
 
         filter_action_button.setOnClickListener {
+            SomAnalytics.eventClickFilterButtonOnOrderList()
             val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
             startActivityForResult(intentFilter, REQUEST_FILTER)
         }
     }
 
     private fun setInitialValue() {
-        paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
-        paramOrder.endDate = Date().toFormattedString("dd/MM/yyyy")
+        defaultStartDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
+        defaultEndDate = Date().toFormattedString("dd/MM/yyyy")
+        paramOrder.startDate = defaultStartDate
+        paramOrder.endDate = defaultEndDate
     }
 
-    private fun loadInitial() {
+    private fun loadTicker() {
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
-        somListViewModel.loadSomListData(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
+        somListViewModel.loadTickerList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker))
     }
 
     private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    renderInfoTicker(it.data)
-                }
-                is Fail -> {
-                    ticker_info?.visibility = View.GONE
-                }
+        when (it) {
+            is Success -> {
+                renderInfoTicker(it.data)
             }
-        })
+            is Fail -> {
+                ticker_info?.visibility = View.GONE
+            }
+        }
+    })
 
     private fun observingFilter() {
         somListViewModel.filterListResult.observe(this, Observer {
@@ -179,6 +299,13 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     filterList = it.data
                     renderFilter()
+                    if (filterStatusId != 0) {
+                        loadFilterStatusList()
+                    } else {
+                        somListItemAdapter.removeAll()
+                        nextOrderId = 0
+                        loadOrderList(nextOrderId)
+                    }
                 }
                 is Fail -> {
                     quick_filter?.visibility = View.GONE
@@ -187,27 +314,56 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
     }
 
-    private fun loadOrderList() {
+    private fun observingStatusList() = somListViewModel.statusOrderListResult.observe(this, Observer {
+        when (it) {
+            is Success -> {
+                it.data.forEach { statusList ->
+                    if (statusList.id == filterStatusId) {
+                        paramOrder.statusList = statusList.orderStatusIdList
+                        return@forEach
+                    }
+                }
+                loadOrderList(nextOrderId)
+            }
+            is Fail -> {
+                loadOrderList(nextOrderId)
+            }
+        }
+    })
+
+    private fun loadFilterStatusList() {
+        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
+    }
+
+    private fun loadOrderList(nextOrderId: Int) {
+        paramOrder.nextOrderId = nextOrderId
         somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
+    }
+
+    private fun loadFilterList() {
+        somListViewModel.loadFilterList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
     }
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
         if (tickerList.isNotEmpty()) {
+            (ticker_info?.getChildAt(0) as CardView).useCompatPadding = false
+            ticker_info?.visibility = View.VISIBLE
             if (tickerList.size > 1) {
                 val listTickerData = arrayListOf<TickerData>()
                 var indexTicker = 0
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.shortDesc, Ticker.TYPE_ANNOUNCEMENT, true))
+                        listTickerData.add(TickerData("", it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}", Ticker.TYPE_ANNOUNCEMENT, true))
                         indexTicker++
                     }
                 }
 
                 context?.let {
                     val adapter = TickerPagerAdapter(it, listTickerData)
-                    adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                    adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            SomAnalytics.eventClickSeeMoreOnTicker()
                         }
 
                     })
@@ -215,12 +371,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             } else {
                 tickerList.first().let {
-                    ticker_info?.visibility = View.VISIBLE
-                    ticker_info?.setHtmlDescription(it.shortDesc)
+                    ticker_info?.setHtmlDescription(it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}")
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            SomAnalytics.eventClickSeeMoreOnTicker()
                         }
 
                         override fun onDismiss() {}
@@ -228,6 +384,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     })
                 }
             }
+            SomAnalytics.eventViewTicker()
         } else {
             ticker_info?.visibility = View.GONE
         }
@@ -245,17 +402,27 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             filterItem.type = it.key
 
             if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
-                SomAnalytics.eventClickQuickFilter(it.orderStatus)
                 currentIndex = index
-                filterItem.setColorBorder(R.color.tkpd_main_green)
+                filterItem.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green)
                 filterItem.isSelected = true
-                if (paramOrder.statusList.isEmpty()) paramOrder.statusList = it.orderStatusIdList
-
-            }  else {
-                filterItem.setColorBorder(R.color.gray_background)
-                filterItem.isSelected = false
+                if (it.key.equals(STATUS_ALL_ORDER, true) ||
+                        it.key.equals(STATUS_DONE, true) ||
+                        it.key.equals(STATUS_ORDER_CANCELLED, true)) {
+                    paramOrder.sortBy = SORT_DESCENDING
+                } else {
+                    paramOrder.sortBy = SORT_ASCENDING
+                }
+                if (paramOrder.statusList.isEmpty()) {
+                    if (tabStatus.equals(STATUS_DELIVERED, true)) {
+                        val listPesananTiba = ArrayList<Int>()
+                        if (it.orderStatusIdList.contains(STATUS_ORDER_DELIVERED)) listPesananTiba.add(STATUS_ORDER_DELIVERED)
+                        if (it.orderStatusIdList.contains(STATUS_ORDER_DELIVERED_DUE_LIMIT)) listPesananTiba.add(STATUS_ORDER_DELIVERED_DUE_LIMIT)
+                        paramOrder.statusList = listPesananTiba
+                    } else {
+                        paramOrder.statusList = it.orderStatusIdList
+                    }
+                }
             }
-            refreshHandler?.startRefresh()
 
             listQuickFilter.add(filterItem)
             mapOrderStatus[it.key] = it.orderStatusIdList
@@ -264,23 +431,23 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         quick_filter?.renderFilter(listQuickFilter, currentIndex)
         quick_filter?.setListener { keySelected ->
+            filterStatusId = 0
+            var tmpKeySelected = keySelected
+            if (tmpKeySelected == "0") {
+                tmpKeySelected = STATUS_ALL_ORDER
+            }
             mapOrderStatus.forEach { (key, listOrderStatusId) ->
-                if (keySelected.equals(key, true)) {
-                    tabActive = keySelected
-                    println("++ selected tabActive = $tabActive")
+                if (tmpKeySelected.equals(key, true)) {
+                    tabActive = tmpKeySelected
+                    SomAnalytics.eventClickQuickFilter(tabActive)
                     if (listOrderStatusId.isNotEmpty()) {
-                        paramOrder.statusList = listOrderStatusId
+                        this.paramOrder.statusList = listOrderStatusId
+                        renderFilter()
                         refreshHandler?.startRefresh()
                     }
+                    return@forEach
                 }
             }
-
-            var intervalDays = -60
-            if (keySelected == STATUS_ALL_ORDER) intervalDays = -90
-            // paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
-
-            println("++ paramOrder.startDate = ${paramOrder.startDate}")
-            println("++ paramOrder.endDate = ${paramOrder.endDate}")
         }
     }
 
@@ -290,18 +457,29 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    if (orderList.isNotEmpty()) renderOrderList()
+                    nextOrderId = orderList.cursorOrderId
+                    if (orderList.orders.isNotEmpty()) {
+                        renderOrderList()
+                        showCoachMarkProducts()
+                    }
+
                     else {
-                        if (tabActive == getString(R.string.key_all_order)) renderCekPeluang()
-                        else if (paramOrder.startDate.isNotEmpty() || paramOrder.endDate.isNotEmpty()) {
-                            val inputFormat = SimpleDateFormat("dd/MM/yyyy")
-                            val outputFormat = SimpleDateFormat("dd MMM yyyy")
-                            val startDate = inputFormat.parse(paramOrder.startDate)
-                            val startDateStr = outputFormat.format(startDate)
-                            val endDate = inputFormat.parse(paramOrder.endDate)
-                            val endDateStr = outputFormat.format(endDate)
-                            renderFilterEmpty(getString(R.string.empty_search_title) + " " + startDateStr + " - " + endDateStr, getString(R.string.empty_search_desc))
-                        } else renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
+                        if (isFilterApplied) {
+                            if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
+                                val inputFormat = SimpleDateFormat("dd/MM/yyyy")
+                                val outputFormat = SimpleDateFormat("dd MMM yyyy")
+                                val startDate = inputFormat.parse(paramOrder.startDate)
+                                val startDateStr = outputFormat.format(startDate)
+                                val endDate = inputFormat.parse(paramOrder.endDate)
+                                val endDateStr = outputFormat.format(endDate)
+                                renderFilterEmpty(getString(R.string.empty_search_title) + " " + startDateStr + " - " + endDateStr, getString(R.string.empty_search_desc))
+                            } else {
+                                renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
+                            }
+                        } else {
+                            renderCekPeluang()
+                            showCoachMarkProductsEmpty()
+                        }
                     }
                 }
                 is Fail -> {
@@ -315,8 +493,27 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.finishRefresh()
         empty_state_order_list.visibility = View.GONE
         order_list_rv.visibility = View.VISIBLE
-        somListItemAdapter.somItemList = orderList.toMutableList()
+
+        if (!onLoadMore) {
+            somListItemAdapter.somItemList = orderList.orders.toMutableList()
+        } else {
+            somListItemAdapter.addItems(orderList.orders)
+            scrollListener.updateStateAfterGetData()
+        }
         somListItemAdapter.notifyDataSetChanged()
+
+    }
+
+    private fun showCoachMarkProducts(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+        }
+    }
+
+    private fun showCoachMarkProductsEmpty(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
+        }
     }
 
     private fun renderFilterEmpty(title: String, desc: String) {
@@ -326,6 +523,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         title_empty?.text = title
         desc_empty?.text = desc
         btn_cek_peluang?.visibility = View.GONE
+        SomAnalytics.eventViewEmptyState(tabActive)
     }
 
     private fun renderErrorOrderList(title: String, desc: String) {
@@ -357,7 +555,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun onSearchReset() { }
+    override fun onSearchReset() {}
 
     override fun onSearchSubmitted(text: String?) {
         text?.let {
@@ -375,32 +573,56 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onRefresh(view: View?) {
-        isLoading = true
-        loadOrderList()
+        addEndlessScrollListener()
+        onLoadMore = false
+        somListItemAdapter.removeAll()
+        nextOrderId = 0
+        loadOrderList(nextOrderId)
+        loadFilterList()
+        if (isFilterApplied) filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
+        else filter_action_button?.rightIconDrawable = null
+    }
+
+    private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {
+        var isApplied = false
+        if (paramOrder.search.isNotEmpty()) isApplied = true
+        if (!paramOrder.startDate.equals(defaultStartDate, true)) isApplied = true
+        if (!paramOrder.endDate.equals(defaultEndDate, true)) isApplied = true
+        if (paramOrder.statusList.isNotEmpty()) isApplied = true
+        if (paramOrder.shippingList.isNotEmpty()) isApplied = true
+        if (paramOrder.orderTypeList.isNotEmpty()) isApplied = true
+        return isApplied
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(SomConsts.PARAM_LIST_ORDER)) {
+                    filterStatusId = 0
                     paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
+                    isFilterApplied = checkFilterApplied(paramOrder)
                     tabActive = ""
                     renderFilter()
+                    refreshHandler?.startRefresh()
                 }
             }
         } else if (requestCode == FLAG_DETAIL && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                if (data.hasExtra(RESULT_ACCEPT_ORDER)) {
-                    val resultAcceptOrder = data.getParcelableExtra<SomAcceptOrder.Data.AcceptOrder>(RESULT_ACCEPT_ORDER)
-                    refreshThenShowToasterOk(resultAcceptOrder.listMessage.first())
+                when {
+                    data.hasExtra(RESULT_ACCEPT_ORDER) -> {
+                        val resultAcceptOrder = data.getParcelableExtra<SomAcceptOrder.Data.AcceptOrder>(RESULT_ACCEPT_ORDER)
+                        refreshThenShowToasterOk(resultAcceptOrder.listMessage.first())
 
-                } else if (data.hasExtra(RESULT_REJECT_ORDER)) {
-                    val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
-                    refreshThenShowToasterOk(resultRejectOrder.message.first())
+                    }
+                    data.hasExtra(RESULT_REJECT_ORDER) -> {
+                        val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
+                        refreshThenShowToasterOk(resultRejectOrder.message.first())
 
-                } else if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
-                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
-                    refreshThenShowToasterOk(resultConfirmShippingMsg)
+                    }
+                    data.hasExtra(RESULT_CONFIRM_SHIPPING) -> {
+                        val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+                        refreshThenShowToasterOk(resultConfirmShippingMsg)
+                    }
                 }
             }
         } else if (requestCode == FLAG_CONFIRM_REQ_PICKUP && resultCode == Activity.RESULT_OK) {
@@ -422,7 +644,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onListItemClicked(orderId: String) {
-        eventClickOrder()
+        eventClickOrder(tabActive)
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
             startActivityForResult(this, FLAG_DETAIL)

@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.similarsearch">
 
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:label="@string/similar_search_app_name"
         android:largeHeap="true"
         android:supportsRtl="true">
 
         <activity
-            android:name=".view.SimilarSearchActivity"
+            android:name=".SimilarSearchActivity"
             android:label="@string/title_similar_search"
-            android:theme="@style/noAnimTheme">
+            android:theme="@style/Theme.White">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

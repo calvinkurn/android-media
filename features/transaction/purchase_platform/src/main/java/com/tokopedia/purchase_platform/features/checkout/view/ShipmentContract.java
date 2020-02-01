@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
@@ -30,16 +30,15 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,8 +94,6 @@ public interface ShipmentContract {
         void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
 
         void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode);
-
-        void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
         void renderErrorCheckPromoShipmentData(String message);
 
@@ -267,12 +264,8 @@ public interface ShipmentContract {
                                             boolean isReloadAfterPriceChangeHinger,
                                             String cornerId, String deviceId, String leasingId);
 
-        void processReloadCheckoutPageFromMultipleAddress(PromoStackingData promoStackingData,
-                                                          CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
-                                                          RecipientAddressModel recipientAddressModel,
-                                                          ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
-                                                          ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel);
+        void processReloadCheckoutPageFromMultipleAddress(RecipientAddressModel recipientAddressModel,
+                                                          ArrayList<ShipmentCartItemModel> shipmentCartItemModels);
 
         void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
@@ -281,10 +274,6 @@ public interface ShipmentContract {
                              boolean isTradeInDropOff, String deviceId, String lesingId);
 
         void checkPromoFinalStackShipment(Promo promo);
-//
-//         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
-//
-//         void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast, boolean isOneClickShipment);
 
         void processCheckPromoStackingLogisticPromo(int cartPosition, String cartString, String code);
 
@@ -309,10 +298,6 @@ public interface ShipmentContract {
         List<ShipmentCartItemModel> getShipmentCartItemModelList();
 
         void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList);
-
-        CartPromoSuggestionHolderData getCartPromoSuggestionHolderData();
-
-        void setCartPromoSuggestionHolderData(CartPromoSuggestionHolderData cartPromoSuggestionHolderData);
 
         void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList);
 

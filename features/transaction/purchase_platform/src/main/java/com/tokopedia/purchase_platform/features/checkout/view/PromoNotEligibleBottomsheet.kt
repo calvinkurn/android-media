@@ -9,7 +9,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.PromoNotEligibleAdapter
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.unifyprinciples.Typography
@@ -65,7 +65,7 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         rvPromoList.adapter = adapter
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         actionListener.onShow()
         dialog?.run {

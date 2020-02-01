@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.autocomplete.adapter
+package com.tokopedia.autocomplete.adapter
 
 import androidx.annotation.LayoutRes
 import android.text.Spannable
@@ -9,7 +9,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.adapter.ItemClickListener
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.viewmodel.HotlistSearch
 
@@ -41,16 +40,16 @@ class HotlistViewHolder(val view : View, val clickListener : ItemClickListener) 
             clickListener.onItemClicked(element.applink, element.url)
         }
 
-        val startIndex = indexOfSearchQuery(element.getKeyword(), element.getSearchTerm())
+        val startIndex = indexOfSearchQuery(element.keyword, element.searchTerm)
         if (startIndex == -1) {
             view.title_hotlist.text = element.keyword
         } else {
-            val highlightedTitle = SpannableString(element.getKeyword())
+            val highlightedTitle = SpannableString(element.keyword)
             highlightedTitle.setSpan(TextAppearanceSpan(view.context, R.style.searchTextHiglight),
                     0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             highlightedTitle.setSpan(TextAppearanceSpan(view.context, R.style.searchTextHiglight),
-                    startIndex + element.getSearchTerm().length,
-                    element.getKeyword().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    startIndex + element.searchTerm.length,
+                    element.keyword.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             view.title_hotlist.text = highlightedTitle
         }
     }

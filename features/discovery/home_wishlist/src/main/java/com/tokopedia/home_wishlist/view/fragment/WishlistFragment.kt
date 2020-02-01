@@ -176,13 +176,13 @@ open class WishlistFragment: Fragment(), WishlistListener {
         return componentType.cast((activity as HasComponent<C>?)?.getComponent())
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.wishlist_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         showOnBoarding()
     }
@@ -380,7 +380,6 @@ open class WishlistFragment: Fragment(), WishlistListener {
 
     private fun updateScrollListenerState(hasNextPage: Boolean) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
     }
 
     private fun updateScrollFlagForSearchView(isSearch: Boolean){
@@ -575,14 +574,14 @@ open class WishlistFragment: Fragment(), WishlistListener {
     }
 
     private fun enableScrollFlagsSearch(){
-        val layoutParam = collapse?.layoutParams as AppBarLayout.LayoutParams
-        layoutParam.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+        val layoutParam = collapse?.layoutParams as? AppBarLayout.LayoutParams
+        layoutParam?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         collapse?.layoutParams = layoutParam
     }
 
     private fun disableScrollFlagsSearch(){
-        val layoutParam = collapse?.layoutParams as AppBarLayout.LayoutParams
-        layoutParam.scrollFlags = 0
+        val layoutParam = collapse?.layoutParams as? AppBarLayout.LayoutParams
+        layoutParam?.scrollFlags = 0
         collapse?.layoutParams = layoutParam
     }
 

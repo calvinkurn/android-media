@@ -49,6 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/progress_bar"
+                    android:visibility="invisible"
                     app:typographyType="body_2"
                     tools:text="2,450 KB / 23,000 KB" />
 
@@ -85,11 +86,11 @@
             tools:text="@string/feature_download_subtitle"
             android:textSize="12sp" />
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_download"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Button.Submit.Green"
-            android:text="@string/start_download" />
+            android:layout_height="@dimen/dp_48"
+            android:text="@string/start_download"/>
+
     </LinearLayout>
 </ScrollView>

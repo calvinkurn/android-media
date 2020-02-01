@@ -6,8 +6,10 @@ import com.tokopedia.applink.DeepLinkChecker.BROWSE
 import com.tokopedia.applink.DeepLinkChecker.CATALOG
 import com.tokopedia.applink.DeepLinkChecker.CATEGORY
 import com.tokopedia.applink.DeepLinkChecker.CONTENT
+import com.tokopedia.applink.DeepLinkChecker.DEALS
 import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
 import com.tokopedia.applink.DeepLinkChecker.ETALASE
+import com.tokopedia.applink.DeepLinkChecker.FIND
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
 import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
 import com.tokopedia.applink.DeepLinkChecker.HOT
@@ -55,6 +57,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
             add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)
             add(Pattern(GT, 1, mapOf(0 to "hot")) to HOT)
+            add(Pattern(GT, 0, mapOf(0 to "find")) to FIND)
             add(Pattern(GT, 0, mapOf(0 to "catalog")) to CATALOG)
             add(Pattern(EQ, 2, mapOf(0 to "b")) to DISCOVERY_PAGE)
             add(Pattern(EQ, 2, mapOf(0 to "discovery")) to DISCOVERY_PAGE)
@@ -86,6 +89,7 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 4, mapOf(0 to "product-review")) to PRODUCT_REVIEW)
             add(Pattern(GT, 1, mapOf(0 to "myshop")) to OTHER)
             add(Pattern(EQ, 1, mapOf(0 to "my-shop")) to OTHER)
+            add(Pattern(GT, 0, mapOf(0 to "deals")) to DEALS)
             add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, null) to PRODUCT)

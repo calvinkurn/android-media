@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
@@ -29,6 +30,14 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onInvalidResiUpload(awbUploadUrl: String)
         fun onDialPhone(strPhoneNo: String)
         fun onShowBookingCode(bookingCode: String, bookingType: String)
+        fun onShowBuyerRequestCancelReasonBottomSheet()
+        fun onSeeInvoice(invoiceUrl: String)
+        fun onCopiedInvoice(invoice: String, str: String)
+        fun onClickProduct(productId: Int)
+        fun onCopiedAddress(address: String, str: String)
+        fun onAddedCoachMarkHeader(coachMark: CoachMarkItem)
+        fun onAddedCoachMarkProducts(coachMark: CoachMarkItem)
+        fun onAddedCoachMarkShipping(coachMark: CoachMarkItem)
     }
 
     companion object {
@@ -47,7 +56,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
             }
             LAYOUT_PRODUCTS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_products_item, parent, false)
-                SomDetailProductsViewHolder(view)
+                SomDetailProductsViewHolder(view, actionListener)
             }
             LAYOUT_SHIPPING -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_shipping_item, parent, false)

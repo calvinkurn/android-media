@@ -19,10 +19,10 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
-import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
@@ -34,7 +34,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 2019-09-20.
  */
-class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener, FeedOnboardingActivity.FeedOnboardingActivityListener {
+class FeedOnboardingFragment : BaseDaggerFragment(), InterestPickAdapter.InterestPickItemListener, FeedOnboardingActivity.FeedOnboardingActivityListener {
 
     companion object {
         private const val OPEN_RECOM_PROFILE = 1236
@@ -51,28 +51,28 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     private var selectedIdList: List<Int> = arrayListOf()
 
-    private val adapter : OnboardingAdapter by lazy {
-        OnboardingAdapter(this, "")
+    private val adapter : InterestPickAdapter by lazy {
+        InterestPickAdapter(this, "")
     }
 
     lateinit var data: OnboardingViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
+    private lateinit var feedPresenter: FeedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         selectedIdList = arguments?.getIntegerArrayList(EXTRA_SELECTED_IDS)?.toList() ?: arrayListOf()
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            feedOnboardingPresenter = viewModelProvider.get(FeedOnboardingViewModel::class.java)
+            feedPresenter = viewModelProvider.get(FeedViewModel::class.java)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        feedOnboardingPresenter.onboardingResp.observe(this, Observer {
+        feedPresenter.onboardingResp.observe(this, Observer {
             hideLoading()
             when (it) {
                 is Success -> onSuccessGetData(it.data)
@@ -80,7 +80,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
             }
         })
 
-        feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
+        feedPresenter.submitInterestPickResp.observe(this, Observer {
             view?.hideLoadingTransparent()
             when (it) {
                 is Success -> onSuccessSubmitInterestData(it.data)
@@ -147,16 +147,16 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     private fun initView() {
         interestList.adapter = adapter
-        interestList.addItemDecoration(OnboardingAdapter.getItemDecoration())
+        interestList.addItemDecoration(InterestPickAdapter.getItemDecoration())
         saveInterest.setOnClickListener {
             feedAnalyticTracker.eventClickFeedCheckInspiration(adapter.getSelectedItemIdList().size.toString())
             view?.showLoadingTransparent()
-            feedOnboardingPresenter.submitInterestPickData(adapter.getSelectedItems(), "", OPEN_RECOM_PROFILE)
+            feedPresenter.submitInterestPickData(adapter.getSelectedItems(), "", OPEN_RECOM_PROFILE)
         }
     }
 
     private fun loadData() {
-        feedOnboardingPresenter.getOnboardingData("",  true)
+        feedPresenter.getOnboardingData("")
         showLoading()
     }
 

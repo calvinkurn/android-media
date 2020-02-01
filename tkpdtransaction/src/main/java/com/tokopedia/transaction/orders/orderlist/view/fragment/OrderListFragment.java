@@ -33,7 +33,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.datepicker.DatePickerUnify;
-import com.tokopedia.datepicker.OnDateChangedListener;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -50,7 +49,6 @@ import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
-import com.tokopedia.transaction.orders.orderlist.common.util.Utils;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
@@ -70,6 +68,7 @@ import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderLi
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
+import com.tokopedia.transaction.util.Utils;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
@@ -87,7 +86,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
 import javax.inject.Inject;
+
 import kotlin.Unit;
 
 
@@ -123,8 +124,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_TRACK_IT = "lacak";
     private static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
+    private static final String ACTION_SIMILAR_PRODUCT = "rekomendasi";
+    private static final String CLICK_SIMILAR_PRODUCT = "click lihat produk serupa";
     private static final String  MULAI_DARI= "Mulai Dari";
     private static final String  SAMPAI= "Sampai";
+    private static final int DEFAULT_FILTER_YEAR = 2017;
+    private static final int DEFAULT_FILTER_MONTH = 0;
+    private static final int DEFAULT_FILTER_DATE = 1;
 
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
@@ -152,6 +158,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private String defEndDate = "";
     private String customStartDate = "";
     private String customEndDate = "";
+    private String datePickerStartDate = "";
+    private String datePickerEndDate = "";
     private boolean customFilter = false;
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
@@ -387,7 +395,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     protected void setViewListener() {
-        refreshHandler = new RefreshHandler(getActivity(), getView(), this);
+        refreshHandler = new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), this);
         refreshHandler.setPullEnabled(true);
         layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setSpanSizeLookup(onSpanSizeLookup());
@@ -484,10 +492,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 addRecyclerListener();
             }
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-                if (elapsedDays == _days90) {
-                    orderListAdapter.setEmptyMarketplaceFilter();
-                } else
-                    orderListAdapter.setEmptyMarketplace();
+                orderListAdapter.setEmptyMarketplaceFilter();
                 presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
             } else {
                 orderListAdapter.setEmptyOrderList();
@@ -630,11 +635,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) {
 
-        defStartDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getStartRangeDate());
-        defEndDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getEndRangeDate());
-        customEndDate = Utils.INSTANCE.setFormat(format, format1, customDate.getEndRangeDate());
-        customStartDate = Utils.INSTANCE.setFormat(format, format1, customDate.getStartRangeDate());
-
+        defStartDate = Utils.setFormat(format, format1, defaultDate.getStartRangeDate());
+        defEndDate = Utils.setFormat(format, format1, defaultDate.getEndRangeDate());
+        customEndDate = Utils.setFormat(format, format1, customDate.getEndRangeDate());
+        customStartDate = Utils.setFormat(format, format1, customDate.getStartRangeDate());
     }
 
     @Override
@@ -648,7 +652,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         orderListAdapter.addElement(data);
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         swipeToRefresh.setVisibility(View.VISIBLE);
-        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation) {
+        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation )|| orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {
             filterDate.setVisibility(View.VISIBLE);
         }
     }
@@ -713,8 +717,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 customFilter = false;
             } else {
                 customFilter = true;
-                startDate = Utils.INSTANCE.setFormat(format, format2, mulaiButton.getText().toString());
-                endDate = Utils.INSTANCE.setFormat(format, format2, sampaiButton.getText().toString());
+                startDate = Utils.setFormat(format, format2, mulaiButton.getText().toString());
+                endDate = Utils.setFormat(format, format2, sampaiButton.getText().toString());
             }
             selectedDateMap.clear();
             selectedDateMap.put(SAMPAI, endDate);
@@ -736,8 +740,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
             selectedDateMap.clear();
             customFilter = false;
             datePickerlayout.setVisibility(View.GONE);
-            sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customEndDate));
-            mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customStartDate));
+            sampaiButton.setText(Utils.setFormat(format2, format, customEndDate));
+            mulaiButton.setText(Utils.setFormat(format2, format, customStartDate));
+            datePickerStartDate = "";
+            datePickerEndDate = "";
         });
         if (customFilter) {
             radio2.setChecked(true);
@@ -745,8 +751,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         } else {
             radio1.setChecked(true);
         }
-        sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
-        mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
+        sampaiButton.setText(Utils.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
+        mulaiButton.setText(Utils.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
 
         crossIcon.setOnClickListener((View view) -> {
             changeDateBottomSheetDialog.dismiss();
@@ -795,17 +801,35 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
 
     private void showDatePicker(String title) {
-        String[] result = split(customStartDate);
-        Calendar minDate = new GregorianCalendar(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
-        Calendar maxDate = new GregorianCalendar(getCurrentLocale(getActivity()));
-        Calendar defaultDate = new GregorianCalendar(getCurrentLocale(getActivity()));
-        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
-            @Override
-            public void onDateChanged(long l) {
-                //
+        Calendar minDate = Calendar.getInstance();
+        Calendar maxDate = Calendar.getInstance();
+        Calendar defaultDate = Calendar.getInstance();
+
+        if (!TextUtils.isEmpty(datePickerStartDate) && !TextUtils.isEmpty(datePickerEndDate)) {
+            String[] resultStartDate = split(datePickerStartDate);
+            String[] resultEndDate = split(datePickerEndDate);
+
+            if (title.equalsIgnoreCase(MULAI_DARI)) {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+
+                defaultDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
+                maxDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
+
+            } else {
+                minDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
+                defaultDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
             }
-        });
-        datePickerUnify.show(getFragmentManager(), "");
+        } else {
+            if (title.equalsIgnoreCase(MULAI_DARI)) {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+                defaultDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+            } else {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+            }
+        }
+
+        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, null);
+
         if (title.equalsIgnoreCase(MULAI_DARI)) {
             datePickerUnify.setTitle(MULAI_DARI);
 
@@ -813,12 +837,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerUnify.setTitle(SAMPAI);
         }
 
+        datePickerUnify.show(getFragmentManager(), "");
         datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
-                sampaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1],getActivity()) + " " + date[2]);
+                sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+                datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
+
             } else {
-                mulaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1],getActivity()) + " " + date[2]);
+                mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+                datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
             }
             datePickerUnify.dismiss();
         });
@@ -888,7 +916,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         this.selectedOrderId = order.id();
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
-                if(mOrderCategory.equals(OrderListContants.BELANJA))
+                if(mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
                     presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 else
                     handleDefaultCase(actionButton);
@@ -905,6 +933,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
                 break;
             default:
+                if (actionButton.uri().contains(ACTION_SIMILAR_PRODUCT)) {
+                    String eventLabel = "";
+                    if (order.items() != null && !order.items().isEmpty()) {
+                        eventLabel = String.valueOf(order.items().get(0).getId());
+                    }
+                    orderListAnalytics.sendActionButtonClickEventList(CLICK_SIMILAR_PRODUCT, eventLabel);
+                }
                 handleDefaultCase(actionButton);
                 break;
         }

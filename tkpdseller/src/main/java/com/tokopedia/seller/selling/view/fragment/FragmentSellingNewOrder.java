@@ -20,6 +20,8 @@ import android.widget.Spinner;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -304,6 +306,16 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     }
 
     @Override
+    public void addRetryMessage(String message) {
+        adapter.addRetryMessage(message);
+    }
+
+    @Override
+    public void removeRetryMessage() {
+        adapter.removeRetryMessage();
+    }
+
+    @Override
     public void addEmptyView() {
         adapter.setIsDataEmpty(true);
     }
@@ -394,6 +406,9 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
+                if (GlobalConfig.isSellerApp()) {
+                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
+                }
                 presenter.onRefreshView();
             }
         };
