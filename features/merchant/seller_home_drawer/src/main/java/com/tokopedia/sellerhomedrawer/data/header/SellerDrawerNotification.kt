@@ -1,7 +1,8 @@
 package com.tokopedia.sellerhomedrawer.data.header
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 
-import com.tokopedia.core.util.GlobalConfig
+
 class SellerDrawerNotification {
 
     companion object {

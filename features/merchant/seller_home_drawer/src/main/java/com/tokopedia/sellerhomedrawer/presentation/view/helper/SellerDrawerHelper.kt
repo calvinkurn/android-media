@@ -185,13 +185,11 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(intent)
                 }
                 SellerHomeState.DrawerPosition.SETTINGS -> {
-                    //TODO: Change ManageGeneral to abstraction
-                    val settingsIntent = Intent(context, ManageGeneral::class.java)
+                    moveActivityApplink(ApplinkConstInternalGlobal.MANAGE_GENERAL)
                     val settingsCanonicalName = ManageGeneral::class.java.canonicalName
                     eventDrawerClick(EventLabel.SETTING)
                     if (settingsCanonicalName != null)
                         SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, settingsCanonicalName, EventLabel.SETTING)
-                    context.startActivity(settingsIntent)
                 }
                 SellerHomeState.DrawerPosition.CONTACT_US -> {
                     val contactUsIntent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE)

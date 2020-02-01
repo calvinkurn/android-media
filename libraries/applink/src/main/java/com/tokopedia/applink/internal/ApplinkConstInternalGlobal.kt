@@ -1,6 +1,5 @@
 package com.tokopedia.applink.internal
 
-import android.webkit.WebView
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -309,4 +308,8 @@ object ApplinkConstInternalGlobal {
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
+
+    //ManageGeneral Activity
+    @JvmField
+    val MANAGE_GENERAL = "$INTERNAL_GLOBAL/manage-general"
 }
