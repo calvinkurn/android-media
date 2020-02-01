@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.core.ManageGeneral
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
@@ -185,11 +184,12 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(intent)
                 }
                 SellerHomeState.DrawerPosition.SETTINGS -> {
-                    moveActivityApplink(ApplinkConstInternalGlobal.MANAGE_GENERAL)
-                    val settingsCanonicalName = ManageGeneral::class.java.canonicalName
+                    val manageGeneralIntent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.MANAGE_GENERAL)
+                    val settingsCanonicalName = manageGeneralIntent.component?.className
                     eventDrawerClick(EventLabel.SETTING)
                     if (settingsCanonicalName != null)
                         SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, settingsCanonicalName, EventLabel.SETTING)
+                    context.startActivity(manageGeneralIntent)
                 }
                 SellerHomeState.DrawerPosition.CONTACT_US -> {
                     val contactUsIntent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE)
