@@ -60,6 +60,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         if (intent.hasExtra(EXTRA_TITLE)) title = title
 
         isClosedNow = intent.getBooleanExtra(EXTRA_IS_CLOSED_NOW, false)
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
         }
