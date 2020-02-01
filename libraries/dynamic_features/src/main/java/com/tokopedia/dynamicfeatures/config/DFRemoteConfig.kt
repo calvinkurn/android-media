@@ -7,14 +7,16 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 class DFRemoteConfig {
 
     companion object {
-        private const val ANDROID_DF_CONFIG = "android_df_config"
+        private const val ANDROID_MAIN_APP_DF_CONFIG = "android_main_app_df_config"
     }
 
     fun getConfig(context: Context): DFConfig {
         val remoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
-        val dfRemoteConfig = remoteConfig.getString(ANDROID_DF_CONFIG)
+        val dfRemoteConfig = remoteConfig.getString(ANDROID_MAIN_APP_DF_CONFIG)
         dfRemoteConfig?.let {
-            return Gson().fromJson(dfRemoteConfig, DFConfig::class.java)
+            Gson().fromJson(dfRemoteConfig, DFConfig::class.java)?.let {
+                return it
+            }
         }
         return DFConfig()
     }

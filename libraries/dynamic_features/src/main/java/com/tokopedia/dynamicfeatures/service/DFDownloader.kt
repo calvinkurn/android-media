@@ -119,7 +119,7 @@ object DFDownloader {
                 setServiceFlagFalse()
                 return@withContext true
             }
-            val result = DFInstaller().installOnBackgroundDefer(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
+            val result = DFInstaller().startInstallInBackground(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
                 DFQueue.removeModuleFromQueue(applicationContext, listOf(moduleToDownload))
                 setServiceFlagFalse()
             }, onFailedInstall = {
