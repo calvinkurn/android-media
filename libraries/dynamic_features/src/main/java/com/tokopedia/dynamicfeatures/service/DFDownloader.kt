@@ -13,7 +13,6 @@ import android.os.PersistableBundle
 import androidx.annotation.RequiresApi
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
@@ -30,12 +29,12 @@ object DFDownloader {
     private var defaultDelay = -1L
 
     @SuppressLint("NewApi")
-    fun startSchedule(context: Context, moduleListToDownload: List<String>? = null, isImmediate:Boolean = false) {
-        if (!DFRemoteConfig().getConfig(context).downloadInBackgroundAllowRetry) {
+    fun startSchedule(context: Context, moduleListToDownload: List<String> = emptyList(), isImmediate:Boolean = false) {
+        if (!isImmediate && !DFRemoteConfig().getConfig(context).downloadInBackgroundAllowRetry) {
             return
         }
         // no changes in module list, so no need to update the queue
-        if (moduleListToDownload?.isNotEmpty() == true) {
+        if (moduleListToDownload.isNotEmpty()) {
             DFQueue.combineListAndPut(context, moduleListToDownload)
         }
         if (isServiceRunning) {
@@ -138,7 +137,7 @@ object DFDownloader {
                 }
                 DFQueue.updateQueue(applicationContext, failedListAfterInstall, successfulListAfterInstall)
                 setServiceFlagFalse()
-            }, isInitial = false)
+            })
             // retrieve the list again, and start the service to download the next DF in queue
             val remainingList = DFQueue.getDFModuleList(applicationContext)
             if (result) {
