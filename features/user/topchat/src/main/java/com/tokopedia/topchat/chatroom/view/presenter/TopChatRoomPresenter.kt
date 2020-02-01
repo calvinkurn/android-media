@@ -585,10 +585,11 @@ class TopChatRoomPresenter @Inject constructor(
                 totalPriceAmount
         )
 
-        if (attachmentsPreview.isNotEmpty() && invoiceViewModel.enoughRequiredData()) {
+        if (invoiceViewModel.enoughRequiredData()) {
             clearAttachmentPreview()
             attachmentsPreview.add(invoiceViewModel)
         }
+
     }
 
     override fun initAttachmentPreview() {
