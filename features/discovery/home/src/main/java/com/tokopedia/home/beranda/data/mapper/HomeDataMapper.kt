@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon.DynamicIcon
@@ -60,6 +61,7 @@ class HomeDataMapper(
             var position = 1
             val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
             val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
+            val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
             val PROMO_NAME_SPRINT = "/ - p%s - %s"
             val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
             val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
@@ -76,6 +78,8 @@ class HomeDataMapper(
                             channel.promoName = String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
                         } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE) {
                             channel.promoName = String.format(PROMO_NAME_LEGO_3_IMAGE, position.toString(), channel.header.name)
+                        } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE) {
+                            channel.promoName = String.format(PROMO_NAME_LEGO_4_IMAGE, position.toString(), channel.header.name)
                         } else {
                             if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_ORGANIC) {
                                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
@@ -115,7 +119,7 @@ class HomeDataMapper(
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
                         }
-                        DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> {
+                        DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
                             list.add(mappingDynamicChannel(
                                     channel,
                                     null,
@@ -283,7 +287,7 @@ class HomeDataMapper(
         val viewModel = DynamicChannelViewModel()
         viewModel.channel = channel
         if (!isCache) {
-            viewModel.setTrackingData(trackingData)
+            viewModel.trackingData = trackingData
             viewModel.trackingDataForCombination = trackingDataForCombination
             viewModel.isTrackingCombined = isCombined
         }

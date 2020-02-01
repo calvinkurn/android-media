@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DateHelper
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
@@ -19,6 +20,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 abstract class DynamicChannelViewHolder(itemView: View,
                                         private val listener: HomeCategoryListener,
@@ -36,6 +38,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_ORGANIC = 2
         const val TYPE_SIX_GRID_LEGO = 3
         const val TYPE_THREE_GRID_LEGO = 4
+        const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_CURATED = 5
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
@@ -46,6 +49,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         when(channels.layout) {
             DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> return TYPE_FOUR_GRID_LEGO
             DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
             DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
             DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
@@ -206,6 +210,13 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
                                 channel.id, channel.grids, channel.header.name, position
                         )
+                )
+            }
+            TYPE_FOUR_GRID_LEGO -> {
+                listener.putEEToIris(
+                        HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
+                                channel, position, true
+                        ) as (HashMap<String, Any>)
                 )
             }
             TYPE_GIF_BANNER -> {
