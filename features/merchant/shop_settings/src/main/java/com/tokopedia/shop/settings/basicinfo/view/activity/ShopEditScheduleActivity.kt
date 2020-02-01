@@ -60,7 +60,9 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         if (intent.hasExtra(EXTRA_TITLE)) title = title
 
         isClosedNow = intent.getBooleanExtra(EXTRA_IS_CLOSED_NOW, false)
-
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+        }
         if (intent.hasExtra(EXTRA_SHOP_MODEL)) {
             shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
             setupView(shopBasicDataModel)
