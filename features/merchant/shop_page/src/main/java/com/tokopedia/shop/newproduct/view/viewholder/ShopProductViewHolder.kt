@@ -122,7 +122,8 @@ class ShopProductViewHolder(
             shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, adapterPosition)
         }
         productCard.setButtonWishlistOnClickListener {
-            shopProductClickedListener?.onWishListClicked(shopProductViewModel, shopTrackType)
+            if (!shopProductViewModel.isSoldOut)
+                shopProductClickedListener?.onWishListClicked(shopProductViewModel, shopTrackType)
         }
 
         if (shopProductViewModel.isCarousel) {
@@ -137,7 +138,7 @@ class ShopProductViewHolder(
             if (!shopProductViewModel.isPo && !shopProductViewModel.isWholesale) {
                 productCard.setLebelPreOrderInvisible(true)
             }
-            if (shopProductViewModel.discountPercentage.toIntOrZero()  <= 0) {
+            if (shopProductViewModel.discountPercentage.toIntOrZero() <= 0) {
                 productCard.setlabelDiscountInvisible(true)
                 productCard.setSlashedPriceInvisible(true)
             }

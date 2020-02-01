@@ -896,15 +896,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun onSuccessGetMembershipData(data: MembershipStampProgressViewModel) {
         if (data.listOfData.isNotEmpty()) {
-            if (!isPaddingSet) {
-                isPaddingSet = true
-                // Remove padding item membership stamp when isShown
-                val scale = resources.displayMetrics.density
-                val dpAsPixels = (-resources.getDimension(R.dimen.dp_8) * scale + 0.5f).toInt()
-                recyclerView?.run {
-                    addItemDecoration(RecyclerViewPadding(dpAsPixels))
-                }
-            }
             shopProductAdapter.setMembershipDataModel(data)
         }
     }
