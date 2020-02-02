@@ -13,14 +13,14 @@ import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
 import com.tokopedia.iris.worker.IrisExecutor
-import com.tokopedia.iris.worker.IrisExecutor.handler
 import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -37,9 +37,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
 
-    override val coroutineContext: CoroutineContext by lazy {
-        IrisExecutor.executor + handler
-    }
+    override val coroutineContext: CoroutineContext = IrisExecutor.executor + IrisExecutor.handler
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 
@@ -90,18 +88,22 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launch(coroutineContext) {
-                val trackingRepository = TrackingRepository(context)
+            launch(Dispatchers.IO) {
+                try {
+                    val trackingRepository = TrackingRepository(context)
 
-                val eventName = map["event"] as? String
-                val eventCategory = map["eventCategory"] as? String
-                val eventAction = map["eventAction"] as? String
+                    val eventName = map["event"] as? String
+                    val eventCategory = map["eventCategory"] as? String
+                    val eventAction = map["eventAction"] as? String
 
-                // convert map to json then save as string
-                val event = gson.toJson(map)
-                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-                trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
-                setAlarm(true, force = false)
+                    // convert map to json then save as string
+                    val event = gson.toJson(map)
+                    val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+                    trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
+                    setAlarm(true, force = false)
+                } catch (e:Exception) {
+                    Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                }
             }
         }
     }

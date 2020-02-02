@@ -44,34 +44,34 @@ class TrackingRepository(
     private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND)
 
     suspend fun saveEvent(data: String, session: Session,
-                          eventName:String?, eventCategory:String?, eventAction:String?) =
+                          eventName: String?, eventCategory: String?, eventAction: String?) =
         withContext(Dispatchers.IO) {
-        try {
-            val tracking = Tracking(data, session.getUserId(), session.getDeviceId())
-            trackingDao.insert(tracking)
-            logIrisStoreAnalytics(eventName, eventCategory, eventAction)
-            IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
+            try {
+                val tracking = Tracking(data, session.getUserId(), session.getDeviceId())
+                trackingDao.insert(tracking)
+                logIrisStoreAnalytics(eventName, eventCategory, eventAction)
+                IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
-            val dbCount = trackingDao.getCount()
-            if (dbCount >= getLineDBFlush()) {
-                Timber.e("P1#IRIS#dbCountFlush %d lines", dbCount)
-                trackingDao.flush()
-            }
-            if (dbCount >= getLineDBSend()) {
-                // if the line is big, send it
-                val i = Intent(context, IrisService::class.java)
-                i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
-                IrisService.enqueueWork(context, i)
+                val dbCount = trackingDao.getCount()
+                if (dbCount >= getLineDBFlush()) {
+                    Timber.e("P1#IRIS#dbCountFlush %d lines", dbCount)
+                    trackingDao.flush()
+                }
+                if (dbCount >= getLineDBSend()) {
+                    // if the line is big, send it
+                    val i = Intent(context, IrisService::class.java)
+                    i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
+                    IrisService.enqueueWork(context, i)
 
-                IrisAnalytics.getInstance(context).setAlarm(true, force = true)
-                Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                    IrisAnalytics.getInstance(context).setAlarm(true, force = true)
+                    Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                }
+            } catch (e: Throwable) {
+                Timber.e("P1#IRIS#saveEvent %s", e.toString())
             }
-        } catch (e: Throwable) {
-            Timber.e("P1#IRIS#saveEvent %s", e.toString())
         }
-    }
 
-    private fun logIrisStoreAnalytics(eventName:String?, eventCategory:String?, eventAction:String?) {
+    private fun logIrisStoreAnalytics(eventName: String?, eventCategory: String?, eventAction: String?) {
         try {
             if ("clickTopNav" == eventName &&
                 eventCategory?.startsWith("top nav") == true &&
@@ -81,7 +81,7 @@ class TrackingRepository(
                 "click - tambah ke keranjang" == eventAction) {
                 Timber.w("P1#IRIS_COLLECT#IRISSTORE_PDP_ATC")
             }
-        }catch (e:Exception) {
+        } catch (e: Exception) {
             Timber.e("P1#IRIS#logIrisAnalyticsStore %s", e.toString())
         }
     }
