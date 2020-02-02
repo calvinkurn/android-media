@@ -1,23 +1,29 @@
 package com.tokopedia.mediauploader.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.data.consts.MediaUploaderQuery
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
-import com.tokopedia.usecase.coroutines.UseCase
 import dagger.Module
 import dagger.Provides
 
 @Module class MediaUploaderModule {
 
+//    @MediaUploaderQualifier
+//    @Provides
+//    fun provideGraphqlDataPolicyUseCase(
+//            repository: GraphqlRepository
+//    ): GraphqlUseCase<DataUploaderPolicy> {
+//        return GraphqlUseCase(repository)
+//    }
+
     @MediaUploaderQualifier
     @Provides
-    fun provideDataPolicyUseCase(): UseCase<DataUploaderPolicy> {
+    fun provideDataPolicyUseCase() : DataPolicyUseCase {
         return DataPolicyUseCase(
                 MediaUploaderQuery.dataPolicyQuery,
-                GraphqlCacheStrategy.Builder(CacheType.NONE).build(),
                 GraphqlInteractor.getInstance().graphqlRepository
         )
     }
