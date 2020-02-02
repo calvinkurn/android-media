@@ -1,15 +1,13 @@
 package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-internal class DataPolicyUseCase @Inject constructor(
+open class DataPolicyUseCase @Inject constructor(
         private val query: String,
-        private val cacheStrategy: GraphqlCacheStrategy,
         private val repository: GraphqlRepository
 ) : UseCase<DataUploaderPolicy>() {
 
@@ -22,7 +20,7 @@ internal class DataPolicyUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): DataUploaderPolicy {
         val request = GraphqlRequest(query, DataUploaderPolicy::class.java, _requestParams)
-        val response = repository.getReseponse(listOf(request), cacheStrategy)
+        val response = repository.getReseponse(listOf(request))
         val error = response.getError(DataUploaderPolicy::class.java)
         if (error == null || error.isEmpty()) {
             return response.getData(DataUploaderPolicy::class.java)
