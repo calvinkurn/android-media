@@ -129,7 +129,6 @@ data class RatesParam(
             private set
         var psl_code: String = ""
             private set
-        //todo: verify this later on
         var products: String = RatesParamHelper.generateProducts(shipping)
             private set
         var unique_id: String = shipping.uniqueId
