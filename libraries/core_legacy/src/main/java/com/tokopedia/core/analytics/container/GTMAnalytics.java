@@ -1146,7 +1146,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .map(it -> {
                     log(getContext(), null, it);
                     logIrisAnalytics(values);
-                    Timber.w("P1#IRIS_COLLECT#");
                     TagManager.getInstance(getContext()).getDataLayer().push(it);
                     pushIris("", it);
                     return true;

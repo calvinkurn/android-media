@@ -66,17 +66,20 @@ class TrackingMapper {
     }
 
     private fun logCertainItems(item:JSONObject?){
-        val itemEvent = item?.getString("event_ga")
-        val itemCat = item?.getString("eventCategory")
-        val itemAct = item?.getString("eventAction")
         try {
-            if ("clickTopNav" == itemEvent &&
-                itemCat?.startsWith("top nav") == true &&
-                "click search box" == itemAct) {
-                Timber.w("P1#IRIS_COLLECT#IRISSEND_CLICKSEARCHBOX")
-            } else if ("clickPDP" == itemEvent && "product detail page" == itemCat &&
-                "click - tambah ke keranjang" == itemAct) {
-                Timber.w("P1#IRIS_COLLECT#IRISSEND_PDP_ATC")
+            if (item?.has("event_ga") == true &&
+                item.has("eventCategory") && item.has("eventAction")) {
+                val itemEvent = item.getString("event_ga")
+                val itemCat = item.getString("eventCategory")
+                val itemAct = item.getString("eventAction")
+                if ("clickTopNav" == itemEvent &&
+                    itemCat?.startsWith("top nav") == true &&
+                    "click search box" == itemAct) {
+                    Timber.w("P1#IRIS_COLLECT#IRISSEND_CLICKSEARCHBOX")
+                } else if ("clickPDP" == itemEvent && "product detail page" == itemCat &&
+                    "click - tambah ke keranjang" == itemAct) {
+                    Timber.w("P1#IRIS_COLLECT#IRISSEND_PDP_ATC")
+                }
             }
         }catch (e:Exception) {
             Timber.e("P1#IRIS#logIrisAnalyticsSend %s", e.toString())
