@@ -12,11 +12,11 @@ import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
-import com.tokopedia.iris.worker.IrisExecutor
 import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +37,9 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
 
-    override val coroutineContext: CoroutineContext = IrisExecutor.executor + IrisExecutor.handler
+    override val coroutineContext: CoroutineContext = Dispatchers.IO +
+        CoroutineExceptionHandler { _, ex ->
+            Timber.e("P1#IRIS#CoroutineExceptionIrisAnalytics %s", ex.toString()) }
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 
@@ -88,7 +90,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launch(Dispatchers.IO) {
+            launch(coroutineContext) {
                 try {
                     val trackingRepository = TrackingRepository(context)
 

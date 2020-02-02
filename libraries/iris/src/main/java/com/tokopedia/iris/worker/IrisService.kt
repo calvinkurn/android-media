@@ -9,8 +9,9 @@ import com.tokopedia.iris.util.Cache
 import com.tokopedia.iris.util.DEFAULT_MAX_ROW
 import com.tokopedia.iris.util.JOB_IRIS_ID
 import com.tokopedia.iris.util.MAX_ROW
-import com.tokopedia.iris.worker.IrisExecutor.handler
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -21,7 +22,10 @@ import kotlin.coroutines.CoroutineContext
 class IrisService : BaseJobIntentService(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext by lazy {
-        IrisExecutor.executor + handler
+        Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
+            isRunning = false
+            Timber.e("P1#IRIS#CoroutineExceptionIrisService %s", ex.toString())
+        }
     }
 
     companion object {
