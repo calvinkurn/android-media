@@ -250,7 +250,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         recycler_view_etalase.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dx > 15) {
+                if (dx > X_SCROLL_OFFSET) {
                     if (!v_etalase_more.isVisible) {
                         val anim = TranslateAnimation(
                                 v_etalase_more.height.toFloat(), 0f, 0f, 0f
@@ -260,7 +260,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                         v_etalase_more.startAnimation(anim)
                         v_etalase_more.show()
                     }
-                } else if (dx <= -15) {
+                } else if (dx <= -X_SCROLL_OFFSET) {
                     if (v_etalase_more.isVisible) {
                         val anim = TranslateAnimation(
                                 0f, v_etalase_more.height.toFloat(), 0f, 0f
@@ -304,7 +304,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = (recyclerView.layoutManager as? StaggeredGridLayoutManager)
-                val firstCompletelyVisibleItem = linearLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.get(0) ?:  0
+                val firstCompletelyVisibleItem = linearLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.get(0)
+                        ?: 0
                 app_bar_layout_etalase_list.background = if (firstCompletelyVisibleItem != 0) {
                     MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
                 } else {
@@ -455,8 +456,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             it.goldOS.isGold == 1, shopProductViewModel.id, attribution),
                     shopProductViewModel, productPosition, shopId, it.shopCore.name, it.freeOngkir.isActive)
         }
-
-        //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
 
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
                 shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
@@ -614,7 +613,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
         if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())
-        }else {
+        } else {
             viewModel.clearGetShopProductUseCase()
             if (shopProductViewModel.isWishList) {
                 viewModel.removeWishList(shopProductViewModel.id ?: "", this)
@@ -702,17 +701,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_ETALASE -> if (resultCode == Activity.RESULT_OK) {
-                selectedEtalaseId = data!!.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
-                selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
-                val useAce = data.getBooleanExtra(ShopParamConstant.EXTRA_USE_ACE, true)
-                val etalaseBadge = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_BADGE)
+                data?.let {
+                    selectedEtalaseId = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
+                    selectedEtalaseName = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
+                    val useAce = it.getBooleanExtra(ShopParamConstant.EXTRA_USE_ACE, true)
+                    val etalaseBadge = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_BADGE)
 
-                addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, useAce, etalaseBadge)
-                shopInfo?.let {
-                    shopPageTracking?.clickMenuFromMoreMenu(viewModel.isMyShop(it.shopCore.shopID),
-                            selectedEtalaseName, CustomDimensionShopPage.create(it.shopCore.shopID, isOfficialStore, isGoldMerchant))
+                    addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, useAce, etalaseBadge)
+                    shopInfo?.let {
+                        shopPageTracking?.clickMenuFromMoreMenu(viewModel.isMyShop(it.shopCore.shopID),
+                                selectedEtalaseName, CustomDimensionShopPage.create(it.shopCore.shopID, isOfficialStore, isGoldMerchant))
+                    }
+                    needReloadData = true
                 }
-                needReloadData = true
             }
 
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
@@ -799,6 +800,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         private val REQUEST_CODE_USER_LOGIN = 100
         private val REQUEST_CODE_ETALASE = 200
+        private const val X_SCROLL_OFFSET = 15
+
         @JvmStatic
         val REQUEST_CODE_SORT = 300
 

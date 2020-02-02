@@ -121,7 +121,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     private void getData() {
         if (!isLoaded && getContext() != null) {
-            GraphqlClient.init(getContext());
             String saldoQuery = GraphqlHelper.loadRawString(
                     getContext().getResources(),
                     R.raw.new_query_saldo_balance);

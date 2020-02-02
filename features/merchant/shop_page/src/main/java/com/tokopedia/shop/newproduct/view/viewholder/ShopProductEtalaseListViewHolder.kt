@@ -28,6 +28,9 @@ class ShopProductEtalaseListViewHolder(
 ) : AbstractViewHolder<ShopProductEtalaseListViewModel>(itemView) {
 
     companion object {
+
+        private const val X_SCROLL_OFFSET = 15
+
         @JvmStatic
         @LayoutRes
         val LAYOUT = R.layout.item_new_shop_product_etalase_chip_list
@@ -64,7 +67,7 @@ class ShopProductEtalaseListViewHolder(
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dx > 15) {
+                if (dx > X_SCROLL_OFFSET) {
                     if (!buttonEtalaseMore.isVisible) {
                         val anim = TranslateAnimation(
                                 buttonEtalaseMore.height.toFloat(), 0f, 0f, 0f
@@ -75,7 +78,7 @@ class ShopProductEtalaseListViewHolder(
                         buttonEtalaseMore.show()
                         shopProductEtalaseListViewModel.isButtonEtalaseMoreShown = true
                     }
-                } else if (dx <= -15) {
+                } else if (dx <= -X_SCROLL_OFFSET) {
                     if (buttonEtalaseMore.isVisible) {
                         val anim = TranslateAnimation(
                                 0f, buttonEtalaseMore.height.toFloat(), 0f, 0f

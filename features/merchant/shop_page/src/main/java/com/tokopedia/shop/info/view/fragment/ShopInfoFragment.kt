@@ -388,7 +388,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private fun shopShopReputation(shopStatisticsResp: ShopStatisticsResp) {
         shopStatisticsResp.shopReputation?.let {
             totalPoin.text = getString(R.string.dashboard_x_points, it.score)
-            context?.run { ImageHandler.loadImage2(shopReputationView, it.badgeHD, R.drawable.ic_loading_image) }
+            context?.run { ImageHandler.LoadImage(shopReputationView, it.badgeHD) }
         }
     }
 

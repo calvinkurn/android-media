@@ -32,7 +32,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.drawable.CountDrawable
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.UserNotLoginException
@@ -272,7 +271,6 @@ class ShopPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            GraphqlClient.init(it)
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
             performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
@@ -769,7 +767,7 @@ class ShopPageFragment :
                     CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1))
 
-            sendMoEngageFavoriteEvent(it.shopCore.name,
+            shopPageTracking.sendMoEngageFavoriteEvent(it.shopCore.name,
                     it.shopCore.shopID,
                     it.shopCore.domain,
                     it.location,
@@ -789,20 +787,6 @@ class ShopPageFragment :
 
     override fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
-    }
-
-    private fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
-                                          isShopOfficaial: Boolean, isFollowed: Boolean) {
-        TrackApp.getInstance().moEngage.sendTrackEvent(mapOf(
-                "shop_name" to shopName,
-                "shop_id" to shopID,
-                "shop_location" to shopLocation,
-                "url_slug" to shopDomain,
-                "is_official_store" to isShopOfficaial),
-                if (isFollowed)
-                    "Seller_Added_To_Favorite"
-                else
-                    "Seller_Removed_From_Favorite")
     }
 
     private fun onErrorModerateListener(e: Throwable?) {

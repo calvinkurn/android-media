@@ -235,18 +235,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             return
         }
         shopPageTracking!!.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, shopId, position)
-        //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
-        /*if (!merchantVoucherListPresenter.isLogin()) {
-            if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-                startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
-            }
-        } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
-            showUseMerchantVoucherLoading();
-            merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
-                    merchantVoucherViewModel.getVoucherId());
-        }*/
-        //TOGGLE_MVC_OFF
         showSnackBarClose(getString(R.string.title_voucher_code_copied))
     }
 

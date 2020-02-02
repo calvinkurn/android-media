@@ -18,10 +18,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class ShopPageSettingViewModel @Inject constructor(private val gqlRepository: GraphqlRepository,
@@ -39,13 +36,11 @@ class ShopPageSettingViewModel @Inject constructor(private val gqlRepository: Gr
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val shopInfoShopBadgeFeedWhitelist = getShopInfoShopReputationDataFeedWhitelist(id, shopDomain, isRefresh)
-                    shopInfoShopBadgeFeedWhitelist.shopInfo?.let {
-                        shopInfoResp.postValue(Success(it))
-                    }
-                }
+            val shopInfoShopBadgeFeedWhitelist = withContext(Dispatchers.IO) {
+                getShopInfoShopReputationDataFeedWhitelist(id, shopDomain, isRefresh)
+            }
+            shopInfoShopBadgeFeedWhitelist.shopInfo?.let {
+                shopInfoResp.postValue(Success(it))
             }
         }) {
             shopInfoResp.value = Fail(it)

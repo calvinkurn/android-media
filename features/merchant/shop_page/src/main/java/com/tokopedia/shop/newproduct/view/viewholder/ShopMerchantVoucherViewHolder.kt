@@ -23,14 +23,14 @@ class ShopMerchantVoucherViewHolder(itemView: View, onMerchantVoucherListWidgetL
     }
 
     override fun bind(shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel) {
-        val recyclerViewState = merchantVoucherListWidget!!.recyclerView!!.layoutManager!!.onSaveInstanceState()
+        val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
 
         shopMerchantVoucherViewModel.shopMerchantVoucherViewModelArrayList?.let {
-            merchantVoucherListWidget!!.setData(ArrayList(it.toMutableList()))
+            merchantVoucherListWidget?.setData(ArrayList(it.toMutableList()))
         }
 
-        if (recyclerViewState != null) {
-            merchantVoucherListWidget!!.recyclerView!!.layoutManager!!.onRestoreInstanceState(recyclerViewState)
+        recyclerViewState?.let {
+            merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
         }
     }
 

@@ -176,7 +176,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
         view.image_view_shop_reputation_badge.show()
-        ImageHandler.loadImage2(view.image_view_shop_reputation_badge, shopBadge.badgeHD, R.drawable.ic_loading_image)
+        ImageHandler.LoadImage(view.image_view_shop_reputation_badge, shopBadge.badgeHD)
     }
 
     private fun displayGoldenShop() {

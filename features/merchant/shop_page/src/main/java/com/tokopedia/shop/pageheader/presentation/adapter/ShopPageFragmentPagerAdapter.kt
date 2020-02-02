@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
@@ -50,7 +51,7 @@ internal class ShopPageFragmentPagerAdapter(
     }
 
     private fun getTabIconDrawable(position: Int, isActive: Boolean = false): Drawable? = ctxRef.get()?.run {
-        ContextCompat.getDrawable(
+        MethodChecker.getDrawable(
                 this,
                 listTitleIcon[position]
         )?.let { iconDrawable ->

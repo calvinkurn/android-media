@@ -90,9 +90,7 @@ object ShopPageProductListMapper {
             }
 
     fun mapTopMembershipViewModel(data: MembershipStampProgress): List<BaseMembershipViewModel> {
-        if (!data.membershipStampProgress.isShown)
-            return mutableListOf()
-        else if (data.membershipStampProgress.membershipProgram.membershipQuests.isEmpty() && data.membershipStampProgress.isUserRegistered) {
+        if (!data.membershipStampProgress.isShown || (data.membershipStampProgress.membershipProgram.membershipQuests.isEmpty() && data.membershipStampProgress.isUserRegistered)){
             return mutableListOf()
         } else {
             val url = data.membershipStampProgress.infoMessage.membershipCta.url
