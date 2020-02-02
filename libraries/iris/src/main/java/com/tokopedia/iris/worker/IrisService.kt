@@ -52,7 +52,7 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
                     val trackingRepository = TrackingRepository(applicationContext)
                     val dataSize = trackingRepository.sendRemainingEvent(maxRow)
                     if (dataSize == 0) {
-                        IrisAnalytics.getInstance(applicationContext).setAlarm(false, force = false)
+                        IrisAnalytics.getInstance(applicationContext).setAlarm(false, force = true)
                     }
                 }
             } catch (e: Exception) {
