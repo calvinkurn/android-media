@@ -303,7 +303,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         lihat.setOnClickListener(view -> {
             orderListAnalytics.sendViewInvoiceClickEvent();
             orderListAnalytics.sendLihatInvoiceClick(status.status());
-            Intent intent = new Intent(getActivity(), SeeInvoiceActivity.class);
+
+            Intent intent = SeeInvoiceActivity.Companion.newInstance(getContext());
             intent.putExtra(SeeInvoiceActivity.STATUS, status.status());
             intent.putExtra(ConstantKt.KEY_URL, invoice.invoiceUrl());
             intent.putExtra(ConstantKt.KEY_TITLE, getResources().getString(R.string.title_invoice));
