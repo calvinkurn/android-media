@@ -62,6 +62,7 @@ import com.tokopedia.shop.product.view.viewmodel.ShopProductListViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -321,7 +322,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onSwipeRefresh() {
         hideEtalaseList()
         viewModel.etalaseListData.value = null
-        viewModel.clearEtalaseCache()
+        viewModel.clearCache()
         shopProductEtalaseAdapter.clearAllElements()
         super.onSwipeRefresh()
     }
@@ -474,6 +475,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onSuccessAddWishlist(productId: String) {
+        showToastSuccess(getString(R.string.msg_success_add_wishlist))
         shopProductAdapter.updateWishListStatus(productId, true)
     }
 
@@ -482,6 +484,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
+        showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         shopProductAdapter.updateWishListStatus(productId, false)
     }
 
@@ -509,6 +512,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 context,
                 "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
         )
+    }
+
+    private fun showToastSuccess(message: String) {
+        activity?.run {
+            Toaster.make(findViewById(android.R.id.content), message)
+        }
     }
 
     fun clickSortButton() {
@@ -605,12 +614,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
         if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())
-            return
-        }
-        if (shopProductViewModel.isWishList) {
-            viewModel.removeWishList(shopProductViewModel.id ?: "", this)
-        } else {
-            viewModel.addWishList(shopProductViewModel.id ?: "", this)
+        }else {
+            viewModel.clearGetShopProductUseCase()
+            if (shopProductViewModel.isWishList) {
+                viewModel.removeWishList(shopProductViewModel.id ?: "", this)
+            } else {
+                viewModel.addWishList(shopProductViewModel.id ?: "", this)
+            }
         }
     }
 

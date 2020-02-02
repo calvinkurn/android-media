@@ -469,11 +469,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     viewModel.isMyShop(shopInfo!!.shopCore.shopID),
                     CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
                             shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
-            if (isOwner) {
-                redirectToShopSettingsEtalase()
-            } else {
-                redirectToEtalasePicker()
-            }
+            redirectToEtalasePicker()
         }
     }
 
@@ -545,10 +541,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     selectedEtalaseId, isShowDefault = true, isShowZeroProduct = false)
             startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
         }
-    }
-
-    private fun redirectToShopSettingsEtalase() {
-        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
     }
 
     private fun showSnackBarClose(stringToShow: String) {
@@ -904,15 +896,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun onSuccessGetMembershipData(data: MembershipStampProgressViewModel) {
         if (data.listOfData.isNotEmpty()) {
-            if (!isPaddingSet) {
-                isPaddingSet = true
-                // Remove padding item membership stamp when isShown
-                val scale = resources.displayMetrics.density
-                val dpAsPixels = (-resources.getDimension(R.dimen.dp_8) * scale + 0.5f).toInt()
-                recyclerView?.run {
-                    addItemDecoration(RecyclerViewPadding(dpAsPixels))
-                }
-            }
             shopProductAdapter.setMembershipDataModel(data)
         }
     }

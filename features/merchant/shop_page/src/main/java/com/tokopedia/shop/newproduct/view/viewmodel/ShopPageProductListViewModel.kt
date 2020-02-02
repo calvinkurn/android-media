@@ -27,6 +27,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import java.lang.Exception
 import javax.inject.Inject
+import javax.inject.Provider
 
 class ShopPageProductListViewModel @Inject constructor(
         private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
@@ -38,7 +39,7 @@ class ShopPageProductListViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val getShopProductUseCase: GqlGetShopProductUseCase,
         @ShopProductGetHighlightProductQualifier
-        private val getShopHighlightProductUseCase: GqlGetShopProductUseCase,
+        private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
         dispatcher: CoroutineDispatcher
@@ -69,6 +70,7 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
+    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase>()
 
     fun getBuyerShopPageProductTabData(shopId: String, shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel) {
         launchCatchError(coroutineContext, {
@@ -162,6 +164,8 @@ class ShopPageProductListViewModel @Inject constructor(
                     this.sort = getSort(it.etalaseId)
                 }
                 async(Dispatchers.IO) {
+                    val getShopHighlightProductUseCase = getShopHighlightProductUseCase.get()
+                    listGetShopHighlightProductUseCase.add(getShopHighlightProductUseCase)
                     getProductList(getShopHighlightProductUseCase,shopId, productFilter).second
                 }
             }.awaitAll()
@@ -330,7 +334,10 @@ class ShopPageProductListViewModel @Inject constructor(
         clearMerchantVoucherCache()
         getShopEtalaseByShopUseCase.clearCache()
         clearGetShopProductUseCase()
-        getShopHighlightProductUseCase.clearCache()
+        listGetShopHighlightProductUseCase.forEach{
+            it.clearCache()
+        }
+        listGetShopHighlightProductUseCase.clear()
         getShopFeaturedProductUseCase.clearCache()
     }
 

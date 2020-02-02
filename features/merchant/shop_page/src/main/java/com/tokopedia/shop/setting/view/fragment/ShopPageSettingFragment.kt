@@ -269,7 +269,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Tambah dan ubah etalase
     override fun onEditEtalaseClicked() {
-        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE_ADD)
+        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
     }
 
     // Pusat bantuan

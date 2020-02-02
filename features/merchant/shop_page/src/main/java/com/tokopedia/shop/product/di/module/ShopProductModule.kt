@@ -150,7 +150,6 @@ class ShopProductModule {
     }
 
     @ShopProductGetHighlightProductQualifier
-    @ShopProductScope
     @Provides
     fun getShopHighlightProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT) gqlQuery: String?,
                               gqlUseCase: MultiRequestGraphqlUseCase?): GqlGetShopProductUseCase {
