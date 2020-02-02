@@ -23,6 +23,7 @@ class ProductCardViewSmallGrid: ProductCardView {
     private var imageShop: ImageView? = null
     private var textViewAddToCart: Typography? = null
     private var labelSoldOut: Label? = null
+    private var layoutEmptyStock: View? = null
     private var labelPreOrder: Label? = null
     private var labelWholesale: Label? = null
 
@@ -93,6 +94,7 @@ class ProductCardViewSmallGrid: ProductCardView {
         skeleton_imageFreeOngkirPromo = inflatedView.findViewById(R.id.skeleton_imageFreeOngkirPromo)
         skeleton_labelOffers = inflatedView.findViewById(R.id.skeleton_labelOffers)
         labelSoldOut = inflatedView.findViewById(R.id.labelEmptyStock)
+        layoutEmptyStock = inflatedView.findViewById(R.id.layout_empty_stock)
         labelPreOrder= inflatedView.findViewById(R.id.label_pre_order)
         labelWholesale= inflatedView.findViewById(R.id.label_wholesale)
     }
@@ -118,7 +120,7 @@ class ProductCardViewSmallGrid: ProductCardView {
             labelSoldOut?.background = it
         }
         labelSoldOut?.visibility = if (productSoldOut) View.VISIBLE else View.GONE
-        layout_empty_stock?.visibility = if (productSoldOut) View.VISIBLE else View.GONE
+        layoutEmptyStock?.visibility = if (productSoldOut) View.VISIBLE else View.GONE
     }
 
     fun setImageShopVisible(isVisible: Boolean) {
@@ -306,7 +308,7 @@ class ProductCardViewSmallGrid: ProductCardView {
         imageFreeOngkirPromo?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
     }
 
-    fun setLebelPreOrderInvisible(isInvisible: Boolean){
+    fun setLabelPreOrderInvisible(isInvisible: Boolean){
         label_pre_order?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
     }
 
