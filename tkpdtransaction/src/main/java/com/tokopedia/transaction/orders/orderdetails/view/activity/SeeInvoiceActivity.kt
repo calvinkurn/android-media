@@ -2,6 +2,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.activity
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
@@ -20,10 +21,6 @@ import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
 
 class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
-
-    companion object {
-        const val STATUS = "status"
-    }
 
     var orderListAnalytics: OrderListAnalytics? = null
         @Inject set
@@ -76,9 +73,19 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
             } else {
                 it.createPrintDocumentAdapter()
             }
-            val builder = PrintAttributes.Builder()
-            builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-            printManager.print(jobName, printAdapter, builder.build())
+
+            val prinAttr = PrintAttributes.Builder()
+                    .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                    .build()
+            printManager.print(jobName, printAdapter, prinAttr)
         }
     }
+
+    companion object {
+        const val STATUS = "status"
+        fun newInstance(context: Context): Intent{
+            return Intent(context, SeeInvoiceActivity::class.java)
+        }
+    }
+
 }
