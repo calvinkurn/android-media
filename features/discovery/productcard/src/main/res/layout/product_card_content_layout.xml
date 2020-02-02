@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewGimmick"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:contentDescription="text view gimmick"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Best Seller"
+        tools:textColor="#ff8b00"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewProductName"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:contentDescription="text view product name"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/charcoal_grey_96"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewGimmick"
+        app:layout_goneMarginTop="@dimen/dp_0"
+        app:typographyType="body_3"
+        tools:text="Product Name"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_4"
+        android:contentDescription="label discount"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:labelType="general_light_red"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        tools:text="20%"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewSlashedPrice"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_14"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:contentDescription="text view slashed price"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/charcoal_grey_44"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/labelDiscount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/labelDiscount"
+        app:layout_constraintTop_toTopOf="@id/labelDiscount"
+        app:typographyType="small"
+        tools:text="Rp8.499.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelPromo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_4"
+        android:contentDescription="label promo"
+        android:visibility="gone"
+        app:labelType="general_light_green"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        tools:visibility="gone"
+        tools:text="Cashback" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierPromo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="textViewSlashedPrice,labelDiscount,labelPromo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewPrice"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_4"
+        android:contentDescription="text view price"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/charcoal_grey_96"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrierPromo"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp7.999.000"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imageShopBadge"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_5"
+        android:contentDescription="image shop badge"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShopLocation"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_4"
+        android:contentDescription="text view shop location"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/charcoal_grey_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imageShopBadge"
+        app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+        app:typographyType="body_3"
+        tools:text="Town Location"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imageRatingString"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_3"
+        android:adjustViewBounds="true"
+        android:contentDescription="image rating string"
+        android:gravity="center"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+        app:srcCompat="@drawable/product_card_ic_rating_active"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewRatingString"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_2"
+        android:contentDescription="text view rating string"
+        android:gravity="center_vertical"
+        android:textColor="@color/charcoal_grey_68"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/imageRatingString"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+        app:typographyType="body_3"
+        tools:text="4.5"
+        tools:visibility="visible" />
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/linearLayoutImageRating"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="@dimen/dp_18"-->
+    <!--            android:layout_marginLeft="@dimen/dp_8"-->
+    <!--            android:layout_marginStart="@dimen/dp_8"-->
+    <!--            android:visibility="gone"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            android:gravity="center"-->
+    <!--            app:layout_constraintStart_toStartOf="@id/imageProduct"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"-->
+    <!--            tools:visibility="gone">-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/imageViewRating1"-->
+    <!--                android:layout_width="@dimen/dp_12"-->
+    <!--                android:layout_height="@dimen/dp_12"-->
+    <!--                android:adjustViewBounds="true"-->
+    <!--                android:gravity="center"-->
+    <!--                android:scaleType="centerCrop"-->
+    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/imageViewRating2"-->
+    <!--                android:layout_width="@dimen/dp_12"-->
+    <!--                android:layout_height="@dimen/dp_12"-->
+    <!--                android:adjustViewBounds="true"-->
+    <!--                android:gravity="center"-->
+    <!--                android:scaleType="centerCrop"-->
+    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/imageViewRating3"-->
+    <!--                android:layout_width="@dimen/dp_12"-->
+    <!--                android:layout_height="@dimen/dp_12"-->
+    <!--                android:adjustViewBounds="true"-->
+    <!--                android:gravity="center"-->
+    <!--                android:scaleType="centerCrop"-->
+    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/imageViewRating4"-->
+    <!--                android:layout_width="@dimen/dp_12"-->
+    <!--                android:layout_height="@dimen/dp_12"-->
+    <!--                android:adjustViewBounds="true"-->
+    <!--                android:gravity="center"-->
+    <!--                android:scaleType="centerCrop"-->
+    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/imageViewRating5"-->
+    <!--                android:layout_width="@dimen/dp_12"-->
+    <!--                android:layout_height="@dimen/dp_12"-->
+    <!--                android:adjustViewBounds="true"-->
+    <!--                android:gravity="center"-->
+    <!--                android:scaleType="centerCrop"-->
+    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+
+    <!--        </LinearLayout>-->
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewReviewCount"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_2"
+        android:contentDescription="text view review count"
+        android:gravity="center_vertical"
+        android:textColor="@color/charcoal_grey_44"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/textViewRatingString"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+        app:typographyType="body_3"
+        tools:text="(60)"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imageFreeOngkirPromo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_4"
+        android:adjustViewBounds="true"
+        android:contentDescription="image free ongkir promo"
+        android:gravity="center"
+        android:scaleType="fitStart"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageRatingString"
+        tools:layout_width="67dp"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShippingInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:contentDescription="text view shipping info"
+        android:layout_marginTop="@dimen/dp_4"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageRatingString"
+        tools:visibility="visible"
+        tools:text="Ongkir Rp11 rb"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

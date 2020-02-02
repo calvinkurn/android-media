@@ -5,7 +5,7 @@ import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.utils.loadProductImageRounded
+import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 
 /**
@@ -42,7 +42,7 @@ class ProductCardViewList: ProductCardView {
 
     override fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
-            it.loadProductImageRounded(productImageUrl)
+            it.loadImageRounded(productImageUrl)
         }
     }
 }

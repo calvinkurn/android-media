@@ -79,7 +79,7 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
     }
 }
 
-internal fun ImageView.loadProductImage(url: String?) {
+internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         Glide.with(context)
                 .load(url)
@@ -91,7 +91,7 @@ internal fun ImageView.loadProductImage(url: String?) {
     }
 }
 
-internal fun ImageView.loadProductImageRounded(url: String?) {
+internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         Glide.with(context)
                 .load(url)
@@ -100,6 +100,15 @@ internal fun ImageView.loadProductImageRounded(url: String?) {
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_loading_toped_new)
                 .error(R.drawable.error_drawable)
+                .into(this)
+    }
+}
+
+internal fun ImageView.loadIcon(url: String?) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(this)
     }
 }

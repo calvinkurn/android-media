@@ -337,7 +337,7 @@ abstract class ProductCardView: BaseCustomView {
 
     open protected fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
-            it.loadProductImage(productImageUrl)
+            it.loadImage(productImageUrl)
         }
     }
 

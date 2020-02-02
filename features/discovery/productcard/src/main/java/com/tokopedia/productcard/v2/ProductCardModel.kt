@@ -18,7 +18,9 @@ data class ProductCardModel (
         val labelCredibility: Label = Label(),
         val labelOffers: Label = Label(),
         val freeOngkir: FreeOngkir = FreeOngkir(),
-        val isTopAds: Boolean = false
+        val isTopAds: Boolean = false,
+        val ratingString: String = "",
+        val hasOptions: Boolean = false
 ) {
     data class Label(
             val title: String = "",

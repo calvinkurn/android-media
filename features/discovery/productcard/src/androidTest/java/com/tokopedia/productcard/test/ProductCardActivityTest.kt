@@ -7,19 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardView
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
+import com.tokopedia.productcard.v3.ProductCardGridView
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
-internal class ProductCardSmallGridActivityTest: AppCompatActivity() {
+internal class ProductCardActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.product_card_small_grid_activity_test_layout)
+        setContentView(R.layout.product_card_activity_test_layout)
 
         val recyclerView = findViewById<RecyclerView>(R.id.productCardSmallGridTestRecyclerView)
         recyclerView.adapter = Adapter()
@@ -40,27 +40,27 @@ internal class ProductCardSmallGridActivityTest: AppCompatActivity() {
     class Adapter: RecyclerView.Adapter<ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.product_card_small_grid_item_test_layout, null)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.product_card_item_test_layout, null)
 
             return ViewHolder(view)
         }
 
         override fun getItemCount(): Int {
-            return productCardModelList.size
+            return productCardModelSmallGridList.size
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(productCardModelList[position])
+            holder.bind(productCardModelSmallGridList[position])
         }
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bind(productCardModel: ProductCardModel) {
-            val productCardView = itemView.findViewById<ProductCardViewSmallGrid>(R.id.productCardSmallGrid)
+            val productCardView = itemView.findViewById<ProductCardGridView>(R.id.productCardSmallGrid)
 
-            productCardView.setProductModel(productCardModel)
-            productCardView.setOnClickListener { Toast.makeText(itemView.context, adapterPosition.toString(), Toast.LENGTH_SHORT).show() }
+            productCardView?.setProductModel(productCardModel)
+            productCardView?.setOnClickListener { Toast.makeText(itemView.context, adapterPosition.toString(), Toast.LENGTH_SHORT).show() }
         }
     }
 
@@ -84,9 +84,9 @@ internal class ProductCardSmallGridActivityTest: AppCompatActivity() {
         }
 
         private fun getVerticalCardViewOffset(view: View): Int {
-            if (view is ProductCardView) {
-                val maxElevation = view.getCardViewMaxElevation()
-                val radius = view.getCardViewRadius()
+            if (view is CardView) {
+                val maxElevation = view.maxCardElevation
+                val radius = view.radius
                 return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
             }
 
@@ -94,9 +94,9 @@ internal class ProductCardSmallGridActivityTest: AppCompatActivity() {
         }
 
         private fun getHorizontalCardViewOffset(view: View): Int {
-            if (view is ProductCardView) {
-                val maxElevation = view.getCardViewMaxElevation()
-                val radius = view.getCardViewRadius()
+            if (view is CardView) {
+                val maxElevation = view.maxCardElevation
+                val radius = view.radius
                 return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
             }
 
