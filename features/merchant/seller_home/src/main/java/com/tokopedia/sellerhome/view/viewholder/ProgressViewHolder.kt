@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.sah_partial_shimmering_progress_widget.vie
 /**
  * Created By @yusufhendrawan on 2020-01-22
  */
-class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHomeWidgetTooltipClickListener) : AbstractViewHolder<ProgressWidgetUiModel>(view) {
+class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHomeWidgetTooltipClickListener, private val listener: Listener) : AbstractViewHolder<ProgressWidgetUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.sah_progress_card_widget
@@ -26,6 +26,7 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
     private var state = State.LOADING
 
     override fun bind(element: ProgressWidgetUiModel) {
+        listener.getProgressData()
         showLoadingState()
         itemView.postDelayed({
             showErrorState(element)
