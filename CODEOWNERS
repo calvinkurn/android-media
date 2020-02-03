@@ -30,6 +30,13 @@
 /features/home/searchbar/                           	@tokopedia/minion-dave
 /features/content/play/                                 @tokopedia/minion-dave
 /features/content/play-common/                          @tokopedia/minion-dave
+/features/discovery/discovery_common                    @tokopedia/minion-dave
+/features/discovery/recommendation_widget_common        @tokopedia/minion-dave
+/features/discovery/carousel_productcard                @tokopedia/minion-dave
+/features/discovery/flashsale_management                @tokopedia/minion-dave
+/features/discovery/productcard_options                 @tokopedia/minion-dave
+/features/discovery/home_page_banner                    @tokopedia/minion-dave
+/features/discovery/flashsale_management_common         @tokopedia/minion-dave
 
 /features/common/developer_options                  	@tokopedia/core-team
 /features/common/nps                                	@tokopedia/core-team
