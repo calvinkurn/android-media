@@ -28,6 +28,8 @@
 /features/home/navigation/                          	@tokopedia/minion-dave
 /features/home/navigation-common/                   	@tokopedia/minion-dave
 /features/home/searchbar/                           	@tokopedia/minion-dave
+/features/content/play/                                 @tokopedia/minion-dave
+/features/content/play-common/                          @tokopedia/minion-dave
 
 /features/common/developer_options                  	@tokopedia/core-team
 /features/common/nps                                	@tokopedia/core-team
@@ -58,25 +60,27 @@
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
-/features/recharge/digital_topup_bills                   @tokopedia/minion-mark
-/features/recharge/rechargeocr                           @tokopedia/minion-mark
-/features/recharge/recharge_general                      @tokopedia/minion-mark
-/features/recharge/voucher_game                          @tokopedia/minion-mark
-/features/recharge/digital_emoney                        @tokopedia/minion-mark
-/features/recharge/common_digital                        @tokopedia/minion-mark
-/features/recharge/common_topup_bills                    @tokopedia/minion-mark
-/features/recharge/digital_homepage                      @tokopedia/minion-mark
-/features/recharge/digitalproduct                        @tokopedia/minion-mark
+/features/recharge/digital_topup_bills                  @tokopedia/minion-mark
+/features/recharge/rechargeocr                          @tokopedia/minion-mark
+/features/recharge/recharge_general                     @tokopedia/minion-mark
+/features/recharge/voucher_game                         @tokopedia/minion-mark
+/features/recharge/digital_emoney                       @tokopedia/minion-mark
+/features/recharge/common_digital                       @tokopedia/minion-mark
+/features/recharge/common_topup_bills                   @tokopedia/minion-mark
+/features/recharge/digital_homepage                     @tokopedia/minion-mark
+/features/recharge/digitalproduct                       @tokopedia/minion-mark
 
-/features/digital/event                 				@tokopedia/minion-mark
-/features/digital/digital_deals         				@tokopedia/minion-mark
-/features/digital/flight_orderlist                      @tokopedia/minion-mark
-/features/digital/flight/                               @tokopedia/minion-mark
-/features/digital/hotel/                                @tokopedia/minion-mark
-/features/digital/common_travel                         @tokopedia/minion-mark
-/features/digital/travel_homepage                       @tokopedia/minion-mark
-/features/digital/travel_country_code                   @tokopedia/minion-mark
-/features/digital/travel_passenger                      @tokopedia/minion-mark
+/features/entertainment/event                 			@tokopedia/minion-mark
+/features/entertainment/digital_deals         			@tokopedia/minion-mark
+
+/features/travel/flight_orderlist                       @tokopedia/minion-mark
+/features/travel/flight/                                @tokopedia/minion-mark
+/features/travel/hotel/                                 @tokopedia/minion-mark
+/features/travel/common_travel                          @tokopedia/minion-mark
+/features/travel/travel_homepage                        @tokopedia/minion-mark
+/features/travel/travel_country_code                    @tokopedia/minion-mark
+/features/travel/travel_passenger                       @tokopedia/minion-mark
+
 /features/salam/umrah                                   @tokopedia/minion-mark
 /libraries/travel_calendar                              @tokopedia/minion-mark
 

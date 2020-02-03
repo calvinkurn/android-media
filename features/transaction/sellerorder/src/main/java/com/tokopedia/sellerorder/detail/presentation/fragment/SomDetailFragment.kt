@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -119,6 +120,7 @@ import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
+import kotlinx.android.synthetic.main.fragment_som_detail.swipe_refresh_layout
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
@@ -128,7 +130,7 @@ import kotlin.collections.HashMap
 /**x
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
+class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBottomSheetCourierProblemsAdapter.ActionListener {
 
     @Inject
@@ -171,6 +173,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private val FLAG_CONFIRM_SHIPPING = 3553
     private lateinit var reasonCourierProblemText: String
     private val tagConfirm = "tag_confirm"
+    private var refreshHandler: RefreshHandler? = null
 
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
@@ -235,7 +238,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.chat_menu, menu)
+        inflater.inflate(R.menu.chat_menu, menu)
     }
 
     override fun onAddedCoachMarkHeader(coachMarkItemHeader: CoachMarkItem) {
@@ -253,6 +256,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun prepareLayout() {
+        refreshHandler = RefreshHandler(swipe_refresh_layout, this)
+        refreshHandler?.setPullEnabled(true)
         somDetailAdapter = SomDetailAdapter().apply {
             setActionListener(this@SomDetailFragment)
         }
@@ -344,6 +349,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun renderDetail() {
+        refreshHandler?.finishRefresh()
+        listDetailData = arrayListOf()
+        somDetailAdapter.listDataDetail = arrayListOf()
         renderHeader()
         renderProducts()
         renderShipment()
@@ -1265,5 +1273,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     override fun onClickProduct(productId: Int) {
         startActivity(RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString()))
+    }
+
+    override fun onRefresh(view: View?) {
+        loadDetail()
     }
 }

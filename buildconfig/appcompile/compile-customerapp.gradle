@@ -17,6 +17,8 @@ include "features:content:explore"
 include "features:content:kol"
 include "features:content:kol_common"
 include "features:content:profile"
+include "features:content:play"
+include "features:content:play_common"
 include "features:content:interest_pick"
 include "features:content:interest_pick_common"
 include "features:category:basemvvm"
@@ -41,9 +43,10 @@ include "features:travel:flight_orderlist"
 include "features:travel:hotel"
 include "features:travel:common_travel"
 
-include "features:digital:event"
+include "features:entertainment:event"
+include "features:entertainment:digital_deals"
+
 include "features:digital:digital_browse"
-include "features:digital:digital_deals"
 
 include "features:salam:umrah"
 
@@ -53,7 +56,6 @@ include 'features:discovery:productcard'
 include 'features:discovery:productcard_options'
 include 'features:discovery:carousel_productcard'
 include 'features:discovery:filter'
-include 'features:discovery:image_search'
 include 'features:discovery:similarsearch'
 include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
