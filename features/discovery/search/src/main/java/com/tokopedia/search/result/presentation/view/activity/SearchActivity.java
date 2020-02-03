@@ -119,7 +119,6 @@ public class SearchActivity extends BaseActivity
     private String catalogTabTitle;
     private String autocompleteApplink;
 
-    @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
     @Inject RemoteConfig remoteConfig;
     @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
@@ -261,7 +260,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onCartButtonClicked() {
-        searchTracking.eventActionClickCartButton(searchParameter.getSearchQuery());
+        SearchTracking.eventActionClickCartButton(searchParameter.getSearchQuery());
 
         if (userSession.isLoggedIn()) {
             RouteManager.route(this, ApplinkConstInternalMarketplace.CART);
@@ -272,7 +271,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToHomeActivity() {
-        searchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
+        SearchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
         RouteManager.route(this, ApplinkConst.HOME);
     }
 
@@ -646,7 +645,11 @@ public class SearchActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         configureButtonCart();
-        unregisterShake();
+    }
+
+    @Override
+    public boolean isAllowShake() {
+        return false;
     }
 
     private void configureButtonCart() {

@@ -11,7 +11,7 @@ import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
-import kotlinx.android.synthetic.main.layout_image_slider.view.*
+import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
 import kotlin.math.min
 
 /**

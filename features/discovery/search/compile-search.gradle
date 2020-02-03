@@ -20,7 +20,7 @@ include "features:user:sessioncommon"
 // search dependencies - libraries
 include "libraries:analytics"
 include "libraries:applink"
-include "libraries:cache_api"
+include "libraries:base_list"
 include "libraries:kotlin_extensions"
 include 'libraries:play_core'
 include "libraries:promotions_target"

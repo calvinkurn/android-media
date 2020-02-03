@@ -227,7 +227,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun fetchCategoryDetail() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.show()
         categoryNavViewModel.fetchCategoryDetail(departmentId)
     }
 
@@ -256,6 +256,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             when (it) {
                 is Success -> {
                     updateToolBarHeading(it.data.name ?: "")
+                    this.departmentId = it.data.id.toString()
                     handleCategoryDetailSuccess()
                 }
                 is Fail -> {

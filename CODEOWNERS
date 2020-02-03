@@ -12,6 +12,7 @@
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
 /features/discovery/home_recom/                     	@tokopedia/minion-dave
+/features/discovery/home_wishlist/                     	@tokopedia/minion-dave
 /features/discovery/recentview/                     	@tokopedia/minion-dave
 /features/discovery/wishlist_common/                	@tokopedia/minion-dave
 /features/discovery/productcard/                    	@tokopedia/minion-dave
@@ -52,8 +53,8 @@
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
-/features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
-/features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-dave
+/features/top_ads/top_ads_autoads/     @tokopedia/minion-darth
+/features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-darth
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
@@ -77,6 +78,9 @@
 /features/digital/digital_topup_bills                   @tokopedia/minion-mark
 /features/digital/flight_orderlist                      @tokopedia/minion-mark
 /features/digital/rechargeocr                           @tokopedia/minion-mark
+/features/digital/recharge_general                      @tokopedia/minion-mark
+/features/digital/event                 				@tokopedia/minion-mark
+/features/digital/digital_deals         				@tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -123,10 +127,10 @@
 /features/user/seamless_login/                          @tokopedia/minion-kevin
 /features/user/kyc_centralized/                         @tokopedia/minion-kevin
 /features/user/attachinvoice/                           @tokopedia/minion-kevin
+/features/user/attachvoucher/                           @tokopedia/minion-kevin
+/features/user/attachcommon/                            @tokopedia/minion-kevin
 
-/features/digital/event                 				@tokopedia/minion-darth
 /features/operational/contact_us        				@tokopedia/minion-darth
-/features/digital/digital_deals         				@tokopedia/minion-darth
 
 /features/fintech/wallet                				@tokopedia/minion-solo
 /features/fintech/common_wallet         				@tokopedia/minion-solo

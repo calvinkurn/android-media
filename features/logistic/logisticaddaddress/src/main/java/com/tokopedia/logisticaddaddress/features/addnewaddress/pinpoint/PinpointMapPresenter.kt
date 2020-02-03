@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ZOOM_LEVEL_THRESHOLD
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
@@ -20,6 +21,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -34,8 +36,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
                                                private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapListener>() {
 
-    private val defaultLat: Double by lazy { -6.175794 }
-    private val defaultLong: Double by lazy { 106.826457 }
     private var saveAddressDataModel = SaveAddressDataModel()
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
@@ -44,7 +44,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         getDistrictUseCase.execute(RequestParams.create(), GetDistrictSubscriber(view, getDistrictMapper))
     }
 
-    fun autofill(lat: Double, long: Double) {
+    fun autofill(lat: Double, long: Double, zoom: Float) {
+        Timber.d("Current zoom level : $zoom")
         if (AddNewAddressUtils.hasDefaultCoordinate(lat, long)) {
             view.showUndetectedDialog()
             return
