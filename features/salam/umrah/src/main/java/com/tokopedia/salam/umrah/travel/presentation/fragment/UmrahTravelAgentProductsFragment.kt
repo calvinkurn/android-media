@@ -7,12 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
+import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelAgentProductsAdapter
+import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelProductAdapterTypeFactory
 import kotlinx.android.synthetic.main.fragment_umrah_travel_agent_products.*
 
-class UmrahTravelAgentProductsFragment(private val listener: UmrahTravelAgentProductListener): Fragment(){
+class UmrahTravelAgentProductsFragment(private val listener: UmrahTravelAgentProductListener): BaseListFragment<UmrahProductModel.UmrahProduct, UmrahTravelProductAdapterTypeFactory>(), BaseEmptyViewHolder.Callback{
 
     var products : List<UmrahProductModel.UmrahProduct> =  emptyList()
     val adapterProducts = UmrahTravelAgentProductsAdapter()
@@ -27,23 +33,41 @@ class UmrahTravelAgentProductsFragment(private val listener: UmrahTravelAgentPro
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         products = listener.getDataProducts()
-        adapterProducts.setList(products)
-        rv_umrah_travel_products.apply {
-            isNestedScrollingEnabled = false
-            adapter = adapterProducts
-            layoutManager = LinearLayoutManager(
-                    context,
-                    RecyclerView.VERTICAL, false
-            )
-            onFlingListener = object : RecyclerView.OnFlingListener() {
-                override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                    rv_umrah_travel_products.dispatchNestedFling(velocityX.toFloat(), velocityY.toFloat(), false)
-                    return false
-                }
-            }
-        }
+        renderList(products)
+    }
+
+    override fun getAdapterTypeFactory(): UmrahTravelProductAdapterTypeFactory = UmrahTravelProductAdapterTypeFactory(this)
+
+    override fun getScreenName(): String  = ""
+
+    override fun initInjector() = getComponent(UmrahTravelComponent::class.java).inject(this)
+
+    override fun loadData(page: Int) {
 
     }
+
+    override fun onEmptyButtonClicked() {
+
+    }
+
+    override fun onEmptyContentItemTextClicked() {
+
+    }
+
+    override fun onItemClicked(t: UmrahProductModel.UmrahProduct?) {
+
+    }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.rv_umrah_travel_products
+
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        val emptyModel = EmptyModel()
+        emptyModel.iconRes = R.drawable.umrah_img_empty_search_png
+        emptyModel.title = getString(R.string.umrah_search_empty_title)
+
+        return emptyModel
+    }
+
 
     interface UmrahTravelAgentProductListener{
         fun getDataProducts():List<UmrahProductModel.UmrahProduct>
