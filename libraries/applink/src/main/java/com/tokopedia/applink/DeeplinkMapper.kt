@@ -210,11 +210,21 @@ object DeeplinkMapper {
     private fun getCreateReviewInternal(deeplink: String): String {
         val parsedUri = Uri.parse(deeplink)
         val segments = parsedUri.pathSegments
-        val rating = parsedUri.getQueryParameter("rating") ?: "5"
+        val paramRating = "rating"
+        val paramUtmSource = "utm_source"
+        val rating = parsedUri.getQueryParameter(paramRating) ?: "5"
+        val utmSource = parsedUri.getQueryParameter(paramUtmSource) ?: ""
 
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()
-        return UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating)
+        val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId)
+        val uri = Uri.parse(newUri)
+                .buildUpon()
+                .appendQueryParameter(paramRating, rating)
+                .appendQueryParameter(paramUtmSource, utmSource)
+                .build()
+                .toString()
+        return uri
     }
 
     /**

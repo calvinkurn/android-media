@@ -25,6 +25,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     companion object {
         const val PARAM_RATING = "rating"
         const val DEFAULT_PRODUCT_RATING = 5
+        const val PARAM_UTM_SOURCE = "utm_source"
+        const val DEFAULT_UTM_SOURCE = ""
         fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
@@ -32,12 +34,15 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
-        val rating = uri?.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
+        var rating = DEFAULT_PRODUCT_RATING
+        var utmSource = DEFAULT_UTM_SOURCE
 
         if (uri != null && uri.pathSegments.size > 0) {
             val uriSegment = uri.pathSegments
             productId = uri.lastPathSegment ?: ""
             reputationId = uriSegment[uriSegment.size - 2]
+            rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
+            utmSource = uri.getQueryParameter(PARAM_UTM_SOURCE) ?: DEFAULT_UTM_SOURCE
         } else {
             productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
@@ -45,7 +50,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         createReviewFragment = CreateReviewFragment.createInstance(
                 productId,
                 reputationId,
-                bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: rating
+                bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: rating,
+                utmSource
         )
         return createReviewFragment
 

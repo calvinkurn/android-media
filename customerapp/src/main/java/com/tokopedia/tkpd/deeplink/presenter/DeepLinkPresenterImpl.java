@@ -97,7 +97,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String OVERRIDE_URL = "override_url";
     private static final String PARAM_TITLEBAR = "titlebar";
     private static final String PARAM_NEED_LOGIN = "need_login";
-    private static final String PARAM_EXTRA_REVIEW = "REVIEW_CLICK_AT";
+    private static final String PARAM_EXTRA_REVIEW = "rating";
+    private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
 
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
@@ -326,8 +327,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String productId = segments.get(segments.size() - 1);
 
             String rating;
-            if (!TextUtils.isEmpty(uri.getQueryParameter("rating"))) {
-                rating = uri.getQueryParameter("rating");
+            if (!TextUtils.isEmpty(uri.getQueryParameter(PARAM_EXTRA_REVIEW))) {
+                rating = uri.getQueryParameter(PARAM_EXTRA_REVIEW);
             } else {
                 rating = "5";
             }
@@ -339,7 +340,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 ratingNumber = 5;
             }
 
-            String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating);
+            String utmSource;
+            if (!TextUtils.isEmpty(uri.getQueryParameter(PARAM_EXTRA_UTM_SOURCE))) {
+                utmSource = uri.getQueryParameter(PARAM_EXTRA_UTM_SOURCE);
+            } else {
+                utmSource = "";
+            }
+            String newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId);
+            String uriReview = Uri.parse(newUri)
+                    .buildUpon()
+                    .appendQueryParameter(PARAM_EXTRA_REVIEW, rating)
+                    .appendQueryParameter(PARAM_EXTRA_UTM_SOURCE, utmSource)
+                    .build()
+                    .toString();
             Intent intent = RouteManager.getIntent(
                     context,
                     uriReview);

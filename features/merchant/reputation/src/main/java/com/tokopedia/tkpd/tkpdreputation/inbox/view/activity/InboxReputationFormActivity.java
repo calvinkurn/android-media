@@ -47,6 +47,7 @@ public class InboxReputationFormActivity extends BaseSimpleActivity {
     public static final String ARGS_REVIEW_IMAGES = "ARGS_REVIEW_IMAGES";
     public static final String ARGS_ANONYMOUS = "ARGS_ANONYMOUS";
     public static final String ARGS_REVIEWEE_NAME = "ARGS_REVIEWEE_NAME";
+    public static final String ARGS_UTM_SOURCE = "ARGS_UTM_SOURCE";
 
 
     SkipListener listener;
