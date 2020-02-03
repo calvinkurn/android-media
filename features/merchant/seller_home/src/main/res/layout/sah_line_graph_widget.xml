@@ -32,6 +32,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
             app:typographyWeight="bold"
             tools:text="Total Pendapatan" />
 
@@ -39,7 +40,8 @@
             android:id="@+id/btnLineGraphInformation"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            android:layout_margin="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
             android:background="@android:color/transparent"
             android:padding="3dp"
             app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphTitle"

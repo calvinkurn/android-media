@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginTop="@dimen/layout_lvl2"
     android:layout_marginBottom="@dimen/layout_lvl1"
     android:orientation="vertical"
     android:paddingStart="18dp"
@@ -34,20 +34,19 @@
         app:typographyWeight="bold"
         tools:text="Performa Toko" />
 
-    <com.tokopedia.unifycomponents.UnifyImageButton
+    <ImageView
         android:id="@+id/btnSectionInfo"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
-        android:padding="4dp"
+        android:padding="3dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvSectionTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvSectionTitle"
         app:layout_constraintTop_toTopOf="@+id/tvSectionTitle"
-        app:srcCompat="@drawable/ic_info"
-        app:unifyImageButtonVariant="image" />
+        app:srcCompat="@drawable/ic_info" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSectionSubTitle"

@@ -44,6 +44,7 @@
             android:minHeight="22dp"
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/fontSize_lvl4"
+            android:text="@string/sah_card_on_error"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCardTitle"

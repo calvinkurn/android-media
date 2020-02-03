@@ -17,12 +17,13 @@ class SectionViewHolder(itemView: View?) : AbstractViewHolder<SectionWidgetUiMod
         val RES_LAYOUT: Int = R.layout.sah_section_widget
     }
 
-    override fun bind(element: SectionWidgetUiModel?) {
+    override fun bind(element: SectionWidgetUiModel) {
         with(itemView) {
-            tvSectionTitle.text = element?.title.orEmpty()
-            tvSectionSubTitle.text = "Subtitle"
+            tvSectionTitle.text = element.title
+            tvSectionSubTitle.visibility = if (element.subTitle.isNotBlank()) View.VISIBLE else View.GONE
+            tvSectionSubTitle.text = element.subTitle
             btnSectionInfo.setOnClickListener {
-                Toast.makeText(context, "Subtitle", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Show tooltip", Toast.LENGTH_SHORT).show()
             }
         }
     }

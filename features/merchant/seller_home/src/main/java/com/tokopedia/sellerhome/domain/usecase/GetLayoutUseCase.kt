@@ -21,14 +21,14 @@ class GetLayoutUseCase(
         return listOf(
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
-                        title = "Performa Toko",
+                        title = "Penting hari ini",
                         subTitle = "",
                         tooltip = TooltipUiModel("", "", emptyList(), false),
                         url = "",
                         appLink = "",
                         dataKey = "",
                         ctaText = "",
-                        data = SectionDataUiModel()
+                        data = null
                 ),
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
@@ -36,7 +36,7 @@ class GetLayoutUseCase(
                         subTitle = "",
                         tooltip = TooltipUiModel("Card 1", "Pesanan Baru adalah ...", emptyList(), false),
                         url = "",
-                        appLink = "",
+                        appLink = "tokopedia://pesanan-baru/detail",
                         dataKey = "newOrder",
                         ctaText = "",
                         data = null
@@ -96,6 +96,17 @@ class GetLayoutUseCase(
                         ctaText = "",
                         data = null
                 ),
+                SectionWidgetUiModel(
+                        widgetType = WidgetType.SECTION,
+                        title = "Ringkasan penjualan",
+                        subTitle = "21 JAN 20 - 27 JAN 20",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = null
+                ),
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Shop Total Revenue",
@@ -124,7 +135,7 @@ class GetLayoutUseCase(
                         subTitle = "",
                         tooltip = TooltipUiModel("Total Pendapatan", "Pendapatan harian bersih per hari", emptyList(), false),
                         url = "",
-                        appLink = "",
+                        appLink = "tokopedia://pesanan-baru/detail",
                         dataKey = "grossIncome",
                         ctaText = "",
                         data = null

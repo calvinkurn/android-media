@@ -15,8 +15,8 @@ data class SectionWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
-        override var data: SectionDataUiModel?
-) : BaseWidgetUiModel<SectionDataUiModel> {
+        override var data: Nothing?
+) : BaseWidgetUiModel<Nothing> {
 
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
