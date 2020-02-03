@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -13,16 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.AsyncDifferConfig;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -30,7 +21,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.AsyncDifferConfig;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -38,11 +46,14 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.home.analytics.HomePageTrackingV2;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
@@ -50,6 +61,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.data.model.PlayChannel;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
@@ -94,6 +106,7 @@ import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListene
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -106,8 +119,13 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,6 +134,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
+
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
@@ -128,6 +147,9 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_SALE;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO;
+import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
+
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -145,11 +167,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
-    public static final String REVIEW_CLICK_AT = "REVIEW_CLICK_AT";
+    public static final String REVIEW_CLICK_AT = "rating";
+    public static final String UTM_SOURCE = "utm_source";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
+    private static final String DEFAULT_UTM_SOURCE = "home_notif";
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
@@ -483,9 +507,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
+        Weaver.Companion.executeWeaveCoRoutine(this::sendScreen,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
         sendScreen();
+        adapter.onResume();
         presenter.onResume();
-
         if (activityStateListener != null) {
             activityStateListener.onResume();
         }
@@ -494,6 +520,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPause() {
         super.onPause();
+        adapter.onPause();
         trackingQueue.sendAll();
         if (activityStateListener != null) {
             activityStateListener.onPause();
@@ -503,6 +530,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
+        adapter.onDestroy();
         presenter.onDestroy();
         presenter.detachView();
         homeRecyclerView.setAdapter(null);
@@ -517,6 +545,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(() -> {
             if (presenter != null) {
                 presenter.searchHint();
+                presenter.refreshHomeData();
             }
             /**
              * set notification gimmick
@@ -554,6 +583,27 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             } else {
                 showLoading();
             }
+        });
+
+        presenter.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> {
+            Glide.with(getContext())
+                    .asBitmap()
+                    .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            presenter.setPlayBanner(playCardViewModelEvent.peekContent());
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            presenter.clearPlayBanner();
+                        }
+                    });
         });
     }
 
@@ -685,7 +735,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build();
-        adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<Visitable>());
+        adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<HomeVisitable>());
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -1220,15 +1270,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            sendScreen();
+            Weaver.Companion.executeWeaveCoRoutine(this::sendScreen,
+                    new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
         }
     }
 
-    private void sendScreen() {
+    @NotNull
+    private Boolean sendScreen() {
         if (getActivity() != null && System.currentTimeMillis() > lastSendScreenTimeMillis + SEND_SCREEN_MIN_INTERVAL_MILLIS) {
             lastSendScreenTimeMillis = System.currentTimeMillis();
             HomePageTracking.sendScreen(getActivity(), getScreenName(), userSession.isLoggedIn());
         }
+        return true;
     }
 
     @Override
@@ -1471,12 +1524,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showNotAllowedGeolocationSnackbar() {
         getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
                 Snackbar.LENGTH_LONG)
-                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        HomePageTracking.eventClickOnAtur(getActivity());
-                        goToApplicationDetailActivity();
-                    }
+                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), view -> {
+                    HomePageTracking.eventClickOnAtur(getActivity());
+                    goToApplicationDetailActivity();
                 }).show();
     }
 
@@ -1562,8 +1612,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onReviewClick(int position, int clickReviewAt, long delay, @NotNull String applink) {
         new Handler().postDelayed(() -> {
-            Intent intent = RouteManager.getIntent(getContext(), applink);
-            intent.putExtra(REVIEW_CLICK_AT, clickReviewAt);
+            String newAppLink = Uri.parse(applink)
+                    .buildUpon()
+                    .appendQueryParameter(REVIEW_CLICK_AT, String.valueOf(clickReviewAt))
+                    .appendQueryParameter(UTM_SOURCE, DEFAULT_UTM_SOURCE)
+                    .build().toString();
+            Intent intent = RouteManager.getIntent(getContext(), newAppLink);
             startActivityForResult(intent, REQUEST_CODE_REVIEW);
         }, delay);
     }
@@ -1616,6 +1670,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);
         }
+    }
+
+    @Override
+    public void onOpenPlayActivity(@NotNull View root, String channelId) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
+        );
+        startActivity(intent, options.toBundle());
     }
 
     private boolean needToPerformanceMonitoring() {
@@ -1677,6 +1740,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 putEEToIris(
                         HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
                                 channel.getId(), channel.getGrids(), channel.getHeader().getName(), position
+                        )
+                );
+                break;
+            case TYPE_FOUR_GRID_LEGO :
+                putEEToIris(
+                        (HashMap<String, Object>) HomePageTrackingV2.LegoBanner.INSTANCE.getLegoBannerFourImageImpression(
+                                channel, position, true
                         )
                 );
                 break;

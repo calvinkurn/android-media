@@ -307,7 +307,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flightOrderList)
-    implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.travelPassenger)
     implementation project(rootProject.ext.features.reputation)
@@ -376,6 +375,8 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.play)
+    implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
@@ -401,12 +402,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.track)
@@ -483,6 +486,7 @@ dependencies {
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }

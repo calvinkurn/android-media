@@ -712,6 +712,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return null;
     }
 
+    public String getFirstProductId() {
+        if (details != null && details.getItems() != null && !details.getItems().isEmpty()) {
+            return String.valueOf(details.getItems().get(0).getId());
+        }
+        return "";
+    }
+
     public void showRetryButtonToaster(String message) {
         if (getView() == null)
             return;
