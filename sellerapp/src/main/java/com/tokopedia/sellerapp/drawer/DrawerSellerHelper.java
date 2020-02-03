@@ -45,7 +45,7 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.tracking.view.SimpleWebViewActivity;
+import com.tokopedia.logisticorder.view.SimpleWebViewActivity;
 
 import java.util.ArrayList;
 
