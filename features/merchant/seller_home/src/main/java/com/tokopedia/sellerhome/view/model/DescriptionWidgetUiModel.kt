@@ -6,7 +6,7 @@ data class DescriptionWidgetUiModel (
         override val widgetType: String,
         override val title: String,
         override val subTitle: String,
-        override val tooltip: TooltipUiModel,
+        override val tooltip: TooltipUiModel?,
         override val url: String,
         override val appLink: String,
         override val dataKey: String,

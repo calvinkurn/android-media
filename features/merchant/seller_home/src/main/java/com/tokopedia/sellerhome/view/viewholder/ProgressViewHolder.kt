@@ -34,7 +34,7 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
             showSuccessState(element)
         }, 10000)
 
-        createListeners(element.tooltip)
+        createListeners(element.tooltip ?: return)
     }
 
     private fun showLoadingState() {

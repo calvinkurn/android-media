@@ -11,7 +11,7 @@ interface BaseWidgetUiModel<T> : Visitable<SellerHomeAdapterTypeFactory> {
     val widgetType: String
     val title: String
     val subTitle: String
-    val tooltip: TooltipUiModel
+    val tooltip: TooltipUiModel?
     val url: String
     val appLink: String
     val dataKey: String

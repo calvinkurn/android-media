@@ -8,10 +8,10 @@ import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 class ProgressUiModel(
         override val widgetType: String,
         override val title: String,
-        override val url: String,
         override val appLink: String,
         override val subTitle: String,
-        override val tooltip: TooltipUiModel,
+        override val tooltip: TooltipUiModel?,
+        override val url: String,
         override val dataKey: String,
         override val ctaText: String,
         override var data: ProgressDataUiModel?
