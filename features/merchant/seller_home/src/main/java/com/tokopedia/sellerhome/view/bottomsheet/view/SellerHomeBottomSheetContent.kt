@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.sah_bottom_sheet_content.view.*
 class SellerHomeBottomSheetContent : LinearLayout {
 
     private var tooltip: TooltipUiModel? = null
-    private lateinit var adapter: BaseListAdapter<Visitable<*>, BottomSheetAdapterTypeFactory>
+    private lateinit var adapter: BaseListAdapter<BaseBottomSheetUiModel, BottomSheetAdapterTypeFactory>
 
     constructor(context: Context) : super(context) {
         initView(context)

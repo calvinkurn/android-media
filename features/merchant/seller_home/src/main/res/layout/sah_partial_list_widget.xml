@@ -20,10 +20,10 @@
 
     <ImageView
         android:id="@+id/iv_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_margin="@dimen/layout_lvl1"
+        android:padding="3dp"
         app:layout_constraintBottom_toBottomOf="@id/tv_card_title"
         app:layout_constraintStart_toEndOf="@id/tv_card_title"
         app:layout_constraintTop_toTopOf="@id/tv_card_title"

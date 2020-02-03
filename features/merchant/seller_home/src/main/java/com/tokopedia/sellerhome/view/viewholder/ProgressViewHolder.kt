@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.SellerHomeWidgetListener
+import com.tokopedia.sellerhome.SellerHomeWidgetTooltipClickListener
 import com.tokopedia.sellerhome.view.model.ProgressUiModel
 import com.tokopedia.sellerhome.view.model.TooltipUiModel
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.sah_partial_shimmering_progress_widget.vie
 /**
  * Created By @yusufhendrawan on 2020-01-22
  */
-class ProgressViewHolder(view: View?, val listener: SellerHomeWidgetListener) : AbstractViewHolder<ProgressUiModel>(view) {
+class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHomeWidgetTooltipClickListener) : AbstractViewHolder<ProgressUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.sah_progress_card_widget
@@ -65,7 +65,7 @@ class ProgressViewHolder(view: View?, val listener: SellerHomeWidgetListener) : 
 
     private fun showBottomSheet(tooltip: TooltipUiModel) {
         Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
-        listener.onInfoTooltipClicked(tooltip)
+        tooltipClickListener.onInfoTooltipClicked(tooltip)
     }
 
     private fun goToDetails() {

@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.SellerHomeWidgetListener
+import com.tokopedia.sellerhome.SellerHomeWidgetTooltipClickListener
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
@@ -36,7 +36,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetListener, CardViewHolder.Listener, LineGraphViewHolder.Listener {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetTooltipClickListener, CardViewHolder.Listener, LineGraphViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -269,7 +269,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             val adapter = TickerPagerAdapter(activity, tickersData)
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    //implement listener on click
+                    //implement tooltipClickListener on click
                 }
             })
 
