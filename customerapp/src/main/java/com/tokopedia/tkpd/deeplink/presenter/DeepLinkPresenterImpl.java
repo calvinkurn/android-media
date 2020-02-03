@@ -300,6 +300,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.DEALS_PAGE;
                     break;
+                case DeepLinkChecker.TRAVEL_HOMEPAGE:
+                    openTravelHomepage(linkSegment, uriData, defaultBundle);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -401,6 +405,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openHotel(Uri uri, Bundle bundle) {
         RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
+        context.finish();
+    }
+
+    private void openTravelHomepage(List<String> linkSegment, Uri uri, Bundle bundle) {
+        if (linkSegment.size() == 1) RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.HOME_TRAVEL_HOMEPAGE));
+        else {
+            Intent intent = RouteManager.getIntent(context, ApplinkConstInternalTravel.CITY_PAGE_TRAVEL_HOMEPAGE);
+            intent.putExtra(ApplinkConstInternalTravel.EXTRA_DESTINATION_WEB_URL, uri.toString());
+            context.startActivity(intent);
+        }
         context.finish();
     }
 
