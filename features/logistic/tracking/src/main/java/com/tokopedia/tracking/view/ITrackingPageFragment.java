@@ -1,6 +1,6 @@
 package com.tokopedia.tracking.view;
 
-import com.tokopedia.tracking.viewmodel.TrackingViewModel;
+import com.tokopedia.tracking.viewmodel.TrackingUiModel;
 
 /**
  * Created by kris on 5/14/18. Tokopedia
@@ -8,7 +8,7 @@ import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 
 public interface ITrackingPageFragment {
 
-    void populateView(TrackingViewModel viewModel);
+    void populateView(TrackingUiModel uiModel);
 
     void showLoading();
 

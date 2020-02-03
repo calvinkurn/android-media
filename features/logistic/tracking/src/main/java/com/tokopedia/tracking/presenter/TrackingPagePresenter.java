@@ -10,7 +10,7 @@ import com.tokopedia.tracking.usecase.entity.RetryAvailability;
 import com.tokopedia.tracking.usecase.entity.RetryAvailabilityResponse;
 import com.tokopedia.tracking.usecase.entity.RetryBookingResponse;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
-import com.tokopedia.tracking.viewmodel.TrackingViewModel;
+import com.tokopedia.tracking.viewmodel.TrackingUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -112,8 +112,8 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
         retryPickupUsecase.unsubscribe();
     }
 
-    private Subscriber<TrackingViewModel> trackingResultSubscriber() {
-        return new Subscriber<TrackingViewModel>() {
+    private Subscriber<TrackingUiModel> trackingResultSubscriber() {
+        return new Subscriber<TrackingUiModel>() {
             @Override
             public void onCompleted() {
 
@@ -126,9 +126,9 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
             }
 
             @Override
-            public void onNext(TrackingViewModel trackingViewModel) {
+            public void onNext(TrackingUiModel trackingUiModel) {
                 view.hideLoading();
-                view.populateView(trackingViewModel);
+                view.populateView(trackingUiModel);
             }
         };
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.tracking.mapper;
 
 import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
-import com.tokopedia.tracking.viewmodel.TrackingViewModel;
+import com.tokopedia.tracking.viewmodel.TrackingUiModel;
 
 /**
  * Created by kris on 5/14/18. Tokopedia
@@ -9,6 +9,6 @@ import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 
 public interface ITrackingPageMapper {
 
-    TrackingViewModel trackingViewModel(TrackingResponse trackingResponse);
+    TrackingUiModel trackingUiModel(TrackingResponse trackingResponse);
 
 }

@@ -2,7 +2,6 @@ package com.tokopedia.tracking.view;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -36,13 +35,12 @@ import com.tokopedia.tracking.di.TrackingPageModule;
 import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.AdditionalInfoUiModel;
-import com.tokopedia.tracking.viewmodel.TrackingViewModel;
+import com.tokopedia.tracking.viewmodel.TrackingUiModel;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifycomponents.ticker.TickerData;
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -158,7 +156,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     }
 
     @Override
-    public void populateView(TrackingViewModel model) {
+    public void populateView(TrackingUiModel model) {
         referenceNumber.setText(model.getReferenceNumber());
         ImageHandler.LoadImage(courierLogo, model.getCourierLogoUrl());
         if (TextUtils.isEmpty(model.getServiceCode())) descriptionLayout.setVisibility(View.GONE);
@@ -260,8 +258,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         liveTrackingButton.setVisibility(View.GONE);
     }
 
-    private void setHistoryView(TrackingViewModel model) {
-        if (model.isInvalid() || model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING
+    private void setHistoryView(TrackingUiModel model) {
+        if (model.isInvalid() || model.getStatusNumber() == TrackingUiModel.ORDER_STATUS_WAITING
                 || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
             trackingHistory.setVisibility(View.GONE);
         } else {
@@ -271,9 +269,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         }
     }
 
-    private void setTickerInfoCourier(TrackingViewModel trackingViewModel) {
-        if (trackingViewModel.getAdditionalInfoList() != null) {
-            List<AdditionalInfoUiModel> additionalInfoUiModelList = trackingViewModel.getAdditionalInfoList();
+    private void setTickerInfoCourier(TrackingUiModel trackingUiModel) {
+        if (trackingUiModel.getAdditionalInfoList() != null) {
+            List<AdditionalInfoUiModel> additionalInfoUiModelList = trackingUiModel.getAdditionalInfoList();
             if (additionalInfoUiModelList.isEmpty()) {
                 tickerInfoCourier.setVisibility(View.GONE);
             } else {
@@ -321,14 +319,14 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
     }
 
-    private void setEmptyHistoryView(TrackingViewModel model) {
+    private void setEmptyHistoryView(TrackingUiModel model) {
         if (model.isInvalid()) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
             notificationText.setText(getString(R.string.warning_courier_invalid));
             notificationHelpStep.setVisibility(View.VISIBLE);
             notificationHelpStep.setLayoutManager(new LinearLayoutManager(getActivity()));
             notificationHelpStep.setAdapter(new EmptyTrackingNotesAdapter());
-        } else if (model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING
+        } else if (model.getStatusNumber() == TrackingUiModel.ORDER_STATUS_WAITING
                 || model.getChange() == 0 || model.getHistoryList().size() == 0) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
             notificationText.setText(getString(R.string.warning_no_courier_change));

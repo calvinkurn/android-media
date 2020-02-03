@@ -6,7 +6,7 @@ import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackOrder;
 import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
 import com.tokopedia.tracking.viewmodel.AdditionalInfoUiModel;
 import com.tokopedia.tracking.viewmodel.TrackingHistoryUiModel;
-import com.tokopedia.tracking.viewmodel.TrackingViewModel;
+import com.tokopedia.tracking.viewmodel.TrackingUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,8 @@ import java.util.List;
 public class TrackingPageMapper implements ITrackingPageMapper {
 
     @Override
-    public TrackingViewModel trackingViewModel(TrackingResponse trackingResponse) {
-        TrackingViewModel model = new TrackingViewModel();
+    public TrackingUiModel trackingUiModel(TrackingResponse trackingResponse) {
+        TrackingUiModel model = new TrackingUiModel();
         TrackOrder order = trackingResponse.getTrackOrder();
         model.setInvalid(switchInteger(order.getInvalid()));
         model.setReferenceNumber(order.getShippingRefNum());

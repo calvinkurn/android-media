@@ -2,7 +2,7 @@ package com.tokopedia.tracking.usecase;
 
 import com.tokopedia.tracking.mapper.ITrackingPageMapper;
 import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
-import com.tokopedia.tracking.viewmodel.TrackingViewModel;
+import com.tokopedia.tracking.viewmodel.TrackingUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -17,7 +17,7 @@ import rx.Observable;
  * Created by kris on 5/9/18. Tokopedia
  */
 
-public class TrackCourierUseCase extends UseCase<TrackingViewModel>{
+public class TrackCourierUseCase extends UseCase<TrackingUiModel>{
 
     private ITrackingPageRepository repository;
     private ITrackingPageMapper mapper;
@@ -29,9 +29,9 @@ public class TrackCourierUseCase extends UseCase<TrackingViewModel>{
     }
 
     @Override
-    public Observable<TrackingViewModel> createObservable(RequestParams requestParams) {
+    public Observable<TrackingUiModel> createObservable(RequestParams requestParams) {
         Map<String, String> parameters = new HashMap<>(requestParams.getParamsAllValueInString());
         return repository.getRates(parameters)
-                .map(trackingResponse -> mapper.trackingViewModel(trackingResponse));
+                .map(trackingResponse -> mapper.trackingUiModel(trackingResponse));
     }
 }

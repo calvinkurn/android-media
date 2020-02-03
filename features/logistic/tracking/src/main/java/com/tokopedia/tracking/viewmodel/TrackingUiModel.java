@@ -6,7 +6,7 @@ import java.util.List;
  * Created by kris on 5/11/18. Tokopedia
  */
 
-public class TrackingViewModel {
+public class TrackingUiModel {
 
     public static int ORDER_STATUS_WAITING = 501;
 
