@@ -17,12 +17,13 @@ import com.tokopedia.transaction.orders.orderdetails.data.Invoice
 import com.tokopedia.transaction.orders.orderdetails.data.Status
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
 
-class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
+class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
 
     var orderListAnalytics: OrderListAnalytics? = null
         @Inject set
@@ -65,8 +66,8 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
 
     @Suppress("DEPRECATION")
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun onPrintClicked(webView: WebView?){
-        webView?.let{
+    private fun onPrintClicked(webView: WebView?) {
+        webView?.let {
             val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
             val jobName = getString(R.string.app_name) + " Document"
             val printAdapter: PrintDocumentAdapter
@@ -86,12 +87,12 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
     companion object {
         const val STATUS = "status"
         @JvmStatic
-        fun newInstance(context: Context, status: Status, invoice: Invoice): Intent =
-                Intent(context, SeeInvoiceActivity::class.java)
-                        .putExtra(STATUS, status.status())
-                        .putExtra(KEY_URL, invoice.invoiceUrl())
-                        .putExtra(KEY_TITLE, R.string.title_invoice)
-
+        fun newInstance(context: Context, status: Status, invoice: Invoice, title: String): Intent =
+                Intent(context, SeeInvoiceActivity::class.java).apply {
+                    putExtra(STATUS, status.status())
+                    putExtra(KEY_URL, invoice.invoiceUrl())
+                    putExtra(KEY_TITLE, title)
+                }
     }
 
 }

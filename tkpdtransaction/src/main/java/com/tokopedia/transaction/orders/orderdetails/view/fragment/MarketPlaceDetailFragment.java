@@ -82,6 +82,7 @@ import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.webview.ConstantKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -303,7 +304,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             orderListAnalytics.sendViewInvoiceClickEvent();
             orderListAnalytics.sendLihatInvoiceClick(status.status());
 
-            Intent intent = SeeInvoiceActivity.Companion.newInstance(getContext(),status, invoice);
+            Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
+                    getString(R.string.title_invoice));
             startActivity(intent);
         });
     }
