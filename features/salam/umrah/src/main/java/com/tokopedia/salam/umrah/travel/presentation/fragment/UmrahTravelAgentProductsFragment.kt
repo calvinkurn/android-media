@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
@@ -47,7 +49,7 @@ class UmrahTravelAgentProductsFragment(private val listener: UmrahTravelAgentPro
     }
 
     override fun onEmptyButtonClicked() {
-
+        RouteManager.route(context, ApplinkConst.SALAM_UMRAH)
     }
 
     override fun onEmptyContentItemTextClicked() {
@@ -64,7 +66,8 @@ class UmrahTravelAgentProductsFragment(private val listener: UmrahTravelAgentPro
         val emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.umrah_img_empty_search_png
         emptyModel.title = getString(R.string.umrah_search_empty_title)
-
+        emptyModel.content = getString(R.string.umrah_search_empty_subtitle)
+        emptyModel.buttonTitle = getString(R.string.umrah_empty_button)
         return emptyModel
     }
 
