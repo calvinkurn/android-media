@@ -240,7 +240,7 @@ class PlayViewModel @Inject constructor(
             if (finalTotalLike < 0) finalTotalLike = 0
             _observableTotalLikes.value = TotalLikeUiModel(
                     finalTotalLike,
-                    finalTotalLike.toAmountString(amountStringStepArray)
+                    finalTotalLike.toAmountString(amountStringStepArray, separator = ".")
             )
         }
     }
