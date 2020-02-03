@@ -11,7 +11,7 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.ListItemUiModel
 import com.tokopedia.sellerhome.view.model.ListUiModel
-import kotlinx.android.synthetic.main.sah_partial_error_load_data.view.*
+import kotlinx.android.synthetic.main.sah_partial_progress_widget_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_list_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_shimmering_list_widget.view.*
 
@@ -22,6 +22,8 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
 
     private var state = State.SUCCESS
 
+    private lateinit var adapter: BaseListAdapter<ListItemUiModel, ListAdapterTypeFactory>
+
     override fun bind(element: ListUiModel) {
         showLoadingState()
         itemView.postDelayed({
@@ -30,7 +32,10 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
         itemView.postDelayed({
             showSuccessState(element)
         }, 10000)
+
+        createListeners()
     }
+
 
     private fun showLoadingState() {
         hideErrorLayout()
@@ -45,7 +50,7 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
             itemView.tv_card_title.text = element.title
             setupListInfoSeller()
 
-            (itemView.rv_info_seller.adapter as BaseListAdapter<ListItemUiModel, *>).run {
+            adapter.run {
                 data.addAll(items)
                 notifyDataSetChanged()
             }
@@ -61,14 +66,28 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
         showErrorLayout()
     }
 
+    private fun createListeners() {
+        itemView.iv_info.setOnClickListener { showBottomSheet() }
+        itemView.tv_see_details.setOnClickListener { goToDetails() }
+    }
+
+
+    private fun showBottomSheet() {
+        Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun goToDetails() {
+        Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
+    }
+
     private fun setupListInfoSeller() {
-        itemView.rv_info_seller.apply {
+        adapter = BaseListAdapter<ListItemUiModel, ListAdapterTypeFactory>(ListAdapterTypeFactory(), this@ListViewHolder)
+        itemView.rv_item_list.apply {
             layoutManager = LinearLayoutManager(itemView.context)
-            adapter = BaseListAdapter<ListItemUiModel, ListAdapterTypeFactory>(ListAdapterTypeFactory(), this@ListViewHolder)
+            adapter = this@ListViewHolder.adapter
         }
     }
 
-    // TODO: Sah Implement this
     override fun onItemClicked(t: ListItemUiModel?) {
         Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
     }

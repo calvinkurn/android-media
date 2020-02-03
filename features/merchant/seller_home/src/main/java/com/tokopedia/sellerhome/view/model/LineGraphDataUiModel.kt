@@ -5,16 +5,16 @@ package com.tokopedia.sellerhome.view.model
  */
 
 data class LineGraphDataUiModel(
-        val dataKey: String,
-        val description: String,
-        val error: String,
-        val header: String,
-        val list: List<XYAxisUiModel>,
-        val yLabels: List<XYAxisUiModel>
-)
+        val dataKey: String = "",
+        val description: String = "",
+        val error: String = "",
+        val header: String = "",
+        val list: List<XYAxisUiModel> = emptyList(),
+        val yLabels: List<XYAxisUiModel> = emptyList()
+) : BaseDataUiModel
 
 data class XYAxisUiModel(
         val xLabel: String,
         val yLabel: String,
-        val yVal: Long
+        val yVal: Int
 )

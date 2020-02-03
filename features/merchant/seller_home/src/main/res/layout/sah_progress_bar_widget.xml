@@ -10,13 +10,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="6sp"
-        tools:text="@string/sah_score"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="@id/tv_current_progress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_current_progress"
         app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="@string/sah_score" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_current_progress"
