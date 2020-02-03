@@ -38,8 +38,6 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayViewModel @Inject constructor(
-        @ApplicationContext
-        private val applicationContext: Context,
         private val playManager: TokopediaPlayManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
@@ -177,11 +175,11 @@ class PlayViewModel @Inject constructor(
             launch { getIsLike(channel.contentId, channel.contentType) }
 
             // TODO("remove, for testing")
-//            channel.videoStream = VideoStream(
-//                    "vertical",
-//                    "live",
-//                    true,
-//                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+            channel.videoStream = VideoStream(
+                    "vertical",
+                    "live",
+                    true,
+                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             /**
              * If Live => start web socket
@@ -331,10 +329,9 @@ class PlayViewModel @Inject constructor(
                     }
                 }
             }
-        }, onReconnect = {
-            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
         }, onError = {
-            _observableSocketInfo.value = PlaySocketInfo.ERROR
+            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
+            startWebSocket(channelId, gcToken, settings)
         })
     }
 
