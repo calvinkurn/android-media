@@ -79,8 +79,8 @@ class DFInstaller {
                     }?.addOnFailureListener {
                         val errorCode = (it as? SplitInstallException)?.errorCode
                         sessionId = null
-                        logFailedStatus(TAG_LOG_DFM_BG, applicationContext, moduleNameToDownload, errorCode?.toString()
-                                ?: it.toString())
+                        logFailedStatus(TAG_LOG_DFM_BG, applicationContext, moduleNameToDownload,
+                                listOf(errorCode?.toString() ?: it.toString()))
                         onFailedInstall?.invoke()
                         unregisterListener()
                         continuation.resume(false)
@@ -108,8 +108,7 @@ class DFInstaller {
             logDeferredStatus(context.applicationContext, messageLog, moduleNameToDownload)
         }?.addOnFailureListener {
             val errorCode = (it as? SplitInstallException)?.errorCode
-            logDeferredStatus(context.applicationContext, messageLog, moduleNameToDownload, errorCode?.toString()
-                    ?: it.toString())
+            logDeferredStatus(context.applicationContext, messageLog, moduleNameToDownload, listOf(errorCode?.toString() ?: it.toString()))
         }
     }
 
@@ -139,26 +138,26 @@ class DFInstaller {
         }.addOnFailureListener {
             val errorCode = (it as? SplitInstallException)?.errorCode
             logDeferredStatus(applicationContext, TAG_LOG_DFM_DEFERRED_UNINSTALL, moduleNameToUninstall,
-                errorCode?.toString() ?: it.toString())
+                listOf(errorCode?.toString() ?: it.toString()))
         }
     }
 
     internal fun logSuccessStatus(tag: String, context: Context, moduleNameToDownload: List<String>) {
         DFTracking.trackDownloadDF(moduleNameToDownload, null, tag == TAG_LOG_DFM_BG)
         DFInstallerLogUtil.logStatus(context, tag, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, null, 0, false)
+                usableSpaceBeforeDownload, moduleSize, emptyList(), 0, false)
     }
 
     internal fun logFailedStatus(tag: String, applicationContext: Context, moduleNameToDownload: List<String>,
-                                 errorCode: String = "") {
-        DFTracking.trackDownloadDF(moduleNameToDownload, listOf(errorCode), tag == TAG_LOG_DFM_BG)
+                                 errorCode: List<String> = emptyList()) {
+        DFTracking.trackDownloadDF(moduleNameToDownload, errorCode, tag == TAG_LOG_DFM_BG)
         DFInstallerLogUtil.logStatus(applicationContext, tag, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, listOf(errorCode), 0, false)
+                usableSpaceBeforeDownload, moduleSize, errorCode, 0, false)
     }
 
-    private fun logDeferredStatus(applicationContext: Context, message: String, moduleNameToDownload: List<String>, errorCode: String = ""){
+    private fun logDeferredStatus(applicationContext: Context, message: String, moduleNameToDownload: List<String>, errorCode: List<String> = emptyList()){
         DFInstallerLogUtil.logStatus(applicationContext, message, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, listOf(errorCode), 0, false, TAG_DFM_DEFERRED)
+                usableSpaceBeforeDownload, moduleSize, errorCode, 0, false, TAG_DFM_DEFERRED)
     }
 
     internal fun unregisterListener() {
@@ -203,7 +202,7 @@ private class SplitInstallListener(val dfInstaller: DFInstaller,
             }
             SplitInstallSessionStatus.FAILED -> {
                 DFTracking.trackDownloadDF(moduleNameToDownload, listOf(it.errorCode().toString()), true)
-                dfInstaller.logFailedStatus(DFInstaller.TAG_LOG_DFM_BG, context, moduleNameToDownload, it.errorCode().toString())
+                dfInstaller.logFailedStatus(DFInstaller.TAG_LOG_DFM_BG, context, moduleNameToDownload, listOf(it.errorCode().toString()))
                 onFailedInstall?.invoke()
                 dfInstaller.unregisterListener()
                 continuation.resume(false)

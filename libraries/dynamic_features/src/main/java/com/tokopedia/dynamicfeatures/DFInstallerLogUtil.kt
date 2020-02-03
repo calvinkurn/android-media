@@ -75,7 +75,7 @@ object DFInstallerLogUtil {
                            modulesName: String,
                            previousFreeSpace: Long = 0,
                            moduleSize: Long = 0,
-                           errorCode: List<String>? = null,
+                           errorCode: List<String> = emptyList(),
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false,
                            tag: String = DFM_TAG) {
@@ -86,7 +86,7 @@ object DFInstallerLogUtil {
             if (downloadTimes > 0) {
                 messageStringBuilder.append("times_dl:{$downloadTimes};")
             }
-            if (errorCode?.isNotEmpty() == true) {
+            if (errorCode.isNotEmpty()) {
                 messageStringBuilder.append("err:{${errorCode.joinToString("|")}};")
             }
             if (isSuccess) {
