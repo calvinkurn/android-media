@@ -5,13 +5,13 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.R
 
 /**
- * Created by jegul on 03/01/20
+ * Created by jegul on 03/02/20
  */
-class RoundedFrameLayout : FrameLayout {
+class RoundedConstraintLayout : ConstraintLayout {
 
     private var cornerRadius: Float = 0f
 
@@ -20,14 +20,14 @@ class RoundedFrameLayout : FrameLayout {
         initAttrs(context, attrs)
     }
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initAttrs(context,attrs)
+        initAttrs(context, attrs)
     }
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
-            val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedFrameLayout)
+            val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedConstraintLayout)
 
-            cornerRadius = attributeArray.getDimension(R.styleable.RoundedFrameLayout_cornerRadius, 0f)
+            cornerRadius = attributeArray.getDimension(R.styleable.RoundedConstraintLayout_cornerRadius, 0f)
             attributeArray.recycle()
         }
     }
