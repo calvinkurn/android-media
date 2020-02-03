@@ -81,6 +81,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.ValidateTradeInPDP
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.spesification.Specification
@@ -275,6 +276,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
+        }
+        context?.let {
+            pdpHashMapUtil = DynamicProductDetailHashMap(it, mapOf(ProductDetailConstant.PRODUCT_SNAPSHOT to ProductSnapshotDataModel()))
         }
         setHasOptionsMenu(true)
     }
@@ -546,8 +550,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     == YouTubeInitializationResult.SUCCESS) {
                 startActivity(ProductYoutubePlayerActivity.createIntent(it, videos.map { it.url }, index))
             } else {
-                startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse(ProductDetailConstant.URL_YOUTUBE + videos[index].url)))
+                // Handle if user didn't have any apps to open Youtube * Usually rooted phone
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + videos[index].url)))
+                } catch (e: Throwable) {
+                }
             }
         }
     }
@@ -1336,12 +1344,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun executeProductShare(productData: ProductData) {
-        val productShare = ProductShare(activity!!, ProductShare.MODE_TEXT)
-        productShare.share(productData, {
-            showProgressDialog()
-        }, {
-            hideProgressDialog()
-        })
+        activity?.let {
+            val productShare = ProductShare(it, ProductShare.MODE_TEXT)
+            productShare.share(productData, {
+                showProgressDialog()
+            }, {
+                hideProgressDialog()
+            })
+        }
     }
 
     /**
