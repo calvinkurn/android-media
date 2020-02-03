@@ -95,7 +95,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             progressWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(shopId, "", dataKeys )
+                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(userSession.shopId, "2020-02-02", dataKeys)
                 return@withContext getProgressDataUseCase.executeOnBackground()
             })
         }, onError = {
