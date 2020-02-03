@@ -108,8 +108,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, SellerRouter.getSellingActivityClass());
-            this.startActivity(intent);
             this.finish();
         }
     }
