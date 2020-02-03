@@ -5,7 +5,7 @@ import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 data class DescriptionWidgetUiModel (
         override val widgetType: String,
         override val title: String,
-        override val subTitle: String,
+        override val subtitle: String,
         override val tooltip: TooltipUiModel?,
         override val url: String,
         override val appLink: String,
@@ -15,10 +15,4 @@ data class DescriptionWidgetUiModel (
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-}
-
-enum class DescriptionState {
-    LOADING,
-    ERROR,
-    IDEAL
 }

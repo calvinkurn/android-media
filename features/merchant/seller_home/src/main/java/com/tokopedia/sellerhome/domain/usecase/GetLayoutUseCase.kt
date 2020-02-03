@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.sellerhome.WidgetType
-import com.tokopedia.sellerhome.view.bottomsheet.model.BottomSheetListItemUiModel
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import com.tokopedia.usecase.coroutines.UseCase
@@ -22,7 +21,7 @@ class GetLayoutUseCase(
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
                         title = "Penting hari ini",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", emptyList(), false),
                         url = "",
                         appLink = "",
@@ -33,7 +32,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "New Order",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
@@ -44,7 +43,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Ready To Ship",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -55,7 +54,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Complaint",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -66,7 +65,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Unread Chat",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -77,7 +76,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Discussion",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -88,7 +87,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Product View",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -99,7 +98,7 @@ class GetLayoutUseCase(
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
                         title = "Ringkasan penjualan",
-                        subTitle = "21 JAN 20 - 27 JAN 20",
+                        subtitle = "21 JAN 20 - 27 JAN 20",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -110,7 +109,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Shop Total Revenue",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -121,7 +120,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Product Sold",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -132,7 +131,7 @@ class GetLayoutUseCase(
                 LineGraphWidgetUiModel(
                         widgetType = WidgetType.LINE_GRAPH,
                         title = "Total Pendapatan",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("Total Pendapatan", "Pendapatan harian bersih per hari", emptyList(), false),
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
@@ -143,7 +142,7 @@ class GetLayoutUseCase(
                 CarouselWidgetUiModel(
                         widgetType = WidgetType.CAROUSEL,
                         title = "Caruosel",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -173,10 +172,10 @@ class GetLayoutUseCase(
                                 state = CarouselState.NORMAL
                         )
                 ),
-                ProgressUiModel(
+                ProgressWidgetUiModel(
                         widgetType = WidgetType.PROGRESS,
                         title = "Power Merchant (Aktif)",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel(
                                 title = "Ringkasan Penjualan",
                                 content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
@@ -219,10 +218,10 @@ class GetLayoutUseCase(
                                 subtitle = "Please maintain your shop score"
                         )
                 ),
-                ListUiModel(
+                ListWidgetUiModel(
                         widgetType = WidgetType.LIST,
                         title = "Info Seller",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",

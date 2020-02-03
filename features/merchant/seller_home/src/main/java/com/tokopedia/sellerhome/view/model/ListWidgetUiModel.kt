@@ -2,10 +2,10 @@ package com.tokopedia.sellerhome.view.model
 
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 
-class ListUiModel(
+class ListWidgetUiModel(
         override val widgetType: String,
         override val title: String,
-        override val subTitle: String,
+        override val subtitle: String,
         override val tooltip: TooltipUiModel?,
         override val url: String,
         override val appLink: String,
