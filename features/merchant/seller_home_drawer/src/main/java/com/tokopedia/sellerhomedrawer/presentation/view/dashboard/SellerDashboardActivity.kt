@@ -12,13 +12,13 @@ import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhomedrawer.R
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
-import com.tokopedia.sellerhomedrawer.di.DaggerSellerHomeDashboardComponent
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
+import com.tokopedia.sellerhomedrawer.di.component.DaggerSellerHomeDashboardComponent
 import com.tokopedia.sellerhomedrawer.di.module.SellerHomeDashboardModule
-import com.tokopedia.sellerhomedrawer.drawer.BaseSellerReceiverDrawerActivity
-import com.tokopedia.sellerhomedrawer.firebase.SellerFirebaseRemoteAppUpdate
+import com.tokopedia.sellerhomedrawer.domain.firebase.SellerFirebaseRemoteAppUpdate
 import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract
+import com.tokopedia.sellerhomedrawer.presentation.view.drawer.BaseSellerReceiverDrawerActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_drawer_layout.*

@@ -2,7 +2,6 @@ package com.tokopedia.sellerhomedrawer.data.header
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.loyalty.common.PopUpNotif
 
 class SellerTokoPointDrawerData() : Parcelable {
 
@@ -10,7 +9,7 @@ class SellerTokoPointDrawerData() : Parcelable {
         offFlag = parcel.readInt()
         hasNotif = parcel.readInt()
         userTier = parcel.readParcelable(UserTier::class.java.classLoader)
-        popUpNotif = parcel.readParcelable(PopUpNotif::class.java.classLoader)
+        popUpNotif = parcel.readParcelable(SellerPopupNotif::class.java.classLoader)
         sumCoupon = parcel.readInt()
         sumCouponStr = parcel.readString()
         mainPageUrl = parcel.readString()
@@ -34,7 +33,7 @@ class SellerTokoPointDrawerData() : Parcelable {
     var offFlag: Int = 0
     var hasNotif: Int = 0
     var userTier: UserTier? = null
-    var popUpNotif: PopUpNotif? = null
+    var popUpNotif: SellerPopupNotif? = null
     var mainPageUrl: String? = null
     var mainPageTitle: String? = null
     var sumCoupon: Int = 0

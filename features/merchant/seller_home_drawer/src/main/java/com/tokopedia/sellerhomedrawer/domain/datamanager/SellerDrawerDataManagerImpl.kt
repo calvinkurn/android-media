@@ -39,11 +39,6 @@ class SellerDrawerDataManagerImpl(private val context: Context,
         sellerTokoCashUseCase.unsubscribe()
     }
 
-    override fun getUserAttributes(userSession: UserSession) {
-        //TODO: Remove this, as this only refer to customer app
-
-    }
-
     override fun getSellerUserAttributes(userSession: UserSession) {
 
         val query = GraphqlHelper.loadRawString(viewListener.getActivity().resources, R.raw.sah_seller_drawer_data_query)

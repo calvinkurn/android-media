@@ -15,13 +15,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.core.ManageGeneral
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.analytics.*
-import com.tokopedia.sellerhomedrawer.constant.SellerBaseUrl
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
+import com.tokopedia.sellerhomedrawer.data.constant.SellerBaseUrl
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.presentation.listener.*
@@ -82,7 +81,6 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(SellerDashboardActivity.createInstance(context))
                 }
                 SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND -> {
-                    //TODO : Check why the drawer item is not showing
                     if (context.application is AbstractionRouter)
                         sendClickHamburgerMenuEvent(drawerItem.label)
                     eventClickGoldMerchantViaDrawer()
@@ -151,7 +149,6 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(SellerSimpleWebViewActivity.createIntent(context, DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA))
                 }
                 SellerHomeState.DrawerPosition.DRAFT_PRODUCT -> {
-                    //TODO : Check the applink
                     eventDrawerClick(EventLabel.DRAFT_PRODUCT)
                     RouteManager.route(context, ApplinkConst.PRODUCT_DRAFT)
                 }
@@ -185,13 +182,12 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(intent)
                 }
                 SellerHomeState.DrawerPosition.SETTINGS -> {
-                    //TODO: Change ManageGeneral to abstraction
-                    val settingsIntent = Intent(context, ManageGeneral::class.java)
-                    val settingsCanonicalName = ManageGeneral::class.java.canonicalName
+                    val manageGeneralIntent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.MANAGE_GENERAL)
+                    val settingsCanonicalName = manageGeneralIntent.component?.className
                     eventDrawerClick(EventLabel.SETTING)
                     if (settingsCanonicalName != null)
                         SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, settingsCanonicalName, EventLabel.SETTING)
-                    context.startActivity(settingsIntent)
+                    context.startActivity(manageGeneralIntent)
                 }
                 SellerHomeState.DrawerPosition.CONTACT_US -> {
                     val contactUsIntent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE)

@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomedrawer.di.module
 
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeParamConstant
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.sellerhomedrawer.di.SellerHomeDashboardScope
 import com.tokopedia.sellerhomedrawer.domain.usecase.FlashSaleGetSellerStatusUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetSellerHomeUserAttributesUseCase
@@ -28,5 +28,20 @@ class SellerHomeDashboardUseCaseModule {
     @Provides
     fun provideGetSellerHomeUserAttributesUseCase(graphqlUseCase: GraphqlUseCase, @Named(SellerHomeParamConstant.SELLER_DRAWER_DATA) rawQuery: String) :
             GetSellerHomeUserAttributesUseCase = GetSellerHomeUserAttributesUseCase(graphqlUseCase, rawQuery)
+//
+//    @Provides
+//    fun provideGetChatNotificationUseCase(@Named("") query: String,
+//                                          graphqlUseCase: GraphqlUseCase): GetChatNotificationUseCase =
+//            GetChatNotificationUseCase(query, graphqlUseCase)
+//
+//    @Provides
+//    fun provideNewNotificationUseCase() : NewNotificationUseCase {
+//
+//    }
+//
+//    @Provides
+//    fun provideNotificationUseCase() : NotificationUseCase {
+//
+//    }
 
 }

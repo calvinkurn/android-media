@@ -2,8 +2,6 @@ package com.tokopedia.sellerhomedrawer.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.gm.common.data.source.cloud.model.OfficialStore
-import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchant
 
 data class GoldGetPmOsStatus(
         @SerializedName("goldGetPMOSStatus")
@@ -37,6 +35,39 @@ data class ShopStatusHeader(
         @SerializedName("error_code")
         @Expose
         val errorCode : String = ""
+)
+
+data class OfficialStore(
+        @SerializedName("error")
+        @Expose
+        val error: String = "",
+        @SerializedName("status")
+        @Expose
+        val status: String = ""
+)
+
+data class PowerMerchant(
+        @SerializedName("auto_extend")
+        @Expose
+        val autoExtend: AutoExtend = AutoExtend(),
+        @SerializedName("expired_time")
+        @Expose
+        val expiredTime: String = "",
+        @SerializedName("shop_popup")
+        @Expose
+        val shopPopup: Boolean = false,
+        @SerializedName("status")
+        @Expose
+        val status: String = ""
+)
+
+data class AutoExtend(
+        @SerializedName("status")
+        @Expose
+        val status: String = "",
+        @SerializedName("tkpd_product_id")
+        @Expose
+        val tkpdProductId: Int = 0
 )
 
 data class ShopStatusModel(

@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.core.drawer2.data.pojo.topcash.Action
 
 
 class SellerTokoCashData(): Parcelable {

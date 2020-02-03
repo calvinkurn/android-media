@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.sellerhomedrawer.R
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 
 class SellerDrawerAdapter(val context: Context,
@@ -39,11 +39,13 @@ class SellerDrawerAdapter(val context: Context,
         var flashSaleIndexPosition = -1
         if (isFlashSaleVisible) {
             visitables.forEachIndexed{ index, visitable ->
-                if ((visitable as SellerDrawerItem).id == SellerHomeState.DrawerPosition.SELLER_TOP_ADS &&
-                        (visitables.get(index + 1) as SellerDrawerItem).id != SellerHomeState.DrawerPosition.SELLER_FLASH_SALE) {
-                    flashSaleIndexPosition = index + 1
+                if (visitable is SellerDrawerItem) {
+                    if (visitable.id == SellerHomeState.DrawerPosition.SELLER_TOP_ADS &&
+                            (visitables.get(index + 1) as SellerDrawerItem).id != SellerHomeState.DrawerPosition.SELLER_FLASH_SALE) {
+                        flashSaleIndexPosition = index + 1
+                    }
+                    return@forEachIndexed
                 }
-                return@forEachIndexed
             }
         }
         if (flashSaleIndexPosition >= 0) {
