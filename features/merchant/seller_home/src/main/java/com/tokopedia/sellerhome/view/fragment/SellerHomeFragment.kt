@@ -9,23 +9,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.library.utils.CommonUtils
-import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeWidgetListener
-import com.tokopedia.sellerhome.SellerHomeWidgetListener
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.util.toJson
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.CardViewHolder
 import com.tokopedia.sellerhome.view.viewholder.LineGraphViewHolder
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -124,7 +120,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this, this)
+        return SellerHomeAdapterTypeFactory(this, this, this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
