@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel
-import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase
-import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase
+import com.tokopedia.sellerhomedrawer.data.drawernotification.NotificationModel
+import com.tokopedia.sellerhomedrawer.di.component.DaggerServiceComponent
+import com.tokopedia.sellerhomedrawer.di.module.BaseModule
+import com.tokopedia.sellerhomedrawer.domain.usecase.NewNotificationUseCase
+import com.tokopedia.sellerhomedrawer.domain.usecase.NotificationUseCase
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -43,13 +45,17 @@ class SellerDrawerGetNotificationService : JobIntentService() {
     }
 
     private fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val component = DaggerServiceComponent
+                .builder()
+                .baseModule(BaseModule(baseContext))
+                .build()
+        component.inject(this)
     }
 
     override fun onHandleWork(intent: Intent) {
         val isSeller = intent.getBooleanExtra(KEY_IS_SELLER, false)
         val isRefresh = intent.getBooleanExtra(KEY_IS_REFRESH, false)
-        newNotificationUseCase.setRefresh(isRefresh)
+        newNotificationUseCase.isRefresh = isRefresh
         newNotificationUseCase.execute(NotificationUseCase.getRequestParam(isSeller), object : Subscriber<NotificationModel>() {
             override fun onCompleted() {
 

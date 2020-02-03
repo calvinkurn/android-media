@@ -14,7 +14,7 @@ import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
 import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
-import com.tokopedia.sellerhomedrawer.di.DaggerSellerHomeDashboardComponent
+import com.tokopedia.sellerhomedrawer.di.component.DaggerSellerHomeDashboardComponent
 import com.tokopedia.sellerhomedrawer.di.module.SellerHomeDashboardModule
 import com.tokopedia.sellerhomedrawer.domain.firebase.SellerFirebaseRemoteAppUpdate
 import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract

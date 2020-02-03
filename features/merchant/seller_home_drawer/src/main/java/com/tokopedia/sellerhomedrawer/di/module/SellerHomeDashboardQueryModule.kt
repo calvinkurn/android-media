@@ -24,4 +24,16 @@ class SellerHomeDashboardQueryModule {
     fun provideGetSellerDrawerDataQuery(context: Context) : String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.sah_seller_drawer_data_query)
     }
+
+    @Provides
+    @Named(SellerHomeParamConstant.GET_CHAT_NOTIFICATION_QUERY)
+    fun provideGetChatNotificationQuery(@Named("application") context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.sah_query_get_chat_notification)
+    }
+
+    @Provides
+    @Named(SellerHomeParamConstant.GET_INFO_PENJUAL_NOTIFICATION_QUERY)
+    fun provideGetInfoPenjualNotificationQuery(@Named("application") context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.sah_query_notification_center_total_unread)
+    }
 }

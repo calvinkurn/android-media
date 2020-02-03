@@ -81,7 +81,6 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(SellerDashboardActivity.createInstance(context))
                 }
                 SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND -> {
-                    //TODO : Check why the drawer item is not showing
                     if (context.application is AbstractionRouter)
                         sendClickHamburgerMenuEvent(drawerItem.label)
                     eventClickGoldMerchantViaDrawer()
@@ -150,7 +149,6 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(SellerSimpleWebViewActivity.createIntent(context, DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA))
                 }
                 SellerHomeState.DrawerPosition.DRAFT_PRODUCT -> {
-                    //TODO : Check the applink
                     eventDrawerClick(EventLabel.DRAFT_PRODUCT)
                     RouteManager.route(context, ApplinkConst.PRODUCT_DRAFT)
                 }

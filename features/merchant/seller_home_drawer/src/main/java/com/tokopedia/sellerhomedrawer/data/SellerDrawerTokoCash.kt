@@ -2,9 +2,6 @@ package com.tokopedia.sellerhomedrawer.data
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerTokoCashAction
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerWalletAction
 
@@ -25,9 +22,9 @@ class SellerDrawerTokoCash(): Parcelable {
     
     protected constructor(parcel: Parcel): this() {
 
-        this.drawerTokoCashAction = parcel.readParcelable(DrawerTokoCashAction::class.java.classLoader)
-        this.homeHeaderWalletAction = parcel.readParcelable(HomeHeaderWalletAction::class.java.classLoader)
-        this.drawerWalletAction = parcel.readParcelable(DrawerWalletAction::class.java.classLoader)
+        this.drawerTokoCashAction = parcel.readParcelable(SellerDrawerTokoCashAction::class.java.classLoader)
+        this.homeHeaderWalletAction = parcel.readParcelable(SellerHomeHeaderWalletAction::class.java.classLoader)
+        this.drawerWalletAction = parcel.readParcelable(SellerDrawerWalletAction::class.java.classLoader)
     }
     
     

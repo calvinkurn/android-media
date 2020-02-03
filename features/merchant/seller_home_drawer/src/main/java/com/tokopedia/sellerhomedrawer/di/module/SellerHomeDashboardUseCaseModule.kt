@@ -28,5 +28,20 @@ class SellerHomeDashboardUseCaseModule {
     @Provides
     fun provideGetSellerHomeUserAttributesUseCase(graphqlUseCase: GraphqlUseCase, @Named(SellerHomeParamConstant.SELLER_DRAWER_DATA) rawQuery: String) :
             GetSellerHomeUserAttributesUseCase = GetSellerHomeUserAttributesUseCase(graphqlUseCase, rawQuery)
+//
+//    @Provides
+//    fun provideGetChatNotificationUseCase(@Named("") query: String,
+//                                          graphqlUseCase: GraphqlUseCase): GetChatNotificationUseCase =
+//            GetChatNotificationUseCase(query, graphqlUseCase)
+//
+//    @Provides
+//    fun provideNewNotificationUseCase() : NewNotificationUseCase {
+//
+//    }
+//
+//    @Provides
+//    fun provideNotificationUseCase() : NotificationUseCase {
+//
+//    }
 
 }
