@@ -57,7 +57,7 @@ class ShopScorePMWidget : FrameLayout {
         }
 
         progress_bar_current.setProgressColor(colors)
-        tv_current_progress.setTextColor(ContextCompat.getColor(context, colors.last()))
+        tv_current_progress.setTextColor(colors.last())
     }
 
     enum class State {
