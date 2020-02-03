@@ -35,4 +35,7 @@ object ApplinkConstInternalTravel {
     @JvmField
     val CITY_PAGE_TRAVEL_HOMEPAGE = "$INTERNAL_TRAVEL_HOMEPAGE/home/city"
 
+    @JvmField
+    val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
+
 }
