@@ -5,7 +5,7 @@ object MediaUploaderQuery {
     private const val paramSourceId = "\$source"
 
     var dataPolicyQuery = """
-        dataPolicyQuery uploader(source: String){
+        query dataPolicyQuery($paramSourceId: String){
           uploadpedia_policy(source: $paramSourceId){
             source_policy{
               host
