@@ -1176,11 +1176,8 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventEnhanceImpressionPlayBanner(PlayCardViewModel playCardViewModel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(playCardViewModel.getEnhanceImpressionPlayBanner());
-        }
+    public static void eventEnhanceImpressionPlayBanner(TrackingQueue trackingQueue, PlayCardViewModel playCardViewModel) {
+        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner());
     }
 
     public static void eventClickPlayBanner(PlayCardViewModel playCardViewModel) {
@@ -1246,14 +1243,14 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickProductChannelMix(Context context,
+    public static void eventClickProductChannelMix(String type,
                                                    DynamicHomeChannel.Channels bannerChannel,
                                                    boolean isFreeOngkir,
                                                    int gridPosition) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir)
+                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir, type)
             );
         }
     }

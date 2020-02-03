@@ -1,6 +1,7 @@
 package com.tokopedia.play.data.mapper
 
 import com.google.gson.Gson
+import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.websocket.WebSocketResponse
@@ -9,7 +10,10 @@ import com.tokopedia.websocket.WebSocketResponse
  * Created by mzennis on 2019-12-10.
  */
 
-class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
+class PlaySocketMapper(
+        private val webSocketResponse: WebSocketResponse,
+        private val amountStringStepArray: Array<String>
+) {
 
     private val gson = Gson()
 
@@ -27,7 +31,6 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
                 return mapToIncomingChat()
             }
             PlaySocketType.PinnedMessage.value -> {
-                //TODO("check if the default behaviour is really to be called twice (one for remove, one for new)")
                 return mapToPinnedMessage()
             }
             PlaySocketType.QuickReply.value -> {
@@ -52,7 +55,7 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
     private fun mapToTotalView(): TotalView {
         val totalView = gson.fromJson(webSocketResponse.jsonObject, TotalView::class.java)
         if (totalView.totalViewFormatted.isNullOrEmpty())
-            totalView.totalViewFormatted = totalView.totalView.toString()
+            totalView.totalViewFormatted = totalView.totalView.toAmountString(amountStringStepArray)
         return totalView
     }
 

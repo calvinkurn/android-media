@@ -105,7 +105,8 @@ class DynamicHomeChannel(
                             "id", grids[position].id,
                             "price", CurrencyFormatHelper.convertRupiahToInt(grids[position].price).toString(),
                             "list", "/ - p1 - lego product - " + header.name,
-                            "position", (position + 1).toString())
+                            "position", (position + 1).toString()),
+                            "dimension84", id
             )
             )
             ),
@@ -401,7 +402,7 @@ class DynamicHomeChannel(
             )
         }
 
-        fun getEnhanceClickProductChannelMix(gridPosition: Int, isFreeOngkir: Boolean): Map<String, Any> {
+        fun getEnhanceClickProductChannelMix(gridPosition: Int, isFreeOngkir: Boolean, type: String): Map<String, Any> {
             return DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "homepage",
@@ -411,7 +412,7 @@ class DynamicHomeChannel(
                     "ecommerce", DataLayer.mapOf(
                     "currencyCode", "IDR",
                     "click", DataLayer.mapOf(
-                    "actionField", DataLayer.mapOf("list", "/ - p1 - dynamic channel mix - product - " + header.name),
+                    "actionField", DataLayer.mapOf("list", "/ - p1 - dynamic channel mix - product - " + header.name + " - " + type),
                     "products", DataLayer.listOf(
                     DataLayer.mapOf(
                             "name", grids[gridPosition].name,
@@ -519,6 +520,7 @@ class DynamicHomeChannel(
             const val LAYOUT_6_IMAGE: String = "6_image"
             const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
+            const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_BU_WIDGET: String = "bu_widget"
             const val LAYOUT_TOPADS: String = "topads"

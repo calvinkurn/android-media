@@ -28,7 +28,7 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ShopProductListViewModel @Inject constructor(private val userSession: UserSessionInterface,
-                                                   private val getShopInfoUseCase: GQLGetShopInfoUseCase,
+                                                   private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
                                                    private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
                                                    private val getShopProductUseCase: GqlGetShopProductUseCase,
                                                    private val addWishListUseCase: AddWishListUseCase,
@@ -53,10 +53,10 @@ class ShopProductListViewModel @Inject constructor(private val userSession: User
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            getShopInfoUseCase.params = GQLGetShopInfoUseCase
+            gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase
                     .createParams(if (id == 0)listOf() else listOf(id), shopDomain)
-            getShopInfoUseCase.isFromCacheFirst = !isRefresh
-            val shopInfo = withContext(Dispatchers.IO){getShopInfoUseCase.executeOnBackground()}
+            gqlGetShopInfoUseCase.isFromCacheFirst = !isRefresh
+            val shopInfo = withContext(Dispatchers.IO){gqlGetShopInfoUseCase.executeOnBackground()}
             shopInfoResp.value = Success(shopInfo)
         }){
             shopInfoResp.value = Fail(it)

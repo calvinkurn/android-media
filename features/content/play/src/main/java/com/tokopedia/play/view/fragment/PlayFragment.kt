@@ -26,6 +26,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
@@ -37,7 +38,6 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val MOCK_CHANNEL_ID = "1953"
 
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
 
@@ -57,7 +57,6 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    // TODO available channelId: 1543 > VOD, 1591, 1387
     private var channelId = ""
 
     @Inject
@@ -92,7 +91,7 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: MOCK_CHANNEL_ID
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
         PlayAnalytics.sendScreen(channelId)
     }
 
@@ -144,6 +143,12 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onPause() {
         unregisterKeyboardListener(requireView())
         super.onPause()
+    }
+
+    fun onNewChannelId(channelId: String?) {
+        if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
+            (activity as PlayNewChannelInteractor).onNewChannel(channelId)
+        }
     }
 
     private fun initView(view: View) {
@@ -295,7 +300,7 @@ class PlayFragment : BaseDaggerFragment() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+            imm?.hideSoftInputFromWindow(v.windowToken, 0)
         }
     }
 

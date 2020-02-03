@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.fragment.app.FragmentManager
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -905,5 +906,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (url.isEmpty()) return
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
+    }
+
+    override fun getSupportChildFragmentManager(): FragmentManager {
+        return childFragmentManager
     }
 }

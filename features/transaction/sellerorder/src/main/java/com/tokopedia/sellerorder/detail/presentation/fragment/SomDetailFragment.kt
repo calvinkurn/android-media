@@ -24,8 +24,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.datepicker.DatePickerUnify
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
@@ -87,6 +89,7 @@ import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfir
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
+import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
@@ -103,6 +106,8 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.webview.KEY_TITLE
+import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
@@ -125,8 +130,28 @@ import kotlin.collections.HashMap
  */
 class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBottomSheetCourierProblemsAdapter.ActionListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkEdit: CoachMarkItem by lazy {
+        CoachMarkItem(btn_secondary, getString(R.string.coachmark_edit), getString(R.string.coachmark_edit_info))
+    }
+
+    private val coachMarkAccept: CoachMarkItem by lazy {
+        CoachMarkItem(btn_primary, getString(R.string.coachmark_terima_pesanan), getString(R.string.coachmark_terima_pesanan_info))
+    }
+
+    private val coachMarkChat: CoachMarkItem by lazy {
+        CoachMarkItem(view?.rootView?.findViewById(R.id.som_action_chat),
+                getString(R.string.coachmark_chat),
+                getString(R.string.coachmark_chat_info)
+        )
+    }
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
@@ -147,11 +172,14 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private lateinit var reasonCourierProblemText: String
     private val tagConfirm = "tag_confirm"
 
+    private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
+
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
     companion object {
+        private val TAG_COACHMARK_DETAIL = "coachmark"
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
@@ -203,10 +231,25 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.chat_menu, menu)
+    }
+
+    override fun onAddedCoachMarkHeader(coachMarkItemHeader: CoachMarkItem) {
+        coachMarkItems.add(coachMarkChat)
+        coachMarkItems.add(coachMarkItemHeader)
+    }
+
+    override fun onAddedCoachMarkProducts(coachMarkItemProduct: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemProduct)
+    }
+
+    override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemShipping)
+        addedCoachMark()
     }
 
     private fun prepareLayout() {
@@ -309,6 +352,22 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         somDetailAdapter.notifyDataSetChanged()
+    }
+
+    private fun addedCoachMark(){
+        if(detailResponse.button.isNotEmpty()){
+            coachMarkItems.add(coachMarkEdit)
+            coachMarkItems.add(coachMarkAccept)
+            showCoachMark()
+        } else {
+            showCoachMark()
+        }
+    }
+
+    private fun showCoachMark(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK_DETAIL)){
+            coachMark.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
+        }
     }
 
     private fun renderHeader() {
@@ -477,7 +536,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 dialogView.label_confirmation_msg_3?.text = msg3
 
                 dialogView.btn_batal?.setOnClickListener { dialogUnify.dismiss() }
-                dialogView.btn_batal?.btn_terima?.setOnClickListener {
+                dialogView.btn_terima?.setOnClickListener {
                     val mapParam = buttonResp.param.convertStrObjToHashMap()
                     if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
                         somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
@@ -824,9 +883,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         startActivity(intent)
     }
 
-    override fun onSeeInvoice(invoiceUrl: String) {
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, invoiceUrl))
-        SomAnalytics.eventClickViewInvoice()
+    override fun onSeeInvoice(url: String) {
+        Intent(activity, SomSeeInvoiceActivity::class.java).apply {
+            putExtra(KEY_URL, url)
+            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
+            startActivity(this)
+        }
     }
 
     override fun onCopiedInvoice(invoice: String, str: String) {

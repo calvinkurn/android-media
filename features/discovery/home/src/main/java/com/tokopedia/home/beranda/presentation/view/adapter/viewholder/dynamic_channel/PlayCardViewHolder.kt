@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -8,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
@@ -27,6 +28,7 @@ class PlayCardViewHolder(
         val listener: HomeCategoryListener
 ): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener, CoroutineScope {
 
+    private val frameLayout = view.findViewById<FrameLayout>(R.id.play_frame_layout)
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val play = view.findViewById<ImageView>(R.id.play)
     private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
@@ -59,11 +61,12 @@ class PlayCardViewHolder(
         get() = masterJob + Dispatchers.IO
 
     override fun bind(element: PlayCardViewModel) {
+        container.hide()
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
         playCardViewModel = element
-        if(playCardViewModel != null) {
+        if(playCardViewModel != null && element?.playCardHome != null) {
             if (container.visibility == View.GONE) container.show()
             initView(playCardViewModel!!)
             playCardViewModel!!.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
@@ -76,8 +79,8 @@ class PlayCardViewHolder(
             title.setValue(model.channel.header.name)
             description.setValue("")
 
-            thumbnailView.loadImageWithoutPlaceholder(playChannel.coverUrl, 350, 150, true)
-
+            thumbnailView.show()
+            thumbnailView.loadImage(playChannel.coverUrl, 350, 150, true)
 
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
@@ -101,7 +104,7 @@ class PlayCardViewHolder(
 
     private fun handlingTracker(model: PlayCardViewModel){
         container.addOnImpressionListener(model){
-            HomePageTracking.eventEnhanceImpressionPlayBanner(model)
+            HomePageTracking.eventEnhanceImpressionPlayBanner(listener.trackingQueue, model)
         }
     }
 
@@ -111,12 +114,15 @@ class PlayCardViewHolder(
 
     private fun goToPlayChannel(model: PlayCardViewModel){
         if(isClickable){
-            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.playCardHome?.channelId) }
+            videoPlayer?.applyZoom()
+            listener.onOpenPlayActivity(frameLayout, model.playCardHome?.channelId)
             HomePageTracking.eventClickPlayBanner(model)
         }
     }
 
     fun resume(){
+        videoPlayer?.resetZoom()
+        thumbnailView.show()
         helper?.onActivityResume()
     }
 

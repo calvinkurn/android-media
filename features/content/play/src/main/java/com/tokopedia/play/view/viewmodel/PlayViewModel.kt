@@ -9,6 +9,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
@@ -21,7 +22,6 @@ import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.toCompactAmountString
 import com.tokopedia.play.view.type.KeyboardState
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
@@ -172,11 +172,9 @@ class PlayViewModel @Inject constructor(
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
-            /**
-             * If Live => start web socket
-             */
-            getTotalLikes(channel.contentId, channel.contentType)
-            getIsLike(channel.contentId, channel.contentType)
+
+            launch { getTotalLikes(channel.contentId, channel.contentType) }
+            launch { getIsLike(channel.contentId, channel.contentType) }
 
             // TODO("remove, for testing")
 //            channel.videoStream = VideoStream(
@@ -185,9 +183,13 @@ class PlayViewModel @Inject constructor(
 //                    true,
 //                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
+            /**
+             * If Live => start web socket
+             */
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayChannelType.Live.value, true))
                 startWebSocket(channelId, channel.gcToken, channel.settings)
+
             playVideoStream(channel)
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
@@ -200,7 +202,6 @@ class PlayViewModel @Inject constructor(
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = mapEvent(channel)
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
-
         }) {
             if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
@@ -239,25 +240,29 @@ class PlayViewModel @Inject constructor(
             if (finalTotalLike < 0) finalTotalLike = 0
             _observableTotalLikes.value = TotalLikeUiModel(
                     finalTotalLike,
-                    finalTotalLike.toCompactAmountString(amountStringStepArray)
+                    finalTotalLike.toAmountString(amountStringStepArray)
             )
         }
     }
 
     private suspend fun getTotalLikes(contentId: Int, contentType: Int) {
-        val totalLike = withContext(dispatchers.io) {
-            getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
-            getTotalLikeUseCase.executeOnBackground()
-        }
-        _observableTotalLikes.value = mapTotalLikes(totalLike)
+        try {
+            val totalLike = withContext(dispatchers.io) {
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
+                getTotalLikeUseCase.executeOnBackground()
+            }
+            _observableTotalLikes.value = mapTotalLikes(totalLike)
+        } catch (e: Exception) {}
     }
 
     private suspend fun getIsLike(contentId: Int, contentType: Int) {
-        val isLiked = withContext(dispatchers.io) {
-            getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
-            getIsLikeUseCase.executeOnBackground()
-        }
-        _observableIsLikeContent.value = isLiked
+        try {
+            val isLiked = withContext(dispatchers.io) {
+                getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
+                getIsLikeUseCase.executeOnBackground()
+            }
+            _observableIsLikeContent.value = isLiked
+        } catch (e: Exception) {}
     }
 
     private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
@@ -296,7 +301,7 @@ class PlayViewModel @Inject constructor(
         playSocket.connect(onMessageReceived = { response ->
             launch {
                 val result = withContext(dispatchers.io) {
-                    val socketMapper = PlaySocketMapper(response)
+                    val socketMapper = PlaySocketMapper(response, amountStringStepArray)
                     socketMapper.mapping()
                 }
                 when (result) {

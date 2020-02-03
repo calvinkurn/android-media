@@ -54,7 +54,7 @@ class GetSearchQueryUseCase @Inject constructor(
         val page = "\$$paramPage"
         """
             query chatSearch($keyword: String, $page: Int){
-              chatSearch(keyword:$keyword, page: $page, isSeller: 1, by:"name") {
+              chatSearch(keyword:$keyword, page: $page, isSeller: 0, by:"name") {
                 contact{
                   hasNext
                   data {

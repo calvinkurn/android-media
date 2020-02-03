@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constrainedWidth="true"
         app:layout_constrainedHeight="true"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,13 +22,15 @@
         android:id="@+id/indicator_banner_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/see_all_promo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewpager_banner"
-        tools:background="@android:color/holo_blue_bright"/>
+        app:layout_constraintTop_toTopOf="@+id/see_all_promo"
+        tools:background="@android:color/holo_blue_bright"
+        tools:layout_height="10dp"
+        tools:layout_width="200dp" />
 
 
     <TextView
@@ -37,9 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:clickable="true"
         android:focusable="true"
-        android:layout_marginTop="8dp"
         android:background="?attr/selectableItemBackground"
         android:focusableInTouchMode="false"
         android:text="@string/home_banner_see_all"

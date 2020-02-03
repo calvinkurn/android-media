@@ -25,6 +25,7 @@ import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSa
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -85,6 +86,7 @@ object DeeplinkMapper {
                         getRegisteredNavigationSalamUmrahOrderDetail(deeplink, context)
                     deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)

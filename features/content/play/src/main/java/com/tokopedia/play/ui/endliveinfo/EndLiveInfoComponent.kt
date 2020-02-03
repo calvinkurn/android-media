@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.endliveinfo
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
@@ -14,21 +15,21 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 14/01/20
  */
-class EndLiveInfoComponent(
+open class EndLiveInfoComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<EndLiveInfoInteractionEvent>, CoroutineScope by coroutineScope, EndLiveInfoView.Listener {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
-        uiView.hide()
-
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event is PlayRoomEvent.Freeze) {
                                 uiView.setInfo(
                                         title = it.event.title,
@@ -61,6 +62,6 @@ class EndLiveInfoComponent(
         }
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             EndLiveInfoView(container, this)
 }

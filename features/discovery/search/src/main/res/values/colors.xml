@@ -18,6 +18,8 @@
     <color name="shop_status_background">#ae31353b</color>
     <color name="shop_status_text_background">#e131353b</color>
     <color name="shop_status_text_color">#f5ffffff</color>
+    <color name="shop_empty_search_title_color">#f531353b</color>
+    <color name="shop_empty_search_recommendation_title_color">#f531353b</color>
     <color name="shadow">#AD31353B</color>
     <color name="grey_400">#bdbdbd</color>
 
@@ -26,7 +28,11 @@
     <color name="free_ongkir_promo_show_case_background">#ae31353b</color>
     <color name="free_ongkir_promo_show_case_title_color">#f531353b</color>
 
+    <color name="search_result_empty_divider_color">#f3f4f5</color>
+
     <color name="cart_count_color">#ef144a</color>
     <color name="search_text_view_color">#F531353B</color>
 
+    <color name="profile_empty_search_title_color">#f531353b</color>
+    <color name="profile_empty_search_recommendation_title_color">#f531353b</color>
 </resources>

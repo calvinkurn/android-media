@@ -6,7 +6,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledCartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
 

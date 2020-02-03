@@ -42,21 +42,33 @@ class PinnedView(
     }
 
     fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
-        val spannableString = SpannableString("${pinnedMessage.partnerName} ${pinnedMessage.title}")
-        spannableString.setSpan(
-                ForegroundColorSpan(
-                        MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Green_G300)
-                ),
-                spannableString.indexOf(pinnedMessage.partnerName),
-                pinnedMessage.partnerName.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        val partnerName = pinnedMessage.partnerName
+        val spannableString = SpannableString(
+                buildString {
+                    if (partnerName.isNotEmpty()) {
+                        append(pinnedMessage.partnerName)
+                        append(' ')
+                    }
+
+                    append(pinnedMessage.title)
+                }
         )
+        if (partnerName.isNotEmpty()) {
+            spannableString.setSpan(
+                    ForegroundColorSpan(
+                            MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Green_G300)
+                    ),
+                    spannableString.indexOf(pinnedMessage.partnerName),
+                    pinnedMessage.partnerName.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
         tvPinnedMessage.text = spannableString
 
         if (!pinnedMessage.applink.isNullOrEmpty()) {
             tvPinnedAction.visible()
             tvPinnedAction.setOnClickListener {
-                listener.onPinnedActionClicked(this, pinnedMessage.applink, tvPinnedMessage.text.toString())
+                listener.onPinnedActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
             }
         } else tvPinnedAction.gone()
     }

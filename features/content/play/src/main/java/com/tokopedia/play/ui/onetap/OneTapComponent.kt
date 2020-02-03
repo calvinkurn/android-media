@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.onetap
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -13,19 +14,21 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 20/12/19
  */
-class OneTapComponent(
+open class OneTapComponent(
         container: ViewGroup,
         bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            ScreenStateEvent.Init -> uiView.show()
                             ScreenStateEvent.ShowOneTapOnboarding -> uiView.showAnimated()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
@@ -41,6 +44,6 @@ class OneTapComponent(
         return emptyFlow()
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             OneTapView(container)
 }

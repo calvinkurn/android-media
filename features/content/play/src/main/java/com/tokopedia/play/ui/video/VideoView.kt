@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.custom.RoundedFrameLayout
+import com.tokopedia.unifycomponents.dpToPx
 
 /**
  * Created by jegul on 02/12/19
@@ -21,6 +22,8 @@ class VideoView(container: ViewGroup) : UIView(container) {
 
     private val rflVideoWrapper = view as RoundedFrameLayout
     private val pvVideo = view.findViewById<VideoPlayCustom>(R.id.pv_video)
+
+    private val cornerRadius = 16f.dpToPx()
 
     override val containerId: Int = view.id
 
@@ -41,8 +44,8 @@ class VideoView(container: ViewGroup) : UIView(container) {
         pvVideo.setPlayer(exoPlayer)
     }
 
-    fun setCornerRadius(cornerRadius: Float) {
-        rflVideoWrapper.setCornerRadius(cornerRadius)
+    fun showCornerRadius(shouldShow: Boolean) {
+        rflVideoWrapper.setCornerRadius(if (shouldShow) cornerRadius else 0f)
         rflVideoWrapper.invalidate()
         rflVideoWrapper.requestLayout()
     }

@@ -164,6 +164,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
              * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
              */
             DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
 
             /**

@@ -2,4 +2,5 @@
 <resources>
     <item name="thumbImg" type="id"/>
     <item name="exoProgressBar" type="id"/>
+    <item name="home_play_texture" type="id"/>
 </resources>

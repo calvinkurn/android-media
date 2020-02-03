@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.transition.Explode;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +28,7 @@ import androidx.annotation.RestrictTo;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,6 +52,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.PlayChannel;
@@ -112,6 +113,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -120,11 +123,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
@@ -204,6 +209,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
+    private Map<Integer,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -234,8 +240,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().getWindow().setEnterTransition(new Explode());
-        getActivity().getWindow().setExitTransition(new Explode());
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
@@ -382,7 +386,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void evaluateFloatingTextButtonOnStateChanged() {
-        int position = layoutManager.findLastVisibleItemPosition();
+        int position = layoutManager.findMaxVisibleItemPosition();
         if (position == presenter.getRecommendationFeedSectionPosition()) {
             floatingTextButton.hide();
         } else {
@@ -484,9 +488,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
+        Weaver.Companion.executeWeaveCoRoutine(this::sendScreen,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
         sendScreen();
+        adapter.onResume();
         presenter.onResume();
-
         if (activityStateListener != null) {
             activityStateListener.onResume();
         }
@@ -495,7 +501,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPause() {
         super.onPause();
-
+        adapter.onPause();
         trackingQueue.sendAll();
         if (activityStateListener != null) {
             activityStateListener.onPause();
@@ -505,6 +511,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
+        adapter.onDestroy();
         presenter.onDestroy();
         presenter.detachView();
         homeRecyclerView.setAdapter(null);
@@ -707,7 +714,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build();
         adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<HomeVisitable>());
-        getLifecycle().addObserver(adapter);
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -906,6 +912,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //onrefresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
+        resetImpressionListener();
         layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
@@ -1242,15 +1249,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            sendScreen();
+            Weaver.Companion.executeWeaveCoRoutine(this::sendScreen,
+                    new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
         }
     }
 
-    private void sendScreen() {
+    @NotNull
+    private Boolean sendScreen() {
         if (getActivity() != null && System.currentTimeMillis() > lastSendScreenTimeMillis + SEND_SCREEN_MIN_INTERVAL_MILLIS) {
             lastSendScreenTimeMillis = System.currentTimeMillis();
             HomePageTracking.sendScreen(getActivity(), getScreenName(), userSession.isLoggedIn());
         }
+        return true;
     }
 
     @Override
@@ -1537,11 +1547,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition) {
-//        adapter.setPlayData(playContentBanner, adapterPosition);
-    }
-
-    @Override
     public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
         this.tickerDetail = tickerDetail;
         updateStickyState();
@@ -1627,6 +1632,33 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void addRecyclerViewScrollImpressionListener(int adapterPosition, @NotNull Function0<Unit> onImpressionListener) {
+        if (!impressionScrollListeners.containsKey(adapterPosition)) {
+            RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
+                        onImpressionListener.invoke();
+                        homeRecyclerView.removeOnScrollListener(this);
+                    }
+                }
+            };
+            impressionScrollListeners.put(adapterPosition, impressionScrollListener);
+            homeRecyclerView.addOnScrollListener(impressionScrollListener);
+        }
+    }
+
+    private void resetImpressionListener() {
+        for (Map.Entry<Integer, RecyclerView.OnScrollListener> entry : impressionScrollListeners.entrySet()) {
+            if (homeRecyclerView != null) {
+                homeRecyclerView.removeOnScrollListener(entry.getValue());
+            }
+        }
+        impressionScrollListeners.clear();
+    }
+
+    @Override
     public void onTokopointCheckNowClicked(@NotNull String applink) {
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);
@@ -1634,9 +1666,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onOpenPlayActivity(@NotNull View videoPlayer, String channelId) {
+    public void onOpenPlayActivity(@NotNull View root, String channelId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), videoPlayer, ANIMATION_TRANSITION_NAME);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
+        );
         startActivity(intent, options.toBundle());
     }
 
@@ -1651,6 +1685,4 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
         Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener);
     }
-
-
 }

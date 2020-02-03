@@ -120,14 +120,23 @@ class SomFilterFragment : BaseDaggerFragment() {
     private fun showDatePicker(flag: String) {
         context?.let {  context ->
             val minDate = Calendar.getInstance()
-            minDate.set(Calendar.YEAR, 2010)
+            minDate.set(Calendar.YEAR, 2017)
             val maxDate = Calendar.getInstance()
             val isEndDateFilled = currentFilterParams?.endDate?.isNotEmpty()
             isEndDateFilled?.let { isNotEmpty ->
                 if (isNotEmpty && flag.equals(START_DATE, true)) {
                     val splitEndDate = currentFilterParams?.endDate?.split('/')
                     splitEndDate?.let {
-                        maxDate.set(it[2].toInt(), it[1].toInt(), it[0].toInt())
+                        maxDate.set(it[2].toInt(), it[1].toInt() - 1, it[0].toInt())
+                    }
+                }
+            }
+            val isStartDateFilled = currentFilterParams?.startDate?.isNotEmpty()
+            isStartDateFilled?.let { isNotEmpty ->
+                if (isNotEmpty && flag.equals(END_DATE, true)) {
+                    val splitStartDate = currentFilterParams?.startDate?.split('/')
+                    splitStartDate?.let {
+                        minDate.set(it[2].toInt(), it[1].toInt() - 1, it[0].toInt())
                     }
                 }
             }
@@ -154,8 +163,13 @@ class SomFilterFragment : BaseDaggerFragment() {
                     var dateStr = resultDate[0].toString()
                     if (dateStr.length == 1) dateStr = "0$dateStr"
 
-                    currentFilterParams?.startDate = "$dateStr/$monthStr/${resultDate[2]}"
-                    et_start_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                    if (flag.equals(START_DATE, true)) {
+                        currentFilterParams?.startDate = "$dateStr/$monthStr/${resultDate[2]}"
+                        et_start_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                    } else {
+                        currentFilterParams?.endDate = "$dateStr/$monthStr/${resultDate[2]}"
+                        et_end_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                    }
                     datePicker.dismiss()
                 }
                 if (flag.equals(START_DATE, true)) {
@@ -326,6 +340,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     fun onResetClicked() {
         resetFilters()
         renderCourierList()
+        renderOrderType()
         SomAnalytics.eventClickResetButtonOnFilterPage()
     }
 
