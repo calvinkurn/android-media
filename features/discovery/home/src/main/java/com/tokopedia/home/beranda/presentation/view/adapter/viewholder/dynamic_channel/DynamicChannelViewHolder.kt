@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
-
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import android.text.TextUtils
