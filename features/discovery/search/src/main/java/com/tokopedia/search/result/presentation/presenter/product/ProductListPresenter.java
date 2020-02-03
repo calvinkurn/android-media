@@ -111,6 +111,7 @@ final class ProductListPresenter
     private boolean isTickerHasDismissed = false;
     private int startFrom = 0;
     private int totalData = 0;
+    private boolean hasLoadData = false;
 
     @Override
     public void initInjector(ProductListSectionContract.View view) {
@@ -142,11 +143,6 @@ final class ProductListPresenter
 
     private Map<String, String> getAdditionalParamsMap() {
         return UrlParamUtils.getParamMap(additionalParams);
-    }
-
-    @Override
-    public void setIsFirstTimeLoad(boolean isFirstTimeLoad) {
-        this.isFirstTimeLoad = isFirstTimeLoad;
     }
 
     @Override
@@ -182,6 +178,34 @@ final class ProductListPresenter
     @Override
     public int getStartFrom() {
         return this.startFrom;
+    }
+
+    @Override
+    public void onViewCreated() {
+        boolean isFirstActiveTab = getView().isFirstActiveTab();
+        if (isFirstActiveTab && !hasLoadData) {
+            hasLoadData = true;
+            onViewFirstTimeLaunch();
+        }
+    }
+
+    private void onViewFirstTimeLaunch() {
+        isFirstTimeLoad = true;
+
+        getView().reloadData();
+    }
+
+    @Override
+    public void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded) {
+        if (isViewVisible) {
+            getView().setupSearchNavigation();
+            getView().trackScreenAuthenticated();
+
+            if (isViewAdded && !hasLoadData) {
+                hasLoadData = true;
+                onViewFirstTimeLaunch();
+            }
+        }
     }
 
     @Override
@@ -791,8 +815,10 @@ final class ProductListPresenter
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
             getViewToShowRecommendationItem();
+            getView().hideBottomNavigation();
         } else {
             getViewToShowProductList(searchProductModel, productViewModel);
+            getView().showBottomNavigation();
         }
 
         setTotalData(productViewModel.getTotalData());

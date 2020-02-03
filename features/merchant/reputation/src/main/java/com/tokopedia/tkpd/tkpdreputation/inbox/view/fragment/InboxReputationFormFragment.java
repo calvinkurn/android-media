@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -38,18 +37,14 @@ import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.SnackbarManager;
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -57,7 +52,9 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
@@ -70,6 +67,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageA
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -112,7 +112,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     ReviewTipsAdapter tipsAdapter;
     boolean isValidRating = false;
 
-    TkpdProgressDialog progressDialog;
+    ProgressDialog progressDialog;
     private ShareDialog shareDialog;
     private CallbackManager callbackManager;
     ArrayList<String> imageUrlOrPathList = new ArrayList<>();
@@ -121,7 +121,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     InboxReputationFormPresenter presenter;
 
     @Inject
-    SessionHandler sessionHandler;
+    UserSessionInterface userSession;
 
     @Inject
     ReputationTracking reviewTracker;
@@ -139,11 +139,11 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent();
         DaggerReputationComponent reputationComponent =
                 (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
-                        .appComponent(appComponent)
+                        .baseAppComponent(baseAppComponent)
                         .build();
         reputationComponent.inject(this);
     }
@@ -214,53 +214,47 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         adapter.setListener(new ImageUploadAdapter.ProductImageListener() {
             @Override
             public View.OnClickListener onUploadClicked(final int position) {
-                return new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        review.clearFocus();
-                        KeyboardHandler.DropKeyboard(getActivity(), review);
-                        presenter.setFormToCache(position, new SendReviewPass(
-                                getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
-                                String.valueOf(rating.getRating()),
-                                review.getText().toString(),
-                                adapter.getList(),
-                                adapter.getDeletedList(),
-                                shareFbSwitch.isChecked(),
-                                anomymousSwitch.isChecked()
-                        ));
+                return view -> {
+                    review.clearFocus();
+                    KeyboardHandler.DropKeyboard(getActivity(), review);
+                    presenter.setFormToCache(position, new SendReviewPass(
+                            getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                            String.valueOf(rating.getRating()),
+                            review.getText().toString(),
+                            adapter.getList(),
+                            adapter.getDeletedList(),
+                            shareFbSwitch.isChecked(),
+                            anomymousSwitch.isChecked()
+                    ));
 
-                        openImagePicker();
-                    }
+                    openImagePicker();
                 };
             }
 
             @Override
             public View.OnClickListener onImageClicked(final int position, final ImageUpload imageUpload) {
-                return new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        review.clearFocus();
-                        KeyboardHandler.DropKeyboard(getActivity(), review);
-                        presenter.setFormToCache(position, new SendReviewPass(
-                                getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
-                                String.valueOf(rating.getRating()),
-                                review.getText().toString(),
-                                adapter.getList(),
-                                adapter.getDeletedList(),
-                                shareFbSwitch.isChecked(),
-                                anomymousSwitch.isChecked()
-                        ));
-                        startActivityForResult(
-                                ImageUploadPreviewActivity.getUpdateCallingIntent(getActivity(),
-                                        position),
-                                ImageUploadHandler.CODE_UPLOAD_IMAGE);
-                    }
+                return view -> {
+                    review.clearFocus();
+                    KeyboardHandler.DropKeyboard(getActivity(), review);
+                    presenter.setFormToCache(position, new SendReviewPass(
+                            getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                            String.valueOf(rating.getRating()),
+                            review.getText().toString(),
+                            adapter.getList(),
+                            adapter.getDeletedList(),
+                            shareFbSwitch.isChecked(),
+                            anomymousSwitch.isChecked()
+                    ));
+                    startActivityForResult(
+                            ImageUploadPreviewActivity.getUpdateCallingIntent(getActivity(),
+                                    position),
+                            Constant.ImageUpload.CODE_UPLOAD_IMAGE);
                 };
             }
 
@@ -269,160 +263,133 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 LinearLayoutManager.HORIZONTAL, false));
         listImageUpload.setAdapter(adapter);
 
-        tipsAdapter = ReviewTipsAdapter.createInstance();
+        tipsAdapter = ReviewTipsAdapter.createInstance(getContext());
         reviewTips.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
         reviewTips.setAdapter(tipsAdapter);
 
-        uploadInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final BottomSheetDialog uploadInfoDialog = new BottomSheetDialog(getActivity());
-                uploadInfoDialog.setContentView(R.layout.upload_info_dialog);
-                Button closeDialog = (Button) uploadInfoDialog.findViewById(R.id.close_button);
-                closeDialog.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        uploadInfoDialog.dismiss();
-                    }
-                });
-                uploadInfoDialog.show();
-            }
+        uploadInfo.setOnClickListener(view -> {
+            final BottomSheetDialog uploadInfoDialog = new BottomSheetDialog(getActivity());
+            uploadInfoDialog.setContentView(R.layout.upload_info_dialog);
+            Button closeDialog = (Button) uploadInfoDialog.findViewById(R.id.close_button);
+            closeDialog.setOnClickListener(v -> uploadInfoDialog.dismiss());
+            uploadInfoDialog.show();
         });
 
-        rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                if (rating == 1.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
-                            .rating_title_1));
-                    isValidRating = true;
-                } else if (rating == 2.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
-                            .rating_title_2));
-                    isValidRating = true;
-                } else if (rating == 3.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
-                            .rating_title_3));
-                    isValidRating = true;
-                } else if (rating == 4.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
-                            .rating_title_4));
-                    isValidRating = true;
-                } else if (rating == 5.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
-                            .rating_title_5));
-                    isValidRating = true;
-                } else if (rating == 0.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
-                            .rating_title_0));
-                    isValidRating = false;
-                }
-
-                reviewTracker.reviewOnRatingChangedTracker(
-                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
-                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                        String.valueOf(rating),
-                        true,
-                        true
-                );
-
-                setButtonEnabled();
+        rating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+            if (rating == 1.0f) {
+                ratingText.setText(getContext().getString(R.string
+                        .rating_title_1));
+                isValidRating = true;
+            } else if (rating == 2.0f) {
+                ratingText.setText(getContext().getString(R.string
+                        .rating_title_2));
+                isValidRating = true;
+            } else if (rating == 3.0f) {
+                ratingText.setText(getContext().getString(R.string
+                        .rating_title_3));
+                isValidRating = true;
+            } else if (rating == 4.0f) {
+                ratingText.setText(getContext().getString(R.string
+                        .rating_title_4));
+                isValidRating = true;
+            } else if (rating == 5.0f) {
+                ratingText.setText(getContext().getString(R.string
+                        .rating_title_5));
+                isValidRating = true;
+            } else if (rating == 0.0f) {
+                ratingText.setText(getContext().getString(R.string
+                        .rating_title_0));
+                isValidRating = false;
             }
+
+            reviewTracker.reviewOnRatingChangedTracker(
+                    getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                    getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                    String.valueOf(rating),
+                    true,
+                    true
+            );
+
+            setButtonEnabled();
         });
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        sendButton.setOnClickListener(view -> {
 
-                reviewTracker.reviewOnSubmitTracker(
-                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+            reviewTracker.reviewOnSubmitTracker(
+                    getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                    getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                    String.valueOf(rating.getRating()),
+                    review.getText().toString().isEmpty(),
+                    String.valueOf(imageUrlOrPathList.size()),
+                    anomymousSwitch.isChecked(),
+                    true
+            );
+
+            if (getArguments() != null
+                    && getArguments().getBoolean(InboxReputationFormActivity.ARGS_IS_EDIT)) {
+
+                presenter.editReview(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
                         getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                        String.valueOf(rating.getRating()),
-                        review.getText().toString().isEmpty(),
-                        String.valueOf(imageUrlOrPathList.size()),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                        review.getText().toString(),
+                        rating.getRating(),
+                        adapter.getList(),
+                        adapter.getDeletedList(),
+                        shareFbSwitch.isChecked(),
                         anomymousSwitch.isChecked(),
-                        true
-                );
-
-                if (getArguments() != null
-                        && getArguments().getBoolean(InboxReputationFormActivity.ARGS_IS_EDIT)) {
-
-                    presenter.editReview(
-                            getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
-                            review.getText().toString(),
-                            rating.getRating(),
-                            adapter.getList(),
-                            adapter.getDeletedList(),
-                            shareFbSwitch.isChecked(),
-                            anomymousSwitch.isChecked(),
-                            getArguments().getString(InboxReputationFormActivity
-                                    .ARGS_PRODUCT_NAME),
-                            getArguments().getString(InboxReputationFormActivity
-                                    .ARGS_PRODUCT_AVATAR),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL));
-                } else {
-                    presenter.sendReview(
-                            getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
-                            review.getText().toString(),
-                            rating.getRating(),
-                            adapter.getList(),
-                            adapter.getDeletedList(),
-                            shareFbSwitch.isChecked(),
-                            anomymousSwitch.isChecked(),
-                            getArguments().getString(InboxReputationFormActivity
-                                    .ARGS_PRODUCT_NAME),
-                            getArguments().getString(InboxReputationFormActivity
-                                    .ARGS_PRODUCT_AVATAR),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL));
-                }
-            }
-        });
-
-        tipsHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setTips();
-            }
-        });
-
-        tipsArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setTips();
-            }
-        });
-
-        anomymousSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                reviewTracker.reviewOnAnonymousClickTracker(
-                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                        getArguments().getString(InboxReputationFormActivity
+                                .ARGS_PRODUCT_NAME),
+                        getArguments().getString(InboxReputationFormActivity
+                                .ARGS_PRODUCT_AVATAR),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_UTM_SOURCE));
+            } else {
+                presenter.sendReview(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
                         getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                        true
-                );
+                        getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                        review.getText().toString(),
+                        rating.getRating(),
+                        adapter.getList(),
+                        adapter.getDeletedList(),
+                        shareFbSwitch.isChecked(),
+                        anomymousSwitch.isChecked(),
+                        getArguments().getString(InboxReputationFormActivity
+                                .ARGS_PRODUCT_NAME),
+                        getArguments().getString(InboxReputationFormActivity
+                                .ARGS_PRODUCT_AVATAR),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_UTM_SOURCE));
             }
         });
+
+        tipsHeader.setOnClickListener(view -> setTips());
+
+        tipsArrow.setOnClickListener(view -> setTips());
+
+        anomymousSwitch.setOnCheckedChangeListener((compoundButton, b) -> reviewTracker.reviewOnAnonymousClickTracker(
+                getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                true
+        ));
 
 
         if (getArguments().getInt
                 (InboxReputationFormActivity.ARGS_PRODUCT_STATUS, -1) ==
                 GetInboxReputationDetailSubscriber.PRODUCT_IS_DELETED) {
             productName.setText(
-                    MainApplication.getAppContext().getString(R.string.product_is_deleted));
+                    getContext().getString(R.string.product_is_deleted));
 
             ImageHandler.loadImageWithIdWithoutPlaceholder(productImage, R.drawable.ic_product_deleted);
         } else if (getArguments().getInt
                 (InboxReputationFormActivity.ARGS_PRODUCT_STATUS, -1) ==
                 GetInboxReputationDetailSubscriber.PRODUCT_IS_BANNED) {
             productName.setText(
-                    MainApplication.getAppContext().getString(R.string.product_is_banned));
+                    getContext().getString(R.string.product_is_banned));
 
             ImageHandler.loadImageWithIdWithoutPlaceholder(productImage, R.drawable.ic_product_deleted);
         } else {
@@ -437,6 +404,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
         checkButtonShouldEnabled();
         setTips();
+        initProgressDialog();
     }
 
     private void checkButtonShouldEnabled() {
@@ -444,6 +412,15 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             sendButton.setEnabled(false);
         } else {
             sendButton.setEnabled(true);
+        }
+    }
+
+    private void initProgressDialog() {
+        if(getContext() != null) {
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setTitle("");
+            progressDialog.setMessage(getContext().getString(R.string.progress_dialog_loading));
+            progressDialog.setCancelable(false);
         }
     }
 
@@ -456,14 +433,14 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 ,new ImagePickerMultipleSelectionBuilder(
                 new ArrayList<>(),
                 null,
-                com.tokopedia.core2.R.string.empty_desc,
+                R.string.empty_desc,
                 MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);
     }
 
     private String getAnonymousName() {
-        String name = sessionHandler.getLoginName();
+        String name = userSession.getName();
         String first = name.substring(0, 1);
         String last = name.substring(name.length() - 1);
         return first + "***" + last;
@@ -521,12 +498,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null) {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        }
-
-        if (progressDialog != null)
-            progressDialog.showDialog();
+        if (!progressDialog.isShowing() && getContext() != null && progressDialog != null)
+            progressDialog.show();
     }
 
     @Override
@@ -546,7 +519,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoadingProgress() {
-        if (progressDialog != null)
+        if (progressDialog.isShowing() && getContext() != null && progressDialog != null)
             progressDialog.dismiss();
     }
 
@@ -662,22 +635,11 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         builder.setTitle(getString(R.string.title_skip_review));
         builder.setMessage(getString(R.string.dialog_skip_review_confirmation));
         builder.setPositiveButton(getString(R.string.action_skip),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        presenter.skipReview(
-                                getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
-                                getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID));
-                    }
-                });
-        builder.setNegativeButton(getString(R.string.title_cancel),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int param) {
-                        dialog.dismiss();
-                    }
-                });
+                (dialog, which) -> presenter.skipReview(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_SHOP_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID)));
+        builder.setNegativeButton(getString(R.string.title_cancel), (dialog, param) -> dialog.dismiss());
         Dialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
@@ -701,9 +663,9 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 );
 
                 startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
-                        imageUrlOrPathList), ImageUploadHandler.CODE_UPLOAD_IMAGE);
+                        imageUrlOrPathList), Constant.ImageUpload.CODE_UPLOAD_IMAGE);
             }
-        } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE) {
+        } else if (requestCode == Constant.ImageUpload.CODE_UPLOAD_IMAGE) {
             presenter.restoreFormFromCache();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -720,7 +682,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (presenter != null)
             outState.putString(ARGS_CAMERA_FILELOC, presenter.getFileLocFromCamera());

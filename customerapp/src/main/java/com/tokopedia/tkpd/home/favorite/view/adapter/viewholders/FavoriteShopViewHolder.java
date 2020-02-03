@@ -1,18 +1,22 @@
 package com.tokopedia.tkpd.home.favorite.view.adapter.viewholders;
 
 import android.content.Context;
-import android.content.Intent;
+
 import androidx.annotation.LayoutRes;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
@@ -80,7 +84,7 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
 
     void onShopLayoutClicked() {
         eventFavoriteShop();
-        Intent intent = ShopPageActivity.createIntent(context, favoriteShop.getShopId());
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShop.getShopId());
         context.startActivity(intent);
     }
 
