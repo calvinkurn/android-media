@@ -76,7 +76,7 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
         if (isVisible != sellerDrawerAdapter?.isFlashSaleVisible) {
             sellerDrawerAdapter?.isFlashSaleVisible = isVisible
             left_drawer.post {
-                sellerDrawerAdapter?.renderFlashSaleDrawer()
+//                sellerDrawerAdapter?.renderFlashSaleDrawer()
             }
         }
     }
