@@ -113,6 +113,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String  CLICK_SUBMIT_CANCELATION = "click submit cancelation";
     private static final String CLICK_VIEW_COMPLAIN ="click view complain";
     private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
+    private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
+
+    public static final String SIMILAR_PRODUCTS_ACTION_BUTTON_KEY = "see_similar_products";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
@@ -739,6 +742,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER, statusValue.getText().toString());
                 } else if (actionButton.getKey().contains("view_complaint")) {
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_VIEW_COMPLAIN, statusValue.getText().toString());
+                    RouteManager.route(getContext(), actionButton.getUri());
+                } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);

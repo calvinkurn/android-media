@@ -4,38 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_10"
-    android:layout_marginTop="@dimen/dp_10"
+    android:layout_marginBottom="1dp"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/dp_15">
+        android:padding="16dp">
+
         <TextView
             android:id="@+id/text_event_name"
+            style="@style/TextView.Title.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextView.Title.Bold"
-            tools:text="EventName"/>
+            tools:text="EventName" />
+
         <TextView
             android:id="@+id/text_event_category"
+            style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextView.Small"
-            tools:text="eventCategory"/>
+            tools:text="eventCategory" />
+
         <TextView
             android:id="@+id/text_data_excerpt"
+            style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextView.Micro.BlackDisabled"
-            tools:text="{ dadfa:sdfasdfas...."/>
+            tools:text="{ dadfa:sdfasdfas...." />
+
         <TextView
             android:id="@+id/text_timestamp"
+            style="@style/TextView.Micro.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextView.Micro.Bold"
             android:layout_marginTop="@dimen/dp_5"
-            tools:text="2018-01-01 01:01:01.000"/>
+            tools:text="2018-01-01 01:01:01.000" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

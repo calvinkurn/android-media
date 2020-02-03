@@ -815,8 +815,10 @@ final class ProductListPresenter
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
             getViewToShowRecommendationItem();
+            getView().hideBottomNavigation();
         } else {
             getViewToShowProductList(searchProductModel, productViewModel);
+            getView().showBottomNavigation();
         }
 
         setTotalData(productViewModel.getTotalData());
