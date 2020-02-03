@@ -138,8 +138,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
 
-        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
-
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
