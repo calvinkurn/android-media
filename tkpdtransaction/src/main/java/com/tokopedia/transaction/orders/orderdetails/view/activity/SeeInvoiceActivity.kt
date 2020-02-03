@@ -13,10 +13,12 @@ import android.view.MenuItem
 import android.webkit.WebView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.transaction.R
-import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent
+import com.tokopedia.transaction.orders.orderdetails.data.Invoice
 import com.tokopedia.transaction.orders.orderdetails.data.Status
+import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
 
@@ -83,9 +85,13 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity(){
 
     companion object {
         const val STATUS = "status"
-        fun newInstance(context: Context): Intent{
-            return Intent(context, SeeInvoiceActivity::class.java)
-        }
+        @JvmStatic
+        fun newInstance(context: Context, status: Status, invoice: Invoice): Intent =
+                Intent(context, SeeInvoiceActivity::class.java)
+                        .putExtra(STATUS, status.status())
+                        .putExtra(KEY_URL, invoice.invoiceUrl())
+                        .putExtra(KEY_TITLE, R.string.title_invoice)
+
     }
 
 }
