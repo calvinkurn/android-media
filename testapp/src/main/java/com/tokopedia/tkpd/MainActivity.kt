@@ -196,5 +196,4 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
 
     }
-
 }

@@ -115,7 +115,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                         HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
                                 DynamicLinkHelper.getActionLink(channel.header))
-                        onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.getHeader()))
+                        onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
                     }
                 } else {
                     seeAllButton.visibility = View.GONE

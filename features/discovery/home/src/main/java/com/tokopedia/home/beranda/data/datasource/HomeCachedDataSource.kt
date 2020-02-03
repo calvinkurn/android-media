@@ -12,7 +12,7 @@ class HomeCachedDataSource(
         private val homeDao: HomeDao) {
     private val timeout = TimeUnit.DAYS.toMillis(30)
 
-    suspend fun getCachedHomeData(): Flow<HomeData?> {
+    fun getCachedHomeData(): Flow<HomeData?> {
         return homeDao.getHomeData().map {
             if(SystemClock.uptimeMillis() - (it?.modificationDate?.time ?: SystemClock.uptimeMillis()) > timeout){
                 homeDao.deleteHomeData()
