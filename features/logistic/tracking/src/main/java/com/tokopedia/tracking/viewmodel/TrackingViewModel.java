@@ -38,7 +38,7 @@ public class TrackingViewModel {
 
     private String status;
 
-    private List<TrackingHistoryViewModel> historyList;
+    private List<TrackingHistoryUiModel> historyList;
 
     private List<AdditionalInfoUiModel> additionalInfoList;
 
@@ -138,11 +138,11 @@ public class TrackingViewModel {
         this.status = status;
     }
 
-    public List<TrackingHistoryViewModel> getHistoryList() {
+    public List<TrackingHistoryUiModel> getHistoryList() {
         return historyList;
     }
 
-    public void setHistoryList(List<TrackingHistoryViewModel> historyList) {
+    public void setHistoryList(List<TrackingHistoryUiModel> historyList) {
         this.historyList = historyList;
     }
 

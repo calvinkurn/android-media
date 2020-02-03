@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.utils.DateUtil;
-import com.tokopedia.tracking.viewmodel.TrackingHistoryViewModel;
+import com.tokopedia.tracking.viewmodel.TrackingHistoryUiModel;
 
 import java.util.List;
 
@@ -24,10 +24,10 @@ import java.util.List;
 
 public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder> {
 
-    private List<TrackingHistoryViewModel> trackingHistoryData;
+    private List<TrackingHistoryUiModel> trackingHistoryData;
     private DateUtil dateUtil;
 
-    public TrackingHistoryAdapter(List<TrackingHistoryViewModel> trackingHistoryData, DateUtil dateUtil) {
+    public TrackingHistoryAdapter(List<TrackingHistoryUiModel> trackingHistoryData, DateUtil dateUtil) {
         this.trackingHistoryData = trackingHistoryData;
         this.dateUtil = dateUtil;
     }

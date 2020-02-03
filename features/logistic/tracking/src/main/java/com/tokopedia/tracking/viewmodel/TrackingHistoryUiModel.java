@@ -4,7 +4,7 @@ package com.tokopedia.tracking.viewmodel;
  * Created by kris on 5/11/18. Tokopedia
  */
 
-public class TrackingHistoryViewModel {
+public class TrackingHistoryUiModel {
 
     private String time;
 
