@@ -37,7 +37,6 @@ import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubsc
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
-import com.tokopedia.iris.util.launchCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
