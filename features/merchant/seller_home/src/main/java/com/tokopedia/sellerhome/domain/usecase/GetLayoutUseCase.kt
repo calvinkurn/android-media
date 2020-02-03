@@ -175,15 +175,7 @@ class GetLayoutUseCase(
                         appLink = "",
                         dataKey = "shopScore",
                         ctaText = "",
-                        data = ProgressDataUiModel(
-                                barTitle = "Skor",
-                                valueTxt = "80jt",
-                                maxValueTxt = "100jt",
-                                value = 80,
-                                maxValue = 100,
-                                colorState = ShopScorePMWidget.State.GREEN,
-                                subtitle = "Please maintain your shop score"
-                        )
+                        data = null
                 ),
                 CarouselWidgetUiModel(
                         widgetType = WidgetType.CAROUSEL,
