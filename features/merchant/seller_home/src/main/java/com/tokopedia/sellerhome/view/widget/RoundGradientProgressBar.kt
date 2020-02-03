@@ -40,8 +40,8 @@ class RoundGradientProgressBar : RoundCornerProgressBar {
     }
 
     fun setProgressColor(progressColors: IntArray) {
-        this.progressColors = progressColors.map { ContextCompat.getColor(context, it) }.toIntArray()
-        super.setProgressColor(ContextCompat.getColor(context, progressColors.first()))
+        this.progressColors = progressColors
+        super.setProgressColor(progressColors.first())
     }
 }
 

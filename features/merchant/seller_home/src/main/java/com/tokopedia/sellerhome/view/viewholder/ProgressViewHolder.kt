@@ -27,13 +27,14 @@ class ProgressViewHolder(
 
     override fun bind(element: ProgressWidgetUiModel) {
         listener.getProgressData()
-        showLoadingState()
-        itemView.postDelayed({
-            showErrorState(element)
-        }, 5000)
-        itemView.postDelayed({
-            showSuccessState(element)
-        }, 10000)
+//        showLoadingState()
+//        itemView.postDelayed({
+//            showErrorState(element)
+//        }, 5000)
+//        itemView.postDelayed({
+//            showSuccessState(element)
+//        }, 10000)
+        showSuccessState(element)
     }
 
     private fun showLoadingState() {
