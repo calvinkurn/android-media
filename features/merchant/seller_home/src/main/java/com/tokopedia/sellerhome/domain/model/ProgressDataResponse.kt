@@ -41,6 +41,10 @@ data class ProgressDataModel(
         val state: String?,
 
         @Expose
+        @SerializedName("subtitle")
+        val subtitle: String?,
+
+        @Expose
         @SerializedName("errorMessage")
         val error: Boolean?,
 

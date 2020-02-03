@@ -50,6 +50,7 @@ object GraphqlQuery {
             "      value\n" +
             "      maxValue\n" +
             "      state\n" +
+            "      subtitle\n" +
             "      error\n" +
             "      errorMsg\n" +
             "    }\n" +

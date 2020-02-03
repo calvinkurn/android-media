@@ -50,7 +50,7 @@ class ProgressViewHolder(
         element.data?.run {
             with(element) {
                 itemView.tv_card_title.text = title
-                itemView.tv_description.text = subtitle
+                itemView.tv_description.text = data?.subtitle
                 setupProgressBar(title, value, maxValue, state)
             }
         }
