@@ -175,11 +175,11 @@ class PlayViewModel @Inject constructor(
             launch { getIsLike(channel.contentId, channel.contentType) }
 
             // TODO("remove, for testing")
-            channel.videoStream = VideoStream(
-                    "vertical",
-                    "live",
-                    true,
-                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+//            channel.videoStream = VideoStream(
+//                    "vertical",
+//                    "live",
+//                    true,
+//                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             /**
              * If Live => start web socket
