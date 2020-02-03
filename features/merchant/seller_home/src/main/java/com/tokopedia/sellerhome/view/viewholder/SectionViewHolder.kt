@@ -20,8 +20,8 @@ class SectionViewHolder(itemView: View?) : AbstractViewHolder<SectionWidgetUiMod
     override fun bind(element: SectionWidgetUiModel) {
         with(itemView) {
             tvSectionTitle.text = element.title
-            tvSectionSubTitle.visibility = if (element.subTitle.isNotBlank()) View.VISIBLE else View.GONE
-            tvSectionSubTitle.text = element.subTitle
+            tvSectionSubTitle.visibility = if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
+            tvSectionSubTitle.text = element.subtitle
             btnSectionInfo.setOnClickListener {
                 Toast.makeText(context, "Show tooltip", Toast.LENGTH_SHORT).show()
             }

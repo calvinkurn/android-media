@@ -123,7 +123,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this, this, this)
+        return SellerHomeAdapterTypeFactory(this, this, this, this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
