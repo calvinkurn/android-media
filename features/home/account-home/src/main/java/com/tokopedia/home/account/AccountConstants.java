@@ -9,6 +9,7 @@ public class AccountConstants {
     public static final String TOPADS_QUERY = "topads_query";
     public static final String VARIABLES = "variables";
     public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
+    public static final String RC_LOCALSERVICE_ENABLE = "enable_local_service_transaction_history_entry";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     public static final String SALDO_QUERY = "saldo_query";
 
@@ -159,6 +160,10 @@ public class AccountConstants {
         public static final String PROMOTION_CLICK = "promoClick";
 
         public static final String VALUE_ACCOUNT_PROMOTION_NAME = "/account_profile_buyer/promotion";
+
+        public static final String CLICK_NOTIF_CENTER = "clickNotifCenter";
+        public static final String NOTIF_CENTER = "notif center";
+        public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
     }
 
     public interface VccStatus {

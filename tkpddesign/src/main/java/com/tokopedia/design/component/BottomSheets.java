@@ -68,10 +68,10 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     }
 
     protected void configView(final View parentView) {
-        TextView textViewTitle = parentView.findViewById(R.id.tv_title);
+        TextView textViewTitle = parentView.findViewById(getTv_title());
         textViewTitle.setText(title());
 
-        TextView resetButton = parentView.findViewById(R.id.tv_reset);
+        TextView resetButton = parentView.findViewById(getTv_reset());
         if (resetButton != null) {
             if (!TextUtils.isEmpty(resetButtonTitle())) {
                 resetButton.setText(resetButtonTitle());
@@ -80,20 +80,40 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
             resetButton.setOnClickListener(view -> onResetButtonClicked());
         }
 
-        View layoutTitle = parentView.findViewById(R.id.layout_title);
+        View layoutTitle = parentView.findViewById(getLayout_title());
         if (layoutTitle != null) {
             layoutTitle.setOnClickListener(v -> onCloseButtonClick());
         }
 
-        View closeButton = parentView.findViewById(R.id.btn_close);
+        View closeButton = parentView.findViewById(getBtn_close());
         if (closeButton != null) {
             closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
         }
 
-        FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
+        FrameLayout frameParent = parentView.findViewById(getBottomsheet_container());
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
         initView(subView);
         frameParent.addView(subView);
+    }
+
+    protected int getBottomsheet_container() {
+        return R.id.bottomsheet_container;
+    }
+
+    protected int getBtn_close() {
+        return R.id.btn_close;
+    }
+
+    protected int getTv_reset() {
+        return R.id.tv_reset;
+    }
+
+    protected int getTv_title() {
+        return R.id.tv_title;
+    }
+
+    protected int getLayout_title() {
+        return R.id.layout_title;
     }
 
     protected void onCloseButtonClick() {

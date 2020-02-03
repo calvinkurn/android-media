@@ -28,7 +28,7 @@ class InterestPickPresenter @Inject constructor(private val getInterestUseCase: 
         getInterestUseCase.execute(GetInterestSubscriber(view))
     }
 
-    override fun updateInterest(interestIds: Array<Int>) {
+    override fun updateInterest(interestIds: List<Int>) {
         view.showProgress()
         updateInterestUseCase.execute(
                 UpdateInterestUseCase.getRequestParams(interestIds), UpdateInterestSubscriber(view)

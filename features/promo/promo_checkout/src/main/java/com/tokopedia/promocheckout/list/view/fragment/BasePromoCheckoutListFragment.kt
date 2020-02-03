@@ -168,7 +168,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     override fun hideProgressBar() {
         view?.progressBarCatalog?.visibility = View.GONE
-
     }
 
     override fun showGetListLastSeenError(e: Throwable) {
@@ -176,9 +175,13 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
+    override fun showListCatalogHighlight(e: Throwable) {
+        populateExchnageCouponList()
+    }
+
     override fun onErrorCheckPromo(e: Throwable) {
         if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed(e)
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCodeFailed()
         }
@@ -241,9 +244,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     protected fun trackSuccessCheckPromoCode(data: DataUiModel) {
         if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes[0])
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes.firstOrNull().orEmpty())
         } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes.firstOrNull().orEmpty())
         }
     }
 

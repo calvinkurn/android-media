@@ -12,6 +12,7 @@ data class Channel(
         @Expose @SerializedName("id") val id: String,
         @Expose @SerializedName("name") val name: String,
         @Expose @SerializedName("layout") val layout: String,
+        @Expose @SerializedName("campaignID") val campaignID: Int,
         @Expose @SerializedName("grids") val grids: MutableList<Grid?>?
 ) : Parcelable {
 
@@ -22,6 +23,7 @@ data class Channel(
             id = parcel.readString() ?: "",
             name = parcel.readString() ?: "",
             layout = parcel.readString() ?: "",
+            campaignID = parcel.readInt() ?: 0,
             grids = parcel.createTypedArrayList(Grid.CREATOR)
     )
 
@@ -33,6 +35,7 @@ data class Channel(
             writeString(id)
             writeString(name)
             writeString(layout)
+            writeInt(campaignID)
             writeTypedList(grids)
         }
     }

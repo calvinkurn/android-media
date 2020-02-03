@@ -3,6 +3,8 @@ package com.tokopedia.application;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -22,8 +24,10 @@ import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -54,6 +58,10 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void onCreate() {
+
+        setVersionCode();
+
+        GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -71,6 +79,7 @@ public class MyApplication extends BaseMainApplication
 
         GraphqlClient.init(this);
         NetworkClient.init(this);
+        registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
@@ -286,21 +295,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-
-    }
-
-    @Override
-    public void unregisterShake() {
-
-    }
-
-    @Override
     public CacheManager getGlobalCacheManager() {
         return null;
     }
@@ -314,6 +308,11 @@ public class MyApplication extends BaseMainApplication
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return false;
+    }
+
+    @Override
+    public void onActivityDestroyed(String screenName, Activity baseActivity) {
+
     }
 
 
@@ -375,4 +374,15 @@ public class MyApplication extends BaseMainApplication
         return null;
     }
 
+    private void setVersionCode() {
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            GlobalConfig.VERSION_CODE = pInfo.versionCode;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        }
+    }
 }

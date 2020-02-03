@@ -10,12 +10,15 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
+import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
+import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailHotelPresenter
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import dagger.Module
 import dagger.Provides
@@ -25,8 +28,9 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @PromoCheckoutDetailScope
@@ -49,11 +53,16 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
+    fun provideHotelCheckVoucherUseCase(@ApplicationContext context: Context): HotelCheckVoucherUseCase {
+        return HotelCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutDetailScope
+    @Provides
     fun provideMarketplacePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                          checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                         checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                          clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailPresenter {
-        return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, clearCacheAutoApplyStackUseCase)
+        return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, clearCacheAutoApplyStackUseCase)
     }
 
     @PromoCheckoutDetailScope
@@ -72,6 +81,15 @@ class PromoCheckoutDetailModule {
                                flightCheckVoucherMapper: FlightCheckVoucherMapper,
                                flightCancelVoucherUseCase: FlightCancelVoucherUseCase): PromoCheckoutDetailFlightPresenter {
         return PromoCheckoutDetailFlightPresenter(getDetailCouponMarketplaceUseCase, flightCheckVoucherUseCase, flightCheckVoucherMapper, flightCancelVoucherUseCase)
+    }
+
+    @PromoCheckoutDetailScope
+    @Provides
+    fun provideHotelPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
+                               hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
+                              hotelCheckVoucherMapper: HotelCheckVoucherMapper,
+                              flightCancelVoucherUseCase: FlightCancelVoucherUseCase): PromoCheckoutDetailHotelPresenter {
+        return PromoCheckoutDetailHotelPresenter(getDetailCouponMarketplaceUseCase, hotelCheckVoucherUseCase, hotelCheckVoucherMapper, flightCancelVoucherUseCase)
     }
 
     @PromoCheckoutDetailScope

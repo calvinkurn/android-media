@@ -89,6 +89,14 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun getArrivalAirport(): FlightAirportViewModel = flightSearchPassData.departureAirport
 
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun isReturning(): Boolean = true
 
     override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel) {
@@ -164,16 +172,16 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         isViewOnlyBestPairing = false
     }
 
-    override fun navigateToCart(returnFlightSearchViewModel: FlightJourneyViewModel?, selectedFlightReturn: String?, flightPriceViewModel: FlightPriceViewModel) {
+    override fun navigateToCart(returnFlightSearchViewModel: FlightJourneyViewModel?, selectedFlightReturn: String?, flightPriceViewModel: FlightPriceViewModel, selectedFlightTerm: String?) {
         if (returnFlightSearchViewModel != null) {
-            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id, flightPriceViewModel, false, true)
-        } else if (selectedFlightReturn != null) {
-            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, flightPriceViewModel, false, true)
+            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id, returnFlightSearchViewModel.term, flightPriceViewModel, false, true)
+        } else if (selectedFlightReturn != null && selectedFlightTerm != null) {
+            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm, flightPriceViewModel,false, true)
         }
     }
 
-    override fun onSelectedFromDetail(selectedId: String) {
-        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId)
+    override fun onSelectedFromDetail(selectedId: String, selectedTerm: String) {
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId, selectedTerm)
     }
 
     override fun buildFilterModel(flightFilterModel: FlightFilterModel): FlightFilterModel {

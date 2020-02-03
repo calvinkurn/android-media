@@ -25,14 +25,6 @@ data class ShopInfo(
         @Expose
         val isAllowManage: Int = 0,
 
-        @SerializedName("isOpen")
-        @Expose
-        val isOpen: Int = 0,
-
-        @SerializedName("isOwner")
-        @Expose
-        val isOwner: Int = 0,
-
         @SerializedName("location")
         @Expose
         val location: String = "",
@@ -53,10 +45,6 @@ data class ShopInfo(
         @Expose
         val shopLastActive: String = "",
 
-        @SerializedName("shopTerms")
-        @Expose
-        val shopTerms: Int = 0,
-
         @SerializedName("statusInfo")
         @Expose
         val statusInfo: StatusInfo = StatusInfo(),
@@ -71,7 +59,12 @@ data class ShopInfo(
 
         @SerializedName("freeOngkir")
         @Expose
-        val freeOngkir: FreeOngkir = FreeOngkir()
+        val freeOngkir: FreeOngkir = FreeOngkir(),
+
+        @SerializedName("addressData")
+        @Expose
+        val addressData: AddressData = AddressData()
+
 ) {
     companion object{
         @JvmField
@@ -155,20 +148,12 @@ data class ShopInfo(
             @Expose
             val note: String = "",
 
-            @SerializedName("reason")
-            @Expose
-            val reason: String = "",
-
             @SerializedName("until")
             @Expose
             val closeUntil: String = ""
     )
 
     data class CreatedInfo(
-            @SerializedName("shopCreated")
-            @Expose
-            val created: String = "",
-
             @SerializedName("openSince")
             @Expose
             val openSince: String = ""
@@ -177,10 +162,36 @@ data class ShopInfo(
     data class TopContent(
             @SerializedName("topURL")
             @Expose
-            val topUrl: String = "",
+            val topUrl: String = ""
+    )
 
-            @SerializedName("bottomURL")
+    data class AddressData(
+            @SerializedName("id")
             @Expose
-            val bottomUrl: String = ""
+            val id: String = "",
+
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+
+            @SerializedName("address")
+            @Expose
+            val address: String = "",
+
+            @SerializedName("area")
+            @Expose
+            val area: String = "",
+
+            @SerializedName("email")
+            @Expose
+            val email: String = "",
+
+            @SerializedName("phone")
+            @Expose
+            val phone: String = "",
+
+            @SerializedName("fax")
+            @Expose
+            val fax: String = ""
     )
 }

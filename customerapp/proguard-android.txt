@@ -108,18 +108,6 @@ public protected *;
 } 
 -keepattributes SourceFile,LineNumberTable
 
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-   @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-   @butterknife.* <methods>;
-}
-
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
 -keepattributes Signature
@@ -215,3 +203,5 @@ public protected *;
 -assumenosideeffects class com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity {
     public void initTranslator();
 }
+
+-keep class com.google.firebase.perf.FirebasePerformance

@@ -13,6 +13,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.common.di.component.FlightComponent;
+import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -25,7 +26,7 @@ import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_
  * Created by zulfikarrahman on 12/12/17.
  */
 
-public class FlightDetailOrderActivity extends BaseSimpleActivity implements HasComponent<FlightComponent> {
+public class FlightDetailOrderActivity extends BaseFlightActivity implements HasComponent<FlightComponent> {
 
     private static final int REQUEST_CODE_LOGIN = 6;
 

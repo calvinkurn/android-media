@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.cardview.widget.CardView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +13,13 @@ import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -42,6 +41,7 @@ import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -50,6 +50,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements DealCategoryAdapterContract.View {
 
@@ -104,7 +105,7 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements De
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 loadCompletedWithError();
             }
@@ -335,7 +336,7 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements De
 
                 Utils.getSingletonInstance().shareDeal(getItems().get(getIndex()).getSeoUrl(),
                         context, getItems().get(getIndex()).getDisplayName(),
-                        getItems().get(getIndex()).getImageWeb(), getItems().get(getIndex()).getDesktopUrl());
+                        getItems().get(getIndex()).getImageWeb(), getItems().get(getIndex()).getWebUrl());
             } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_wish_list) {
                 ProductItem item = getItems().get(getIndex());
                 boolean isLoggedIn = mPresenter.setDealLike(item.getId(), item.isLiked(), getIndex(), item.getLikes());

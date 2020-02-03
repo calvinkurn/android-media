@@ -2,13 +2,13 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.ACTION_KEY
@@ -16,6 +16,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
@@ -94,7 +95,17 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
     }
 
     override fun onError(throwable: Throwable?) {
-        view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable))
+        view?.let {
+            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
+    override fun setWebView(): Int {
+        return R.id.webviewPm
+    }
+
+    override fun setProgressBar(): Int {
+        return R.id.progressbarPm
     }
 
     private fun initVar() {
@@ -111,7 +122,9 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         activateBtn.setOnClickListener {
             powerMerchantTracking.eventUpgradeShopWebView()
             if (!isTermsAgreed) {
-                mainView.showErrorToaster(getString(R.string.pm_terms_error_no_agreed))
+                mainView?.let {
+                    Toaster.make(it, getString(R.string.pm_terms_error_no_agreed), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
             } else {
                 presenter.activatePowerMerchant()
             }

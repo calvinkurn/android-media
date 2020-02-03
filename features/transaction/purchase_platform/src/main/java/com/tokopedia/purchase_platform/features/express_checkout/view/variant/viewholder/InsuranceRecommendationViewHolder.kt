@@ -12,29 +12,29 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceApplicationValueViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceProductApplicationDetailsViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceRecommendationViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.insurance.utils.*
+import com.tokopedia.purchase_platform.common.view.model.InsuranceApplicationValueViewModel
+import com.tokopedia.purchase_platform.common.view.model.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.transaction.insurance.utils.*
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.InsuranceRecommendationUiModel
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*
 
 
-class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationViewModel>(view) {
+class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationUiModel>(view) {
 
     private var datePicker: SaldoDatePickerUtil? = null
     private var errorMessage: String = ""
-    private var originalData = InsuranceRecommendationViewModel()
+    private var originalData = InsuranceRecommendationUiModel()
 
     companion object {
         val LAYOUT = R.layout.item_insurance_recommendation_product_page
     }
 
-    override fun bind(element: InsuranceRecommendationViewModel?) {
+    override fun bind(element: InsuranceRecommendationUiModel?) {
 
         if (element != null &&
                 !element.cartShopsList.isNullOrEmpty() &&
@@ -76,6 +76,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 itemView.insurance_tv_info.text = insuranceCartDigitalProductViewModel.productInfo.linkName
                 itemView.insurance_tv_info.setOnClickListener {
 
+                    listener.sendEventInsuranceInfoClicked()
                     openBottomSheetWebView(itemView.context,
                             insuranceCartDigitalProductViewModel.productInfo.appLinkUrl,
                             insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle)
@@ -222,6 +223,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                         applicationDetailsView.hide()
                         itemView.tv_info_text.hide()
                     }
+                    listener.sendEventInsuranceSelectedStateChanged(isChecked, insuranceCartDigitalProductViewModel.productInfo.title)
                     listener.onInsuranceSelectedStateChanged(originalData, isChecked)
                 }
 

@@ -40,5 +40,9 @@ class CategoryLevelOneViewModel @Inject constructor(var getCategoryListUseCase: 
         return categoryAllList
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        getCategoryListUseCase.unsubscribe()
+    }
 
 }

@@ -1,15 +1,15 @@
 package com.tokopedia.hotel.roomlist.presentation.fragment
 
 import android.app.ProgressDialog
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.Rect
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -98,6 +98,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkIn))
             hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
+            hotelRoomListPageModel.destinationName = it.getString(ARG_DESTINATION_NAME, "")
+            hotelRoomListPageModel.destinationType =  it.getString(ARG_DESTINATION_TYPE, "")
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -109,7 +111,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         roomListViewModel.roomListResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    if (firstTime) trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
+                    if (firstTime) {
+                        trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId, hotelRoomListPageModel, it.data)
+                    }
                     firstTime = false
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
@@ -131,7 +135,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this,it.data.response.cartId))
+                        startActivity(HotelBookingActivity.getCallingIntent(this,it.data.response.cartId,
+                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
+                                hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
                     }
                 }
                 is Fail -> {
@@ -250,14 +256,15 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onItemClicked(room: HotelRoom) {
-        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
+        val position = roomList.indexOf(room)
+        trackingHotelUtil.hotelClickRoomDetails(room, hotelRoomListPageModel, position)
         val objectId = System.currentTimeMillis().toString()
         context?.run {
             SaveInstanceCacheManager(this, objectId).apply {
                 val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
                 put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
             }
-            startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, roomList.indexOf(room)), RESULT_ROOM_DETAIL)
+            startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, position), RESULT_ROOM_DETAIL)
         }
     }
 
@@ -265,7 +272,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
                 listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
-                hotelRoomListPageModel.adult)
+                hotelRoomListPageModel.room, hotelRoomListPageModel.adult, hotelRoomListPageModel.destinationType,
+                hotelRoomListPageModel.destinationName)
     }
 
     override fun getScreenName(): String = ""
@@ -314,7 +322,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
-        hotelCalendarDialog.show(fragmentManager, "test")
+        fragmentManager?.let { hotelCalendarDialog.show(it, "test") }
     }
 
     override fun onSaveGuest(room: Int, adult: Int) {
@@ -359,10 +367,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onClickBookListener(room: HotelRoom) {
         progressDialog.show()
-        trackingHotelUtil.hotelChooseRoom(room, roomList.indexOf(room))
+        val hotelAddCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
+        trackingHotelUtil.hotelChooseRoom(room, hotelAddCartParam)
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-                    mapToAddCartParam(hotelRoomListPageModel, room))
+                    hotelAddCartParam)
         } else {
             goToLoginPage()
         }
@@ -398,11 +407,14 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         const val ARG_TOTAL_ROOM = "arg_total_room"
         const val ARG_TOTAL_ADULT = "arg_total_adult"
         const val ARG_TOTAL_CHILDREN = "arg_total_children"
+        const val ARG_DESTINATION_TYPE = "arg_destination_type"
+        const val ARG_DESTINATION_NAME = "arg_destination_name"
         const val TAG_GUEST_INFO = "guestHotelInfo"
         const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
 
         fun createInstance(propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
-                           totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0): HotelRoomListFragment {
+                           totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0,
+                           destinationType: String, destinationName: String): HotelRoomListFragment {
 
             return HotelRoomListFragment().also {
                 it.arguments = Bundle().apply {
@@ -413,6 +425,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     putInt(ARG_TOTAL_ROOM, totalRoom)
                     putInt(ARG_TOTAL_ADULT, totalAdult)
                     putInt(ARG_TOTAL_CHILDREN, totalChildren)
+                    putString(ARG_DESTINATION_TYPE, destinationType)
+                    putString(ARG_DESTINATION_NAME, destinationName)
                 }
             }
         }

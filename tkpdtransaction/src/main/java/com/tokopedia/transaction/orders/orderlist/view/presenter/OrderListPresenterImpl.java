@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -66,9 +65,12 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -76,6 +78,7 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
 
@@ -246,7 +249,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper("error =" + e.toString());
+                    Timber.d("error =" + e.toString());
                     getView().removeProgressBarView();
                     getView().displayLoadMore(false);
                     getView().unregisterScrollListener();
@@ -261,6 +264,21 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     return;
                 getView().removeProgressBarView();
                 getView().displayLoadMore(false);
+                long elapsedDays = 0;
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                long secondsInMilli = 1000;
+                long time;
+                long daysInMilli = secondsInMilli * 60 * 60 * 24;
+                try {
+                    if (getView().getEndDate() != null && getView().getStartDate() != null) {
+                        Date date2 = format.parse(getView().getEndDate());
+                        Date date1 = format.parse(getView().getStartDate());
+                        time = date2.getTime() - date1.getTime();
+                        elapsedDays = time / daysInMilli;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 if (response != null) {
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {
@@ -272,7 +290,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                         }
                     } else {
                         getView().unregisterScrollListener();
-                        getView().renderEmptyList(typeRequest);
+                        getView().renderEmptyList(typeRequest,elapsedDays);
                     }
 
                     OrderFilter orderFilter = response.getData(OrderFilter.class);
@@ -281,7 +299,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     }
                 } else {
                     getView().unregisterScrollListener();
-                    getView().renderEmptyList(typeRequest);
+                    getView().renderEmptyList(typeRequest,elapsedDays);
                 }
 
             }
@@ -690,7 +708,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper("error occured" + e);
+                    Timber.d("error occured" + e);
                     getView().displayLoadMore(false);
                 }
             }
@@ -822,7 +840,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                             @Override
                                             public void onError(Throwable e) {
                                                 if (getView() != null && getView().getAppContext() != null) {
-                                                    CommonUtils.dumper(e.getStackTrace());
+                                                    Timber.d(e);
                                                     getView().showFailureMessage(e.getMessage());
                                                     getView().displayLoadMore(false);
                                                     getView().finishOrderDetail();
@@ -874,7 +892,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper(e.getStackTrace());
+                    Timber.d(e);
                     getView().displayLoadMore(false);
                     getView().showFailureMessage(e.getMessage());
                     getView().finishOrderDetail();

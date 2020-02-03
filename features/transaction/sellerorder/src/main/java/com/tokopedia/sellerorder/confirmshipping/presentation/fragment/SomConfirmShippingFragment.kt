@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.zxing.integration.android.IntentIntegrator
+import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.sellerorder.R
@@ -20,16 +21,12 @@ import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.confirmshipping.data.model.*
+import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
 import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
-import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomScanResiActivity
+import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.confirmshipping.presentation.adapter.SomBottomSheetCourierListAdapter
 import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -38,7 +35,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.fragment_som_confirm_shipping.*
 import javax.inject.Inject
-import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 
 /**
  * Created by fwidjaja on 2019-11-15.
@@ -69,9 +65,6 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             return SomConfirmShippingFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_ORDER_ID, bundle.getString(PARAM_ORDER_ID))
-                    putInt(PARAM_CURR_SHIPMENT_ID, bundle.getInt(PARAM_CURR_SHIPMENT_ID))
-                    putString(PARAM_CURR_SHIPMENT_NAME, bundle.getString(PARAM_CURR_SHIPMENT_NAME))
-                    putString(PARAM_CURR_SHIPMENT_PRODUCT_NAME, bundle.getString(PARAM_CURR_SHIPMENT_PRODUCT_NAME))
                     putBoolean(PARAM_CURR_IS_CHANGE_SHIPPING, bundle.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING))
                 }
             }
@@ -81,13 +74,8 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currOrderId = arguments?.getString(PARAM_ORDER_ID).toString()
-        currShipmentName = arguments?.getString(PARAM_CURR_SHIPMENT_NAME).toString()
-        currShipmentProductName = arguments?.getString(PARAM_CURR_SHIPMENT_PRODUCT_NAME).toString()
         arguments?.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING)?.let {
             currIsChangeShipping = it
-        }
-        arguments?.getInt(PARAM_CURR_SHIPMENT_ID)?.let {
-            currShipmentId = it
         }
         getCourierList()
     }
@@ -115,8 +103,6 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             setPlaceholder(getString(R.string.tf_no_resi_placeholder))
             setFirstIcon(R.drawable.ic_scanbarcode)
         }
-        label_choosen_courier?.text = currShipmentName
-        label_choosen_courier_service?.text = currShipmentProductName
 
         if (currIsChangeShipping) {
             switch_change_courier?.isChecked = true
@@ -130,7 +116,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private fun setupListeners() {
         // set onclick scan resi
         tf_no_resi?.getFirstIcon()?.setOnClickListener {
-            requestBarcodeScanner(activity as Activity, SomScanResiActivity::class.java)
+            requestBarcodeScanner(activity as Activity, CaptureActivity::class.java)
         }
 
         if (currIsChangeShipping) {
@@ -161,7 +147,6 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     .replace(INPUT_SP_ID, currShipmentProductId)
             processChangeCourier(queryString)
         }
-        observingChangeCourier()
     }
 
     private fun setBtnToConfirmShipping() {
@@ -221,6 +206,18 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             when (it) {
                 is Success -> {
                     courierListResponse = it.data
+
+                    if (courierListResponse.isNotEmpty()) {
+                        currShipmentId = courierListResponse.first().shipmentId
+                        label_choosen_courier?.text = courierListResponse.first().shipmentName
+
+                        val listServiceCourier = courierListResponse.first().listShipmentPackage
+                        if (listServiceCourier.isNotEmpty()) {
+                            currShipmentProductId = listServiceCourier.first().spId
+                            label_choosen_courier_service?.text = listServiceCourier.first().name
+                        }
+                    }
+
                     label_choosen_courier?.setOnClickListener { showBottomSheetCourier(false) }
                     iv_choose_courier?.setOnClickListener { showBottomSheetCourier(false) }
 
@@ -265,7 +262,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let { bottomSheetUnify.show(it, getString(R.string.show_bottomsheet)) }
 
         if (isCourierService) {
             setCourierServiceListData(currShipmentId)

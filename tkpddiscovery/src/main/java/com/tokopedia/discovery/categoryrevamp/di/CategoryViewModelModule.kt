@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.discovery.categoryrevamp.viewmodel.BannedProdNavViewModel
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
@@ -37,4 +38,10 @@ abstract class CategoryViewModelModule {
     @CategoryNavScope
     @ViewModelKey(CategoryNavViewModel::class)
     internal abstract fun categoryNavViewModel(viewModel: CategoryNavViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @CategoryNavScope
+    @ViewModelKey(BannedProdNavViewModel::class)
+    internal abstract fun bannedProdNavViewModel(viewModel: BannedProdNavViewModel): ViewModel
 }

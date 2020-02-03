@@ -1,7 +1,6 @@
 package com.tokopedia.flight.search.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.search.domain.FlightGetComboKeyUseCase
@@ -15,6 +14,7 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -79,7 +79,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
         )
     }
 
-    override fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String) {
+    override fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String, selectedTerm: String) {
         val priceViewModel = view.getFlightPriceViewModel()
 
         compositeSubscription.add(Observable.zip(
@@ -117,7 +117,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                     override fun onNext(t: Boolean?) {
                         if (t != null && t) {
                             view.navigateToCart(selectedFlightReturn = selectedFlightReturn,
-                                    flightPriceViewModel = priceViewModel)
+                                    flightPriceViewModel = priceViewModel, selectedFlightTerm = selectedTerm)
                         } else {
                             view.showReturnTimeShouldGreaterThanArrivalDeparture()
                         }
@@ -147,7 +147,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                 val different = returnDepartureTime.time - departureArrivalTime.time
                 return if (different >= 0) {
                     val hours: Long = different / ONE_HOUR
-                    CommonUtils.dumper("diff : $hours")
+                    Timber.d("diff : $hours")
                     hours >= MIN_DIFF_HOURS
                 } else {
                     false

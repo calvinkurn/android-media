@@ -3,13 +3,14 @@ package com.tokopedia.seller.selling.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.widget.Toast;
 
-import com.tokopedia.core2.R;
+import androidx.annotation.NonNull;
+
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
@@ -180,11 +181,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     }
 
     @Override
-    public String getMessageTAG(Class<?> className) {
-        return null;
-    }
-
-    @Override
     public void initData(@NonNull Context context) {
         view.initListener();
         if (!isAfterRotate) {
@@ -244,6 +240,19 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.removeRetryMessage();
+            view.hideFab();
+        } else {
+            NetworkErrorHelper.showSnackbar((Activity) context);
+        }
+    }
+
+    @Override
+    public void onErrorWithMessage(String message) {
+        finishConnection();
+        if (listDatas.size() == 0) {
+            view.addRetry();
+            view.addRetryMessage(message);
             view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
@@ -255,6 +264,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.removeRetryMessage();
             view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);

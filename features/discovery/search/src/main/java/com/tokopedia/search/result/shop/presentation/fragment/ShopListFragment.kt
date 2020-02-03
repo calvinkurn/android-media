@@ -1,22 +1,24 @@
 package com.tokopedia.search.result.shop.presentation.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.State
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.manager.FilterSortManager
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
@@ -25,16 +27,14 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
-import com.tokopedia.search.result.common.EventObserver
-import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
-import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
+import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
+import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
@@ -151,10 +151,10 @@ internal class ShopListFragment:
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(R.dimen.dp_16)
+                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         )
     }
 
@@ -360,7 +360,7 @@ internal class ShopListFragment:
                 searchShopViewModel?.onViewApplyFilter(queryParams)
             }
 
-            override fun onSortResult(selectedSort: Map<String, String>, selectedSortName: String, autoApplyFilter: String) { }
+            override fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?) { }
         })
     }
 
@@ -376,10 +376,10 @@ internal class ShopListFragment:
     private fun trackShopItemClick(shopItem: ShopViewModel.ShopItem) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
 
-        SearchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), keyword)
+        SearchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), shopItem.id, keyword)
 
         if (isShopNotActive(shopItem)) {
-            SearchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), keyword)
+            SearchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), shopItem.id, keyword)
         }
     }
 
@@ -443,7 +443,7 @@ internal class ShopListFragment:
         return searchShopViewModel?.getUserId() ?: ""
     }
 
-    override fun getSelectedFilterAsOptionList(): MutableList<Option> {
+    override fun getSelectedFilterAsOptionList(): List<Option> {
         val activeFilterOptionList = searchShopViewModel?.getActiveFilterOptionListForEmptySearch() ?: return mutableListOf()
 
         return OptionHelper.combinePriceFilterIfExists(

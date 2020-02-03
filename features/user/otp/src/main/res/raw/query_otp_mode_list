@@ -1,5 +1,5 @@
-query otp_mode_list($otpType: String!, $email: String){
-    OTPModeList(otpType: $otpType, email: $email) {
+query otp_mode_list($otpType: String!, $userId: String, $msisdn: String, $email: String){
+    OTPModeList(otpType: $otpType, userID: $userId, msisdn: $msisdn, email: $email) {
         success
         message
         errorMessage
@@ -14,6 +14,7 @@ query otp_mode_list($otpType: String!, $email: String){
             popUpHeader
             popUpBody
             countdown
+            otpDigit
         }
     }
 }

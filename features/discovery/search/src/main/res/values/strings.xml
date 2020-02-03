@@ -1,5 +1,5 @@
 <resources>
-    <string name="title_search_result" >Hasil Pencarian</string>
+    <string name="title_search_result" >Pencarian</string>
     <string name="search_result_app_name">search</string>
     <string name="app_name">Search</string>
     <string name="search_result_page">Search Result Page</string>
@@ -26,6 +26,8 @@
     <string name="megerti">Mengerti</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="msg_remove_wishlist_failed">Gagal menghapus wishlist</string>
+    <string name="msg_add_wishlist_failed">Gagal menambah wishlist</string>
 
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>

@@ -22,6 +22,7 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
+import com.tokopedia.sellerapp.dashboard.view.listener.OnNotificationDataUpdatedListener;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
@@ -32,8 +33,10 @@ import javax.inject.Inject;
  * Created by nathan on 9/5/17.
  */
 
-public class DashboardActivity extends DrawerPresenterActivity
-        implements GCMHandlerListener, SellerDashboardDrawerPresenter.SellerDashboardView {
+public class DashboardActivity extends DrawerPresenterActivity implements
+        GCMHandlerListener,
+        SellerDashboardDrawerPresenter.SellerDashboardView,
+        OnNotificationDataUpdatedListener {
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
@@ -200,5 +203,10 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void notificationDataUpdated() {
+        updateDrawerData();
     }
 }

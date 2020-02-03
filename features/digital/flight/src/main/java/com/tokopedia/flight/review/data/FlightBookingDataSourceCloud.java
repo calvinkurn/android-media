@@ -3,7 +3,7 @@ package com.tokopedia.flight.review.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.FlightGsonPlainQualifier;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
