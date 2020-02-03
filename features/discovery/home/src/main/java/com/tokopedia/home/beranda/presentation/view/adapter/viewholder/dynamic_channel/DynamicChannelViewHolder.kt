@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView

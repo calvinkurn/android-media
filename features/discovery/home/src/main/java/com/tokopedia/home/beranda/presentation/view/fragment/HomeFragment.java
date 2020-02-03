@@ -53,6 +53,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.home.analytics.HomePageTrackingV2;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
@@ -1744,9 +1745,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 break;
             case TYPE_FOUR_GRID_LEGO :
                 putEEToIris(
-                        HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
+                        (HashMap<String, Object>) HomePageTrackingV2.LegoBanner.INSTANCE.getLegoBannerFourImageImpression(
                                 channel, position, true
-                        ) as (HashMap<String, Any>)
+                        )
                 );
                 break;
             case TYPE_GIF_BANNER :
