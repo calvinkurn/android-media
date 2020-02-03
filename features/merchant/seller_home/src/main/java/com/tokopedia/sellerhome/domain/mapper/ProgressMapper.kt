@@ -24,7 +24,7 @@ class ProgressMapper @Inject constructor() {
                     colorState = mapState(it.state.orEmpty()),
                     error = it.errorMessage.orEmpty(),
                     subtitle = it.subtitle.orEmpty()
-                    )
+            )
         }
     }
 

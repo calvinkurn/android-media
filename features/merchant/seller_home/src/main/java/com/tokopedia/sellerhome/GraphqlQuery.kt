@@ -49,7 +49,8 @@ object GraphqlQuery {
             "      maxValueTxt\n" +
             "      value\n" +
             "      maxValue\n" +
-            "      colorState\n" +
+            "      state\n" +
+            "      subtitle\n" +
             "      error\n" +
             "      errorMsg\n" +
             "    }\n" +
