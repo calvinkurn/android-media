@@ -2,15 +2,12 @@ package com.tokopedia.tkpd.tkpdreputation.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain;
 import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.GetLikeDislikePojo;
 import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.LikeDislikeList;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +19,10 @@ import rx.functions.Func1;
  * @author by nisie on 9/29/17.
  */
 
-public class GetLikeDislikeMapper implements Func1<Response<TkpdResponse>,
+public class GetLikeDislikeMapper implements Func1<Response<TokopediaWsV4Response>,
         GetLikeDislikeReviewDomain> {
     @Override
-    public GetLikeDislikeReviewDomain call(Response<TkpdResponse> response) {
+    public GetLikeDislikeReviewDomain call(Response<TokopediaWsV4Response> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
@@ -43,7 +40,10 @@ public class GetLikeDislikeMapper implements Func1<Response<TkpdResponse>,
                 }
             }
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = "";
+            if (response.body() != null) {
+                messageError = response.body().getErrorMessageJoined();
+            }
             if (!TextUtils.isEmpty(messageError)) {
                 throw new ErrorMessageException(messageError);
             } else {
