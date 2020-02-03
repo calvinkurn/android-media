@@ -2,12 +2,13 @@ package com.tokopedia.sellerhome.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhome.GraphqlQuery
 import com.tokopedia.sellerhome.domain.mapper.LineGraphMapper
-import com.tokopedia.sellerhome.domain.model.LineGraphDataResponse
+import com.tokopedia.sellerhome.domain.model.GetLineGraphDataResponse
 import com.tokopedia.sellerhome.util.getData
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -18,22 +19,20 @@ import com.tokopedia.usecase.coroutines.UseCase
  */
 
 class GetLineGraphDataUseCase(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
+        private val gqlRepository: GraphqlRepository,
         private val lineGraphMapper: LineGraphMapper
 ) : UseCase<List<LineGraphDataUiModel>>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): List<LineGraphDataUiModel> {
-        val gqlRequest = GraphqlRequest(GraphqlQuery.GET_LINE_GRAPH_DATA, LineGraphDataResponse::class.java, params.parameters)
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(gqlRequest)
-        val gqlResponse: GraphqlResponse = graphqlUseCase.executeOnBackground()
+        val gqlRequest = GraphqlRequest(GraphqlQuery.GET_LINE_GRAPH_DATA, GetLineGraphDataResponse::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-        val errors: List<GraphqlError>? = gqlResponse.getError(LineGraphDataResponse::class.java)
+        val errors: List<GraphqlError>? = gqlResponse.getError(GetLineGraphDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<LineGraphDataResponse>()
-            val widgetDataList = data.responseData?.getLineGraphData?.widgetData.orEmpty()
+            val data = gqlResponse.getData<GetLineGraphDataResponse>()
+            val widgetDataList = data.getLineGraphData?.widgetData.orEmpty()
             return lineGraphMapper.mapRemoteDataModelToUiDataModel(widgetDataList)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })

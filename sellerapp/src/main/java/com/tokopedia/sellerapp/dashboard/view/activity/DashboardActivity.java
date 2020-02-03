@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -21,7 +22,6 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
-import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.sellerapp.dashboard.view.listener.OnNotificationDataUpdatedListener;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;

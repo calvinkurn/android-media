@@ -6,6 +6,8 @@ import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.tokopedia.graphql.data.model.GraphqlResponse
 
 /**
@@ -29,4 +31,8 @@ fun Context.toast(message: String) {
 inline fun <reified T> GraphqlResponse.getData(): T {
     return this.getData<T>(T::class.java)
 }
+
+//log
+val Any.toJson: JsonElement
+    get() = Gson().toJsonTree(this)
 

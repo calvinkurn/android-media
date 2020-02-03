@@ -1,9 +1,9 @@
 package com.tokopedia.sellerhome.view.viewholder
 
-import android.os.Handler
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
 import kotlinx.android.synthetic.main.sah_card_widget.view.*
 
@@ -11,41 +11,55 @@ import kotlinx.android.synthetic.main.sah_card_widget.view.*
  * Created By @ilhamsuaib on 2020-01-15
  */
 
-class CardViewHolder(itemView: View?) : AbstractViewHolder<CardWidgetUiModel>(itemView) {
+class CardViewHolder(
+        itemView: View?,
+        private val listener: Listener
+) : AbstractViewHolder<CardWidgetUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.sah_card_widget
     }
 
     override fun bind(element: CardWidgetUiModel) {
+        observeState(element)
+        listener.getCardData()
+
         with(itemView) {
             tvCardTitle.text = element.title
-            tvCardValue.text = "Rp999.999.999"
-            tvCardSubValue.text = "Potensi +50 jt"
+            tvCardValue.text = element.data?.value ?: "0"
+            tvCardSubValue.text = element.data?.description?.parseAsHtml()
         }
-
-        Handler().postDelayed({
-            showShimmer(false)
-            showOnError(true)
-        }, 5000)
-
-        Handler().postDelayed({
-            showOnError(false)
-            showViewComponent(true)
-        }, 10000)
-
-        showShimmer(true)
-        showOnError(false)
-        showViewComponent(false)
     }
 
-    private fun showViewComponent(isShown: Boolean) {
+    private fun observeState(element: CardWidgetUiModel) {
+        val data = element.data
+        when {
+            null == data -> {
+                showViewComponent(element, false)
+                showOnError(false)
+                showShimmer(true)
+            }
+            data.error.isNotBlank() -> {
+                showViewComponent(element, false)
+                showShimmer(false)
+                showOnError(true)
+            }
+            else -> {
+                showOnError(false)
+                showShimmer(false)
+                showViewComponent(element, true)
+            }
+        }
+    }
+
+    private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {
         with(itemView) {
             val visibility = if (isShown) View.VISIBLE else View.INVISIBLE
             tvCardTitle.visibility = visibility
             tvCardValue.visibility = visibility
             tvCardSubValue.visibility = visibility
-            if (isShown) tvCardValue.text = "Rp999.999.999"
+            val value = element.data?.value
+            if (isShown) tvCardValue.text = if (value.isNullOrBlank()) "0" else value
         }
     }
 
@@ -64,5 +78,9 @@ class CardViewHolder(itemView: View?) : AbstractViewHolder<CardWidgetUiModel>(it
             shimmerCardTitle.visibility = visibility
             shimmerCardValue.visibility = visibility
         }
+    }
+
+    interface Listener {
+        fun getCardData()
     }
 }

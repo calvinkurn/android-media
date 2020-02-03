@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_card_title"
         app:layout_constraintStart_toEndOf="@id/tv_card_title"
         app:layout_constraintTop_toTopOf="@id/tv_card_title"
-        app:srcCompat="@drawable/ic_sah_information" />
+        app:srcCompat="@drawable/ic_info" />
 
     <com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
         android:id="@+id/shop_score_widget"
@@ -76,6 +76,6 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_see_details"
         app:layout_constraintStart_toEndOf="@id/tv_see_details"
         app:layout_constraintTop_toTopOf="@id/tv_see_details"
-        app:srcCompat="@drawable/ic_sah_arrow_right" />
+        app:srcCompat="@drawable/ic_arrow_right_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

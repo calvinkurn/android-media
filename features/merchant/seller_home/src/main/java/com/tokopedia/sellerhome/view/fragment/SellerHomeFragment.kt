@@ -9,19 +9,23 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.library.utils.CommonUtils
+import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeWidgetListener
+import com.tokopedia.sellerhome.SellerHomeWidgetListener
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.util.toJson
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
-import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
-import com.tokopedia.sellerhome.view.model.TickerUiModel
-import com.tokopedia.sellerhome.view.model.TooltipUiModel
+import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhome.view.viewholder.CardViewHolder
+import com.tokopedia.sellerhome.view.viewholder.LineGraphViewHolder
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -36,7 +40,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetListener {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetListener, CardViewHolder.Listener, LineGraphViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -47,10 +51,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
     private val mViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
+    private var hasLoadCardData = false
+    private var hasLoadLineGraphData = false
 
     private lateinit var bottomSheet: BottomSheetUnify
 
@@ -74,6 +82,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         setupView()
         getWidgetsLayout()
         getTickerView()
+        observeCardLiveData()
+        observeLineGraphLiveData()
     }
 
     private fun hideTooltipIfExist() {
@@ -97,10 +107,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
         }
         recyclerView.layoutManager = gridLayoutManager
+
+        swipeRefreshLayout.setOnRefreshListener {
+            refreshWidget()
+        }
+    }
+
+    private fun refreshWidget() = view?.run {
+        hasLoadCardData = false
+        hasLoadLineGraphData = false
+        widgetHasMap.clear()
+        adapter.data.clear()
+        adapter.notifyDataSetChanged()
+        showGetWidgetShimmer(false)
+        mViewModel.getWidgetLayout()
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this)
+        return SellerHomeAdapterTypeFactory(this, this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -109,6 +133,37 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     override fun loadData(page: Int) {
 
+    }
+
+    private fun showGetWidgetShimmer(isShown: Boolean) {
+        view?.swipeRefreshLayout?.isRefreshing = isShown
+    }
+
+    private fun showSwipeProgress(isShown: Boolean) {
+        view?.swipeRefreshLayout?.isRefreshing = isShown
+    }
+
+    private fun getWidgetsLayout() {
+        mViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    showGetWidgetShimmer(false)
+                    renderList(result.data)
+                    result.data.forEach {
+                        if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
+                            widgetHasMap[it.widgetType] = mutableListOf(it)
+                            return@forEach
+                        }
+                        widgetHasMap[it.widgetType]?.add(it)
+                    }
+                }
+                is Fail -> {
+                    showGetWidgetShimmer(false)
+                }
+            }
+        })
+        showGetWidgetShimmer(true)
+        mViewModel.getWidgetLayout()
     }
 
     override fun onInfoTooltipClicked(tooltip: TooltipUiModel) {
@@ -140,22 +195,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
     }
 
-    private fun getWidgetsLayout() {
-        mViewModel.widgetLayout.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    showGetWidgetShimmer(false)
-                    renderList(it.data)
-                }
-                is Fail -> {
-                    showGetWidgetShimmer(false)
-                }
-            }
-        })
-        showGetWidgetShimmer(true)
-        mViewModel.getWidgetLayout()
-    }
-
     private fun getTickerView() {
         mViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -173,12 +212,45 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         mViewModel.getTicker()
     }
 
-    private fun showGetWidgetShimmer(isShown: Boolean) {
-
+    private fun observeCardLiveData() {
+        mViewModel.cardWidgetData.observe(viewLifecycleOwner, Observer { result ->
+            val type = WidgetType.CARD
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type)
+            }
+        })
     }
 
-    private fun showSwipeProgress(isShown: Boolean) {
-        view?.swipeRefreshLayout?.isRefreshing = isShown
+    private fun observeLineGraphLiveData() {
+        mViewModel.lineGraphWidgetData.observe(viewLifecycleOwner, Observer { result ->
+            val type = WidgetType.LINE_GRAPH
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type)
+            }
+        })
+    }
+
+    private fun List<BaseDataUiModel>.setOnSuccessWidgetState(type: String) {
+        widgetHasMap[type]?.forEachIndexed { i, widget ->
+            when (widget) {
+                is CardWidgetUiModel -> widget.data = this[i] as CardDataUiModel
+                is LineGraphWidgetUiModel -> widget.data = this[i] as LineGraphDataUiModel
+            }
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun Throwable.setOnErrorWidgetState(type: String) {
+        val message = this.message.orEmpty()
+        widgetHasMap[type]?.forEach { widget ->
+            when (widget) {
+                is CardWidgetUiModel -> widget.data = CardDataUiModel(error = message)
+                is LineGraphWidgetUiModel -> widget.data = LineGraphDataUiModel(error = message)
+            }
+        }
+        adapter.notifyDataSetChanged()
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
@@ -207,5 +279,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
             tickerView.addPagerView(adapter, tickersData)
         }
+    }
+
+    override fun getCardData() {
+        if (hasLoadCardData) return
+        hasLoadCardData = true
+        val dataKeys = getWidgetDataKeys<CardWidgetUiModel>()
+        mViewModel.getCardWidgetData(dataKeys)
+    }
+
+    override fun getLineGraphData() {
+        if (hasLoadLineGraphData) return
+        hasLoadLineGraphData = true
+        val dataKeys = getWidgetDataKeys<LineGraphWidgetUiModel>()
+        mViewModel.getLineGraphWidgetData(dataKeys)
+    }
+
+    private inline fun <reified T : BaseWidgetUiModel<*>> getWidgetDataKeys(): List<String> {
+        return adapter.data.orEmpty().filterIsInstance<T>().map { it.dataKey }
     }
 }
