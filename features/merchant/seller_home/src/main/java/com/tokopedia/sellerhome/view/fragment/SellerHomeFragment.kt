@@ -14,11 +14,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.util.toJson
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.CardViewHolder
 import com.tokopedia.sellerhome.view.viewholder.LineGraphViewHolder
+import com.tokopedia.sellerhome.view.viewholder.ProgressViewHolder
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -34,7 +34,7 @@ import javax.inject.Inject
  */
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(),
-        CardViewHolder.Listener, LineGraphViewHolder.Listener {
+        CardViewHolder.Listener, LineGraphViewHolder.Listener, ProgressViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -45,12 +45,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     lateinit var viewModelFactory: ViewModelFactory
 
     private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
-    private val mViewModel by lazy {
+    private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
+    private var hasLoadProgressData = false
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -73,6 +74,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         getTickerView()
         observeCardLiveData()
         observeLineGraphLiveData()
+        observeProgressLiveData()
     }
 
     private fun setupView() = view?.run {
@@ -102,7 +104,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         adapter.data.clear()
         adapter.notifyDataSetChanged()
         showGetWidgetShimmer(false)
-        mViewModel.getWidgetLayout()
+        sellerHomeViewModel.getWidgetLayout()
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
@@ -117,6 +119,27 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     }
 
+    override fun getCardData() {
+        if (hasLoadCardData) return
+        hasLoadCardData = true
+        val dataKeys = getWidgetDataKeys<CardWidgetUiModel>()
+        sellerHomeViewModel.getCardWidgetData(dataKeys)
+    }
+
+    override fun getLineGraphData() {
+        if (hasLoadLineGraphData) return
+        hasLoadLineGraphData = true
+        val dataKeys = getWidgetDataKeys<LineGraphWidgetUiModel>()
+        sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
+    }
+
+    override fun getProgressData() {
+        if (hasLoadProgressData) return
+        hasLoadProgressData = true
+        val dataKeys = getWidgetDataKeys<ProgressWidgetUiModel>()
+        sellerHomeViewModel.getProgressWidgetData(dataKeys)
+    }
+
     private fun showGetWidgetShimmer(isShown: Boolean) {
         view?.swipeRefreshLayout?.isRefreshing = isShown
     }
@@ -126,7 +149,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun getWidgetsLayout() {
-        mViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
                     showGetWidgetShimmer(false)
@@ -145,11 +168,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
         })
         showGetWidgetShimmer(true)
-        mViewModel.getWidgetLayout()
+        sellerHomeViewModel.getWidgetLayout()
     }
 
     private fun getTickerView() {
-        mViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
+        sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     showSwipeProgress(false)
@@ -162,11 +185,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
         })
         showSwipeProgress(true)
-        mViewModel.getTicker()
+        sellerHomeViewModel.getTicker()
     }
 
     private fun observeCardLiveData() {
-        mViewModel.cardWidgetData.observe(viewLifecycleOwner, Observer { result ->
+        sellerHomeViewModel.cardWidgetData.observe(viewLifecycleOwner, Observer { result ->
             val type = WidgetType.CARD
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
@@ -176,8 +199,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun observeLineGraphLiveData() {
-        mViewModel.lineGraphWidgetData.observe(viewLifecycleOwner, Observer { result ->
+        sellerHomeViewModel.lineGraphWidgetData.observe(viewLifecycleOwner, Observer { result ->
             val type = WidgetType.LINE_GRAPH
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type)
+            }
+        })
+    }
+
+    private fun observeProgressLiveData() {
+        sellerHomeViewModel.progressWidgetData.observe(viewLifecycleOwner, Observer { result ->
+            val type = WidgetType.PROGRESS
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
                 is Fail -> result.throwable.setOnErrorWidgetState(type)
@@ -190,6 +223,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             when (widget) {
                 is CardWidgetUiModel -> widget.data = this[i] as CardDataUiModel
                 is LineGraphWidgetUiModel -> widget.data = this[i] as LineGraphDataUiModel
+                is ProgressWidgetUiModel -> widget.data = this[i] as ProgressDataUiModel
             }
         }
         adapter.notifyDataSetChanged()
@@ -201,6 +235,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             when (widget) {
                 is CardWidgetUiModel -> widget.data = CardDataUiModel(error = message)
                 is LineGraphWidgetUiModel -> widget.data = LineGraphDataUiModel(error = message)
+                is ProgressWidgetUiModel -> widget.data = ProgressDataUiModel(error = message)
             }
         }
         adapter.notifyDataSetChanged()
@@ -232,20 +267,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
             tickerView.addPagerView(adapter, tickersData)
         }
-    }
-
-    override fun getCardData() {
-        if (hasLoadCardData) return
-        hasLoadCardData = true
-        val dataKeys = getWidgetDataKeys<CardWidgetUiModel>()
-        mViewModel.getCardWidgetData(dataKeys)
-    }
-
-    override fun getLineGraphData() {
-        if (hasLoadLineGraphData) return
-        hasLoadLineGraphData = true
-        val dataKeys = getWidgetDataKeys<LineGraphWidgetUiModel>()
-        mViewModel.getLineGraphWidgetData(dataKeys)
     }
 
     private inline fun <reified T : BaseWidgetUiModel<*>> getWidgetDataKeys(): List<String> {

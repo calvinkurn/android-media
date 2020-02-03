@@ -61,7 +61,7 @@ class LineGraphViewHolder(
     /**
      * Loading State -> when data is null. By default when adapter created
      * it will pass null data.
-     * Error State -> when error field have a string
+     * Error State -> when errorMessage field have a string
      * Success State -> when data not null &
      * */
 

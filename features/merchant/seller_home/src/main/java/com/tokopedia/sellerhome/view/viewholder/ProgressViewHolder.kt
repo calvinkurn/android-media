@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.view.model.ProgressUiModel
+import com.tokopedia.sellerhome.view.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import kotlinx.android.synthetic.main.sah_partial_error_load_data.view.*
 import kotlinx.android.synthetic.main.sah_partial_progress_widget.view.*
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.sah_partial_shimmering_progress_widget.vie
 /**
  * Created By @yusufhendrawan on 2020-01-22
  */
-class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view) {
+class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressWidgetUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.sah_progress_card_widget
@@ -22,7 +22,7 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
 
     private var state = State.LOADING
 
-    override fun bind(element: ProgressUiModel) {
+    override fun bind(element: ProgressWidgetUiModel) {
         showLoadingState()
         itemView.postDelayed({
             showErrorState(element)
@@ -38,7 +38,7 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         showShimmeringLayout()
     }
 
-    private fun showSuccessState(element: ProgressUiModel) {
+    private fun showSuccessState(element: ProgressWidgetUiModel) {
         hideErrorLayout()
         hideShimmeringLayout()
 
@@ -53,7 +53,7 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         showProgressLayout()
     }
 
-    private fun showErrorState(element: ProgressUiModel) {
+    private fun showErrorState(element: ProgressWidgetUiModel) {
         hideProgressLayout()
         hideShimmeringLayout()
         itemView.tv_error_card_title.text = element.title
@@ -95,5 +95,9 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         LOADING,
         SUCESS,
         ERROR
+    }
+
+    interface Listener {
+        fun getProgressData()
     }
 }

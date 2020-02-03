@@ -20,7 +20,7 @@ class GetLayoutUseCase(
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
                         title = "Performa Toko",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -31,7 +31,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "New Order",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -42,7 +42,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Ready To Ship",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -53,7 +53,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Complaint",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -64,7 +64,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Unread Chat",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -75,7 +75,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Discussion",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -86,7 +86,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Product View",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -97,7 +97,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Shop Total Revenue",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -108,7 +108,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Product Sold",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -119,7 +119,7 @@ class GetLayoutUseCase(
                 LineGraphWidgetUiModel(
                         widgetType = WidgetType.LINE_GRAPH,
                         title = "Total Pendapatan",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -130,7 +130,7 @@ class GetLayoutUseCase(
                 CarouselWidgetUiModel(
                         widgetType = WidgetType.CAROUSEL,
                         title = "Caruosel",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
@@ -159,6 +159,17 @@ class GetLayoutUseCase(
                                 ),
                                 state = CarouselState.NORMAL
                         )
+                ),
+                ProgressWidgetUiModel(
+                        widgetType =  WidgetType.PROGRESS,
+                        title = "Progress",
+                        subtitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = ",",
+                        dataKey = "shopScore",
+                        ctaText = "",
+                        data = null
                 )
         )
     }

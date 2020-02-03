@@ -10,19 +10,19 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.ListItemUiModel
-import com.tokopedia.sellerhome.view.model.ListUiModel
+import com.tokopedia.sellerhome.view.model.ListWidgetUiModel
 import kotlinx.android.synthetic.main.sah_partial_error_load_data.view.*
 import kotlinx.android.synthetic.main.sah_partial_list_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_shimmering_list_widget.view.*
 
-class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseListAdapter.OnAdapterInteractionListener<ListItemUiModel> {
+class ListViewHolder(view: View?) : AbstractViewHolder<ListWidgetUiModel>(view), BaseListAdapter.OnAdapterInteractionListener<ListItemUiModel> {
     companion object {
         val RES_LAYOUT = R.layout.sah_list_card_widget
     }
 
     private var state = State.SUCCESS
 
-    override fun bind(element: ListUiModel) {
+    override fun bind(element: ListWidgetUiModel) {
         showLoadingState()
         itemView.postDelayed({
             showErrorState(element)
@@ -38,7 +38,7 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
         showShimmeringLayout()
     }
 
-    private fun showSuccessState(element: ListUiModel) {
+    private fun showSuccessState(element: ListWidgetUiModel) {
         element.data?.run {
             hideErrorLayout()
             hideShimmeringLayout()
@@ -54,7 +54,7 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
         }
     }
 
-    private fun showErrorState(element: ListUiModel) {
+    private fun showErrorState(element: ListWidgetUiModel) {
         hideListLayout()
         hideShimmeringLayout()
         itemView.tv_error_card_title.text = element.title

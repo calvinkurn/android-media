@@ -5,9 +5,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.domain.mapper.CardMapper
 import com.tokopedia.sellerhome.domain.mapper.LineGraphMapper
+import com.tokopedia.sellerhome.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhome.domain.usecase.GetCardDataUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetLayoutUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetProgressDataUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -42,4 +44,12 @@ class SellerHomeUseCaseModule {
     ): GetLineGraphDataUseCase {
         return GetLineGraphDataUseCase(gqlRepository, mapper)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetProgressDataUseCase(
+            gqlRepository: GraphqlRepository,
+            progressMapper: ProgressMapper
+    ): GetProgressDataUseCase
+            = GetProgressDataUseCase(gqlRepository, progressMapper)
 }
