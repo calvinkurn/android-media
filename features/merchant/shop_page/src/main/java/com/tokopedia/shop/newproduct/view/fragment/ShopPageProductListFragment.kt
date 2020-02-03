@@ -9,6 +9,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -153,6 +154,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
         }
         //this is to reset fling and initial load position
+        if (recyclerView?.hasNestedScrollingParent(ViewCompat.TYPE_NON_TOUCH) != true) {
+            recyclerView?.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH);
+        }
         recyclerView?.smoothScrollBy(0, 1)
         shopProductAdapter.refreshSticky()
         recyclerView?.post {
