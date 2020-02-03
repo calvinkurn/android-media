@@ -21,6 +21,6 @@ object ApplinkConstInternalMechant {
     val BRANDLIST = "${INTERNAL_MERCHANT}/official-store/brand/{category_id}/"
     // Official Store Brandlist - Search Page
     @JvmField
-    val BRANDLIST_SEARCH = "${INTERNAL_MERCHANT}/official-store/brandlist-search/"
+    val BRANDLIST_SEARCH = "${INTERNAL_MERCHANT}/official-store/brand-search/"
 
 }
