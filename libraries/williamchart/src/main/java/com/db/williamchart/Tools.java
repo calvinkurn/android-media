@@ -139,12 +139,14 @@ public class Tools {
     }
 
     public static BaseWilliamChartConfig getSellerHomeLineGraphWidgetConfig(LineChartView lineChartView,
-                                                                            final BaseWilliamChartModel dataSetChartModel) {
+                                                                            BaseWilliamChartModel dataSetChartModel,
+                                                                            Tooltip tooltip,
+                                                                            TooltipConfiguration tooltipConfiguration) {
         int chartMarginTop = (lineChartView.getLayoutParams().height / 3) - 20;
         if (chartMarginTop <= 0) chartMarginTop = 0;
         return getCommonWilliamChartConfig(lineChartView, dataSetChartModel,
-                new SellerHomeDataSetConfig(), getTooltip(lineChartView.getContext(), getTooltipResLayout()),
-                new DefaultTooltipConfiguration(), new SellerHomeLineGraphConfig(chartMarginTop, 15));
+                new SellerHomeDataSetConfig(), tooltip, tooltipConfiguration,
+                new SellerHomeLineGraphConfig(chartMarginTop, 15));
     }
 
     public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,

@@ -6,9 +6,14 @@ import com.db.williamchart.Tools
 import com.db.williamchart.base.BaseWilliamChartConfig
 import com.db.williamchart.base.BaseWilliamChartModel
 import com.db.williamchart.model.LineSet
+import com.db.williamchart.renderer.StringFormatRenderer
+import com.db.williamchart.tooltip.Tooltip
 import com.db.williamchart.util.GMStatisticUtil
+import com.db.williamchart.util.KMNumbers
+import com.db.williamchart.util.TooltipConfiguration
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.util.getResDrawable
@@ -41,12 +46,14 @@ class LineGraphViewHolder(
         tvLineGraphTitle.text = element.title
         tvLineGraphValue.text = element.data?.header.orEmpty()
         tvLineGraphSubValue.text = element.data?.description.orEmpty().parseAsHtml()
+
         btnLineGraphMore.setOnClickListener {
-            context.toast("Selengkapnya")
+            openAppLink(element.appLink)
         }
         btnLineGraphNext.setOnClickListener {
-            context.toast("Selengkapnya")
+            openAppLink(element.appLink)
         }
+
         tvLineGraphTitle.setOnClickListener {
             context.toast("Information")
         }
@@ -56,6 +63,11 @@ class LineGraphViewHolder(
 
         val colors = intArrayOf(context.getResColor(R.color.sah_green_light), Color.TRANSPARENT)
         lineGraphView.setGradientFillColors(colors)
+    }
+
+    private fun openAppLink(appLink: String) {
+        if (appLink.isBlank()) return
+        RouteManager.route(itemView.context, appLink)
     }
 
     /**
@@ -69,19 +81,19 @@ class LineGraphViewHolder(
         val data: LineGraphDataUiModel? = element.data
         when {
             null == data -> {
-                showViewComponent(false)
+                showViewComponent(false, element)
                 onStateError(false)
                 onStateLoading(true)
             }
             data.error.isNotBlank() -> {
                 onStateLoading(false)
-                showViewComponent(false)
+                showViewComponent(false, element)
                 onStateError(true)
             }
             else -> {
                 onStateLoading(false)
                 onStateError(false)
-                showViewComponent(true)
+                showViewComponent(true, element)
                 showLineGraph(element)
             }
         }
@@ -98,7 +110,7 @@ class LineGraphViewHolder(
         btnLineGraphInformation.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
     }
 
-    private fun showViewComponent(isShown: Boolean) = with(itemView) {
+    private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) = with(itemView) {
         val componentVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
         tvLineGraphTitle.visibility = componentVisibility
         tvLineGraphValue.visibility = componentVisibility
@@ -107,18 +119,55 @@ class LineGraphViewHolder(
         btnLineGraphNext.visibility = componentVisibility
         btnLineGraphInformation.visibility = componentVisibility
         linearLineGraphView.visibility = componentVisibility
+
+        val isBtnMoreVisible = if (element.appLink.isNotBlank() && isShown) View.VISIBLE else View.GONE
+        btnLineGraphMore.visibility = isBtnMoreVisible
+        btnLineGraphNext.visibility = isBtnMoreVisible
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
         val yValue: List<Int> = element.data?.list.orEmpty().map { it.yVal }
         val xLabel: List<String> = element.data?.list.orEmpty().map { it.xLabel }
         val lineGraphModel: BaseWilliamChartModel = GMStatisticUtil.getChartModel(xLabel, yValue)
-        val lineGraphConfig: BaseWilliamChartConfig = Tools.getSellerHomeLineGraphWidgetConfig(itemView.lineGraphView, lineGraphModel)
-        lineGraphConfig.setDotDrawable(itemView.context.getResDrawable(R.drawable.sah_oval_chart_dot))
-        lineGraphConfig.setLineSet(LineSet().apply {
-            setDotsStrokeColor(itemView.context.getResColor(R.color.Green_G400))
-        })
-        lineGraphConfig.buildChart(itemView.lineGraphView)
+
+        val lineGraphConfig: BaseWilliamChartConfig = getLineGraphConfig(lineGraphModel)
+        with(lineGraphConfig) {
+            setDotDrawable(itemView.context.getResDrawable(R.drawable.sah_oval_chart_dot))
+            setLineSet(LineSet().apply {
+                setDotsStrokeColor(itemView.context.getResColor(R.color.Green_G400))
+            })
+            buildChart(itemView.lineGraphView)
+        }
+    }
+
+    private fun getLineGraphConfig(graphModel: BaseWilliamChartModel): BaseWilliamChartConfig {
+        return Tools.getSellerHomeLineGraphWidgetConfig(
+                itemView.lineGraphView, graphModel, getTooltip(), CustomTooltipConfiguration()
+        )
+    }
+
+    private fun getTooltip(): Tooltip {
+        return Tooltip(
+                itemView.context,
+                R.layout.sah_partial_line_graph_tooltip,
+                R.id.tvTitle,
+                R.id.tvValue,
+                StringFormatRenderer { s ->
+                    KMNumbers.formatSuffixNumbers(java.lang.Float.valueOf(s))
+                }
+        )
+    }
+
+    class CustomTooltipConfiguration : TooltipConfiguration {
+
+        companion object {
+            private const val DEFAULT_WIDTH = 56F
+            private const val DEFAULT_HEIGHT = 32F
+        }
+
+        override fun width(): Int = Tools.fromDpToPx(DEFAULT_WIDTH).toInt()
+
+        override fun height(): Int = Tools.fromDpToPx(DEFAULT_HEIGHT).toInt()
     }
 
     interface Listener {
