@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
  */
 
 class BannerViewModel : ImpressHolder(), HomeVisitable {
-
     var slides: List<BannerSlidesModel>? = null
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
