@@ -15,7 +15,8 @@ import com.tokopedia.sellerhome.view.viewholder.*
 class SellerHomeAdapterTypeFactory(
         private val tooltipClickListener: SellerHomeWidgetTooltipClickListener,
         private val cardWidgetListener: CardViewHolder.Listener,
-        private val lineGraphWidgetListener: LineGraphViewHolder.Listener
+        private val lineGraphWidgetListener: LineGraphViewHolder.Listener,
+        private val progressWidgetListener: ProgressViewHolder.Listener
 ) : BaseAdapterTypeFactory(), SellerHomeTypeFactory {
 
     override fun type(cardWidget: CardWidgetUiModel): Int {
@@ -38,11 +39,11 @@ class SellerHomeAdapterTypeFactory(
         return SectionViewHolder.RES_LAYOUT
     }
 
-    override fun type(progressWidget: ProgressUiModel): Int {
+    override fun type(progressWidgetWidget: ProgressWidgetUiModel): Int {
         return ProgressViewHolder.RES_LAYOUT
     }
 
-    override fun type(listWidget: ListUiModel): Int {
+    override fun type(listWidget: ListWidgetUiModel): Int {
         return ListViewHolder.RES_LAYOUT
     }
 
@@ -53,7 +54,7 @@ class SellerHomeAdapterTypeFactory(
             LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, lineGraphWidgetListener)
             CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent)
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
-            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, tooltipClickListener)
+            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, tooltipClickListener, progressWidgetListener)
             ListViewHolder.RES_LAYOUT -> ListViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

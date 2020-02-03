@@ -15,7 +15,7 @@ object GraphqlQuery {
             "      dataKey\n" +
             "      value\n" +
             "      description\n" +
-            "      state\n" +
+            "      colorState\n" +
             "      errorMsg\n" +
             "    }\n" +
             "  }\n" +
@@ -40,4 +40,20 @@ object GraphqlQuery {
             "    }\n" +
             "  }\n" +
             "}\n"
+
+    const val GET_PROGRESS_DATA = "query getProgressData(\$shopID: Int!, \$dataKey: [String!]!, \$date: String!) {\n" +
+            "getProgressBarData(shopID: \$shopID, dataKey: \$dataKey, date: \$date){\n" +
+            "    data {\n" +
+            "      dataKey\n" +
+            "      valueTxt\n" +
+            "      maxValueTxt\n" +
+            "      value\n" +
+            "      maxValue\n" +
+            "      state\n" +
+            "      subtitle\n" +
+            "      error\n" +
+            "      errorMsg\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
 }

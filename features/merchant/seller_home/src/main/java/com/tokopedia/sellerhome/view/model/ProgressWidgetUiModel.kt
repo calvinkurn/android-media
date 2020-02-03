@@ -5,11 +5,11 @@ import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 /**
  * Created By @yusufhendrawan on 2020-01-22
  */
-class ProgressUiModel(
+class ProgressWidgetUiModel(
         override val widgetType: String,
         override val title: String,
         override val appLink: String,
-        override val subTitle: String,
+        override val subtitle: String,
         override val tooltip: TooltipUiModel?,
         override val url: String,
         override val dataKey: String,
