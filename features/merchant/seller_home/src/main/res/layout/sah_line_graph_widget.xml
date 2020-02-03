@@ -35,19 +35,19 @@
             app:typographyWeight="bold"
             tools:text="Total Pendapatan" />
 
-        <com.tokopedia.unifycomponents.UnifyImageButton
+        <ImageView
             android:id="@+id/btnLineGraphInformation"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_margin="@dimen/layout_lvl1"
             android:background="@android:color/transparent"
-            android:padding="@dimen/layout_lvl1"
+            android:padding="3dp"
             app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/tvLineGraphTitle"
             app:layout_constraintTop_toTopOf="@+id/tvLineGraphTitle"
-            app:srcCompat="@drawable/ic_sah_information"
-            app:unifyImageButtonVariant="image" />
+            app:srcCompat="@drawable/ic_info" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvLineGraphValue"
@@ -81,7 +81,12 @@
             android:id="@+id/linearLineGraphView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue">

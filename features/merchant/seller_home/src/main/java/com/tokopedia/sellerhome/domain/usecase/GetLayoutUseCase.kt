@@ -19,7 +19,7 @@ class GetLayoutUseCase(
         return listOf(
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
-                        title = "Performa Toko, tes jika textnya kepanjangan akan seperti apa hasilnya",
+                        title = "Performa Toko",
                         subTitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
@@ -30,36 +30,91 @@ class GetLayoutUseCase(
                 ),
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
-                        title = "Card 1",
+                        title = "New Order",
                         subTitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
-                        dataKey = "",
+                        dataKey = "newOrder",
                         ctaText = "",
-                        data = CardDataUiModel()
+                        data = null
                 ),
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
-                        title = "Card 2",
+                        title = "Ready To Ship",
                         subTitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
-                        dataKey = "",
+                        dataKey = "readyToShipOrder",
                         ctaText = "",
-                        data = CardDataUiModel()
+                        data = null
                 ),
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
-                        title = "Card 3",
+                        title = "Complaint",
                         subTitle = "",
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
-                        dataKey = "",
+                        dataKey = "complaint",
                         ctaText = "",
-                        data = CardDataUiModel()
+                        data = null
+                ),
+                CardWidgetUiModel(
+                        widgetType = WidgetType.CARD,
+                        title = "Unread Chat",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "unreadChat",
+                        ctaText = "",
+                        data = null
+                ),
+                CardWidgetUiModel(
+                        widgetType = WidgetType.CARD,
+                        title = "Discussion",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "discussion",
+                        ctaText = "",
+                        data = null
+                ),
+                CardWidgetUiModel(
+                        widgetType = WidgetType.CARD,
+                        title = "Product View",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "productViewStatistic",
+                        ctaText = "",
+                        data = null
+                ),
+                CardWidgetUiModel(
+                        widgetType = WidgetType.CARD,
+                        title = "Shop Total Revenue",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "shopTotalRevenueStatistic",
+                        ctaText = "",
+                        data = null
+                ),
+                CardWidgetUiModel(
+                        widgetType = WidgetType.CARD,
+                        title = "Product Sold",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "productSoldStatistic",
+                        ctaText = "",
+                        data = null
                 ),
                 LineGraphWidgetUiModel(
                         widgetType = WidgetType.LINE_GRAPH,
@@ -68,52 +123,9 @@ class GetLayoutUseCase(
                         tooltip = TooltipUiModel("", "", false),
                         url = "",
                         appLink = "",
-                        dataKey = "",
+                        dataKey = "grossIncome",
                         ctaText = "",
-                        data = LineGraphDataUiModel(
-                                dataKey = "",
-                                description = "<span style=color:#EF144A;><b>-87%</b></span>",
-                                error = "",
-                                header = "Rp2.000.000",
-                                yLabels = emptyList(),
-                                list = listOf(
-                                        XYAxisUiModel(
-                                                xLabel = "29 des",
-                                                yLabel = "",
-                                                yVal = 1000
-                                        ),
-                                        XYAxisUiModel(
-                                                xLabel = "30 ",
-                                                yLabel = "",
-                                                yVal = 200
-                                        ),
-                                        XYAxisUiModel(
-                                                xLabel = "31",
-                                                yLabel = "",
-                                                yVal = 600
-                                        ),
-                                        XYAxisUiModel(
-                                                xLabel = "1 jan",
-                                                yLabel = "",
-                                                yVal = 1200
-                                        ),
-                                        XYAxisUiModel(
-                                                xLabel = "2",
-                                                yLabel = "",
-                                                yVal = 700
-                                        ),
-                                        XYAxisUiModel(
-                                                xLabel = "3",
-                                                yLabel = "",
-                                                yVal = 1100
-                                        ),
-                                        XYAxisUiModel(
-                                                xLabel = "4",
-                                                yLabel = "",
-                                                yVal = 1500
-                                        )
-                                )
-                        )
+                        data = null
                 ),
                 CarouselWidgetUiModel(
                         widgetType = WidgetType.CAROUSEL,

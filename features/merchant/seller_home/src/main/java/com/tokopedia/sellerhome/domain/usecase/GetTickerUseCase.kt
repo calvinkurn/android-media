@@ -14,7 +14,7 @@ class GetTickerUseCase @Inject constructor(
 ) : UseCase<List<TickerUiModel>>() {
 
     override suspend fun executeOnBackground(): List<TickerUiModel> {
-        return /*tickerRepo.getTicker()*/ getDummyTickerList()
+        return tickerRepo.getTicker()
     }
 
     private fun getDummyTickerList(): List<TickerUiModel> {
