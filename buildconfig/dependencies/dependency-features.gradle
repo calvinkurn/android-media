@@ -28,6 +28,8 @@ ext {
             affiliateCommon                 : ":features:content:affiliate_common",
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
+            play                            : ":features:content:play",
+            playCommon                      : ":features:content:play_common",
 
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
