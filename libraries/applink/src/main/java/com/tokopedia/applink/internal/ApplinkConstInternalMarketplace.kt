@@ -91,6 +91,14 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
 
+    //ShopInfoActivity
+    @JvmField
+    val SHOP_INFO = "$INTERNAL_MARKETPLACE/shop-info/{shop_id}/"
+
+    //ShopPageActivity
+    @JvmField
+    val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
+
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
@@ -128,6 +136,9 @@ object ApplinkConstInternalMarketplace {
     //ShopSettingsAddressActivity
     @JvmField
     val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
+
+    @JvmField
+    val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField
@@ -179,6 +190,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    @JvmField
+    val SHOP_PAGE_SETTING = "$INTERNAL_MARKETPLACE/shop-page-setting"
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
