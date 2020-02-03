@@ -179,7 +179,7 @@ class GetLayoutUseCase(
                 ),
                 CarouselWidgetUiModel(
                         widgetType = WidgetType.CAROUSEL,
-                        title = "Caruosel",
+                        title = "Carousel",
                         subtitle = "",
                         tooltip = null,
                         url = "",
