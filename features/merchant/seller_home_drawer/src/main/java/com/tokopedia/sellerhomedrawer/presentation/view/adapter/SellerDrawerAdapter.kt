@@ -39,11 +39,13 @@ class SellerDrawerAdapter(val context: Context,
         var flashSaleIndexPosition = -1
         if (isFlashSaleVisible) {
             visitables.forEachIndexed{ index, visitable ->
-                if ((visitable as SellerDrawerItem).id == SellerHomeState.DrawerPosition.SELLER_TOP_ADS &&
-                        (visitables.get(index + 1) as SellerDrawerItem).id != SellerHomeState.DrawerPosition.SELLER_FLASH_SALE) {
-                    flashSaleIndexPosition = index + 1
+                if (visitable is SellerDrawerItem) {
+                    if (visitable.id == SellerHomeState.DrawerPosition.SELLER_TOP_ADS &&
+                            (visitables.get(index + 1) as SellerDrawerItem).id != SellerHomeState.DrawerPosition.SELLER_FLASH_SALE) {
+                        flashSaleIndexPosition = index + 1
+                    }
+                    return@forEachIndexed
                 }
-                return@forEachIndexed
             }
         }
         if (flashSaleIndexPosition >= 0) {
