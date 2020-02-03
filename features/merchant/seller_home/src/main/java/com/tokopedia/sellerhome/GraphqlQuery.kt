@@ -15,7 +15,7 @@ object GraphqlQuery {
             "      dataKey\n" +
             "      value\n" +
             "      description\n" +
-            "      colorState\n" +
+            "      state\n" +
             "      errorMsg\n" +
             "    }\n" +
             "  }\n" +

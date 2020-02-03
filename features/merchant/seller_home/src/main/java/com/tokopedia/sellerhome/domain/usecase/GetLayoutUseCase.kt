@@ -139,39 +139,6 @@ class GetLayoutUseCase(
                         ctaText = "",
                         data = null
                 ),
-                CarouselWidgetUiModel(
-                        widgetType = WidgetType.CAROUSEL,
-                        title = "Caruosel",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "",
-                        ctaText = "",
-                        data = CarouselDataUiModel(
-                                data = listOf(
-                                        CarouselDataModel(
-                                                id = "asasd",
-                                                url = "http://tokopedia.com/blablablaal",
-                                                applink = "https://seller.tokopedia.com/edu/cara-melihat-promosi-affiliate/",
-                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg"
-                                        ),
-                                        CarouselDataModel(
-                                                id = "",
-                                                url = "http://placekitten.com/300/101",
-                                                applink = "",
-                                                featuredMediaURL = "http://placekitten.com/300/102"
-                                        ),
-                                        CarouselDataModel(
-                                                id = "",
-                                                url = "http://placekitten.com/300/102",
-                                                applink = "",
-                                                featuredMediaURL = "http://placekitten.com/300/103"
-                                        )
-                                ),
-                                state = CarouselState.NORMAL
-                        )
-                ),
                 ProgressWidgetUiModel(
                         widgetType = WidgetType.PROGRESS,
                         title = "Power Merchant (Aktif)",
@@ -206,16 +173,41 @@ class GetLayoutUseCase(
                         ),
                         url = "",
                         appLink = "",
+                        dataKey = "shopScore",
+                        ctaText = "",
+                        data = null
+                ),
+                CarouselWidgetUiModel(
+                        widgetType = WidgetType.CAROUSEL,
+                        title = "Carousel",
+                        subtitle = "",
+                        tooltip = null,
+                        url = "",
+                        appLink = "",
                         dataKey = "",
                         ctaText = "",
-                        data = ProgressDataUiModel(
-                                barTitle = "Skor",
-                                valueTxt = "80jt",
-                                maxValueTxt = "100jt",
-                                value = 80,
-                                maxValue = 100,
-                                colorState = ShopScorePMWidget.State.GREEN,
-                                subtitle = "Please maintain your shop score"
+                        data = CarouselDataUiModel(
+                                data = listOf(
+                                        CarouselDataModel(
+                                                id = "asasd",
+                                                url = "http://tokopedia.com/blablablaal",
+                                                applink = "https://seller.tokopedia.com/edu/cara-melihat-promosi-affiliate/",
+                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg"
+                                        ),
+                                        CarouselDataModel(
+                                                id = "",
+                                                url = "http://placekitten.com/300/101",
+                                                applink = "",
+                                                featuredMediaURL = "http://placekitten.com/300/102"
+                                        ),
+                                        CarouselDataModel(
+                                                id = "",
+                                                url = "http://placekitten.com/300/102",
+                                                applink = "",
+                                                featuredMediaURL = "http://placekitten.com/300/103"
+                                        )
+                                ),
+                                state = CarouselState.NORMAL
                         )
                 ),
                 ListWidgetUiModel(

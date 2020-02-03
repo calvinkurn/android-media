@@ -33,7 +33,7 @@ class ProgressMapper @Inject constructor() {
             GOOD -> ShopScorePMWidget.State.GREEN
             WARNING -> ShopScorePMWidget.State.YELLOW
             DANGER -> ShopScorePMWidget.State.RED
-            else -> ShopScorePMWidget.State.RED
+            else -> ShopScorePMWidget.State.GREEN
         }
     }
 

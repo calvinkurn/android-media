@@ -27,7 +27,7 @@ data class CardDataModel(
         @SerializedName("errorMsg")
         val errorMsg: String?,
         @Expose
-        @SerializedName("colorState")
+        @SerializedName("state")
         val state: String?,
         @Expose
         @SerializedName("value")
