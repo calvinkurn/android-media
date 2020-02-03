@@ -12,7 +12,6 @@ import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeWidgetListener
 import com.tokopedia.sellerhome.WidgetType
@@ -42,6 +41,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     companion object {
         @JvmStatic
         fun newInstance() = SellerHomeFragment()
+
+        const val TAG_TOOLTIP = "seller_home_tooltip"
     }
 
     @Inject
@@ -50,6 +51,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
+
+    private lateinit var bottomSheet: BottomSheetUnify
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -67,9 +70,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideTooltipIfExist()
         setupView()
         getWidgetsLayout()
         getTickerView()
+    }
+
+    private fun hideTooltipIfExist() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
+        if (bottomSheet != null) {
+            (bottomSheet as BottomSheetUnify).dismiss()
+        }
     }
 
     private fun setupView() = view?.run {
@@ -107,17 +118,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private fun showTooltip(tooltip: TooltipUiModel) {
         hideSoftKeyboardIfPresent()
 
-        val bottomSheet = BottomSheetUnify()
+        if (!::bottomSheet.isInitialized) {
+            bottomSheet = BottomSheetUnify()
+        }
+
         bottomSheet.setTitle(tooltip.title)
         bottomSheet.clearClose(false)
         bottomSheet.clearHeader(false)
         bottomSheet.setCloseClickListener { bottomSheet.dismiss() }
-        
+
         val bottomSheetContentView = SellerHomeBottomSheetContent(context!!)
         bottomSheetContentView.setTooltipData(tooltip)
 
         bottomSheet.setChild(bottomSheetContentView)
-        bottomSheet.show(childFragmentManager, "Seller Home Bottom Sheet")
+        bottomSheet.show(childFragmentManager, TAG_TOOLTIP)
     }
 
     private fun hideSoftKeyboardIfPresent() {

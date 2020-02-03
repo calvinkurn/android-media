@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.sah_bottom_sheet_content.view.*
 
 class SellerHomeBottomSheetContent : LinearLayout {
 
+    private var tooltip: TooltipUiModel? = null
     private lateinit var adapter: BaseListAdapter<Visitable<*>, BottomSheetAdapterTypeFactory>
 
     constructor(context: Context) : super(context) {
@@ -45,6 +46,7 @@ class SellerHomeBottomSheetContent : LinearLayout {
     }
 
     fun setTooltipData(tooltip: TooltipUiModel) {
+        this.tooltip = tooltip
         with(tooltip) {
             val items = mutableListOf<BaseBottomSheetUiModel>()
 
