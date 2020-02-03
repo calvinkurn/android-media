@@ -9,6 +9,7 @@
     <dimen name="fontxl">22sp</dimen>
     <dimen name="fontvl">25sp</dimen>
     <dimen name="font_medium">16sp</dimen>
+    <dimen name="font_large">18sp</dimen>
     <dimen name="fontvs">12sp</dimen>
     <dimen name="fontvvs">10sp</dimen>
     <dimen name="fontvvvs">8sp</dimen>
@@ -99,6 +100,7 @@
     <dimen name="text_size_xxsmall">10sp</dimen>
     <dimen name="text_size_xsmall">11sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_s_medium">13sp</dimen>
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_l_medium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
@@ -122,6 +124,8 @@
     <!--NEW DIMENSION USED FOR NEW FRAGMENT_ADD_PRODUCT UI-->
 
     <dimen name="bottom_navigation_elevation">20dp</dimen>
+    <dimen name="product_grid_padding">10dp</dimen>
+    <dimen name="wishlish_button_size">38dp</dimen>
 
 
     <!--NEW ONBOARDING-->
