@@ -27,15 +27,8 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
 
     override fun bind(element: ProgressWidgetUiModel) {
         listener.getProgressData()
-        showLoadingState()
-        itemView.postDelayed({
-            showErrorState(element)
-        }, 5000)
-        itemView.postDelayed({
-            showSuccessState(element)
-        }, 10000)
-
         createListeners(element.tooltip ?: return)
+        showSuccessState(element)
     }
 
     private fun showLoadingState() {
