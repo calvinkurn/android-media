@@ -992,7 +992,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             topAdsGetProductManage = it.topAdsGetProductManage
             actionButtonView.renderData(it.isExpressCheckoutType, hasTopAds())
 
-            if (!viewModel.isUserSessionActive && ::performanceMonitoringP2Login.isInitialized)
+            if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
 
             it.pdpAffiliate?.let { renderAffiliate(it) }
