@@ -653,7 +653,9 @@ open class HomePresenter (
                 }
                 _requestImageTestLiveData.value = Event(playBanner.copy(playCardHome = it.first()))
             }
-        })
+        }){
+            clearPlayBanner()
+        }
     }
 
     // If the image is valid it will be set play banner to UI
