@@ -36,17 +36,24 @@ class ShopScorePMWidget : FrameLayout {
         View.inflate(context, R.layout.sah_progress_bar_widget, this)
     }
 
-    fun setProgress(progress: Int) {
-        progress_bar_current.progress = progress.toFloat()
-        tv_current_progress.text = "$progress"
-    }
-
-    fun setMaxProgress(maxProgress: Int) {
-        tv_max_progress.text = "/".plus("$maxProgress")
-    }
-
     fun setProgressTitle(title: String) {
         tv_progress_title.text = title
+    }
+
+    fun setCurrentProgressText(progress: String) {
+        tv_current_progress.text = progress
+    }
+
+    fun setMaxProgressText(progress: String) {
+        tv_max_progress.text = "/".plus(progress)
+    }
+
+    fun setProgressValue(progress: Int) {
+        progress_bar_current.progress = progress.toFloat()
+    }
+
+    fun setMaxProgressValue(maxProgress: Int) {
+        progress_bar_current.max = maxProgress.toFloat()
     }
 
     fun setProgressColor(state: State) {
@@ -57,7 +64,7 @@ class ShopScorePMWidget : FrameLayout {
         }
 
         progress_bar_current.setProgressColor(colors)
-        tv_current_progress.setTextColor(ContextCompat.getColor(context, colors.last()))
+        tv_current_progress.setTextColor(colors.last())
     }
 
     enum class State {

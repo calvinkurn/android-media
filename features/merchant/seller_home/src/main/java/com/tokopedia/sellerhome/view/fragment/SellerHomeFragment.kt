@@ -8,18 +8,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.SellerHomeWidgetTooltipClickListener
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.util.toJson
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
+import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.CardViewHolder
 import com.tokopedia.sellerhome.view.viewholder.LineGraphViewHolder
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -33,12 +36,13 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(),
-        CardViewHolder.Listener, LineGraphViewHolder.Listener {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetTooltipClickListener, CardViewHolder.Listener, LineGraphViewHolder.Listener {
 
     companion object {
         @JvmStatic
         fun newInstance() = SellerHomeFragment()
+
+        const val TAG_TOOLTIP = "seller_home_tooltip"
     }
 
     @Inject
@@ -51,6 +55,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
+
+    private lateinit var bottomSheet: BottomSheetUnify
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -68,11 +74,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideTooltipIfExist()
         setupView()
         getWidgetsLayout()
         getTickerView()
         observeCardLiveData()
         observeLineGraphLiveData()
+    }
+
+    private fun hideTooltipIfExist() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
+        if (bottomSheet != null) {
+            (bottomSheet as BottomSheetUnify).dismiss()
+        }
     }
 
     private fun setupView() = view?.run {
@@ -106,7 +120,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this, this)
+        return SellerHomeAdapterTypeFactory(this, this, this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -146,6 +160,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         })
         showGetWidgetShimmer(true)
         mViewModel.getWidgetLayout()
+    }
+
+    override fun onInfoTooltipClicked(tooltip: TooltipUiModel) {
+        showTooltip(tooltip)
+    }
+
+    private fun showTooltip(tooltip: TooltipUiModel) {
+        hideSoftKeyboardIfPresent()
+
+        if (!::bottomSheet.isInitialized) {
+            bottomSheet = BottomSheetUnify()
+        }
+
+        bottomSheet.setTitle(tooltip.title)
+        bottomSheet.clearClose(false)
+        bottomSheet.clearHeader(false)
+        bottomSheet.setCloseClickListener { bottomSheet.dismiss() }
+
+        val bottomSheetContentView = SellerHomeBottomSheetContent(context!!)
+        bottomSheetContentView.setTooltipData(tooltip)
+
+        bottomSheet.setChild(bottomSheetContentView)
+        bottomSheet.show(childFragmentManager, TAG_TOOLTIP)
+    }
+
+    private fun hideSoftKeyboardIfPresent() {
+        activity?.let {
+            CommonUtils.hideKeyboard(it, it.currentFocus)
+        }
     }
 
     private fun getTickerView() {
@@ -226,7 +269,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             val adapter = TickerPagerAdapter(activity, tickersData)
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    //implement listener on click
+                    //implement tooltipClickListener on click
                 }
             })
 

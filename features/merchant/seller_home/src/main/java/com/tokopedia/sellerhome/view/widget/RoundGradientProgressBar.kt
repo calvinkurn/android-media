@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.widget
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import androidx.core.content.ContextCompat
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
 
 
@@ -40,8 +39,8 @@ class RoundGradientProgressBar : RoundCornerProgressBar {
     }
 
     fun setProgressColor(progressColors: IntArray) {
-        this.progressColors = progressColors.map { ContextCompat.getColor(context, it) }.toIntArray()
-        super.setProgressColor(ContextCompat.getColor(context, progressColors.first()))
+        this.progressColors = progressColors
+        super.setProgressColor(progressColors.first())
     }
 }
 

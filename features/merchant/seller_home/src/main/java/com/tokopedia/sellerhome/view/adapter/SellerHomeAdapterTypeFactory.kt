@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.sellerhome.SellerHomeWidgetTooltipClickListener
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.*
 
@@ -12,6 +13,7 @@ import com.tokopedia.sellerhome.view.viewholder.*
  */
 
 class SellerHomeAdapterTypeFactory(
+        private val tooltipClickListener: SellerHomeWidgetTooltipClickListener,
         private val cardWidgetListener: CardViewHolder.Listener,
         private val lineGraphWidgetListener: LineGraphViewHolder.Listener
 ) : BaseAdapterTypeFactory(), SellerHomeTypeFactory {
@@ -51,7 +53,7 @@ class SellerHomeAdapterTypeFactory(
             LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, lineGraphWidgetListener)
             CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent)
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
-            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent)
+            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, tooltipClickListener)
             ListViewHolder.RES_LAYOUT -> ListViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
