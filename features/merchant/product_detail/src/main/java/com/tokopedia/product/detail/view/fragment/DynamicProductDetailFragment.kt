@@ -46,6 +46,7 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -618,11 +619,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onEtalaseClicked(url: String) {
-        val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: 0
+        val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
         val etalaseName = viewModel.getDynamicProductInfoP1?.basic?.menu?.name ?: ""
+        val shopId = viewModel.shopInfo?.shopCore?.shopID ?: ""
 
-        dynamicProductDetailTracking.eventEtalaseClicked(etalaseId.toString(), etalaseName)
-        RouteManager.route(context, url)
+        dynamicProductDetailTracking.eventEtalaseClicked(etalaseId, etalaseName)
+        val intent = RouteManager.getIntent(context, if (etalaseId.isNotEmpty()) {
+            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
+        } else {
+            UriUtil.buildUri(ApplinkConst.SHOP, shopId)
+        })
+        startActivity(intent)
     }
 
     /**
@@ -949,7 +956,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeData() {
+        observeP1()
+        observeP2Login()
+        observeP2Shop()
+        observeP2General()
+        observeP3()
+        observeToggleFavourite()
+        observeMoveToWarehouse()
+        observeMoveToEtalase()
+        observeRecommendationProduct()
+    }
+
+    private fun observeP1() {
         viewModel.productLayout.observe(viewLifecycleOwner, Observer {
+            if (::performanceMonitoringP1.isInitialized)
+                performanceMonitoringP1.stopTrace()
             when (it) {
                 is Success -> {
                     context?.let { context ->
@@ -963,67 +984,95 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }
         })
+    }
 
-        viewModel.loadTopAdsProduct.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    pdpHashMapUtil.updateRecomData(it.data)
-                    dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil.listProductRecomMap)
-                }
-                is Fail -> dynamicAdapter.removeRecommendation(pdpHashMapUtil.listProductRecomMap)
-            }
-        })
-
+    private fun observeP2Login() {
         viewModel.p2Login.observe(this, Observer {
             topAdsGetProductManage = it.topAdsGetProductManage
             actionButtonView.renderData(it.isExpressCheckoutType, hasTopAds())
 
-            if (::performanceMonitoringFull.isInitialized)
+            if (!viewModel.isUserSessionActive && ::performanceMonitoringP2Login.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
 
             it.pdpAffiliate?.let { renderAffiliate(it) }
-            pdpHashMapUtil.updateDataP2Login(it)
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+            if (::pdpHashMapUtil.isInitialized) {
+                pdpHashMapUtil.updateDataP2Login(it)
+                dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+            }
         })
+    }
 
+    private fun observeP2Shop() {
         viewModel.p2ShopDataResp.observe(this, Observer {
             if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
                 performanceMonitoringFull.stopTrace()
-
             performanceMonitoringP2.stopTrace()
-            onSuccessGetDataP2Shop(it)
-        })
 
+            if (::pdpHashMapUtil.isInitialized) {
+                onSuccessGetDataP2Shop(it)
+            }
+        })
+    }
+
+    private fun observeP2General() {
         viewModel.p2General.observe(this, Observer {
-            performanceMonitoringP2General.stopTrace()
-            onSuccessGetDataP2General(it)
-        })
+            if (::performanceMonitoringP2General.isInitialized)
+                performanceMonitoringP2General.stopTrace()
 
+            if (::pdpHashMapUtil.isInitialized) {
+                onSuccessGetDataP2General(it)
+            }
+        })
+    }
+
+    private fun observeP3() {
         viewModel.productInfoP3resp.observe(this, Observer {
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringFull.stopTrace()
 
-            onSuccessGetDataP3Resp(it)
+            if (::pdpHashMapUtil.isInitialized) {
+                onSuccessGetDataP3Resp(it)
+            }
         })
+    }
 
+    private fun observeToggleFavourite() {
         viewModel.toggleFavoriteResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessFavoriteShop(it.data)
-                is Fail -> onFailFavoriteShop(it.throwable)
+                is Success -> if (::pdpHashMapUtil.isInitialized) onSuccessFavoriteShop(it.data)
+                is Fail -> if (::pdpHashMapUtil.isInitialized) onFailFavoriteShop(it.throwable)
             }
         })
+    }
 
+    private fun observeMoveToWarehouse() {
         viewModel.moveToWarehouseResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessWarehouseProduct()
-                is Fail -> onErrorWarehouseProduct(it.throwable)
+                is Success -> if (::pdpHashMapUtil.isInitialized) onSuccessWarehouseProduct()
+                is Fail -> if (::pdpHashMapUtil.isInitialized) onErrorWarehouseProduct(it.throwable)
             }
         })
+    }
 
+    private fun observeMoveToEtalase() {
         viewModel.moveToEtalaseResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessMoveToEtalase()
-                is Fail -> onErrorMoveToEtalase(it.throwable)
+                is Success -> if (::pdpHashMapUtil.isInitialized) onSuccessMoveToEtalase()
+                is Fail -> if (::pdpHashMapUtil.isInitialized) onErrorMoveToEtalase(it.throwable)
+            }
+        })
+    }
+
+    private fun observeRecommendationProduct() {
+        viewModel.loadTopAdsProduct.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (::pdpHashMapUtil.isInitialized) {
+                        pdpHashMapUtil.updateRecomData(it.data)
+                        dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil.listProductRecomMap)
+                    }
+                }
+                is Fail -> if (::pdpHashMapUtil.isInitialized) dynamicAdapter.removeRecommendation(pdpHashMapUtil.listProductRecomMap)
             }
         })
     }

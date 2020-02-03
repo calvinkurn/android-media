@@ -1647,7 +1647,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
-        performanceMonitoringP1.stopTrace()
         val data = productInfoP1.productInfo
         // Assign productId with selected variant Id
         productId = data.basic.id.toString()

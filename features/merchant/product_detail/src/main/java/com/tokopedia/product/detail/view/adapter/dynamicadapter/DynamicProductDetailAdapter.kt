@@ -49,19 +49,25 @@ class DynamicProductDetailAdapter(
     }
 
     fun removeDiscussionSection(data: ProductDiscussionDataModel?) {
-        clearElement(data)
+        data?.let {
+            clearElement(it)
+        }
     }
 
     fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
-        clearElement(data)
+        data?.let {
+            clearElement(it)
+        }
     }
 
     fun removeMostHelpfulReviewSection(data: ProductMostHelpfulReviewDataModel?) {
-        clearElement(data)
+        data?.let {
+            clearElement(it)
+        }
     }
 
     fun getTradeinPosition(data: ProductGeneralInfoDataModel?): Int {
-        return if(data != null) {
+        return if (data != null) {
             list.indexOf(data)
         } else {
             0
