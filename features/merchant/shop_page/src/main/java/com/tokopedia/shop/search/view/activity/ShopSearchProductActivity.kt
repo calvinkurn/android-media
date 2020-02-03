@@ -16,6 +16,7 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
         const val KEY_SHOP_INFO_CACHE_MANAGER_ID = "keyShopInfoCacheManagerId"
         const val KEY_SHOP_ATTRIBUTION = "keyShopAttribution"
         const val KEY_KEYWORD = "keyKeyword"
+        const val KEY_SORT_ID = "keySortId"
 
         @JvmStatic
         fun createIntent(context: Context, keyword: String, cacheManagerId: String, shopAttribution: String?): Intent {
@@ -23,6 +24,14 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             intent.putExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID, cacheManagerId)
             intent.putExtra(KEY_SHOP_ATTRIBUTION, shopAttribution)
             intent.putExtra(KEY_KEYWORD, keyword)
+            return intent
+        }
+
+        @JvmStatic
+        fun createIntent(context: Context, keyword: String, cacheManagerId: String,
+                         shopAttribution: String?, sortId: String): Intent {
+            val intent = createIntent(context, keyword, cacheManagerId, shopAttribution)
+            intent.putExtra(KEY_SORT_ID, sortId)
             return intent
         }
     }
@@ -33,6 +42,8 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
 
     private var keyword: String = ""
 
+    private var sortId: String = ""
+
     private var component: ShopComponent? = null
 
     private fun getIntentData() {
@@ -40,6 +51,7 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             shopInfoCacheManagerId = getStringExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
             shopAttribution = getStringExtra(KEY_SHOP_ATTRIBUTION).orEmpty()
             keyword = getStringExtra(KEY_KEYWORD).orEmpty()
+            sortId = getStringExtra(KEY_SORT_ID).orEmpty()
         }
     }
 
@@ -51,7 +63,8 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     override fun getNewFragment() = ShopSearchProductFragment.createInstance(
             keyword,
             shopInfoCacheManagerId,
-            shopAttribution
+            shopAttribution,
+            sortId
     )
 
     override fun getComponent(): ShopComponent = component

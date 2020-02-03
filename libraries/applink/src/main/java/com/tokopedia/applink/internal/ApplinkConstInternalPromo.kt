@@ -36,4 +36,11 @@ object ApplinkConstInternalPromo {
     const val TOKOPOINTS_COUPON = "${INTERNAL_TOKOPOINTS}/kupon-saya"
     const val TOKOPOINTS_CATALOG_DETAIL = "${INTERNAL_TOKOPOINTS}/tukar-detail/{catalog_code}"
     const val TOKOPOINTS_CATALOG_LISTING = "${INTERNAL_TOKOPOINTS}/tukar-point/{slug_category}/{slug_sub_category}"
+
+    /**
+     * This const used to redirect to PromoCheckoutListUmrahActivity
+     * This const used to redirect to PromoCheckoutDetailUmrahActivity
+     */
+    const val PROMO_LIST_UMROH = "$INTERNAL_PROMO/list/umroh"
+    const val PROMO_DETAIL_UMROH = "$INTERNAL_PROMO/detail/umroh"
 }

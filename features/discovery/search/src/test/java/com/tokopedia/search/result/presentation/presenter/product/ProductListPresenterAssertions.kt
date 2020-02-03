@@ -25,7 +25,6 @@ fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSect
     productListView.addLoading()
     productListView.setTotalSearchResultCount(any())
     productListView.stopTracePerformanceMonitoring()
-    productListView.updateScrollListener()
 }
 
 fun MockKVerificationScope.verifyHideLoading(productListView: ProductListSectionContract.View) {
@@ -60,4 +59,13 @@ fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductList
     productListView.updateScrollListener()
 
     productListView.hideRefreshLayout()
+}
+
+fun MockKVerificationScope.verifyIsVisible(productListView: ProductListSectionContract.View) {
+    productListView.setupSearchNavigation()
+    productListView.trackScreenAuthenticated()
+}
+
+fun MockKVerificationScope.verifyIsAdded(productListView: ProductListSectionContract.View) {
+    productListView.reloadData()
 }

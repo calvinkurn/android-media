@@ -22,7 +22,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -65,7 +64,7 @@ import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.common.widget.RecyclerViewPadding
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
-import com.tokopedia.shop.page.view.activity.ShopPageActivity
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -75,6 +74,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
+import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.model.*
@@ -111,7 +111,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private var shopInfo: ShopInfo? = null
     private var shopModuleRouter: ShopModuleRouter? = null
 
-    private var onShopProductListFragmentListener: ShopProductListFragment.OnShopProductListFragmentListener? = null
+    private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
 
     private val sortName = Integer.toString(Integer.MIN_VALUE)
     private var recyclerView: RecyclerView? = null
@@ -1088,7 +1088,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         shopModuleRouter = context.applicationContext as ShopModuleRouter
-        onShopProductListFragmentListener = context as? ShopProductListFragment.OnShopProductListFragmentListener
+        onShopProductListFragmentListener = context as? OnShopProductListFragmentListener
 
     }
 

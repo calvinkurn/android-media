@@ -32,6 +32,7 @@ import com.readystatesoftware.chuck.Chuck;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analytics.debugger.GtmLogger;
+import com.tokopedia.analytics.debugger.IrisLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
@@ -84,6 +85,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleChuck;
 
     private TextView vGoToAnalytics;
+    private TextView vGoToAnalyticsError;
+    private TextView vGoToIrisSaveLogDB;
+    private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
 
     private CheckBox toggleUiBlockDebugger;
@@ -163,6 +167,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleChuck = findViewById(R.id.toggle_chuck);
 
         vGoToAnalytics = findViewById(R.id.goto_analytics);
+        vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
+        vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
+        vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
+
         toggleAnalytics = findViewById(R.id.toggle_analytics);
 
         toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
@@ -280,6 +288,17 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
         vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
+        vGoToAnalyticsError.setOnClickListener(v -> {
+            GtmLogger.getInstance(DeveloperOptionActivity.this).openErrorActivity();
+        });
+
+        vGoToIrisSaveLogDB.setOnClickListener(v -> {
+            IrisLogger.getInstance(DeveloperOptionActivity.this).openSaveActivity();
+        });
+
+        vGoToIrisSendLogDB.setOnClickListener(v -> {
+            IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
+        });
 
         SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");
         toggleUiBlockDebugger.setChecked(uiBlockDebuggerPref.getBoolean("isEnabled", false));
