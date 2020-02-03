@@ -20,10 +20,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
@@ -116,6 +120,7 @@ import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
+import kotlinx.android.synthetic.main.fragment_som_detail.swipe_refresh_layout
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
@@ -125,10 +130,30 @@ import kotlin.collections.HashMap
 /**x
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
+class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBottomSheetCourierProblemsAdapter.ActionListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkEdit: CoachMarkItem by lazy {
+        CoachMarkItem(btn_secondary, getString(R.string.coachmark_edit), getString(R.string.coachmark_edit_info))
+    }
+
+    private val coachMarkAccept: CoachMarkItem by lazy {
+        CoachMarkItem(btn_primary, getString(R.string.coachmark_terima_pesanan), getString(R.string.coachmark_terima_pesanan_info))
+    }
+
+    private val coachMarkChat: CoachMarkItem by lazy {
+        CoachMarkItem(view?.rootView?.findViewById(R.id.som_action_chat),
+                getString(R.string.coachmark_chat),
+                getString(R.string.coachmark_chat_info)
+        )
+    }
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
@@ -148,12 +173,16 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private val FLAG_CONFIRM_SHIPPING = 3553
     private lateinit var reasonCourierProblemText: String
     private val tagConfirm = "tag_confirm"
+    private var refreshHandler: RefreshHandler? = null
+
+    private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
     companion object {
+        private val TAG_COACHMARK_DETAIL = "coachmark"
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
@@ -205,13 +234,30 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.chat_menu, menu)
+        inflater.inflate(R.menu.chat_menu, menu)
+    }
+
+    override fun onAddedCoachMarkHeader(coachMarkItemHeader: CoachMarkItem) {
+        coachMarkItems.add(coachMarkChat)
+        coachMarkItems.add(coachMarkItemHeader)
+    }
+
+    override fun onAddedCoachMarkProducts(coachMarkItemProduct: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemProduct)
+    }
+
+    override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemShipping)
+        addedCoachMark()
     }
 
     private fun prepareLayout() {
+        refreshHandler = RefreshHandler(swipe_refresh_layout, this)
+        refreshHandler?.setPullEnabled(true)
         somDetailAdapter = SomDetailAdapter().apply {
             setActionListener(this@SomDetailFragment)
         }
@@ -303,6 +349,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun renderDetail() {
+        refreshHandler?.finishRefresh()
+        listDetailData = arrayListOf()
+        somDetailAdapter.listDataDetail = arrayListOf()
         renderHeader()
         renderProducts()
         renderShipment()
@@ -311,6 +360,22 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         somDetailAdapter.notifyDataSetChanged()
+    }
+
+    private fun addedCoachMark(){
+        if(detailResponse.button.isNotEmpty()){
+            coachMarkItems.add(coachMarkEdit)
+            coachMarkItems.add(coachMarkAccept)
+            showCoachMark()
+        } else {
+            showCoachMark()
+        }
+    }
+
+    private fun showCoachMark(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK_DETAIL)){
+            coachMark.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
+        }
     }
 
     private fun renderHeader() {
@@ -1208,5 +1273,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     override fun onClickProduct(productId: Int) {
         startActivity(RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString()))
+    }
+
+    override fun onRefresh(view: View?) {
+        loadDetail()
     }
 }

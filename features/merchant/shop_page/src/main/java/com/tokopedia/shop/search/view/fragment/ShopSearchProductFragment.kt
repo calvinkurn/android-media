@@ -1,18 +1,27 @@
 package com.tokopedia.shop.search.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Handler
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
@@ -24,23 +33,28 @@ import com.tokopedia.applink.ApplinkConst.DISCOVERY_SEARCH
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
+import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.page.view.activity.ShopPageActivity.Companion.SHOP_LOCATION_PLACEHOLDER
-import com.tokopedia.shop.page.view.activity.ShopPageActivity.Companion.SHOP_NAME_PLACEHOLDER
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_LOCATION_PLACEHOLDER
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_NAME_PLACEHOLDER
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_KEYWORD
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_ATTRIBUTION
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_INFO_CACHE_MANAGER_ID
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SORT_ID
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDataModel
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResultDataModel
@@ -49,13 +63,16 @@ import com.tokopedia.shop.search.view.viewmodel.ShopSearchProductViewModel
 import com.tokopedia.shop.search.widget.ShopSearchProductDividerItemDecoration
 import com.tokopedia.shop.search.widget.share.ShopShare
 import com.tokopedia.shop.search.widget.share.ShopShareData
+import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_search_product.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataModel, ShopSearchProductAdapterTypeFactory>() {
 
@@ -63,6 +80,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
+        private const val REQUEST_CODE_SORT = 103
         private const val KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID = "keyShopInfoCacheManagerSavedInstanceStateId"
 
         fun createInstance(
@@ -75,6 +93,22 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 bundleData.putString(KEY_SHOP_INFO_CACHE_MANAGER_ID, shopInfoCacheManagerId)
                 bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
                 bundleData.putString(KEY_KEYWORD, keyword)
+                arguments = bundleData
+            }
+        }
+
+        fun createInstance(
+                keyword: String,
+                shopInfoCacheManagerId: String,
+                shopAttribution: String,
+                sortId: String
+        ): Fragment {
+            return ShopSearchProductFragment().apply {
+                val bundleData = Bundle()
+                bundleData.putString(KEY_SHOP_INFO_CACHE_MANAGER_ID, shopInfoCacheManagerId)
+                bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
+                bundleData.putString(KEY_KEYWORD, keyword)
+                bundleData.putString(KEY_SORT_ID, sortId)
                 arguments = bundleData
             }
         }
@@ -100,12 +134,12 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private var shopInfoCacheManagerId: String = ""
-
     private var shopAttribution: String = ""
 
     private var shopInfo: ShopInfo? = null
 
     private var searchQuery = ""
+    private var sortValue: String? = ""
 
     private var viewFragment: View? = null
 
@@ -128,7 +162,13 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewFragment = view
-        initView(view)
+
+        if (isNewShopPageEnabled()) {
+            initViewNew(view)
+        } else {
+            initViewOld(view)
+        }
+
         observeShopSearchProductResult()
     }
 
@@ -192,6 +232,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         activity?.finish()
     }
 
+    private fun isNewShopPageEnabled(): Boolean{
+        val shopPageConfig = ShopPageConfig(context)
+        return shopPageConfig.isNewShopPageEnabled()
+    }
+
     override fun getScreenName(): String {
         return ShopSearchProductFragment::class.java.simpleName
     }
@@ -247,9 +292,18 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
-            if (resultCode == Activity.RESULT_OK) {
+        when (requestCode) {
+            REQUEST_CODE_USER_LOGIN_CART -> if (resultCode == Activity.RESULT_OK) {
                 goToCart()
+            }
+            REQUEST_CODE_SORT -> {
+                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                sortName?.let {
+                    sortValue = sortName
+                    searchQuery = editTextSearchProduct.text.toString()
+                    redirectToShopProductListPage()
+                    activity?.finish()
+                }
             }
         }
     }
@@ -281,7 +335,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                     shopCore.shopID,
                     searchQuery,
                     "",
-                    shopAttribution
+                    shopAttribution,
+                    sortValue
             )
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
@@ -349,7 +404,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         renderList(listData, false)
     }
 
-    private fun initView(view: View) {
+    private fun initViewOld(view: View) {
         with(getRecyclerView(view) as VerticalRecyclerView) {
             clearItemDecoration()
             addItemDecoration(ShopSearchProductDividerItemDecoration(
@@ -357,6 +412,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             ))
         }
         initToolbar()
+        linearLayoutNewDesign.visibility = View.GONE
+        textCancel.visibility = View.GONE
         with(searchInputView) {
             setSearchHint(getString(
                     R.string.shop_product_search_hint_2,
@@ -365,6 +422,96 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             searchText = searchQuery
             searchTextView.requestFocus()
             showKeyboard()
+        }
+    }
+
+    private fun initViewNew(view: View) {
+        showSortButton()
+        with(getRecyclerView(view) as VerticalRecyclerView) {
+            clearItemDecoration()
+            addItemDecoration(ShopSearchProductDividerItemDecoration(
+                    view.context.resources.getDrawable(R.drawable.bg_line_separator_thin)
+            ))
+        }
+        searchInputView.visibility = View.GONE
+        textCancel.setOnClickListener {
+            onClickCancel()
+        }
+        with(editTextSearchProduct) {
+            hint = getString(
+                    R.string.shop_product_search_hint_2,
+                    MethodChecker.fromHtml(shopInfo?.shopCore?.name.orEmpty()).toString()
+            )
+            addTextChangedListener(getSearchTextWatcher())
+            setOnEditorActionListener(getSearchEditorActionListener())
+            requestFocus()
+            showKeyboard()
+            setText(searchQuery)
+            setSelection(searchQuery.length)
+        }
+        shopPageMainSortIcon.setOnClickListener {
+            onClickSort()
+        }
+        image_view_clear_button.setOnClickListener {
+            editTextSearchProduct.text.clear()
+        }
+    }
+
+    private fun getSearchTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            var timer: Timer? = Timer()
+
+            override fun afterTextChanged(s: Editable) {
+                runTimer(s.toString())
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
+                timer?.cancel()
+                if (TextUtils.isEmpty(text.toString())) {
+                    showSortButton()
+                } else {
+                    showClearButton()
+                }
+            }
+
+            private fun runTimer(text: String) {
+                timer = Timer()
+                timer?.schedule(delayTextChanged) {
+                    updateListener(text)
+                }
+            }
+
+            private fun updateListener(text: String) {
+                val myRunnable = Runnable { onSearchTextChanged(text) }
+                Handler(context?.mainLooper).post(myRunnable)
+            }
+        }
+    }
+
+    private fun showClearButton() {
+        shopPageMainSortIcon.hide()
+        image_view_clear_button.show()
+    }
+
+    private fun showSortButton() {
+        shopPageMainSortIcon.show()
+        image_view_clear_button.hide()
+    }
+
+    private fun getSearchEditorActionListener(): TextView.OnEditorActionListener {
+        return object : TextView.OnEditorActionListener {
+            override fun onEditorAction(textView: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    onSearchSubmitted(textView?.text.toString())
+                    return true
+                }
+                return false
+            }
+
         }
     }
 
@@ -381,7 +528,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
 
     private fun getShopInfoFromCacheManager() {
         shopInfo = context?.run {
@@ -406,6 +552,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             } ?: getString(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
             shopAttribution = getString(KEY_SHOP_ATTRIBUTION).orEmpty()
             searchQuery = getString(KEY_KEYWORD).orEmpty()
+            sortValue = getString(KEY_SORT_ID).orEmpty()
         }
     }
 
@@ -435,6 +582,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
         }
+    }
+
+    private fun onClickSort() {
+        val intent = ShopProductSortActivity.createIntent(activity, sortValue)
+        startActivityForResult(intent, REQUEST_CODE_SORT)
+    }
+
+    private fun onClickCancel() {
+        activity?.finish()
     }
 
     private fun onShareShop() {

@@ -4,9 +4,8 @@
 
     <solid android:color="@color/white" />
     <stroke
-        android:width="@dimen/dimen_topchat_2dp"
-        android:color="@color/Neutral_N75" />
-
+        android:width="@dimen/dimen_topchat_1dp"
+        android:color="@color/color_chat_system" />
     <corners
         android:bottomLeftRadius="@dimen/dimen_topchat_20dp"
         android:bottomRightRadius="@dimen/dimen_topchat_20dp"

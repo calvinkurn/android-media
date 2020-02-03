@@ -8,5 +8,5 @@ import com.google.gson.annotations.SerializedName
 
 data class ClearCacheAutoApplyStackResponse(
         @SerializedName("clearCacheAutoApplyStack")
-        val successData: SuccessData = SuccessData()
+        var successData: SuccessData = SuccessData()
 )

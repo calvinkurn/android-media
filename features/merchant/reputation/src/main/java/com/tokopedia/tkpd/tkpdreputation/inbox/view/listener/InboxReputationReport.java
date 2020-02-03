@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+
 
 /**
  * @author by nisie on 9/13/17.
@@ -18,6 +21,8 @@ public interface InboxReputationReport {
         void onSuccessReportReview();
 
         void removeLoadingProgress();
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {
