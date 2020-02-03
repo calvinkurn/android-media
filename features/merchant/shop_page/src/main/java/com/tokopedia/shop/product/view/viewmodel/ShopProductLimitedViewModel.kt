@@ -159,36 +159,38 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         }
     }
 
-    fun getShopProductsEtalaseHighlight(shopId: String, isForceRefresh: Boolean = false) {
+    fun getShopProductsEtalaseHighlight(shopId: String) {
         launchCatchError(block = {
             productHighlightResp.value =
                     etalaseHighLight.map {
                         ShopProductFilterInput(1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
                                 "", it.etalaseId, getSort(it.etalaseId))
-                    }
-                            .map {
-                                val params = GqlGetShopProductUseCase.createParams(shopId, it)
-                                val cacheStrategy = GraphqlCacheStrategy
-                                        .Builder(if (isForceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
-                                val gqlRequest = GraphqlRequest(getShopProductUseCase.gqlQuery, ShopProduct.Response::class.java, params)
-                                async(Dispatchers.IO) {
-                                    try {
-                                        val resp = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
-                                        if (resp.getError(ShopProduct.Response::class.java)?.isNotEmpty() != true) {
-                                            val gqlProduct = resp.getData<ShopProduct.Response>(ShopProduct.Response::class.java).getShopProduct
-                                            if (gqlProduct.errors.isNotEmpty()) {
-                                                null
-                                            } else {
-                                                gqlProduct.data.map { product -> product.toProductViewModel(isMyShop(shopId)) }
-                                            }
-                                        } else null
-
-                                    } catch (t: Throwable) {
+                    }.map {
+                        val params = GqlGetShopProductUseCase.createParams(shopId, it)
+                        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                        val gqlRequest = GraphqlRequest(getShopProductUseCase.gqlQuery, ShopProduct.Response::class.java, params)
+                        async(Dispatchers.IO) {
+                            try {
+                                val resp = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+                                if (resp.getError(ShopProduct.Response::class.java)?.isNotEmpty() != true) {
+                                    val gqlProduct = resp.getData<ShopProduct.Response>(ShopProduct.Response::class.java).getShopProduct
+                                    if (gqlProduct.errors.isNotEmpty()) {
                                         null
+                                    } else {
+                                        gqlProduct.data.map { product -> product.toProductViewModel(isMyShop(shopId)) }
                                     }
-                                }
-                            }.map { it.await() }.filterNotNull();
-        }) {}
+                                } else null
+
+                            } catch (t: Throwable) {
+                                null
+                            }
+                        }
+                    }.map {
+                        it.await()
+                    }.filterNotNull();
+        }) {
+            //no op
+        }
     }
 
     private fun getSort(etalaseId: String?): Int {
