@@ -4,16 +4,16 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
-import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.QuotationPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 import javax.inject.Inject
 
@@ -27,6 +27,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
+            TYPE_QUOTATION -> covertToQuotation(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
@@ -89,6 +90,24 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 pojoAttribute.imageUrl2,
                 pojoAttribute.url2,
                 item.blastId
+        )
+    }
+
+    private fun covertToQuotation(message: Reply): Visitable<*> {
+        val quotationPojo = GsonBuilder().create().fromJson<QuotationPojo>(message.attachment?.attributes,
+                QuotationPojo::class.java)
+        return QuotationViewModel(
+                message.msgId.toString(),
+                message.senderId.toString(),
+                message.senderName,
+                message.role,
+                message.attachment?.id ?: "",
+                message.attachment?.type.toString(),
+                message.replyTime,
+                message.isRead,
+                !message.isOpposite,
+                message.msg,
+                quotationPojo
         )
     }
 }

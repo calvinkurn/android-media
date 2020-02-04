@@ -28,6 +28,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightCh
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 
 open class TopChatTypeFactoryImpl(
@@ -84,6 +85,10 @@ open class TopChatTypeFactoryImpl(
         return RoomSettingFraudAlertViewHolder.LAYOUT
     }
 
+    override fun type(quotationViewModel: QuotationViewModel): Int {
+        return QuotationViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(parent: ViewGroup, type: Int): AbstractViewHolder<*> {
         val layoutRes = when (type) {
@@ -99,6 +104,7 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent)
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
             RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent)
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
