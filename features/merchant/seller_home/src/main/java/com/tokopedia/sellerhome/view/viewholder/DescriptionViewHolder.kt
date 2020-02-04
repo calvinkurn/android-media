@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.view.model.DescriptionState
 import com.tokopedia.sellerhome.view.model.DescriptionWidgetUiModel
 import kotlinx.android.synthetic.main.partial_sah_description_widget.view.*
 import kotlinx.android.synthetic.main.partial_sah_description_widget.view.tv_description_title
@@ -17,45 +16,21 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
     }
 
     override fun bind(element: DescriptionWidgetUiModel) {
-        with(element) {
-            when(data?.state) {
-                DescriptionState.LOADING -> showShimmer()
-                DescriptionState.IDEAL -> showIdeal(element)
-                DescriptionState.ERROR -> showOnError(element)
-            }
-        }
-    }
-
-    private fun showIdeal(element: DescriptionWidgetUiModel) {
         with(itemView) {
             shimmer_description_layout.visibility = View.GONE
             error_description_layout.visibility = View.GONE
             tv_description_title.text = element.title
-            tv_description_desc.text = element.data?.description
+            tv_description_desc.text = element.subtitle
+            if(element.ctaText.isNotEmpty()) {
+                tv_description_url.text = element.ctaText
+            } else {
+                tv_description_url.visibility = View.GONE
+            }
             tv_description_url.setOnClickListener {
                 //GO TO LINK
 
             }
+            ideal_description_layout.visibility = View.VISIBLE
         }
     }
-
-    private fun showOnError(element: DescriptionWidgetUiModel) {
-        with(itemView) {
-            ideal_description_layout.visibility = View.GONE
-            shimmer_description_layout.visibility = View.GONE
-            error_description_layout.visibility = View.VISIBLE
-            tv_description_error_title.text = element.title
-        }
-    }
-
-    private fun showShimmer() {
-        with(itemView) {
-            ideal_description_layout.visibility = View.GONE
-            error_description_layout.visibility = View.GONE
-            shimmer_description_layout.visibility = View.VISIBLE
-        }
-    }
-
-
-
 }

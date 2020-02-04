@@ -11,7 +11,9 @@ data class DescriptionWidgetUiModel (
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
-        override var data: DescriptionDataUiModel?) : BaseWidgetUiModel<DescriptionDataUiModel> {
+        override var data: Nothing?
+) : BaseWidgetUiModel<Nothing> {
+
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

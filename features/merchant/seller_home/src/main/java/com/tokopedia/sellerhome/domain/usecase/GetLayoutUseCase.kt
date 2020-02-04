@@ -245,6 +245,17 @@ class GetLayoutUseCase(
                                         )
                                 )
                         )
+                ),
+                DescriptionWidgetUiModel(
+                        widgetType = WidgetType.DESCRIPTION,
+                        title = "Yuk, Daftar Power Merchant",
+                        subtitle = "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant",
+                        tooltip = null,
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "Selengkapnya",
+                        data = null
                 )
         )
     }

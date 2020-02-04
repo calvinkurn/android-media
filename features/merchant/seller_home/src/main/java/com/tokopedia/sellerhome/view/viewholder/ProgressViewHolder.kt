@@ -23,12 +23,26 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
         val RES_LAYOUT = R.layout.sah_progress_card_widget
     }
 
-    private var state = State.LOADING
-
     override fun bind(element: ProgressWidgetUiModel) {
+        observeState(element)
         listener.getProgressData()
         createListeners(element.tooltip ?: return)
         showSuccessState(element)
+    }
+
+    private fun observeState(element: ProgressWidgetUiModel) {
+        val data = element.data
+        when {
+            data == null -> {
+                showLoadingState()
+            }
+            data.error.isNotBlank() -> {
+                showErrorState(element)
+            }
+            else -> {
+                showSuccessState(element)
+            }
+        }
     }
 
     private fun showLoadingState() {
@@ -111,12 +125,6 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
 
     private fun hideErrorLayout() {
         itemView.sah_error_layout.gone()
-    }
-
-    enum class State {
-        LOADING,
-        SUCESS,
-        ERROR
     }
 
     interface Listener {
