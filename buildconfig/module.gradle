@@ -93,4 +93,5 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.powerMockXstream
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
 }

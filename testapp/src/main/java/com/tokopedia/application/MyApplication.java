@@ -310,11 +310,6 @@ public class MyApplication extends BaseMainApplication
         return false;
     }
 
-    @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-
-    }
-
 
     @Override
     public FingerprintModel getFingerprintModel() {

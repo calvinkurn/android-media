@@ -22,30 +22,30 @@ public class RecommendationEntityMapperTest {
     }
 
     //pass null data, it should not return null object because we already implement NullChecker
-    @Test
-    public void mapper_isReturningNotNullObject_whenRecommendationDataIsNull() {
-        assertThat(
-                recommendationEntityMapper.call(getMockRecommendationDataWithNull()), notNullValue());
-    }
-
-    @Test
-    public void mapper_isReturningNotNullObject_whenRecommendationDataIsNotNull() {
-        assertThat(
-                recommendationEntityMapper.call(getMockRecommendationData()), notNullValue());
-    }
-
-    private RecomendationEntity.RecomendationData getMockRecommendationData() {
-        return new RecomendationEntity.RecomendationData();
-    }
-
-    private RecomendationEntity.RecomendationData getMockRecommendationDataWithNull() {
-        RecomendationEntity.RecomendationData mockData = new RecomendationEntity.RecomendationData();
-        mockData.setTitle(null);
-        mockData.setForeignTitle(null);
-        mockData.setRecommendation(null);
-        mockData.setSource(null);
-        mockData.setWidgetUrl(null);
-        mockData.setTid(null);
-        return mockData;
-    }
+//    @Test
+//    public void mapper_isReturningNotNullObject_whenRecommendationDataIsNull() {
+//        assertThat(
+//                recommendationEntityMapper.call(getMockRecommendationDataWithNull()), notNullValue());
+//    }
+//
+//    @Test
+//    public void mapper_isReturningNotNullObject_whenRecommendationDataIsNotNull() {
+//        assertThat(
+//                recommendationEntityMapper.call(getMockRecommendationData()), notNullValue());
+//    }
+//
+//    private RecomendationEntity.RecomendationData getMockRecommendationData() {
+//        return new RecomendationEntity.RecomendationData();
+//    }
+//
+//    private RecomendationEntity.RecomendationData getMockRecommendationDataWithNull() {
+//        RecomendationEntity.RecomendationData mockData = new RecomendationEntity.RecomendationData();
+//        mockData.setTitle(null);
+//        mockData.setForeignTitle(null);
+//        mockData.setRecommendation(null);
+//        mockData.setSource(null);
+//        mockData.setWidgetUrl(null);
+//        mockData.setTid(null);
+//        return mockData;
+//    }
 }
