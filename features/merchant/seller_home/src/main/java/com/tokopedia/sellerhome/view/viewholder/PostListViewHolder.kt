@@ -41,7 +41,7 @@ class PostListViewHolder(
             }
             else -> {
                 if (data.items.isEmpty()) {
-                    listener.removeWidget(element)
+                    listener.removeWidget(adapterPosition, element)
                 } else {
                     showSuccessState(element)
                 }
@@ -161,6 +161,6 @@ class PostListViewHolder(
 
     interface Listener {
         fun getPostData()
-        fun removeWidget(data: PostListWidgetUiModel)
+        fun removeWidget(position: Int, data: PostListWidgetUiModel)
     }
 }

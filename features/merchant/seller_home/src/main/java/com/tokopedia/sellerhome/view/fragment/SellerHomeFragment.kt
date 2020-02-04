@@ -126,7 +126,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this, this, this, this)
+        return SellerHomeAdapterTypeFactory(this, this, this, this, this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -162,12 +162,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         if (hasLoadPostData) return
         hasLoadPostData = true
         val dataKeys = getWidgetDataKeys<PostListWidgetUiModel>()
-        mViewModel.getPostWidgetData(dataKeys)
+        sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
 
-    override fun removeWidget(data: PostListWidgetUiModel) {
+    override fun removeWidget(position: Int, data: PostListWidgetUiModel) {
         recyclerView.post {
-            adapter.data.remove(data)
+            adapter.data.removeAt(position)
             adapter.notifyDataSetChanged()
             widgetHasMap[data.widgetType]?.remove(data)
         }
