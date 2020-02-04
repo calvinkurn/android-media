@@ -1,10 +1,16 @@
 package com.tokopedia.play.view.custom
 
+import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Outline
 import android.graphics.Path
 import android.graphics.RectF
+import android.os.Build
 import android.util.AttributeSet
+import android.view.View
+import android.view.ViewOutlineProvider
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.R
 
@@ -35,20 +41,26 @@ class RoundedConstraintLayout : ConstraintLayout {
     private val cornerPath = Path()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        setupCorner(w.toFloat(), h.toFloat())
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) setupCorner(w.toFloat(), h.toFloat())
     }
 
     override fun dispatchDraw(canvas: Canvas) {
-        setupCorner(width.toFloat(), height.toFloat())
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            val save = canvas.save()
+            canvas.clipPath(cornerPath)
+            super.dispatchDraw(canvas)
+            canvas.restoreToCount(save)
 
-        val save = canvas.save()
-        canvas.clipPath(cornerPath)
-        super.dispatchDraw(canvas)
-        canvas.restoreToCount(save)
+        } else {
+            setRoundedOutlineProvider(cornerRadius)
+            super.dispatchDraw(canvas)
+        }
     }
 
     fun setCornerRadius(cornerRadius: Float) {
         this.cornerRadius = cornerRadius
+        invalidate()
+        requestLayout()
     }
 
     private fun setupCorner(width: Float, height: Float) {
@@ -60,5 +72,19 @@ class RoundedConstraintLayout : ConstraintLayout {
                 Path.Direction.CW
         )
         cornerPath.close()
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun setRoundedOutlineProvider(cornerRadius: Float) {
+        outlineProvider = RoundedViewOutlineProvider(cornerRadius)
+        clipToOutline = true
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    inner class RoundedViewOutlineProvider(private val cornerRadius: Float) : ViewOutlineProvider() {
+
+        override fun getOutline(view: View, outline: Outline) {
+            outline.setRoundRect(0, 0, view.width, view.height, cornerRadius)
+        }
     }
 }
