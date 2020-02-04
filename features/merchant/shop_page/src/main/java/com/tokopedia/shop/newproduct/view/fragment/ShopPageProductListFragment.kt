@@ -824,8 +824,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             isLoadingNewProductData = false
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
+            shopProductAdapter.notifyItemRangeInserted(shopProductAdapter.lastIndex,productList.size)
         }
-        shopProductAdapter.notifyItemRangeInserted(shopProductAdapter.lastIndex,productList.size)
         if (parentFragment is ShopPageFragment) {
             (parentFragment as? ShopPageFragment)?.stopPerformanceMonitor()
         }

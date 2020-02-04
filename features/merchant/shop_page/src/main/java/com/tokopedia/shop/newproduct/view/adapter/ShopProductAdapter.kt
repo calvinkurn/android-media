@@ -126,9 +126,13 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     override fun hideLoading() {
         if (visitables.contains(loadingModel)) {
+            val itemPosition = visitables.indexOf(loadingModel)
             visitables.remove(loadingModel)
+            notifyItemRemoved(itemPosition)
         } else if (visitables.contains(loadingMoreModel)) {
+            val itemPosition = visitables.indexOf(loadingMoreModel)
             visitables.remove(loadingMoreModel)
+            notifyItemRemoved(itemPosition)
         }
     }
 
@@ -139,13 +143,19 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     override fun clearAllNonDataElement() {
         super.clearAllNonDataElement()
         sellerEmptyProductAllEtalaseDataModel?.let {
+            val position = visitables.indexOf(it)
             visitables.remove(it)
+            notifyItemRemoved(position)
         }
         shopEmptyProductViewModel?.let {
+            val position = visitables.indexOf(it)
             visitables.remove(it)
+            notifyItemRemoved(position)
         }
         shopProductAddViewModel?.let {
+            val position = visitables.indexOf(it)
             visitables.remove(it)
+            notifyItemRemoved(position)
         }
         mapDataModel()
     }
@@ -343,7 +353,9 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun addSellerAddProductDataModel() {
-        visitables.add(ShopProductAddViewModel())
+        val shopProductAddViewModel = ShopProductAddViewModel()
+        visitables.add(shopProductAddViewModel)
+        notifyItemInserted(visitables.indexOf(shopProductAddViewModel))
         mapDataModel()
     }
 
@@ -361,6 +373,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun addEmptyDataModel(emptyDataViewModel: Visitable<*>) {
         visitables.add(emptyDataViewModel)
+        notifyItemInserted(visitables.indexOf(emptyDataViewModel))
         mapDataModel()
     }
 
