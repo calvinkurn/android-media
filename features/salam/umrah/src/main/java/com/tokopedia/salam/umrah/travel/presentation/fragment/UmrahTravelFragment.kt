@@ -14,24 +14,23 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
-import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
-import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity.Companion.EXTRA_SLUG_NAME
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelAgentViewPagerAdapter
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.bottom_sheet_umrah_travel_agent_permission.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_travel_agent.*
-import java.util.*
+import kotlinx.android.synthetic.main.widget_umrah_item.*
 import javax.inject.Inject
 
 /**
@@ -87,7 +86,7 @@ class UmrahTravelFragment: BaseDaggerFragment(){
                     setupAll(it.data)
                 }
                 is Fail ->{
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png){
+                    NetworkErrorHelper.showEmptyState(context, view?.rootView,it.throwable.message,null,null,R.drawable.umrah_img_empty_search_png){
                         requestData()
                     }
                 }
@@ -151,6 +150,10 @@ class UmrahTravelFragment: BaseDaggerFragment(){
             setPermissionPdp()
             setVerifiedTravel()
         }
+
+        tg_widget_umrah_pdp_item_desc.setOnClickListener {
+            showPermissionUmrah(travelAgent.permissionOfUmrah)
+        }
     }
 
     private fun checkChatSession(){
@@ -169,6 +172,21 @@ class UmrahTravelFragment: BaseDaggerFragment(){
                 resources.getString(R.string.umrah_shop_id), "",
                 resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
         startActivity(intent)
+    }
+
+    private fun showPermissionUmrah(permissionUmrah : String){
+        val permissionBottomSheet = BottomSheetUnify()
+        permissionBottomSheet.clearClose(true)
+        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_umrah_travel_agent_permission, null)
+        view.apply {
+            tg_umrah_permission_desc.text = getString(R.string.umrah_travel_permission_desc, permissionUmrah)
+            btn_travel_permission_close.setOnClickListener {
+                permissionBottomSheet.dismiss()
+            }
+        }
+        permissionBottomSheet.setChild(view)
+        permissionBottomSheet.show(fragmentManager!!,"")
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

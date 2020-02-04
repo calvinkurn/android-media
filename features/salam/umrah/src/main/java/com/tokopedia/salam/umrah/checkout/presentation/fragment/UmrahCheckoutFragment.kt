@@ -44,7 +44,6 @@ import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutAct
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_PRICE
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_SLUG_NAME
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_TOTAL_PASSENGER
-import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_TOTAL_PRICE
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_VARIANT
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutInstallmentActivity
@@ -632,7 +631,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     private fun inflatingViewTermCondition(context: Context, id: Int,
                                            listBottomSheet: List<UmrahTermCondition>): View? {
-        val view = LayoutInflater.from(context).inflate(id, null).apply {
+        return LayoutInflater.from(context).inflate(id, null).apply {
             umrahCheckoutTermConditionAdapter.setList(listBottomSheet)
             rv_umrah_checkout_term_condition.adapter = umrahCheckoutTermConditionAdapter
             rv_umrah_checkout_term_condition.layoutManager = LinearLayoutManager(
@@ -640,11 +639,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     RecyclerView.VERTICAL, false
             )
         }
-        return view
     }
 
     private fun inflatingViewMandatoryDocument(context: Context, id: Int, listBottomSheet: List<UmrahCheckoutMandatoryDocument>): View? {
-        val view = LayoutInflater.from(context).inflate(id, null).apply {
+       return LayoutInflater.from(context).inflate(id, null).apply {
             umrahCheckoutMandatoryDocumentAdapter.setList(listBottomSheet)
             rv_umrah_checkout_mandatory_document.adapter = umrahCheckoutMandatoryDocumentAdapter
             rv_umrah_checkout_mandatory_document.layoutManager = LinearLayoutManager(
@@ -652,7 +650,6 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     RecyclerView.VERTICAL, false
             )
         }
-        return view
     }
 
     fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {

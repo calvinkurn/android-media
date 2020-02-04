@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.TravelAgent
-import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import kotlinx.android.synthetic.main.fragment_umrah_travel_agent_info.*
 
 class UmrahTravelAgentInfoFragment(private val listener: UmrahTravelAgentInfoListener) : Fragment(){

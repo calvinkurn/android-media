@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
-import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentGalleryFragment
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentInfoFragment
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentProductsFragment
 

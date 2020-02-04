@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -18,19 +15,13 @@ import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelAgentProductsAdapter
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelProductAdapterTypeFactory
-import kotlinx.android.synthetic.main.fragment_umrah_travel_agent_products.*
 
 class UmrahTravelAgentProductsFragment(private val listener: UmrahTravelAgentProductListener): BaseListFragment<UmrahProductModel.UmrahProduct, UmrahTravelProductAdapterTypeFactory>(), BaseEmptyViewHolder.Callback{
 
     var products : List<UmrahProductModel.UmrahProduct> =  emptyList()
-    val adapterProducts = UmrahTravelAgentProductsAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_umrah_travel_agent_products,container, false)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

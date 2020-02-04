@@ -21,7 +21,7 @@ class UmrahTravelAgentProductsAdapter : RecyclerView.Adapter<UmrahTravelAgentPro
         fun bind(element: UmrahProductModel.UmrahProduct) {
             with(itemView) {
                 iv_umrah_image.loadImage(element.banners.first())
-                label_umrah_duration.text = resources.getString(R.string.umrah_search_duration_days, element.durationDays.toString())
+                label_umrah_duration.text = resources.getString(R.string.umrah_travel_product_duration, element.durationDays.toString())
                 tg_umrah_title.text = element.title
                 tg_umrah_price.text = CurrencyFormatter.getRupiahFormat(element.originalPrice)
                 tg_umrah_calendar.text = element.ui.travelDates
