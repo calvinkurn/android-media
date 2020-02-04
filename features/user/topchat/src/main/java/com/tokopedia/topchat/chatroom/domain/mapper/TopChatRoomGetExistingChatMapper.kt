@@ -27,7 +27,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
-            TYPE_QUOTATION -> covertToQuotation(chatItemPojoByDateByTime)
+            TYPE_QUOTATION -> convertToQuotation(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
@@ -93,7 +93,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         )
     }
 
-    private fun covertToQuotation(message: Reply): Visitable<*> {
+    private fun convertToQuotation(message: Reply): Visitable<*> {
         val quotationAttributes = GsonBuilder()
                 .create()
                 .fromJson<QuotationAttributes>(
@@ -101,17 +101,17 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                         QuotationAttributes::class.java
                 )
         return QuotationViewModel(
-                message.msgId.toString(),
-                message.senderId.toString(),
-                message.senderName,
-                message.role,
-                message.attachment?.id ?: "",
-                message.attachment?.type.toString(),
-                message.replyTime,
-                message.isRead,
-                !message.isOpposite,
-                message.msg,
-                quotationAttributes.quotation
+                quotationPojo = quotationAttributes.quotation,
+                messageId = message.msgId.toString(),
+                fromUid = message.senderId.toString(),
+                from = message.senderName,
+                fromRole = message.role,
+                attachmentId = message.attachment?.id ?: "",
+                attachmentType = message.attachment?.type.toString(),
+                replyTime = message.replyTime,
+                isSender = !message.isOpposite,
+                message = message.msg,
+                isRead = message.isRead
         )
     }
 }

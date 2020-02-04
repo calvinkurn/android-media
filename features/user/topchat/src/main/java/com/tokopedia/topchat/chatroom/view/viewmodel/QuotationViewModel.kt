@@ -6,6 +6,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.QuotationPojo
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class QuotationViewModel(
+        private val quotationPojo: QuotationPojo,
         messageId: String,
         fromUid: String,
         from: String,
@@ -13,10 +14,11 @@ class QuotationViewModel(
         attachmentId: String,
         attachmentType: String,
         replyTime: String,
-        isRead: Boolean,
         isSender: Boolean,
         message: String,
-        private val quotationPojo: QuotationPojo
+        startTime: String = "",
+        isRead: Boolean = false,
+        isDummy: Boolean = false
 ) : SendableViewModel(
         messageId,
         fromUid,
@@ -25,9 +27,9 @@ class QuotationViewModel(
         attachmentId,
         attachmentType,
         replyTime,
-        "",
+        startTime,
         isRead,
-        false,
+        isDummy,
         isSender,
         message
 ), Visitable<TopChatTypeFactory> {
