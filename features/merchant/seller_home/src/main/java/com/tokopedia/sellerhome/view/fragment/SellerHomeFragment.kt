@@ -13,17 +13,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.SellerHomeWidgetTooltipClickListener
+import com.tokopedia.sellerhome.TooltipClickListener
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
-import com.tokopedia.sellerhome.view.viewholder.CardViewHolder
-import com.tokopedia.sellerhome.view.viewholder.LineGraphViewHolder
-import com.tokopedia.sellerhome.view.viewholder.PostListViewHolder
-import com.tokopedia.sellerhome.view.viewholder.ProgressViewHolder
+import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
+import com.tokopedia.sellerhome.view.viewholder.PostListViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -38,7 +36,9 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetTooltipClickListener, CardViewHolder.Listener, LineGraphViewHolder.Listener, ProgressViewHolder.Listener, PostListViewHolder.Listener {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(),
+        TooltipClickListener, CardViewHolder.Listener, LineGraphViewHolder.Listener,
+        ProgressViewHolder.Listener, SectionViewHolder.Listener, PostListViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -60,7 +60,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var hasLoadProgressData = false
     private var hasLoadPostData = false
 
-    private lateinit var bottomSheet: BottomSheetUnify
+    private val tooltipBottomSheet by lazy { BottomSheetUnify() }
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -126,7 +126,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this, this, this, this, this)
+        return SellerHomeAdapterTypeFactory(this, this, this, this, this, this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -204,27 +204,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.getWidgetLayout()
     }
 
-    override fun onInfoTooltipClicked(tooltip: TooltipUiModel) {
-        showTooltip(tooltip)
-    }
-
-    private fun showTooltip(tooltip: TooltipUiModel) {
+    override fun onTooltipClicked(tooltip: TooltipUiModel) {
         hideSoftKeyboardIfPresent()
 
-        if (!::bottomSheet.isInitialized) {
-            bottomSheet = BottomSheetUnify()
+        with(tooltipBottomSheet) tooltip@ {
+            setTitle(tooltip.title)
+            clearClose(false)
+            clearHeader(false)
+            setCloseClickListener { this.dismiss() }
+
+            val bottomSheetContentView = SellerHomeBottomSheetContent(this@SellerHomeFragment.context ?: return)
+            bottomSheetContentView.setTooltipData(tooltip)
+
+            setChild(bottomSheetContentView)
+            show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
         }
-
-        bottomSheet.setTitle(tooltip.title)
-        bottomSheet.clearClose(false)
-        bottomSheet.clearHeader(false)
-        bottomSheet.setCloseClickListener { bottomSheet.dismiss() }
-
-        val bottomSheetContentView = SellerHomeBottomSheetContent(context!!)
-        bottomSheetContentView.setTooltipData(tooltip)
-
-        bottomSheet.setChild(bottomSheetContentView)
-        bottomSheet.show(childFragmentManager, TAG_TOOLTIP)
     }
 
     private fun hideSoftKeyboardIfPresent() {
@@ -242,7 +236,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
                 is Fail -> {
                     showSwipeProgress(false)
-                    view?.tickerView?.visibility = View.GONE
+                    view?.relTicker?.visibility = View.GONE
                 }
             }
         })
@@ -325,9 +319,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         val isTickerVisible = if (tickers.isEmpty()) View.GONE else View.VISIBLE
 
+        view?.relTicker?.visibility = isTickerVisible
         view?.tickerView?.run {
-            visibility = isTickerVisible
-
             val tickersData = tickers.map {
                 TickerData(it.title, it.message, getTickerType(it.color))
             }

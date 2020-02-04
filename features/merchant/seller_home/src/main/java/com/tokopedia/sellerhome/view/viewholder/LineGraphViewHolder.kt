@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.TooltipClickListener
 import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.util.getResDrawable
 import com.tokopedia.sellerhome.util.parseAsHtml
-import com.tokopedia.sellerhome.util.toast
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.sah_line_graph_widget.view.*
@@ -43,22 +43,39 @@ class LineGraphViewHolder(
         observeState(element)
         listener.getLineGraphData()
 
+        val data = element.data
+
         tvLineGraphTitle.text = element.title
-        tvLineGraphValue.text = element.data?.header.orEmpty()
-        tvLineGraphSubValue.text = element.data?.description.orEmpty().parseAsHtml()
+        tvLineGraphValue.text = data?.header.orEmpty()
+        tvLineGraphSubValue.text = data?.description.orEmpty().parseAsHtml()
 
-        btnLineGraphMore.setOnClickListener {
-            openAppLink(element.appLink)
-        }
-        btnLineGraphNext.setOnClickListener {
-            openAppLink(element.appLink)
+        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+        val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+        btnLineGraphMore.visibility = ctaVisibility
+        btnLineGraphNext.visibility = ctaVisibility
+        btnLineGraphMore.text = element.ctaText
+
+        if (isCtaVisible) {
+            btnLineGraphMore.setOnClickListener {
+                openAppLink(element.appLink)
+            }
+            btnLineGraphNext.setOnClickListener {
+                openAppLink(element.appLink)
+            }
         }
 
-        tvLineGraphTitle.setOnClickListener {
-            context.toast("Information")
-        }
-        btnLineGraphInformation.setOnClickListener {
-            context.toast("Information")
+        element.tooltip?.let { tooltip ->
+            if (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty()) {
+                tvLineGraphTitle.setOnClickListener {
+                    listener.onTooltipClicked(element.tooltip)
+                }
+                btnLineGraphInformation.visibility = View.VISIBLE
+                btnLineGraphInformation.setOnClickListener {
+                    listener.onTooltipClicked(element.tooltip)
+                }
+            } else {
+                btnLineGraphInformation.visibility = View.GONE
+            }
         }
 
         val colors = intArrayOf(context.getResColor(R.color.sah_green_light), Color.TRANSPARENT)
@@ -73,8 +90,8 @@ class LineGraphViewHolder(
     /**
      * Loading State -> when data is null. By default when adapter created
      * it will pass null data.
-     * Error State -> when errorMessage field have a string
-     * Success State -> when data not null &
+     * Error State -> when errorMessage field have a message
+     * else -> state is Success
      * */
 
     private fun observeState(element: LineGraphWidgetUiModel) {
@@ -107,7 +124,6 @@ class LineGraphViewHolder(
         ImageHandler.loadImageWithId(imgLineGraphError, R.drawable.unify_globalerrors_connection)
         layoutLineGraphErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
         tvLineGraphTitle.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
-        btnLineGraphInformation.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
     }
 
     private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) = with(itemView) {
@@ -117,7 +133,6 @@ class LineGraphViewHolder(
         tvLineGraphSubValue.visibility = componentVisibility
         btnLineGraphMore.visibility = componentVisibility
         btnLineGraphNext.visibility = componentVisibility
-        btnLineGraphInformation.visibility = componentVisibility
         linearLineGraphView.visibility = componentVisibility
 
         val isBtnMoreVisible = if (element.appLink.isNotBlank() && isShown) View.VISIBLE else View.GONE
@@ -170,7 +185,7 @@ class LineGraphViewHolder(
         override fun height(): Int = Tools.fromDpToPx(DEFAULT_HEIGHT).toInt()
     }
 
-    interface Listener {
+    interface Listener : TooltipClickListener {
         fun getLineGraphData()
     }
 }

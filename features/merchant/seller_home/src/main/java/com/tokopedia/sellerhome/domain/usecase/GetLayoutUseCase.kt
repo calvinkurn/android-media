@@ -18,11 +18,34 @@ class GetLayoutUseCase(
 
         //handle request here
         return listOf(
+                DescriptionWidgetUiModel(
+                        widgetType = WidgetType.DESCRIPTION,
+                        title = "Tampah produk pertamamu!",
+                        subtitle = "Maksimalkan penjualanmu dengan upgrade jadi Power Merchant! Tingkatkan penjualan dengan mengakses fitur dan promo khusus untuk Power Merchant",
+                        tooltip = null,
+                        url = "",
+                        appLink = "tokopedia://pesanan-baru/detail",
+                        dataKey = "",
+                        ctaText = "Tambah produk sekarang!",
+                        data = null
+                ),
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
                         title = "Penting hari ini",
                         subtitle = "",
-                        tooltip = TooltipUiModel("", "", emptyList(), false),
+                        tooltip = TooltipUiModel(
+                                title = "Ringkasan Penjualan",
+                                content = "",
+                                list = listOf(
+                                        TooltipListItemUiModel("New Order", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
+                                        TooltipListItemUiModel("Ready to ship", "Jumlah produk terjual dari setiap transaksi sukses"),
+                                        TooltipListItemUiModel("Complaint", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
+                                        TooltipListItemUiModel("Unread Chat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
+                                        TooltipListItemUiModel("Discussion", "Jumlah produk terjual dari setiap transaksi sukses"),
+                                        TooltipListItemUiModel("Product View", "Jumlah pemasukan dari produk terjual beserta ongkos kirim.")
+                                ),
+                                isShow = true
+                        ),
                         url = "",
                         appLink = "",
                         dataKey = "",
@@ -31,7 +54,7 @@ class GetLayoutUseCase(
                 ),
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
-                        title = "New Order",
+                        title = "New order",
                         subtitle = "",
                         tooltip = null,
                         url = "",
@@ -42,7 +65,7 @@ class GetLayoutUseCase(
                 ),
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
-                        title = "Ready To Ship",
+                        title = "Ready to ship",
                         subtitle = "",
                         tooltip = null,
                         url = "",
@@ -139,6 +162,17 @@ class GetLayoutUseCase(
                         ctaText = "",
                         data = null
                 ),
+                SectionWidgetUiModel(
+                        widgetType = WidgetType.SECTION,
+                        title = "Performa toko",
+                        subtitle = "21 JAN 20 - 27 JAN 20",
+                        tooltip = null,
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = null
+                ),
                 ProgressWidgetUiModel(
                         widgetType = WidgetType.PROGRESS,
                         title = "Power Merchant (Aktif)",
@@ -152,7 +186,7 @@ class GetLayoutUseCase(
                 ),
                 CarouselWidgetUiModel(
                         widgetType = WidgetType.CAROUSEL,
-                        title = "Carousel",
+                        title = "Khusus untukmu",
                         subtitle = "",
                         tooltip = null,
                         url = "",

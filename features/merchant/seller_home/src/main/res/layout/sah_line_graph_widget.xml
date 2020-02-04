@@ -32,7 +32,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4"
+            app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Total Pendapatan" />
 
@@ -44,12 +44,14 @@
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:background="@android:color/transparent"
             android:padding="3dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/tvLineGraphTitle"
             app:layout_constraintTop_toTopOf="@+id/tvLineGraphTitle"
-            app:srcCompat="@drawable/ic_info" />
+            app:srcCompat="@drawable/ic_info"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvLineGraphValue"

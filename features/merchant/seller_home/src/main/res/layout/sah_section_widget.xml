@@ -30,7 +30,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
+        app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Performa Toko" />
 
@@ -41,12 +41,14 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:padding="3dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tvSectionTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvSectionTitle"
         app:layout_constraintTop_toTopOf="@+id/tvSectionTitle"
-        app:srcCompat="@drawable/ic_info" />
+        app:srcCompat="@drawable/ic_info"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSectionSubTitle"
