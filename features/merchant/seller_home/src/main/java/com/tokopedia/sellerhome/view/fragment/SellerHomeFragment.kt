@@ -166,9 +166,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun removeWidget(position: Int, data: PostListWidgetUiModel) {
-        adapter.data.remove(data)
-        adapter.notifyItemRemoved(position)
-        widgetHasMap[data.widgetType]?.remove(data)
+        recyclerView.post {
+            adapter.data.remove(data)
+            adapter.notifyItemRemoved(position)
+            widgetHasMap[data.widgetType]?.remove(data)
+        }
     }
 
     private fun showGetWidgetShimmer(isShown: Boolean) {
