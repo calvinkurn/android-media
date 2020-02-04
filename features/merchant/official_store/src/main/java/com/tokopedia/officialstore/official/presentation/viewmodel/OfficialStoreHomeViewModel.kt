@@ -121,7 +121,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
         val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
         launchCatchError(block = {
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(categoriesWithoutClosingSquare, page).await())
+            getOfficialStoreProductRecommendation(categoriesWithoutClosingSquare, page)
         }) {
 
         }
@@ -173,26 +173,19 @@ class OfficialStoreHomeViewModel @Inject constructor(
         )
     }
 
-    private fun getOfficialStoreProductRecommendation(categoryId: String, page: Int): Deferred<RecommendationWidget> {
-        return async(Dispatchers.IO) {
-            val defaultValue = ""
+    private suspend fun getOfficialStoreProductRecommendation(categoryId: String, pageNumber: Int) {
+        withContext(Dispatchers.IO) {
             val pageName = "official-store"
-            val pageNumber = page
-            var productRecommendation = RecommendationWidget(emptyList(), defaultValue, defaultValue, defaultValue, defaultValue, defaultValue, defaultValue,
-                    defaultValue, pageNumber, 0, 0, true, pageName)
 
             try {
-                val dataProduct = getRecommendationUseCase.createObservable(
-                        getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId))
-                        .toBlocking()
-                dataProduct.first()[0].let {
-                    productRecommendation = it
-                }
+                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+                val dataProduct = getRecommendationUseCase.createObservable(requestParams).toBlocking()
+                val recommendationWidget = dataProduct.first()[0]
+
+                _officialStoreProductRecommendation.value = Success(recommendationWidget)
             } catch (t: Throwable) {
                 _officialStoreProductRecommendation.value = Fail(t)
             }
-
-            productRecommendation
         }
     }
 
