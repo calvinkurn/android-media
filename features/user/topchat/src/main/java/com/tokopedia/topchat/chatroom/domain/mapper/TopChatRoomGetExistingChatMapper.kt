@@ -10,7 +10,7 @@ import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
-import com.tokopedia.topchat.chatroom.domain.pojo.QuotationPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
@@ -94,8 +94,12 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun covertToQuotation(message: Reply): Visitable<*> {
-        val quotationPojo = GsonBuilder().create().fromJson<QuotationPojo>(message.attachment?.attributes,
-                QuotationPojo::class.java)
+        val quotationAttributes = GsonBuilder()
+                .create()
+                .fromJson<QuotationAttributes>(
+                        message.attachment?.attributes,
+                        QuotationAttributes::class.java
+                )
         return QuotationViewModel(
                 message.msgId.toString(),
                 message.senderId.toString(),
@@ -107,7 +111,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 message.isRead,
                 !message.isOpposite,
                 message.msg,
-                quotationPojo
+                quotationAttributes.quotation
         )
     }
 }

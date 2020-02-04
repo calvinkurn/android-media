@@ -15,3 +15,8 @@ data class QuotationPojo(
     @SerializedName("url")
     val url: String = ""
 )
+
+data class QuotationAttributes(
+        @SerializedName("quotation_profile")
+        val quotation: QuotationPojo
+)
