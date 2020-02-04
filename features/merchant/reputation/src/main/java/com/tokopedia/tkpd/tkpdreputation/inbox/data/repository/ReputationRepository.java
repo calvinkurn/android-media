@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
@@ -18,6 +17,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Da
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
 
