@@ -90,14 +90,8 @@ abstract class OfficialStoreHomeViewModelTestFixture {
     }
 
     protected fun onGetOfficialStoreProductRecommendation_thenReturn(recommendations: List<RecommendationWidget>) {
-        val recommendationObs = mockk<Observable<List<RecommendationWidget>>>()
-        val recommendationBlockingObs = mockk<BlockingObservable<List<RecommendationWidget>>>()
-
-        coEvery { recommendationBlockingObs.first() } returns recommendations
-        coEvery { recommendationObs.toBlocking() } returns recommendationBlockingObs
-
         coEvery { getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns RequestParams()
-        coEvery { getRecommendationUseCase.createObservable(any()) } returns recommendationObs
+        coEvery { getRecommendationUseCase.createObservable(any()) } returns mockObservable(recommendations)
     }
 
     protected fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
@@ -247,6 +241,16 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         val actualError = value.toString()
         val expectedError = error.toString()
         assertEquals(expectedError, actualError)
+    }
+
+    private fun<T> mockObservable(data: T): Observable<T>  {
+        val obs = mockk<Observable<T>>()
+        val blockingObs = mockk<BlockingObservable<T>>()
+
+        coEvery { blockingObs.first() } returns data
+        coEvery { obs.toBlocking() } returns blockingObs
+
+        return obs
     }
     // endregion
 }
