@@ -116,6 +116,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private fun refreshWidget() = view?.run {
         hasLoadCardData = false
         hasLoadLineGraphData = false
+        hasLoadProgressData = false
+        hasLoadPostData = false
         widgetHasMap.clear()
         adapter.data.clear()
         adapter.notifyDataSetChanged()
