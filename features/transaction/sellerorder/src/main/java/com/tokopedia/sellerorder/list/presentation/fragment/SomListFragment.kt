@@ -204,7 +204,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     Handler().postDelayed({
                         if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                            filter_action_button.show()
+                            try {
+                                filter_action_button?.show()
+                            } catch (e: Throwable) {
+                                // do nothing
+                            }
                         }
                     }, 2000)
                 }
@@ -268,7 +272,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         search_input_view?.setResetListener(this)
         search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
 
-        filter_action_button.setOnClickListener {
+        filter_action_button?.setOnClickListener {
             SomAnalytics.eventClickFilterButtonOnOrderList()
             val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
             startActivityForResult(intentFilter, REQUEST_FILTER)
@@ -496,8 +500,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderOrderList() {
         refreshHandler?.finishRefresh()
-        empty_state_order_list.visibility = View.GONE
-        order_list_rv.visibility = View.VISIBLE
+        empty_state_order_list?.visibility = View.GONE
+        order_list_rv?.visibility = View.VISIBLE
 
         if (!onLoadMore) {
             somListItemAdapter.somItemList = orderList.orders.toMutableList()
