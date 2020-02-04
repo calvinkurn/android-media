@@ -2,7 +2,7 @@ package com.tokopedia.attachproduct.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -80,8 +80,8 @@ public class AttachProductModule {
 
     @Provides
     @ChuckInterceptorAttachProductQualifier
-    public static ChuckInterceptor provideChuck(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+    public static ChuckerInterceptor provideChuck(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
     @AttachProductScope
@@ -115,7 +115,7 @@ public class AttachProductModule {
     @AttachProductQualifier
     OkHttpClient provideOkHttpClient(OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
-                                     @ChuckInterceptorAttachProductQualifier ChuckInterceptor
+                                     @ChuckInterceptorAttachProductQualifier ChuckerInterceptor
                                              chuckInterceptor,
                                      @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                      TkpdAuthInterceptor tkpdAuthInterceptor,
