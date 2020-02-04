@@ -215,7 +215,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             insets
         }
 
-        invalidateInsets()
+        invalidateInsets(view)
     }
 
     //region observe
@@ -1083,7 +1083,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         view?.performClick()
     }
 
-    private fun invalidateInsets() {
+    private fun invalidateInsets(view: View) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) view.requestApplyInsets()
             else view.requestFitSystemWindows()
