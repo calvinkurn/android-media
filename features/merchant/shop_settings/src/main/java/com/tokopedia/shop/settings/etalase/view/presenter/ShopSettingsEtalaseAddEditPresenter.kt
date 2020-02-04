@@ -3,7 +3,7 @@ package com.tokopedia.shop.settings.etalase.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.AddShopEtalaseUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.UpdateShopEtalaseUseCase
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addShopEtalaseUseCase: AddShopEtalaseUseCase,
                                                               private val updateShopEtalaseUseCase: UpdateShopEtalaseUseCase,
-                                                              private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
+                                                              private val getShopEtalase: GetShopEtalaseUseCase,
                                                               private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<ShopSettingsEtalaseAddEditView>() {
 
@@ -50,30 +50,25 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
 
     fun getEtalaseList() {
         view?.showLoading()
-        val params = GetShopEtalaseByShopUseCase.createRequestParams(
-                userSession.shopId,
-                hideNoCount = true,
-                hideShowCaseGroup = false,
-                isOwner = true
-        )
-        getShopEtalaseByShopUseCase.clearCache()
-        getShopEtalaseByShopUseCase.execute(params, object : Subscriber<ArrayList<ShopEtalaseModel>>() {
-            override fun onNext(listEtalase: ArrayList<ShopEtalaseModel>?) {
-                view?.hideLoading()
-                listEtalase?.let {
-                    etalaseCount = it.size
-                    view?.onSuccessGetEtalaseList()
-                }
-            }
+        getShopEtalase.execute(
+                GetShopEtalaseUseCase.createRequestParams(true),
+                object : Subscriber<ArrayList<ShopEtalaseModel>>() {
+                    override fun onNext(listEtalase: ArrayList<ShopEtalaseModel>?) {
+                        view?.hideLoading()
+                        listEtalase?.let {
+                            etalaseCount = it.size
+                            view?.onSuccessGetEtalaseList()
+                        }
+                    }
 
-            override fun onCompleted() {}
+                    override fun onCompleted() {}
 
-            override fun onError(error: Throwable?) {
-                view?.hideLoading()
-                view?.onErrorGetEtalaseList(error)
-            }
+                    override fun onError(error: Throwable?) {
+                        view?.hideLoading()
+                        view?.onErrorGetEtalaseList(error)
+                    }
 
-        })
+                })
     }
 
     fun isIdlePowerMerchant() = userSession.isPowerMerchantIdle
