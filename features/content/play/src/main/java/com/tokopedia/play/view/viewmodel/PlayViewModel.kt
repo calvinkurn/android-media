@@ -165,7 +165,10 @@ class PlayViewModel @Inject constructor(
     }
 
     fun getChannelInfo(channelId: String) {
-        launchCatchError(block = {
+
+        var retryCount = 0
+
+        fun getChannelInfoResponse(channelId: String): Job = launchCatchError(block = {
             val channel = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
@@ -201,8 +204,11 @@ class PlayViewModel @Inject constructor(
             _observableEvent.value = mapEvent(channel)
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
-            if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
+            if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
+            else if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
+
+        getChannelInfoResponse(channelId)
     }
 
     fun resume() {
@@ -470,4 +476,8 @@ class PlayViewModel @Inject constructor(
         }
     }
     //endregion
+
+    companion object {
+        private const val MAX_RETRY_CHANNEL_INFO = 3
+    }
 }
