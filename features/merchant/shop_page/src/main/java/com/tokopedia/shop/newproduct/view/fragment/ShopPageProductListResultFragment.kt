@@ -401,11 +401,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         updateScrollListenerState(hasNextPage)
 
         if (shopProductAdapter.shopProductViewModelList.size == 0) {
-            shopProductAdapter.addElement(emptyDataViewModel)
+            shopProductAdapter.addEmptyDataModel(emptyDataViewModel)
         } else {
             isLoadingInitialData = false
+            shopProductAdapter.notifyItemRangeInserted(shopProductAdapter.lastIndex,productList.size)
         }
-        shopProductAdapter.notifyItemRangeInserted(shopProductAdapter.lastIndex,productList.size)
     }
 
     override fun onItemClicked(baseShopProductViewModel: BaseShopProductViewModel) {
