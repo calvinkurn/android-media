@@ -1649,6 +1649,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    @Override
+    public void refreshHomeData() {
+        refreshLayout.setRefreshing(true);
+        onNetworkRetry();
+    }
+
     private void resetImpressionListener() {
         for (Map.Entry<Integer, RecyclerView.OnScrollListener> entry : impressionScrollListeners.entrySet()) {
             if (homeRecyclerView != null) {

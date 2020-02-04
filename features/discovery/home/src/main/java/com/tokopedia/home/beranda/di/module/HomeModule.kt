@@ -10,6 +10,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
 import com.tokopedia.home.beranda.data.datasource.HomeCachedDataSource
+import com.tokopedia.home.beranda.data.datasource.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
@@ -90,11 +91,18 @@ class HomeModule {
 
     @HomeScope
     @Provides
+    fun provideHomeDafaultDataSource(): HomeDefaultDataSource {
+        return HomeDefaultDataSource()
+    }
+
+    @HomeScope
+    @Provides
     fun homeRepository(homeDataSource: HomeDataSource,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
-                       playRemoteDataSource: PlayRemoteDataSource): HomeRepository {
-        return HomeRepositoryImpl(homeDataSource, homeCachedDataSource, homeRemoteDataSource, playRemoteDataSource)
+                       playRemoteDataSource: PlayRemoteDataSource,
+                       homeDefaultDataSource: HomeDefaultDataSource): HomeRepository {
+        return HomeRepositoryImpl(homeDataSource, homeCachedDataSource, homeRemoteDataSource, playRemoteDataSource, homeDefaultDataSource)
     }
 
     @HomeScope

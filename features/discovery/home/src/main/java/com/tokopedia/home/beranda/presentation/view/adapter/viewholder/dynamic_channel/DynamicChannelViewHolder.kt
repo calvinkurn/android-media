@@ -77,64 +77,66 @@ abstract class DynamicChannelViewHolder(itemView: View,
 
     override fun bind(element: DynamicChannelViewModel) {
         try {
+            val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
             val seeAllButton: TextView = itemView.findViewById(R.id.see_all_button)
-            val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
             countDownView = itemView.findViewById(R.id.count_down)
 
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
 
-            channel?.let { channel->
-                setViewPortImpression(element, channel)
+            channel?.let {
+                channelTitleContainer?.let {
+                    setViewPortImpression(element, channel)
 
-                /**
-                 * Requirement:
-                 * Only show channel header name when it is exist
-                 */
-                if (!TextUtils.isEmpty(channelHeaderName)) {
-                    channelTitleContainer?.visibility = View.VISIBLE
-                    channelTitle.text = channelHeaderName
-                    channelTitle.setTextColor(
-                            if(channel.header.textColor != null && channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
-                            else ContextCompat.getColor(channelTitle.context, R.color.Neutral_N700)
-                    )
-                } else {
-                    channelTitleContainer?.visibility = View.GONE
-                }
-
-                /**
-                 * Requirement:
-                 * Only show `see all` button when it is exist
-                 * Don't show `see all` button on dynamic channel mix carousel
-                 */
-                if (isHasSeeMoreApplink(channel) &&
-                        getLayoutType(channel) != TYPE_BANNER_CAROUSEL) {
-                    seeAllButton.visibility = View.VISIBLE
-                    seeAllButton.setOnClickListener {
-                        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
-                        HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
-                                DynamicLinkHelper.getActionLink(channel.header))
-                        onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
+                    /**
+                     * Requirement:
+                     * Only show channel header name when it is exist
+                     */
+                    if (!TextUtils.isEmpty(channelHeaderName)) {
+                        channelTitleContainer?.visibility = View.VISIBLE
+                        channelTitle.text = channelHeaderName
+                        channelTitle.setTextColor(
+                                if(channel.header.textColor != null && channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
+                                else ContextCompat.getColor(channelTitle.context, R.color.Neutral_N700)
+                        )
+                    } else {
+                        channelTitleContainer?.visibility = View.GONE
                     }
-                } else {
-                    seeAllButton.visibility = View.GONE
-                }
 
-                /**
-                 * Requirement:
-                 * Only show countDownView when expired time exist
-                 * Don't start countDownView when it is expired from backend (possibly caused infinite refresh)
-                 *  since onCountDownFinished would getting called and refresh home
-                 */
-                if (hasExpiredTime(channel)) {
-                    val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
-                    if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
-                        countDownView.setup(element.serverTimeOffset, expiredTime, countDownListener)
-                        countDownView.visibility = View.VISIBLE
+                    /**
+                     * Requirement:
+                     * Only show `see all` button when it is exist
+                     * Don't show `see all` button on dynamic channel mix carousel
+                     */
+                    if (isHasSeeMoreApplink(channel) &&
+                            getLayoutType(channel) != TYPE_BANNER_CAROUSEL) {
+                        seeAllButton.visibility = View.VISIBLE
+                        seeAllButton.setOnClickListener {
+                            listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
+                            HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
+                                    DynamicLinkHelper.getActionLink(channel.header))
+                            onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
+                        }
+                    } else {
+                        seeAllButton.visibility = View.GONE
                     }
-                } else {
-                    countDownView.visibility = View.GONE
+
+                    /**
+                     * Requirement:
+                     * Only show countDownView when expired time exist
+                     * Don't start countDownView when it is expired from backend (possibly caused infinite refresh)
+                     *  since onCountDownFinished would getting called and refresh home
+                     */
+                    if (hasExpiredTime(channel)) {
+                        val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
+                        if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
+                            countDownView.setup(element.serverTimeOffset, expiredTime, countDownListener)
+                            countDownView.visibility = View.VISIBLE
+                        }
+                    } else {
+                        countDownView.visibility = View.GONE
+                    }
                 }
 
                 /**

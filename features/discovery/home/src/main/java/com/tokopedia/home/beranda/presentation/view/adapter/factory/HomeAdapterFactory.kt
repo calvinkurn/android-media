@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.*
@@ -17,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessUnitViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
@@ -178,6 +178,11 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
              * refer to gif banner layout com.tokopedia.home.R.layout#banner_image
              */
             DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> BannerImageViewHolder.LAYOUT
+
+            /**
+             * refer to gif banner layout com.tokopedia.home.R.layout#home_dc_default_error_prompt
+             */
+            DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> ErrorPromptViewHolder.LAYOUT
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
@@ -211,6 +216,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
+            ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

@@ -6,6 +6,7 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeRoomData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 class HomeCachedDataSource(

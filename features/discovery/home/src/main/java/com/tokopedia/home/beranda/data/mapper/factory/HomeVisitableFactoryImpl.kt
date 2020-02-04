@@ -32,10 +32,14 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     private var homeData: HomeData? = null
     private var isCache: Boolean = true
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
-    val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=2&tab=1"
+
+    val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=1"
     val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
-    val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/android/others/home_banner_default_1.jpg"
-    val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/android/others/home_banner_default_2.jpg"
+    val DEFAULT_BANNER_APPLINK_3 = ApplinkConst.PROMO
+
+    val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg"
+    val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros1000.jpg"
+    val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo1000.jpg"
 
     override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeVisitableFactory {
         this.homeData = homeData
@@ -63,8 +67,15 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
             defaultBannerSlidesModel2.type = BannerSlidesModel.TYPE_BANNER_DEFAULT
             defaultBannerSlidesModel2.imageUrl = DEFAULT_BANNER_IMAGE_URL_2
 
+            val defaultBannerSlidesModel3 = BannerSlidesModel()
+            defaultBannerSlidesModel3.applink = DEFAULT_BANNER_APPLINK_3
+            defaultBannerSlidesModel3.type = BannerSlidesModel.TYPE_BANNER_DEFAULT
+            defaultBannerSlidesModel3.imageUrl = DEFAULT_BANNER_IMAGE_URL_3
+
             defaultSlides.add(defaultBannerSlidesModel1)
             defaultSlides.add(defaultBannerSlidesModel2)
+            defaultSlides.add(defaultBannerSlidesModel3)
+
             bannerViewModel.slides = defaultSlides
         } else {
             bannerDataModel.slides.forEachIndexed { index, bannerSlidesModel ->
@@ -194,6 +205,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                     )
                     if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
+                DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
             }
