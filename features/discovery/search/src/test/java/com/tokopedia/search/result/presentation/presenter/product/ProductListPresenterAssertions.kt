@@ -25,7 +25,6 @@ fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSect
     productListView.addLoading()
     productListView.setTotalSearchResultCount(any())
     productListView.stopTracePerformanceMonitoring()
-    productListView.updateScrollListener()
 }
 
 fun MockKVerificationScope.verifyHideLoading(productListView: ProductListSectionContract.View) {

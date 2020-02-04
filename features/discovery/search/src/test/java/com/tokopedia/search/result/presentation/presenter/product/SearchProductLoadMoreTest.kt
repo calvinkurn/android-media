@@ -80,6 +80,9 @@ internal class SearchProductLoadMoreTest: Spek({
 
                     verifyProcessingData(productListView)
 
+                    productListView.showBottomNavigation()
+                    productListView.updateScrollListener()
+
                     verifyHideLoading(productListView)
 
                     verifyProcessingNextPage(productListView)
@@ -148,6 +151,9 @@ internal class SearchProductLoadMoreTest: Spek({
                     verifyShowLoading(productListView)
 
                     verifyProcessingData(productListView)
+
+                    productListView.showBottomNavigation()
+                    productListView.updateScrollListener()
 
                     verifyHideLoading(productListView)
 

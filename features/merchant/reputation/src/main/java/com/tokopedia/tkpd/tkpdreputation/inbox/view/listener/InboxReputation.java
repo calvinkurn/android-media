@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 
@@ -13,17 +13,17 @@ public interface InboxReputation {
     interface View extends CustomerView {
         void showLoadingFull();
 
-        void onErrorGetFirstTimeInboxReputation(String errorMessage);
+        void onErrorGetFirstTimeInboxReputation(Throwable throwable);
 
         void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel);
 
         void finishLoadingFull();
 
-        void onErrorGetNextPage(String errorMessage);
+        void onErrorGetNextPage(Throwable throwable);
 
         void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel);
 
-        void onErrorRefresh(String errorMessage);
+        void onErrorRefresh(Throwable throwable);
 
         void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel);
 
@@ -40,13 +40,15 @@ public interface InboxReputation {
 
         void onSuccessGetFilteredInboxReputation(InboxReputationViewModel inboxReputationViewModel);
 
-        void onErrorGetFilteredInboxReputation(String errorMessage);
+        void onErrorGetFilteredInboxReputation(Throwable throwable);
 
         void finishRefresh();
 
         void onShowEmpty();
 
         void onShowEmptyFilteredInboxReputation();
+
+        void clickFromWhitespace(boolean source);
 
     }
 

@@ -31,7 +31,7 @@
                 android:layout_height="@dimen/dp_56"
                 android:layout_marginStart="@dimen/dp_15"
                 android:layout_marginLeft="@dimen/dp_15"
-                android:src="@drawable/img_app_share"
+                android:src="@drawable/reputation_img_app_share"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

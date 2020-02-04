@@ -21,6 +21,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -152,7 +153,6 @@ import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
-import com.tokopedia.officialstore.reactnative.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -203,6 +203,7 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -314,7 +315,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
-    private RemoteConfig remoteConfig;
     private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
@@ -329,13 +329,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initializeDagger();
         initDaggerInjector();
         initFirebase();
-        initRemoteConfig();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         initCMPushNotification();
         initIris();
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        ResourceDownloadManager.Companion.getManager().initialize(this, R.raw.url_list);
     }
 
     private void initDaggerInjector() {
@@ -391,10 +391,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 e.printStackTrace();
             }
         }
-    }
-
-    private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override
@@ -982,6 +978,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
+        return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
     public void goToWebview(Context context, String url) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
@@ -1047,7 +1048,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareEvent(Context context, String uri, String name, String imageUrl,String desktopUrl) {
+    public void shareEvent(Context context, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType("")
                 .setName(name)
@@ -1231,12 +1232,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
-        boolean enableOsNative = getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OFFICIAL_STORE_OS, true);
-        if (enableOsNative) {
-            return OfficialHomeContainerFragment.newInstance(bundle);
-        } else {
-            return ReactNativeOfficialStoreFragment.Companion.createInstance();
-        }
+        return OfficialHomeContainerFragment.newInstance(bundle);
     }
 
     @Override
