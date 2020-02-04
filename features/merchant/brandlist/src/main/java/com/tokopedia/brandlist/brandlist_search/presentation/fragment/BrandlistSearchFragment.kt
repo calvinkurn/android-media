@@ -1,6 +1,5 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,21 +7,22 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
+import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
+import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 class BrandlistSearchFragment: BaseDaggerFragment(),
         HasComponent<BrandlistSearchComponent> {
-
-    private var statusBar: View? = null
-    private var toolbar: Toolbar? = null
-
 
     companion object {
         @JvmStatic
@@ -35,6 +35,14 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         }
     }
 
+    @Inject
+    lateinit var viewModel: BrandlistSearchViewModel
+
+    private var searchView: SearchInputView? = null
+    private var statusBar: View? = null
+
+    private var toolbar: Toolbar? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -45,7 +53,9 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        searchView = view.findViewById(R.id.search_input_view)
         initView(view)
+        observeSearchResultData()
     }
 
     override fun getComponent(): BrandlistSearchComponent? {
@@ -69,8 +79,8 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private fun initView(view: View) {
         statusBar = view.findViewById(R.id.statusbar)
         toolbar = view.findViewById(R.id.toolbar)
-//        configStatusBar(view)
         configToolbar(view)
+        initSearchView()
     }
 
     private fun configToolbar(view: View){
@@ -84,15 +94,48 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         }
     }
 
-//    private fun configStatusBar(view: View) {
-//        activity?.let {
-//            statusBar?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
-//        }
-//        statusBar?.visibility = when {
-//            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-//            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-//            else -> View.GONE
-//        }
-//    }
+    private fun initSearchView() {
+        searchView?.setDelayTextChanged(250)
+        searchView?.setListener(object : SearchInputView.Listener {
+            override fun onSearchSubmitted(text: String?) {
+                searchView?.hideKeyboard()
+            }
+
+            override fun onSearchTextChanged(text: String?) {
+                println(text)
+                text?.let {
+                    if (it.isNotEmpty()) {
+                        val categoryId = 0
+                        val offset = 0
+                        val sortType = 1
+                        val firstLetter = ""
+                        val brandSize = 10
+                        viewModel.searchBrand(
+                                categoryId,
+                                offset,
+                                it,
+                                brandSize,
+                                sortType,
+                                firstLetter)
+                    }
+                }
+            }
+
+        })
+    }
+
+    private fun observeSearchResultData() {
+        viewModel.brandlistSearchResponse.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    val response = it.data.officialStoreAllBrands
+                    println(response)
+                }
+                is Fail -> {
+                    println("Fail")
+                }
+            }
+        })
+    }
 
 }
