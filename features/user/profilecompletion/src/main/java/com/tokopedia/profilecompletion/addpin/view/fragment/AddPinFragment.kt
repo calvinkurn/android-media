@@ -48,7 +48,7 @@ class AddPinFragment: BaseDaggerFragment(){
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
 
     private var isConfirmPin = false
-    private var isFromLogin: Boolean = false
+    private var isSkipOtp: Boolean = false
     private var pin = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -71,7 +71,7 @@ class AddPinFragment: BaseDaggerFragment(){
                 if(s?.length == 6){
                     if(isConfirmPin){
                         if(s.toString() == pin){
-                            if(isFromLogin){
+                            if(isSkipOtp){
                                 showLoading()
                                 addChangePinViewModel.checkSkipOtpPin()
                             }else{
@@ -127,16 +127,16 @@ class AddPinFragment: BaseDaggerFragment(){
 
         addChangePinViewModel.skipOtpPinResponse.observe(this, Observer {
             when(it){
-                is Success -> onSuccessCheckSkipOtp(it.data)
+                is Success -> onSuccessSkipOtp(it.data)
                 is Fail -> onErrorSkipOtpPin(it.throwable)
             }
         })
     }
 
     private fun initVar() {
-        val isFromLogin = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, false)
-        if(isFromLogin != null)
-            this.isFromLogin = isFromLogin
+        val isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false)
+        if(isSkipOtp != null)
+            this.isSkipOtp = isSkipOtp
     }
 
     private fun goToVerificationActivity(){
@@ -181,7 +181,7 @@ class AddPinFragment: BaseDaggerFragment(){
         }
     }
 
-    private fun onSuccessCheckSkipOtp(skipOtpPinData: SkipOtpPinData){
+    private fun onSuccessSkipOtp(skipOtpPinData: SkipOtpPinData){
         dismissLoading()
         if(skipOtpPinData.skipOtp && skipOtpPinData.validateToken.isNotEmpty()){
             showLoading()

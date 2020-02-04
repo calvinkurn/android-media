@@ -37,6 +37,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
     val isSessionActive: Boolean
         get() = userSession.isLoggedIn
     var postId = "0"
+    var targetType = ""
 
     companion object{
         private const val POST_NOT_FOUND = "Post tidak ditemukan"

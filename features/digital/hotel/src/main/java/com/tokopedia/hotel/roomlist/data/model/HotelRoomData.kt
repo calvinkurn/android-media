@@ -26,7 +26,11 @@ data class HotelRoomData(
 
         @SerializedName("isDirectPayment")
         @Expose
-        val isDirectPayment: Boolean = false
+        val isDirectPayment: Boolean = false,
+
+        @SerializedName("isEnabled")
+        @Expose
+        val isEnabled: Boolean = false
 ) {
         data class Response(
                 @SerializedName("propertySearchRoom")

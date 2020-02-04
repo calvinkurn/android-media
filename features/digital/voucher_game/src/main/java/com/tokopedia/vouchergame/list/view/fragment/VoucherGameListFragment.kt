@@ -28,6 +28,8 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
@@ -62,6 +64,8 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
     @Inject
     lateinit var rechargeAnalytics: RechargeAnalytics
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +106,10 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                                 (activity as BaseVoucherGameActivity).updateTitle(categoryName)
                                 voucherGameAnalytics.categoryName = categoryName
                                 voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
-                                    rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName, id.toString())
+                                    rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName,
+                                            id.toString())
+                                    rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName,
+                                            id.toString())
                                 }
                             }
 
@@ -163,7 +170,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val operatorList = voucherGameViewModel.voucherGameList.value
-                    if (operatorList is Success) {
+                    if (operatorList is Success && operatorList.data.operators.isNotEmpty()) {
                         val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
                         with(operatorList.data) {
                             if (searchInputView.searchText.isNotEmpty()) {
@@ -312,7 +319,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
             voucherGameAnalytics.eventClickSearchResult(searchInputView.searchText)
 
             val operatorList = voucherGameViewModel.voucherGameList.value
-            if (operatorList is Success) {
+            if (operatorList is Success && operatorList.data.operators.isNotEmpty()) {
                 val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
                 voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
                         operatorList.data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))

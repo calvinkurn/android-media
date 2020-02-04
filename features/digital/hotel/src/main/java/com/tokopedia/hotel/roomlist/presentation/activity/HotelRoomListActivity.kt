@@ -35,13 +35,15 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
             intent.getStringExtra(HotelRoomListFragment.ARG_CHECK_OUT),
             intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_ADULT, 0),
             intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_CHILDREN, 0),
-            intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_ROOM, 0))
+            intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_ROOM, 0),
+            intent.getStringExtra(HotelRoomListFragment.ARG_DESTINATION_TYPE),
+            intent.getStringExtra(HotelRoomListFragment.ARG_DESTINATION_NAME))
 
     override fun shouldShowOptionMenu(): Boolean = false
 
     companion object {
         fun createInstance(context: Context, propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
-                           totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0): Intent =
+                           totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0, destinationType: String, destinationName: String): Intent =
                 Intent(context, HotelRoomListActivity::class.java)
                         .putExtra(HotelRoomListFragment.ARG_PROPERTY_ID, propertyId)
                         .putExtra(HotelRoomListFragment.ARG_PROPERTY_NAME, propertyName)
@@ -50,5 +52,7 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
                         .putExtra(HotelRoomListFragment.ARG_TOTAL_ADULT, totalAdult)
                         .putExtra(HotelRoomListFragment.ARG_TOTAL_CHILDREN, totalChildren)
                         .putExtra(HotelRoomListFragment.ARG_TOTAL_ROOM, totalRoom)
+                        .putExtra(HotelRoomListFragment.ARG_DESTINATION_TYPE, destinationType)
+                        .putExtra(HotelRoomListFragment.ARG_DESTINATION_NAME, destinationName)
     }
 }

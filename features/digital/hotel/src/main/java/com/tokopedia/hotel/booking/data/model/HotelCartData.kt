@@ -59,7 +59,11 @@ data class HotelCartData (
 
     @SerializedName("contact")
     @Expose
-    val contact: BookingContact = BookingContact()
+    val contact: BookingContact = BookingContact(),
+
+    @SerializedName("roomContent")
+    @Expose
+    val roomContent: String = ""
 
 ) {
 

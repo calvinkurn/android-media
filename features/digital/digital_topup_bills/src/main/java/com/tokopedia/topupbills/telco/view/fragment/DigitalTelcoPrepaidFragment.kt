@@ -249,8 +249,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             promoListWidget.visibility = View.GONE
         } else {
             layoutProgressBar.visibility = View.GONE
-            recentNumbersWidget.visibility = View.VISIBLE
-            promoListWidget.visibility = View.VISIBLE
+            // If client number auto fill is done (product tabs are visible), do not show recent numbers & promo list
+            if (tabLayout.visibility == View.GONE && viewPager.visibility == View.GONE) {
+                recentNumbersWidget.visibility = View.VISIBLE
+                promoListWidget.visibility = View.VISIBLE
+            }
         }
     }
 

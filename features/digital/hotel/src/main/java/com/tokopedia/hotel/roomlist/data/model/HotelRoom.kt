@@ -206,6 +206,8 @@ data class HotelRoom(
 
             val isDirectPayment: Boolean = false,
 
+            val isEnabled: Boolean = false,
+
             val propertyName: String = ""
     )
 }

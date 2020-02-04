@@ -34,7 +34,8 @@
         app:typographyWeight="reguler"
         app:typographyType="body_2"
         app:layout_constraintTop_toBottomOf="@id/header_resi_label"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:textIsSelectable="true"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_copy_resi"

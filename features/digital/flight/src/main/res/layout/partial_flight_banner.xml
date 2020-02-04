@@ -5,18 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_20"
-    android:background="@color/background_apps"
+    android:background="@color/Neutral_N0"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_20"
     android:visibility="gone"
     tools:visibility="visible">
 
-    <com.tokopedia.banner.BannerView
+    <com.tokopedia.banner.Banner
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_20"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class InvoiceService extends AuthService<InvoiceApi> {
-    private static final String TAG = InvoiceService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

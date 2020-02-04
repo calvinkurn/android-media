@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="verification_icon">38dp</dimen>
+    <dimen name="dp_38">38dp</dimen>
+    <dimen name="dp_245">245dp</dimen>
+    <dimen name="dp_288">288dp</dimen>
 </resources>

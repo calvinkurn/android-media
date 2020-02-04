@@ -2,5 +2,4 @@
 <resources>
     <integer name="medal_margin">1</integer>
     <integer name="default_caption_character">128</integer>
-    <integer name="max_image_description_length">140</integer>
 </resources>

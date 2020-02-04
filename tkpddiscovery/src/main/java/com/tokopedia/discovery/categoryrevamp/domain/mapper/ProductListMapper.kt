@@ -1,7 +1,9 @@
 package com.tokopedia.discovery.categoryrevamp.domain.mapper
 
+import com.tokopedia.discovery.categoryrevamp.data.productModel.FreeOngkir
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.discovery.categoryrevamp.data.productModel.Shop
 import com.tokopedia.discovery.categoryrevamp.data.topAds.TopAdsResponse
 
 class ProductListMapper {
@@ -9,46 +11,44 @@ class ProductListMapper {
     fun transform(productListResponse: ProductListResponse, topAdsResponse: TopAdsResponse)
             : ProductListResponse {
 
-
         if (productListResponse.searchProduct?.products?.isNotEmpty() == true) {
 
             topAdsResponse.productAds?.data?.let {
                 for (i in it) {
-                    val item = ProductsItem()
-
                     i?.let { dataItem ->
-                        item.imageURL300 = dataItem.product?.image?.sEcs ?: ""
-                        item.imageURL = dataItem.product?.image?.sEcs ?: ""
-                        item.imageURL700 = dataItem.product?.image?.mEcs ?: ""
-                        item.name = dataItem.product?.name ?: ""
-                        item.shop.name = dataItem.shop?.name ?: ""
-                        item.discountPercentage = dataItem.product?.campaign?.discountPercentage
-                                ?: 0
-                        item.originalPrice = dataItem.product?.campaign?.originalPrice ?: ""
-                        item.priceRange = dataItem.product?.priceFormat ?: ""
-                        item.price = dataItem.product?.priceFormat ?: ""
-                        dataItem.shop?.let { shop ->
-                            shop.badges?.let { badgeList ->
-                                item.badges = badgeList
-                            }
-                        }
-                        item.shop.city = dataItem.shop?.city ?: ""
-                        item.isTopAds = true
-                        item.rating = dataItem.product?.productRating ?: 0
+                        val item = ProductsItem(
+                                imageURL300 = dataItem.product?.image?.sEcs ?: "",
+                                        imageURL = dataItem.product?.image?.sEcs ?: "",
+                                imageURL700 = dataItem.product?.image?.mEcs ?: "",
+                                name = dataItem.product?.name ?: "",
+                                shop = Shop(
+                                    city = dataItem.shop.city,
+                                    id = dataItem.shop.id.toInt(),
+                                    location = dataItem.shop.location,
+                                    goldmerchant = dataItem.shop.goldShop,
+                                    name = dataItem.shop.name
+                                ),
+                                discountPercentage = dataItem.product?.campaign?.discountPercentage
+                                ?: 0,
+                                originalPrice = dataItem.product?.campaign?.originalPrice ?: "",
+                                priceRange = dataItem.product?.priceFormat ?: "",
+                                price = dataItem.product?.priceFormat ?: "",
+                                badges = dataItem.shop?.badges,
+                                isTopAds = true,
+                                rating = dataItem.product?.productRating ?: 0,
+                                countReview = getReviewCount(dataItem.product?.countReviewFormat
+                                ?: "0"),
+                                wishlist = (dataItem.product?.wishlist) ?: false,
+                                id = (dataItem.product?.id?.toInt()) ?: 0,
+                                categoryID = (dataItem.product?.category?.id?.toInt()) ?: 0,
+                                productImpTrackingUrl = dataItem.product?.image?.sUrl ?: "",
+                                productClickTrackingUrl = dataItem.productClickUrl ?: "",
+                                productWishlistTrackingUrl = dataItem.productWishlistUrl ?: "",
+                                freeOngkir = FreeOngkir(dataItem.product?.freeOngkir?.isActive ?: false, dataItem.product?.freeOngkir?.imageUrl ?: "")
+                        )
 
-                        item.countReview = getReviewCount(dataItem.product?.countReviewFormat
-                                ?: "0")
-
-                        item.wishlist = (dataItem.product?.wishlist) ?: false
-
-                        item.id = (dataItem.product?.id?.toInt()) ?: 0
-                        item.categoryID = (dataItem.product?.category?.id?.toInt()) ?: 0
-                        item.productImpTrackingUrl = dataItem.product?.image?.sUrl ?: ""
-                        item.productClickTrackingUrl = dataItem.productClickUrl ?: ""
-                        item.productWishlistTrackingUrl = dataItem.productWishlistUrl ?: ""
+                        productListResponse.searchProduct.products.add(0, item)
                     }
-
-                    productListResponse.searchProduct.products.add(0, item)
                 }
             }
         }

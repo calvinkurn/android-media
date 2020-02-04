@@ -73,6 +73,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
     lateinit var overlayView: View
     lateinit var tickerPhoneVerification: Ticker
 
+    private var chancesChangeName = "0"
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_setting_profile, container, false)
@@ -330,7 +332,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 showButton = true,
                 fieldClickListener = View.OnClickListener {
                     ChangeNameTracker().clickOnChangeName()
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName)
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName, chancesChangeName)
                     startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
                 }
         )
@@ -472,6 +474,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dismissLoading()
         bod.isEnabled = profileRoleData.isAllowedChangeDob
         name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(REMOTE_KEY_CHANGE_NAME, false)
+        chancesChangeName = profileRoleData.chancesChangeName
     }
 
     private fun onErrorGetProfileRole(throwable: Throwable) {

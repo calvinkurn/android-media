@@ -183,17 +183,14 @@ open class WishlistViewModel @Inject constructor(
 
         launchCatchError(block = {
             val data = getWishlistUseCase.getData(GetWishlistParameter(keywordSearch, currentPage))
-            if (!data.isSuccess) {
-                wishlistData.value = wishlistData.value.copy()
+            if (!data.isSuccess || data.items.isEmpty()) {
+                wishlistData.value = removeLoadMore()
                 currentPage--
                 loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
-                        isSuccess = false,
+                        isSuccess = data.isSuccess,
                         hasNextPage = data.hasNextPage,
                         message = data.errorMessage))
                 return@launchCatchError
-            }
-            if (data.items.isEmpty()) {
-                wishlistData.value = removeLoadMore()
             } else {
                 val newPageVisitableData = combineVisitable(removeLoadMore(), mappingWishlistToVisitable(data.items))
                 wishlistData.value = newPageVisitableData
