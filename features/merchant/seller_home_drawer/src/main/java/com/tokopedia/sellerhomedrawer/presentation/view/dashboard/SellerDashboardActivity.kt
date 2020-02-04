@@ -7,9 +7,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
-import com.tokopedia.core.ManageGeneral
-import com.tokopedia.core.gcm.FCMCacheManager
-import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
@@ -60,11 +57,6 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
     override fun onResume() {
         sellerHomeDashboardDrawerPresenter.attachView(this)
         super.onResume()
-
-        //TODO: Remove core woi
-        FCMCacheManager.checkAndSyncFcmId(applicationContext)
-        NotificationModHandler.showDialogNotificationIfNotShowing(this,
-                ManageGeneral.getCallingIntent(this, ManageGeneral.TAB_POSITION_MANAGE_APP))
     }
 
     override fun setDrawerPosition(): Int {

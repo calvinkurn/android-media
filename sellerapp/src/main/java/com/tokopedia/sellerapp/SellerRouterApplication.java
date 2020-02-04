@@ -5,18 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
-import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
@@ -42,7 +40,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -134,7 +131,6 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -142,6 +138,7 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.sellerhomedrawer.presentation.view.dashboard.SellerDashboardActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -167,7 +164,6 @@ import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.user.session.UserSession;
@@ -396,7 +392,7 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
             if (SessionHandler.isUserHasShop(context)) {
-                return DashboardActivity.createInstance(context);
+                return SellerDashboardActivity.createInstance(context);
             } else {
                 return intent;
             }
@@ -413,7 +409,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         if (SessionHandler.isV4Login(context)) {
-            return DashboardActivity.class;
+            return SellerDashboardActivity.class;
         } else {
             return WelcomeActivity.class;
         }
@@ -455,7 +451,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void goToDefaultRoute(Context context) {
-        Intent intent = DashboardActivity.createInstance(context);
+        Intent intent = SellerDashboardActivity.createInstance(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -698,7 +694,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getSellerHomeIntent(Activity activity) {
-        return DashboardActivity.createInstance(activity);
+        return SellerDashboardActivity.createInstance(activity);
     }
 
     @Override
