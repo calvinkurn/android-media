@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.TooltipClickListener
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
@@ -21,7 +20,6 @@ import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetConte
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
-import com.tokopedia.sellerhome.view.viewholder.PostListViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -37,8 +35,8 @@ import javax.inject.Inject
  */
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(),
-        TooltipClickListener, CardViewHolder.Listener, LineGraphViewHolder.Listener,
-        ProgressViewHolder.Listener, SectionViewHolder.Listener, PostListViewHolder.Listener {
+        CardViewHolder.Listener, LineGraphViewHolder.Listener, ProgressViewHolder.Listener,
+        SectionViewHolder.Listener, PostListViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -126,7 +124,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this, this, this, this, this, this)
+        return SellerHomeAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -166,11 +164,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun removeWidget(position: Int, data: PostListWidgetUiModel) {
-        recyclerView.post {
-            adapter.data.removeAt(position)
-            adapter.notifyDataSetChanged()
-            widgetHasMap[data.widgetType]?.remove(data)
-        }
+        adapter.data.remove(data)
+        adapter.notifyItemRemoved(position)
+        widgetHasMap[data.widgetType]?.remove(data)
     }
 
     private fun showGetWidgetShimmer(isShown: Boolean) {
@@ -207,13 +203,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         hideSoftKeyboardIfPresent()
 
-        with(tooltipBottomSheet) tooltip@ {
+        with(tooltipBottomSheet) tooltip@{
             setTitle(tooltip.title)
             clearClose(false)
             clearHeader(false)
             setCloseClickListener { this.dismiss() }
 
-            val bottomSheetContentView = SellerHomeBottomSheetContent(this@SellerHomeFragment.context ?: return)
+            val bottomSheetContentView = SellerHomeBottomSheetContent(this@SellerHomeFragment.context
+                    ?: return)
             bottomSheetContentView.setTooltipData(tooltip)
 
             setChild(bottomSheetContentView)

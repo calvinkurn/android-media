@@ -8,7 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.SellerHomeWidgetTooltipClickListener
+import com.tokopedia.sellerhome.TooltipClickListener
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
@@ -19,8 +19,7 @@ import kotlinx.android.synthetic.main.sah_partial_shimmering_post_list_widget.vi
 
 class PostListViewHolder(
         view: View?,
-        private val listener: Listener,
-        private val tooltipClickListener: SellerHomeWidgetTooltipClickListener
+        private val listener: Listener
 ) : AbstractViewHolder<PostListWidgetUiModel>(view), BaseListAdapter.OnAdapterInteractionListener<PostUiModel> {
 
     companion object {
@@ -134,7 +133,7 @@ class PostListViewHolder(
     }
 
     private fun showBottomSheet(tooltip: TooltipUiModel) {
-        tooltipClickListener.onInfoTooltipClicked(tooltip)
+        listener.onTooltipClicked(tooltip)
     }
 
     private fun goToDetails(appLink: String) {
@@ -159,7 +158,7 @@ class PostListViewHolder(
         itemView.context.startActivity(intent)
     }
 
-    interface Listener {
+    interface Listener : TooltipClickListener {
         fun getPostData()
         fun removeWidget(position: Int, data: PostListWidgetUiModel)
     }

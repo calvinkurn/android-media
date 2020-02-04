@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.view.model.*
-import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -26,7 +25,7 @@ class GetLayoutUseCase(
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
                         dataKey = "",
-                        ctaText = "Tambah produk sekarang!",
+                        ctaText = "Tambah produk sekarang",
                         data = null
                 ),
                 SectionWidgetUiModel(
@@ -34,7 +33,7 @@ class GetLayoutUseCase(
                         title = "Penting hari ini",
                         subtitle = "",
                         tooltip = TooltipUiModel(
-                                title = "Ringkasan Penjualan",
+                                title = "Penting Hari Ini",
                                 content = "",
                                 list = listOf(
                                         TooltipListItemUiModel("New Order", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
@@ -43,8 +42,7 @@ class GetLayoutUseCase(
                                         TooltipListItemUiModel("Unread Chat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
                                         TooltipListItemUiModel("Discussion", "Jumlah produk terjual dari setiap transaksi sukses"),
                                         TooltipListItemUiModel("Product View", "Jumlah pemasukan dari produk terjual beserta ongkos kirim.")
-                                ),
-                                isShow = true
+                                )
                         ),
                         url = "",
                         appLink = "",
@@ -155,7 +153,7 @@ class GetLayoutUseCase(
                         widgetType = WidgetType.LINE_GRAPH,
                         title = "Total Pendapatan",
                         subtitle = "",
-                        tooltip = TooltipUiModel("Total Pendapatan", "Pendapatan harian bersih per hari", emptyList(), false),
+                        tooltip = TooltipUiModel("Total Pendapatan", "Pendapatan harian bersih per hari", emptyList()),
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
                         dataKey = "grossIncome",
@@ -221,7 +219,7 @@ class GetLayoutUseCase(
                         widgetType = WidgetType.POST,
                         title = "Info Seller",
                         subtitle = "",
-                        tooltip = TooltipUiModel("Info Seller", "Skor ada little ipsum del amet, yang membawa per minggu", emptyList(), true),
+                        tooltip = TooltipUiModel("Info Seller", "Skor ada little ipsum del amet, yang membawa per minggu", emptyList()),
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
                         dataKey = "article",

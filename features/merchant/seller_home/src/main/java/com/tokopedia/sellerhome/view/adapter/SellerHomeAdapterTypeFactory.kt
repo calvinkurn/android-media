@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.sellerhome.TooltipClickListener
+import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.*
 
@@ -13,12 +13,7 @@ import com.tokopedia.sellerhome.view.viewholder.*
  */
 
 class SellerHomeAdapterTypeFactory(
-        private val tooltipClickListener: TooltipClickListener,
-        private val cardWidgetListener: CardViewHolder.Listener,
-        private val lineGraphWidgetListener: LineGraphViewHolder.Listener,
-        private val progressWidgetListener: ProgressViewHolder.Listener,
-        private val sectionWidgetListener: SectionViewHolder.Listener,
-        private val postListWidgetListener: PostListViewHolder.Listener
+        private val sellerHomeFragment: SellerHomeFragment
 ) : BaseAdapterTypeFactory(), SellerHomeTypeFactory {
 
     override fun type(cardWidget: CardWidgetUiModel): Int {
@@ -51,13 +46,13 @@ class SellerHomeAdapterTypeFactory(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, sectionWidgetListener)
-            CardViewHolder.RES_LAYOUT -> CardViewHolder(parent, cardWidgetListener)
-            LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, lineGraphWidgetListener)
+            SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, sellerHomeFragment)
+            CardViewHolder.RES_LAYOUT -> CardViewHolder(parent, sellerHomeFragment)
+            LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, sellerHomeFragment)
             CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent)
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
-            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, progressWidgetListener)
-            PostListViewHolder.RES_LAYOUT -> PostListViewHolder(parent, postListWidgetListener, tooltipClickListener)
+            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, sellerHomeFragment)
+            PostListViewHolder.RES_LAYOUT -> PostListViewHolder(parent, sellerHomeFragment)
             else -> super.createViewHolder(parent, type)
         }
     }
