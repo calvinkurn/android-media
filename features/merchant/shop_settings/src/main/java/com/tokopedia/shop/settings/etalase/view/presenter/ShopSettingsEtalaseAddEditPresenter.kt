@@ -56,6 +56,7 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
                 hideShowCaseGroup = false,
                 isOwner = true
         )
+        getShopEtalaseByShopUseCase.clearCache()
         getShopEtalaseByShopUseCase.execute(params, object : Subscriber<ArrayList<ShopEtalaseModel>>() {
             override fun onNext(listEtalase: ArrayList<ShopEtalaseModel>?) {
                 view?.hideLoading()
