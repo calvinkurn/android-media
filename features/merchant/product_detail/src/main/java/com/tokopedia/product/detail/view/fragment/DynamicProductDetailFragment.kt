@@ -200,13 +200,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var warehouseId: String? = null
     private var isTopdasLoaded: Boolean = false
     private var shouldRenderSticky = true
+    private var doActivityResult = true
+    private var pdpHashMapUtil: DynamicProductDetailHashMap? = null
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
     private lateinit var varToolbar: Toolbar
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
-    private var pdpHashMapUtil: DynamicProductDetailHashMap? = null
     private lateinit var topAdsDetailSheet: TopAdsDetailSheet
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
@@ -260,6 +261,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
+            doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_LOGIN, true)
             userInputNotes = savedInstanceState.getString(ProductDetailConstant.SAVED_NOTE, "")
             userInputQuantity = savedInstanceState.getInt(ProductDetailConstant.SAVED_QUANTITY, 1)
             userInputVariant = savedInstanceState.getString(ProductDetailConstant.SAVED_VARIANT)
@@ -287,6 +289,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        outState.putBoolean(ProductDetailConstant.SAVED_LOGIN, false)
         outState.putString(ProductDetailConstant.SAVED_NOTE, userInputNotes)
         outState.putInt(ProductDetailConstant.SAVED_QUANTITY, userInputQuantity)
         outState.putString(ProductDetailConstant.SAVED_VARIANT, userInputVariant)
@@ -491,13 +494,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }
             ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
-                onSwipeRefresh()
+                if (resultCode == Activity.RESULT_OK  && doActivityResult) {
+                    onSwipeRefresh()
+                }
             }
             ProductDetailConstant.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
             }
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
 
