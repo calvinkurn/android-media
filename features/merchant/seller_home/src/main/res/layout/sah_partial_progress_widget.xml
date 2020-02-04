@@ -52,8 +52,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shop_score_widget"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant." />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_see_details"
@@ -61,7 +60,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:lineSpacingExtra="6sp"
-        android:text="@string/sah_more"
         android:textColor="@color/Green_G500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
@@ -69,6 +67,7 @@
         app:typographyWeight="bold" />
 
     <ImageView
+        android:id="@+id/iv_arrow_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"

@@ -60,6 +60,7 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
                 itemView.tv_card_title.text = title
                 itemView.tv_description.text = data?.subtitle
                 setupProgressBar(barTitle, valueTxt, maxValueTxt, value, maxValue, colorState)
+                setupDetails(this)
             }
         }
 
@@ -68,7 +69,6 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
 
     private fun createListeners(tooltip: TooltipUiModel) {
         itemView.iv_info.setOnClickListener { showBottomSheet(tooltip) }
-        itemView.tv_see_details.setOnClickListener { goToDetails() }
     }
 
     private fun showBottomSheet(tooltip: TooltipUiModel) {
@@ -101,6 +101,24 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
         itemView.shop_score_widget.setProgressValue(currentProgress)
         itemView.shop_score_widget.setMaxProgressValue(maxProgress)
         itemView.shop_score_widget.setProgressColor(state)
+    }
+
+    private fun setupDetails(element: ProgressWidgetUiModel) {
+        with(itemView) {
+            if(element.ctaText.isNotEmpty() && element.appLink.isNotEmpty() ) {
+                tv_see_details.text = element.ctaText
+                iv_arrow_url.visibility = View.VISIBLE
+                tv_see_details.setOnClickListener {
+                    goToDetails()
+                }
+                iv_arrow_url.setOnClickListener {
+                    goToDetails()
+                }
+            } else {
+                tv_see_details.visibility = View.GONE
+                iv_arrow_url.visibility = View.GONE
+            }
+        }
     }
 
     private fun showShimmeringLayout() {
