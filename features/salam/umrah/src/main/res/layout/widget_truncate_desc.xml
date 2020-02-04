@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="small"
+        android:visibility="gone"
         android:textColor="@color/Green_G500"
         android:text="@string/umrah_travel_read_more"
         android:layout_marginLeft="@dimen/dp_16"

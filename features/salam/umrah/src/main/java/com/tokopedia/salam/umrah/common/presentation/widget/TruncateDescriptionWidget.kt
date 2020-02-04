@@ -70,6 +70,7 @@ class TruncateDescriptionWidget @JvmOverloads constructor(context: Context, attr
         if(tg_desc.lineCount>descriptionLineCount){
             tg_desc.ellipsize = TextUtils.TruncateAt.END
             tg_desc.maxLines = descriptionLineCount
+            tg_load_more.visibility = View.VISIBLE
             tg_load_more.text = resources.getString(R.string.umrah_travel_read_more)
             truncateDescription = HIDE_DESC
         }
@@ -79,7 +80,10 @@ class TruncateDescriptionWidget @JvmOverloads constructor(context: Context, attr
         tg_desc.ellipsize = null
         tg_desc.maxLines = Integer.MAX_VALUE
         tg_load_more.text = resources.getString(R.string.umrah_travel_hide_more)
-        truncateDescription = SHOW_DESC
+        if(tg_desc.lineCount>descriptionLineCount) {
+            tg_load_more.visibility = View.VISIBLE
+            truncateDescription = SHOW_DESC
+        }
     }
 
 
