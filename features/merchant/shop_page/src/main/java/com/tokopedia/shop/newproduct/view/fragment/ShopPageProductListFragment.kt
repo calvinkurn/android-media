@@ -216,9 +216,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : DataEndlessScrollListener(recyclerView!!.layoutManager, shopProductAdapter) {
+        return object : DataEndlessScrollListener(recyclerView?.layoutManager, shopProductAdapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
+                shopProductAdapter.showLoading()
                 loadData(page)
             }
         }
@@ -825,7 +825,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
         }
-        shopProductAdapter.notifyDataSetChanged()
+        shopProductAdapter.notifyItemRangeInserted(shopProductAdapter.lastIndex,productList.size)
         if (parentFragment is ShopPageFragment) {
             (parentFragment as? ShopPageFragment)?.stopPerformanceMonitor()
         }

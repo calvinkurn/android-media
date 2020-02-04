@@ -32,7 +32,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
@@ -55,10 +54,8 @@ import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewH
 import com.tokopedia.shop.newproduct.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
-import com.tokopedia.shop.product.view.adapter.EtalaseChipAdapter
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
-import com.tokopedia.shop.product.view.viewmodel.ShopProductListViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -66,7 +63,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import kotlinx.android.synthetic.main.fragment_shop_product_list_new.*
 import kotlinx.android.synthetic.main.fragment_shop_product_list_new.recycler_view_etalase
 import kotlinx.android.synthetic.main.fragment_shop_product_list_new.v_etalase_more
 import kotlinx.android.synthetic.main.fragment_shop_product_list_new.vg_etalase_list
@@ -368,27 +364,27 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : DataEndlessScrollListener(recyclerView?.layoutManager, shopProductAdapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
+                shopProductAdapter.showLoading()
                 loadData(page)
             }
         }
     }
 
-    private fun renderProductList(list: List<ShopProductViewModel>, hasNextPage: Boolean) {
+    private fun renderProductList(productList: List<ShopProductViewModel>, hasNextPage: Boolean) {
         shopInfo?.let {
-            if (list.isNotEmpty()) {
+            if (productList.isNotEmpty()) {
                 shopPageTracking?.impressionProductList(
                         viewModel.isMyShop(it.shopCore.shopID),
                         if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                         selectedEtalaseName, CustomDimensionShopPageAttribution.create(it.shopCore.shopID,
                         it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution),
-                        list, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name, it.freeOngkir.isActive
+                        productList, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name, it.freeOngkir.isActive
                 )
             }
             if (!TextUtils.isEmpty(keyword) && prevAnalyticKeyword != keyword) {
                 shopPageTracking?.searchKeyword(viewModel.isMyShop(it.shopCore.shopID),
                         keyword,
-                        list.isNotEmpty(),
+                        productList.isNotEmpty(),
                         CustomDimensionShopPage.create(it.shopCore.shopID,
                                 it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
                 prevAnalyticKeyword = keyword
@@ -401,7 +397,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductAdapter.clearProductList()
             endlessRecyclerViewScrollListener.resetState()
         }
-        shopProductAdapter.setProductListDataModel(list)
+        shopProductAdapter.setProductListDataModel(productList)
         updateScrollListenerState(hasNextPage)
 
         if (shopProductAdapter.shopProductViewModelList.size == 0) {
@@ -409,7 +405,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         } else {
             isLoadingInitialData = false
         }
-        shopProductAdapter.notifyDataSetChanged()
+        shopProductAdapter.notifyItemRangeInserted(shopProductAdapter.lastIndex,productList.size)
     }
 
     override fun onItemClicked(baseShopProductViewModel: BaseShopProductViewModel) {
