@@ -11,18 +11,26 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCas
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.*
+import io.mockk.CapturingSlot
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
+import rx.Observable
+import rx.observables.BlockingObservable
 
 abstract class OfficialStoreHomeViewModelTestFixture {
 
@@ -81,6 +89,17 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } returns osFeatured
     }
 
+    protected fun onGetOfficialStoreProductRecommendation_thenReturn(recommendations: List<RecommendationWidget>) {
+        val recommendationObs = mockk<Observable<List<RecommendationWidget>>>()
+        val recommendationBlockingObs = mockk<BlockingObservable<List<RecommendationWidget>>>()
+
+        coEvery { recommendationBlockingObs.first() } returns recommendations
+        coEvery { recommendationObs.toBlocking() } returns recommendationBlockingObs
+
+        coEvery { getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns RequestParams()
+        coEvery { getRecommendationUseCase.createObservable(any()) } returns recommendationObs
+    }
+
     protected fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } throws error
     }
@@ -91,6 +110,10 @@ abstract class OfficialStoreHomeViewModelTestFixture {
 
     protected fun onGetOfficialStoreFeaturedShop_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } throws error
+    }
+
+    protected fun onGetOfficialStoreProductRecommendation_thenReturn(error: Throwable) {
+        coEvery { getRecommendationUseCase.createObservable(any()) } throws error
     }
     // endregion
 
@@ -132,6 +155,15 @@ abstract class OfficialStoreHomeViewModelTestFixture {
             .assertSuccess(expectedDynamicChannel)
     }
 
+    protected fun verifyOfficialStoreProductRecommendationEquals(
+        expectedProductRecommendation: Success<RecommendationWidget>
+    ) {
+        verifyGetOfficialStoreProductRecommendationUseCaseCalled()
+
+        viewModel.officialStoreProductRecommendationResult
+            .assertSuccess(expectedProductRecommendation)
+    }
+
     protected fun verifyOfficialStoreBannersError(expectedError: Fail) {
         verifyGetOfficialStoreBannersUseCaseCalled()
 
@@ -158,6 +190,13 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         verifyGetOfficialDynamicChannelCalled(error)
 
         viewModel.officialStoreDynamicChannelResult
+            .assertError(expectedError)
+    }
+
+    protected fun verifyOfficialStoreProductRecommendationError(expectedError: Fail) {
+        verifyGetOfficialStoreProductRecommendationUseCaseCalled()
+
+        viewModel.officialStoreProductRecommendationResult
             .assertError(expectedError)
     }
 
@@ -191,6 +230,10 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         }
 
         onError.captured.invoke(error)
+    }
+
+    private fun verifyGetOfficialStoreProductRecommendationUseCaseCalled() {
+        coVerify { getRecommendationUseCase.createObservable(any()) }
     }
     // endregion
     

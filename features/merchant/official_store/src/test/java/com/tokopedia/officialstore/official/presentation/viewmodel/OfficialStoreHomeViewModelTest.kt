@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.*
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -55,6 +56,41 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             verifyOfficialStoreBenefitsError(expectedError)
             verifyOfficialStoreFeaturedShopError(expectedError)
             verifyOfficialStoreDynamicChannelError(expectedError)
+        }
+    }
+
+    @Test
+    fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation() {
+       runBlocking {
+           val page = 1
+           val category = Category()
+           val productRecommendation = listOf(
+               RecommendationWidget(title = "Recommendation 1"),
+               RecommendationWidget(title = "Recommendation 2")
+           )
+
+           onGetOfficialStoreProductRecommendation_thenReturn(productRecommendation)
+
+           viewModel.loadMore(category, page)
+
+           val expectedProductRecommendation = Success(productRecommendation[0])
+           verifyOfficialStoreProductRecommendationEquals(expectedProductRecommendation)
+       }
+    }
+
+    @Test
+    fun given_get_data_error__when_load_more__should_set_product_recommendation_error_value() {
+        runBlocking {
+            val page = 1
+            val category = Category()
+            val error = NullPointerException()
+
+            onGetOfficialStoreProductRecommendation_thenReturn(error)
+
+            viewModel.loadMore(category, page)
+
+            val expectedError = Fail(NullPointerException())
+            verifyOfficialStoreProductRecommendationError(expectedError)
         }
     }
 }
