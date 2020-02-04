@@ -18,6 +18,7 @@ import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,7 +42,13 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         topupBillsViewModel.enquiryData.observe(this, Observer {
             it.run {
                 when (it) {
-                    is Success -> processEnquiry(it.data)
+                    is Success -> {
+                        if (it.data.enquiry.attributes != null) {
+                            processEnquiry(it.data)
+                        } else {
+                            showEnquiryError(MessageErrorException(getString(R.string.common_topup_enquiry_error)))
+                        }
+                    }
                     is Fail -> showEnquiryError(it.throwable)
                 }
             }
