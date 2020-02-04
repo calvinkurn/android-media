@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.manage.item.common.util.FreeReturnTypeDef
-import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.ProductManagePreOrderDef
 import com.tokopedia.product.manage.list.constant.ProductManageStockDef
 import com.tokopedia.product.manage.list.constant.ProductManageWholesaleDef
@@ -98,7 +97,7 @@ class ProductManageListViewHolder(view: View, checkableListener: CheckableIntera
         if (!statusStockEmpty && productManageViewModel.productUsingStock == ProductManageStockDef.USING_STOCK) {
             stockTextView.visibility = View.VISIBLE
             if (productManageViewModel.isProductVariant) {
-                stockTextView.text = itemView.context.getString(com.tokopedia.product.manage.list.R.string.pml_product_variant_stock_limited)
+                stockTextView.text = itemView.context.getString(com.tokopedia.product.manage.list.R.string.pml_product_variant_stock_active)
             } else {
                 stockTextView.text = itemView.context.getString(com.tokopedia.product.manage.list.R.string.product_manage_label_stock_counter, productManageViewModel.productStock)
             }

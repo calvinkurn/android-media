@@ -36,6 +36,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupEditPromoActivity
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductViewPresenterImpl;
 
+import timber.log.Timber;
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
@@ -285,7 +286,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         if (dataResponseActionAds != null && dataResponseActionAds instanceof ProductAdBulkAction) {
             Integer status = Integer.valueOf(((ProductAdBulkAction) dataResponseActionAds).getAds().get(0).getStatus());
 
-            CommonUtils.dumper("status from network -> " + status);
+            Timber.d("status from network -> " + status);
             if (adFromIntent != null)
                 adFromIntent.setStatus(status);
 

@@ -106,7 +106,7 @@ public class IndicatorAdapter extends RecyclerView.Adapter<IndicatorAdapter.View
         holder.title.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         holder.title.setTextColor(MethodChecker.getColor(context, R.color.black_70));
         MethodChecker.setBackground(holder.wrapper, MethodChecker.getDrawable(context, R.drawable
-                .shadow_background_circle));
+                .shadow_bg_topchat_circle));
     }
 
     @Override

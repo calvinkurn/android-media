@@ -14,10 +14,4 @@ public interface DiscoveryRouter {
     Intent getLoginIntent(Context context);
 
     Intent getShopPageIntent(Context context, String shopId);
-
-    boolean isSupportApplink(String appLink);
-
-    void goToApplinkActivity(Context context, String applink);
-
-    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 }

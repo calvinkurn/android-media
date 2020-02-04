@@ -28,8 +28,9 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @PromoCheckoutDetailScope
@@ -60,9 +61,8 @@ class PromoCheckoutDetailModule {
     @Provides
     fun provideMarketplacePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                          checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                         checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                          clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailPresenter {
-        return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, clearCacheAutoApplyStackUseCase)
+        return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, clearCacheAutoApplyStackUseCase)
     }
 
     @PromoCheckoutDetailScope
@@ -87,8 +87,9 @@ class PromoCheckoutDetailModule {
     @Provides
     fun provideHotelPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
-                              hotelCheckVoucherMapper: HotelCheckVoucherMapper): PromoCheckoutDetailHotelPresenter {
-        return PromoCheckoutDetailHotelPresenter(getDetailCouponMarketplaceUseCase, hotelCheckVoucherUseCase, hotelCheckVoucherMapper)
+                              hotelCheckVoucherMapper: HotelCheckVoucherMapper,
+                              flightCancelVoucherUseCase: FlightCancelVoucherUseCase): PromoCheckoutDetailHotelPresenter {
+        return PromoCheckoutDetailHotelPresenter(getDetailCouponMarketplaceUseCase, hotelCheckVoucherUseCase, hotelCheckVoucherMapper, flightCancelVoucherUseCase)
     }
 
     @PromoCheckoutDetailScope

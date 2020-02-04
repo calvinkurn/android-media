@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
-        android:background="@drawable/bg_variant_container"
+        android:background="@drawable/notifcenter_bg_variant_container"
         android:orientation="horizontal"
         android:paddingStart="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8">
@@ -44,7 +44,7 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        android:background="@drawable/bg_variant_container"
+        android:background="@drawable/notifcenter_bg_variant_container"
         android:orientation="horizontal"
         android:paddingStart="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8">

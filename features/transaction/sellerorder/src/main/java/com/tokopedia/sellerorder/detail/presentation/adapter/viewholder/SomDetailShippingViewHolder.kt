@@ -2,6 +2,8 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.graphics.Typeface
 import android.view.View
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
@@ -22,6 +24,15 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             itemView.tv_receiver_phone.text = item.dataObject.receiverPhone
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
+
+            itemView.copy_address_btn.apply {
+                setOnClickListener {
+                    actionListener.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
+                            "\n" + item.dataObject.receiverPhone +
+                            "\n" + item.dataObject.receiverStreet +
+                            "\n" + item.dataObject.receiverDistrict))
+                }
+            }
 
             if (item.dataObject.isFreeShipping || item.dataObject.isRemoveAwb) {
                 itemView.label_harus_sesuai.visibility = View.VISIBLE
@@ -120,5 +131,14 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.rl_som_dropshipper.visibility = View.GONE
             }
         }
+
+        val coachmarkShipping = CoachMarkItem(itemView,
+                itemView.context.getString(R.string.coachmark_shipping),
+                itemView.context.getString(R.string.coachmark_shipping_info))
+
+        actionListener.onAddedCoachMarkShipping(
+                coachmarkShipping
+        )
+
     }
 }

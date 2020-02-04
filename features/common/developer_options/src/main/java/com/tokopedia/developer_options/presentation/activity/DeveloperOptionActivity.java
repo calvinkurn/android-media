@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,11 +32,13 @@ import com.readystatesoftware.chuck.Chuck;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analytics.debugger.GtmLogger;
+import com.tokopedia.analytics.debugger.IrisLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.developer_options.R;
+import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
@@ -43,6 +46,9 @@ import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 @DeepLink(ApplinkConst.DEVELOPER_OPTIONS)
 public class DeveloperOptionActivity extends BaseActivity {
@@ -80,6 +86,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleChuck;
 
     private TextView vGoToAnalytics;
+    private TextView vGoToAnalyticsError;
+    private TextView vGoToIrisSaveLogDB;
+    private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
 
     private CheckBox toggleUiBlockDebugger;
@@ -96,6 +105,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView accessTokenView;
     private TextView tvFakeResponse;
 
+    private Button requestFcmToken;
+
     @Override
     public String getScreenName() {
         return getString(R.string.screen_name);
@@ -104,10 +115,10 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (GlobalConfig.isAllowDebuggingTools() && getIntent() != null && getIntent().getData() != null) {
+        if (GlobalConfig.isAllowDebuggingTools() && getIntent()!=null && getIntent().getData()!=null) {
             userSession = new UserSession(this);
             Uri uri = getIntent().getData();
-            if (uri.getHost().equals(DEVELOPEROPTION)) {
+            if(uri.getHost().equals(DEVELOPEROPTION)) {
                 handleUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
@@ -121,9 +132,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void handleUri(Uri uri) {
-        if (uri.getLastPathSegment().startsWith(STAGING)) {
+        if(uri.getLastPathSegment().startsWith(STAGING)){
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.STAGING);
-        } else if (uri.getLastPathSegment().startsWith(LIVE)) {
+        } else if (uri.getLastPathSegment().startsWith(LIVE)){
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.LIVE);
         }
         TokopediaUrl.Companion.deleteInstance();
@@ -158,6 +169,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleChuck = findViewById(R.id.toggle_chuck);
 
         vGoToAnalytics = findViewById(R.id.goto_analytics);
+        vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
+        vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
+        vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
+
         toggleAnalytics = findViewById(R.id.toggle_analytics);
 
         toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
@@ -179,6 +194,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
         accessTokenView = findViewById(R.id.access_token);
+        requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
@@ -265,17 +281,28 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        reviewNotifBtn.setOnClickListener(v -> {
+        reviewNotifBtn.setOnClickListener(v ->{
             Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777, notifReview);
-        });
+            notificationManagerCompat.notify(777,notifReview);
+                });
 
         toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
 
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
         vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
+        vGoToAnalyticsError.setOnClickListener(v -> {
+            GtmLogger.getInstance(DeveloperOptionActivity.this).openErrorActivity();
+        });
+
+        vGoToIrisSaveLogDB.setOnClickListener(v -> {
+            IrisLogger.getInstance(DeveloperOptionActivity.this).openSaveActivity();
+        });
+
+        vGoToIrisSendLogDB.setOnClickListener(v -> {
+            IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
+        });
 
         SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");
         toggleUiBlockDebugger.setChecked(uiBlockDebuggerPref.getBoolean("isEnabled", false));
@@ -325,6 +352,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
             }
+        });
+
+        requestFcmToken.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
+            startService(intent);
         });
 
         tvFakeResponse.setOnClickListener(v -> {

@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.seller.R;
@@ -45,7 +47,7 @@ public class NewOrderWidget extends AppWidgetProvider {
                 views.setRemoteAdapter(R.id.list_order, intent);
                 views.setEmptyView(R.id.list_order, R.id.view_no_result);
                 views.setTextViewText(R.id.count_order, String.valueOf(dataOrderViewWidget.getDataOrderCount()));
-                Intent intentOrder = ActivitySellingTransaction.createIntent(context, ActivitySellingTransaction.TAB_POSITION_SELLING_NEW_ORDER);
+                Intent intentOrder = RouteManager.getIntent(context, ApplinkConst.SELLER_NEW_ORDER);
                 intentOrder.putExtra(ActivitySellingTransaction.FROM_WIDGET_TAG, true);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentOrder, 0);
                 views.setOnClickPendingIntent(R.id.container_order_count, pendingIntent);

@@ -1,16 +1,17 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -20,8 +21,8 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -87,7 +88,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                     @Override
                     public void onClick(View view) {
                         HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                context,
                                 element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                         );
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
@@ -146,7 +146,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         @Override
                         public void onClick(View view) {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                    holder.getContext(),
                                     channel.getEnhanceClickDynamicChannelHomePage(grid, position + 2)
                             );
                             listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid));

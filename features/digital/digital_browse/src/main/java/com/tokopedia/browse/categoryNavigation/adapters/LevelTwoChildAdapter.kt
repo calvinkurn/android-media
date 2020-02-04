@@ -26,43 +26,47 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?,
     }
 
     override fun getItemCount(): Int {
-        return list!!.size
+        return list?.size?:0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        list?.let {list->
-            holder.itemView.addOnImpressionListener(list[position], object: ViewHintListener {
+        list?.let { list ->
+            holder.itemView.addOnImpressionListener(list[position], object : ViewHintListener {
                 override fun onViewHint() {
                     if (!viewMap.containsKey(position) && list.size > position) {
                         viewMap[position] = true
-                        trackingQueue?.let {trackingQueue->
+                        trackingQueue?.let { trackingQueue ->
                             CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(trackingQueue, list[position], position)
                         }
                     }
                 }
             })
+
+
+            val marginThirty = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_10)
+            val marginZero = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_0)
+
+            if (list[position].iconImageUrl == null) {
+                holder.productImage.setImageResource(R.drawable.ic_see_more)
+                holder.productImage.setPadding(marginThirty, marginThirty, marginThirty, marginThirty)
+                holder.productName.text = holder.itemView.resources.getString(R.string.default_category_lihat_seuma)
+            } else {
+                holder.productImage.setPadding(marginZero, marginZero, marginZero, marginZero)
+                ImageHandler.loadImage(holder.itemView.context, holder.productImage, list[position].iconImageUrl, R.drawable.loading_page)
+                holder.productName.text = list[position].name
+            }
+
+            holder.productImage.setOnClickListener {
+                CategoryAnalytics.createInstance().eventBannerInsideLevelTwoClick(list[position], position)
+                RouteManager.route(holder.productImage.context, list[position].applinks)
+            }
+            holder.productName.setOnClickListener {
+                RouteManager.route(holder.productImage.context, list[position].applinks)
+            }
+
         }
 
-        holder.productName.text = list!![position].name
 
-        val marginThirty = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_10)
-        val marginZero = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_0)
-
-        if (list[position].iconImageUrl == null) {
-            holder.productImage.setImageResource(R.drawable.ic_see_more)
-            holder.productImage.setPadding(marginThirty, marginThirty, marginThirty, marginThirty)
-        } else {
-            holder.productImage.setPadding(marginZero, marginZero, marginZero, marginZero)
-            ImageHandler.loadImage(holder.itemView.context, holder.productImage, list[position].iconImageUrl, R.drawable.loading_page)
-        }
-
-        holder.productImage.setOnClickListener {
-            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoClick(list[position], position)
-            RouteManager.route(holder.productImage.context, list[position].applinks)
-        }
-        holder.productName.setOnClickListener {
-            RouteManager.route(holder.productImage.context, list[position].applinks)
-        }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
