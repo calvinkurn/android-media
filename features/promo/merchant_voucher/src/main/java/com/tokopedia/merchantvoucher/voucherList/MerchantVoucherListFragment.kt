@@ -32,8 +32,8 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterTypeFactory
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import javax.inject.Inject
 
 
@@ -180,7 +180,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             onRetryListener = ErrorNetworkModel.OnRetryListener {
                 presenter.clearCache()
                 shopInfo?.run {
-                    presenter.getVoucherList(info.shopId)
+                    presenter.getVoucherList(this.shopCore.shopID)
                 }
             }
         }

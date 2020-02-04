@@ -11,6 +11,7 @@ public interface ApplinkConst {
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
+    String HOME_ACCOUNT_SELLER = "tokopedia://home/account/seller";
     String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
     String FIND = "tokopedia://find";
@@ -244,6 +245,8 @@ public interface ApplinkConst {
     String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
 
+    String PLAY_DETAIL = "tokopedia://play/{channel_id}";
+
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
@@ -338,7 +341,6 @@ public interface ApplinkConst {
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
 
     String MONEYIN = "tokopedia://money_in/device_validation";
-
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";

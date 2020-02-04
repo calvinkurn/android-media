@@ -1,0 +1,5 @@
+<resources>
+    <string name="title_product_card_options">Product Card Options</string>
+
+    <string name="bottom_sheet_show">BottomSheet Show</string>
+</resources>

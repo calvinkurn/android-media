@@ -51,5 +51,14 @@
     <dimen name="home_banner_mix_carousel_width">125dp</dimen>
     <dimen name="home_banner_mix_arrow_icon_size">50dp</dimen>
 
+    <!--Banner Play-->
+    <dimen name="home_play_banner_play_icon_size">34dp</dimen>
+    <dimen name="home_play_banner_title_margin_bottom">3dp</dimen>
+    <dimen name="home_play_banner_desc_margin_bottom">12dp</dimen>
+    <dimen name="home_play_banner_gradient_height">120dp</dimen>
+    <dimen name="home_play_banner_thumbnail_margin_top">12dp</dimen>
+    <dimen name="home_play_banner_player_margin_top">12dp</dimen>
+    <dimen name="home_play_banner_viewer_margin_start">4dp</dimen>
+
     <dimen name="new_margin_sm">24dp</dimen>
 </resources>

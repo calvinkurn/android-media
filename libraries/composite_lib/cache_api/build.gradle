@@ -22,7 +22,7 @@ dependencies {
 project.ext {
     artifactId = 'cache_api'
     groupId = 'com.tokopedia.cacheapi'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "cache_api"
 }
 

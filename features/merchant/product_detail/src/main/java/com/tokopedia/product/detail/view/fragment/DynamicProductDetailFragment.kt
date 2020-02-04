@@ -131,6 +131,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
+import tradein_common.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -229,6 +230,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.deviceId = TradeInUtils.getDeviceId(context) ?: viewModel.userSessionInterface.deviceId
         initPerformanceMonitoring()
         initRecyclerView(view)
         initBtnAction()
@@ -688,7 +690,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         (activity as? ProductDetailActivity)?.goToHomePageClicked()
     }
 
-    override fun goToTobacooError(url: String) {
+    override fun goToWebView(url: String) {
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
@@ -733,7 +735,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onReviewClick() {
         viewModel.getDynamicProductInfoP1?.run {
-            productDetailTracking.eventReviewClicked()
             dynamicProductDetailTracking.eventReviewClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
                     ?: "")
             dynamicProductDetailTracking.sendMoEngageClickReview(this, viewModel.shopInfo?.shopCore?.name
@@ -888,8 +889,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDiscussionClicked() {
-        productDetailTracking.eventTalkClicked()
-
         activity?.let {
             val intent = RouteManager.getIntent(it,
                     ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
@@ -1057,7 +1056,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     p1.data.preOrder)
             actionButtonView.visibility = !isAffiliate && it.shopInfo?.statusInfo?.shopStatus == 1
 
-            pdpHashMapUtil.getShopInfo.shopInfo?.let { shopInfo ->
+            viewModel.shopInfo?.let { shopInfo ->
                 dynamicProductDetailTracking.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
                 dynamicProductDetailTracking.eventAppsFylerOpenProduct(p1)
 
@@ -1460,8 +1459,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (viewModel.getDynamicProductInfoP1 == null) {
             menuShare.isVisible = false
             menuShare.isEnabled = false
-            menuCart.isVisible = false
-            menuCart.isEnabled = false
+            menuCart.isVisible = true
+            menuCart.isEnabled = true
             menuReport.isVisible = false
             menuReport.isEnabled = false
             menuWarehouse.isVisible = false
@@ -1706,7 +1705,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun gotoEditProduct() {
-        val id = viewModel.getDynamicProductInfoP1?.data?.variant?.parentID ?: return
+        val id = viewModel.getDynamicProductInfoP1?.parentProductId ?: return
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
             intent?.run { startActivityForResult(this, ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT) }
