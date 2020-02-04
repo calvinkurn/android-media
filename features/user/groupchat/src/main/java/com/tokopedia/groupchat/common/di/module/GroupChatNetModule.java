@@ -52,10 +52,10 @@ public class GroupChatNetModule {
     @Provides
     public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
         ChuckerCollector collector = new ChuckerCollector(
-                context, GlobalConfig.isAllowDebuggingTools(), RetentionManager.Period.ONE_HOUR);
+                context, GlobalConfig.isAllowDebuggingTools());
 
         return new ChuckerInterceptor(
-                context, collector, 120000L);
+                context, collector);
     }
 
     @GroupChatScope

@@ -48,10 +48,10 @@ public class TkpdOkHttpBuilder {
             LocalCacheHandler cache = new LocalCacheHandler(CoreNetworkApplication.getAppContext(), ConstantCoreNetwork.CHUCK_ENABLED);
             Boolean allowLogOnNotification = cache.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false);
             ChuckerCollector collector = new ChuckerCollector(
-                    CoreNetworkApplication.getAppContext(), allowLogOnNotification, RetentionManager.Period.ONE_HOUR);
+                    CoreNetworkApplication.getAppContext(), allowLogOnNotification);
 
             this.addInterceptor(new ChuckerInterceptor(
-                    CoreNetworkApplication.getAppContext(), collector, 120000L));
+                    CoreNetworkApplication.getAppContext(), collector));
             this.addInterceptor(new DebugInterceptor());
         }
 

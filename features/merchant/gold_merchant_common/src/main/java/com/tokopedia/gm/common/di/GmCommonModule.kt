@@ -36,14 +36,12 @@ class GmCommonModule {
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         val collector = ChuckerCollector(
                 context = context,
-                showNotification = GlobalConfig.isAllowDebuggingTools(),
-                retentionPeriod = RetentionManager.Period.ONE_HOUR
+                showNotification = GlobalConfig.isAllowDebuggingTools()
         )
 
         return ChuckerInterceptor(
                 context = context,
-                collector = collector,
-                maxContentLength = 120000L
+                collector = collector
         )
     }
 

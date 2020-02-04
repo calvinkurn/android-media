@@ -154,9 +154,9 @@ public class LogisticNetworkModule {
                                         @LogisticAbstractionRouterQualifier AbstractionRouter abstractionRouter) {
 
         ChuckerCollector collector = new ChuckerCollector(
-                context, abstractionRouter.isAllowLogOnChuckInterceptorNotification(), RetentionManager.Period.ONE_HOUR);
+                context, abstractionRouter.isAllowLogOnChuckInterceptorNotification());
 
-        return new ChuckerInterceptor(context, collector, 120000L);
+        return new ChuckerInterceptor(context, collector);
     }
 
     @Provides

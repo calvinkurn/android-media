@@ -114,9 +114,9 @@ public class DistrictRecommendationModule {
                 .addInterceptor(tkpdAuthInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
             ChuckerCollector collector = new ChuckerCollector(
-                    context, abstractionRouter.isAllowLogOnChuckInterceptorNotification(), RetentionManager.Period.ONE_HOUR);
+                    context, abstractionRouter.isAllowLogOnChuckInterceptorNotification());
 
-            Interceptor chuckInterceptor = new ChuckerInterceptor(context, collector, 120000L);
+            Interceptor chuckInterceptor = new ChuckerInterceptor(context, collector);
             builder.addInterceptor(chuckInterceptor);
         }
         return builder.build();

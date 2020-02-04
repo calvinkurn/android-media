@@ -103,14 +103,12 @@ class PlayModule {
         if (GlobalConfig.isAllowDebuggingTools()) {
             val collector = ChuckerCollector(
                     context = context,
-                    showNotification = GlobalConfig.isAllowDebuggingTools(),
-                    retentionPeriod = RetentionManager.Period.ONE_HOUR
+                    showNotification = GlobalConfig.isAllowDebuggingTools()
             )
 
             builder.addInterceptor(ChuckerInterceptor(
                     context = context,
-                    collector = collector,
-                    maxContentLength = 120000L
+                    collector = collector
             ))
                     .addInterceptor(httpLoggingInterceptor)
         }

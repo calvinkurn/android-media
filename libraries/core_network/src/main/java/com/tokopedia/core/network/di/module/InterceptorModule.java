@@ -113,11 +113,10 @@ public class InterceptorModule {
                                                                   @Named(ConstantCoreNetwork.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
         ChuckerCollector collector = new ChuckerCollector(
                 context,
-                localCacheHandler.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false),
-                RetentionManager.Period.ONE_HOUR);
+                localCacheHandler.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false));
 
         return new ChuckerInterceptor(
-                context, collector, 120000L);
+                context, collector);
     }
 
     @ApplicationScope
