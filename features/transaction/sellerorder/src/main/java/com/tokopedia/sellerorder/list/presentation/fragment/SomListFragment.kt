@@ -125,6 +125,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var nextOrderId = 0
     private var onLoadMore = false
     private var isFilterButtonAnimating = false
+    private var _animator: Animator? = null
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -202,15 +203,35 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             addOnScrollListener(scrollListener)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    Handler().postDelayed({
-                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                            try {
-                                filter_action_button?.show()
-                            } catch (e: Throwable) {
-                                // do nothing
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        try {
+                            _animator?.end()
+                            ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
+                                duration = ANIMATION_DURATION_IN_MILIS
+                                addListener(object : Animator.AnimatorListener {
+                                    override fun onAnimationRepeat(p0: Animator?) {
+                                    }
+
+                                    override fun onAnimationCancel(p0: Animator?) {
+                                        isFilterButtonAnimating = false
+                                    }
+
+                                    override fun onAnimationStart(animation: Animator) {
+                                        isFilterButtonAnimating = true
+                                    }
+
+                                    override fun onAnimationEnd(animation: Animator) {
+                                        isFilterButtonAnimating = false
+                                    }
+                                })
+                                if (!isFilterButtonAnimating) {
+                                    start()
+                                }
                             }
+                        } catch (e: Throwable) {
+                            // do nothing
                         }
-                    }, 2000)
+                    }
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -223,14 +244,18 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                                 override fun onAnimationCancel(p0: Animator?) {
                                     isFilterButtonAnimating = false
+                                    _animator = null
                                 }
 
                                 override fun onAnimationStart(animation: Animator) {
                                     isFilterButtonAnimating = true
+                                    _animator = animation
                                 }
 
                                 override fun onAnimationEnd(animation: Animator) {
                                     isFilterButtonAnimating = false
+                                    _animator = null
+
                                 }
                             })
                             if (!isFilterButtonAnimating) {
