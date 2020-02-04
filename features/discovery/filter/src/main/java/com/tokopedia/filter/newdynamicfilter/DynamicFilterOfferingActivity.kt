@@ -28,13 +28,13 @@ class DynamicFilterOfferingActivity : DynamicFilterDetailGeneralActivity() {
 
             if (activity != null) {
                 val intent = Intent(activity, DynamicFilterOfferingActivity::class.java)
-                intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_PAGE_TITLE, pageTitle)
-                intent.putParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_OPTION_LIST, ArrayList(optionList))
-                intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_IS_SEARCHABLE, isSearchable)
-                intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_SEARCH_HINT, searchHint)
-                intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_IS_USING_TRACKING, isUsingTracking)
-                intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_TRACKING_DATA, trackingData)
-                activity.startActivityForResult(intent, AbstractDynamicFilterDetailActivity.REQUEST_CODE)
+                intent.putExtra(EXTRA_PAGE_TITLE, pageTitle)
+                intent.putParcelableArrayListExtra(EXTRA_OPTION_LIST, ArrayList(optionList))
+                intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable)
+                intent.putExtra(EXTRA_SEARCH_HINT, searchHint)
+                intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking)
+                intent.putExtra(EXTRA_TRACKING_DATA, trackingData)
+                activity.startActivityForResult(intent, REQUEST_CODE)
             }
         }
     }

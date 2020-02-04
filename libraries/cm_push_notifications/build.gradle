@@ -48,7 +48,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.miscDependencies.guava
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+
+
+    implementation (rootProject.ext.miscDependencies.workManager) {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
+
 }
 
 project.ext {

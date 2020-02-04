@@ -152,6 +152,7 @@
     <string name="hotel_order_detail_contact_hotel">Kontak Hotel</string>
     <string name="hotel_order_detail_guest_detail">Detail Tamu</string>
     <string name="hotel_order_detail_guest_name">Nama Tamu</string>
+    <string name="hotel_order_detail_information">Informasi Pembayaran</string>
     <string name="hotel_order_detail_payment_method">Metode Pembayaran</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_order_detail_contact_phone_sheet_title">Kontak Hotel</string>
@@ -169,7 +170,6 @@
     <string name="hotel_room_night_count">%1$d Malam</string>
     <string name="hotel_booking_pay_at_hotel_label">\u0020Bayar di Hotel\u0020</string>
     <string name="hotel_booking_pay_at_hotel_cc_required_label">\u0020Bayar di Hotel (Perlu Jaminan Kartu Kredit)</string>
-    <string name="hotel_booking_room_general_info">%1$d Kamar • %2$d Tamu</string>
     <string name="hotel_booking_free_breakfast">Sarapan Gratis</string>
     <string name="hotel_booking_cancellation_policy_more_info">Pelajari lebih lanjut</string>
     <string name="hotel_booking_cancellation_policy_title">Ketentuan Pembatalan</string>

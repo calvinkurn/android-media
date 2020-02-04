@@ -953,4 +953,13 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.VIEW_POP_UP_PRICE_INCREASE,
                 eventLabel);
     }
+
+    public void eventClickCheckboxDonation(boolean check) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_DONATION,
+                check ? "check" : "uncheck"
+        );
+    }
 }

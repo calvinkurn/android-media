@@ -78,7 +78,7 @@ public class FingerprintModelGenerator {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
             } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
                 e.printStackTrace();
-                Timber.w("P2" + e.toString() + " | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                Timber.w("P2#FINGERPRINT#" + e.toString() + " | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                         + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
                         + " | "+Build.TAGS);
                 return "";

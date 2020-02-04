@@ -140,6 +140,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
                 getActivity().finish();
         }else {
             Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true);
             startActivityForResult(intent, REQUEST_CODE_PIN);
         }
     }

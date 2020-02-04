@@ -82,17 +82,14 @@ public class PromoGuidePagerAdapter extends FragmentStatePagerAdapter
         switch (position) {
             case 0 :
                 if (firstTab.equals(PROMO_TAB)) {
-                    digitalPromoFragment = DigitalPromoFragment.createInstance();
-                    digitalPromoFragment.setDigitalPromoConnector(this);
+                    digitalPromoFragment = DigitalPromoFragment.createInstance(this);
                     return digitalPromoFragment;
                 } else if (firstTab.equals(GUIDE_TAB)) {
-                    digitalGuideFragment = DigitalGuideFragment.createInstance();
-                    digitalGuideFragment.setConnector(this);
+                    digitalGuideFragment = DigitalGuideFragment.createInstance(this);
                     return digitalGuideFragment;
                 }
             case 1 :
-                digitalGuideFragment = DigitalGuideFragment.createInstance();
-                digitalGuideFragment.setConnector(this);
+                digitalGuideFragment = DigitalGuideFragment.createInstance(this);
                 return digitalGuideFragment;
             default :
                 return null;

@@ -62,14 +62,12 @@ import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
 
-
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
 
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
     public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details";
-    public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id";
 
     private final long animation_duration = 300;
 
@@ -136,6 +134,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean showMclBlockTickerFirebaseFlag = false;
     private FirebaseRemoteConfigImpl remoteConfig;
     private SaveInstanceCacheManager saveInstanceCacheManager;
+    public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id";
 
     public SaldoDepositFragment() {
     }
@@ -748,8 +747,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saveInstanceCacheManager.put(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
         if (saveInstanceCacheManager.getId()!=null) {
             bundle.putInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID, Integer.parseInt(saveInstanceCacheManager.getId()));
-        }
-        getChildFragmentManager()
+        }        getChildFragmentManager()
                 .beginTransaction()
                 .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
                 .commit();

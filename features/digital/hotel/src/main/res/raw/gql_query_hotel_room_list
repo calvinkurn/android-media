@@ -94,5 +94,6 @@ query PropertySearchRoom($data:PropertySearchRoomRequest!){
     isAddressRequired
     isCvCRequired
     isDirectPayment
+    isEnabled
   }
 }

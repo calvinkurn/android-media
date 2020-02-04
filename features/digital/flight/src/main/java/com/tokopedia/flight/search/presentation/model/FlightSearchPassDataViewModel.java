@@ -19,8 +19,12 @@ public class FlightSearchPassDataViewModel implements Parcelable{
     private FlightAirportViewModel departureAirport;
     private FlightAirportViewModel arrivalAirport;
     private FlightClassViewModel flightClass;
+    private String linkUrl;
 
-    public FlightSearchPassDataViewModel(String departureDate, String returnDate, boolean isOneWay, FlightPassengerViewModel flightPassengerViewModel, FlightAirportViewModel departureAirport, FlightAirportViewModel arrivalAirport, FlightClassViewModel flightClass) {
+    public FlightSearchPassDataViewModel(String departureDate, String returnDate, boolean isOneWay,
+                                         FlightPassengerViewModel flightPassengerViewModel,
+                                         FlightAirportViewModel departureAirport, FlightAirportViewModel arrivalAirport,
+                                         FlightClassViewModel flightClass, String linkUrl) {
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.isOneWay = isOneWay;
@@ -28,6 +32,7 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.flightClass = flightClass;
+        this.linkUrl = linkUrl;
     }
 
     public FlightSearchPassDataViewModel() {
@@ -41,6 +46,7 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         departureAirport = in.readParcelable(FlightAirportViewModel.class.getClassLoader());
         arrivalAirport = in.readParcelable(FlightAirportViewModel.class.getClassLoader());
         flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
+        linkUrl = in.readString();
     }
 
     public static final Creator<FlightSearchPassDataViewModel> CREATOR = new Creator<FlightSearchPassDataViewModel>() {
@@ -69,6 +75,14 @@ public class FlightSearchPassDataViewModel implements Parcelable{
 
     public String getDate(boolean isReturning) {
         return isReturning ? getReturnDate() : getDepartureDate();
+    }
+
+    public String getLinkUrl() {
+        return linkUrl;
+    }
+
+    public void setLinkUrl(String linkUrl) {
+        this.linkUrl = linkUrl;
     }
 
     public void setReturnDate(String returnDate) {
@@ -129,6 +143,7 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         parcel.writeParcelable(departureAirport, i);
         parcel.writeParcelable(arrivalAirport, i);
         parcel.writeParcelable(flightClass, i);
+        parcel.writeString(linkUrl);
     }
 
     public static class Builder {
@@ -139,6 +154,7 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         private FlightAirportViewModel departureAirport;
         private FlightAirportViewModel arrivalAirport;
         private FlightClassViewModel flightClass;
+        private String linkUrl;
 
         public Builder() {
         }
@@ -178,8 +194,15 @@ public class FlightSearchPassDataViewModel implements Parcelable{
             return this;
         }
 
+        public Builder setLinkUrl(String linkUrl) {
+            this.linkUrl = linkUrl;
+            return this;
+        }
+
         public FlightSearchPassDataViewModel build() {
-            return new FlightSearchPassDataViewModel(departureDate, returnDate, isOneWay, flightPassengerViewModel, departureAirport, arrivalAirport, flightClass);
+            return new FlightSearchPassDataViewModel(departureDate, returnDate, isOneWay,
+                    flightPassengerViewModel, departureAirport, arrivalAirport, flightClass,
+                    linkUrl);
         }
     }
 }

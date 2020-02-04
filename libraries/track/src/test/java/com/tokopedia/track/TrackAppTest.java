@@ -12,7 +12,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 public class TrackAppTest  {
@@ -21,7 +25,12 @@ public class TrackAppTest  {
     public void testAja(){
         TrackApp.initTrackApp((Application) RuntimeEnvironment.application.getApplicationContext());
         TrackApp trackApp = TrackApp.getInstance();
-        trackApp.registerImplementation("TEST", TestAnalytics.class);
+        trackApp.registerImplementation("GTM", TestAnalytics.class);
+        trackApp.registerImplementation("TEST2", TestAnalytics2.class);
+
+        MockAja mock = mock(MockAja.class);
+
+        ((TestAnalytics2)trackApp.getValue("TEST2")).mockAja = mock;
 
         ((TestAnalytics)trackApp.getValue("TEST")).test1 = 2;
 
@@ -30,22 +39,35 @@ public class TrackAppTest  {
         assert trackApp.context==RuntimeEnvironment.application.getApplicationContext();
 
         trackApp.initializeAllApis();
+
+        trackApp.getValue("TEST2").sendGeneralEvent(new HashMap<>());
+
+        verify(mock).lalala();
     }
 
-    static class TestAnalytics extends ContextAnalytics {
-        public int test1 = 1;
+    class MockAja{
+        void lalala(){}
+    }
 
-        public TestAnalytics(Context context) {
+    static class TestAnalytics2 extends ContextAnalytics{
+
+        private TrackAppTest.MockAja mockAja;
+
+        public TestAnalytics2(Context context) {
             super(context);
         }
 
-        @Override
-        public void initialize() {
-            test1 = 1;
+        public void setMockAja(MockAja mockAja) {
+            this.mockAja = mockAja;
         }
 
         @Override
         public void sendGeneralEvent(Map<String, Object> value) {
+            mockAja.lalala();
+        }
+
+        @Override
+        public void sendGeneralEvent(String event, String category, String action, String label) {
 
         }
 
@@ -66,6 +88,59 @@ public class TrackAppTest  {
 
         @Override
         public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+
+        }
+
+        @Override
+        public void sendEvent(String eventName, Map<String, Object> eventValue) {
+
+        }
+    }
+
+    static class TestAnalytics extends ContextAnalytics {
+        public int test1 = 1;
+
+        public TestAnalytics(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void initialize() {
+            test1 = 1;
+        }
+
+        @Override
+        public void sendGeneralEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendGeneralEvent(String event, String category, String action, String label) {
+
+        }
+
+        @Override
+        public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+
+        }
+
+        @Override
+        public void sendEvent(String eventName, Map<String, Object> eventValue) {
 
         }
     }

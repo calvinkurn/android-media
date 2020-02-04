@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartGqlResponse
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
 

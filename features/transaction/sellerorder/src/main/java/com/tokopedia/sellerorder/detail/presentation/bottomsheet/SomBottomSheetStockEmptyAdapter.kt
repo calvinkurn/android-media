@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.bottomsheet_empty_product_item.view.*
 /**
  * Created by fwidjaja on 2019-11-05.
  */
-class SomBottomSheetStockEmptyAdapter(): RecyclerView.Adapter<SomBottomSheetStockEmptyAdapter.ViewHolder>() {
+class SomBottomSheetStockEmptyAdapter: RecyclerView.Adapter<SomBottomSheetStockEmptyAdapter.ViewHolder>() {
     var listProduct = mutableListOf<SomDetailOrder.Data.GetSomDetail.Products>()
     var listToBeEmptied = ArrayList<SomDetailOrder.Data.GetSomDetail.Products>()
 
@@ -29,7 +29,7 @@ class SomBottomSheetStockEmptyAdapter(): RecyclerView.Adapter<SomBottomSheetStoc
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.iv_product.loadImageRounded(listProduct[position].thumbnail, holder.itemView.resources.getDimension(R.dimen.dp_8))
+        holder.itemView.iv_product.loadImageRounded(listProduct[position].thumbnail, holder.itemView.resources.getDimension(com.tokopedia.design.R.dimen.dp_8))
         holder.itemView.tv_product_name.text = listProduct[position].name
         holder.itemView.tv_product_price.text = listProduct[position].priceText
         holder.itemView.cb_product.setOnCheckedChangeListener { buttonView, isChecked ->
