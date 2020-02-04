@@ -74,7 +74,7 @@ class RoundedConstraintLayout : ConstraintLayout {
         cornerPath.close()
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setRoundedOutlineProvider(cornerRadius: Float) {
         outlineProvider = RoundedViewOutlineProvider(cornerRadius)
         clipToOutline = true
