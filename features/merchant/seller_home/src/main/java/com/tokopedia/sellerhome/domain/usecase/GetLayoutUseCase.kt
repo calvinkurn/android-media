@@ -143,38 +143,11 @@ class GetLayoutUseCase(
                         widgetType = WidgetType.PROGRESS,
                         title = "Power Merchant (Aktif)",
                         subtitle = "",
-                        tooltip = TooltipUiModel(
-                                title = "Ringkasan Penjualan",
-                                content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                                list = listOf(
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim.")
-                                ),
-                                isShow = true
-                        ),
+                        tooltip = null,
                         url = "",
-                        appLink = "",
+                        appLink = "testing",
                         dataKey = "shopScore",
-                        ctaText = "",
+                        ctaText = "Selengkapnya",
                         data = null
                 ),
                 CarouselWidgetUiModel(
@@ -183,9 +156,9 @@ class GetLayoutUseCase(
                         subtitle = "",
                         tooltip = null,
                         url = "",
-                        appLink = "",
+                        appLink = "testing",
                         dataKey = "",
-                        ctaText = "",
+                        ctaText = "Lihat Semua",
                         data = CarouselDataUiModel(
                                 data = listOf(
                                         CarouselDataModel(
@@ -245,6 +218,17 @@ class GetLayoutUseCase(
                                         )
                                 )
                         )
+                ),
+                DescriptionWidgetUiModel(
+                        widgetType = WidgetType.DESCRIPTION,
+                        title = "Yuk, Daftar Power Merchant",
+                        subtitle = "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant",
+                        tooltip = null,
+                        url = "",
+                        appLink = "testing",
+                        dataKey = "",
+                        ctaText = "Selengkapnya",
+                        data = null
                 )
         )
     }

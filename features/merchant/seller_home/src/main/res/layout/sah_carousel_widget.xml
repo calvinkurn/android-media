@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <include layout="@layout/partial_sah_carousel_widget_shimmering"
+        <include layout="@layout/sah_partial_carousel_widget_shimmering"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:id="@+id/bannerImagesShimmering"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"/>
 
-        <include layout="@layout/partial_sah_carousel_widget_error"
+        <include layout="@layout/sah_partial_carousel_widget_error"
             android:layout_margin="@dimen/spacing_lvl3"
             android:id="@+id/bannerImagesError"
             android:layout_width="match_parent"
