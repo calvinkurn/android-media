@@ -8,7 +8,6 @@
         android:supportsRtl="true">
         <activity
             android:name=".inbox.view.activity.InboxReputationActivity"
-            android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden" />
@@ -41,7 +40,6 @@
 
         <activity
             android:name=".createreputation.ui.activity.CreateReviewActivity"
-            android:label="@string/title_activity_reputation"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
@@ -60,7 +58,6 @@
 
         <activity
             android:name=".review.product.view.ReviewProductActivity"
-            android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -78,7 +75,6 @@
 
         <activity
             android:name=".review.shop.view.ReviewShopInfoActivity"
-            android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>
