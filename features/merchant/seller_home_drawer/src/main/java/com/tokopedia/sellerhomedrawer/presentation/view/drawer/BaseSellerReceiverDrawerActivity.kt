@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService
 import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService
 
 abstract class BaseSellerReceiverDrawerActivity: SellerDrawerPresenterActivity() {
@@ -49,7 +48,7 @@ abstract class BaseSellerReceiverDrawerActivity: SellerDrawerPresenterActivity()
     }
 
     protected fun startDrawerGetNotificationServiceOnResume() {
-        DrawerGetNotificationService.startService(this, true, false)
+        SellerDrawerGetNotificationService.startService(this, true)
     }
 
     private fun registerBroadcastReceiver() {

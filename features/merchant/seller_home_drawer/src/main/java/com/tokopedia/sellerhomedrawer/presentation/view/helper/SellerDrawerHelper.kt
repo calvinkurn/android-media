@@ -5,7 +5,7 @@ import android.content.Intent
 import android.view.View
 import androidx.core.app.TaskStackBuilder
 import androidx.core.view.GravityCompat
-import com.tkpd.library.ui.view.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
