@@ -146,8 +146,8 @@ final class ProductListPresenter
     }
 
     @Override
-    public void setIsTickerHasDismissed(boolean isTickerHasDismissed) {
-        this.isTickerHasDismissed = isTickerHasDismissed;
+    public void onPriceFilterTickerDismissed() {
+        this.isTickerHasDismissed = true;
     }
 
     @Override
