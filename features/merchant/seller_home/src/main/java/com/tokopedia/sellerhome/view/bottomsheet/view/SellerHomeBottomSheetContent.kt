@@ -4,9 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.bottomsheet.adapter.BottomSheetAdapterTypeFactory
@@ -41,7 +40,10 @@ class SellerHomeBottomSheetContent : LinearLayout {
         rv_bottom_sheet_content.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@SellerHomeBottomSheetContent.adapter
-            addItemDecoration(DividerItemDecoration(context, VERTICAL))
+            val divider = ContextCompat.getDrawable(context, R.drawable.sah_tooltip_item_divider)
+            divider?.apply {
+                addItemDecoration(SellerHomeTooltipItemDivider(this))
+            }
         }
     }
 

@@ -9,14 +9,14 @@
     android:paddingBottom="@dimen/layout_lvl1">
 
     <ImageView
-        android:id="@+id/iv_list_item"
+        android:id="@+id/iv_post"
         android:layout_width="56dp"
         android:layout_height="56dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_list_item_title"
+        android:id="@+id/tv_post_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -24,19 +24,19 @@
         android:ellipsize="end"
         android:maxLines="2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/iv_list_item"
+        app:layout_constraintStart_toEndOf="@id/iv_post"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Tips Sukses Kak Irfan: Bisnis Bermanfaat Untuk Diri Sendiri" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_list_item_desc"
+        android:id="@+id/tv_post_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        app:layout_constraintStart_toStartOf="@id/tv_list_item_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_list_item_title"
+        app:layout_constraintStart_toStartOf="@id/tv_post_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_post_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Info" />

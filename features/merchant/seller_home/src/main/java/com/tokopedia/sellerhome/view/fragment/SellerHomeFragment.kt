@@ -21,6 +21,7 @@ import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetConte
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.CardViewHolder
 import com.tokopedia.sellerhome.view.viewholder.LineGraphViewHolder
+import com.tokopedia.sellerhome.view.viewholder.PostListViewHolder
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -36,7 +37,9 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetTooltipClickListener, CardViewHolder.Listener, LineGraphViewHolder.Listener {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>,
+        SellerHomeAdapterTypeFactory>(), SellerHomeWidgetTooltipClickListener,
+        CardViewHolder.Listener, LineGraphViewHolder.Listener, PostListViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -55,6 +58,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
+    private var hasLoadPostData = false
 
     private lateinit var bottomSheet: BottomSheetUnify
 
@@ -80,6 +84,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         getTickerView()
         observeCardLiveData()
         observeLineGraphLiveData()
+        observePostLiveData()
     }
 
     private fun hideTooltipIfExist() {
@@ -120,7 +125,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this, this, this)
+        return SellerHomeAdapterTypeFactory(this, this, this, this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -228,11 +233,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         })
     }
 
+    private fun observePostLiveData() {
+        mViewModel.postWidgetData.observe(viewLifecycleOwner, Observer { result ->
+            val type = WidgetType.POST
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type)
+            }
+        })
+    }
+
     private fun List<BaseDataUiModel>.setOnSuccessWidgetState(type: String) {
         widgetHasMap[type]?.forEachIndexed { i, widget ->
             when (widget) {
                 is CardWidgetUiModel -> widget.data = this[i] as CardDataUiModel
                 is LineGraphWidgetUiModel -> widget.data = this[i] as LineGraphDataUiModel
+                is PostListWidgetUiModel -> widget.data = this[i] as PostListDataUiModel
             }
         }
         adapter.notifyDataSetChanged()
@@ -244,6 +260,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             when (widget) {
                 is CardWidgetUiModel -> widget.data = CardDataUiModel(error = message)
                 is LineGraphWidgetUiModel -> widget.data = LineGraphDataUiModel(error = message)
+                is PostListWidgetUiModel -> widget.data = PostListDataUiModel(error = message)
             }
         }
         adapter.notifyDataSetChanged()
@@ -289,6 +306,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hasLoadLineGraphData = true
         val dataKeys = getWidgetDataKeys<LineGraphWidgetUiModel>()
         mViewModel.getLineGraphWidgetData(dataKeys)
+    }
+
+    override fun getPostData() {
+        if (hasLoadPostData) return
+        hasLoadPostData = true
+        val dataKeys = getWidgetDataKeys<PostListWidgetUiModel>()
+        mViewModel.getPostWidgetData(dataKeys)
+    }
+
+    override fun removeWidget(data: PostListWidgetUiModel) {
+        recyclerView.post {
+            adapter.data.remove(data)
+            adapter.notifyDataSetChanged()
+            widgetHasMap[data.widgetType]?.remove(data)
+        }
     }
 
     private inline fun <reified T : BaseWidgetUiModel<*>> getWidgetDataKeys(): List<String> {

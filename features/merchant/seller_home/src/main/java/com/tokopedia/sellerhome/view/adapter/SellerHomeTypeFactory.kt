@@ -20,5 +20,5 @@ interface SellerHomeTypeFactory {
 
     fun type(progressWidget: ProgressUiModel): Int
 
-    fun type(listWidget: ListUiModel): Int
+    fun type(postListWidget: PostListWidgetUiModel): Int
 }

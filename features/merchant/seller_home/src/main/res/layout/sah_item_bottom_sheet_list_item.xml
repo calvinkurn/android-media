@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
-        app:typographyType="heading_5"
+        app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography

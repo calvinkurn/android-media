@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.sellerhome.WidgetType
-import com.tokopedia.sellerhome.view.bottomsheet.model.BottomSheetListItemUiModel
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import com.tokopedia.usecase.coroutines.UseCase
@@ -219,41 +218,27 @@ class GetLayoutUseCase(
                                 subtitle = "Please maintain your shop score"
                         )
                 ),
-                ListUiModel(
-                        widgetType = WidgetType.LIST,
+                PostListWidgetUiModel(
+                        widgetType = WidgetType.POST,
                         title = "Info Seller",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("Info Seller", "Skor ada little ipsum del amet, yang membawa per minggu", emptyList(), true),
+                        url = "",
+                        appLink = "tokopedia://pesanan-baru/detail",
+                        dataKey = "article",
+                        ctaText = "",
+                        data = null
+                ),
+                PostListWidgetUiModel(
+                        widgetType = WidgetType.POST,
+                        title = "Produk Terlaris",
                         subTitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
-                        dataKey = "",
+                        dataKey = "product",
                         ctaText = "",
-                        data = ListDataUiModel(
-                                dataKey = "articles",
-                                items = listOf(
-                                        ListItemUiModel(
-                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
-                                                appLink = "",
-                                                url = "",
-                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
-                                                subtitle = "FITUR <i> 12 SEP 19"
-                                        ),
-                                        ListItemUiModel(
-                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
-                                                appLink = "",
-                                                url = "",
-                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
-                                                subtitle = "FITUR <i> 12 SEP 20"
-                                        ),
-                                        ListItemUiModel(
-                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
-                                                appLink = "",
-                                                url = "",
-                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
-                                                subtitle = "FITUR <i> 12 SEP 21"
-                                        )
-                                )
-                        )
+                        data = null
                 )
         )
     }
