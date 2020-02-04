@@ -3,8 +3,8 @@ package com.tokopedia.sellerhomedrawer.domain.factory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.core.gcm.network.GeneratedHostConverter;
-import com.tokopedia.core.gcm.network.StringResponseConverter;
+import com.tokopedia.sellerhomedrawer.domain.retrofit.converters.GeneratedHostConverter;
+import com.tokopedia.sellerhomedrawer.domain.retrofit.converters.StringResponseConverter;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
