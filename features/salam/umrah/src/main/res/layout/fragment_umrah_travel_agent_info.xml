@@ -20,19 +20,12 @@
         app:typographyWeight="bold"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.salam.umrah.common.presentation.widget.TruncateDescriptionWidget
         android:id="@+id/tv_umrah_travel_info_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        tools:text="@string/umrah_travel_info_desc_content"
-        app:typographyType="small"
-        android:textColor="@color/Neutral_N700"
         app:layout_constraintTop_toBottomOf="@+id/tv_umrah_travel_info_title"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         />
 
     <androidx.appcompat.widget.AppCompatImageView

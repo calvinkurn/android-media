@@ -269,5 +269,7 @@
     <string name="umrah_travel_permission_desc">Sesuai dengan SK Ditjen Penyelenggaraan Haji dan Umroh nomor %s</string>
     <string name="umrah_travel_permission_close">Tutup</string>
     <string name="umrah_travel_product_duration">%s Hari</string>
+    <string name="umrah_travel_read_more">Baca Selengkapnya</string>
+    <string name="umrah_travel_hide_more">Sembunyikan</string>
 
 </resources>

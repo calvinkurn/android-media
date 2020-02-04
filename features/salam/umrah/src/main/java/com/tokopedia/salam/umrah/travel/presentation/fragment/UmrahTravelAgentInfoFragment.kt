@@ -19,10 +19,16 @@ class UmrahTravelAgentInfoFragment(private val listener: UmrahTravelAgentInfoLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         travelAgent = listener.getDataInfo()
-        tv_umrah_travel_info_desc.text = travelAgent.description
+        buildDesc(travelAgent.description)
         tv_umrah_travel_info_address.text = travelAgent.address
         tv_umrah_travel_info_years.text = travelAgent.ui.establishedSince
         tv_umrah_travel_info_pilgrims.text = getString(R.string.umrah_travel_pilgrims_info,travelAgent.ui.pilgrimsPerYear)
+    }
+
+    fun buildDesc(desc: String){
+        tv_umrah_travel_info_desc.truncateDescription = true
+        tv_umrah_travel_info_desc.setDescription(desc)
+        tv_umrah_travel_info_desc.buildView()
     }
 
     interface UmrahTravelAgentInfoListener{
