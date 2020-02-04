@@ -21,7 +21,7 @@ class GetLayoutUseCase(
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
                         title = "Penting hari ini",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("", "", emptyList(), false),
                         url = "",
                         appLink = "",
@@ -32,7 +32,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "New Order",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
@@ -43,7 +43,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Ready To Ship",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -54,7 +54,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Complaint",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -65,7 +65,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Unread Chat",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -76,7 +76,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Discussion",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -87,7 +87,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Product View",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -98,7 +98,7 @@ class GetLayoutUseCase(
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
                         title = "Ringkasan penjualan",
-                        subTitle = "21 JAN 20 - 27 JAN 20",
+                        subtitle = "21 JAN 20 - 27 JAN 20",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -109,7 +109,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Shop Total Revenue",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -120,7 +120,7 @@ class GetLayoutUseCase(
                 CardWidgetUiModel(
                         widgetType = WidgetType.CARD,
                         title = "Product Sold",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
@@ -131,7 +131,7 @@ class GetLayoutUseCase(
                 LineGraphWidgetUiModel(
                         widgetType = WidgetType.LINE_GRAPH,
                         title = "Total Pendapatan",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("Total Pendapatan", "Pendapatan harian bersih per hari", emptyList(), false),
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
@@ -139,15 +139,26 @@ class GetLayoutUseCase(
                         ctaText = "",
                         data = null
                 ),
-                CarouselWidgetUiModel(
-                        widgetType = WidgetType.CAROUSEL,
-                        title = "Caruosel",
-                        subTitle = "",
+                ProgressWidgetUiModel(
+                        widgetType = WidgetType.PROGRESS,
+                        title = "Power Merchant (Aktif)",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
-                        appLink = "",
+                        appLink = "testing",
+                        dataKey = "shopScore",
+                        ctaText = "Selengkapnya",
+                        data = null
+                ),
+                CarouselWidgetUiModel(
+                        widgetType = WidgetType.CAROUSEL,
+                        title = "Carousel",
+                        subtitle = "",
+                        tooltip = null,
+                        url = "",
+                        appLink = "testing",
                         dataKey = "",
-                        ctaText = "",
+                        ctaText = "Lihat Semua",
                         data = CarouselDataUiModel(
                                 data = listOf(
                                         CarouselDataModel(
@@ -172,56 +183,10 @@ class GetLayoutUseCase(
                                 state = CarouselState.NORMAL
                         )
                 ),
-                ProgressUiModel(
-                        widgetType = WidgetType.PROGRESS,
-                        title = "Power Merchant (Aktif)",
-                        subTitle = "",
-                        tooltip = TooltipUiModel(
-                                title = "Ringkasan Penjualan",
-                                content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                                list = listOf(
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Produk dilihat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Produk terjual", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Total pendapatan", "Jumlah pemasukan dari produk terjual beserta ongkos kirim.")
-                                ),
-                                isShow = true
-                        ),
-                        url = "",
-                        appLink = "",
-                        dataKey = "",
-                        ctaText = "",
-                        data = ProgressDataUiModel(
-                                barTitle = "Skor",
-                                valueTxt = "80jt",
-                                maxValueTxt = "100jt",
-                                value = 80,
-                                maxValue = 100,
-                                colorState = ShopScorePMWidget.State.GREEN,
-                                subtitle = "Please maintain your shop score"
-                        )
-                ),
                 PostListWidgetUiModel(
                         widgetType = WidgetType.POST,
                         title = "Info Seller",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = TooltipUiModel("Info Seller", "Skor ada little ipsum del amet, yang membawa per minggu", emptyList(), true),
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
@@ -232,7 +197,7 @@ class GetLayoutUseCase(
                 PostListWidgetUiModel(
                         widgetType = WidgetType.POST,
                         title = "Produk Terlaris",
-                        subTitle = "",
+                        subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",

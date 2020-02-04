@@ -41,6 +41,22 @@ object GraphqlQuery {
             "  }\n" +
             "}\n"
 
+    const val GET_PROGRESS_DATA = "query getProgressData(\$shopID: Int!, \$dataKey: [String!]!, \$date: String!) {\n" +
+            "getProgressBarData(shopID: \$shopID, dataKey: \$dataKey, date: \$date){\n" +
+            "    data {\n" +
+            "      dataKey\n" +
+            "      valueTxt\n" +
+            "      maxValueTxt\n" +
+            "      value\n" +
+            "      maxValue\n" +
+            "      state\n" +
+            "      subtitle\n" +
+            "      error\n" +
+            "      errorMsg\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
+
     const val GET_POST_DATA = "query getPostWidgetData(\$dataKey: [String!]!, \$shopId: Int!, \$startDate: String!, \$endDate: String!) {\n" +
             "  getPostWidgetData(dataKey: \$dataKey, shopID: \$shopId, startDate: \$startDate, endDate: \$endDate) {\n" +
             "    data {\n" +
