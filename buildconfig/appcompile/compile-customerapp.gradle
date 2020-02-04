@@ -89,7 +89,7 @@ include "features:im:referral"
 include "features:kyc"
 include "features:scanner"
 
-include "features:logistic:tracking"
+include "features:logistic:logisticorder"
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
