@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,6 +14,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -30,6 +32,10 @@ import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -49,6 +55,8 @@ import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.shakedetect.ShakeDetectManager;
+import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -73,6 +81,13 @@ import java.util.concurrent.TimeUnit;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+import org.jetbrains.annotations.NotNull;
+
+import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -91,6 +106,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
+
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -102,12 +118,52 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-        UIBlockDebugger.init(this);
-        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
-        setVersionCode();
-
+        initConfigValues();
         initializeSdk();
+        initRemoteConfig();
+        TokopediaUrl.Companion.init(this); // generate base url
 
+        TrackApp.initTrackApp(this);
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
+        initReact();
+
+        Weaver.Companion.executeWeaveCoRoutine(this::executePreCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+
+        super.onCreate();
+
+        initGqlNWClient();
+        Weaver.Companion.executeWeaveCoRoutine(this::executePostCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutine(this::loadFontsInBg, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
+        ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
+            @Override
+            public void onShakeDetected(boolean isLongShake) {
+                openShakeDetectCampaignPage(isLongShake);
+            }
+        });
+        registerActivityLifecycleCallbacks(shakeSubscriber);
+    }
+
+    @NotNull
+    private Boolean loadFontsInBg(){
+        getTypeface(context, "NunitoSansExtraBold.ttf");
+        getTypeface(context, "RobotoRegular.ttf");
+        getTypeface(context, "RobotoBold.ttf");
+        return true;
+    }
+
+    @NotNull
+    private Boolean executePreCreateSequence(){
+        UIBlockDebugger.init(ConsumerMainApplication.this);
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
+        PersistentCacheManager.init(ConsumerMainApplication.this);
+        return true;
+    }
+
+    private void initConfigValues(){
+        setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -123,35 +179,25 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceUtil.getDeviceId(this);
-
-        TokopediaUrl.Companion.init(this); // generate base url
-
         generateConsumerAppNetworkKeys();
+    }
 
-        TrackApp.initTrackApp(this);
+    private void initGqlNWClient(){
+        GraphqlClient.init(getApplicationContext());
+        NetworkClient.init(getApplicationContext());
+    }
 
-        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
-        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
-        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
-        TrackApp.getInstance().initializeAllApis();
-
-        PersistentCacheManager.init(this);
-        initReact();
-
-        super.onCreate();
-
-        StethoUtil.initStetho(this);
-
-        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
-        InAppManager.getInstance().setInAppListener(this);
-
+    @NotNull
+    private Boolean executePostCreateSequence(){
+        StethoUtil.initStetho(ConsumerMainApplication.this);
+        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(ConsumerMainApplication.this);
+        InAppManager.getInstance().setInAppListener(ConsumerMainApplication.this);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
+        LocalBroadcastManager.getInstance(ConsumerMainApplication.this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         createCustomSoundNotificationChannel();
         PushManager.getInstance().setMessageListener(new CustomPushListener());
-        GraphqlClient.init(getApplicationContext());
-        NetworkClient.init(getApplicationContext());
+
 
         if (!com.tokopedia.config.GlobalConfig.DEBUG) {
             // do not replace with method reference "Crashlytics::logException", will not work in dynamic feature
@@ -163,17 +209,24 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }).start();
         }
 
-        LogManager.init(this);
+        LogManager.init(ConsumerMainApplication.this);
         if (LogManager.instance != null) {
             LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
         }
-        TimberWrapper.init(this);
-
+        TimberWrapper.init(ConsumerMainApplication.this);
         initializeAbTestVariant();
-
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
+        return true;
     }
+
+    private void openShakeDetectCampaignPage(boolean isLongShake) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+    }
+
+
 
     private boolean isMainProcess() {
         ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);

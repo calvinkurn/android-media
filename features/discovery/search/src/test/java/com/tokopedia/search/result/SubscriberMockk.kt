@@ -10,5 +10,6 @@ fun <T> Subscriber<T>.complete(emittedValue: T?) {
 }
 
 fun <T> Subscriber<T>.error(exception: Exception?) {
+    onStart()
     onError(exception)
 }

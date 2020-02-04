@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-12-26.
  */
 
-class UpdateCartUseCase @Inject constructor(private val schedulers: ExecutorSchedulers) : UseCase<UpdateCartData>() {
+class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase, private val schedulers: ExecutorSchedulers) : UseCase<UpdateCartData>() {
 
     companion object {
         val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
@@ -47,7 +47,6 @@ class UpdateCartUseCase @Inject constructor(private val schedulers: ExecutorSche
         )
 
         val graphqlRequest = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, variables)
-        val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
@@ -55,13 +54,10 @@ class UpdateCartUseCase @Inject constructor(private val schedulers: ExecutorSche
                 .map {
                     val updateCartGqlResponse = it.getData<UpdateCartGqlResponse>(UpdateCartGqlResponse::class.java)
                     val updateCartData = UpdateCartData()
-                    updateCartData.isSuccess = updateCartGqlResponse.updateCartDataResponse.status == "OK"
-                    updateCartData.message = if (updateCartGqlResponse.updateCartDataResponse.status == "OK") {
-                        if (updateCartGqlResponse.updateCartDataResponse.data?.error?.isNotBlank() == true) {
-                            updateCartGqlResponse.updateCartDataResponse.data.error
-                        } else {
-                            ""
-                        }
+                    updateCartData.isSuccess = updateCartGqlResponse.updateCartDataResponse.status == "OK" &&
+                            updateCartGqlResponse.updateCartDataResponse.data?.status == true
+                    updateCartData.message = if (updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty()) {
+                        updateCartGqlResponse.updateCartDataResponse.error[0]
                     } else {
                         ""
                     }

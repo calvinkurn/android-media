@@ -135,6 +135,7 @@ import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -674,6 +675,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
+        return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
@@ -1040,11 +1046,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getLoginIntent(Context context) {
         return LoginActivity.DeepLinkIntents.getCallingIntent(context);
-    }
-
-    @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-
     }
 
     @Override

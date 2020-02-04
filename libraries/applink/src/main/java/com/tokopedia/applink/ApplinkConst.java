@@ -11,6 +11,7 @@ public interface ApplinkConst {
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
+    String HOME_ACCOUNT_SELLER = "tokopedia://home/account/seller";
     String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
     String FIND = "tokopedia://find";
@@ -206,7 +207,16 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
-    String SELLER_ORDER_DETAIL = "tokopedia://seller/order/{order_id}";
+
+    String SELLER_PURCHASE_CANCELED = "tokopedia://seller/cancelled";
+    String SELLER_PURCHASE_WAITING_PICKUP = "tokopedia://seller/waitingpickup";
+    String SELLER_PURCHASE_WAITING_AWB = "tokopedia://seller/waitingawb";
+    String SELLER_PURCHASE_AWB_INVALID = "tokopedia://seller/awbinvalid";
+    String SELLER_PURCHASE_AWB_CHANGE = "tokopedia://seller/awbchange";
+    String SELLER_PURCHASE_RETUR = "tokopedia://seller/retur";
+    String SELLER_PURCHASE_COMPLAINT = "tokopedia://seller/complaint";
+    String SELLER_PURCHASE_FINISHED = "tokopedia://seller/finished";
+    String SELLER_ORDER_DETAIL = "tokopedia://seller/order";
 
     String SALDO = "tokopedia://saldo";
     String SALDO_INTRO = "tokopedia://saldo-intro";
@@ -234,6 +244,8 @@ public interface ApplinkConst {
     String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
     String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
+
+    String PLAY_DETAIL = "tokopedia://play/{channel_id}";
 
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
@@ -329,7 +341,6 @@ public interface ApplinkConst {
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
 
     String MONEYIN = "tokopedia://money_in/device_validation";
-
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";

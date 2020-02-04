@@ -9,7 +9,6 @@ import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
@@ -31,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
@@ -51,6 +51,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MA
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
@@ -121,8 +122,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_BASE, R.string.title_digital_deals))
 
             // Discovery
-            add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) ||
-                    it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_BASE, R.string.title_image_search))
+            add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_BASE, R.string.title_similar_search))
             add(DFP({ it.startsWith(SEARCH_RESULT) ||
                     it.startsWith(AUTOCOMPLETE)}, DFM_BASE, R.string.title_search_result))
 
@@ -150,7 +150,8 @@ object DeeplinkDFMapper {
                     it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL) ||
                     it.startsWith(OPPORTUNITY) ||
-                    it.startsWith(SELLER_TRANSACTION)
+                    it.startsWith(SELLER_TRANSACTION) ||
+                    it.startsWith(INTERNAL_SELLER)
             }, DFM_MERCHANT_SELLER_CUSTOMERAPP, R.string.merchant_seller))
 
             // Operational
@@ -190,6 +191,7 @@ object DeeplinkDFMapper {
 
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_BASE, R.string.title_salam))
+            add(DFP({ it.startsWith(NOTIFICATION) }, DFM_BASE, R.string.title_notification_center))
         }
     }
 
