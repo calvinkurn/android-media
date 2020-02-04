@@ -17,7 +17,7 @@
         android:layout_height="5dp"
         android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="7dp"
-        android:background="@drawable/green_notification_circle"/>
+        android:background="@drawable/reputation_green_notification_circle"/>
 
     <TextView
         android:id="@+id/title"

@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.typefactory;
 
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -9,7 +10,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
-import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
@@ -44,7 +45,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.base.Config;
 
-public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
+public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implements ProductListTypeFactory {
 
     private final ProductListener productListener;
     private final TickerListener tickerListener;
@@ -57,6 +58,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     private final RecommendationListener recommendationListener;
     private final BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener;
     private final Config topAdsConfig;
+    private int recyclerViewItem;
 
     public ProductListTypeFactoryImpl(ProductListener productListener,
                                       TickerListener tickerListener,
@@ -81,6 +83,16 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         this.recommendationListener = recommendationListener;
         this.bannedProductsRedirectToBrowserListener = bannedProductsRedirectToBrowserListener;
         this.topAdsConfig = config;
+    }
+
+    @Override
+    public int getRecyclerViewItem() {
+        return recyclerViewItem;
+    }
+
+    @Override
+    public void setRecyclerViewItem(int recyclerViewItem) {
+        this.recyclerViewItem = recyclerViewItem;
     }
 
     @Override
@@ -117,7 +129,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     }
 
     @Override
-    public int type(EmptySearchViewModel emptySearchModel) {
+    public int type(EmptySearchProductViewModel emptySearchModel) {
         return ProductEmptySearchViewHolder.LAYOUT;
     }
 

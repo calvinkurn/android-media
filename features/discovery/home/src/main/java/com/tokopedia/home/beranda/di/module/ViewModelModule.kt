@@ -21,5 +21,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TabBusinessViewModel::class)
     internal abstract fun tabBusinessViewModel(viewModel: TabBusinessViewModel): ViewModel
-
 }

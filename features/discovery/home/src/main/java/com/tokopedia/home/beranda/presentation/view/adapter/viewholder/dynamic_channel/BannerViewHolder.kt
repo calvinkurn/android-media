@@ -48,13 +48,15 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
     override fun onPromoClick(position: Int) {
         slidesList?.let {
-            if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO) {
-                HomePageTracking.eventPromoOverlayClick(it[position])
-            } else {
-                HomePageTracking.eventPromoClick(it[position])
+            if(it.size > position) {
+                if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO) {
+                    HomePageTracking.eventPromoOverlayClick(it[position])
+                } else {
+                    HomePageTracking.eventPromoClick(it[position])
+                }
+                listener.onPromoClick(position, it[position])
+                HomeTrackingUtils.homeSlidingBannerClick(context, it[position], position)
             }
-            listener.onPromoClick(position, it[position])
-            HomeTrackingUtils.homeSlidingBannerClick(context, it[position], position)
         }
     }
 

@@ -7,6 +7,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -17,6 +19,18 @@ public class ShippingCourierConverter {
 
     @Inject
     public ShippingCourierConverter() {
+    }
+
+    public void updateSelectedCourier(List<ShippingCourierViewModel> courierModels, int spId) {
+        if (courierModels != null) {
+            for (ShippingCourierViewModel courierModel : courierModels) {
+                if (courierModel.getProductData().getShipperProductId() == spId) {
+                    courierModel.setSelected(true);
+                } else {
+                    courierModel.setSelected(false);
+                }
+            }
+        }
     }
 
     public CourierItemData convertToCourierItemData(ShippingCourierViewModel shippingCourierViewModel) {

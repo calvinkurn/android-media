@@ -21,6 +21,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -202,6 +203,7 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -293,11 +295,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ResolutionRouter,
         ProductDetailRouter,
-        KYCRouter {
+        KYCRouter,
+        CustomerRouter.IrisInstallRouter {
 
     private static final String EXTRA = "extra";
     public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
+    public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
+    public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -310,7 +315,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
-    private RemoteConfig remoteConfig;
     private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
@@ -325,13 +329,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initializeDagger();
         initDaggerInjector();
         initFirebase();
-        initRemoteConfig();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         initCMPushNotification();
         initIris();
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        ResourceDownloadManager.Companion.getManager().initialize(this, R.raw.url_list);
     }
 
     private void initDaggerInjector() {
@@ -387,10 +391,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 e.printStackTrace();
             }
         }
-    }
-
-    private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override
@@ -978,6 +978,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
+        return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
     public void goToWebview(Context context, String url) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
@@ -1043,7 +1048,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareEvent(Context context, String uri, String name, String imageUrl,String desktopUrl) {
+    public void shareEvent(Context context, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType("")
                 .setName(name)
@@ -1524,6 +1529,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
+    }
+
+    @Override
+    public void sendIrisInstallEvent() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_INSTALL);
+        mIris.sendEvent(map);
     }
 
     @Override
