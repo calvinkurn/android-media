@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.datasource
+package com.tokopedia.home.beranda.data.datasource.local
 
 import android.os.SystemClock
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
