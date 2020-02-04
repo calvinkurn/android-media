@@ -60,7 +60,7 @@ class DrawerHeaderViewHolder(itemView: View,
             verified_icon.visibility = View.GONE
             verified.visibility = View.GONE
             drawer_header.visibility = View.GONE
-            ImageHandler.loadImageWithId(cover_img, R.drawable.drawer_header_bg)
+            ImageHandler.loadImageWithId(cover_img, R.drawable.sh_drawer_header_bg)
         }
     }
 

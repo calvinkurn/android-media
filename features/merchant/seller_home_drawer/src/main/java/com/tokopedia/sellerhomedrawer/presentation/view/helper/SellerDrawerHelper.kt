@@ -26,7 +26,6 @@ import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.presentation.listener.*
 import com.tokopedia.sellerhomedrawer.presentation.view.adapter.SellerDrawerAdapter
 import com.tokopedia.sellerhomedrawer.presentation.view.adapter.SellerDrawerAdapterTypeFactory
-import com.tokopedia.sellerhomedrawer.presentation.view.dashboard.SellerDashboardActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
@@ -78,7 +77,7 @@ class SellerDrawerHelper(val context: Activity,
             when(drawerItem.id) {
                 SellerHomeState.DrawerPosition.INDEX_HOME -> {
                     eventDrawerClick(EventLabel.SELLER_HOME)
-                    context.startActivity(SellerDashboardActivity.createInstance(context))
+                    moveActivityApplink(ApplinkConstInternalMarketplace.SELLER_HOME)
                 }
                 SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND -> {
                     if (context.application is AbstractionRouter)
@@ -334,7 +333,7 @@ class SellerDrawerHelper(val context: Activity,
         drawerItemData.apply {
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_home),
-                    iconId = R.drawable.icon_home,
+                    iconId = R.drawable.sh_icon_home,
                     id = SellerHomeState.DrawerPosition.SELLER_INDEX_HOME,
                     isExpanded = true,
                     isSelected = selectedPosition == SellerHomeState.DrawerPosition.SELLER_INDEX_HOME))
@@ -596,7 +595,7 @@ class SellerDrawerHelper(val context: Activity,
         if (powerMerchantInstance == null)
             powerMerchantInstance =  SellerDrawerItem(
                     label = context.getString(R.string.pm_title),
-                    iconId = R.drawable.ic_pm_badge_shop_regular,
+                    iconId = R.drawable.sh_ic_pm_badge_shop_regular,
                     id = SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                     isExpanded = true)
         return powerMerchantInstance

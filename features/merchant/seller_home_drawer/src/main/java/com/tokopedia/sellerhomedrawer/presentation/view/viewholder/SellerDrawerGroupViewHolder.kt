@@ -38,8 +38,8 @@ class SellerDrawerGroupViewHolder(itemView: View,
     private fun setArrowPosition(isExpanded: Boolean) {
         with(itemView) {
             if (isExpanded)
-                arrow.setImageResource(R.drawable.arrow_up)
-            else arrow.setImageResource(R.drawable.arrow_drop_down)
+                arrow.setImageResource(R.drawable.sh_arrow_up)
+            else arrow.setImageResource(R.drawable.sh_arrow_drop_down)
         }
     }
 

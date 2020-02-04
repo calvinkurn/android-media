@@ -21,8 +21,8 @@ import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerDeposit
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerTopPoints
-import com.tokopedia.sellerhomedrawer.di.component.DaggerSellerHomeDashboardComponent
-import com.tokopedia.sellerhomedrawer.di.component.SellerHomeDashboardComponent
+import com.tokopedia.sellerhomedrawer.di.component.DaggerSellerHomeDrawerComponent
+import com.tokopedia.sellerhomedrawer.di.component.SellerHomeDrawerComponent
 import com.tokopedia.sellerhomedrawer.di.module.SellerHomeDashboardModule
 import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManager
 import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManagerImpl
@@ -71,7 +71,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     fun injectDependency() {
-        val component: SellerHomeDashboardComponent = DaggerSellerHomeDashboardComponent.builder()
+        val component: SellerHomeDrawerComponent = DaggerSellerHomeDrawerComponent.builder()
                 .sellerHomeDashboardModule(SellerHomeDashboardModule(this))
                 .build()
         component.inject(this)
