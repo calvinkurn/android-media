@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sah_progress_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,19 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
-        app:typographyWeight="bold"
-        tools:text="Power Merchant (Aktif)" />
-
-    <ImageView
-        android:id="@+id/iv_info"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_margin="@dimen/layout_lvl1"
-        android:padding="3dp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_card_title"
-        app:layout_constraintStart_toEndOf="@id/tv_card_title"
-        app:layout_constraintTop_toTopOf="@id/tv_card_title"
-        app:srcCompat="@drawable/ic_info" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
         android:id="@+id/shop_score_widget"

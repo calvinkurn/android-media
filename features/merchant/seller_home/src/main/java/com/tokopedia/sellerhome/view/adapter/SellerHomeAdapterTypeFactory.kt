@@ -54,7 +54,7 @@ class SellerHomeAdapterTypeFactory(
             LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, lineGraphWidgetListener)
             CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent)
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
-            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, tooltipClickListener, progressWidgetListener)
+            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, progressWidgetListener)
             ListViewHolder.RES_LAYOUT -> ListViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

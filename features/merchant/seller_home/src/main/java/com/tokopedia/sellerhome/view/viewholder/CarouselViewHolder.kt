@@ -1,10 +1,13 @@
 package com.tokopedia.sellerhome.view.viewholder
 
 import android.view.View
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.error
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.model.CarouselState
 import com.tokopedia.sellerhome.view.model.CarouselWidgetUiModel
+import kotlinx.android.synthetic.main.sah_banner_layout.view.*
 import kotlinx.android.synthetic.main.sah_carousel_widget.view.*
 import timber.log.Timber
 
@@ -31,14 +34,27 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
 
         with(itemView) {
             tvBannerTitle.text = element.title
-            renderBanners(bannerImages, imageList)
+            renderBanners(bannerImages, imageList, element)
             element.data?.let {
-                setVisibilityState(it.state, itemView)
+                setVisibilityState(it.state)
             }
         }
     }
 
-    private fun setVisibilityState(state: CarouselState, itemView: View) {
+    private fun setupDetails(element: CarouselWidgetUiModel, banner: BannerCarousel) {
+        if(element.ctaText.isNotEmpty() && element.appLink.isNotEmpty() ) {
+            banner.bannerSeeAll.text = element.ctaText
+            banner.bannerSeeAll.visibility = View.VISIBLE
+        } else {
+            banner.bannerSeeAll.visibility = View.GONE
+        }
+    }
+
+    private fun goToDetails() {
+
+    }
+
+    private fun setVisibilityState(state: CarouselState) {
         when (state) {
             CarouselState.LOADING -> {
                 itemView.tvBannerTitle.visibility = View.GONE
@@ -83,14 +99,15 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
         }
     }
 
-    private fun renderBanners(banner: BannerCarousel, imageList: List<String>) {
+    private fun renderBanners(banner: BannerCarousel, imageList: List<String>, element: CarouselWidgetUiModel) {
 
         if (imageList.isNotEmpty()) {
             with(banner) {
+                setupDetails(element, banner)
                 setPromoList(imageList)
                 setOnPromoClickListener { Timber.e(it.toString()) }
                 setOnPromoScrolledListener { Timber.e(it.toString()) }
-                setOnPromoAllClickListener { Timber.e("Lihat Semua") }
+                setOnPromoAllClickListener { goToDetails() }
                 buildView()
 
                 if (!isSeeAllVisible) bannerSeeAll.visibility = View.GONE

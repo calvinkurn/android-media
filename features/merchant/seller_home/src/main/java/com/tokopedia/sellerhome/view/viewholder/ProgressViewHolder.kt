@@ -7,8 +7,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.model.ProgressWidgetUiModel
-import com.tokopedia.sellerhome.SellerHomeWidgetTooltipClickListener
-import com.tokopedia.sellerhome.view.model.TooltipUiModel
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import kotlinx.android.synthetic.main.sah_partial_progress_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_progress_widget_error.view.*
@@ -17,7 +15,7 @@ import kotlinx.android.synthetic.main.sah_partial_shimmering_progress_widget.vie
 /**
  * Created By @yusufhendrawan on 2020-01-22
  */
-class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHomeWidgetTooltipClickListener, private val listener: Listener) : AbstractViewHolder<ProgressWidgetUiModel>(view) {
+class ProgressViewHolder(view: View?, private val listener: Listener) : AbstractViewHolder<ProgressWidgetUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.sah_progress_card_widget
@@ -26,7 +24,6 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
     override fun bind(element: ProgressWidgetUiModel) {
         observeState(element)
         listener.getProgressData()
-        createListeners(element.tooltip ?: return)
         showSuccessState(element)
     }
 
@@ -67,15 +64,6 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
         showProgressLayout()
     }
 
-    private fun createListeners(tooltip: TooltipUiModel) {
-        itemView.iv_info.setOnClickListener { showBottomSheet(tooltip) }
-    }
-
-    private fun showBottomSheet(tooltip: TooltipUiModel) {
-        Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
-        tooltipClickListener.onInfoTooltipClicked(tooltip)
-    }
-
     private fun goToDetails() {
         Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
     }
@@ -107,6 +95,7 @@ class ProgressViewHolder(view: View?, private val tooltipClickListener: SellerHo
         with(itemView) {
             if(element.ctaText.isNotEmpty() && element.appLink.isNotEmpty() ) {
                 tv_see_details.text = element.ctaText
+                tv_see_details.visibility = View.VISIBLE
                 iv_arrow_url.visibility = View.VISIBLE
                 tv_see_details.setOnClickListener {
                     goToDetails()
