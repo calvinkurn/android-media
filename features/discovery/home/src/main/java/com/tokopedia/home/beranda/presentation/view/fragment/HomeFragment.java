@@ -46,12 +46,18 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.home.analytics.HomePageTrackingV2;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -119,6 +125,7 @@ import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,7 +139,17 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_GIF_BANNER;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_ORGANIC;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_LEGO;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_SALE;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
+
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -150,11 +167,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
-    public static final String REVIEW_CLICK_AT = "REVIEW_CLICK_AT";
+    public static final String REVIEW_CLICK_AT = "rating";
+    public static final String UTM_SOURCE = "utm_source";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
+    private static final String DEFAULT_UTM_SOURCE = "home_notif";
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
@@ -209,7 +228,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
-    private Map<Integer,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
+    private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -549,10 +568,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
 
         presenter.getTrackingLiveData().observe(this, trackingData-> {
-            addImpressionToTrackingQueue(new ArrayList(trackingData.getContentIfNotHandled()));
+            List<Visitable> visitables = new ArrayList(trackingData.getContentIfNotHandled());
+            addImpressionToTrackingQueue(visitables);
+            setupViewportImpression(visitables);
         });
 
         presenter.getUpdateNetworkLiveData().observe(this, resource -> {
+            resetImpressionListener();
             if(resource.getStatus() == Resource.Status.SUCCESS){
                 hideLoading();
             } else if(resource.getStatus() == Resource.Status.ERROR){
@@ -912,7 +934,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //onrefresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-        resetImpressionListener();
         layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
@@ -1591,8 +1612,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onReviewClick(int position, int clickReviewAt, long delay, @NotNull String applink) {
         new Handler().postDelayed(() -> {
-            Intent intent = RouteManager.getIntent(getContext(), applink);
-            intent.putExtra(REVIEW_CLICK_AT, clickReviewAt);
+            String newAppLink = Uri.parse(applink)
+                    .buildUpon()
+                    .appendQueryParameter(REVIEW_CLICK_AT, String.valueOf(clickReviewAt))
+                    .appendQueryParameter(UTM_SOURCE, DEFAULT_UTM_SOURCE)
+                    .build().toString();
+            Intent intent = RouteManager.getIntent(getContext(), newAppLink);
             startActivityForResult(intent, REQUEST_CODE_REVIEW);
         }, delay);
     }
@@ -1631,37 +1656,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return displayMetrics.widthPixels;
     }
 
-    @Override
-    public void addRecyclerViewScrollImpressionListener(int adapterPosition, @NotNull Function0<Unit> onImpressionListener) {
-        if (!impressionScrollListeners.containsKey(adapterPosition)) {
-            RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
-                        onImpressionListener.invoke();
-                        homeRecyclerView.removeOnScrollListener(this);
-                    }
-                }
-            };
-            impressionScrollListeners.put(adapterPosition, impressionScrollListener);
-            homeRecyclerView.addOnScrollListener(impressionScrollListener);
+    private void resetImpressionListener() {
+        for (Map.Entry<String, RecyclerView.OnScrollListener> entry : impressionScrollListeners.entrySet()) {
+            if (homeRecyclerView != null) {
+                homeRecyclerView.removeOnScrollListener(entry.getValue());
+            }
         }
+        impressionScrollListeners.clear();
     }
 
     @Override
     public void refreshHomeData() {
         refreshLayout.setRefreshing(true);
         onNetworkRetry();
-    }
-
-    private void resetImpressionListener() {
-        for (Map.Entry<Integer, RecyclerView.OnScrollListener> entry : impressionScrollListeners.entrySet()) {
-            if (homeRecyclerView != null) {
-                homeRecyclerView.removeOnScrollListener(entry.getValue());
-            }
-        }
-        impressionScrollListeners.clear();
     }
 
     @Override
@@ -1690,5 +1697,95 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
         Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener);
+    }
+
+    public void addRecyclerViewScrollImpressionListener(DynamicChannelViewModel dynamicChannelViewModel, int adapterPosition) {
+        if (!impressionScrollListeners.containsKey(dynamicChannelViewModel.getChannel().getId())) {
+            RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
+                        sendIrisTracker(DynamicChannelViewHolder.Companion.getLayoutType(dynamicChannelViewModel.getChannel()),
+                                dynamicChannelViewModel.getChannel(),
+                                adapterPosition);
+                        homeRecyclerView.removeOnScrollListener(this);
+                    }
+                }
+            };
+            impressionScrollListeners.put(dynamicChannelViewModel.getChannel().getId(), impressionScrollListener);
+            homeRecyclerView.addOnScrollListener(impressionScrollListener);
+        }
+    }
+
+    private void sendIrisTracker(int layoutType, DynamicHomeChannel.Channels channel, int position) {
+        switch (layoutType) {
+            case TYPE_SPRINT_SALE :
+                putEEToIris(
+                        HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
+                                channel.getId(), channel.getGrids(), position
+                        )
+                );
+                break;
+            case TYPE_ORGANIC :
+            case TYPE_SPRINT_LEGO :
+                putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
+                                channel.getId(), channel.getGrids(), channel.getHeader().getName()
+                        )
+                );
+                break;
+            case TYPE_SIX_GRID_LEGO :
+                putEEToIris(
+                        HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
+                                channel.getId(), channel.getGrids(), channel.getHeader().getName(), position
+                        )
+                );
+                break;
+            case TYPE_THREE_GRID_LEGO :
+                putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
+                                channel.getId(), channel.getGrids(), channel.getHeader().getName(), position
+                        )
+                );
+                break;
+            case TYPE_FOUR_GRID_LEGO :
+                putEEToIris(
+                        (HashMap<String, Object>) HomePageTrackingV2.LegoBanner.INSTANCE.getLegoBannerFourImageImpression(
+                                channel, position, true
+                        )
+                );
+                break;
+            case TYPE_GIF_BANNER :
+                putEEToIris(
+                        HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel));
+                break;
+            case TYPE_BANNER_CAROUSEL :
+            case TYPE_BANNER :
+                String bannerType = BannerOrganicViewHolder.Companion.getTYPE_NON_CAROUSEL();
+                if (layoutType == TYPE_BANNER_CAROUSEL) bannerType = BannerOrganicViewHolder.Companion.getTYPE_CAROUSEL();
+                putEEToIris(
+                        HomePageTracking.getEnhanceImpressionProductChannelMix(
+                                channel, bannerType
+                        )
+                );
+                putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionBannerChannelMix(channel)
+                );
+                break;
+        }
+    }
+
+    private void setupViewportImpression(List<Visitable> visitables) {
+        int index = 0;
+        for (Visitable visitable: visitables) {
+            if (visitable instanceof DynamicChannelViewModel) {
+                DynamicChannelViewModel dynamicChannelViewModel = ((DynamicChannelViewModel) visitable);
+                if (!dynamicChannelViewModel.isCache() && !dynamicChannelViewModel.getChannel().isInvoke()) {
+                    addRecyclerViewScrollImpressionListener(dynamicChannelViewModel, index);
+                }
+            }
+            index++;
+        }
     }
 }

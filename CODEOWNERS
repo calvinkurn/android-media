@@ -30,6 +30,12 @@
 /features/home/searchbar/                           	@tokopedia/minion-dave
 /features/content/play/                                 @tokopedia/minion-dave
 /features/content/play-common/                          @tokopedia/minion-dave
+/features/content/interest_pick_common                  @tokopedia/minion-dave
+/features/discovery/discovery_common                    @tokopedia/minion-dave
+/features/discovery/recommendation_widget_common        @tokopedia/minion-dave
+/features/discovery/carousel_productcard                @tokopedia/minion-dave
+/features/discovery/productcard_options                 @tokopedia/minion-dave
+/features/discovery/home_page_banner                    @tokopedia/minion-dave
 
 /features/common/developer_options                  	@tokopedia/core-team
 /features/common/nps                                	@tokopedia/core-team
@@ -55,8 +61,8 @@
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
-/features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
-/features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-dave
+/features/top_ads/top_ads_autoads/                      @tokopedia/minion-darth
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-darth
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 

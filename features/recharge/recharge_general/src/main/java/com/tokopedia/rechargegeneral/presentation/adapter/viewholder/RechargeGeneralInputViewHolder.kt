@@ -23,6 +23,8 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
             inputView.isCustomInput = false
             inputView.setInputType(enquiryData.style)
         }
+        // Add delay to reduce tracking events
+        inputView.setDelayTextChanged(1000)
 
         inputView.actionListener = object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
@@ -34,7 +36,9 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
                     inputView.setErrorMessage(getString(R.string.input_error_message))
                     inputData = ""
                 }
-                listener.onFinishInput(enquiryData.name, inputData, adapterPosition)
+
+                val isManual = inputView.hasFocus()
+                listener.onFinishInput(enquiryData.name, inputData, adapterPosition, isManual)
             }
 
             // Setup favorite number input
@@ -52,7 +56,8 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
 
         // Set item data
         if (enquiryData.value.isNotEmpty()) {
-            inputView.setInputText(enquiryData.value)
+            inputView.setInputText(enquiryData.value, false)
+            listener.onFinishInput(enquiryData.name, enquiryData.value, adapterPosition)
             // Hide dropdown icon
             inputView.toggleDropdownIcon(false)
         }

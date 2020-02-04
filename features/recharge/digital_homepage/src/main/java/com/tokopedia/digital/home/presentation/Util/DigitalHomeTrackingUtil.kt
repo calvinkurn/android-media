@@ -6,6 +6,7 @@ import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.CATEGORY
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.CREATIVE
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.CREATIVE_URL
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.ECOMMERCE
@@ -13,25 +14,24 @@ import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEECons
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.NAME
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.POSITION
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.PROMOTIONS
+import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.PROMO_CODE
+import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.PROMO_ID
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.ALL_BANNERS_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BACK_BUTTON_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.MORE_INFO_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_BOX_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingCategoryConstant.DIGITAL_HOMEPAGE_CATEGORY
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingEventNameConstant.CLICK_HOMEPAGE
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingEventNameConstant.CLICK_TOPUP_BILLS
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingEventNameConstant.PROMO_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingEventNameConstant.PROMO_VIEW
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingLabelConstant.FAVOURITE_NUMBER
@@ -46,11 +46,14 @@ class DigitalHomeTrackingUtil {
     fun eventBannerImpression(item: DigitalHomePageBannerModel.Banner?, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
-                NAME, item?.title,
+                ID, item?.id ?: "",
+                NAME, item?.title ?: "",
+                CREATIVE, item?.title ?: "",
+                CREATIVE_URL, item?.filename ?: "",
                 POSITION, position,
-                ID, item?.id,
-                CREATIVE, item?.title,
-                CREATIVE_URL, item?.filename
+                CATEGORY, "",
+                PROMO_ID, "",
+                PROMO_CODE, ""
         ))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -67,11 +70,14 @@ class DigitalHomeTrackingUtil {
     fun eventBannerClick(item: DigitalHomePageBannerModel.Banner?, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
-                NAME, item?.title,
+                ID, item?.id ?: "",
+                NAME, item?.title ?: "",
+                CREATIVE, item?.title ?: "",
+                CREATIVE_URL, item?.filename ?: "",
                 POSITION, position,
-                ID, item?.id,
-                CREATIVE, item?.title,
-                CREATIVE_URL, item?.filename
+                CATEGORY, "",
+                PROMO_ID, "",
+                PROMO_CODE, ""
         ))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -89,11 +95,14 @@ class DigitalHomeTrackingUtil {
         val products = mutableListOf<Any>()
         for ((index, item) in items.withIndex()) {
             products.add(DataLayer.mapOf(
-                    NAME, item?.name,
+                    ID, item?.id ?: "",
+                    NAME, item?.name ?: "",
+                    CREATIVE, item?.name ?: "",
+                    CREATIVE_URL, item?.icon ?: "",
                     POSITION, index,
-                    ID, item?.id,
-                    CREATIVE, item?.name,
-                    CREATIVE_URL, item?.icon
+                    CATEGORY, "",
+                    PROMO_ID, "",
+                    PROMO_CODE, ""
             ))
         }
 
@@ -111,11 +120,14 @@ class DigitalHomeTrackingUtil {
     fun eventCategoryClick(item: DigitalHomePageCategoryModel.Submenu?, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
-                NAME, item?.name,
+                ID, item?.id ?: "",
+                NAME, item?.name ?: "",
+                CREATIVE, item?.name ?: "",
+                CREATIVE_URL, item?.icon ?: "",
                 POSITION, position,
-                ID, item?.id,
-                CREATIVE, item?.name,
-                CREATIVE_URL, item?.icon
+                CATEGORY, "",
+                PROMO_ID, "",
+                PROMO_CODE, ""
         ))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -130,43 +142,43 @@ class DigitalHomeTrackingUtil {
     }
 
     fun eventClickOrderList(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, ORDER_LIST)
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, ORDER_LIST)
     }
 
     fun eventClickLangganan(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, LANGGANAN)
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, LANGGANAN)
     }
 
     fun eventClickHelp(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, HELP)
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, HELP)
     }
 
     fun eventClickFavNumber(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, FAVOURITE_NUMBER)
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, FAVOURITE_NUMBER)
     }
 
     fun eventClickBackButton(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, BACK_BUTTON_CLICK, "")
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, BACK_BUTTON_CLICK, "")
     }
 
     fun eventClickSearchBox(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_BOX_CLICK, "")
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_BOX_CLICK, "")
     }
 
     fun eventClickSearch(searchQuery: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_CLICK, searchQuery)
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_CLICK, searchQuery)
     }
 
     fun eventClickAllBanners(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, ALL_BANNERS_CLICK, "")
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, ALL_BANNERS_CLICK, "")
     }
 
     fun eventClickSubscriptionGuide(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, SUBSCRIPTION_GUIDE_CLICK, "")
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, SUBSCRIPTION_GUIDE_CLICK, "")
     }
 
     fun eventClickMoreInfo(){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, MORE_INFO_CLICK, "")
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, MORE_INFO_CLICK, "")
     }
 
     fun eventSectionImpression(data: List<DigitalHomePageSectionModel.Item>, eventAction: String) {
@@ -198,9 +210,12 @@ class DigitalHomeTrackingUtil {
             items.add(DataLayer.mapOf(
                     ID, item.id,
                     NAME, item.title,
-                    POSITION, position ?: index,
                     CREATIVE, item.title,
-                    CREATIVE_URL, item.mediaUrl
+                    CREATIVE_URL, item.mediaUrl,
+                    POSITION, position ?: index,
+                    CATEGORY, "",
+                    PROMO_ID, "",
+                    PROMO_CODE, ""
             ))
         }
         return items
@@ -210,11 +225,14 @@ class DigitalHomeTrackingUtil {
         val categories = mutableListOf<Any>()
         for ((position, item) in items.withIndex()) {
             categories.add(DataLayer.mapOf(
-                    NAME, item.productName,
-                    POSITION, position,
                     ID, item.productId,
+                    NAME, item.productName,
                     CREATIVE, item.productName,
-                    CREATIVE_URL, item.iconUrl
+                    CREATIVE_URL, item.iconUrl,
+                    POSITION, position,
+                    CATEGORY, item.categoryName,
+                    PROMO_ID, "",
+                    PROMO_CODE, ""
             ))
         }
 
@@ -231,11 +249,14 @@ class DigitalHomeTrackingUtil {
     fun eventRecommendationClick(item: RecommendationItemEntity, position: Int) {
         val categories = mutableListOf<Any>()
         categories.add(DataLayer.mapOf(
-                NAME, item.productName,
-                POSITION, position,
                 ID, item.productId,
+                NAME, item.productName,
                 CREATIVE, item.productName,
-                CREATIVE_URL, item.iconUrl
+                CREATIVE_URL, item.iconUrl,
+                POSITION, position,
+                CATEGORY, item.categoryName,
+                PROMO_ID, "",
+                PROMO_CODE, ""
         ))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -253,11 +274,14 @@ class DigitalHomeTrackingUtil {
         val categories = mutableListOf<Any>()
         for ((position, item) in items.withIndex()) {
             categories.add(DataLayer.mapOf(
-                    NAME, item.name,
-                    POSITION, position,
                     ID, item.id,
+                    NAME, item.name,
                     CREATIVE, item.name,
-                    CREATIVE_URL, item.icon
+                    CREATIVE_URL, item.icon,
+                    POSITION, position,
+                    CATEGORY, "",
+                    PROMO_ID, "",
+                    PROMO_CODE, ""
             ))
         }
 
@@ -275,11 +299,14 @@ class DigitalHomeTrackingUtil {
     fun eventSearchResultPageClick(item: DigitalHomePageSearchCategoryModel, position: Int) {
         val categories = mutableListOf<Any>()
             categories.add(DataLayer.mapOf(
-                    NAME, item.name,
-                    POSITION, position,
                     ID, item.id,
+                    NAME, item.name,
                     CREATIVE, item.name,
-                    CREATIVE_URL, item.icon
+                    CREATIVE_URL, item.icon,
+                    POSITION, position,
+                    CATEGORY, "",
+                    PROMO_ID, "",
+                    PROMO_CODE, ""
             ))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(

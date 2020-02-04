@@ -87,7 +87,5 @@ interface HomeCategoryListener {
 
     fun getWindowWidth(): Int
 
-    fun addRecyclerViewScrollImpressionListener(adapterPosition: Int, onImpressionListener: ()->Unit)
-
     fun refreshHomeData()
 }

@@ -41,7 +41,7 @@ interface RechargeGeneralEventTracking {
             val CLICK_BUY = "click beli"
             val CLICK_RECENT_ICON = "click recent icon"
             val CLICK_PROMO_TAB = "click promo tab"
-            val CLICK_COPY_PROMO = "click salin promo diigtal"
+            val CLICK_COPY_PROMO = "click salin promo digital"
             val CLICK_BACK = "user click back button from PDP"
             val INPUT_FAVORITE_NUMBER = "input from favorite number"
         }

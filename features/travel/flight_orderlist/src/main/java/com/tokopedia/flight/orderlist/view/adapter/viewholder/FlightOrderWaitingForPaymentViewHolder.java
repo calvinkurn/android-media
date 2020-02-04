@@ -118,7 +118,8 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                 tvPayment.setText(element.getPayment().getManualTransfer().getAccountBankName());
                 tvPaymentCostLabel.setVisibility(View.VISIBLE);
                 tvPaymentCost.setVisibility(View.VISIBLE);
-                tvPaymentCost.setText(element.getPayment().getManualTransfer().getTotal());
+                if (element.getPayment().getNeedToPayAmount() > 0) tvPaymentCost.setText(convertToIdrPrice(element.getPayment().getNeedToPayAmount()));
+                else tvPaymentCost.setText(element.getPayment().getManualTransfer().getTotal());
             } else {
                 tvPayment.setText(element.getPayment().getGatewayName());
                 tvPaymentLabel.setText(R.string.flight_order_payment_label);
