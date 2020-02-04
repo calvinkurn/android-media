@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OfficialStoreHomeViewModel @Inject constructor(
@@ -104,9 +105,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
     fun loadFirstData(category: Category?) {
         launchCatchError(block = {
             currentSlug = "${category?.prefixUrl}${category?.slug}"
-            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(currentSlug).await())
-            _officialStoreBenefitResult.value = Success(getOfficialStoreBenefit().await())
-            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
+            getOfficialStoreBanners(currentSlug)
+            getOfficialStoreBenefit()
+            getOfficialStoreFeaturedShop(category?.categoryId ?: "")
             getOfficialStoreDynamicChannel(currentSlug)
         }) {
             _officialStoreBannersResult.value = Fail(it)
@@ -126,45 +127,41 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getOfficialStoreBanners(categoryId: String): Deferred<OfficialStoreBanners> {
-        return async(Dispatchers.IO) {
-            var banner = OfficialStoreBanners()
+    private suspend fun getOfficialStoreBanners(categoryId: String) {
+        withContext(Dispatchers.IO) {
             try {
                 getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.
                         createParams(categoryId)
-                banner = getOfficialStoreBannersUseCase.executeOnBackground()
+                val banner = getOfficialStoreBannersUseCase.executeOnBackground()
+                _officialStoreBannersResult.value = Success(banner)
             } catch (t:  Throwable) {
-                _officialStoreFeaturedShopResult.value = Fail(t)
+                _officialStoreBannersResult.value = Fail(t)
             }
-            banner
         }
     }
 
-    private fun getOfficialStoreBenefit(): Deferred<OfficialStoreBenefits> {
-        return async(Dispatchers.IO) {
-            var benefits = OfficialStoreBenefits()
+    private suspend fun getOfficialStoreBenefit() {
+        withContext(Dispatchers.IO) {
             try {
-                benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
+                val benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
+                _officialStoreBenefitResult.value = Success(benefits)
             } catch (t: Throwable) {
                 _officialStoreBenefitResult.value = Fail(t)
             }
-            benefits
         }
     }
 
 
-    private fun getOfficialStoreFeaturedShop(categoryId: String): Deferred<OfficialStoreFeaturedShop>  {
-       return async(Dispatchers.IO) {
-           var featuredShop = OfficialStoreFeaturedShop()
+    private suspend fun getOfficialStoreFeaturedShop(categoryId: String) {
+        withContext(Dispatchers.IO) {
            try {
                getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.
                        createParams(categoryId.toIntOrNull() ?: 0)
-               featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
+               val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
+               _officialStoreFeaturedShopResult.value = Success(featuredShop)
            } catch (t: Throwable) {
                _officialStoreFeaturedShopResult.value = Fail(t)
            }
-
-           featuredShop
         }
     }
 
