@@ -30,6 +30,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getCardDataUseCase: GetCardDataUseCase,
         private val getLineGraphDataUseCase: GetLineGraphDataUseCase,
         private val getProgressDataUseCase: GetProgressDataUseCase,
+        private val getPostDataUseCase: GetPostDataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -45,6 +46,7 @@ class SellerHomeViewModel @Inject constructor(
     val cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
     val lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
     val progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
+    val postWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
 
     fun getTicker() {
         launchCatchError(block = {
@@ -100,6 +102,17 @@ class SellerHomeViewModel @Inject constructor(
             })
         }, onError = {
             progressWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getPostWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            postWidgetData.value = Success(withContext(Dispatchers.IO) {
+                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
+                getPostDataUseCase.executeOnBackground()
+            })
+        }, onError = {
+            postWidgetData.value = Fail(it)
         })
     }
 }

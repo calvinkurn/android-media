@@ -56,4 +56,20 @@ object GraphqlQuery {
             "    }\n" +
             "  }\n" +
             "}"
+
+    const val GET_POST_DATA = "query getPostWidgetData(\$dataKey: [String!]!, \$shopId: Int!, \$startDate: String!, \$endDate: String!) {\n" +
+            "  getPostWidgetData(dataKey: \$dataKey, shopID: \$shopId, startDate: \$startDate, endDate: \$endDate) {\n" +
+            "    data {\n" +
+            "      datakey\n" +
+            "      list {\n" +
+            "        title\n" +
+            "        url\n" +
+            "        applink\n" +
+            "        subtitle\n" +
+            "        featuredMediaURL\n" +
+            "      }\n" +
+            "      errorMsg\n" +
+            "    }\n" +
+            "  }\n" +
+            "}"
 }

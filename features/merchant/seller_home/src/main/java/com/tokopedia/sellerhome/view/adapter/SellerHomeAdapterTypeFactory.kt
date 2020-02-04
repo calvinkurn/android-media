@@ -16,7 +16,8 @@ class SellerHomeAdapterTypeFactory(
         private val tooltipClickListener: SellerHomeWidgetTooltipClickListener,
         private val cardWidgetListener: CardViewHolder.Listener,
         private val lineGraphWidgetListener: LineGraphViewHolder.Listener,
-        private val progressWidgetListener: ProgressViewHolder.Listener
+        private val progressWidgetListener: ProgressViewHolder.Listener,
+        private val postListWidgetListener: PostListViewHolder.Listener
 ) : BaseAdapterTypeFactory(), SellerHomeTypeFactory {
 
     override fun type(cardWidget: CardWidgetUiModel): Int {
@@ -43,8 +44,8 @@ class SellerHomeAdapterTypeFactory(
         return ProgressViewHolder.RES_LAYOUT
     }
 
-    override fun type(listWidget: ListWidgetUiModel): Int {
-        return ListViewHolder.RES_LAYOUT
+    override fun type(postListWidget: PostListWidgetUiModel): Int {
+        return PostListViewHolder.RES_LAYOUT
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -55,7 +56,7 @@ class SellerHomeAdapterTypeFactory(
             CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent)
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
             ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, progressWidgetListener)
-            ListViewHolder.RES_LAYOUT -> ListViewHolder(parent)
+            PostListViewHolder.RES_LAYOUT -> PostListViewHolder(parent, postListWidgetListener, tooltipClickListener)
             else -> super.createViewHolder(parent, type)
         }
     }

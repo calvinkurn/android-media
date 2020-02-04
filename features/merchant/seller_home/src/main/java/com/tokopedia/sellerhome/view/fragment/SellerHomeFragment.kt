@@ -21,6 +21,7 @@ import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetConte
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.CardViewHolder
 import com.tokopedia.sellerhome.view.viewholder.LineGraphViewHolder
+import com.tokopedia.sellerhome.view.viewholder.PostListViewHolder
 import com.tokopedia.sellerhome.view.viewholder.ProgressViewHolder
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -37,7 +38,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetTooltipClickListener, CardViewHolder.Listener, LineGraphViewHolder.Listener, ProgressViewHolder.Listener {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(), SellerHomeWidgetTooltipClickListener, CardViewHolder.Listener, LineGraphViewHolder.Listener, ProgressViewHolder.Listener, PostListViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -57,6 +58,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
     private var hasLoadProgressData = false
+    private var hasLoadPostData = false
 
     private lateinit var bottomSheet: BottomSheetUnify
 
@@ -83,6 +85,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         observeCardLiveData()
         observeLineGraphLiveData()
         observeProgressLiveData()
+        observePostLiveData()
     }
 
     private fun hideTooltipIfExist() {
@@ -123,7 +126,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this, this, this, this)
+        return SellerHomeAdapterTypeFactory(this, this, this, this, this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -153,6 +156,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hasLoadProgressData = true
         val dataKeys = getWidgetDataKeys<ProgressWidgetUiModel>()
         sellerHomeViewModel.getProgressWidgetData(dataKeys)
+    }
+
+    override fun getPostData() {
+        if (hasLoadPostData) return
+        hasLoadPostData = true
+        val dataKeys = getWidgetDataKeys<PostListWidgetUiModel>()
+        sellerHomeViewModel.getPostWidgetData(dataKeys)
+    }
+
+    override fun removeWidget(position: Int, data: PostListWidgetUiModel) {
+        recyclerView.post {
+            adapter.data.removeAt(position)
+            adapter.notifyDataSetChanged()
+            widgetHasMap[data.widgetType]?.remove(data)
+        }
     }
 
     private fun showGetWidgetShimmer(isShown: Boolean) {
@@ -252,6 +270,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         })
     }
 
+    private fun observePostLiveData() {
+        sellerHomeViewModel.postWidgetData.observe(viewLifecycleOwner, Observer { result ->
+            val type = WidgetType.POST
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type)
+            }
+        })
+    }
+
     private fun observeProgressLiveData() {
         sellerHomeViewModel.progressWidgetData.observe(viewLifecycleOwner, Observer { result ->
             val type = WidgetType.PROGRESS
@@ -268,6 +296,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 is CardWidgetUiModel -> widget.data = this[i] as CardDataUiModel
                 is LineGraphWidgetUiModel -> widget.data = this[i] as LineGraphDataUiModel
                 is ProgressWidgetUiModel -> widget.data = this[i] as ProgressDataUiModel
+                is PostListWidgetUiModel -> widget.data = this[i] as PostListDataUiModel
             }
         }
         adapter.notifyDataSetChanged()
@@ -280,6 +309,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 is CardWidgetUiModel -> widget.data = CardDataUiModel(error = message)
                 is LineGraphWidgetUiModel -> widget.data = LineGraphDataUiModel(error = message)
                 is ProgressWidgetUiModel -> widget.data = ProgressDataUiModel(error = message)
+                is PostListWidgetUiModel -> widget.data = PostListDataUiModel(error = message)
             }
         }
         adapter.notifyDataSetChanged()

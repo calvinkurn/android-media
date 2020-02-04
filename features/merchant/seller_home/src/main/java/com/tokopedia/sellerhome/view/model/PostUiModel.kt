@@ -3,7 +3,7 @@ package com.tokopedia.sellerhome.view.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 
-class ListItemUiModel(
+class PostUiModel(
         val title: String,
         val appLink: String,
         val url: String,

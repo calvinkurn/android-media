@@ -183,51 +183,26 @@ class GetLayoutUseCase(
                                 state = CarouselState.NORMAL
                         )
                 ),
-                ListWidgetUiModel(
-                        widgetType = WidgetType.LIST,
+                PostListWidgetUiModel(
+                        widgetType = WidgetType.POST,
                         title = "Info Seller",
+                        subtitle = "",
+                        tooltip = TooltipUiModel("Info Seller", "Skor ada little ipsum del amet, yang membawa per minggu", emptyList(), true),
+                        url = "",
+                        appLink = "tokopedia://pesanan-baru/detail",
+                        dataKey = "article",
+                        ctaText = "",
+                        data = null
+                ),
+                PostListWidgetUiModel(
+                        widgetType = WidgetType.POST,
+                        title = "Produk Terlaris",
                         subtitle = "",
                         tooltip = null,
                         url = "",
                         appLink = "",
-                        dataKey = "",
+                        dataKey = "product",
                         ctaText = "",
-                        data = ListDataUiModel(
-                                dataKey = "articles",
-                                items = listOf(
-                                        ListItemUiModel(
-                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
-                                                appLink = "",
-                                                url = "",
-                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
-                                                subtitle = "FITUR <i> 12 SEP 19"
-                                        ),
-                                        ListItemUiModel(
-                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
-                                                appLink = "",
-                                                url = "",
-                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
-                                                subtitle = "FITUR <i> 12 SEP 20"
-                                        ),
-                                        ListItemUiModel(
-                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
-                                                appLink = "",
-                                                url = "",
-                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
-                                                subtitle = "FITUR <i> 12 SEP 21"
-                                        )
-                                )
-                        )
-                ),
-                DescriptionWidgetUiModel(
-                        widgetType = WidgetType.DESCRIPTION,
-                        title = "Yuk, Daftar Power Merchant",
-                        subtitle = "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant",
-                        tooltip = null,
-                        url = "",
-                        appLink = "testing",
-                        dataKey = "",
-                        ctaText = "Selengkapnya",
                         data = null
                 )
         )
