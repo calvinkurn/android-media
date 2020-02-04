@@ -159,7 +159,7 @@ class GetLayoutUseCase(
                         url = "",
                         appLink = "tokopedia://pesanan-baru/detail",
                         dataKey = "grossIncome",
-                        ctaText = "",
+                        ctaText = "Selanjutnya",
                         data = null
                 ),
                 SectionWidgetUiModel(

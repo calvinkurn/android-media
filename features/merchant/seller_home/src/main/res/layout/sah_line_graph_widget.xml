@@ -90,10 +90,12 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue">
+            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue"
+            app:layout_constraintVertical_bias="0.0">
 
             <com.db.williamchart.view.LineChartView
                 android:id="@+id/lineGraphView"
