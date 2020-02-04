@@ -20,7 +20,6 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
     : BaseDaggerPresenter<ShopSettingsEtalaseAddEditView>() {
 
     var etalaseCount = 0
-
     override fun detachView() {
         super.detachView()
         addShopEtalaseUseCase.unsubscribe()
@@ -56,7 +55,7 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
                     override fun onNext(listEtalase: ArrayList<ShopEtalaseModel>?) {
                         view?.hideLoading()
                         listEtalase?.let {
-                            etalaseCount = it.size
+                            etalaseCount = listEtalase.filter { it.type!= DEFAULT_ETALASE_TYPE }.size
                             view?.onSuccessGetEtalaseList()
                         }
                     }
@@ -79,5 +78,6 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
 
     companion object {
         private const val ID = "id"
+        private const val DEFAULT_ETALASE_TYPE  = -1
     }
 }
