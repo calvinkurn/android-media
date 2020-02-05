@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,11 +11,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.main_testapp.*
 import rx.Observable
@@ -194,6 +200,13 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-
+        val intent = Intent(this, OrderListActivity::class.java)
+        val bundle = Bundle()
+        bundle.putString(OrderCategory.KEY_LABEL, OrderListContants.BELANJA)
+        val uri = Uri.parse(ApplinkConst.MARKETPLACE_ORDER).buildUpon()
+        if (uri != null) {
+            intent.data = uri.build()
+        }
+        startActivity(intent, bundle)
     }
 }
