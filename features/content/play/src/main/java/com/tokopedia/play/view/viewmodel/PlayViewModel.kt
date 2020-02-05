@@ -163,7 +163,7 @@ class PlayViewModel @Inject constructor(
 
         var retryCount = 0
 
-        fun getChannelInfoResponse(channelId: String): Job = launchCatchError(block = {
+        fun getChannelInfoResponse(channelId: String) = launchCatchError(block = {
             val channel = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
