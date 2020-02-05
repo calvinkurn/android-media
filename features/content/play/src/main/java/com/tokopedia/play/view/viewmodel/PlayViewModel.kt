@@ -30,6 +30,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -160,7 +161,10 @@ class PlayViewModel @Inject constructor(
     }
 
     fun getChannelInfo(channelId: String) {
-        launchCatchError(block = {
+
+        var retryCount = 0
+
+        fun getChannelInfoResponse(channelId: String): Job = launchCatchError(block = {
             val channel = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
@@ -189,8 +193,11 @@ class PlayViewModel @Inject constructor(
             _observableEvent.value = mapEvent(channel)
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
-            if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
+            if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
+            else if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
+
+        getChannelInfoResponse(channelId)
     }
 
     fun resume() {
@@ -317,10 +324,9 @@ class PlayViewModel @Inject constructor(
                     }
                 }
             }
-        }, onReconnect = {
-            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
         }, onError = {
-            _observableSocketInfo.value = PlaySocketInfo.ERROR
+            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
+            startWebSocket(channelId, gcToken, settings)
         })
     }
 
@@ -424,5 +430,9 @@ class PlayViewModel @Inject constructor(
         startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
         playManager.muteVideo(false)
         playManager.setRepeatMode(false)
+    }
+
+    companion object {
+        private const val MAX_RETRY_CHANNEL_INFO = 3
     }
 }

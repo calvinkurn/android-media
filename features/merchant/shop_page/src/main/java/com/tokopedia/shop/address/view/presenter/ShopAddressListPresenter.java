@@ -38,7 +38,7 @@ public class ShopAddressListPresenter extends BaseDaggerPresenter<ShopAddressLis
         catch (NumberFormatException exception) {
             Timber.d("Failed to convert shop ID to integer");
         }
-        gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(shopIds, null , GQLGetShopInfoUseCase.getDefaultShopFields()));
+        gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(shopIds, null , GQLGetShopInfoUseCase.getDefaultShopFields(),""));
         gqlGetShopInfoUseCase.execute(
                 shopInfo -> {
                     if (isViewAttached()) {
