@@ -28,6 +28,11 @@
             android:layout_height="wrap_content"
             app:siv_search_hint="@string/brandlist_search_view_hint"/>
 
-</androidx.appcompat.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_brandlist_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

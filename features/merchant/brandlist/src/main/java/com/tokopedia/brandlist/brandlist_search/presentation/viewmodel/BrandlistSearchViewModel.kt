@@ -29,7 +29,7 @@ class BrandlistSearchViewModel @Inject constructor(
             sortType: Int,
             firstLetter: String
     ) {
-        searchBrandUseCase.cancelJobs()
+        // searchBrandUseCase.cancelJobs()
         launchCatchError(block = {
             coroutineScope {
                 launch(Dispatchers.IO) {

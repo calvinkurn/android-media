@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
@@ -40,7 +41,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     private var searchView: SearchInputView? = null
     private var statusBar: View? = null
-
+    private var recyclerView: RecyclerView? = null
     private var toolbar: Toolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +55,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         searchView = view.findViewById(R.id.search_input_view)
+        recyclerView = view.findViewById(R.id.rv_brandlist_search)
         initView(view)
         observeSearchResultData()
     }
@@ -74,6 +76,12 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     override fun initInjector() {
         component?.inject(this)
+    }
+
+    override fun onDestroy() {
+        viewModel.brandlistSearchResponse.removeObservers(this)
+        viewModel.flush()
+        super.onDestroy()
     }
 
     private fun initView(view: View) {
@@ -110,13 +118,8 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                         val sortType = 1
                         val firstLetter = ""
                         val brandSize = 10
-                        viewModel.searchBrand(
-                                categoryId,
-                                offset,
-                                it,
-                                brandSize,
-                                sortType,
-                                firstLetter)
+                        viewModel.searchBrand(categoryId, offset, it,
+                                brandSize, sortType, firstLetter)
                     }
                 }
             }
@@ -128,6 +131,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         viewModel.brandlistSearchResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    println(it.data.officialStoreAllBrands)
                     val response = it.data.officialStoreAllBrands
                     println(response)
                 }
