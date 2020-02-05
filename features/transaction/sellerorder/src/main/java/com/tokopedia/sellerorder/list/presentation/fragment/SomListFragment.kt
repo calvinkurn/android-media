@@ -204,32 +204,28 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        try {
-                            _animator?.end()
-                            ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
-                                duration = ANIMATION_DURATION_IN_MILIS
-                                addListener(object : Animator.AnimatorListener {
-                                    override fun onAnimationRepeat(p0: Animator?) {
-                                    }
-
-                                    override fun onAnimationCancel(p0: Animator?) {
-                                        isFilterButtonAnimating = false
-                                    }
-
-                                    override fun onAnimationStart(animation: Animator) {
-                                        isFilterButtonAnimating = true
-                                    }
-
-                                    override fun onAnimationEnd(animation: Animator) {
-                                        isFilterButtonAnimating = false
-                                    }
-                                })
-                                if (!isFilterButtonAnimating) {
-                                    start()
+                        _animator?.end()
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
                                 }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
                             }
-                        } catch (e: Throwable) {
-                            // do nothing
                         }
                     }
                 }
