@@ -143,9 +143,9 @@ public class PhoneVerificationModule {
 
     @Provides
     @PhoneVerificationScope
-    public Interceptor provideChuckInterceptor(@ApplicationContext Context context) {
+    public Interceptor provideChuckerInterceptor(@ApplicationContext Context context) {
         if (context instanceof PhoneVerificationRouter) {
-            return ((PhoneVerificationRouter) context).getChuckInterceptor();
+            return ((PhoneVerificationRouter) context).getChuckerInterceptor();
         }
         throw new RuntimeException("App should implement " + PhoneVerificationRouter.class
                 .getSimpleName());

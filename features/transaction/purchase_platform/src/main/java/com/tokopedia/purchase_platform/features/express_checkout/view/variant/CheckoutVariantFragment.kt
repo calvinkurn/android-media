@@ -276,7 +276,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         val shopShipmentList = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
         val selectedServiceId = fragmentUiModel.getProfileViewModel()?.shippingDurationId
         shippingDurationBottomsheet.updateArguments(shippingParam, selectedServiceId
-            ?: 0, -1, true, shopShipmentList)
+            ?: 0, shopShipmentList)
         if (!shippingDurationBottomsheet.isAdded) {
             activity?.supportFragmentManager?.run {
                 shippingDurationBottomsheet.show(this, "")
@@ -305,7 +305,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             tooltip.setTitle(activity?.getString(R.string.title_bottomsheet_insurance))
             tooltip.setDesc(insuranceInfo)
             tooltip.setTextButton(activity?.getString(R.string.label_button_bottomsheet_close))
-            tooltip.setIcon(R.drawable.ic_insurance)
+            tooltip.setIcon(R.drawable.ic_pp_insurance)
             tooltip.btnAction.setOnClickListener {
                 tooltip.dismiss()
             }

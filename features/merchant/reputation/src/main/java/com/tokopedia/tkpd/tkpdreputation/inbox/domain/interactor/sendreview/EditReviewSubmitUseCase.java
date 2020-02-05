@@ -1,10 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 
@@ -14,10 +12,8 @@ import rx.Observable;
 
 public class EditReviewSubmitUseCase extends SendReviewSubmitUseCase {
 
-    public EditReviewSubmitUseCase(ThreadExecutor threadExecutor,
-                                   PostExecutionThread postExecutionThread,
-                                   ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread, reputationRepository);
+    public EditReviewSubmitUseCase(ReputationRepository reputationRepository) {
+        super(reputationRepository);
     }
 
     @Override

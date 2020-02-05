@@ -320,14 +320,16 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         //create analytics model (combine data objects with their corresponding header name
         var dataObjects: ArrayList<DigitalBrowseServiceAnalyticsModel> =
                 arrayListOf<DigitalBrowseServiceAnalyticsModel>()
-        var position = 1
+        var position = 0
         for (item: DigitalBrowseServiceCategoryViewModel in viewModels) {
-            val analyticsModel = presenter.getItemPositionInGroup(
-                    this.viewModel.titleMap!!,
-                    position)
-            analyticsModel.iconName = item.name ?: ""
-            analyticsModel.buIdentifier = item.buIdentifier?:""
-            dataObjects.add(analyticsModel)
+            if (!item.isTitle) {
+                val analyticsModel = presenter.getItemPositionInGroup(
+                        this.viewModel.titleMap!!,
+                        position)
+                analyticsModel.iconName = item.name ?: ""
+                analyticsModel.buIdentifier = item.buIdentifier?:""
+                dataObjects.add(analyticsModel)
+            }
             position++
         }
 
