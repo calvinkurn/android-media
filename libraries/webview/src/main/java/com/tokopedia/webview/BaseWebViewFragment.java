@@ -259,7 +259,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            webView.loadAuthUrl(getUrl(), userSession);
+            webView.loadAuthUrl(getUrl(), getUserSession());
         } else if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();
@@ -272,6 +272,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 webView.loadAuthUrl(historyUrl, userSession);
             }
         }
+    }
+
+    public UserSession getUserSession() {
+        if (getActivity() != null)
+            return new UserSession(getActivity());
+        else return userSession;
     }
 
     class MyWebChromeClient extends WebChromeClient {
