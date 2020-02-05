@@ -576,6 +576,8 @@ public class MainParentActivity extends BaseActivity implements
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
+
+        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
     }
 
     @Override
