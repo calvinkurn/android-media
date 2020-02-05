@@ -30,6 +30,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -163,7 +164,7 @@ class PlayViewModel @Inject constructor(
 
         var retryCount = 0
 
-        fun getChannelInfoResponse(channelId: String) = launchCatchError(block = {
+        fun getChannelInfoResponse(channelId: String): Job = launchCatchError(block = {
             val channel = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
