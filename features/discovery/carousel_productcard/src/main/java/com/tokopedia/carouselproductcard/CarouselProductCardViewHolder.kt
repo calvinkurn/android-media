@@ -25,7 +25,7 @@ internal class CarouselProductCardViewHolder(
         val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
         val onWishlistClickListener = carouselProductCardModel.getOnWishlistItemClickListener()
 
-        itemView.carouselProductCardItem?.setItemWithWrapBlankSpaceConfig(
+        itemView.carouselProductCardItem?.setProductModel(
                 productCardModel, carouselProductCardModel.blankSpaceConfig
         )
 
