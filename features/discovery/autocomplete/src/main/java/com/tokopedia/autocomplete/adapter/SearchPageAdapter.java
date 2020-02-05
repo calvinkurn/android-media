@@ -8,8 +8,9 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.tokopedia.autocomplete.R;
-import com.tokopedia.autocomplete.TabAutoCompleteCallback;
 import com.tokopedia.autocomplete.fragment.SearchResultFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author erry on 23/02/17.
@@ -22,8 +23,7 @@ public class SearchPageAdapter extends FragmentStatePagerAdapter {
 
     public SearchPageAdapter(FragmentManager fm,
                              Context context,
-                             ItemClickListener clickListener,
-                             TabAutoCompleteCallback tabAutoCompleteListener) {
+                             ItemClickListener clickListener) {
         super(fm);
         TITLE = new String[]{
                 context.getString(R.string.title_all),
@@ -31,24 +31,26 @@ public class SearchPageAdapter extends FragmentStatePagerAdapter {
                 context.getString(R.string.title_shop)
         };
         for (int i = 0; i < 3; i++) {
-            registeredFragments.put(i, SearchResultFragment.newInstance(TITLE[i], i, clickListener, tabAutoCompleteListener));
+            registeredFragments.put(i, SearchResultFragment.newInstance(TITLE[i], i, clickListener));
         }
     }
 
+    @NotNull
     @Override
     public Fragment getItem(int position) {
         return registeredFragments.get(position);
     }
 
+    @NotNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NotNull ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
         registeredFragments.put(position, fragment);
         return fragment;
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(@NotNull ViewGroup container, int position, @NotNull Object object) {
         registeredFragments.remove(position);
         super.destroyItem(container, position, object);
     }

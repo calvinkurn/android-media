@@ -23,5 +23,6 @@
     <color name="topchat_grey_68">#ae31353b</color>
     <color name="bg_topchat_right_message">#EAECEE</color>
     <color name="shadow_topchat_voucher_attachment">#7FB8B8B8</color>
+    <color name="topchat_black_44">#70000000</color>
 
 </resources>

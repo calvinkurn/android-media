@@ -11,8 +11,6 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 
 import java.util.List;
 
@@ -97,19 +95,6 @@ public abstract class BrowseSectionGeneralAdapter extends RecyclerView.Adapter<A
 
     public boolean isLoading(int position) {
         return checkDataSize(position) && getItemList().get(position) instanceof LoadingModel;
-    }
-
-
-    public boolean isHeaderBanner(int position) {
-        if (checkDataSize(position))
-            return getItemList().get(position) instanceof HeaderViewModel;
-        return false;
-    }
-
-    public boolean isRelatedSearch(int position) {
-        if (checkDataSize(position))
-            return getItemList().get(position) instanceof RelatedSearchModel;
-        return false;
     }
 
     public boolean isEmptyItem(int position) {

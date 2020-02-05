@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.CheckoutProfileActionListener
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewholder.ProfileViewHolder
-import com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewmodel.ProfileViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.profile.uimodel.ProfileUiModel
 import javax.inject.Inject
 
 /**
@@ -14,14 +14,14 @@ import javax.inject.Inject
 
 class CheckoutProfileAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val data = ArrayList<ProfileViewModel>()
+    val data = ArrayList<ProfileUiModel>()
     private lateinit var listener: CheckoutProfileActionListener
 
     fun setListener(listener: CheckoutProfileActionListener) {
         this.listener = listener
     }
 
-    fun setData(newData: ArrayList<ProfileViewModel>) {
+    fun setData(newData: ArrayList<ProfileUiModel>) {
         data.clear()
         data.addAll(newData)
         notifyDataSetChanged()

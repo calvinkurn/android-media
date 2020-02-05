@@ -4,7 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.product.util.TestDispatcherProvider
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
@@ -15,6 +16,7 @@ import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
+import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
@@ -94,6 +96,34 @@ class DynamicProductDetailViewModelTest {
     }
 
     /**
+     * isShopOwner
+     */
+    @Test
+    fun isShopOwnerTrue() {
+        val shopId = "123"
+        every {
+            userSessionInterface.shopId
+        } returns shopId
+
+        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+
+        Assert.assertTrue(isShopOwner)
+    }
+
+    @Test
+    fun isShowOwnerFalse() {
+        val shopId = "123"
+        val anotherShopId = "312"
+        every {
+            userSessionInterface.shopId
+        } returns anotherShopId
+
+        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+
+        Assert.assertFalse(isShopOwner)
+    }
+
+    /**
      * GetProductInfoP1
      */
     @Test
@@ -108,6 +138,10 @@ class DynamicProductDetailViewModelTest {
         val dataP2General = ProductInfoP2General()
 
         val dataP3 = ProductInfoP3(SummaryText(), RatesModel())
+
+        every {
+            viewModel.userId
+        } returns "123"
 
         every {
             userSessionInterface.isLoggedIn
@@ -146,6 +180,8 @@ class DynamicProductDetailViewModelTest {
         coVerify {
             getProductInfoP2ShopUseCase.executeOnBackground()
         }
+
+        Assert.assertNotNull(viewModel.shopInfo)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.shopInfo)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
@@ -331,6 +367,36 @@ class DynamicProductDetailViewModelTest {
     }
 
     /**
+     * Hit Affiliate, most of it do no op call
+     */
+    @Test
+    fun onSuccessHitAffiliateTracker() {
+        every {
+            trackAffiliateUseCase.execute(captureLambda(), any())
+        } answers {
+
+        }
+
+        viewModel.hitAffiliateTracker(anyString(), anyString())
+
+        verify { viewModel.hitAffiliateTracker(anyString(), anyString()) }
+    }
+
+    @Test
+    fun onErrorHitAffiliateTracker() {
+        every {
+            trackAffiliateUseCase.execute(any(), captureLambda())
+        } answers {
+
+        }
+
+        viewModel.hitAffiliateTracker(anyString(), anyString())
+
+        verify { viewModel.hitAffiliateTracker(anyString(), anyString()) }
+    }
+
+
+    /**
      * UpdateCartCounter
      */
     @Test
@@ -372,7 +438,7 @@ class DynamicProductDetailViewModelTest {
     @Test
     fun onErrorHitSubmitTicket() {
         val data = SubmitTicketResult()
-        val request = AddToCartDataModel()
+        val request = AddToCartDataModel(errorReporter = ErrorReporterModel(texts = ErrorReporterTextModel(submitDescription = "error")))
         val requestParams = RequestParams()
         val onSuccess = mockk<((SubmitTicketResult) -> Unit)>()
 
@@ -573,4 +639,100 @@ class DynamicProductDetailViewModelTest {
         })
     }
 
+    @Test
+    fun onSuccessRemoveWishlist() {
+        val productId = "123"
+        every { (removeWishlistUseCase.createObservable(any(), any(), any())) }.answers {
+            val listener = args[2] as WishListActionListener
+            listener.onSuccessRemoveWishlist(productId)
+        }
+
+        viewModel.removeWishList(productId, null, {
+            Assert.assertEquals(it, productId)
+        })
+    }
+
+    @Test
+    fun onErrorRemoveWishlist() {
+        val productId = ""
+        val errorMessage = ""
+        every {
+            (removeWishlistUseCase.createObservable(any(), any(), any()))
+        }.answers {
+            val listener = args[2] as WishListActionListener
+            listener.onErrorRemoveWishlist(errorMessage, productId)
+        }
+
+        viewModel.removeWishList(productId, null, {
+            Assert.assertEquals(it, errorMessage)
+        })
+    }
+
+    /**
+     * Job Cancel
+     */
+    @Test
+    fun onSuccessCancelWarehouseJob() {
+        viewModel.cancelWarehouseUseCase()
+        verify { viewModel.cancelWarehouseUseCase() }
+    }
+
+    @Test
+    fun onSuccessCancelEtalaseJob() {
+        viewModel.cancelEtalaseUseCase()
+        verify { viewModel.cancelEtalaseUseCase() }
+    }
+
+    @Test
+    fun flush() {
+        viewModel.flush()
+
+        verify {
+            stickyLoginUseCase.cancelJobs()
+        }
+
+        verify {
+            getPdpLayoutUseCase.cancelJobs()
+        }
+
+        verify {
+            getProductInfoP2ShopUseCase.cancelJobs()
+        }
+
+        verify {
+            getProductInfoP2LoginUseCase.cancelJobs()
+        }
+
+        verify {
+            getProductInfoP2GeneralUseCase.cancelJobs()
+        }
+
+        verify {
+            getProductInfoP3UseCase.cancelJobs()
+        }
+
+        verify {
+            toggleFavoriteUseCase.cancelJobs()
+        }
+
+        verify {
+            trackAffiliateUseCase.cancelJobs()
+        }
+
+        verify {
+            moveProductToWarehouseUseCase.cancelJobs()
+        }
+
+        verify {
+            moveProductToEtalaseUseCase.cancelJobs()
+        }
+
+        verify {
+            getRecommendationUseCase.unsubscribe()
+        }
+
+        verify {
+            removeWishlistUseCase.unsubscribe()
+        }
+    }
 }

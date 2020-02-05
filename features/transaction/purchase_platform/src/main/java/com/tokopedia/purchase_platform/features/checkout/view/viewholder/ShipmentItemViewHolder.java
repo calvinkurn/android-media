@@ -1514,7 +1514,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgInsuranceInfo.setOnClickListener(view -> showBottomSheet(imgInsuranceInfo.getContext(),
                             imgInsuranceInfo.getContext().getString(R.string.title_bottomsheet_insurance),
                             courierItemData.getInsuranceUsedInfo(),
-                            R.drawable.ic_insurance));
+                            R.drawable.ic_pp_insurance));
                 }
             }
 
