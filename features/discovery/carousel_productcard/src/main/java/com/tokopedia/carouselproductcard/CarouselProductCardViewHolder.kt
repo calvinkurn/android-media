@@ -41,7 +41,7 @@ internal class CarouselProductCardViewHolder(
         onItemImpressedListener?.getImpressHolder(adapterPosition)?.let {
             itemView.carouselProductCardItem?.setImageProductViewHintListener(it, object : ViewHintListener {
                 override fun onViewHint() {
-                    onItemImpressedListener?.onItemImpressed(productCardModel, adapterPosition)
+                    onItemImpressedListener.onItemImpressed(productCardModel, adapterPosition)
                 }
             })
         }
