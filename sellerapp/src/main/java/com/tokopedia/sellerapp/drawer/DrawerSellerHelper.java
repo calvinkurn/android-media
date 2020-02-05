@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -45,7 +46,6 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.logisticorder.view.SimpleWebViewActivity;
 
 import java.util.ArrayList;
 
@@ -58,6 +58,7 @@ public class DrawerSellerHelper extends DrawerHelper
         DrawerSellerHeaderDataBinder.DrawerHeaderListener {
 
     private static final String DIGITAL_PATH_MITRA = "mitra";
+    private String pulsa = "https://pulsa.tokopedia.com/mitra/";
     private TextView shopName;
     private TextView shopLabel;
     private ImageView shopIcon;
@@ -350,11 +351,11 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, pulsa)
                     eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, pulsa)
                     eventClickDigitalTransactionListOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
