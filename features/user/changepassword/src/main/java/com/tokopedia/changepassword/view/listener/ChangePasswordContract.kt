@@ -22,16 +22,11 @@ interface ChangePasswordContract {
 
         fun onErrorChangePassword(errorMessage: String)
 
-        fun onErrorLogout(errorMessage: String)
-
         fun onErrorOldPass(errorMessage: String?)
 
         fun onErrorNewPass(errorMessage: String?)
 
         fun onErrorConfirmPass(errorMessage: String?)
-
-        fun onSuccessLogout()
-
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -39,8 +34,5 @@ interface ChangePasswordContract {
         fun submitChangePasswordForm(oldPassword: String, newPassword: String, confirmPassword: String)
 
         fun isValidForm(oldPassword: String, newPassword: String, confirmPassword: String): Boolean
-
-        fun doLogout()
-
     }
 }

@@ -5,19 +5,13 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.changepassword.domain.ChangePasswordUseCase
 import com.tokopedia.changepassword.domain.model.ChangePasswordDomain
 import com.tokopedia.changepassword.view.listener.ChangePasswordContract
-import com.tokopedia.logout.domain.model.LogoutDomain
-import com.tokopedia.logout.domain.usecase.LogoutUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
 /**
  * @author by nisie on 7/25/18.
  */
 class ChangePasswordPresenter(
-        private val changePasswordUseCase: ChangePasswordUseCase,
-        private val logoutUseCase: LogoutUseCase,
-        val userSession: UserSession
+        private val changePasswordUseCase: ChangePasswordUseCase
 ) : ChangePasswordContract.Presenter, BaseDaggerPresenter<ChangePasswordContract.View>() {
 
     override fun submitChangePasswordForm(oldPassword: String,
@@ -65,30 +59,8 @@ class ChangePasswordPresenter(
                 && confirmPassword.isNotBlank()
     }
 
-    override fun doLogout() {
-        logoutUseCase.execute(
-                LogoutUseCase.getParam(userSession), object : Subscriber<LogoutDomain>() {
-
-            override fun onCompleted() {
-            }
-
-            override fun onNext(t: LogoutDomain?) {
-                if (t?.is_success as Boolean && isViewAttached) {
-                    view.onSuccessLogout()
-                }
-            }
-
-            override fun onError(e: Throwable?) {
-                if (isViewAttached) {
-                    view.onErrorLogout(e?.message as String)
-                }
-            }
-        })
-    }
-
     override fun detachView() {
         super.detachView()
         changePasswordUseCase.unsubscribe()
-        logoutUseCase.unsubscribe()
     }
 }

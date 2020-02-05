@@ -1,5 +1,7 @@
 package com.tokopedia.changepassword.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.changepassword.R
@@ -18,6 +21,7 @@ import com.tokopedia.changepassword.common.di.ChangePasswordDependencyInjector
 import com.tokopedia.changepassword.view.listener.ChangePasswordContract
 import com.tokopedia.changepassword.view.presenter.ChangePasswordPresenter
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_change_password.*
 
 /**
@@ -28,6 +32,8 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     lateinit var oldPasswordTextField : TextFieldUnify
     lateinit var newPasswordTextField : TextFieldUnify
     lateinit var confPasswordTextField : TextFieldUnify
+
+    var userSession = UserSession(context)
 
     override fun getScreenName(): String {
         return ChangePasswordAnalytics.SCREEN_NAME
@@ -65,6 +71,12 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         disableSubmitButton()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            RouteManager.route(context, ApplinkConst.HOME)
+        }
+    }
+
     private fun processInput(input: String, textField: TextFieldUnify) {
         if(input.isBlank()){
             textField.setError(true)
@@ -77,7 +89,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     private fun onGoToForgotPass() {
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, presenter.userSession.email)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
             startActivity(intent)
             it.finish()
         }
@@ -125,10 +137,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onSuccessChangePassword() {
         hideLoading()
-        presenter.doLogout()
-    }
-
-    override fun onSuccessLogout() {
         RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
     }
 
@@ -171,15 +179,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         super.onDestroyView()
         presenter.detachView()
     }
-
-    override fun onErrorLogout(errorMessage: String) {
-        if (TextUtils.isEmpty(errorMessage)) {
-            NetworkErrorHelper.showSnackbar(activity)
-        } else {
-            NetworkErrorHelper.showSnackbar(activity, errorMessage)
-        }
-    }
-
 
     private fun EditText.setSimpleListener(listener : (p0: CharSequence?) -> Unit) {
         this.addTextChangedListener(TextWatcherFactory().create(listener))
