@@ -122,6 +122,11 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coEvery { addWishListUseCase.createObservable(withProductId, withUserId, any()) } returns Unit
     }
 
+    protected fun onRemoveWishList_thenCompleteWith(productId: String, userId: String) {
+        coEvery { userSessionInterface.userId } returns userId
+        coEvery { removeWishListUseCase.createObservable(productId, userId, any()) } returns Unit
+    }
+
     protected fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } throws error
     }
@@ -307,7 +312,7 @@ abstract class OfficialStoreHomeViewModelTestFixture {
             addWishListUseCase.createObservable(productId, userId, capture(listener))
         }
 
-        listener.captured.onSuccessAddWishlist("productId")
+        listener.captured.onSuccessAddWishlist(productId)
     }
 
     protected fun verifyAddWishListUseCaseCalled(productId: String, userId: String, error: Throwable) {
@@ -317,7 +322,27 @@ abstract class OfficialStoreHomeViewModelTestFixture {
             addWishListUseCase.createObservable(productId, userId, capture(listener))
         }
 
-        listener.captured.onErrorAddWishList(error.message, "productId")
+        listener.captured.onErrorAddWishList(error.message, productId)
+    }
+
+    protected fun verifyRemoveWishListUseCaseCalled(productId: String, userId: String) {
+        val listener = CapturingSlot<WishListActionListener>()
+
+        coVerify {
+            removeWishListUseCase.createObservable(productId, userId, capture(listener))
+        }
+
+        listener.captured.onSuccessRemoveWishlist(productId)
+    }
+
+    protected fun verifyRemoveWishListUseCaseCalled(productId: String, userId: String, error: Throwable) {
+        val listener = CapturingSlot<WishListActionListener>()
+
+        coVerify {
+            removeWishListUseCase.createObservable(productId, userId, capture(listener))
+        }
+
+        listener.captured.onErrorRemoveWishlist(error.message, productId)
     }
     // endregion
     

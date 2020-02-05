@@ -137,7 +137,7 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             val isTopAds = true
             val error = NullPointerException()
             val recommendation = RecommendationItem(isTopAds = isTopAds)
-            val callback = mockk<((Boolean, Throwable?) -> Unit)>()
+            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
 
             onAddTopAdsWishList_thenReturn(error)
 
@@ -185,6 +185,46 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
 
             val expectedError = Throwable("Error Message")
             verifyAddWishListUseCaseCalled(productId, userId, expectedError)
+
+            callback.assertError(expectedError)
+        }
+    }
+
+    @Test
+    fun given_gql_call_success__when_remove_wishlist__should_invoke_callback_success() {
+        runBlocking {
+            val isTopAds = false
+            val productId = "15000"
+            val userId = "11000"
+
+            val recommendation = createRecommendation(productId, isTopAds)
+            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
+
+            onRemoveWishList_thenCompleteWith(productId, userId)
+
+            viewModel.removeWishlist(recommendation, callback)
+
+            verifyRemoveWishListUseCaseCalled(productId, userId)
+            callback.assertSuccess()
+        }
+    }
+
+    @Test
+    fun given_gql_call_error__when_remove_wishlist__should_invoke_callback_error() {
+        runBlocking {
+            val isTopAds = false
+            val productId = "1900"
+            val userId = "1350"
+
+            val recommendation = createRecommendation(productId, isTopAds)
+            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
+
+            onRemoveWishList_thenCompleteWith(productId, userId)
+
+            viewModel.removeWishlist(recommendation, callback)
+
+            val expectedError = Throwable("Error Message")
+            verifyRemoveWishListUseCaseCalled(productId, userId, expectedError)
 
             callback.assertError(expectedError)
         }
