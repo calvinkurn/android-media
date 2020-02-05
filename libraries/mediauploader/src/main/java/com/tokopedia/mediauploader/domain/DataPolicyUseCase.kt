@@ -11,15 +11,11 @@ open class DataPolicyUseCase @Inject constructor(
         private val repository: GraphqlRepository
 ) : UseCase<DataUploaderPolicy>() {
 
-    private var _requestParams = mapOf<String, Any>()
-    var requestParams: Map<String, Any>
-        get() = _requestParams
-        set(value) {
-            _requestParams = value
-        }
+    var requestParams = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): DataUploaderPolicy {
-        val request = GraphqlRequest(query, DataUploaderPolicy::class.java, _requestParams)
+        if (requestParams.isEmpty()) throw Exception("Not param found")
+        val request = GraphqlRequest(query, DataUploaderPolicy::class.java, requestParams)
         val response = repository.getReseponse(listOf(request))
         val error = response.getError(DataUploaderPolicy::class.java)
         if (error == null || error.isEmpty()) {
@@ -32,7 +28,7 @@ open class DataPolicyUseCase @Inject constructor(
     companion object {
         private const val PARAM_SOURCE_ID = "source"
 
-        fun createParamDataPolicy(sourceId: String): Map<String, Any> {
+        fun createParams(sourceId: String): Map<String, Any> {
             val requestParams = hashMapOf<String, Any>()
             requestParams[PARAM_SOURCE_ID] = sourceId
             return requestParams
