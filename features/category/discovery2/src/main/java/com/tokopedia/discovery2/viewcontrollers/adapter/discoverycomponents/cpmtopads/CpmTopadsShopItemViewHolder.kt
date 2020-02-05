@@ -47,7 +47,7 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
     }
 
     private fun setName(item: DataItem) {
-        val name = item.name + " \n" + item.buttonText
+        val name = "${item.name} \n${item.buttonText}"
         val button = item.buttonText ?: ""
         val startIndexOfLink = name.indexOf(button)
         val spannableString = SpannableString(name)

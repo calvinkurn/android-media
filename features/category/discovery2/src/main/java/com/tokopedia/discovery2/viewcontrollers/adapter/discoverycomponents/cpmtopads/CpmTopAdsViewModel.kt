@@ -20,18 +20,19 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.withContext
 
 class CpmTopAdsViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    //private val cpmTopAdsData = MutableLiveData<Result<Headline>>()
+    private val cpmTopAdsList = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
+    private val promotedText = MutableLiveData<Result<String>>()
+    private val brandName = MutableLiveData<Result<String>>()
+    private val imageUrl = MutableLiveData<Result<String>>()
+
     @Inject
     lateinit var cpmTopAdsUseCase: CpmTopAdsUseCase
-    val listData = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
-    val cpmTopAdsData = MutableLiveData<Result<DiscoveryDataMapper.CpmTopAdsData>>()
 
-    fun getCpmTopAdsLiveData(): LiveData<Result<DiscoveryDataMapper.CpmTopAdsData>> {
-        return cpmTopAdsData
-    }
+
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -42,8 +43,17 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
 
     fun fetchCpmTopAdsData() {
         launchCatchError(block = {
-            val data = components.data?.get(0)?.paramsMobile?.let { cpmTopAdsUseCase.getCpmTopAdsData(it) }
-            data?.let { cpmTopAdsData.postValue(Success(it)) }
+            withContext(Dispatchers.IO){
+                val data = components.data?.get(0)?.paramsMobile?.let { cpmTopAdsUseCase.getCpmTopAdsData(it) }
+                if (data!=null){
+                    cpmTopAdsList.postValue(Success(data.componentList))
+                    promotedText.postValue(Success(data.promotedText))
+                    brandName.postValue(Success(data.brandName))
+                    imageUrl.postValue(Success(data.imageUrl))
+                }
+            }
+
+
         }, onError = {
             it.printStackTrace()
         })
@@ -56,6 +66,11 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
                 .build()
                 .inject(this)
     }
+
+    fun getCpmTopAdsList(): LiveData<Result<ArrayList<ComponentsItem>>> = cpmTopAdsList
+    fun getPromotedText(): LiveData<Result<String>> =  promotedText
+    fun getBrandName(): LiveData<Result<String>> =  brandName
+    fun getImageUrl(): LiveData<Result<String>> =  imageUrl
 
 
 }

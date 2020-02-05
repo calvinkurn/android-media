@@ -8,5 +8,4 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 interface PushStatusRepository {
     suspend fun checkPushStatus(compaignId:Int): PushStatusResponse
     suspend fun subscribeToPush(compaignId:Int): PushSubscriptionResponse
-    suspend fun getCpmTopAdsData(paramsMobile: String): DiscoveryDataMapper.CpmTopAdsData?
 }

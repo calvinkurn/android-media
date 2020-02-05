@@ -39,22 +39,38 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
     }
 
     private fun setUpObserver() {
-        cpmTopAdsViewModel.getCpmTopAdsLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+        cpmTopAdsViewModel.getCpmTopAdsList().observe(fragment.viewLifecycleOwner, Observer { item ->
             when (item) {
                 is Success -> {
-                    setTitle(item.data)
-                    discoveryRecycleAdapter.setDataList(item.data.componentList)
+                    discoveryRecycleAdapter.setDataList(item.data)
                 }
             }
 
         })
-    }
+        cpmTopAdsViewModel.getPromotedText().observe(fragment.viewLifecycleOwner, Observer { item ->
+            when (item) {
+                is Success -> {
+                    promotedText.setTextAndCheckShow(item.data)
+                }
+            }
 
+        })
+        cpmTopAdsViewModel.getBrandName().observe(fragment.viewLifecycleOwner, Observer { item ->
+            when (item) {
+                is Success -> {
+                    promotedBrand.setTextAndCheckShow(item.data)
+                }
+            }
 
-    private fun setTitle(titleData: DiscoveryDataMapper.CpmTopAdsData) {
-        promotedBrand.setTextAndCheckShow(titleData.brandName)
-        promotedText.setTextAndCheckShow(titleData.promotedText)
-        badge.loadImage(titleData.imageUrl)
+        })
+        cpmTopAdsViewModel.getImageUrl().observe(fragment.viewLifecycleOwner, Observer { item ->
+            when (item) {
+                is Success -> {
+                    badge.loadImage(item.data)
+                }
+            }
+
+        })
     }
 
 

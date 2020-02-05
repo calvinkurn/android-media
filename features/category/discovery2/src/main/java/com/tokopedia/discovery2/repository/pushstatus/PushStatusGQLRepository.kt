@@ -21,17 +21,7 @@ class PushStatusGQLRepository @Inject constructor(val getGQLString: (Int) -> Str
                 PushSubscriptionResponse::class.java, mapOf("campaignID" to compaignId)) as PushSubscriptionResponse
     }
 
-    override suspend fun getCpmTopAdsData(paramsMobile: String): DiscoveryDataMapper.CpmTopAdsData? {
-        val cpmTopAdsResponse = getGQLData(getGQLString(R.raw.query_cpm_topads_gql),
-                CpmTopAdsResponse::class.java, mapOf("params" to paramsMobile)) as CpmTopAdsResponse
-        val discoveryDataMapper = DiscoveryDataMapper()
-        val data = cpmTopAdsResponse.displayAdsV3?.data?.get(0)
 
-        val listOfProduct = data?.let { discoveryDataMapper.addShopItemToProductList(it) }
-        val listComponentsItem = discoveryDataMapper.mapProductListToComponentsList(listOfProduct)
-
-        return data?.headline?.let { discoveryDataMapper.mapToCpmTopAdsData(it, listComponentsItem) }
-    }
 
 
 }
