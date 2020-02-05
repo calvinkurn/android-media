@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.AsyncDifferConfig;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -46,7 +47,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -61,7 +61,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.home.beranda.data.model.PlayChannel;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
@@ -81,7 +80,6 @@ import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
-import com.tokopedia.home.beranda.presentation.view.adapter.PreCachingLayoutManager;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
@@ -106,7 +104,6 @@ import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListene
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -125,7 +122,6 @@ import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,7 +132,6 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER;
@@ -148,7 +143,6 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_SALE;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO;
-import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
 
 
 /**
@@ -196,7 +190,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomeRecycleAdapter adapter;
     private RemoteConfig firebaseRemoteConfig;
     private SnackbarRetry messageSnackbar;
-    private PreCachingLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private StickyLoginView stickyLoginView;
     private boolean showRecomendation;
@@ -405,7 +399,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void evaluateFloatingTextButtonOnStateChanged() {
-        int position = layoutManager.findMaxVisibleItemPosition();
+        int position = layoutManager.getItemCount();
         if (position == presenter.getRecommendationFeedSectionPosition()) {
             floatingTextButton.hide();
         } else {
@@ -609,10 +603,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
-            if (!isCache) {
-                layoutManager.setExtraLayoutSpace(getWindowHeightForExtraSpace()*5);
-            } else {
-                if (needToPerformanceMonitoring()) setOnRecyclerViewLayoutReady();
+            if (isCache && needToPerformanceMonitoring()) {
+                setOnRecyclerViewLayoutReady();
             }
 
             adapter.submitList(data);
@@ -719,8 +711,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initAdapter() {
-        layoutManager = new PreCachingLayoutManager(getContext());
-        layoutManager.setExtraLayoutSpace(0);
+        layoutManager = new LinearLayoutManager(getContext());
         homeRecyclerView.setLayoutManager(layoutManager);
         HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
                 getChildFragmentManager(),
@@ -934,7 +925,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //onrefresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-        layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
         removeNetworkError();
@@ -955,7 +945,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //onrefresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-        layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
         removeNetworkError();
