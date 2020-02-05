@@ -27,8 +27,6 @@ class CardViewHolder(
 
         with(itemView) {
             tvCardTitle.text = element.title
-            tvCardValue.text = element.data?.value ?: "0"
-            tvCardSubValue.text = element.data?.description?.parseAsHtml()
 
             setOnClickListener {
                 if (element.appLink.isNotBlank()) {
@@ -66,6 +64,14 @@ class CardViewHolder(
             tvCardSubValue.visibility = visibility
             val value = element.data?.value
             if (isShown) tvCardValue.text = if (value.isNullOrBlank()) "0" else value
+        }
+
+        if (!isShown) return
+
+        with(itemView) {
+            tvCardTitle.text = element.title
+            tvCardValue.text = element.data?.value ?: "0"
+            tvCardSubValue.text = element.data?.description?.parseAsHtml()
         }
     }
 
