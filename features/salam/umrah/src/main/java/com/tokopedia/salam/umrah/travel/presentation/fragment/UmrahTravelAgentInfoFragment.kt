@@ -6,12 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import kotlinx.android.synthetic.main.fragment_umrah_travel_agent_info.*
+import javax.inject.Inject
 
 class UmrahTravelAgentInfoFragment(private val listener: UmrahTravelAgentInfoListener) : Fragment(){
 
     var travelAgent : TravelAgent = TravelAgent()
+
+    @Inject
+    lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_umrah_travel_agent_info,container, false)

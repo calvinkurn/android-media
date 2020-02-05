@@ -51,4 +51,15 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
                 Intent(context, UmrahTravelActivity::class.java)
                         .putExtra(EXTRA_SLUG_NAME, slugName)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (fragment is OnBackListener) {
+            (fragment as OnBackListener).onBackPressed()
+        }
+    }
+
+    interface OnBackListener {
+        fun onBackPressed()
+    }
 }

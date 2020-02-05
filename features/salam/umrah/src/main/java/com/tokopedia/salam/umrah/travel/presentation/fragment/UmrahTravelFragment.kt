@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -21,6 +22,7 @@ import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
+import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity.Companion.EXTRA_SLUG_NAME
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelAgentViewPagerAdapter
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelViewModel
@@ -37,7 +39,7 @@ import javax.inject.Inject
  * @author by Firman on 22/1/20
  */
 
-class UmrahTravelFragment: BaseDaggerFragment(){
+class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListener{
 
     @Inject
     lateinit var umrahTravelViewModel: UmrahTravelViewModel
@@ -135,6 +137,18 @@ class UmrahTravelFragment: BaseDaggerFragment(){
         umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager,travelAgentBySlugName)
         vp_umrah_travel_agent.adapter = umrahTravelAgentViewPagerAdapter
         tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
+        vp_umrah_travel_agent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                when(position){
+                    0 -> umrahTrackingUtil.umrahTravelAgentClickPacketUmroh()
+                    1 -> umrahTrackingUtil.umrahTravelAgentClickGaleri()
+                    2 -> umrahTrackingUtil.umrahTravelAgentClickInfo()
+                }
+            }
+        })
     }
 
     private fun setupTravelAgent(travelAgent: TravelAgent){
@@ -202,6 +216,12 @@ class UmrahTravelFragment: BaseDaggerFragment(){
         if (activity != null) {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (!isDetached) {
+            umrahTrackingUtil.umrahTravelAgentClickBack()
         }
     }
 }

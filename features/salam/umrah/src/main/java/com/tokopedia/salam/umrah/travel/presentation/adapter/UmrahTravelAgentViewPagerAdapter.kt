@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
+import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentGalleryFragment
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentInfoFragment
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentProductsFragment
 
@@ -18,7 +19,8 @@ class UmrahTravelAgentViewPagerAdapter(fm: FragmentManager, private val umrahTra
     override fun getItem(position: Int): Fragment {
         return when(position){
             0 -> UmrahTravelAgentProductsFragment(this)
-            1 -> UmrahTravelAgentInfoFragment(this)
+            1 -> UmrahTravelAgentGalleryFragment()
+            2 -> UmrahTravelAgentInfoFragment(this)
             else -> UmrahTravelAgentProductsFragment(this)
         }
     }
@@ -26,7 +28,8 @@ class UmrahTravelAgentViewPagerAdapter(fm: FragmentManager, private val umrahTra
     override fun getPageTitle(position: Int): CharSequence? {
         return when(position){
             0 -> PRODUCTS_TITLE
-            1 -> INFO_TITLE
+            1 -> GALLERY_TITLE
+            2 -> INFO_TITLE
             else -> PRODUCTS_TITLE
         }
     }
@@ -40,7 +43,7 @@ class UmrahTravelAgentViewPagerAdapter(fm: FragmentManager, private val umrahTra
     }
 
     companion object {
-        const val SIZE_TAB = 2
+        const val SIZE_TAB = 3
         const val PRODUCTS_TITLE = "Paket Umroh"
         const val GALLERY_TITLE = "Galeri"
         const val INFO_TITLE = "Info"
