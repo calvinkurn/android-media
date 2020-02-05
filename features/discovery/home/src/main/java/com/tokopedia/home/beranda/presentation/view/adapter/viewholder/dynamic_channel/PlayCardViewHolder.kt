@@ -32,7 +32,7 @@ class PlayCardViewHolder(
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val play = view.findViewById<ImageView>(R.id.play)
     private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
-    private val imageViewer = view.findViewById<TextView>(R.id.image_viewer)
+    private val imageViewer = view.findViewById<ImageView>(R.id.image_viewer)
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
