@@ -226,11 +226,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         endDateTV!!.text = date
     }
 
-    override fun getStartDate(): String? {
+    override fun getStartDate(): String {
         return startDateTV!!.text.toString()
     }
 
-    override fun getEndDate(): String? {
+    override fun getEndDate(): String {
         return endDateTV!!.text.toString()
     }
 

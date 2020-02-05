@@ -15,9 +15,9 @@ class SaldoHistoryContract {
     interface View : CustomerView {
         fun getContext(): Context?
 
-        fun getStartDate(): String?
+        fun getStartDate(): String
 
-        fun getEndDate(): String?
+        fun getEndDate(): String
 
 //        fun getDefaultEmptyViewModel(): Visitable<*>?
 
@@ -70,7 +70,7 @@ class SaldoHistoryContract {
     interface Presenter {
         fun setFirstDateParameter(view : View)
 
-        fun onSearchClicked(startDate : String?,endDate : String?)
+        fun onSearchClicked(startDate : String, endDate : String)
 
         fun onEndDateClicked(datePicker: SaldoDatePickerUtil,view : View)
 

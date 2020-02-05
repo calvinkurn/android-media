@@ -29,11 +29,6 @@ import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.
 class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>() {
 
     companion object {
-
-        private val SELLER_SALDO = 1
-        private val BUYER_SALDO = 0
-        private val ALL_SALDO = 2
-
         fun createInstance(type: String, saldoHistoryViewModel: SaldoHistoryViewModel, saldoHistoryFragrmnt : SaldoHistoryContract.View ): SaldoHistoryListFragment {
             val saldoHistoryListFragment = SaldoHistoryListFragment()
             val bundle = Bundle()
@@ -144,9 +139,9 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 when (transactionType) {
-                    FOR_ALL -> viewModel.loadMoreAllTransaction(page, ALL_SALDO)
-                    FOR_BUYER -> viewModel.loadMoreBuyerTransaction(page, BUYER_SALDO)
-                    FOR_SELLER -> viewModel.loadMoreSellerTransaction(page, SELLER_SALDO)
+                    FOR_ALL -> viewModel.loadMoreAllTransaction(page)
+                    FOR_BUYER -> viewModel.loadMoreBuyerTransaction(page)
+                    FOR_SELLER -> viewModel.loadMoreSellerTransaction(page)
                 }
             }
         }

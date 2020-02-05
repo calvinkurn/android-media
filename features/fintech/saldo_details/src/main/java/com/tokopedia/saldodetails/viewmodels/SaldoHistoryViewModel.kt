@@ -2,6 +2,7 @@ package com.tokopedia.saldodetails.viewmodels
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
@@ -96,26 +97,26 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         paramEndDate = endDate
     }
 
-    override fun onSearchClicked(startDate: String?, endDate: String?) {
-        paramStartDate = startDate
-        paramEndDate = endDate
+
+
+    override fun onSearchClicked(startDate: String, endDate: String) {
+        setDates(startDate,endDate)
         getSummaryDeposit()
     }
 
-    private fun setData(data: GqlAllDepositSummaryResponse?) {
-        if (data == null) {
-            return
-        }
+    fun setDates(startDate : String , endDate: String){
+        paramEndDate = endDate
+        paramStartDate = startDate
+    }
+
+    private fun setData(data: GqlAllDepositSummaryResponse) {
+        Thread.sleep(2000)
         allDepositResponseLiveData.value = Success(data.allDepositHistory!!)
         buyerResponseLiveData.value = Success(data.buyerDepositHistory!!)
         sellerResponseLiveData.value = Success(data.sellerDepositHistory!!)
     }
 
-    private fun setData(data: GqlCompleteTransactionResponse?) {
-        if (data == null) {
-            return
-        }
-
+    private fun setData(data: GqlCompleteTransactionResponse) {
         allDepositResponseLiveData.value = AddElements(data.allDepositHistory!!)
     }
 
@@ -128,23 +129,27 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
 
     override fun onEndDateClicked(datePicker: SaldoDatePickerUtil, view: SaldoHistoryContract.View) {
         val date = dateFormatter(view.getEndDate())
-        datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
-        datePicker.DatePickerCalendar { year, month, day ->
-            val selectedDate = this@SaldoHistoryViewModel.getDate(year, month, day)
-            view.setEndDate(selectedDate)
-            val startDate = view.getStartDate()
-            android.os.Handler().postDelayed({ this@SaldoHistoryViewModel.onSearchClicked(startDate, selectedDate) }, SEARCH_DELAY)
+        date?.let {
+            datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
+            datePicker.DatePickerCalendar { year, month, day ->
+                val selectedDate = this@SaldoHistoryViewModel.getDate(year, month, day)
+                view.setEndDate(selectedDate)
+                val startDate = view.getStartDate()
+                android.os.Handler().postDelayed({ this@SaldoHistoryViewModel.onSearchClicked(startDate, selectedDate) }, SEARCH_DELAY)
+            }
         }
     }
 
     override fun onStartDateClicked(datePicker: SaldoDatePickerUtil, view: SaldoHistoryContract.View) {
         val date = dateFormatter(view.getStartDate())
-        datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
-        datePicker.DatePickerCalendar { year, month, day ->
-            val selectedDate = getDate(year, month, day)
-            view.setStartDate(selectedDate)
-            val endDate = view.getEndDate()
-            android.os.Handler().postDelayed({ this.onSearchClicked(selectedDate, endDate) }, SEARCH_DELAY)
+        date?.let {
+            datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
+            datePicker.DatePickerCalendar { year, month, day ->
+                val selectedDate = getDate(year, month, day)
+                view.setStartDate(selectedDate)
+                val endDate = view.getEndDate()
+                android.os.Handler().postDelayed({ this.onSearchClicked(selectedDate, endDate) }, SEARCH_DELAY)
+            }
         }
     }
 
@@ -174,7 +179,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         return Integer.parseInt(day)
     }
 
-    private fun dateFormatter(date: String?): String {
+    private fun dateFormatter(date: String): String? {
 
         val sdf = SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US)
         val sdf_ws = SimpleDateFormat("dd/MM/yyyy", Locale.US)
@@ -183,6 +188,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
             formattedStart = sdf.parse(date)
         } catch (e: ParseException) {
             e.printStackTrace()
+            return null
         }
 
         return sdf_ws.format(formattedStart)
@@ -260,6 +266,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         return date.replace("/", "-")
     }
 
+
     private fun getSummaryDepositParam(page: Int, saldoType: Int): Map<String, Any> {
         val param = SummaryDepositParam()
         val sdf = SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US)
@@ -279,11 +286,11 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
 
     }
 
-    fun loadMoreAllTransaction(lastItemPosition: Int, type: Int) {
+    fun loadMoreAllTransaction(lastItemPosition: Int) {
         launchCatchError(block = {
             if (isValid) {
                 allDepositResponseLiveData.value = Loading()
-                onAllTransactionsFetched(getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, type)), lastItemPosition)
+                onAllTransactionsFetched(getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, ALL_SALDO)))
             }
 
         }) {
@@ -297,7 +304,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
 
     }
 
-    private fun onAllTransactionsFetched(gqlCompleteTransactionResponse: GqlCompleteTransactionResponse, page: Int) {
+    private fun onAllTransactionsFetched(gqlCompleteTransactionResponse: GqlCompleteTransactionResponse) {
         if (!gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
             setData(gqlCompleteTransactionResponse)
         } else {
@@ -307,11 +314,11 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         }
     }
 
-    fun loadMoreSellerTransaction(lastItemPosition: Int, type: Int) {
+    fun loadMoreSellerTransaction(lastItemPosition: Int) {
         launchCatchError(block = {
             if (isValid) {
                 sellerResponseLiveData.value = Loading()
-                val gqlCompleteTransactionResponse = getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, type))
+                val gqlCompleteTransactionResponse = getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, SELLER_SALDO))
 
                 if (!gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
                     sellerResponseLiveData.value = AddElements(gqlCompleteTransactionResponse.allDepositHistory!!)
@@ -333,11 +340,11 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         }
     }
 
-    fun loadMoreBuyerTransaction(lastItemPosition: Int, type: Int) {
+    fun loadMoreBuyerTransaction(lastItemPosition: Int) {
         launchCatchError(block = {
             if (isValid) {
                 buyerResponseLiveData.value = Loading()
-                val gqlCompleteTransactionResponse = getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, type))
+                val gqlCompleteTransactionResponse = getAllTransactionUsecase.execute(getSummaryDepositParam(lastItemPosition, BUYER_SALDO))
 
                 if (!gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
                     buyerResponseLiveData.value = AddElements(gqlCompleteTransactionResponse.allDepositHistory!!)
@@ -369,5 +376,8 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         private val DATE_FORMAT_VIEW = "dd MMM yyyy"
         val REQUEST_WITHDRAW_CODE = 1
         private val DATE_FORMAT_WS = "yyyy/MM/dd"
+        private val SELLER_SALDO = 1
+        private val BUYER_SALDO = 0
+        private val ALL_SALDO = 2
     }
 }
