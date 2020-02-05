@@ -1,0 +1,46 @@
+package com.tokopedia.mediauploader.di
+
+import com.google.gson.Gson
+import com.tokopedia.resources.common.BuildConfig
+import dagger.Module
+import dagger.Provides
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+
+@Module class NetworkModule {
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideOkHttpClientBuilder(): OkHttpClient.Builder {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        httpLoggingInterceptor.level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BODY
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
+
+        return OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .connectTimeout(NET_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(NET_READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(NET_WRITE_TIMEOUT, TimeUnit.SECONDS)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideMediaUploaderRetrofitBuilder(): Retrofit.Builder {
+        return Retrofit.Builder().addConverterFactory(
+                GsonConverterFactory.create(Gson())
+        )
+    }
+
+    companion object {
+        private const val NET_READ_TIMEOUT = 60L
+        private const val NET_WRITE_TIMEOUT = 60L
+        private const val NET_CONNECT_TIMEOUT = 60L
+    }
+
+}
