@@ -3,7 +3,6 @@ package com.tokopedia.age_restriction.viewcontroller
 import android.app.Activity
 import androidx.lifecycle.Observer
 import android.content.Intent
-import com.google.android.material.snackbar.Snackbar
 import androidx.fragment.app.Fragment
 import android.view.View
 import com.tokopedia.age_restriction.R
@@ -11,9 +10,10 @@ import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.tradein_common.IAccessRequestListener
+import com.tokopedia.design.dialog.AccessRequestDialogFragment
+import com.tokopedia.design.dialog.IAccessRequestListener
+import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.age_restriction_home_activity.*
 
 class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {
@@ -26,6 +26,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     private var selection = 0
 
     override fun clickAccept() {
+        sendGeneralEvent(AccessRequestDialogFragment.STATUS_AGREE)
         when (selection) {
             notLogin -> {
                 navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST)
@@ -74,6 +75,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     }
 
     override fun clickDeny() {
+        sendGeneralEvent(AccessRequestDialogFragment.STATUS_DENY)
         when (selection) {
             notLogin -> {
                 sendGeneralEvent(eventClick,
@@ -230,5 +232,13 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                         .putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_age_not_adult)))
             }
         }
+    }
+
+    private fun sendGeneralEvent(label: String) {
+        val trackApp = TrackApp.getInstance()
+        trackApp.gtm.sendGeneralEvent("clickPDP",
+                "product detail page",
+                "click - asking permission trade in",
+                label)
     }
 }
