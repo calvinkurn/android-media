@@ -10,11 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
+private const val minimumAdultAge = 21
 class VerifyDOBViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
-
-    companion object{
-        private const val minimumAdultAge = 21
-    }
 
     val userIsAdult = MutableLiveData<Boolean>()
     val userNotAdult = MutableLiveData<Boolean>()

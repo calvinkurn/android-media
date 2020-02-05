@@ -17,12 +17,13 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
+private const val KEY_SAFE_SEARCH = "safeSearch"
+
 class GetCategoryLevelOneUseCase
 @Inject constructor(private val context: Context,
                     private val graphqlUseCase: GraphqlUseCase)
     : UseCase<CategoryAllList>() {
 
-    private val KEY_SAFE_SEARCH = "safeSearch"
 
     fun createRequestParams(safeSearch: Boolean): RequestParams {
         val requestParams = RequestParams.create()

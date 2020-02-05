@@ -15,15 +15,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class ARHomeViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
+private const val minimumAdultAge = 21
+private const val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
 
-    companion object{
-        private const val minimumAdultAge = 21
-    }
+class ARHomeViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
 
     private var userDetailLiveData: UserDOBResponse? = null
     private val askUserLogin = MutableLiveData<Int>()
-    private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
     val notAdult = MutableLiveData<Int>()
     val notVerified = MutableLiveData<String>()
     val notFilled = MutableLiveData<Int>()
@@ -32,7 +30,7 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
     override fun doOnCreate() {
         super.doOnCreate()
         repository?.let {
-            if (!it.getUserLoginState()?.isLoggedIn)
+            if (!it.getUserLoginState().isLoggedIn)
                 askUserLogin.value = 1
             else {
                 fetchUserDOB()

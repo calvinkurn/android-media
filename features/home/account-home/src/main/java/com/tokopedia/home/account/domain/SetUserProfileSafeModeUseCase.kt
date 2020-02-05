@@ -10,12 +10,10 @@ import com.tokopedia.home.account.data.model.SetUserProfileSettingResponse
 import java.util.HashMap
 import javax.inject.Inject
 
+private const val PARAM_SAFE_MODE = "safeMode"
 class SetUserProfileSafeModeUseCase @Inject constructor(@ApplicationContext var context: Context?,
                                                         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<SetUserProfileSettingResponse>(graphqlRepository) {
-    companion object {
-        private const val PARAM_SAFE_MODE = "safeMode"
-    }
 
     private fun getRequestParamsForSetSafeMode(savedValue: Boolean): HashMap<String, Any> {
         val requestParams = HashMap<String, Any>()

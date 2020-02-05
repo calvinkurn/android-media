@@ -15,12 +15,9 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import kotlinx.android.synthetic.main.age_restriction_home_activity.*
 
+private const val STATUS_AGREE = "setuju"
+private const val STATUS_DENY = "batal"
 class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {
-
-    companion object {
-        private const val STATUS_AGREE = "setuju"
-        private const val STATUS_DENY = "batal"
-    }
 
     private lateinit var arHomeViewModel: ARHomeViewModel
     private var notAdult = 11

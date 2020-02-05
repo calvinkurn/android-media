@@ -15,7 +15,6 @@ import com.tokopedia.common_tradein.customviews.TradeInTextView;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
 import com.tokopedia.common_tradein.model.ValidateTradePDP;
-import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;

@@ -12,6 +12,8 @@ import com.tokopedia.home.account.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home.account.presentation.listener.SettingOptionsView
 import com.tokopedia.user.session.UserSessionInterface
 
+private const val minimumAdultAge = 21
+
 class SettingsPresenter(var context: Context?,
                         var userProfileSafeModeUseCase: UserProfileSafeModeUseCase?,
                         var userProfileDobUseCase: UserProfileDobUseCase?,
@@ -102,10 +104,6 @@ class SettingsPresenter(var context: Context?,
         val editor = settings.edit()
         editor.putBoolean(key, isChecked)
         editor.apply()
-    }
-
-    companion object {
-        private const val minimumAdultAge = 21
     }
 
 }

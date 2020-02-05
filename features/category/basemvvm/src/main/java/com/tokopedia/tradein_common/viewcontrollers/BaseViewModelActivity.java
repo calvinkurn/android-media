@@ -20,7 +20,6 @@ import com.example.tradein_common.R;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein_common.viewmodel.BaseLifeCycleObserver;
