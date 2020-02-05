@@ -106,6 +106,9 @@ class AccessRequestDialogFragment : DialogFragment() {
 
     companion object {
         const val TAG = "ACCESS REQUEST FRAGMENT"
+        const val STATUS_AGREE = "setuju"
+        const val STATUS_DENY = "batal"
+
         fun newInstance(): AccessRequestDialogFragment {
             return AccessRequestDialogFragment()
         }

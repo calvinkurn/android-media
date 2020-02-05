@@ -10,13 +10,12 @@ import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.design.dialog.AccessRequestDialogFragment
 import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import kotlinx.android.synthetic.main.age_restriction_home_activity.*
 
-private const val STATUS_AGREE = "setuju"
-private const val STATUS_DENY = "batal"
 class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {
 
     private lateinit var arHomeViewModel: ARHomeViewModel
@@ -27,7 +26,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     private var selection = 0
 
     override fun clickAccept() {
-        sendGeneralEvent(STATUS_AGREE)
+        sendGeneralEvent(AccessRequestDialogFragment.STATUS_AGREE)
         when (selection) {
             notLogin -> {
                 navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST)
@@ -76,7 +75,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     }
 
     override fun clickDeny() {
-        sendGeneralEvent(STATUS_DENY)
+        sendGeneralEvent(AccessRequestDialogFragment.STATUS_DENY)
         when (selection) {
             notLogin -> {
                 sendGeneralEvent(eventClick,

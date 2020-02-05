@@ -9,6 +9,7 @@ import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 private const val minimumAdultAge = 21
-private const val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
 
 class ARHomeViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
 
@@ -51,10 +51,11 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
     }
 
     fun fetchUserDOB() {
+        val userDobQuery = TokopediaUrl.Companion.getInstance().ACCOUNTS.plus("userapp/api/v1/profile/get-dob")
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val response = getRepo().getRestData(USER_DOB_PATH,
+                    val response = getRepo().getRestData(userDobQuery,
                             object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
                             RequestType.GET,
                             RequestParams.EMPTY.parameters)
