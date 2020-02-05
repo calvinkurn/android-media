@@ -24,7 +24,6 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -46,13 +45,12 @@ import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
-import com.tokopedia.saldodetails.response.model.LiveDataResult
+import com.tokopedia.saldodetails.utils.ErrorMessage
+import com.tokopedia.saldodetails.utils.Success
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -296,9 +294,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.gqlUserSaldoBalanceLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
 
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    setSellerSaldoBalance(it.data?.saldo!!.sellerUsable, it.data.saldo!!.sellerUsableFmt!!)
+            when (it) {
+                is Success -> {
+                    setSellerSaldoBalance(it.data.saldo!!.sellerUsable, it.data.saldo!!.sellerUsableFmt!!)
                     showSellerSaldoRL()
 
                     setBuyerSaldoBalance(it.data.saldo!!.buyerUsable, it.data.saldo!!.buyerUsableFmt!!)
@@ -315,12 +313,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                         hideWarning()
                     }
                 }
-                LiveDataResult.STATUS.ERROR -> {
-                    if (it.error is UnknownHostException ||
-                            it.error is SocketTimeoutException) {
-                        setRetry()
+                is ErrorMessage<*, *>  -> {
+                    if (it.data is Int) {
+                        setRetry(getString(it.data))
                     } else {
-                        setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
+                        setRetry()
                     }
                 }
                 else -> {
@@ -331,9 +328,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
         saldoDetailViewModel.gqlMerchantSaldoDetailLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    showSaldoPrioritasFragment(it.data?.data)
+            when (it) {
+                is Success -> {
+                    showSaldoPrioritasFragment(it.data.data)
                 }
                 else -> {
                     hideSaldoPrioritasFragment()
@@ -343,9 +340,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
         saldoDetailViewModel.gqlMerchantCreditDetailLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    showMerchantCreditLineFragment(it.data?.data)
+            when (it) {
+                is Success -> {
+                    showMerchantCreditLineFragment(it.data.data)
                 }
                 else -> {
                     hideMerchantCreditLineFragment()
@@ -355,9 +352,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
         saldoDetailViewModel.gqlLateCountResponseLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    setLateCount(it.data?.mclGetLatedetails!!.lateCount)
+            when (it) {
+                is Success -> {
+                    setLateCount(it.data.mclGetLatedetails!!.lateCount)
                 }
                 else -> {
                     hideWithdrawTicker()
@@ -367,9 +364,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
         saldoDetailViewModel.gqlTickerWithdrawalLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data != null && !TextUtils.isEmpty(it.data.withdrawalTicker!!.tickerMessage)) {
+            when (it) {
+                is Success -> {
+                    if (!TextUtils.isEmpty(it.data.withdrawalTicker!!.tickerMessage)) {
                         showTickerMessage(it.data.withdrawalTicker!!.tickerMessage!!)
                     } else {
                         hideTickerMessage()

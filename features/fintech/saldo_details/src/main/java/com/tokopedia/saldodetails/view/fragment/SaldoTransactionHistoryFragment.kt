@@ -234,28 +234,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         return endDateTV!!.text.toString()
     }
 
-//    override fun getDefaultEmptyViewModel(): Visitable<*>? {
-//        return EmptyModel()
-//    }
-
-//    override fun finishLoading() {
-//        if (getSingleTabAdapter() != null) {
-//            getSingleTabAdapter()!!.hideLoading()
-//        }
-//
-//        if (getAllHistoryAdapter() != null) {
-//            getAllHistoryAdapter()!!.hideLoading()
-//        }
-//
-//        if (getBuyerHistoryAdapter() != null) {
-//            getBuyerHistoryAdapter()!!.hideLoading()
-//        }
-//
-//        if (getSellerHistoryAdapter() != null) {
-//            getSellerHistoryAdapter()!!.hideLoading()
-//        }
-//    }
-
     override fun showErrorMessage(s: String) {
         NetworkErrorHelper.showRedCloseSnackbar(activity, s)
     }
@@ -264,24 +242,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         NetworkErrorHelper.showRedCloseSnackbar(activity, errorMessage)
     }
 
-//    override fun removeError() {
-//        if (getSingleTabAdapter() != null) {
-//            getSingleTabAdapter()!!.removeErrorNetwork()
-//        }
-//
-//        if (getAllHistoryAdapter() != null) {
-//            getAllHistoryAdapter()!!.removeErrorNetwork()
-//        }
-//
-//        if (getBuyerHistoryAdapter() != null) {
-//            getBuyerHistoryAdapter()!!.removeErrorNetwork()
-//        }
-//
-//        if (getSellerHistoryAdapter() != null) {
-//            getSellerHistoryAdapter()!!.removeErrorNetwork()
-//        }
-//
-//    }
 
     override fun getSingleTabAdapter(): SaldoDepositAdapter? {
         return if (singleTabItem != null) {
@@ -335,19 +295,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     private fun createNewAdapter(): SaldoDepositAdapter {
         return SaldoDepositAdapter(SaldoDetailTransactionFactory())
     }
-
-//    override fun getAdapter(): SaldoDepositAdapter? {
-//        if (activePosition == 0) {
-//            return (allSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
-//        } else if (activePosition == 1) {
-//            return (buyerSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
-//        } else if (activePosition == 2) {
-//            return (sellerSaldoHistoryTabItem!!.fragment as SaldoHistoryListFragment).adapter
-//        }
-//
-//        return SaldoDepositAdapter(SaldoDetailTransactionFactory())
-//    }
-
 
     override fun getScreenName(): String? {
         return null

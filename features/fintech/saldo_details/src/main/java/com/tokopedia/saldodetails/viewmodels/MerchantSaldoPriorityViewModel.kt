@@ -5,8 +5,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.saldodetails.di.DispatcherModule
 import com.tokopedia.saldodetails.response.model.GqlSetMerchantSaldoStatus
-import com.tokopedia.saldodetails.response.model.LiveDataResult
 import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus
+import com.tokopedia.saldodetails.utils.ErrorMessage
+import com.tokopedia.saldodetails.utils.Resources
+import com.tokopedia.saldodetails.utils.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -18,17 +20,17 @@ class MerchantSaldoPriorityViewModel @Inject constructor(
         @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher
 ): BaseViewModel(uiDispatcher) {
 
-    val gqlUpdateSaldoStatusLiveData: MutableLiveData<LiveDataResult<GqlSetMerchantSaldoStatus>> = MutableLiveData()
+    val gqlUpdateSaldoStatusLiveData: MutableLiveData<Resources<GqlSetMerchantSaldoStatus>> = MutableLiveData()
 
     fun updateSellerSaldoStatus(value: Boolean) {
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 val response = setMerchantSaldoStatusUseCase.updateStatus(value)
                 response.merchantSaldoStatus?.value = value
-                gqlUpdateSaldoStatusLiveData.postValue(LiveDataResult.success(response))
+                gqlUpdateSaldoStatusLiveData.postValue(Success(response))
             }
         }, onError = {
-                gqlUpdateSaldoStatusLiveData.postValue(LiveDataResult.error(it))
+                gqlUpdateSaldoStatusLiveData.postValue(ErrorMessage(it.toString()))
         })
     }
 }

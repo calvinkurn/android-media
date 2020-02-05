@@ -195,23 +195,6 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
 
     }
 
-//    override fun loadMore(lastItemPosition: Int, visibleItem: Int) {
-//        if (paging.CheckNextPage()
-//                && isOnLastPosition(lastItemPosition, visibleItem)
-//                && canLoadMore()) {
-//            paging.nextPage()
-//            getSummaryDeposit()
-//        }
-//    }
-
-//    private fun canLoadMore(): Boolean {
-//        return !getDepositSummaryUseCase.isRequesting
-//    }
-
-    private fun isOnLastPosition(lastItemPosition: Int, visibleItem: Int): Boolean {
-        return lastItemPosition == visibleItem
-    }
-
     override fun getSummaryDeposit() {
         launchCatchError(block = {
             if (isValid) {

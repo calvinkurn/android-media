@@ -28,7 +28,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse
 import com.tokopedia.saldodetails.response.model.GqlSpAnchorListResponse
-import com.tokopedia.saldodetails.response.model.LiveDataResult
+import com.tokopedia.saldodetails.utils.Success
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_SELLER_DETAILS
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_SELLER_DETAILS_ID
@@ -94,19 +94,13 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
     private fun setViewModelObservers() {
         merchantSaldoPriorityViewModel.gqlUpdateSaldoStatusLiveData.observe(context as AppCompatActivity,
                 Observer {
-                    when (it.status) {
-                        LiveDataResult.STATUS.SUCCESS -> {
-                            if (it.data != null) {
-
-                                if (it.data.merchantSaldoStatus?.isSuccess!!) {
+                    when (it) {
+                       is Success -> {
+                           if (it.data.merchantSaldoStatus?.isSuccess!!) {
                                     onSaldoStatusUpdateSuccess(it.data.merchantSaldoStatus?.value ?: false)
                                 } else {
                                     onSaldoStatusUpdateError("")
                                 }
-
-                            } else {
-                                onSaldoStatusUpdateError("")
-                            }
                             hideProgressLoading()
                         }
                         else -> {
