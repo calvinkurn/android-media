@@ -9,17 +9,19 @@ import com.tokopedia.user.session.UserSession
 import rx.Observable
 import java.security.NoSuchAlgorithmException
 import java.util.*
+import javax.inject.Inject
 import kotlin.experimental.and
 
 /**
  * @author by nisie on 5/30/18.
  */
-class LogoutUseCase(private val api: LogoutApi,
-                    private val mapper: LogoutMapper,
-                    private val userSession: UserSession) : UseCase<LogoutDomain>() {
+class LogoutUseCase @Inject constructor(
+        private val api: LogoutApi,
+        private val mapper: LogoutMapper,
+        private val userSession: UserSession
+) : UseCase<LogoutDomain>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<LogoutDomain> {
-
         return api.logout(requestParams.parameters)
                 .map(mapper)
                 .doOnNext { removeSession() }

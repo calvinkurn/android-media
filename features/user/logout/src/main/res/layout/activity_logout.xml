@@ -5,9 +5,10 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".logout.LogoutActivity">
+  tools:context=".view.LogoutActivity">
   
   <com.tokopedia.unifycomponents.LoaderUnify
+    android:id="@+id/logoutLoading"
     android:layout_width="@dimen/dp_32"
     android:layout_height="@dimen/dp_32"
     app:layout_constraintBottom_toBottomOf="parent"
