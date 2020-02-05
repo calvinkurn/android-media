@@ -38,3 +38,4 @@ include "libraries:tracking_optimizer"
 include "tkpdabstraction"
 include "tkpddesign"
 include "tkpdtransaction-common"
+include ':libraries:remoteresourcerequest'
