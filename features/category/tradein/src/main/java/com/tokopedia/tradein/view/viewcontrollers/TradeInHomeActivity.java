@@ -174,8 +174,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                             sendGeneralEvent(clickEvent,
                                     category,
                                     TradeInGTMConstants.ACTION_KEMBALI_KE_DETAIL_PRODUK,
-                                    String.format("phone type : %s - min price : %s - max price : %s",
-                                            tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), homeResult.minPrice, homeResult.maxPrice));
+                                    getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                                            tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), homeResult.minPrice.toString(), homeResult.maxPrice.toString()));
                             finish();
                         });
 
