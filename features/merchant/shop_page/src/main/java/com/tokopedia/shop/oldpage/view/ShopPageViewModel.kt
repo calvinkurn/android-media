@@ -90,7 +90,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         val shopInfoShopBadgeFeedWhitelist = ShopInfoShopBadgeFeedWhitelist()
 
         gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase
-                .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain)
+                .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain, source = SHOP_INFO_BY_ID_SOURCE_VALUE)
         val shopInfoRequest = gqlGetShopInfoUseCase.request
 
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
@@ -232,5 +232,6 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
 
     companion object {
         private const val DATA_NOT_FOUND = "Data not found"
+        private const val SHOP_INFO_BY_ID_SOURCE_VALUE = "shoppage"
     }
 }
