@@ -27,9 +27,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -189,29 +187,27 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun addTopAdsWishlist(model: RecommendationItem): Deferred<WishlistModel> {
+    private suspend fun addTopAdsWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit) {
         val params = RequestParams.create()
         params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
 
-        return async(Dispatchers.IO) {
-            var wishlistResponse = WishlistModel()
-
+        withContext(Dispatchers.IO) {
             try {
                 val dataTopAdsWishlist = topAdsWishlishedUseCase.createObservable(params).toBlocking()
-                dataTopAdsWishlist.first().let {
-                    wishlistResponse = it
-                }
+                val topAdsWishList = dataTopAdsWishlist.first()
+
+                _topAdsWishlistResult.value = Success(topAdsWishList)
             } catch (t: Throwable) {
                 _topAdsWishlistResult.value = Fail(t)
+                callback.invoke(false, t)
             }
-            wishlistResponse
         }
     }
 
     fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
         if (model.isTopAds) {
             launchCatchError (block = {
-                _topAdsWishlistResult.value = Success(addTopAdsWishlist(model).await())
+                addTopAdsWishlist(model, callback)
                 callback.invoke(true, null)
             }) {
                 callback.invoke(false, it)
