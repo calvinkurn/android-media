@@ -204,8 +204,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
-        hideSoftKeyboardIfPresent()
-
         with(tooltipBottomSheet) tooltip@{
             setTitle(tooltip.title)
             clearClose(false)
@@ -218,12 +216,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
             setChild(bottomSheetContentView)
             show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
-        }
-    }
-
-    private fun hideSoftKeyboardIfPresent() {
-        activity?.let {
-            //hide soft keyboard
         }
     }
 
