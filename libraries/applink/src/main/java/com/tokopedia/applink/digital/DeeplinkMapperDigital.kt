@@ -25,6 +25,7 @@ object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
     const val MENU_ID_PARAM = "menu_id"
+    const val HOST_DIGITAL_PRODUCT = "form"
 
     private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
         if (whiteList == null) {
@@ -47,6 +48,7 @@ object DeeplinkMapperDigital {
         if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
             if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) return getDigitalTemplateNavigation(context, deeplink)
             if (!uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty()) return getDigitalMenuNavigation(context, deeplink)
+            else ApplinkConsInternalDigital.DIGITAL_PRODUCT_INTERNAL
         } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)){
             return getDigitalSmartcardNavigation(context, deeplink)
         }
