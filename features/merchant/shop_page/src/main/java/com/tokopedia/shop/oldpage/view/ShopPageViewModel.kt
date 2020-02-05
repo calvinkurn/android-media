@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -90,7 +91,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         val shopInfoShopBadgeFeedWhitelist = ShopInfoShopBadgeFeedWhitelist()
 
         gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase
-                .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain, source = SHOP_INFO_BY_ID_SOURCE_VALUE)
+                .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain, source = SHOP_PAGE_SOURCE)
         val shopInfoRequest = gqlGetShopInfoUseCase.request
 
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
@@ -232,6 +233,5 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
 
     companion object {
         private const val DATA_NOT_FOUND = "Data not found"
-        private const val SHOP_INFO_BY_ID_SOURCE_VALUE = "shoppage"
     }
 }

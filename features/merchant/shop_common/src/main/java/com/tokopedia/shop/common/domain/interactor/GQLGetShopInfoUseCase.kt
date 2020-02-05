@@ -38,6 +38,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         private const val PARAM_SHOP_FIELDS = "fields"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
         private const val PARAM_SOURCE = "source"
+        const val SHOP_PAGE_SOURCE = "shoppage"
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
