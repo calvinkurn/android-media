@@ -6,7 +6,8 @@
             android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
             android:label="@string/tokopedia"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:configChanges="uiMode" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
