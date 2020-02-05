@@ -93,6 +93,8 @@ public class TopChatAnalytics {
         public static final String VIEW_BANNED_PRODUCT = "view banned product bubble";
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
         String CLICK_HEADER = "click header-shop icon";
+        String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
+        String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
     }
 
     public interface Label {
@@ -453,6 +455,26 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.VIEW_BANNED_PRODUCT,
                 eventLabel
+        );
+    }
+
+    // #AP3
+    public void eventClickAddToWishList(@NotNull String productId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_ADD_TO_WISHLIST,
+                productId
+        );
+    }
+
+    // #AP4
+    public void eventClickRemoveFromWishList(@NotNull String productId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_REMOVE_FROM_WISHLIST,
+                productId
         );
     }
 }

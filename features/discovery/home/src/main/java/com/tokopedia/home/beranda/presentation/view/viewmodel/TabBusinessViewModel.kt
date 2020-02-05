@@ -6,21 +6,21 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 class TabBusinessViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        @Named("Main")
-        private val baseDispatcher: CoroutineDispatcher
+        private val baseDispatcher: HomeDispatcherProvider
 ) : ViewModel(), CoroutineScope {
 
     private val job = Job()
@@ -39,7 +39,7 @@ class TabBusinessViewModel @Inject constructor(
     }
 
     override val coroutineContext: CoroutineContext
-        get() = baseDispatcher + job
+        get() = baseDispatcher.ui() + job
 
     fun getTabList(rawQuery: String) {
         _homeWidget.value = HomeWidget()

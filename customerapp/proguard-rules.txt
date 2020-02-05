@@ -385,6 +385,10 @@
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 -dontwarn kotlinx.coroutines.flow.**inlined**
 
+#home
+ -dontwarn com.tokopedia.home.beranda.data.datasource.**inlined**
+ -dontwarn com.tokopedia.home.beranda.data.usecase.**inlined**
+
 # -- Unit Test
 -keep class junit.framework.** { *; }
 -keep class android.test.** { *; }
@@ -405,3 +409,7 @@
 -keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
 
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
+
+-dontwarn com.google.android.exoplayer2.audio.AudioAttributes
+-dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
+-dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar

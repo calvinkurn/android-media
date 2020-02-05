@@ -16,6 +16,9 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
       tag
       thumbnail
       domain
+      isOfficial
+      isGold
+      badge
       status {
         timestamp
         timestampStr
