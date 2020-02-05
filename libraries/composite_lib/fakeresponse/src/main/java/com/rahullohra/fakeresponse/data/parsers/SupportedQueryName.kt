@@ -10,8 +10,4 @@ object SupportedQueryName {
 
 object SupportedRestEndpoints {
     val names: ArrayList<String> = arrayListOf()
-
-    init {
-
-    }
 }
