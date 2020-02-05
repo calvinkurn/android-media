@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.R
@@ -22,7 +22,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopG
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.*
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject

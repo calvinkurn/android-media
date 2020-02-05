@@ -22,6 +22,6 @@ class FlightCancelVoucher (
         class Attributes(
                 @SerializedName("success")
                 @Expose
-                var success: Boolean = true
+                var success: Boolean = false
         )
 }

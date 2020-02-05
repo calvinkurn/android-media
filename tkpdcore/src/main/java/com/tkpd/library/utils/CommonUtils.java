@@ -21,10 +21,7 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -33,11 +30,10 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core2.R;
+import com.tokopedia.network.constant.ResponseStatus;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,69 +60,6 @@ public class CommonUtils {
 
     }
 
-    public static int convertDpToPixel(float dp, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return Math.round(px);
-    }
-
-    public static boolean isFinishActivitiesOptionEnabled(Context context) {
-        int result = 0;
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                result = Settings.System.getInt(context.getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
-            } else {
-                result = Settings.Global.getInt(context.getContentResolver(), Settings.System.ALWAYS_FINISH_ACTIVITIES, 0);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            return result == 1;
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    public static void getProcessDay(Context context, String day, TextView view, View view2) {
-        String processDay;
-
-        if (day.equals("1") || day.equals("Besok")) {
-            processDay = context.getString(R.string.title_tommorow);
-            //view.setBackgroundColor(context.getResources().getColor(R.color.tkpd_status_orange));
-            try {
-                view2.setBackground(context.getResources().getDrawable(R.drawable.border_left_2dp));
-            } catch (NoSuchMethodError e) {
-                view2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_left_2dp));
-            }
-        } else if (day.equals("0")) {
-            processDay = context.getString(R.string.title_today);
-            //view.setBackgroundColor(context.getResources().getColor(R.color.tkpd_status_red));
-            try {
-                view2.setBackground(context.getResources().getDrawable(R.drawable.border_left_2dp));
-            } catch (NoSuchMethodError e) {
-                view2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_left_2dp));
-            }
-        } else if (day.equals("-1")) {
-            processDay = context.getString(R.string.title_expired);
-            //view.setBackgroundColor(context.getResources().getColor(R.color.tkpd_status_red));
-            try {
-                view2.setBackground(context.getResources().getDrawable(R.drawable.border_left_2dp_grey));
-            } catch (NoSuchMethodError e) {
-                view2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_left_2dp_grey));
-            }
-        } else {
-            processDay = day + " " + context.getString(R.string.title_day_again);
-            //view.setBackgroundColor(context.getResources().getColor(R.color.tkpd_status_blue));
-            try {
-                view2.setBackground(context.getResources().getDrawable(R.drawable.border_left_2dp_blue));
-            } catch (NoSuchMethodError e) {
-                view2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.border_left_2dp_blue));
-            }
-        }
-
-        view.setText(processDay);
-    }
-
     public static void ShowError(Context context, ArrayList<String> MessageError) {
         String error = "";
         for (int i = 0; i < MessageError.size(); i++) {
@@ -147,28 +80,6 @@ public class CommonUtils {
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();*/
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    public static void dumper(Object o) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            Log.i("Dumper", o.toString());
-        }
-    }
-
-    public static void dumper(String str) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            Log.i("Dumper", str);
-        }
-    }
-
-    public static String getUniqueDeviceID(Context context) {
-        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        String DeviceID = tm.getDeviceId();
-        String Brand = Build.BRAND;
-        String Model = Build.MODEL;
-        String UniqueDeviceID = Brand + "~" + Model + "~" + DeviceID;
-        CommonUtils.dumper("Device ID" + UniqueDeviceID);
-        return UniqueDeviceID;
     }
 
     public static String SaveImageFromBitmap(Activity context, Bitmap bitmap, String PicName) {
@@ -225,23 +136,6 @@ public class CommonUtils {
         return mediaFile;
     }
 
-    private static boolean isDownloadManagerAvailable(Context context) {
-        try {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
-                return false;
-            }
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.setClassName("com.android.providers.downloads.ui", "com.android.providers.downloads.ui.DownloadList");
-            List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(intent,
-                    PackageManager.MATCH_DEFAULT_ONLY);
-            return list.size() > 0;
-        } catch (Exception e) {
-            Toast.makeText(context, "Download gagal", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
-
     public static void UniversalToast(Context context, String text) {
         Toast.makeText(context, MethodChecker.fromHtml(text), Toast.LENGTH_LONG).show();
     }
@@ -250,94 +144,12 @@ public class CommonUtils {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
-    public static float DimentoPx(Context context, int dimen) {
-        return context.getResources().getDimension(dimen);
-        //int dp = (int) context.getResources().getDimension(dimen);
-        //return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-    }
-
     public static Boolean isUrl(String url) {
         return url.contains("http");
     }
 
 
     ///////////////////////////////////////////////////////////////////////////////
-
-    public static Bitmap drawViewToBitmap(Bitmap dest, View view, int width, int height, int downSampling, Drawable drawable) {
-        float scale = 1f / downSampling;
-        int heightCopy = view.getHeight();
-        view.layout(0, 0, width, height);
-        int bmpWidth = (int) (width * scale);
-        int bmpHeight = (int) (height * scale);
-        if (dest == null || dest.getWidth() != bmpWidth || dest.getHeight() != bmpHeight) {
-            dest = Bitmap.createBitmap(bmpWidth, bmpHeight, Bitmap.Config.ARGB_8888);
-        }
-        Canvas c = new Canvas(dest);
-        drawable.setBounds(new Rect(0, 0, width, height));
-        drawable.draw(c);
-        if (downSampling > 1) {
-            c.scale(scale, scale);
-        }
-        view.draw(c);
-        view.layout(0, 0, width, heightCopy);
-        // saveToSdCard(original, "original.png");
-        return dest;
-    }
-
-    public static Bitmap getScreenShotToBitmap(Bitmap bitmap, Activity context) {
-        Rect fucker = new Rect();
-        context.getWindow().getDecorView().getWindowVisibleDisplayFrame(fucker);
-        bitmap = Bitmap.createBitmap(context.getWindow().getDecorView().getRootView().getWidth(), context.getWindow().getDecorView().getRootView().getHeight(), Bitmap.Config.ARGB_8888);
-        Drawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-        Canvas c = new Canvas(bitmap);
-        drawable.setBounds(new Rect(0, 0, context.getWindow().getDecorView().getRootView().getWidth(), context.getWindow().getDecorView().getRootView().getHeight()));
-        context.getWindow().getDecorView().getRootView().draw(c);
-        bitmap = Bitmap.createBitmap(bitmap, 0, context.getActionBar().getHeight() + fucker.top, context.getWindow().getDecorView().getRootView().getWidth(), bitmap.getHeight() - context.getActionBar().getHeight() - fucker.top);
-        return bitmap;
-    }
-
-    public static Bitmap DownScaleBitmap(Bitmap bitmap) {
-        BitmapFactory.Options mBFO = new BitmapFactory.Options();
-        mBFO.inDensity = 120;
-        bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, false);
-        bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, false);
-        return bitmap;
-    }
-
-    public static Bitmap applyGaussianBlur(Bitmap src) {
-        //set gaussian blur configuration
-        double[][] GaussianBlurConfig = new double[][]{
-                {1, 2, 1},
-                {2, 4, 2},
-                {1, 2, 1}
-        };
-        // create instance of Convolution matrix
-        ConvultionMatrix convMatrix = new ConvultionMatrix(9);
-        // Apply Configuration
-        convMatrix.applyConfig(GaussianBlurConfig);
-        convMatrix.Factor = 16;
-        convMatrix.Offset = 0;
-        //return out put bitmap
-        return ConvultionMatrix.computeConvolution3x3(src, convMatrix);
-    }
-
-    public static void OpenHtmlLink(Activity context, String link) {
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-        List<Intent> targetedShareIntents = new ArrayList<Intent>();
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(myIntent, 0);
-        if (!resInfo.isEmpty()) {
-            for (ResolveInfo info : resInfo) {
-                if (!info.activityInfo.packageName.equals("com.tokopedia.tkpd")) {
-                    Intent targetedShare = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                    targetedShare.setPackage(info.activityInfo.packageName);
-                    targetedShareIntents.add(targetedShare);
-                }
-            }
-        }
-        Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Open with");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
-        context.startActivity(chooserIntent);
-    }
 
     public static String getDate(long time) {
         Calendar calendar = Calendar.getInstance();
@@ -369,18 +181,6 @@ public class CommonUtils {
         return "";
     }
 
-    public static String replaceCreditCardNumber(String text) {
-        final String MASKCARD = "$1<XTKPDX>$2";
-        final Pattern PATTERNCARD =
-                Pattern.compile("\\b([0-9]{4})[0-9]{0,9}([0-9]{4})\\b");
-        Matcher matcher = PATTERNCARD.matcher(text);
-        if (matcher.find()) {
-            return matcher.replaceAll(MASKCARD);
-        }
-        return text;
-
-    }
-
     /**
      * chek nullability at json parsing
      *
@@ -393,27 +193,6 @@ public class CommonUtils {
 
         return true;
     }
-
-    public static String parseNullForZeroJson(String input) {
-        if (checkNullForZeroJson(input)) {
-            return input;
-        } else {
-            return null;
-        }
-    }
-
-    public static List<String> checkNullMessageError(List<String> messageError) {
-        boolean isNull = false;
-        if (messageError == null && messageError.size() <= 0)
-            return new ArrayList<String>();
-
-        for (String msg : messageError) {
-            if (!checkNullForZeroJson(msg))
-                return new ArrayList<String>();
-        }
-        return messageError;
-    }
-
 
     public static void hideKeyboard(Activity activity, View view) {
         if (view != null) {
@@ -437,15 +216,6 @@ public class CommonUtils {
         } else {
             return false;
         }
-    }
-
-    public static Double parsePriceToDouble(String price, String currency) {
-        price = price.replace(",", "");
-        if (!currency.equals("US$")) {
-            // remove cent
-            price = price.replace(".", "");
-        }
-        return Double.parseDouble(price);
     }
 
     /**
@@ -484,30 +254,9 @@ public class CommonUtils {
         return result;
     }
 
-    /**
-     * @param errorMessages
-     * @return true if empty, false is not empty
-     */
-    public static boolean checkErrorMessageEmpty(String errorMessages) {
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("");
-
-        if (checkNotNull(errorMessages)) {
-            if (strings.toString().equals(errorMessages)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static void hideSoftKeyboard(View view) {
         InputMethodManager inputMethodManager = (InputMethodManager) MainApplication.getInstance().getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    public static void forceShowKeyboard(Context context) {
-        ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     /**
@@ -559,19 +308,6 @@ public class CommonUtils {
         }
         return context.getString(R.string.error_unknown);
 
-    }
-
-    public static boolean checkStringNotEmpty(String message) {
-        if (message != null && message.equals("") && message.equals("0")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static void closeKeyboard(Context c, IBinder windowToken) {
-        InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(windowToken, 0);
     }
 
     public static double round(double value, int places) {

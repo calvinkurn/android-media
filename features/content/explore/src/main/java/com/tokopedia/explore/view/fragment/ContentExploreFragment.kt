@@ -12,7 +12,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -30,6 +29,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.explore.R
 import com.tokopedia.explore.analytics.ContentExloreEventTracking
+import com.tokopedia.explore.analytics.ContentExploreAnalytics
 import com.tokopedia.explore.di.DaggerExploreComponent
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter
@@ -86,6 +86,8 @@ class ContentExploreFragment :
     lateinit var affiliatePreference: AffiliatePreference
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var analytics: ContentExploreAnalytics
 
     private lateinit var searchInspiration: SearchInputView
     private lateinit var exploreCategoryRv: RecyclerView
@@ -198,7 +200,7 @@ class ContentExploreFragment :
                 presenter.getExploreData(true)
                 hasLoadedOnce = !hasLoadedOnce
             }
-            TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+            analytics.sendScreenName(screenName)
         }
     }
 
@@ -208,12 +210,7 @@ class ContentExploreFragment :
     }
 
     override fun onSuccessGetExploreData(exploreViewModel: ExploreViewModel, clearData: Boolean) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.LOAD_MORE,
-                ""
-        ))
+        analytics.eventImpressionSuccessGetData()
 
         if (!exploreViewModel.exploreImageViewModelList.isEmpty()) {
             loadImageData(exploreViewModel.exploreImageViewModelList)
@@ -276,21 +273,11 @@ class ContentExploreFragment :
         val isSameCategory = setAllCategoriesInactive(position)
         if (isSameCategory) {
             updateCategoryId(0)
-            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                    ContentExloreEventTracking.Event.EXPLORE,
-                    ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                    ContentExloreEventTracking.Action.DESELECT_CATEGORY,
-                    categoryName
-            ))
+            analytics.eventDeselectCategory(categoryName)
 
         } else {
             updateCategoryId(categoryId)
-            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                    ContentExloreEventTracking.Event.EXPLORE,
-                    ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                    ContentExloreEventTracking.Action.FILTER_CATEGORY,
-                    categoryName
-            ))
+            analytics.eventSelectCategory(categoryName)
 
             if (position > 0) {
                 categoryAdapter.list[position].isActive = true
@@ -345,22 +332,13 @@ class ContentExploreFragment :
         imageAdapter.showEmpty()
     }
 
-    override fun goToKolPostDetail(postId: Int, name: String) {
+    override fun goToKolPostDetail(postId: Int, name: String, recomId: Int) {
         RouteManager.route(
                 requireContext(),
                 ApplinkConst.CONTENT_DETAIL,
                 postId.toString()
         )
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.CLICK_GRID_CONTENT,
-                String.format(
-                        ContentExloreEventTracking.EventLabel.CLICK_GRID_CONTENT_LABEL,
-                        name,
-                        postId
-                )
-        ))
+        analytics.eventTrackExploreItem(name, postId, recomId)
     }
 
     override fun addExploreItemCoachmark(view: View) {
@@ -400,12 +378,7 @@ class ContentExploreFragment :
 
         updateSearch(text)
         presenter.getExploreData(true)
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.SEARCH,
-                text
-        ))
+        analytics.eventSubmitSearch(text)
     }
 
     override fun onSearchTextChanged(text: String) {

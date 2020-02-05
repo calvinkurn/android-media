@@ -39,13 +39,13 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
 import com.tokopedia.gamification.cracktoken.util.AnimatorArray;
 import com.tokopedia.gamification.cracktoken.util.BounceBackExponentialInterpolator;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
-import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
@@ -129,6 +129,7 @@ public class WidgetCrackResult extends RelativeLayout {
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
         tvRewardsTip = view.findViewById(R.id.tvRewardsTip);
 
+        tvRewardsTip.setBackgroundResource(R.drawable.gamification_tooltip);
         animationList = new ArrayList<>();
     }
 

@@ -28,13 +28,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="@dimen/dp_0"
-        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/grey_200">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16">
+            android:layout_margin="@dimen/dp_10">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_location"
@@ -59,7 +58,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shop_address"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:typographyWeight="reguler"
                 app:typographyType="body_3"
@@ -70,8 +69,10 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_toRightOf="@id/ic_location"
                 android:layout_toEndOf="@id/ic_location"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/label_location"
-                app:layout_constraintStart_toEndOf="@id/ic_location"/>
+                app:layout_constraintStart_toEndOf="@id/ic_location" />
 
             <ImageView
                 android:id="@+id/ic_phone"
@@ -105,31 +106,34 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_address"
-        android:layout_marginTop="@dimen/dp_20">
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/card_courier_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
                 android:text="@string/card_courier_title"
                 app:typographyWeight="reguler"
                 app:typographyType="body_3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@color/grey_200"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:background="@color/grey_200"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
+                android:layout_margin="@dimen/dp_10"
                 android:background="@color/white">
 
                 <ImageView
@@ -138,22 +142,26 @@
                     android:layout_height="@dimen/dp_50"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_courier_name_service"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@id/iv_courier"
                     app:typographyType="body_3"
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
                     tools:text="@string/card_courier_name_example"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_courier_notes"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:typographyType="body_3"
                     app:typographyWeight="reguler"
@@ -161,19 +169,26 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_courier_name_service"
                     android:layout_marginTop="@dimen/dp_8"
                     android:singleLine="false"
-                    tools:text="@string/card_courier_notes_example"/>
+                    tools:text="@string/card_courier_notes_example"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:lineSpacingMultiplier="1"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_courier_count"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:typographyType="body_3"
                     app:layout_constraintStart_toStartOf="@id/tv_courier_notes"
                     app:layout_constraintTop_toBottomOf="@id/tv_courier_notes"
-                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_8"
                     tools:text="@string/card_courier_count_example"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
@@ -186,14 +201,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_courier"
         android:text="@string/req_pickup_info_title"
-        android:layout_marginTop="@dimen/dp_20"/>
+        android:layout_marginTop="@dimen/dp_10"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_courier_notes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/label_pastikan"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/dp_20"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

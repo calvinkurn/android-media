@@ -1,0 +1,20 @@
+query TravelCollectiveRecommendation($product: TravelColletiveCategory!, $cityID: Int){
+  TravelCollectiveRecommendation(product: $product, cityID: $cityID) {
+    items {
+      product
+      title
+      subtitle
+      prefix
+      prefixStyling
+      value
+      webURL
+      appURL
+      imageURL
+    }
+    meta {
+      title
+      webURL
+      appURL
+    }
+  }
+}

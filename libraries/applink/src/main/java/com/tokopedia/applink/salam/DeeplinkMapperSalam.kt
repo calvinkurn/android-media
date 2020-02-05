@@ -23,6 +23,14 @@ object DeeplinkMapperSalam{
         }
     }
 
+    fun getRegisteredNavigationSalamUmrahShop(deeplink: String, context: Context):String{
+        return if(getRemoteConfigSalamUmrahEnabler(context)) {
+            deeplink.replace(ApplinkConst.SALAM_UMRAH_SHOP, ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE)
+        }else{
+            ApplinkConst.SALAM_UMRAH
+        }
+    }
+
     fun getRemoteConfigSalamUmrahEnabler(context: Context): Boolean{
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SALAM_UMRAH))

@@ -18,8 +18,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:background="@drawable/feed_container_rounded_corners_border"
-        tools:src="@drawable/feed_ic_check_green_24dp" />
+        android:background="@drawable/feed_container_rounded_corners_border" />
 
     <com.tokopedia.gm.resource.GMImageView
         android:id="@+id/gold_merchant"

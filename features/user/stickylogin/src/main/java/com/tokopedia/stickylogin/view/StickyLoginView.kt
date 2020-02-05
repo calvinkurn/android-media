@@ -24,9 +24,13 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.StripedUnderlineUtil
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 
-class StickyLoginView : BaseCustomView {
+class StickyLoginView : BaseCustomView, CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 
     private lateinit var layoutContainer: LinearLayout
     private lateinit var imageViewLeft: ImageView
@@ -47,14 +51,24 @@ class StickyLoginView : BaseCustomView {
 
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
         inflateLayout()
-        initAttributeSet(attributeSet)
-        initView()
+        launch {
+            val result = initAttrsInBg(attributeSet)
+            result.await()
+            initView()
+        }
     }
 
     constructor(context: Context, attributeSet: AttributeSet, styleAttr: Int) : super(context, attributeSet, styleAttr) {
         inflateLayout()
+        launch {
+            val result = initAttrsInBg(attributeSet)
+            result.await()
+            initView()
+        }
+    }
+
+    fun initAttrsInBg(attributeSet: AttributeSet) : Deferred<Unit> = async(Dispatchers.IO) {
         initAttributeSet(attributeSet)
-        initView()
     }
 
     private fun inflateLayout() {

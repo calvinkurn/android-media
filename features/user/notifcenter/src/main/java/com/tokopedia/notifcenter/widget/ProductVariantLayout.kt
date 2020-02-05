@@ -58,7 +58,7 @@ class ProductVariantLayout @JvmOverloads constructor(
     }
 
     private fun getBackgroundDrawable(hexColor: String?): Drawable? {
-        val backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.notification_circle_color_variant_indicator)
+        val backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.notifcenter_circle_color_variant_indicator)
 
         if (isWhiteColor(hexColor)) {
             applyStrokeTo(backgroundDrawable)

@@ -2,24 +2,24 @@ package com.tokopedia.tracking.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.logisticdata.data.apiservice.TrackingOrderApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
+import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
+import com.tokopedia.logisticdata.data.repository.TrackingPageRepository;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.tracking.mapper.ITrackingPageMapper;
 import com.tokopedia.tracking.mapper.TrackingPageMapper;
 import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.presenter.TrackingPagePresenter;
-import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
-import com.tokopedia.logisticdata.data.repository.TrackingPageRepository;
 import com.tokopedia.tracking.usecase.GetRetryAvailability;
 import com.tokopedia.tracking.usecase.RetryPickup;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
@@ -89,7 +89,7 @@ public class TrackingPageModule {
                         userSession));
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(new HttpLoggingInterceptor())
-                    .addInterceptor(new ChuckInterceptor(context));
+                    .addInterceptor(new ChuckerInterceptor(context));
         }
         return builder.build();
     }

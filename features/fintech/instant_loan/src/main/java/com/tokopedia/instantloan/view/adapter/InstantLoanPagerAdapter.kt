@@ -21,9 +21,9 @@ class InstantLoanPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         notifyDataSetChanged()
     }
 
-    override fun getItem(position: Int): Fragment? {
+    override fun getItem(position: Int): Fragment {
         mCurrentPosition = position
-        return searchSectionItemList[position].fragment
+        return searchSectionItemList[position].fragment ?: Fragment()
     }
 
     override fun getItemPosition(any: Any): Int {

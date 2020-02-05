@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Budi Santoso" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDot"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:gravity="center_vertical"
+        android:text="●"
+        android:textColor="@color/Neutral_N700_96"
+        android:textStyle="normal"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/chatcommon_grey_68"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Admin" />
+
+</merge>
