@@ -820,12 +820,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopProductAdapter.addSellerAddProductDataModel()
                 }
                 endlessRecyclerViewScrollListener.resetState()
-                shopProductAdapter.notifyDataSetChanged()
             }
             isLoadingNewProductData = false
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
-            shopProductAdapter.notifyItemRangeInserted(shopProductAdapter.lastIndex,productList.size)
         }
         if (parentFragment is ShopPageFragment) {
             (parentFragment as? ShopPageFragment)?.stopPerformanceMonitor()

@@ -42,7 +42,7 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         super.onCreate(savedInstanceState)
 
         saveTextView?.run {
-            setOnClickListener { (fragment as ShopSettingsEtalaseAddEditFragment).saveAddEditEtalase() }
+            setOnClickListener { (fragment as? ShopSettingsEtalaseAddEditFragment)?.saveAddEditEtalase() }
             visibility = View.GONE
         }
 

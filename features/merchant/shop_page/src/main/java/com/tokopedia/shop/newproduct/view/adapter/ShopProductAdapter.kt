@@ -349,13 +349,14 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     fun setProductListDataModel(productList: List<ShopProductViewModel>) {
         visitables.addAll(productList)
         shopProductViewModelList.addAll(productList)
+        notifyItemRangeInserted(lastIndex,productList.size)
         mapDataModel()
     }
 
     fun addSellerAddProductDataModel() {
         val shopProductAddViewModel = ShopProductAddViewModel()
         visitables.add(shopProductAddViewModel)
-        notifyItemInserted(visitables.indexOf(shopProductAddViewModel))
+        notifyItemInserted(visitables.size - 1)
         mapDataModel()
     }
 

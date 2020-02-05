@@ -404,7 +404,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductAdapter.addEmptyDataModel(emptyDataViewModel)
         } else {
             isLoadingInitialData = false
-            shopProductAdapter.notifyItemRangeInserted(shopProductAdapter.lastIndex,productList.size)
         }
     }
 
