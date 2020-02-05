@@ -32,7 +32,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     private fun observeState(element: ProgressWidgetUiModel) {
         val data = element.data
         when {
-            data == null -> {
+            null == data -> {
                 showLoadingState()
             }
             data.error.isNotBlank() -> {
