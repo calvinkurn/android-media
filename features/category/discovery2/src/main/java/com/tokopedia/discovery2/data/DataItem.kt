@@ -69,7 +69,16 @@ data class DataItem(
         val boxColor: String? = "",
 
         @SerializedName("font_color")
-        val fontColor: String? = ""
+        val fontColor: String? = "",
+
+        @SerializedName("button_text")
+        val buttonText: String? = "",
+
+        @SerializedName("btn_applink")
+        val btnApplink: String? = "",
+
+        @SerializedName("title")
+        val title: String? = ""
 
 ) {
     val leftMargin: Int

@@ -12,7 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 class DiscoveryRecycleAdapter(private val fragment: Fragment)
     : RecyclerView.Adapter<AbstractViewHolder>() {
 
-    var viewHolderListModel = ViewModelProviders.of(fragment).get(DiscoveryListViewModel::class.java)
+    private var viewHolderListModel = ViewModelProviders.of(fragment).get(DiscoveryListViewModel::class.java)
 
     private val componentList: ArrayList<ComponentsItem> = ArrayList()
 

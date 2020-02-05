@@ -9,6 +9,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.MultiBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.BannerTimerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.BannerTimerViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModel
 import kotlin.reflect.KFunction
 
 class DiscoveryHomeFactory {
@@ -23,10 +25,11 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.TripleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
             initializeComponent(ComponentsList.QuadrupleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
             initializeComponent(ComponentsList.BannerTimer, ::BannerTimerViewHolder, ::BannerTimerViewModel)
+            initializeComponent(ComponentsList.LihatSemua, ::LihatSemuaViewHolder, ::LihatSemuaViewModel)
 
         }
 
-        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>,componentViewModel: KFunction<T>) {
+        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>, componentViewModel: KFunction<T>) {
             componentIdMap[component.componentName] = component.ordinal
             componentMapper[component.ordinal] = ComponentHelpersHolder(viewModel, componentViewModel);
         }
@@ -43,7 +46,7 @@ class DiscoveryHomeFactory {
         }
 
         fun createViewModel(viewType: Int): KFunction<DiscoveryBaseViewModel> {
-            if(componentMapper[viewType] != null){
+            if (componentMapper[viewType] != null) {
                 return componentMapper[viewType]!!.getComponentModels()
             }
             return ::MultiBannerViewModel
