@@ -11,6 +11,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCas
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
@@ -18,6 +19,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.CapturingSlot
@@ -110,6 +112,11 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coEvery { topAdsWishlishedUseCase.createObservable(any()) } returns mockObservable(wishList)
     }
 
+    protected fun onAddWishListCompleted(withProductId: String, withUserId: String) {
+        coEvery { userSessionInterface.userId } returns withUserId
+        coEvery { addWishListUseCase.createObservable(withProductId, withUserId, any()) } returns Unit
+    }
+
     protected fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } throws error
     }
@@ -191,8 +198,14 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coVerify { this@assertSuccess.invoke(true, null) }
     }
 
-    protected fun ((Boolean, Throwable?) -> Unit).assertError(expectedError: Throwable?) {
-        coVerify { this@assertError.invoke(false, expectedError) }
+    protected fun ((Boolean, Throwable?) -> Unit).assertError(error: Throwable?) {
+        val throwable = CapturingSlot<Throwable>()
+        coVerify { this@assertError.invoke(false, capture(throwable)) }
+
+        val expectedError = error.toString().trim()
+        val actualError = throwable.captured.toString().trim()
+
+        assertEquals(expectedError, actualError)
     }
 
     protected fun verifyOfficialStoreBannersError(expectedError: Fail) {
@@ -277,9 +290,33 @@ abstract class OfficialStoreHomeViewModelTestFixture {
     private fun verifyAddTopAdsWishListUseCaseCalled() {
         coVerify { topAdsWishlishedUseCase.createObservable(any()) }
     }
+
+    protected fun verifyAddWishListUseCaseCalled(productId: String, userId: String) {
+        val listener = CapturingSlot<WishListActionListener>()
+
+        coVerify {
+            addWishListUseCase.createObservable(productId, userId, capture(listener))
+        }
+
+        listener.captured.onSuccessAddWishlist("productId")
+    }
+
+    protected fun verifyAddWishListUseCaseCalled(productId: String, userId: String, error: Throwable) {
+        val listener = CapturingSlot<WishListActionListener>()
+
+        coVerify {
+            addWishListUseCase.createObservable(productId, userId, capture(listener))
+        }
+
+        listener.captured.onErrorAddWishList(error.message, "productId")
+    }
     // endregion
     
     // region private methods
+    protected fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
+        return RecommendationItem(productId = productId.toInt(), isTopAds = isTopAds)
+    }
+
     private fun<T> LiveData<T>.assertSuccess(expectedValue: Success<*>) {
         val actualValue = value
         assertEquals(expectedValue, actualValue)

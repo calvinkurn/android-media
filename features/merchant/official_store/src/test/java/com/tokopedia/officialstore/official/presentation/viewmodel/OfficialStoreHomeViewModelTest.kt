@@ -1,16 +1,18 @@
 package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import com.tokopedia.officialstore.category.data.model.Category
-import com.tokopedia.officialstore.official.data.model.*
+import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
+import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.coroutines.Fail
-import kotlinx.coroutines.runBlocking
-import org.junit.Test
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
+import org.junit.Test
 
 class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
 
@@ -132,6 +134,46 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             verifyTopAdsWishListError(expectedError)
 
             callback.assertError(error)
+        }
+    }
+
+    @Test
+    fun given_recommendation_is_NOT_top_ads__when_add_to_wishlist__should_invoke_callback_success() {
+        runBlocking {
+            val isTopAds = false
+            val productId = "15000"
+            val userId = "11000"
+
+            val recommendation = createRecommendation(productId, isTopAds)
+            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
+
+            onAddWishListCompleted(withProductId = productId, withUserId = userId)
+
+            viewModel.addWishlist(recommendation, callback)
+
+            verifyAddWishListUseCaseCalled(productId, userId)
+            callback.assertSuccess()
+        }
+    }
+
+    @Test
+    fun given_recommendation_is_NOT_top_ads__when_add_to_wishlist_failed__should_invoke_callback_error() {
+        runBlocking {
+            val isTopAds = false
+            val productId = "1900"
+            val userId = "1350"
+
+            val recommendation = createRecommendation(productId, isTopAds)
+            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
+
+            onAddWishListCompleted(withProductId = productId, withUserId = userId)
+
+            viewModel.addWishlist(recommendation, callback)
+
+            val expectedError = Throwable("Error Message")
+            verifyAddWishListUseCaseCalled(productId, userId, expectedError)
+
+            callback.assertError(expectedError)
         }
     }
 }
