@@ -157,6 +157,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
+
+
     private fun openOldShopPage() {
         val oldShopPageIntent = Intent(intent)
         oldShopPageIntent.setClass(this, com.tokopedia.shop.oldpage.view.activity.ShopPageActivity::class.java)

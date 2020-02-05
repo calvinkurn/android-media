@@ -26,6 +26,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
+import com.tokopedia.shop.analytic.NewShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.data.model.ShopInfoData
@@ -64,13 +65,19 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var shopPageConfig: ShopPageConfig
     private lateinit var shopViewModel: ShopInfoViewModel
-    private lateinit var shopPageTracking: ShopPageTrackingBuyer
+    private lateinit var shopPageTracking: NewShopPageTrackingShopPageInfo
     private lateinit var noteAdapter: BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>
 
     private var shopInfo: ShopInfoData? = null
 
     // Will be deleted once old shop page removed
     private var shouldInitView = true
+    val isOfficial: Boolean
+        get() = shopInfo?.isOfficial == 1
+    val isGold: Boolean
+        get() = shopInfo?.isGold == 1
+    private val customDimensionShopPage: CustomDimensionShopPage
+        get() = CustomDimensionShopPage.create(getShopId(),isOfficial,isGold)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_info, container, false)
@@ -80,7 +87,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         super.onViewCreated(view, savedInstanceState)
 
         shopInfo = arguments?.getParcelable(EXTRA_SHOP_INFO)
-        shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(context!!))
+        shopPageTracking = NewShopPageTrackingShopPageInfo(TrackingQueue(context!!))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
 
@@ -111,10 +118,19 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item?.itemId == R.id.action_share) {
-            onClickShareShop()
+        when(item.itemId){
+            R.id.action_share  ->  {
+                onClickShareShop()
+            }
+            android.R.id.home ->{
+                onClickBackButton()
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun onClickBackButton() {
+        shopPageTracking.clickBackArrow(false, customDimensionShopPage)
     }
 
     override fun onEmptyButtonClicked() {
@@ -438,7 +454,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun trackClickShareButton(it: ShopInfoData) {
         val dimension = CustomDimensionShopPage.create(it.shopId, it.isOfficial == 1, it.isGold == 1)
-        shopPageTracking.clickShareButton(shopViewModel.isMyShop(it.shopId), dimension)
+        shopPageTracking.clickShareButton(dimension)
     }
 
     private fun getShopShareMessage(shopInfo: ShopInfoData): String {

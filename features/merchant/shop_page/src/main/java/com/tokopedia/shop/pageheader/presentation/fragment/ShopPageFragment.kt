@@ -22,12 +22,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
@@ -42,7 +40,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
@@ -65,7 +63,6 @@ import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
-import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -124,7 +121,7 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     private var performanceMonitoring: PerformanceMonitoring? = null
-    lateinit var shopPageTracking: ShopPageTrackingBuyer
+    lateinit var shopPageTracking: NewShopPageTrackingBuyer
     var titles = listOf<String>()
     var shopId: String? = null
     var shopDomain: String? = null
@@ -145,6 +142,10 @@ class ShopPageFragment :
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
     private val intentData: Intent = Intent()
+    private val customDimensionShopPage: CustomDimensionShopPage
+        get() {
+            return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+        }
 
 
     val isMyShop: Boolean
@@ -274,7 +275,7 @@ class ShopPageFragment :
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
             performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTracking = NewShopPageTrackingBuyer(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID)
                 shopDomain = getStringExtra(SHOP_DOMAIN)
@@ -454,16 +455,27 @@ class ShopPageFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_action_search -> redirectToShopSearchProduct()
-            R.id.menu_action_settings -> redirectToShopSettingsPage()
+            R.id.menu_action_settings -> clickSettingButton()
             R.id.menu_action_cart -> redirectToCartPage()
             R.id.menu_action_shop_info -> redirectToShopInfoPage()
+            android.R.id.home -> clickBackArrow()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun clickBackArrow() {
+        shopPageTracking.clickBackArrow(isMyShop, customDimensionShopPage)
+    }
+
+    private fun clickSettingButton() {
+        shopPageTracking.clickSettingButton(customDimensionShopPage)
+        redirectToShopSettingsPage()
     }
 
     private fun redirectToShopInfoPage() {
         context?.let { context ->
             shopId?.let { shopId ->
+                shopPageTracking.clickShopProfile(customDimensionShopPage)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_INFO, shopId)
             }
         }
@@ -518,9 +530,7 @@ class ShopPageFragment :
                 button_chat.hide()
             }
             activity?.run {
-                shopPageTracking.sendScreenShopPage(this,
-                        CustomDimensionShopPage.create(shopCore.shopID, goldOS.isOfficial == 1,
-                                goldOS.isGold == 1))
+                shopPageTracking.sendScreenShopPage(shopCore.shopID)
             }
             if (shopInfo.statusInfo.shopStatus != ShopStatusDef.OPEN) {
                 shopViewModel.getModerateShopInfo()
@@ -541,21 +551,21 @@ class ShopPageFragment :
                 listOf(getString(R.string.shop_info_title_tab_home),
                         getString(R.string.shop_info_title_tab_product),
                         getString(R.string.shop_info_title_tab_feed),
-                        getString(R.string.shop_info_title_tab_info))
+                        getString(R.string.shop_info_title_tab_review))
             }
             isShowFeed -> {
                 listOf(getString(R.string.shop_info_title_tab_product),
                         getString(R.string.shop_info_title_tab_feed),
-                        getString(R.string.shop_info_title_tab_info))
+                        getString(R.string.shop_info_title_tab_review))
             }
             isOfficialStore -> {
                 listOf(getString(R.string.shop_info_title_tab_home),
                         getString(R.string.shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_info))
+                        getString(R.string.shop_info_title_tab_review))
             }
             else -> {
                 listOf(getString(R.string.shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_info))
+                        getString(R.string.shop_info_title_tab_review))
             }
         }
         if (isOfficialStore && tabPosition == 0) {
@@ -732,12 +742,10 @@ class ShopPageFragment :
         swipeToRefresh.isRefreshing = true
     }
 
-    override fun onFollowerTextClicked() {
+    override fun onFollowerTextClicked(shopFavourited: Boolean) {
         context?.run {
             (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
-                shopPageTracking.clickFollowerList(shopViewModel.isMyShop(it.shopCore.shopID),
-                        CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                                it.goldOS.isGold == 1))
+                shopPageTracking.clickFollowUnfollow(shopFavourited, customDimensionShopPage)
                 startActivityForResult(ShopFavouriteListActivity.createIntent(this, it.shopCore.shopID),
                         REQUEST_CODE_FOLLOW)
             }

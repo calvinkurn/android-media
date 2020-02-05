@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.R
+import com.tokopedia.shop.analytic.NewShopPageTrackingShopSearchProduct
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
 import com.tokopedia.shop.search.ShopSearchProductConstant.UNIVERSE_SEARCH_QUERY
 import com.tokopedia.shop.search.di.scope.ShopSearchProductScope
@@ -46,6 +47,12 @@ class ShopSearchProductModule {
     fun provideShopPageTrackingShopSearchProduct(
             trackingQueue: TrackingQueue
     ) = ShopPageTrackingShopSearchProduct(trackingQueue)
+
+    @ShopSearchProductScope
+    @Provides
+    fun provideNewShopPageTrackingShopSearchProduct(
+            trackingQueue: TrackingQueue
+    ) = NewShopPageTrackingShopSearchProduct(trackingQueue)
 
     @ShopSearchProductScope
     @Provides

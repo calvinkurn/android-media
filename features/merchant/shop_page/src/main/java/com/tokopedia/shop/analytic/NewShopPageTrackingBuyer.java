@@ -17,39 +17,15 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW_FROM_ZERO_FOLLOWER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MESSAGE_SELLER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEND_CHAT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MESSAGE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TOP_NAV;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.FOLLOW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.FREE_ONGKIR;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OF_PRODUCT_LIST;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE_OR_OTHER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_CLICK;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_NAV;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
 
-public class NewShopPageTrackingBuyer extends ShopPageTrackingUser {
+import static com.tokopedia.shop.analytic.NewShopPageTrackingConstant.*;
+
+public class NewShopPageTrackingBuyer extends NewShopPageTracking {
 
     public NewShopPageTrackingBuyer(
-                                 TrackingQueue trackingQueue) {
+            TrackingQueue trackingQueue) {
         super(trackingQueue);
     }
 
@@ -76,7 +52,7 @@ public class NewShopPageTrackingBuyer extends ShopPageTrackingUser {
                             ShopPageTrackingConstant.SHOP_NAME, shopName,
                             ShopPageTrackingConstant.PAGE_TYPE, SHOPPAGE,
                             ShopPageTrackingConstant.ATTRIBUTION, attribution,
-                            ShopPageTrackingConstant.DIMENSION83, isActiveFreeOngkir? FREE_ONGKIR: NONE_OR_OTHER
+                            ShopPageTrackingConstant.DIMENSION83, isActiveFreeOngkir ? FREE_ONGKIR : NONE_OR_OTHER
                     )
             );
         }
@@ -150,10 +126,10 @@ public class NewShopPageTrackingBuyer extends ShopPageTrackingUser {
     }
 
     public void clickMessageSeller(CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
-                joinDash(TOP_SECTION, CLICK),
-                CLICK_MESSAGE_SELLER,
+                CLICK_CHAT_SELLER,
+                "",
                 customDimensionShopPage);
     }
 
@@ -173,30 +149,22 @@ public class NewShopPageTrackingBuyer extends ShopPageTrackingUser {
                 customDimensionShopPage);
     }
 
-    public void clickProductPicture(boolean isOwner,
-                                    @ListTitleTypeDef String listType,
-                                    String sectionName,
-                                    CustomDimensionShopPageAttribution customDimensionShopPage,
-                                    ShopProductViewModel shopProductViewModel,
-                                    int productPosStart,
-                                    String shopId, String shopName, boolean isActiveFreeOngkir) {
-        if (isOwner) {
-            sendEvent(CLICK_SHOP_PAGE,
-                    SHOP_PAGE_SELLER,
-                    joinDash(joinSpace(listType, sectionName), CLICK),
-                    CLICK_PRODUCT_PICTURE,
-                    customDimensionShopPage);
-        } else {
-            sendDataLayerEvent(
-                    createProductClickMap(PRODUCT_CLICK,
-                            SHOP_PAGE_BUYER,
-                            joinDash(joinSpace(listType, sectionName), CLICK),
-                            CLICK_PRODUCT_PICTURE,
-                            customDimensionShopPage,
-                            shopProductViewModel,
-                            listType, sectionName,
-                            productPosStart, shopId, shopName, isActiveFreeOngkir));
-        }
+    public void clickProduct(boolean isOwner,
+                             @ListTitleTypeDef String listType,
+                             String sectionName,
+                             CustomDimensionShopPageAttribution customDimensionShopPage,
+                             ShopProductViewModel shopProductViewModel,
+                             int productPosStart,
+                             String shopId, String shopName, boolean isActiveFreeOngkir) {
+        sendDataLayerEvent(
+                createProductClickMap(PRODUCT_CLICK,
+                        getShopPageCategory(isOwner),
+                        joinDash(joinSpace(listType, sectionName), CLICK),
+                        CLICK_PRODUCT_PICTURE,
+                        customDimensionShopPage,
+                        shopProductViewModel,
+                        listType, sectionName,
+                        productPosStart, shopId, shopName, isActiveFreeOngkir));
     }
 
     public void impressionProductList(boolean isOwner,
@@ -258,5 +226,54 @@ public class NewShopPageTrackingBuyer extends ShopPageTrackingUser {
                 eventAction,
                 ""
         );
+    }
+
+    public void clickShopProfile(CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_SHOP_PROFILE,
+                "",
+                customDimensionShopPage);
+    }
+
+    public void clickFollowUnfollow(boolean isShopFavorited, CustomDimensionShopPage customDimensionShopPage) {
+        String  action;
+        if(!isShopFavorited){
+            action= CLICK_FOLLOW;
+        }else{
+            action= CLICK_UNFOLLOW;
+        }
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                action,
+                "",
+                customDimensionShopPage);
+    }
+
+    public void clickMoreMenuChip(boolean isOwner,
+                                  String selectedEtalaseName,
+                                  CustomDimensionShopPage customDimensionShopPage) {
+        sendEvent(CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                CLICK_SHOWCASE_LIST,
+                String.format(ETALASE_X, selectedEtalaseName),
+                customDimensionShopPage);
+    }
+
+    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain ,String shopLocation,
+                                          Boolean isShopOfficaial, Boolean isFollowed) {
+        Map<String, Object> mapData = DataLayer.mapOf(
+                ShopPageTrackingConstant.SHOP_NAME ,shopName,
+                ShopPageTrackingConstant.SHOP_ID ,shopID,
+                ShopPageTrackingConstant.SHOP_LOCATION ,shopLocation,
+                ShopPageTrackingConstant.URL_SLUG ,shopDomain,
+                ShopPageTrackingConstant.IS_OFFICIAL_STORE ,isShopOfficaial
+        );
+        String eventName;
+        if (isFollowed)
+            eventName =  ShopPageTrackingConstant.SELLER_ADDED_TO_FAVORITE;
+        else
+            eventName = ShopPageTrackingConstant.SELLER_REMOVED_FROM_FAVORITE;
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(mapData,eventName);
     }
 }

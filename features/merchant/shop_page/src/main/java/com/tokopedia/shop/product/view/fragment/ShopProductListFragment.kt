@@ -470,8 +470,6 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                     shopProductViewModel, productPosition, shopId, it.shopCore.name,it.freeOngkir.isActive)
         }
 
-        //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
-
         startActivity(getProductIntent(shopProductViewModel.id, attribution,
                 shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName) ?: ""))
     }

@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
-                                       private val shopPageTracking: ShopPageTrackingBuyer,
+                                       private val shopPageTracking: NewShopPageTrackingBuyer,
                                        private val context: Context) {
     private var isShopFavourited = false
     private var isShopRequestedModerate = false
@@ -36,7 +36,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
-        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked() }
+        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavourited) }
         view.shop_page_main_profile_location.text = shopInfo.location
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
         if (isMyShop) {
@@ -195,7 +195,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     interface ShopPageFragmentViewHolderListener {
-        fun onFollowerTextClicked()
+        fun onFollowerTextClicked(shopFavourited: Boolean)
         fun toggleFavorite(isFavourite: Boolean)
         fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
