@@ -19,7 +19,12 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
     @Test
     fun given_get_data_success__when_load_first_data__should_set_success_value() {
         runBlocking {
-            val category = Category()
+            val prefixUrl = "prefix"
+            val slug = "slug"
+
+            val category = createCategory(prefixUrl, slug)
+            val channelType = "$prefixUrl$slug"
+
             val osBanners = OfficialStoreBanners()
             val osBenefits = OfficialStoreBenefits()
             val osFeatured = OfficialStoreFeaturedShop()
@@ -28,6 +33,7 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             onGetOfficialStoreBanners_thenReturn(osBanners)
             onGetOfficialStoreBenefits_thenReturn(osBenefits)
             onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+            onSetupDynamicChannelParams_completeWith(channelType)
 
             viewModel.loadFirstData(category)
 
@@ -40,18 +46,24 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             verifyOfficialStoreBenefitsEquals(expectedOSBenefits)
             verifyOfficialStoreFeaturedShopEquals(expectedOSFeaturedShop)
             verifyOfficialStoreDynamicChannelEquals(expectedOSDynamicChannel)
+            verifyDynamicChannelParamsEquals(channelType)
         }
     }
 
     @Test
     fun given_get_data_error__when_load_first_data__should_set_error_value() {
         runBlocking {
-            val category = Category()
             val error = NullPointerException()
+            val prefixUrl = "prefix"
+            val slug = "slug"
+
+            val category = createCategory(prefixUrl, slug)
+            val channelType = "$prefixUrl$slug"
 
             onGetOfficialStoreBanners_thenReturn(error)
             onGetOfficialStoreBenefits_thenReturn(error)
             onGetOfficialStoreFeaturedShop_thenReturn(error)
+            onSetupDynamicChannelParams_completeWith(channelType)
 
             viewModel.loadFirstData(category)
 
@@ -61,6 +73,7 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             verifyOfficialStoreBenefitsError(expectedError)
             verifyOfficialStoreFeaturedShopError(expectedError)
             verifyOfficialStoreDynamicChannelError(expectedError)
+            verifyDynamicChannelParamsEquals(channelType)
         }
     }
 

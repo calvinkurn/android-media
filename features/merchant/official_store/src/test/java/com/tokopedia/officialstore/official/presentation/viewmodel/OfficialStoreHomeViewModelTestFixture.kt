@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
@@ -108,6 +109,10 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coEvery { getRecommendationUseCase.createObservable(any()) } returns mockObservable(recommendations)
     }
 
+    protected fun onSetupDynamicChannelParams_completeWith(withChannelType: String) {
+        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(withChannelType) } returns Unit
+    }
+
     protected fun onAddTopAdsWishList_thenReturn(wishList: WishlistModel) {
         coEvery { topAdsWishlishedUseCase.createObservable(any()) } returns mockObservable(wishList)
     }
@@ -174,6 +179,10 @@ abstract class OfficialStoreHomeViewModelTestFixture {
 
         viewModel.officialStoreDynamicChannelResult
             .assertSuccess(expectedDynamicChannel)
+    }
+
+    protected fun verifyDynamicChannelParamsEquals(channelType: String) {
+        coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) }
     }
 
     protected fun verifyOfficialStoreProductRecommendationEquals(
@@ -315,6 +324,10 @@ abstract class OfficialStoreHomeViewModelTestFixture {
     // region private methods
     protected fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
         return RecommendationItem(productId = productId.toInt(), isTopAds = isTopAds)
+    }
+
+    protected fun createCategory(prefixUrl: String, slug: String): Category {
+        return Category(prefixUrl = prefixUrl, slug = slug)
     }
 
     private fun<T> LiveData<T>.assertSuccess(expectedValue: Success<*>) {
