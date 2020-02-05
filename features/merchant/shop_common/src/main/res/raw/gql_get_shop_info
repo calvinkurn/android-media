@@ -1,8 +1,9 @@
-query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
+query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $source: String){
     shopInfoByID(input: {
         shopIDs: $shopIds,
         fields: $fields,
-        domain: $shopDomain
+        domain: $shopDomain,
+        source: $source
     }){
         result {
             shopCore{
