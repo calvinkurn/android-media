@@ -12,12 +12,12 @@ import com.tokopedia.purchase_platform.*
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.utils.each
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
 import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.*
-import com.tokopedia.purchase_platform.features.checkout.domain.usecase.saf.each
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter
@@ -306,7 +306,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
         Scenario("Disable all") {
 
             Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAllNewBuyer, ShipmentAddressFormDataResponse::class.java))
+                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAll, ShipmentAddressFormDataResponse::class.java))
             }
 
             When("process initial load checkout page") {

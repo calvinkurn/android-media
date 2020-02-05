@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.domain.usecase.saf
 import com.google.gson.Gson
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.*
+import com.tokopedia.purchase_platform.common.utils.each
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
 import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ShipmentMapper
@@ -254,49 +255,12 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             }
         }
 
-        Scenario("Disable all but not new buyer") {
-
-            val result by lazy { subscriber.onNextEvents[0] }
-
-            Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAllOldBuyer, ShipmentAddressFormDataResponse::class.java))
-            }
-
-            When("create observable") {
-                subscriber = useCase.createObservable(param).test()
-            }
-
-            Then("should not have dropshipper disabled") {
-                assertEquals(false, result.isDropshipperDisable)
-            }
-
-            Then("should not have multiple address disabled") {
-                assertEquals(false, result.isMultipleDisable)
-            }
-
-            Then("should not have order prioritas disabled") {
-                assertEquals(false, result.isOrderPrioritasDisable)
-            }
-
-            Then("should have egold attributes") {
-                assertNotNull(result.egoldAttributes)
-            }
-
-            Then("should have purchase protection plan data") {
-                result.groupAddress.each { groupShop.each { products.each { assertNotNull(purchaseProtectionPlanData) } } }
-            }
-
-            Then("should have donation") {
-                assertNotNull(result.donation)
-            }
-        }
-
         Scenario("Disable all") {
 
             val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAllNewBuyer, ShipmentAddressFormDataResponse::class.java))
+                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAll, ShipmentAddressFormDataResponse::class.java))
             }
 
             When("create observable") {
@@ -330,9 +294,3 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
     }
 
 })
-
-fun <T : Any> List<T>.each(action: T.() -> Unit) {
-    for (item in this) {
-        item.action()
-    }
-}
