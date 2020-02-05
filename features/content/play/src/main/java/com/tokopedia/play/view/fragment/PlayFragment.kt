@@ -192,22 +192,12 @@ class PlayFragment : BaseDaggerFragment() {
             view?.let { view ->
                 if (it == PlaySocketInfo.ERROR) {
                     PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_error), playViewModel.isLive)
-                    Toaster.make(
-                            view,
-                            getString(R.string.play_message_socket_error),
-                            type = Toaster.TYPE_ERROR,
-                            duration = Snackbar.LENGTH_INDEFINITE,
-                            actionText = getString(R.string.play_try_again),
-                            clickListener = View.OnClickListener {
-                                playViewModel.getChannelInfo(channelId)
-                            }
-                    )
                 } else if (it == PlaySocketInfo.RECONNECT) {
                     Toaster.make(
                             view,
                             getString(R.string.play_message_socket_reconnect),
                             type = Toaster.TYPE_ERROR,
-                            duration = Toaster.LENGTH_LONG
+                            duration = Snackbar.LENGTH_LONG
                     )
                 }
             }
