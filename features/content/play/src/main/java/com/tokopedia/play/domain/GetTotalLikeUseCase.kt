@@ -66,11 +66,11 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: MultiReque
             """.trimIndent()
         }
 
-        fun createParam(contentId: Int, contentType: Int, isLive: Boolean): HashMap<String, Any> {
+        fun createParam(contentId: Int, contentType: Int, likeType: Int): HashMap<String, Any> {
             return hashMapOf(
                     CONTENT_ID to contentId.toString(),
                     CONTENT_TYPE to contentType,
-                    LIKE_TYPE to if(isLive) 1 else 2
+                    LIKE_TYPE to likeType
             )
         }
     }

@@ -1,13 +1,11 @@
 package com.tokopedia.play.view.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -31,7 +29,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -131,11 +131,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableChanelInfo.value?.likeType.toZeroIfNull()
 
     init {
-        //TODO(Remove, ONLY FOR TESTING)
-//        initMockChat()
-//        initMockFreeze()
-//        initMockBanned()
-
         _observableVOD.value = playManager.videoPlayer
         stateHandler.observeForever(stateHandlerObserver)
     }
@@ -174,15 +169,8 @@ class PlayViewModel @Inject constructor(
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
 
-            launch { getTotalLikes(channel.contentId, channel.contentType) }
+            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
-
-            // TODO("remove, for testing")
-//            channel.videoStream = VideoStream(
-//                    "vertical",
-//                    "live",
-//                    true,
-//                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             /**
              * If Live => start web socket
@@ -244,15 +232,15 @@ class PlayViewModel @Inject constructor(
             if (finalTotalLike < 0) finalTotalLike = 0
             _observableTotalLikes.value = TotalLikeUiModel(
                     finalTotalLike,
-                    finalTotalLike.toAmountString(amountStringStepArray)
+                    finalTotalLike.toAmountString(amountStringStepArray, separator = ".")
             )
         }
     }
 
-    private suspend fun getTotalLikes(contentId: Int, contentType: Int) {
+    private suspend fun getTotalLikes(contentId: Int, contentType: Int, likeType: Int) {
         try {
             val totalLike = withContext(dispatchers.io) {
-                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, likeType)
                 getTotalLikeUseCase.executeOnBackground()
             }
             _observableTotalLikes.value = mapTotalLikes(totalLike)
@@ -442,40 +430,6 @@ class PlayViewModel @Inject constructor(
         playManager.muteVideo(false)
         playManager.setRepeatMode(false)
     }
-
-    //region mock
-    private fun initMockChat() {
-        launch(dispatchers.io) {
-
-            var index = 0
-            while (isActive) {
-                delay(3000)
-                _observableNewChat.postValue(
-                        mapPlayChat(
-                                PlayChat(
-                                        message = "test ${++index}",
-                                        user = PlayChat.UserData(name = "YoMamen")
-                                )
-                        )
-                )
-            }
-        }
-    }
-
-    private fun initMockFreeze() {
-        launch(dispatchers.main) {
-            delay(10000)
-            _observableEvent.value = EventUiModel(isBanned = false, isFreeze = true, freezeTitle = "Freeze title", freezeMessage = "freeze message", freezeButtonTitle = "Freeze Button", freezeButtonUrl = "tokopedia://play/2")
-        }
-    }
-
-    private fun initMockBanned() {
-        launch(dispatchers.main) {
-            delay(10000)
-            _observableEvent.value = EventUiModel(isBanned = true, isFreeze = false, bannedTitle = "You are banned", bannedMessage = "You are banned for spamming", bannedButtonTitle = "Back to Home")
-        }
-    }
-    //endregion
 
     companion object {
         private const val MAX_RETRY_CHANNEL_INFO = 3

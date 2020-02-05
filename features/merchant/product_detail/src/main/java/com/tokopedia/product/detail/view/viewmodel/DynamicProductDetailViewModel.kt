@@ -128,8 +128,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         get() = userSessionInterface.userId
     val isUserHasShop: Boolean
         get() = userSessionInterface.hasShop()
-    val deviceId: String
-        get() = userSessionInterface.deviceId
+    var deviceId: String = userSessionInterface.deviceId
 
     override fun flush() {
         super.flush()
