@@ -20,16 +20,6 @@
         tools:text="Power Merchant (Aktif)" />
 
     <ImageView
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_margin="@dimen/layout_lvl1"
-        android:padding="3dp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_error_card_title"
-        app:layout_constraintStart_toEndOf="@id/tv_error_card_title"
-        app:layout_constraintTop_toTopOf="@id/tv_error_card_title"
-        app:srcCompat="@drawable/ic_info" />
-
-    <ImageView
         android:id="@+id/iv_error"
         android:layout_width="107dp"
         android:layout_height="80dp"
