@@ -22,15 +22,15 @@ class ServerJobService : JobService() {
                     isNetworkAvailable(application) and (LogManager.getCount() > 0) -> {
                         LogManager.deleteExpiredLogs()
                         LogManager.sendLogToServer()
-                        jobFinished(params, false)
+                        jobFinished(params,false)
                     }
                     // When there is data in DB but no network connection, we check this data, if its old we delete it
                     LogManager.loggerRepository.getCount() > 0 -> {
                         LogManager.deleteExpiredLogs()
-                        jobFinished(params, false)
+                        jobFinished(params,false)
                     }
                     else -> {
-                        jobFinished(params, false)
+                        jobFinished(params,false)
                     }
                 }
             }
