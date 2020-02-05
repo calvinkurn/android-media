@@ -13,6 +13,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCa
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -90,8 +91,12 @@ abstract class OfficialStoreHomeViewModelTestFixture {
     }
 
     protected fun onGetOfficialStoreProductRecommendation_thenReturn(recommendations: List<RecommendationWidget>) {
-        coEvery { getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns RequestParams()
+        coEvery { getRecommendationUseCase.getOfficialStoreRecomParams(any(), any(), any()) } returns RequestParams()
         coEvery { getRecommendationUseCase.createObservable(any()) } returns mockObservable(recommendations)
+    }
+
+    protected fun onAddTopAdsWishList_thenReturn(wishList: WishlistModel) {
+        coEvery { topAdsWishlishedUseCase.createObservable(any()) } returns mockObservable(wishList)
     }
 
     protected fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
@@ -108,6 +113,10 @@ abstract class OfficialStoreHomeViewModelTestFixture {
 
     protected fun onGetOfficialStoreProductRecommendation_thenReturn(error: Throwable) {
         coEvery { getRecommendationUseCase.createObservable(any()) } throws error
+    }
+
+    protected fun onAddTopAdsWishList_thenReturn(error: Throwable) {
+        coEvery { topAdsWishlishedUseCase.createObservable(any()) } throws error
     }
     // endregion
 
@@ -158,6 +167,23 @@ abstract class OfficialStoreHomeViewModelTestFixture {
             .assertSuccess(expectedProductRecommendation)
     }
 
+    protected fun verifyTopAdsWishListEquals(
+        expectedTopAdsWishList: Success<WishlistModel>
+    ) {
+        verifyAddTopAdsWishListUseCaseCalled()
+
+        viewModel.topAdsWishlistResult
+            .assertSuccess(expectedTopAdsWishList)
+    }
+
+    protected fun ((Boolean, Throwable?) -> Unit).assertSuccess() {
+        coVerify { this@assertSuccess.invoke(true, null) }
+    }
+
+    protected fun ((Boolean, Throwable?) -> Unit).assertError(expectedError: Throwable?) {
+        coVerify { this@assertError.invoke(false, expectedError) }
+    }
+
     protected fun verifyOfficialStoreBannersError(expectedError: Fail) {
         verifyGetOfficialStoreBannersUseCaseCalled()
 
@@ -191,6 +217,13 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         verifyGetOfficialStoreProductRecommendationUseCaseCalled()
 
         viewModel.officialStoreProductRecommendationResult
+            .assertError(expectedError)
+    }
+
+    protected fun verifyTopAdsWishListError(expectedError: Fail) {
+        verifyAddTopAdsWishListUseCaseCalled()
+
+        viewModel.topAdsWishlistResult
             .assertError(expectedError)
     }
 
@@ -228,6 +261,10 @@ abstract class OfficialStoreHomeViewModelTestFixture {
 
     private fun verifyGetOfficialStoreProductRecommendationUseCaseCalled() {
         coVerify { getRecommendationUseCase.createObservable(any()) }
+    }
+
+    private fun verifyAddTopAdsWishListUseCaseCalled() {
+        coVerify { topAdsWishlishedUseCase.createObservable(any()) }
     }
     // endregion
     

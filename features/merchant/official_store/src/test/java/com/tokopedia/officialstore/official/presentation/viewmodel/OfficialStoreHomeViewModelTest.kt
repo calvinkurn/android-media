@@ -3,11 +3,14 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.*
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.mockk
 
 class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
 
@@ -91,6 +94,44 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
 
             val expectedError = Fail(NullPointerException())
             verifyOfficialStoreProductRecommendationError(expectedError)
+        }
+    }
+
+    @Test
+    fun given_recommendation_is_top_ads__when_add_to_wishlist__should_set_success_value() {
+        runBlocking {
+            val isTopAds = true
+            val wishList = WishlistModel()
+            val recommendation = RecommendationItem(isTopAds = isTopAds)
+            val callback = mockk<((Boolean, Throwable?) -> Unit)>()
+
+            onAddTopAdsWishList_thenReturn(wishList)
+
+            viewModel.addWishlist(recommendation, callback)
+
+            val expectedWishList = Success(wishList)
+            verifyTopAdsWishListEquals(expectedWishList)
+
+            callback.assertSuccess()
+        }
+    }
+
+    @Test
+    fun given_recommendation_is_top_ads__when_add_to_wishlist_failed__should_set_error_value() {
+        runBlocking {
+            val isTopAds = true
+            val error = NullPointerException()
+            val recommendation = RecommendationItem(isTopAds = isTopAds)
+            val callback = mockk<((Boolean, Throwable?) -> Unit)>()
+
+            onAddTopAdsWishList_thenReturn(error)
+
+            viewModel.addWishlist(recommendation, callback)
+
+            val expectedError = Fail(NullPointerException())
+            verifyTopAdsWishListError(expectedError)
+
+            callback.assertError(error)
         }
     }
 }
