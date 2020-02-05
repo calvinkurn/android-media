@@ -26,13 +26,12 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     override fun bind(element: ProgressWidgetUiModel) {
         observeState(element)
         listener.getProgressData()
-        showSuccessState(element)
     }
 
     private fun observeState(element: ProgressWidgetUiModel) {
         val data = element.data
         when {
-            data == null -> {
+            null == data -> {
                 showLoadingState()
             }
             data.error.isNotBlank() -> {
