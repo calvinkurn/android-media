@@ -8,7 +8,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class CpmTopadsProductItemViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel() {
 
-    val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
+    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
     init {
         componentData.value = components

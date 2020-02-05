@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.topads.sdk.utils.ImpresionTask
@@ -25,7 +26,7 @@ class CpmTopadsProductItemViewHolder(itemView: View, private val fragment: Fragm
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         cpmTopadsProductItemViewModel = discoveryBaseViewModel as CpmTopadsProductItemViewModel
         cpmTopadsProductItemViewModel.getComponent().observe(fragment.viewLifecycleOwner, Observer { item ->
-            val data = item.data?.get(0)
+            val data = item.data?.getOrElse(0) { DataItem() }
             ImageHandler.LoadImage(productImage, data?.imageUrlMobile)
             productName.text = data?.name
             productPrice.text = data?.priceFormat

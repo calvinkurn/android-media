@@ -14,8 +14,8 @@
 
     <View
         android:id="@+id/card_background"
-        android:layout_width="228dp"
-        android:layout_height="68dp"
+        android:layout_width="@dimen/shop_card_width"
+        android:layout_height="@dimen/shop_card_height"
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_24"
         android:background="@drawable/card_background_with_shadow"

@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.repository.cpmtopads
 
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.cpmtopads.CpmTopAdsResponse
+import com.tokopedia.discovery2.data.cpmtopads.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.tradein_common.repository.BaseRepository
 import javax.inject.Inject
@@ -14,7 +15,7 @@ open class CpmTopAdsGQLRepository @Inject constructor(val getGQLString: (Int) ->
         val cpmTopAdsResponse = getGQLData(getGQLString(R.raw.query_cpm_topads_gql),
                 CpmTopAdsResponse::class.java, mapOf("params" to paramsMobile)) as CpmTopAdsResponse
         val discoveryDataMapper = DiscoveryDataMapper()
-        val data = cpmTopAdsResponse.displayAdsV3?.data?.get(0)
+        val data = cpmTopAdsResponse.displayAdsV3?.data?.getOrElse(0) { DataItem() }
 
         val listOfProduct = data?.let { discoveryDataMapper.addShopItemToProductList(it) }
         val listComponentsItem = discoveryDataMapper.mapProductListToComponentsList(listOfProduct)
@@ -24,3 +25,5 @@ open class CpmTopAdsGQLRepository @Inject constructor(val getGQLString: (Int) ->
 
 
 }
+
+

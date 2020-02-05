@@ -1,11 +1,9 @@
 package com.tokopedia.discovery2.discoverymapper
 
+import com.tokopedia.design.component.badge.Badge
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.cpmtopads.DataItem
-import com.tokopedia.discovery2.data.cpmtopads.Headline
-import com.tokopedia.discovery2.data.cpmtopads.ImageProduct
-import com.tokopedia.discovery2.data.cpmtopads.ProductItem
+import com.tokopedia.discovery2.data.cpmtopads.*
 
 class DiscoveryDataMapper {
 
@@ -13,7 +11,7 @@ class DiscoveryDataMapper {
         val cpmTitleData = CpmTopAdsData()
         cpmTitleData.brandName = headline.name.toString()
         cpmTitleData.promotedText = headline.promotedText.toString()
-        cpmTitleData.imageUrl = headline.badges?.get(0)?.imageUrl.toString()
+        cpmTitleData.imageUrl = headline.badges?.getOrElse(0) { BadgesItem() }?.imageUrl.toString()
         cpmTitleData.componentList = listComponentsItem
         return cpmTitleData
     }

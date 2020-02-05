@@ -14,8 +14,8 @@
 
     <View
         android:id="@+id/card_background"
-        android:layout_width="244dp"
-        android:layout_height="68dp"
+        android:layout_width="@dimen/prodcut_card_width"
+        android:layout_height="@dimen/prodcut_card_height"
         android:background="@drawable/card_background_with_shadow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

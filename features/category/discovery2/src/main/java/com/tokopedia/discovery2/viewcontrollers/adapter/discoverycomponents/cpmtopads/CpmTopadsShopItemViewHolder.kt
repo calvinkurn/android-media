@@ -27,7 +27,7 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         cpmTopadsItemViewModel = discoveryBaseViewModel as CpmTopadsShopItemViewModel
         cpmTopadsItemViewModel.getComponent().observe(fragment.viewLifecycleOwner, Observer { item ->
-            val data = item.data?.get(0)
+            val data = item.data?.getOrElse(0) { DataItem() }
             ImageHandler.loadImageCircle2(itemView.context,
                     brandImage,
                     data?.imageUrlMobile)
