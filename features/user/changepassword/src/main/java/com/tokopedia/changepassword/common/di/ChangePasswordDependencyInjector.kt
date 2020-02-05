@@ -1,9 +1,9 @@
 package com.tokopedia.changepassword.common.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.changepassword.data.ChangePasswordApi
 import com.tokopedia.changepassword.data.ChangePasswordUrl
@@ -47,7 +47,7 @@ class ChangePasswordDependencyInjector {
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
 
-            val chuckInterceptor = ChuckInterceptor(context)
+            val chuckInterceptor = ChuckerInterceptor(context)
 
             val httpLoggingInterceptor = HttpLoggingInterceptor().apply{
                 level = if (GlobalConfig.isAllowDebuggingTools()) { HttpLoggingInterceptor.Level.BODY} else { HttpLoggingInterceptor.Level.NONE}

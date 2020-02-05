@@ -256,6 +256,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             when (it) {
                 is Success -> {
                     updateToolBarHeading(it.data.name ?: "")
+                    this.departmentId = it.data.id.toString()
                     handleCategoryDetailSuccess()
                 }
                 is Fail -> {

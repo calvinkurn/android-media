@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
@@ -57,7 +57,7 @@ public class LoginRegisterModule {
     @Provides
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      TkpdOldAuthInterceptor tkpdAuthInterceptor,
-                                     ChuckInterceptor chuckInterceptor,
+                                     ChuckerInterceptor chuckInterceptor,
                                      DebugInterceptor debugInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      FingerprintInterceptor fingerprintInterceptor) {
