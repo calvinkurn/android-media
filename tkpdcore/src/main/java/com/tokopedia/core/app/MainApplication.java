@@ -53,6 +53,7 @@ public abstract class MainApplication extends MainRouterApplication{
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
+    private UserSession userSession;
 
     public static MainApplication getInstance() {
         return instance;
@@ -141,6 +142,7 @@ public abstract class MainApplication extends MainRouterApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
+        userSession = new UserSession(this);
         init();
         initCrashlytics();
         initStetho();
@@ -187,7 +189,9 @@ public abstract class MainApplication extends MainRouterApplication{
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier("");
+            Crashlytics.setUserIdentifier(userSession.getUserId());
+            Crashlytics.setUserEmail(userSession.getEmail());
+            Crashlytics.setUserName(userSession.getName());
         }
     }
 
@@ -212,7 +216,6 @@ public abstract class MainApplication extends MainRouterApplication{
 
     private void initBranch() {
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
-        UserSession userSession = new UserSession(this);
 
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
