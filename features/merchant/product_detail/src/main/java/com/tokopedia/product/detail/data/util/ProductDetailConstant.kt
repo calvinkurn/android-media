@@ -134,7 +134,7 @@ object ProductDetailConstant {
 
     //Save Instance State
     const val SAVED_NOTE = "saved_note"
-    const val SAVED_LOGIN = "saved_login"
+    const val SAVED_ACTIVITY_RESULT = "saved_activity_result"
     const val SAVED_QUANTITY = "saved_quantity"
     const val SAVED_VARIANT = "saved_variant"
 

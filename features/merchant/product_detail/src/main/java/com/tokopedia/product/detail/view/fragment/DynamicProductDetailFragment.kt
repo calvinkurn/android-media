@@ -261,7 +261,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_LOGIN, true)
+            doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
             userInputNotes = savedInstanceState.getString(ProductDetailConstant.SAVED_NOTE, "")
             userInputQuantity = savedInstanceState.getInt(ProductDetailConstant.SAVED_QUANTITY, 1)
             userInputVariant = savedInstanceState.getString(ProductDetailConstant.SAVED_VARIANT)
@@ -289,7 +289,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(ProductDetailConstant.SAVED_LOGIN, false)
+        // If the activity being destroyed and onActivityResult start afterward
+        // Then just ignore onActivityResult with this variable
+        outState.putBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, false)
         outState.putString(ProductDetailConstant.SAVED_NOTE, userInputNotes)
         outState.putInt(ProductDetailConstant.SAVED_QUANTITY, userInputQuantity)
         outState.putString(ProductDetailConstant.SAVED_VARIANT, userInputVariant)
@@ -540,6 +542,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDestroy() {
+        viewModel.productLayout.removeObservers(this)
         viewModel.p2ShopDataResp.removeObservers(this)
         viewModel.p2General.removeObservers(this)
         viewModel.p2Login.removeObservers(this)
@@ -636,6 +639,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             UriUtil.buildUri(ApplinkConst.SHOP, shopId)
         })
         startActivity(intent)
+    }
+
+    override fun goToApplink(url: String) {
+        RouteManager.route(context, url)
     }
 
     /**
@@ -981,8 +988,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 is Success -> {
                     context?.let { context ->
                         pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
-                        onSuccessGetDataP1(it.data)
                     }
+                    onSuccessGetDataP1(it.data)
                 }
                 is Fail -> {
                     logException(it.throwable)

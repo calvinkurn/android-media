@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -48,7 +47,7 @@ class ProductInfoAdapter(private val listener: DynamicProductDetailListener,
                             if (uriLink.size >= 2 && uriLink[1] == "etalase") {
                                 listener.onEtalaseClicked(data.applink)
                             } else {
-                                RouteManager.route(view.context, data.applink)
+                                listener.goToApplink(data.applink)
                             }
                         }
                     }
