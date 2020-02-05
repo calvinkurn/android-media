@@ -117,3 +117,8 @@ const val HARGA_PAKET = "harga paket"
 const val SLIDER_BANNER = "slider banner"
 
 const val MY_UMRAH_AND_DREAM_FUND_CREATIVE = "https://ecs7.tokopedia.net/assets-tokopedia-lite/v2/firdaus/kratos/a61bc722.png"
+
+const val UMRAH_TRAVEL_PAGE_CATEGORY = "travel page umroh"
+const val UMRAH_TRAVEL_CLICK_INFO = "click info"
+const val UMRAH_TRAVEL_CLICK_MORE = "click selengkapnya"
+const val UMRAH_TRAVEL_CLICK_PACKET = "click paket umroh"

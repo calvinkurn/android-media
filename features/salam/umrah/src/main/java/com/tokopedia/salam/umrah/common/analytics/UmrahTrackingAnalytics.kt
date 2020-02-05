@@ -580,4 +580,45 @@ class UmrahTrackingAnalytics {
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
+
+    fun umrahTravelAgentClickBack(){
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_TRAVEL_PAGE_CATEGORY
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_BACK
+        map[TrackAppUtils.EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+
+    fun umrahTravelAgentClickInfo(){
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_TRAVEL_PAGE_CATEGORY
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_INFO
+        map[TrackAppUtils.EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun umrahTravelAgentClickSelengkapnya(){
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_TRAVEL_PAGE_CATEGORY
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_MORE
+        map[TrackAppUtils.EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun umrahTravelAgentClickPacketUmroh(){
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_TRAVEL_PAGE_CATEGORY
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_PACKET
+        map[TrackAppUtils.EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
 }
