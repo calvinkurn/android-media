@@ -229,4 +229,22 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             callback.assertError(expectedError)
         }
     }
+
+    @Test
+    fun given_user_session_logged_in__when_call_isLoggedIn__should_return_true() {
+        val isLoggedIn = true
+
+        onGetUserSessionIsLoggedIn_thenReturn(isLoggedIn)
+
+        verifyIsLoggedInEquals(true)
+    }
+
+    @Test
+    fun given_user_session_logged_out__when_call_isLoggedIn__should_return_false() {
+        val isLoggedIn = false
+
+        onGetUserSessionIsLoggedIn_thenReturn(isLoggedIn)
+
+        verifyIsLoggedInEquals(false)
+    }
 }

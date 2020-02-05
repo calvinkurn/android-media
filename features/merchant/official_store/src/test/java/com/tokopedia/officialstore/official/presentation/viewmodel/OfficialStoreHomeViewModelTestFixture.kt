@@ -27,6 +27,7 @@ import io.mockk.CapturingSlot
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import org.junit.After
@@ -127,6 +128,10 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coEvery { removeWishListUseCase.createObservable(productId, userId, any()) } returns Unit
     }
 
+    protected fun onGetUserSessionIsLoggedIn_thenReturn(loggedIn: Boolean) {
+        every { userSessionInterface.isLoggedIn } returns loggedIn
+    }
+
     protected fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } throws error
     }
@@ -206,6 +211,11 @@ abstract class OfficialStoreHomeViewModelTestFixture {
 
         viewModel.topAdsWishlistResult
             .assertSuccess(expectedTopAdsWishList)
+    }
+
+    protected fun verifyIsLoggedInEquals(expectedLoggedInStatus: Boolean) {
+        val actualLoggedInStatus = viewModel.isLoggedIn()
+        assertEquals(expectedLoggedInStatus, actualLoggedInStatus)
     }
 
     protected fun ((Boolean, Throwable?) -> Unit).assertSuccess() {
