@@ -30,6 +30,7 @@ import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -92,7 +93,6 @@ class PlayFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
-        PlayAnalytics.sendScreen(channelId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -128,6 +128,7 @@ class PlayFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         playViewModel.getChannelInfo(channelId)
 
+        observeGetChannelInfo()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoProperty()
@@ -185,6 +186,15 @@ class PlayFragment : BaseDaggerFragment() {
 
             insets
         }
+    }
+
+    private fun observeGetChannelInfo() {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success ->
+                    PlayAnalytics.sendScreen(channelId, playViewModel.isLive)
+            }
+        })
     }
 
     private fun observeSocketInfo() {
