@@ -16,6 +16,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.exception.MessageErrorException
@@ -42,14 +43,15 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         topupBillsViewModel.enquiryData.observe(this, Observer {
             it.run {
                 when (it) {
-                    is Success -> {
-                        if (it.data.enquiry.attributes != null) {
-                            processEnquiry(it.data)
-                        } else {
-                            showEnquiryError(MessageErrorException(getString(R.string.common_topup_enquiry_error)))
+                    is Success -> processEnquiry(it.data)
+                    is Fail -> {
+                        // Handle null response error
+                        var throwable = it.throwable
+                        if (throwable.message == NULL_RESPONSE) {
+                            throwable = MessageErrorException(getString(R.string.common_topup_enquiry_error))
                         }
+                        showEnquiryError(throwable)
                     }
-                    is Fail -> showEnquiryError(it.throwable)
                 }
             }
         })
