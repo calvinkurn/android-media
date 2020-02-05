@@ -1,30 +1,31 @@
 package com.tokopedia.mediauploader.data
 
 import com.tokopedia.mediauploader.data.entity.Uploader
-import retrofit2.http.POST
-import retrofit2.http.Path
+import okhttp3.MultipartBody
+import retrofit2.http.*
 
 interface UploaderServices {
 
-    @POST("$UPLOAD_URL/{file_type}/{source_id}")
+    @POST
+    @Multipart
     suspend fun uploadFile(
             /*
-            * file_type:
-            * image | file | video
+            * get url from data policy
             * */
-            @Path("file_type") fileType: String,
+            @Url urlToUpload: String,
+
             /*
-            * source_id:
-            * tribe source id based on request
+            * file_upload:
+            * media blob (a file) to upload
             * */
-            @Path("source_id") sourceId: String
+            @Part fileUpload: MultipartBody.Part
     ) : Uploader
 
     companion object {
         private const val API_VERSION = "v1"
         private const val UPLOAD_PATH = "upload"
 
-        const val UPLOAD_URL = "/$API_VERSION/$UPLOAD_PATH"
+        const val UPLOAD_URL = "/$API_VERSION/$UPLOAD_PATH/{file_type}/{source_id}"
     }
 
 }
