@@ -20,6 +20,7 @@ import com.example.tradein_common.R;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein_common.viewmodel.BaseLifeCycleObserver;
@@ -238,7 +239,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.newInstance();
+        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.Companion.newInstance();
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);
         accessDialog.setPositiveButton(positiveButton);
@@ -248,7 +249,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     protected void showAgeVerificationDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.newInstance();
+        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.Companion.newInstance();
         accessDialog.setLayoutResId(R.layout.age_restriction_verifcation_dialog);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);
