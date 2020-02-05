@@ -56,7 +56,8 @@ include 'features:discovery:productcard'
 include 'features:discovery:productcard_options'
 include 'features:discovery:carousel_productcard'
 include 'features:discovery:filter'
-include 'features:discovery:similarsearch'include "features:user:attachcommon"
+include 'features:discovery:similarsearch'
+include "features:user:attachcommon"
 
 include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
