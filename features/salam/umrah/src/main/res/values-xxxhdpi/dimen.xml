@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="margin_top_umrah_search">30dp</dimen>
+    <dimen name="margin_right_umrah_banner">40dp</dimen>
 </resources>

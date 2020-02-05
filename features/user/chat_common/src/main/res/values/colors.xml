@@ -20,7 +20,8 @@
     <color name="tkpd_yellow_status">#FFF6BF</color>
 
     <color name="product_preview_container">#f8f8f8</color>
-    <color name="chatcommon_hour_time">#51000000</color>
+    <color name="chatcommon_hour_time">#70000000</color>
     <color name="chatcommon_grey_68">#ae31353b</color>
+    <color name="chatcommon_wishlist_selected">#EF144A</color>
 
 </resources>

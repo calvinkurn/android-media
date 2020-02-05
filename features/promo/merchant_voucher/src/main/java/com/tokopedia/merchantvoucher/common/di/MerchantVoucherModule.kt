@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,8 +27,9 @@ class MerchantVoucherModule {
 
     @Provides
     @MerchantVoucherScope
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @Provides

@@ -216,16 +216,24 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
     }
 
     private fun setCounterNotificationUpdate() {
+        var counter = ""
         val defaultTitle = getString(R.string.title_notification_update)
-        val counter = getString(R.string.title_counter_update_notification, if (updateCounter > 0) {
-            updateCounter.toString()
-        } else {
-            getString(R.string.exceed_ninety_nine)
-        })
+        if (updateCounter > 0) {
+            counter = setCounterText(updateCounter.toString())
+        } else if (updateCounter > 99) {
+            counter = setCounterText(getString(R.string.exceed_ninety_nine))
+        }
 
-        customTabView?.findViewById<TextView>(R.id.title)?.let {
+        val tabView = tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView
+        val textTab: TextView? = tabView?.findViewById(R.id.title)
+
+        textTab?.let {
             it.text = String.format("%s%s", defaultTitle, counter)
         }
+    }
+
+    private fun setCounterText(text: String): String {
+        return getString(R.string.title_counter_update_notification, text)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

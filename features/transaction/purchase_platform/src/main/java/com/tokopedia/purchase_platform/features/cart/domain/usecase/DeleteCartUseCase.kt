@@ -18,6 +18,7 @@ import javax.inject.Inject
  */
 
 class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                            private val graphqlUseCase: GraphqlUseCase,
                                             private val schedulers: ExecutorSchedulers) : UseCase<DeleteCartData>() {
 
     companion object {
@@ -54,7 +55,6 @@ class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStack
         )
 
         val graphqlRequest = GraphqlRequest(QUERY, DeleteCartGqlResponse::class.java, variables)
-        val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

@@ -19,7 +19,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="7sp"
-        android:text="@string/send"
+        android:text="@string/submit_review"
         android:textColor="@color/grey_700"
         android:textSize="@dimen/sp_14"
         android:textStyle="normal"
