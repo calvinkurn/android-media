@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhome.view.viewholder
 
 import android.view.View
-import com.tkpd.library.ui.view.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.TooltipClickListener
+import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
@@ -97,12 +98,13 @@ class PostListViewHolder(
         itemView.sah_error_layout.gone()
     }
 
-    private fun setupTooltip(tooltip: TooltipUiModel?) {
+    private fun setupTooltip(tooltip: TooltipUiModel?) = with(itemView) {
         if (tooltip == null) {
-            itemView.iv_info.gone()
+            iv_info.gone()
         } else {
-            itemView.iv_info.visible()
-            itemView.iv_info.setOnClickListener { showBottomSheet(tooltip) }
+            iv_info.visible()
+            iv_info.setOnClickListener { showBottomSheet(tooltip) }
+            tv_card_title.setOnClickListener { showBottomSheet(tooltip) }
         }
     }
 

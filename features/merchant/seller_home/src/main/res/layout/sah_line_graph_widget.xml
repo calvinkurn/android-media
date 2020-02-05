@@ -122,16 +122,16 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLineGraphView"
             app:typographyWeight="reguler" />
 
-        <com.tokopedia.unifycomponents.UnifyImageButton
+        <ImageView
             android:id="@+id/btnLineGraphNext"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:tint="@color/Green_G500"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
             app:layout_constraintBottom_toBottomOf="@+id/btnLineGraphMore"
             app:layout_constraintStart_toEndOf="@+id/btnLineGraphMore"
             app:layout_constraintTop_toTopOf="@+id/btnLineGraphMore"
-            app:srcCompat="@drawable/ic_sah_arrow_right"
-            app:unifyImageButtonVariant="image" />
+            app:srcCompat="@drawable/ic_arrow_right_default" />
 
         <include
             layout="@layout/sah_partial_line_graph_widget_error"

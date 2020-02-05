@@ -3,9 +3,11 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.view.model.ProgressDataUiModel
 import com.tokopedia.sellerhome.view.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import kotlinx.android.synthetic.main.sah_partial_progress_widget.view.*
@@ -64,8 +66,8 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
         showProgressLayout()
     }
 
-    private fun goToDetails() {
-        Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
+    private fun goToDetails(element: ProgressWidgetUiModel) {
+        RouteManager.route(itemView.context, element.appLink)
     }
 
     private fun showErrorState(element: ProgressWidgetUiModel) {
@@ -98,10 +100,10 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
                 tv_see_details.visibility = View.VISIBLE
                 iv_arrow_url.visibility = View.VISIBLE
                 tv_see_details.setOnClickListener {
-                    goToDetails()
+                    goToDetails(element)
                 }
                 iv_arrow_url.setOnClickListener {
-                    goToDetails()
+                    goToDetails(element)
                 }
             } else {
                 tv_see_details.visibility = View.GONE

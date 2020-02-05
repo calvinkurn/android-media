@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.domain.usecase
 
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.view.model.*
@@ -23,7 +24,7 @@ class GetLayoutUseCase(
                         subtitle = "Maksimalkan penjualanmu dengan upgrade jadi Power Merchant! Tingkatkan penjualan dengan mengakses fitur dan promo khusus untuk Power Merchant",
                         tooltip = null,
                         url = "",
-                        appLink = "tokopedia://pesanan-baru/detail",
+                        appLink = ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM,
                         dataKey = "",
                         ctaText = "Tambah produk sekarang",
                         data = null
@@ -174,10 +175,10 @@ class GetLayoutUseCase(
                 ProgressWidgetUiModel(
                         widgetType = WidgetType.PROGRESS,
                         title = "Power Merchant (Aktif)",
-                        subtitle = "",
+                        subtitle = "Skor",
                         tooltip = null,
                         url = "",
-                        appLink = "testing",
+                        appLink = ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL,
                         dataKey = "shopScore",
                         ctaText = "Selengkapnya",
                         data = null

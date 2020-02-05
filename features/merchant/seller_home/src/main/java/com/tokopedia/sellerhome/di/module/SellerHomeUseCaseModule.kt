@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.domain.mapper.CardMapper
 import com.tokopedia.sellerhome.domain.mapper.LineGraphMapper
