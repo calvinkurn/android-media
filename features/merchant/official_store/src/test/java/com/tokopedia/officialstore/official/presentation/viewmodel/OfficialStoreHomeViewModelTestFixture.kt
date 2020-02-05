@@ -21,47 +21,52 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.CapturingSlot
-import io.mockk.MockKAnnotations
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import rx.Observable
+import rx.Scheduler
+import rx.android.plugins.RxAndroidPlugins
+import rx.android.plugins.RxAndroidSchedulersHook
 import rx.observables.BlockingObservable
+import rx.schedulers.Schedulers
 
 abstract class OfficialStoreHomeViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-
-    @RelaxedMockK
-    lateinit var getOfficialStoreBannersUseCase: GetOfficialStoreBannerUseCase
-    @RelaxedMockK
-    lateinit var getOfficialStoreBenefitUseCase: GetOfficialStoreBenefitUseCase
-    @RelaxedMockK
-    lateinit var getOfficialStoreFeaturedShopUseCase: GetOfficialStoreFeaturedUseCase
-    @RelaxedMockK
-    lateinit var getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase
-    @RelaxedMockK
-    lateinit var getRecommendationUseCase: GetRecommendationUseCase
-    @RelaxedMockK
-    lateinit var userSessionInterface: UserSessionInterface
-    @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-    @RelaxedMockK
-    lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
-    @RelaxedMockK
-    lateinit var removeWishListUseCase: RemoveWishListUseCase
+    
+    private lateinit var getOfficialStoreBannersUseCase: GetOfficialStoreBannerUseCase
+    private lateinit var getOfficialStoreBenefitUseCase: GetOfficialStoreBenefitUseCase
+    private lateinit var getOfficialStoreFeaturedShopUseCase: GetOfficialStoreFeaturedUseCase
+    private lateinit var getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase
+    private lateinit var getRecommendationUseCase: GetRecommendationUseCase
+    private lateinit var userSessionInterface: UserSessionInterface
+    private lateinit var addWishListUseCase: AddWishListUseCase
+    private lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
+    private lateinit var removeWishListUseCase: RemoveWishListUseCase
 
     protected lateinit var viewModel: OfficialStoreHomeViewModel
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
+        registerRxSchedulerHook()
+
+        getOfficialStoreBannersUseCase = mockk(relaxed = true)
+        getOfficialStoreBenefitUseCase = mockk(relaxed = true)
+        getOfficialStoreFeaturedShopUseCase = mockk(relaxed = true)
+        getOfficialStoreDynamicChannelUseCase = mockk(relaxed = true)
+        getRecommendationUseCase = mockk(relaxed = true)
+        userSessionInterface = mockk(relaxed = true)
+        addWishListUseCase = mockk(relaxed = true)
+        topAdsWishlishedUseCase = mockk(relaxed = true)
+        removeWishListUseCase = mockk(relaxed = true)
 
         viewModel = OfficialStoreHomeViewModel(
             getOfficialStoreBannersUseCase,
@@ -75,6 +80,12 @@ abstract class OfficialStoreHomeViewModelTestFixture {
             removeWishListUseCase,
             Dispatchers.Unconfined
         )
+    }
+
+    @After
+    fun reset() {
+        clearAllMocks()
+        resetRxSchedulerHook()
     }
 
     // region stub
@@ -288,6 +299,19 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coEvery { obs.toBlocking() } returns blockingObs
 
         return obs
+    }
+
+    private fun registerRxSchedulerHook() {
+        RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
+            override fun getMainThreadScheduler(): Scheduler {
+                return Schedulers.immediate()
+            }
+        })
+    }
+
+    private fun resetRxSchedulerHook() {
+        @Suppress("UnstableApiUsage")
+        RxAndroidPlugins.getInstance().reset()
     }
     // endregion
 }

@@ -212,7 +212,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             }) {
                 callback.invoke(false, it)
             }
-
         } else {
             addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
