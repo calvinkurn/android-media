@@ -303,41 +303,6 @@ object ShipmentPresenterDisableFeatureTest : Spek({
             }
         }
 
-        Scenario("Disable all but not new buyer") {
-
-            Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAllOldBuyer, ShipmentAddressFormDataResponse::class.java))
-            }
-
-            When("process initial load checkout page") {
-                presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-            }
-
-            Then("should not have dropshipper disable in all items") {
-                presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
-            }
-
-            Then("should not have multiple address disabled") {
-                assertEquals(false, presenter.recipientAddressModel.isDisableMultipleAddress)
-            }
-
-            Then("should not have order prioritas disabled in all items") {
-                presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
-            }
-
-            Then("should have egold attributes") {
-                assertNotNull(presenter.egoldAttributeModel)
-            }
-
-            Then("should have purchase protection plan data in all items") {
-                presenter.shipmentCartItemModelList.each { cartItemModels.each { assertEquals(true, isProtectionAvailable) } }
-            }
-
-            Then("should have donation") {
-                assertNotNull(presenter.shipmentDonationModel)
-            }
-        }
-
         Scenario("Disable all") {
 
             Given("mock response") {
