@@ -110,7 +110,7 @@ class DensityFinderTest {
     fun findDensityReturnEmpty(){
         every { mockRes.displayMetrics } returns metrics
         every { context.resources } returns mockRes
-        metrics.densityDpi = DisplayMetrics.DENSITY_140
+        metrics.densityDpi = DisplayMetrics.DENSITY_DEFAULT
         val density = DensityFinder.findDensity(context)
 
         assertEquals("", density)
