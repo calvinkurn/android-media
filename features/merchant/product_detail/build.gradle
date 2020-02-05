@@ -58,18 +58,6 @@ android {
     }
 }
 
-String findAllReports() {
-    def file = "${rootProject.buildDir}/reports"
-
-    def sonarEnabledProjects = rootProject.subprojects
-            .findAll { p -> p.sonarqube.getProperties().get("skipProject") == false }
-            *.name
-            .collect { projectName -> "$file/jacocoTestReport-${projectName}.xml" }
-            .join(",")
-
-    return sonarEnabledProjects
-}
-
 sonarqube {
     properties {
         def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-27/android.jar"/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
