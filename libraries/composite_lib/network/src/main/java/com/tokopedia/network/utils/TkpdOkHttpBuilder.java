@@ -2,7 +2,7 @@ package com.tokopedia.network.utils;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
