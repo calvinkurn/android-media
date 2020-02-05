@@ -204,8 +204,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                             sendGeneralEvent(clickEvent,
                                     category,
                                     TradeInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
-                                    String.format("phone type : %s - min price : %s - max price : %s",
-                                            tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), homeResult.minPrice, homeResult.maxPrice));
+                                    getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                                            tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), homeResult.minPrice.toString(), homeResult.maxPrice.toString()));
 
                         });
                         if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
@@ -453,11 +453,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
     private void sendIrisEvent(Integer maxPrice, Integer minPrice){
         HashMap<String, Object> values = new HashMap<>();
-        values.put("event", TradeInGTMConstants.ACTION_VIEW_TRADEIN_IRIS);
-        values.put("eventCategory", TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE);
-        values.put("eventAction", TradeInGTMConstants.VIEW_PRICE_RANGE_PAGE);
-        values.put("eventLabel",  String.format("phone type : %s - min price : %s - max price : %s", tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), minPrice, maxPrice));
-        values.put("productId",  tradeInHomeViewModel.getTradeInParams().getProductId());
+        values.put(TradeInGTMConstants.EVENT, TradeInGTMConstants.ACTION_VIEW_TRADEIN_IRIS);
+        values.put(TradeInGTMConstants.EVENT_CATEGORY, TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE);
+        values.put(TradeInGTMConstants.EVENT_ACTION, TradeInGTMConstants.VIEW_PRICE_RANGE_PAGE);
+        values.put(TradeInGTMConstants.EVENT_LABEL,  getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase(), minPrice.toString(), maxPrice.toString()));
+        values.put(TradeInGTMConstants.PRODUCT_ID,  tradeInHomeViewModel.getTradeInParams().getProductId());
 
         IrisAnalytics.getInstance(this).sendEvent(values);
     }

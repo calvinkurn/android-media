@@ -847,7 +847,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         this, quantity,
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
-                        String.format("phone type : %s - phone price : %s - diagnostic id : %s", phoneType, phonePrice, deviceid))
+                        getString(R.string.trade_in_event_label_phone_type_phone_price_diagnostic_id, phoneType, phonePrice, deviceid))
             }
             activity?.run {
                 val shipmentFormRequest = ShipmentFormRequest.BundleBuilder()
