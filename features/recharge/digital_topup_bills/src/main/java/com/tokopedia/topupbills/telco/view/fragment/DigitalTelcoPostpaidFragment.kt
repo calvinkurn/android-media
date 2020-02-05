@@ -22,7 +22,6 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
@@ -279,31 +278,23 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun onSuccessEnquiry(telcoEnquiryData: TelcoEnquiryData) {
-        if (telcoEnquiryData.enquiry.attributes != null) {
-            sharedModel.setEnquiryResult(telcoEnquiryData)
-            postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
-            recentNumbersWidget.visibility = View.GONE
-            promoListWidget.visibility = View.GONE
+        sharedModel.setEnquiryResult(telcoEnquiryData)
+        postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
+        recentNumbersWidget.visibility = View.GONE
+        promoListWidget.visibility = View.GONE
 
-            buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes!!.price)
-            buyWidget.setVisibilityLayout(true)
-            buyWidget.setListener(object : TopupBillsCheckoutWidget.ActionListener {
-                override fun onClickNextBuyButton() {
-                    processToCart()
-                }
-            })
-        } else {
-            onErrorEnquiry(MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_error)))
-        }
+        buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
+        buyWidget.setVisibilityLayout(true)
+        buyWidget.setListener(object : TopupBillsCheckoutWidget.ActionListener {
+            override fun onClickNextBuyButton() {
+                processToCart()
+            }
+        })
     }
 
     fun onErrorEnquiry(throwable: Throwable) {
         view?.run {
-            var throwableItem = throwable
-            if (throwable.message == DigitalTelcoEnquiryViewModel.NULL_VALUE) {
-                throwableItem = MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_error))
-            }
-            Toaster.showError(this, ErrorHandler.getErrorMessage(activity, throwableItem), Snackbar.LENGTH_LONG)
+            Toaster.showError(this, ErrorHandler.getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
         }
     }
 

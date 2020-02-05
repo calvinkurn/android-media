@@ -67,19 +67,17 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
     }
 
     fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {
-        telcoEnquiryData.enquiry.attributes?.mainInfoList?.let { enquiryData ->
-            enquiryResult.removeAllViews()
-            for (item in enquiryData) {
-                if (!TextUtils.isEmpty(item.value)) {
-                    val billsResult = DigitalTelcoBillsResultWidget(context)
-                    billsResult.setLabel(item.label)
-                    billsResult.setValue(item.value)
-                    enquiryResult.addView(billsResult)
-                }
+        enquiryResult.removeAllViews()
+        for(item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
+            if (!TextUtils.isEmpty(item.value)) {
+                val billsResult = DigitalTelcoBillsResultWidget(context)
+                billsResult.setLabel(item.label)
+                billsResult.setValue(item.value)
+                enquiryResult.addView(billsResult)
             }
-            btnEnquiry.visibility = View.GONE
-            titleEnquiryResult.visibility = View.VISIBLE
         }
+        btnEnquiry.visibility = View.GONE
+        titleEnquiryResult.visibility = View.VISIBLE
     }
 
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {

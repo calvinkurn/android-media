@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
-import com.tokopedia.network.exception.MessageErrorException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,17 +27,9 @@ class DigitalTelcoEnquiryViewModel @Inject constructor(private val graphqlReposi
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoEnquiryData>()
 
-            if (data.enquiry.attributes != null) {
-                onSuccess(data)
-            } else {
-                onError(MessageErrorException(NULL_VALUE))
-            }
+            onSuccess(data)
         }) {
             onError(it)
         }
-    }
-
-    companion object {
-        const val NULL_VALUE = "null"
     }
 }

@@ -208,10 +208,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
         toggleEnquiryLoadingBar(false)
-        data.enquiry.attributes?.let { attributes ->
-            isEnquired = true
-            renderEnquiryResult(attributes.mainInfoList)
-        }
+        isEnquired = true
+        renderEnquiryResult(data.enquiry.attributes.mainInfoList)
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {

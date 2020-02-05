@@ -15,5 +15,5 @@ data class TopupBillsEnquiry (
     val retryDuration: Int = 0,
     @SerializedName("attributes")
     @Expose
-    val attributes: TopupBillsEnquiryAttribute? = TopupBillsEnquiryAttribute()
+    val attributes: TopupBillsEnquiryAttribute = TopupBillsEnquiryAttribute()
 )
