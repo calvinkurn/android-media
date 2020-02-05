@@ -1,14 +1,74 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
+apply plugin: "org.sonarqube"
+
+
+String findAllReports() {
+    def file = "${rootProject.buildDir}/reports"
+
+    def sonarEnabledProjects = rootProject.subprojects
+            .findAll { p -> p.sonarqube.getProperties().get("skipProject") == false }
+            *.name
+            .collect { projectName -> "$file/jacocoTestReport-${projectName}.xml" }
+            .join(",")
+
+    return sonarEnabledProjects
+}
+
+sonarqube {
+    properties {
+        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-27/android.jar"/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
+        property "sonar.verbose", true
+        property "sonar.sources", "src/main/java"
+        property "sonar.binaries", "build/intermediates/classes/debug"
+        property "sonar.libraries", libraries
+        property "sonar.tests", "src/test/java, src/androidTest/java"
+        property "sonar.java.test.binaries", "build/intermediates/javac/debugUnitTest/classes/"
+        property "sonar.java.test.libraries", libraries
+        property "sonar.coverage.jacoco.xmlReportPaths", findAllReports()
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.junit.reportsPath", "build/test-results/testDebugUnitTest"
+        property "sonar.android.lint.report", "build/reports/lint-results.xml"
+    }
+}
+
+android {
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
+    }
+
+    testOptions {
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.search.application.SearchInstrumentationTestRunner"
+    }
+}
 
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        jcenter()
         maven { url 'https://hansel.io/maven' }
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -95,6 +155,10 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation "org.json:json:20140107"
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
 
@@ -105,6 +169,14 @@ project.ext {
     groupId = 'com.tokopedia.merchant'
     versionName = "0.0.1"
     artifactName = "product_detail-release"
+    unitTestJavaIncludes = [
+            '**/UrlParamUtils.*'
+    ]
+    unitTestKotlinIncludes = [
+            '**/SearchShopViewModel.*',
+            '**/SearchViewModel.*',
+            '**/SearchKotlinExtKt.*',
+    ]
 }
 
 apply from: '../../../publish_local.gradle'
