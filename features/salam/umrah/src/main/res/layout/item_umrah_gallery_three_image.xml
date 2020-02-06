@@ -36,15 +36,49 @@
             app:typographyType="body_3"
             android:layout_marginLeft="@dimen/dp_12"
             />
-<!--        Youtube Player-->
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iw_umrah_gallery_three_image_image"
+        <LinearLayout
+            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
-            />
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_weight="1"
+                android:id="@+id/iw_umrah_gallery_three_image_first"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:background="@drawable/umrah_bg_rounded_image"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_weight="1"
+                android:id="@+id/iw_umrah_gallery_three_image_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_1"
+                android:layout_marginRight="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:background="@drawable/umrah_bg_rounded_image"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_weight="1"
+                android:id="@+id/iw_umrah_gallery_three_image_third"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:background="@drawable/umrah_bg_rounded_image"
+                />
+
+        </LinearLayout>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_umrah_gallery_three_image_desc"
             android:layout_width="match_parent"
