@@ -3,10 +3,13 @@ package com.tokopedia.sellerhomedrawer.presentation.view.drawer
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -68,6 +71,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         injectDependency()
         setupDrawer()
         setupToolbar()
+        setupDrawerStatusBar()
     }
 
     fun injectDependency() {
@@ -110,11 +114,6 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     override fun getLayoutRes(): Int {
         return R.layout.sh_drawer_activity
     }
-
-
-//    override fun getContentId(): Int {
-//        return R.layout.sh_drawer_activity
-//    }
 
     override fun onErrorGetDeposit(errorMessage: String) {
 
@@ -274,7 +273,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
 
     private fun Toolbar.initTitle() {
         toolbarTitle = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
-        toolbarTitle.actionbar_title.text = getTitle()
+        toolbarTitle.actionbar_title.text = title
         this.addView(toolbarTitle)
     }
 
@@ -294,6 +293,16 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
             setDisplayHomeAsUpEnabled(false)
             setDisplayShowTitleEnabled(false)
             setHomeButtonEnabled(false)
+        }
+    }
+
+    private fun setupDrawerStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.apply {
+                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                statusBarColor = ContextCompat.getColor(context, com.tokopedia.design.R.color.white_95)
+            }
         }
     }
 

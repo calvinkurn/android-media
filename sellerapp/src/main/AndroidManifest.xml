@@ -100,7 +100,7 @@
             android:label="@string/drawer_title_home"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
