@@ -109,8 +109,8 @@ class DrawerHeaderViewHolder(itemView: View,
         ImageHandler.loadImage(context,
                 itemView.user_avatar,
                 userAvatar,
-                R.drawable.ic_image_avatar_boy,
-                R.drawable.ic_image_avatar_boy)
+                R.drawable.sah_ic_image_avatar_boy,
+                R.drawable.sah_ic_image_avatar_boy)
         oldUserAvatar = userAvatar
     }
 
