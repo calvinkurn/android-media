@@ -21,11 +21,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.BuildConfig;
 import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.common.util.AddProductErrorHandler;
 import com.tokopedia.product.manage.item.common.util.AddProductException;
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
@@ -196,7 +196,7 @@ public class UploadProductService extends BaseService implements AddProductServi
                         "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",\"%s\"",
                         userSession.getUserId(),
                         userSession.getEmail(),
-                        getExceptionMessage(t),
+                        AddProductErrorHandler.INSTANCE.getExceptionMessage(t),
                         URLEncoder.encode(gson.toJson(productViewModel), "UTF-8"));
                 AddProductException exception = new AddProductException(errorMessage, t);
                 Crashlytics.logException(exception);
@@ -205,15 +205,6 @@ public class UploadProductService extends BaseService implements AddProductServi
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private String getExceptionMessage(Throwable t) {
-        if (t instanceof ResponseV4ErrorException
-                && ((ResponseV4ErrorException) t).getErrorList().size() > 0) {
-            return ((ResponseV4ErrorException) t).getErrorList().get(0);
-        } else {
-            return t.getLocalizedMessage();
         }
     }
 

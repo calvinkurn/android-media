@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.product.manage.item.common.domain.GetProductDetailUseCase;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.manage.item.common.util.AddProductErrorHandler;
 import com.tokopedia.product.manage.item.main.base.data.exception.ImageUploadErrorException;
 import com.tokopedia.product.manage.item.main.base.data.model.BasePictureViewModel;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
@@ -20,7 +21,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -80,7 +80,10 @@ public class SubmitProductUseCase extends UseCase<Integer> {
                 })
                 .onErrorResumeNext(throwable -> {
                     if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
-                        throw new ImageUploadErrorException(throwable.getLocalizedMessage(), throwable);
+                        throw new ImageUploadErrorException(
+                                AddProductErrorHandler.INSTANCE.getExceptionMessage(throwable),
+                                throwable
+                        );
                     }
                     return Observable.error(throwable);
                 })
