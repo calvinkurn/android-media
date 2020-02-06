@@ -37,6 +37,7 @@ class QuotationViewModel(
     val price get() = quotationPojo.price
     val title get() = quotationPojo.title
     val thumbnailUrl get() = quotationPojo.thumbnail
+    val url get() = quotationPojo.url
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)

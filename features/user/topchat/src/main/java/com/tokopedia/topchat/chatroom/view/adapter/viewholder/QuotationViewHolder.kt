@@ -7,13 +7,18 @@ import android.widget.RelativeLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
 import kotlinx.android.synthetic.main.item_chat_quotation.view.*
 import kotlinx.android.synthetic.main.topchat_quotation_attachment.view.*
 
-class QuotationViewHolder(itemView: View?) : BaseChatViewHolder<QuotationViewModel>(itemView) {
+class QuotationViewHolder(
+        itemView: View?,
+        private val chatLinkHandlerListener: ChatLinkHandlerListener
+) : BaseChatViewHolder<QuotationViewModel>(itemView) {
 
     private var chatStatus: ImageView? = null
 
@@ -26,6 +31,7 @@ class QuotationViewHolder(itemView: View?) : BaseChatViewHolder<QuotationViewMod
         bindProductImage(message)
         bindProductTitle(message)
         bindProductPrice(message)
+        bindClick(message)
     }
 
     override fun alwaysShowTime(): Boolean {
@@ -56,7 +62,8 @@ class QuotationViewHolder(itemView: View?) : BaseChatViewHolder<QuotationViewMod
         ImageHandler.loadImageRounded2(
                 itemView.context,
                 itemView.ivThumbnail,
-                message.thumbnailUrl
+                message.thumbnailUrl,
+                8f.toPx()
         )
     }
 
@@ -66,6 +73,12 @@ class QuotationViewHolder(itemView: View?) : BaseChatViewHolder<QuotationViewMod
 
     private fun bindProductPrice(message: QuotationViewModel) {
         itemView.tvQuotationPrice?.text = message.price
+    }
+
+    private fun bindClick(message: QuotationViewModel) {
+        itemView.quotationAttachmentContainer?.setOnClickListener {
+            chatLinkHandlerListener.onGoToWebView(message.url, message.url)
+        }
     }
 
     private fun bindChatStatusImage() {
