@@ -9,14 +9,16 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil
+import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
+import com.tokopedia.salam.umrah.travel.data.UmrahTravelProduct
 import kotlinx.android.synthetic.main.item_umrah_search.view.*
 
 /**
  * @author by Firman on 3/2/20
  */
 
-class UmrahTravelAgentProductViewHolder (view: View): AbstractViewHolder<UmrahProductModel.UmrahProduct>(view){
-    override fun bind(element: UmrahProductModel.UmrahProduct) {
+class UmrahTravelAgentProductViewHolder (view: View): AbstractViewHolder<UmrahTravelProduct>(view){
+    override fun bind(element: UmrahTravelProduct) {
         with(itemView){
             iv_umrah_image.loadImage(element.banners.first())
             label_umrah_duration.text = resources.getString(R.string.umrah_travel_product_duration, element.durationDays.toString())

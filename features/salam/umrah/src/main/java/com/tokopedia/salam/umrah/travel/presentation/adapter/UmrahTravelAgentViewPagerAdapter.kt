@@ -3,25 +3,21 @@ package com.tokopedia.salam.umrah.travel.presentation.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.tokopedia.salam.umrah.common.data.TravelAgent
-import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentGalleryFragment
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentInfoFragment
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentProductsFragment
 
-class UmrahTravelAgentViewPagerAdapter(fm: FragmentManager, private val umrahTravelAgentBySlugNameEntity: UmrahTravelAgentBySlugNameEntity): FragmentStatePagerAdapter(fm),
-        UmrahTravelAgentProductsFragment.UmrahTravelAgentProductListener,
-        UmrahTravelAgentInfoFragment.UmrahTravelAgentInfoListener{
+class UmrahTravelAgentViewPagerAdapter(fm: FragmentManager, val slugName: String, private val umrahTravelAgentBySlugNameEntity: UmrahTravelAgentBySlugNameEntity): FragmentStatePagerAdapter(fm){
 
     override fun getCount(): Int  = SIZE_TAB
 
     override fun getItem(position: Int): Fragment {
         return when(position){
-            0 -> UmrahTravelAgentProductsFragment(this)
+            0 -> UmrahTravelAgentProductsFragment.createInstance(slugName)
             1 -> UmrahTravelAgentGalleryFragment()
-            2 -> UmrahTravelAgentInfoFragment(this)
-            else -> UmrahTravelAgentProductsFragment(this)
+            2 -> UmrahTravelAgentInfoFragment.createInstance(slugName)
+            else -> UmrahTravelAgentProductsFragment()
         }
     }
 
@@ -32,14 +28,6 @@ class UmrahTravelAgentViewPagerAdapter(fm: FragmentManager, private val umrahTra
             2 -> INFO_TITLE
             else -> PRODUCTS_TITLE
         }
-    }
-
-    override fun getDataProducts():List<UmrahProductModel.UmrahProduct> {
-        return umrahTravelAgentBySlugNameEntity.umrahTravelAgentBySlug.products
-    }
-
-    override fun getDataInfo(): TravelAgent {
-        return umrahTravelAgentBySlugNameEntity.umrahTravelAgentBySlug
     }
 
     companion object {

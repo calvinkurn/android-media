@@ -54,6 +54,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
 
 
     private var slugName : String ? = ""
+    private val OFF_SCREEN_LIMIT = 3
 
     override fun getScreenName(): String = getString(R.string.umrah_travel_agent_title)
 
@@ -66,7 +67,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
     }
     private fun requestData(){
         slugName?.let {
-            umrahTravelViewModel.requestPdpData(
+            umrahTravelViewModel.requestTravelData(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_travel_by_slugname), it)
         }
     }
@@ -107,6 +108,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
                 }
 
         const val REQUEST_CODE_LOGIN = 400
+        const val EXTRA_SLUGNAME = "EXTRA_SLUGNAME"
     }
 
 
@@ -134,21 +136,24 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
     }
 
     private fun setupViewPager(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
-        umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager,travelAgentBySlugName)
-        vp_umrah_travel_agent.adapter = umrahTravelAgentViewPagerAdapter
-        tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
-        vp_umrah_travel_agent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        slugName?.let {
+            umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager, it ,travelAgentBySlugName)
+            vp_umrah_travel_agent.adapter = umrahTravelAgentViewPagerAdapter
+            vp_umrah_travel_agent.offscreenPageLimit = OFF_SCREEN_LIMIT
+            tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
+            vp_umrah_travel_agent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {}
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
-            override fun onPageSelected(position: Int) {
-                when(position){
-                    0 -> umrahTrackingUtil.umrahTravelAgentClickPacketUmroh()
-                    1 -> umrahTrackingUtil.umrahTravelAgentClickGaleri()
-                    2 -> umrahTrackingUtil.umrahTravelAgentClickInfo()
+                override fun onPageSelected(position: Int) {
+                    when (position) {
+                        0 -> umrahTrackingUtil.umrahTravelAgentClickPacketUmroh()
+                        1 -> umrahTrackingUtil.umrahTravelAgentClickGaleri()
+                        2 -> umrahTrackingUtil.umrahTravelAgentClickInfo()
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun setupTravelAgent(travelAgent: TravelAgent){
@@ -224,4 +229,5 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
             umrahTrackingUtil.umrahTravelAgentClickBack()
         }
     }
+
 }
