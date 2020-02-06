@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 
 class NotificationChatService : IntentService("NotificationChatService") {
 
-    private val REPLY_KEY = "replay_chat_key"
+    private val REPLY_KEY = "reply_chat_key"
     private val MESSAGE_ID = "message_chat_id"
     private val NOTIFICATION_ID = "notification_id"
 

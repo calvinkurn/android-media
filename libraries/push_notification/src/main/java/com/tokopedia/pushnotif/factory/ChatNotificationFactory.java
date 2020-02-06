@@ -18,8 +18,8 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 
 public class ChatNotificationFactory extends BaseNotificationFactory {
 
-    private static String REPLY_KEY = "replay_chat_key";
-    private static String REPLY_LABEL = "Replay";
+    private static String REPLY_KEY = "reply_chat_key";
+    private static String REPLY_LABEL = "Reply";
 
     public ChatNotificationFactory(Context context) {
         super(context);
