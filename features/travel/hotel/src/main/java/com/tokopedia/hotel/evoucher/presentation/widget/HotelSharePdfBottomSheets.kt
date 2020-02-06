@@ -1,11 +1,13 @@
 package com.tokopedia.hotel.evoucher.presentation.widget
 
+import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.EditTextCompat
@@ -32,6 +34,11 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
     lateinit var containerEmail: View
 
     override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_share_as_pdf
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    }
 
     override fun initView(view: View) {
         adapter = HotelShareAsPdfAdapter(emailList, this)
