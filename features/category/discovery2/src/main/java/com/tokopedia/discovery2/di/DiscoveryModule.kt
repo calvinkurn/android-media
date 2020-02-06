@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
+import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
+import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.PushStatusRepository
 import com.tokopedia.tradein_common.repository.BaseRepository
@@ -32,6 +34,12 @@ class DiscoveryModule {
     @Provides
     fun provideCpmTopAdsGQLRepository(@ApplicationContext context: Context): CpmTopAdsRepository {
         return CpmTopAdsGQLRepository(provideGetStringMethod(context))
+    }
+
+    @DiscoveryScope
+    @Provides
+    fun provideCategoryNavigationRestRepository(@ApplicationContext context: Context): CategoryNavigationRepository {
+        return CategoryNavigationRestRepository()
     }
 
     @DiscoveryScope

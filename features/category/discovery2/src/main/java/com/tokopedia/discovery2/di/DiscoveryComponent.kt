@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopAdsViewModel
 import dagger.Component
 
@@ -13,4 +14,5 @@ interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
     fun inject(mutliViewModel: MultiBannerViewModel)
     fun inject(cpmTopAdsViewModel: CpmTopAdsViewModel)
+    fun inject(categoryNavigationViewModel: CategoryNavigationViewModel)
 }
