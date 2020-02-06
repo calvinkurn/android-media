@@ -20,6 +20,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
 
     private static String REPLY_KEY = "reply_chat_key";
     private static String REPLY_LABEL = "Reply";
+    private static String MESSAGE_ID = "message_chat_id";
+    private static String NOTIFICATION_ID = "notification_id";
 
     public ChatNotificationFactory(Context context) {
         super(context);
@@ -70,8 +72,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
 
         Intent intent = new Intent("com.tokopedia.topchat.chatroom.service.NotificationChatService.REPLY_CHAT");
         intent.setPackage(context.getPackageName());
-        intent.putExtra("message_chat_id", mMessageId);
-        intent.putExtra("notification_id", notificationId);
+        intent.putExtra(MESSAGE_ID, mMessageId);
+        intent.putExtra(NOTIFICATION_ID, notificationId);
 
         return PendingIntent.getService(context, 100, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
