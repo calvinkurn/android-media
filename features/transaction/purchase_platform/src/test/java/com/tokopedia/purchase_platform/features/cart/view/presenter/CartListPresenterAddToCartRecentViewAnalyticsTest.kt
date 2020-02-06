@@ -4,7 +4,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
@@ -30,7 +30,7 @@ import rx.subscriptions.CompositeSubscription
  * Created by Irfan Khoirul on 2020-01-31.
  */
 
-object CartListPresenterAddToCartAnalyticsTest : Spek({
+object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -70,7 +70,7 @@ object CartListPresenterAddToCartAnalyticsTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("1 item selected") {
+        Scenario("1 item selected on non empty cart") {
 
             lateinit var result: Map<String, Any>
 
@@ -83,9 +83,41 @@ object CartListPresenterAddToCartAnalyticsTest : Spek({
             }
 
             Then("should be containing 1 product") {
-                val action = result[EnhancedECommerceCartMapData.REMOVE_ACTION] as Map<String, Any>
-                val products = action[EnhancedECommerceCartMapData.KEY_PRODUCTS] as List<Any>
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
                 Assert.assertEquals(1, products.size)
+            }
+
+            Then("key `list` value should be `cart`") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
+            }
+
+        }
+
+        Scenario("1 item selected on non empty cart") {
+
+            lateinit var result: Map<String, Any>
+
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData())
+            }
+
+            When("generate add to cart wishlist data analytics") {
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), true)
+            }
+
+            Then("should be containing 1 product") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
+                Assert.assertEquals(1, products.size)
+            }
+
+            Then("key `list` value should be `empty cart`") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
             }
 
         }
