@@ -3,7 +3,7 @@ package com.tokopedia.productcard.test
 import android.view.View
 import android.view.ViewGroup
 
-internal fun ViewGroup.getChildren(): MutableList<View> {
+internal fun ViewGroup.getChildren(): List<View> {
     val children = mutableListOf<View>()
 
     forAllChild {

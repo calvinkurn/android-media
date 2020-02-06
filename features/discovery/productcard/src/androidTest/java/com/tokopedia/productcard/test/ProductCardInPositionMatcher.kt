@@ -7,41 +7,59 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 
-internal class ProductCardInPositionMatcher(
+internal fun productCardInPosition(position: Int, itemMatcherList: Map<Int, Matcher<View?>>): Matcher<View?>? {
+    return ProductCardInPositionMatcher(position, itemMatcherList)
+}
+
+private class ProductCardInPositionMatcher(
         private val position: Int,
         private val itemMatcherList: Map<Int, Matcher<View?>>
 ): BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
-    var itemDescription = ""
-    var currentMatcher : Matcher<View?>? = null
+
+    private var currentViewComponentDescription = ""
+    private var currentMatcher : Matcher<View?>? = null
 
     override fun describeTo(description: Description?) {
-        description?.appendText("Product Card Position: $position, $itemDescription ")
+        description?.appendText("Product Card Position: $position, $currentViewComponentDescription ")
         currentMatcher?.describeTo(description)
     }
 
     override fun matchesSafely(recyclerView: RecyclerView): Boolean {
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
-        val itemView = viewHolder?.itemView ?: return false
-        val uncheckedChildren = (itemView as ViewGroup).getChildren()
+        val productCard = recyclerView.getProductCardInPosition() ?: return false
 
-        val checkedChildrenMatches = itemMatcherList.all {
-            uncheckedChildren.removeAll { child -> child.id == it.key }
-
-            val view: View = itemView.findViewById(it.key)
-            itemDescription = view.resources.getResourceEntryName(it.key)
-            currentMatcher = it.value
-
-            it.value.matches(view)
-        }
+        val checkedChildrenMatches = productCard.checkChildrenInMatchers()
 
         if (!checkedChildrenMatches) return false
 
-        return uncheckedChildren.all {
-            itemDescription = it.resources.getResourceEntryName(it.id)
+        return productCard.getUncheckedChildren().checkNotDisplayed()
+    }
 
-            val matcher = isNotDisplayed()
-            currentMatcher = matcher
-            matcher.matches(it)
+    private fun RecyclerView.getProductCardInPosition(): ViewGroup? {
+        return this.findViewHolderForAdapterPosition(position)?.itemView as ViewGroup
+    }
+
+    private fun ViewGroup.checkChildrenInMatchers(): Boolean {
+        return itemMatcherList.all {
+            it.value.matchProductCardComponent(this.findViewById(it.key))
+        }
+    }
+
+    private fun Matcher<View?>.matchProductCardComponent(view: View): Boolean {
+        currentViewComponentDescription = view.resources.getResourceEntryName(view.id)
+        currentMatcher = this
+
+        return this.matches(view)
+    }
+
+    private fun ViewGroup.getUncheckedChildren(): List<View> {
+        return this.getChildren().filter { productCardComponent ->
+            !itemMatcherList.any { productCardComponent.id == it.key }
+        }
+    }
+
+    private fun List<View>.checkNotDisplayed(): Boolean {
+        return this.all {
+            isNotDisplayed().matchProductCardComponent(it)
         }
     }
 }
