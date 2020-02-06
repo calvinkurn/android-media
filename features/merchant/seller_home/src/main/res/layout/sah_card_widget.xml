@@ -59,7 +59,7 @@
             android:maxLines="1"
             android:minHeight="18dp"
             android:textColor="@color/Neutral_N700_68"
-            android:textSize="@dimen/fontSize_lvl3"
+            android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCardValue"

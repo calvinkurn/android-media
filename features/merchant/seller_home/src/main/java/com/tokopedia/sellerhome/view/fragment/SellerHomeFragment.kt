@@ -241,7 +241,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             val type = WidgetType.CARD
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type, CardDataUiModel::class.java)
             }
         })
     }
@@ -251,7 +251,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             val type = WidgetType.LINE_GRAPH
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type, LineGraphDataUiModel::class.java)
             }
         })
     }
@@ -261,7 +261,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             val type = WidgetType.POST
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type, PostListDataUiModel::class.java)
             }
         })
     }
@@ -271,34 +271,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             val type = WidgetType.PROGRESS
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type, ProgressDataUiModel::class.java)
             }
         })
     }
 
-    private fun List<BaseDataUiModel>.setOnSuccessWidgetState(type: String) {
+    private inline fun <DATA : BaseDataUiModel, reified WIDGET : BaseWidgetUiModel<DATA>> List<DATA>.setOnSuccessWidgetState(type: String) {
         widgetHasMap[type]?.forEachIndexed { i, widget ->
-            when (widget) {
-                is CardWidgetUiModel -> widget.data = this[i] as CardDataUiModel
-                is LineGraphWidgetUiModel -> widget.data = this[i] as LineGraphDataUiModel
-                is ProgressWidgetUiModel -> widget.data = this[i] as ProgressDataUiModel
-                is PostListWidgetUiModel -> widget.data = this[i] as PostListDataUiModel
+            if (widget is WIDGET) {
+                widget.data = this[i]
+                notifyWidgetChanged(widget)
             }
         }
-        adapter.notifyDataSetChanged()
     }
 
-    private fun Throwable.setOnErrorWidgetState(type: String) {
+    private inline fun <DATA : BaseDataUiModel, reified WIDGET : BaseWidgetUiModel<DATA>> Throwable.setOnErrorWidgetState(type: String, data: Class<DATA>) {
         val message = this.message.orEmpty()
         widgetHasMap[type]?.forEach { widget ->
-            when (widget) {
-                is CardWidgetUiModel -> widget.data = CardDataUiModel(error = message)
-                is LineGraphWidgetUiModel -> widget.data = LineGraphDataUiModel(error = message)
-                is ProgressWidgetUiModel -> widget.data = ProgressDataUiModel(error = message)
-                is PostListWidgetUiModel -> widget.data = PostListDataUiModel(error = message)
+            if (widget is WIDGET) {
+                widget.data = data.newInstance().apply {
+                    error = message
+                }
+                notifyWidgetChanged(widget)
             }
         }
-        adapter.notifyDataSetChanged()
+    }
+
+    private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
+        val widgetPosition = adapter.data.indexOf(widget)
+        adapter.notifyItemChanged(widgetPosition)
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
