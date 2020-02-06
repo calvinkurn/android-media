@@ -4,7 +4,10 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
@@ -13,8 +16,9 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartI
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -30,7 +34,7 @@ import rx.subscriptions.CompositeSubscription
  * Created by Irfan Khoirul on 2020-01-31.
  */
 
-object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
+object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -78,8 +82,8 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
                 add(CartItemData())
             }
 
-            When("generate add to cart recent view data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), false)
+            When("generate add to cart recommendation data analytics") {
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(RecommendationItem()), AddToCartDataModel(), false)
             }
 
             Then("should be containing 1 product") {
@@ -91,7 +95,7 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
             Then("key `list` value should be `cart`") {
                 val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
                 val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
             }
 
         }
@@ -104,8 +108,8 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
                 add(CartItemData())
             }
 
-            When("generate add to cart recent view data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), true)
+            When("generate add to cart recommendation data analytics") {
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(RecommendationItem()), AddToCartDataModel(), true)
             }
 
             Then("should be containing 1 product") {
@@ -117,7 +121,7 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
             Then("key `list` value should be `empty cart`") {
                 val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
                 val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_ON_EMPTY_CART)
             }
 
         }
