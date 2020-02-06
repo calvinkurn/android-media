@@ -146,8 +146,8 @@ final class ProductListPresenter
     }
 
     @Override
-    public void setIsTickerHasDismissed(boolean isTickerHasDismissed) {
-        this.isTickerHasDismissed = isTickerHasDismissed;
+    public void onPriceFilterTickerDismissed() {
+        this.isTickerHasDismissed = true;
     }
 
     @Override
@@ -815,8 +815,10 @@ final class ProductListPresenter
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
             getViewToShowRecommendationItem();
+            getView().hideBottomNavigation();
         } else {
             getViewToShowProductList(searchProductModel, productViewModel);
+            getView().showBottomNavigation();
         }
 
         setTotalData(productViewModel.getTotalData());

@@ -1646,6 +1646,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
+        adapter.notifyItemChanged(data.rowNumber, data.adapterPosition)
         ToasterError.make(view, data.errorMessage, BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_try_again
                 ) { v -> feedViewModel.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId) }

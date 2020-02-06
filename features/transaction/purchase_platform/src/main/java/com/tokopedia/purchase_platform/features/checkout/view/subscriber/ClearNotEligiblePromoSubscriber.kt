@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
 import rx.Subscriber
 import java.util.*
 

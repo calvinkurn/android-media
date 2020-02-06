@@ -19,9 +19,6 @@ class BannerViewModel : ImpressHolder(), HomeVisitable {
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is BannerViewModel) {
-            return slides == b.slides
-        }
         return false
     }
 

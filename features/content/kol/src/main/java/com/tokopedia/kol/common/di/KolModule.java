@@ -2,7 +2,7 @@ package com.tokopedia.kol.common.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -120,7 +120,7 @@ public class KolModule {
     @Provides
     @KolChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+        return new ChuckerInterceptor(context);
     }
 
     @KolScope

@@ -375,6 +375,8 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.play)
+    implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
@@ -407,6 +409,7 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.track)
@@ -431,7 +434,6 @@ dependencies {
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.shakeDetect)
-    implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.unifyDependencies.components
@@ -464,6 +466,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.performance
+    implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.design
@@ -483,6 +486,7 @@ dependencies {
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }

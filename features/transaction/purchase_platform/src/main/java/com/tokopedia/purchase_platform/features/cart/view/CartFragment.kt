@@ -16,14 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
-import com.readystatesoftware.chuck.Chuck
+import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -90,7 +89,7 @@ import com.tokopedia.purchase_platform.features.cart.view.mapper.PromoMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -582,7 +581,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onGoToChuck() {
         activity?.let {
-            startActivity(Chuck.getLaunchIntent(it))
+            startActivity(Chucker.getLaunchIntent(it, Chucker.SCREEN_HTTP))
         }
     }
 
