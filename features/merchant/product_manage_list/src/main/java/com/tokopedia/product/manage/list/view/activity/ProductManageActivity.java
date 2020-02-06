@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.constant.AppScreen;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
@@ -31,16 +30,6 @@ public class ProductManageActivity extends BaseSimpleActivity implements HasComp
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
         setupLayout(savedInstanceState);
-    }
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_product_manage;
-    }
-
-    @Override
-    protected int getParentViewResourceID() {
-        return R.id.container;
     }
 
     @Nullable
