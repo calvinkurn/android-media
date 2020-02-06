@@ -157,6 +157,24 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         onGetOfficialStoreBenefits_thenReturn(error)
         onGetOfficialStoreFeaturedShop_thenReturn(error)
     }
+
+    private fun<T> mockObservable(data: T): Observable<T>  {
+        val obs = mockk<Observable<T>>()
+        val blockingObs = mockk<BlockingObservable<T>>()
+
+        coEvery { blockingObs.first() } returns data
+        coEvery { obs.toBlocking() } returns blockingObs
+
+        return obs
+    }
+
+    protected fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
+        return RecommendationItem(productId = productId.toInt(), isTopAds = isTopAds)
+    }
+
+    protected fun createCategory(prefixUrl: String, slug: String): Category {
+        return Category(prefixUrl = prefixUrl, slug = slug)
+    }
     // endregion
 
     // region verification
@@ -367,16 +385,6 @@ abstract class OfficialStoreHomeViewModelTestFixture {
 
         listener.captured.onErrorRemoveWishlist(error.message, productId)
     }
-    // endregion
-    
-    // region private methods
-    protected fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
-        return RecommendationItem(productId = productId.toInt(), isTopAds = isTopAds)
-    }
-
-    protected fun createCategory(prefixUrl: String, slug: String): Category {
-        return Category(prefixUrl = prefixUrl, slug = slug)
-    }
 
     private fun<T> LiveData<T>.assertSuccess(expectedValue: Success<*>) {
         val actualValue = value
@@ -388,17 +396,9 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         val expectedError = error.toString()
         assertEquals(expectedError, actualError)
     }
-
-    private fun<T> mockObservable(data: T): Observable<T>  {
-        val obs = mockk<Observable<T>>()
-        val blockingObs = mockk<BlockingObservable<T>>()
-
-        coEvery { blockingObs.first() } returns data
-        coEvery { obs.toBlocking() } returns blockingObs
-
-        return obs
-    }
-
+    // endregion
+    
+    // region private methods
     private fun registerRxSchedulerHook() {
         RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
             override fun getMainThreadScheduler(): Scheduler {
