@@ -3,9 +3,8 @@ package com.tokopedia.smart_recycler_helper
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 
-abstract class SmartAbstractViewHolder<T : Visitable<*>>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+abstract class SmartAbstractViewHolder<T : SmartVisitable<*>>(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     abstract fun bind(element: T, listener: SmartListener)
 
