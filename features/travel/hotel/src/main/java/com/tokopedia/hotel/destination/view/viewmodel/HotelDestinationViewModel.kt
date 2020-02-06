@@ -2,7 +2,7 @@ package com.tokopedia.hotel.destination.view.viewmodel
 
 import android.app.Activity
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,6 +13,7 @@ import com.tokopedia.hotel.destination.data.model.HotelSuggestion
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.data.model.SearchDestination
+import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
@@ -41,6 +42,9 @@ class HotelDestinationViewModel @Inject constructor(
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
     private val deleteSuccess = MutableLiveData<Boolean>()
+
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
 
     fun getHotelRecommendation(popularRawQuery: String, recentSearchRawQuery: String) {
 
@@ -113,6 +117,35 @@ class HotelDestinationViewModel @Inject constructor(
         locationDetectorHelper.getLocation(onGetLocation(), activity,
                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                 activity.getString(R.string.hotel_destination_need_permission))
+    }
+
+    fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
+        locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        locationRequest.interval = 10 * 1000
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                if (locationResult == null) return
+                locationResult.locations.forEach {
+                    if (it != null) {
+                        if (it.latitude == 0.0 && it.longitude == 0.0) longLat.value = Fail(Throwable())
+                        else longLat.value = Success(Pair(it.longitude, it.latitude))
+                        try {
+                            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+
+            override fun onLocationAvailability(locationAvailability: LocationAvailability) {
+                if (!locationAvailability.isLocationAvailable) longLat.value = Fail(Throwable(HotelRecommendationFragment.GPS_FAILED_SHOW_ERROR))
+            }
+        }
+
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
