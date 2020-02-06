@@ -58,7 +58,7 @@ public class DrawerSellerHelper extends DrawerHelper
         DrawerSellerHeaderDataBinder.DrawerHeaderListener {
 
     private static final String DIGITAL_PATH_MITRA = "mitra";
-    private String pulsa = "https://pulsa.tokopedia.com/mitra/";
+    private static final String pulsa = "https://pulsa.tokopedia.com/mitra/";
     private TextView shopName;
     private TextView shopLabel;
     private ImageView shopIcon;
