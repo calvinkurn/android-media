@@ -2,14 +2,13 @@ package com.tokopedia.entertainment.home.adapter.viewmodel
 
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory
-import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
-import com.tokopedia.entertainment.home.data.ResponseModel
+import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridViewModel(var layout: ResponseModel.Data.EventHome.Layout)
+class EventGridViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout)
     : HomeEventItem<HomeTypeFactory> {
 
     var title : String = ""
@@ -23,8 +22,8 @@ class EventGridViewModel(var layout: ResponseModel.Data.EventHome.Layout)
                         it.imageApp,
                         it.title,
                         it.location,
-                        it.price,
-                        it.schedule
+                        it.salesPrice,
+                        it.price
                 ))
             }
         }

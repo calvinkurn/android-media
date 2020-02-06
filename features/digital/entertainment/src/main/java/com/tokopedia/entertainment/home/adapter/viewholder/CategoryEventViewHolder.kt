@@ -22,18 +22,6 @@ class CategoryEventViewHolder(itemView: View): HomeEventViewHolder<CategoryViewM
     val listAdapter = SimpleCategoryItemAdapter()
 
     init {
-        listAdapter.items = Arrays.asList(
-                CategoryItemModel("https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/5/47672011/47672011_a49223fb-656a-4665-b8c2-7af12cb869c5.png",
-                        "Taman bermain"),
-                CategoryItemModel("https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/5/47672011/47672011_a49223fb-656a-4665-b8c2-7af12cb869c5.png",
-                        "Taman bermain"),
-                CategoryItemModel("https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/5/47672011/47672011_a49223fb-656a-4665-b8c2-7af12cb869c5.png",
-                        "Taman bermain"),
-                CategoryItemModel("https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/5/47672011/47672011_a49223fb-656a-4665-b8c2-7af12cb869c5.png",
-                        "Taman bermain"),
-                CategoryItemModel("https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/5/47672011/47672011_a49223fb-656a-4665-b8c2-7af12cb869c5.png",
-                        "Taman bermain")
-        )
         itemView.list.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(itemView.context, 5)
@@ -43,6 +31,7 @@ class CategoryEventViewHolder(itemView: View): HomeEventViewHolder<CategoryViewM
     }
 
     override fun bind(element: CategoryViewModel) {
+        listAdapter.items = element.items
         listAdapter.notifyDataSetChanged()
     }
 
@@ -52,7 +41,7 @@ class CategoryEventViewHolder(itemView: View): HomeEventViewHolder<CategoryViewM
         var LAYOUT: Int = R.layout.ent_layout_viewholder_category
     }
 
-    data class CategoryItemModel(var imageUrl: String, var title : String)
+    data class CategoryItemModel(var imageUrl: String, var title : String, var applink: String)
 
     class SimpleCategoryItemAdapter : RecyclerView.Adapter<SimpleCategoryItemAdapter.ItemViewHolder>() {
 

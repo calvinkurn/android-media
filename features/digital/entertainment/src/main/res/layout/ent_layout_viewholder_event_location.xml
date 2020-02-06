@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_location_event_gradient"
     android:paddingTop="14dp"
     android:paddingBottom="14dp">
 
@@ -20,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_2"
-        tools:text="Berencana liburan ke luar negeri?" />
+        android:text="Berencana liburan ke luar negeri?" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtitle"
@@ -34,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ent_title_card"
         app:typographyType="body_3"
-        tools:text="Cek wahana yang harus kamu kunjungi, yuk!" />
+        android:text="Cek wahana yang harus kamu kunjungi, yuk!" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ent_recycle_view"
@@ -52,6 +53,6 @@
         app:layout_constraintTop_toBottomOf="@+id/subtitle"
         tools:itemCount="4"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/ent_layout_viewholder_event_location_adatper_item" />
+        tools:listitem="@layout/ent_layout_viewholder_event_location_adaper_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

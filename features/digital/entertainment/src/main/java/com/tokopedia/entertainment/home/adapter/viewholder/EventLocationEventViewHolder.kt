@@ -11,7 +11,7 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationViewModel
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location.view.*
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adatper_item.view.*
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adaper_item.view.*
 
 /**
  * Author errysuprayogi on 27,January,2020
@@ -28,7 +28,6 @@ class EventLocationEventViewHolder(itemView: View): HomeEventViewHolder<EventLoc
     }
 
     override fun bind(element: EventLocationViewModel) {
-        itemView.ent_title_card.text = element.titleCard
         itemAdapter.items = element.items
     }
 
@@ -50,7 +49,7 @@ class EventLocationEventViewHolder(itemView: View): HomeEventViewHolder<EventLoc
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_layout_viewholder_event_location_adatper_item, parent, false)
+                    .inflate(R.layout.ent_layout_viewholder_event_location_adaper_item, parent, false)
             return ItemViewHolder(view)
         }
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

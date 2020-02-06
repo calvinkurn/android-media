@@ -2,14 +2,12 @@ package com.tokopedia.entertainment.home.adapter.viewmodel
 
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory
-import com.tokopedia.entertainment.home.adapter.viewholder.BannerEventViewHolder
-import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
-import com.tokopedia.entertainment.home.data.ResponseModel
+import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class BannerViewModel(var layout: ResponseModel.Data.EventHome.Layout): HomeEventItem<HomeTypeFactory> {
+class BannerViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout): HomeEventItem<HomeTypeFactory> {
 
     var items : MutableList<String> = mutableListOf()
 
