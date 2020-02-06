@@ -196,7 +196,6 @@ class OnboardingActivity : BaseActivity() {
 
     private fun finishOnBoarding() {
         userSession.setFirstTimeUserOnboarding(false)
-        DFInstaller().uninstallOnBackground(this.application, listOf(DeeplinkDFMapper.DFM_ONBOARDING))
         finish()
     }
 
