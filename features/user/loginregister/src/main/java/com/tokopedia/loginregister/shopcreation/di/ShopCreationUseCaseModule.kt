@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.shopcreation.di
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -21,4 +22,11 @@ class ShopCreationUseCaseModule {
             @Named(ShopCreationQueryConstant.MUTATION_REGISTER_CHECK) query: String,
             graphqlRepository: GraphqlRepository
     ): RegisterCheckUseCase = RegisterCheckUseCase(query, graphqlRepository)
+
+    @ShopCreationScope
+    @Provides
+    fun provideShopInfoUseCase(
+            @Named(ShopCreationQueryConstant.QUERY_SHOP_INFO) query: String,
+            graphqlRepository: GraphqlRepository
+    ): ShopInfoUseCase = ShopInfoUseCase(query, graphqlRepository)
 }

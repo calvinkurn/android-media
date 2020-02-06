@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true" >
+    android:fitsSystemWindows="true"
+    android:background="@color/Neutral_N0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_view"
@@ -88,6 +89,13 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_continue" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loading"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_shop_creation"

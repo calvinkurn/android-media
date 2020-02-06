@@ -6,8 +6,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
+import com.tokopedia.loginregister.shopcreation.domain.param.ShopInfoParam
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecommon.domain.param.UpdateUserProfileParam
 import com.tokopedia.profilecommon.domain.param.ValidateUserProfileParam
@@ -43,6 +46,7 @@ open class ShopCreationViewModel @Inject constructor(
         private val validateUserProfileUseCase: ValidateUserProfileUseCase,
         private val updateUserProfileUseCase: UpdateUserProfileUseCase,
         private val getProfileUseCase: GetProfileUseCase,
+        private val shopInfoUseCase: ShopInfoUseCase,
         private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -75,6 +79,10 @@ open class ShopCreationViewModel @Inject constructor(
     val getUserInfoResponse: LiveData<Result<ProfileInfo>>
         get() = _getUserInfoResponse
 
+    private val _getShopInfoResponse = MutableLiveData<Result<ShopInfoByID>>()
+    val getShopInfoResponse: LiveData<Result<ShopInfoByID>>
+        get() = _getShopInfoResponse
+
     fun addName(name: String) {
         val updateUserProfileParam = UpdateUserProfileParam(fullname = name)
 
@@ -106,6 +114,17 @@ open class ShopCreationViewModel @Inject constructor(
             _registerCheckResponse.value = data
         }, onError = {
             _registerCheckResponse.postValue(Fail(it))
+        })
+    }
+
+    fun getShopInfo(shopId: Int) {
+        val shopInfoParam = ShopInfoParam(shopID = shopId)
+
+        launchCatchError(block = {
+            val data = shopInfoUseCase.getData(shopInfoParam)
+            _getShopInfoResponse.value = data
+        }, onError = {
+            _getShopInfoResponse.postValue(Fail(it))
         })
     }
 

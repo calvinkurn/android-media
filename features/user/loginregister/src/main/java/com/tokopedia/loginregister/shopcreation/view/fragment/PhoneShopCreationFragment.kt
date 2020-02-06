@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.shopcreation.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -92,6 +94,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 super.onTextChanged(s, cursorPosition, before, count)
                 if(isValidPhone(s.toString())) {
                     buttonContinue.isEnabled = true
+                    textFieldPhone.setError(false)
                     clearMessageFieldPhone()
                 }
             }
@@ -278,19 +281,28 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun emptyStatePhoneField() {
+        textFieldPhone.setError(true)
         setMessageFieldPhone(getString(R.string.please_fill_phone_number))
     }
 
     private fun invalidTypeStatePhoneField() {
+        textFieldPhone.setError(true)
         setMessageFieldPhone(getString(R.string.phone_number_invalid))
     }
 
     private fun setMessageFieldPhone(message: String) {
         errorMessage.text = message
+        context?.let {
+            errorMessage.text = message
+            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Red_R500))
+        }
     }
 
     private fun clearMessageFieldPhone() {
-        errorMessage.text = getString(R.string.desc_phone_shop_creation)
+        context?.let {
+            errorMessage.text = getString(R.string.desc_phone_shop_creation)
+            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N500))
+        }
     }
 
     private fun toastError (throwable: Throwable) {

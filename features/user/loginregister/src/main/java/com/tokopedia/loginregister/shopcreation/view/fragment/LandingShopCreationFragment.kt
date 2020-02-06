@@ -16,15 +16,19 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
+import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
 import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionData
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,6 +46,8 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     lateinit var toolbarShopCreation: Toolbar
     lateinit var buttonOpenShop: UnifyButton
     lateinit var landingImage: ImageView
+    lateinit var loading: LoaderUnify
+    lateinit var mainView: View
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -61,6 +67,8 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
         buttonOpenShop = view.findViewById(R.id.btn_continue)
         landingImage = view.findViewById(R.id.landing_shop_creation_image)
+        loading = view.findViewById(R.id.loading)
+        mainView = view.findViewById(R.id.main_view)
         return view
     }
 
@@ -81,11 +89,13 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         ImageHandler.LoadImage(landingImage, LANDING_PICT_URL)
         if (userSession.isLoggedIn) {
             buttonOpenShop.setOnClickListener {
+                showLoading()
                 shopCreationAnalytics.eventClickOpenShopLanding()
                 shopCreationViewModel.getUserProfile()
             }
         } else {
             buttonOpenShop.setOnClickListener {
+                showLoading()
                 shopCreationAnalytics.eventClickOpenShopLanding()
                 goToPhoneShopCreation()
             }
@@ -113,6 +123,16 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
+        shopCreationViewModel.getShopInfoResponse.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetShopInfo(it.data)
+                }
+                is Fail -> {
+                    onFailedGetShopInfo(it.throwable)
+                }
+            }
+        })
     }
 
     private fun onSuccessGetProfileInfo(userProfileCompletionData: UserProfileCompletionData) {
@@ -123,7 +143,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     goToNameShopCreation()
                 } else {
                     if (userSession.hasShop())
-                        goToShopPage(userSession.shopId)
+                        shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
                     else goToShopName()
                 }
             } else {
@@ -136,6 +156,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun onFailedGetProfileInfo(throwable: Throwable) {
         view?.run {
+            hideLoading()
             val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
             NetworkErrorHelper.showEmptyState(context, this, error) {
                 shopCreationViewModel.getUserProfile()
@@ -154,8 +175,26 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun onFailedGetUserInfo(throwable: Throwable) {
         view?.run {
+            hideLoading()
             throwable.message?.let { Toaster.make(this, it, Toaster.toasterLength, Toaster.TYPE_ERROR) }
         }
+    }
+
+    private fun onSuccessGetShopInfo(shopInfoByID: ShopInfoByID) {
+        if (!userSession.hasShop()){
+            goToShopName()
+        }
+        else if(shopInfoByID.result.isNotEmpty() && shopInfoByID.result[0].shippingLoc.provinceID < 1) {
+            goToShopLogistic()
+        }
+        else goToShopPage(userSession.shopId)
+    }
+
+    private fun onFailedGetShopInfo(throwable: Throwable) {
+        view?.run {
+            throwable.message?.let { Toaster.make(this, it, Toaster.toasterLength, Toaster.TYPE_ERROR) }
+        }
+        goToShopPage(userSession.shopId)
     }
 
     private fun goToNameShopCreation() {
@@ -177,6 +216,15 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun goToShopName() {
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            it.startActivity(intent)
+            it.finish()
+        }
+    }
+
+    private fun goToShopLogistic() {
+        activity?.let {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             it.startActivity(intent)
             it.finish()
@@ -218,6 +266,16 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
+    }
+
+    private fun showLoading() {
+        loading.visibility = View.VISIBLE
+        mainView.visibility = View.INVISIBLE
+    }
+
+    private fun hideLoading() {
+        loading.visibility = View.GONE
+        mainView.visibility = View.VISIBLE
     }
 
     override fun onBackPressed(): Boolean {
