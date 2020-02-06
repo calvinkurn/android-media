@@ -243,7 +243,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun onPopularDestinationClick(appUrl: String, webUrl: String) {
         context?.let {
-            startActivity(TravelDestinationActivity.createInstance(it, webUrl))
+            RouteManager.route(context, appUrl)
         }
     }
 

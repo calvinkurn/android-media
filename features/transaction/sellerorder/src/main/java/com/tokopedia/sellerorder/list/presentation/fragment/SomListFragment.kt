@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -201,7 +202,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             addOnScrollListener(scrollListener)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
+                    Handler().postDelayed({
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            filter_action_button.show()
+                        }
+                    }, 2000)
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -579,8 +584,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         nextOrderId = 0
         loadOrderList(nextOrderId)
         loadFilterList()
-        if (isFilterApplied) filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
-        else filter_action_button?.rightIconDrawable = null
+        if (isFilterApplied) {
+            if (paramOrder.startDate.equals(defaultStartDate, true) && paramOrder.endDate.equals(defaultEndDate, true)) {
+                filter_action_button?.rightIconDrawable = null
+            } else {
+                filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
+            }
+        } else filter_action_button?.rightIconDrawable = null
     }
 
     private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {

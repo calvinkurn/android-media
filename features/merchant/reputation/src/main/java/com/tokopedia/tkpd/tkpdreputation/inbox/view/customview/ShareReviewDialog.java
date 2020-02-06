@@ -9,7 +9,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,12 +22,12 @@ import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.util.ClipboardHandler;
-import com.tokopedia.core.widgets.ShareItem;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ShareAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
+import com.tokopedia.tkpd.tkpdreputation.utils.ClipboardHandler;
+import com.tokopedia.tkpd.tkpdreputation.widgets.ShareItem;
 
 /**
  * Created by stevenfredian on 2/20/17.
@@ -55,7 +54,7 @@ public class ShareReviewDialog {
         this.context = context;
         this.dialog = new BottomSheetDialog(context);
         this.fragment = fragment;
-        this.dialog.setContentView(R.layout.share_review_dialog);
+        this.dialog.setContentView(R.layout.reputation_share_review_dialog);
         appGrid = (GridView) this.dialog.findViewById(R.id.grid);
         cancelButton = this.dialog.findViewById(R.id.cancel_but);
         initAdapter();
@@ -64,7 +63,7 @@ public class ShareReviewDialog {
     }
 
     public void initAdapter() {
-        adapterRead = ArrayAdapter.createFromResource(context, R.array.talk_read, R.layout.dialog_item);
+        adapterRead = ArrayAdapter.createFromResource(context, R.array.talk_read, R.layout.reputation_dialog_item);
         adapterRead.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 

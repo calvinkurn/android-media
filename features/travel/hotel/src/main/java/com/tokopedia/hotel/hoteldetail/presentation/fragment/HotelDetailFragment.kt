@@ -21,6 +21,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
 import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
@@ -45,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.round
@@ -68,6 +70,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var roomPrice: String = "0"
     private var roomPriceAmount: String = ""
     private var isDirectPayment: Boolean = true
+
+    private var isHotelDetailSuccess: Boolean = true
+    private var isHotelReviewSuccess: Boolean = true
+    private var isRoomListSuccess: Boolean = true
 
     private val thumbnailImageList = mutableListOf<String>()
     private val imageList = mutableListOf<String>()
@@ -142,10 +148,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         detailViewModel.roomListResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    isRoomListSuccess = true
                     setupPriceButton(it.data)
                 }
                 is Fail -> {
-                    showErrorState(it.throwable)
+                    isRoomListSuccess = false
+                    showErrorView(it.throwable)
                 }
             }
         })
@@ -153,12 +161,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         detailViewModel.hotelInfoResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    isHotelDetailSuccess = true
                     setupLayout(it.data)
                     hotelName = it.data.property.name
                     hotelId = it.data.property.id
                 }
                 is Fail -> {
-                    showErrorState(it.throwable)
+                    isHotelDetailSuccess = false
+                    showErrorView(it.throwable)
                 }
             }
         })
@@ -166,10 +176,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         detailViewModel.hotelReviewResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    isHotelReviewSuccess = true
                     setupReviewLayout(it.data)
                 }
                 is Fail -> {
-                    showErrorState(it.throwable)
+                    isHotelReviewSuccess = false
+                    showErrorView(it.throwable)
                 }
             }
         })
@@ -212,6 +224,27 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
         }
+    }
+
+    private fun showErrorView(e : Throwable) {
+        if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
+            container_content.visibility = View.GONE
+            container_error.visibility = View.VISIBLE
+
+            iv_icon.setImageResource(ErrorHandlerHotel.getErrorImage(e))
+            message_retry.text = ErrorHandlerHotel.getErrorTitle(context, e)
+            sub_message_retry.text = ErrorHandlerHotel.getErrorMessage(context, e)
+
+            button_retry.setOnClickListener {
+                hideErrorView()
+                onErrorRetryClicked()
+            }
+        }
+    }
+
+    private fun hideErrorView() {
+        container_content.visibility = View.VISIBLE
+        container_error.visibility = View.GONE
     }
 
     private fun setupLayout(data: PropertyDetailData) {

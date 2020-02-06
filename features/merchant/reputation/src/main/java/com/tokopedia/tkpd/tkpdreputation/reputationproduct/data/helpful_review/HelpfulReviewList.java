@@ -5,14 +5,13 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.ArrayList;
 import java.util.List;
 /**
  * Created by stevenfredian on 3/1/16.
  */
-public class HelpfulReviewList extends RecyclerViewItem implements Parcelable{
+public class HelpfulReviewList implements Parcelable{
 
     @SerializedName("list")
     @Expose
