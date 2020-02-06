@@ -1,6 +1,4 @@
-package com.tokopedia.entertainment.adapter
-
-import com.tokopedia.entertainment.adapter.factory.HomeTypeFactory
+package com.tokopedia.entertainment.home.adapter
 
 /**
  * Author errysuprayogi on 27,January,2020

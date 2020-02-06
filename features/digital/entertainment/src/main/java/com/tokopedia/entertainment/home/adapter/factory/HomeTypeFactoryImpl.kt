@@ -1,16 +1,10 @@
-package com.tokopedia.entertainment.adapter.factory
+package com.tokopedia.entertainment.home.adapter.factory
 
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
-import com.tokopedia.entertainment.adapter.HomeViewHolder
-import com.tokopedia.entertainment.adapter.viewholder.BannerViewHolder
-import com.tokopedia.entertainment.adapter.viewholder.CategoryViewHolder
-import com.tokopedia.entertainment.adapter.viewholder.EventCarouselViewHolder
-import com.tokopedia.entertainment.adapter.viewholder.EventGridViewHolder
-import com.tokopedia.entertainment.adapter.viewmodel.BannerViewModel
-import com.tokopedia.entertainment.adapter.viewmodel.CategoryViewModel
-import com.tokopedia.entertainment.adapter.viewmodel.EventCarouselViewModel
-import com.tokopedia.entertainment.adapter.viewmodel.EventGridViewModel
+import com.tokopedia.entertainment.home.adapter.HomeViewHolder
+import com.tokopedia.entertainment.home.adapter.viewholder.*
+import com.tokopedia.entertainment.home.adapter.viewmodel.*
 
 /**
  * Author errysuprayogi on 29,January,2020
@@ -33,6 +27,10 @@ class HomeTypeFactoryImpl : HomeTypeFactory {
         return EventGridViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: EventLocationViewModel): Int {
+        return EventLocationViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: ViewGroup, type: Int): HomeViewHolder<*> {
         val creatViewHolder: HomeViewHolder<*>
         creatViewHolder = if (type == BannerViewHolder.LAYOUT) {
@@ -43,6 +41,8 @@ class HomeTypeFactoryImpl : HomeTypeFactory {
             EventGridViewHolder(view)
         } else if (type == EventCarouselViewHolder.LAYOUT) {
             EventCarouselViewHolder(view)
+        } else if (type == EventLocationViewHolder.LAYOUT) {
+            EventLocationViewHolder(view)
         } else {
             throw TypeNotSupportedException.create("Layout not supported")
         }

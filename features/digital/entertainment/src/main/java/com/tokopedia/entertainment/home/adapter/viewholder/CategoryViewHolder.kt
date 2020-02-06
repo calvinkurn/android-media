@@ -1,16 +1,15 @@
-package com.tokopedia.entertainment.adapter.viewholder
+package com.tokopedia.entertainment.home.adapter.viewholder
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.adapter.HomeViewHolder
-import com.tokopedia.entertainment.adapter.viewmodel.CategoryViewModel
+import com.tokopedia.entertainment.home.adapter.HomeViewHolder
+import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryViewModel
 import kotlinx.android.synthetic.main.ent_layout_category_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
 import java.util.*

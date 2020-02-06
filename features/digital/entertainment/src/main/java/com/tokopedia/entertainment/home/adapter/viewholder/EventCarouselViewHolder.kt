@@ -1,4 +1,4 @@
-package com.tokopedia.entertainment.adapter.viewholder
+package com.tokopedia.entertainment.home.adapter.viewholder
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.adapter.HomeViewHolder
-import com.tokopedia.entertainment.adapter.viewmodel.EventCarouselViewModel
-import kotlinx.android.synthetic.main.ent_layout_category_adapter_item.view.*
-import kotlinx.android.synthetic.main.ent_layout_event_carousel_adapter_item.view.*
+import com.tokopedia.entertainment.home.adapter.HomeViewHolder
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselViewModel
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 
 /**
@@ -19,7 +18,7 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
  */
 class EventCarouselViewHolder(itemView: View): HomeViewHolder<EventCarouselViewModel>(itemView) {
 
-    var itemAdapter = SimpleEventItemAdapter()
+    var itemAdapter = ItemAdapter()
 
     init {
         itemView.ent_recycle_view.apply {
@@ -44,7 +43,7 @@ class EventCarouselViewHolder(itemView: View): HomeViewHolder<EventCarouselViewM
                               var price: String,
                               var date: String)
 
-    class SimpleEventItemAdapter : RecyclerView.Adapter<SimpleEventItemAdapter.ItemViewHolder>() {
+    class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -52,7 +51,7 @@ class EventCarouselViewHolder(itemView: View): HomeViewHolder<EventCarouselViewM
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_layout_event_carousel_adapter_item, parent, false)
+                    .inflate(R.layout.ent_layout_viewholder_event_carousel_adapter_item, parent, false)
             return ItemViewHolder(view)
         }
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

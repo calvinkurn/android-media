@@ -1,6 +1,5 @@
-package com.tokopedia.entertainment.adapter;
+package com.tokopedia.entertainment.home.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.entertainment.adapter.factory.HomeTypeFactory;
+import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.entertainment.adapter
+package com.tokopedia.entertainment.home.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

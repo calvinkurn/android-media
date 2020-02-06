@@ -1,4 +1,4 @@
-package com.tokopedia.entertainment.fragment
+package com.tokopedia.entertainment.home.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -6,14 +6,13 @@ import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.adapter.EntertainmentHomeAdapter
-import com.tokopedia.entertainment.adapter.HomeItem
-import com.tokopedia.entertainment.adapter.factory.HomeTypeFactoryImpl
-import com.tokopedia.entertainment.adapter.viewholder.EventCarouselViewHolder
-import com.tokopedia.entertainment.adapter.viewmodel.BannerViewModel
-import com.tokopedia.entertainment.adapter.viewmodel.CategoryViewModel
-import com.tokopedia.entertainment.adapter.viewmodel.EventCarouselViewModel
-import com.tokopedia.entertainment.adapter.viewmodel.EventGridViewModel
+import com.tokopedia.entertainment.home.adapter.EntertainmentHomeAdapter
+import com.tokopedia.entertainment.home.adapter.HomeItem
+import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
+import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselViewHolder
+import com.tokopedia.entertainment.home.adapter.viewholder.EventGridViewHolder
+import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationViewHolder
+import com.tokopedia.entertainment.home.adapter.viewmodel.*
 import kotlinx.android.synthetic.main.ent_home_fragment.*
 import java.util.*
 
@@ -34,6 +33,7 @@ class HomeEntertainmentFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,12 +75,69 @@ class HomeEntertainmentFragment : BaseDaggerFragment() {
                 )
         )
 
+        val itemsEvent2 : List<EventGridViewHolder.EventItemModel> = Arrays.asList(
+                EventGridViewHolder.EventItemModel(
+                        "https://ecs7.tokopedia.net/img/banner/2019/12/23/41831484/41831484_49d7ce00-a29f-4f66-b34f-9914e45d1f1a.jpg",
+                        "Legoland Malaysia",
+                        "Jakarta, Bandung",
+                        "Rp 183.000",
+                        "Rp 83.000"
+                ),
+                EventGridViewHolder.EventItemModel(
+                        "https://ecs7.tokopedia.net/img/banner/2019/12/23/41831484/41831484_49d7ce00-a29f-4f66-b34f-9914e45d1f1a.jpg",
+                        "Legoland Malaysia",
+                        "Jakarta, Bandung",
+                        "Rp 183.000",
+                        "Rp 83.000"
+                ),
+                EventGridViewHolder.EventItemModel(
+                        "https://ecs7.tokopedia.net/img/banner/2019/12/23/41831484/41831484_49d7ce00-a29f-4f66-b34f-9914e45d1f1a.jpg",
+                        "Legoland Malaysia",
+                        "Jakarta, Bandung",
+                        "Rp 183.000",
+                        "Rp 83.000"
+                ),
+                EventGridViewHolder.EventItemModel(
+                        "https://ecs7.tokopedia.net/img/banner/2019/12/23/41831484/41831484_49d7ce00-a29f-4f66-b34f-9914e45d1f1a.jpg",
+                        "Legoland Malaysia",
+                        "Jakarta, Bandung",
+                        "Rp 183.000",
+                        "Rp 83.000"
+                )
+        )
+
+        val itemsEvent3 : List<EventLocationViewHolder.EventItemModel> = Arrays.asList(
+                EventLocationViewHolder.EventItemModel(
+                        "https://ecs7.tokopedia.net/img/banner/2019/12/23/41831484/41831484_49d7ce00-a29f-4f66-b34f-9914e45d1f1a.jpg",
+                        "Singapore",
+                        "Tagline goes here"
+                ),
+                EventLocationViewHolder.EventItemModel(
+                        "https://ecs7.tokopedia.net/img/banner/2019/12/23/41831484/41831484_49d7ce00-a29f-4f66-b34f-9914e45d1f1a.jpg",
+                        "Singapore",
+                        "Tagline goes here"
+                ),
+                EventLocationViewHolder.EventItemModel(
+                        "https://ecs7.tokopedia.net/img/banner/2019/12/23/41831484/41831484_49d7ce00-a29f-4f66-b34f-9914e45d1f1a.jpg",
+                        "Singapore",
+                        "Tagline goes here"
+                ),
+                EventLocationViewHolder.EventItemModel(
+                        "https://ecs7.tokopedia.net/img/banner/2019/12/23/41831484/41831484_49d7ce00-a29f-4f66-b34f-9914e45d1f1a.jpg",
+                        "Singapore",
+                        "Tagline goes here"
+                )
+        )
+
         val items: List<HomeItem<*>> = Arrays.asList(
                 BannerViewModel(),
                 CategoryViewModel(),
                 EventCarouselViewModel(itemsEvent1),
-                EventGridViewModel("Wahana keren yang wajib dicoba")
+                EventGridViewModel("Wahana keren yang wajib dicoba", itemsEvent2),
+                EventLocationViewModel("Berencana Liburan ke Luar Negeri", itemsEvent3)
         )
+
+
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)

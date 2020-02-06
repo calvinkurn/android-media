@@ -1,8 +1,8 @@
-package com.tokopedia.entertainment.adapter.viewmodel
+package com.tokopedia.entertainment.home.adapter.viewmodel
 
-import com.tokopedia.entertainment.adapter.HomeItem
-import com.tokopedia.entertainment.adapter.factory.HomeTypeFactory
-import com.tokopedia.entertainment.adapter.viewholder.EventCarouselViewHolder
+import com.tokopedia.entertainment.home.adapter.HomeItem
+import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory
+import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselViewHolder
 
 /**
  * Author errysuprayogi on 27,January,2020

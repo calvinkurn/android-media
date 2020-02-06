@@ -1,8 +1,7 @@
-package com.tokopedia.entertainment.widget
+package com.tokopedia.entertainment.home.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import com.tokopedia.banner.BannerView

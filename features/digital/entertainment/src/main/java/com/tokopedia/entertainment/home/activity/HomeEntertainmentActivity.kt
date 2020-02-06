@@ -1,10 +1,9 @@
-package com.tokopedia.entertainment.activity
+package com.tokopedia.entertainment.home.activity
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.entertainment.fragment.HomeEntertainmentFragment
+import com.tokopedia.entertainment.home.fragment.HomeEntertainmentFragment
 
 /**
  * Author errysuprayogi on 27,January,2020
