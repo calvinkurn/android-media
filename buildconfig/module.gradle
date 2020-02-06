@@ -22,10 +22,11 @@ android {
 
     buildTypes {
         debug {
-            ext.enableHansel = false
-            testCoverageEnabled (project.hasProperty('coverage')? true : false)
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
         }
         release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled false
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'

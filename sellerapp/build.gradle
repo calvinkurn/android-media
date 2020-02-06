@@ -130,13 +130,13 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
-            ext.enableHansel=false
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
         }
         release {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            ext.enableHansel=true
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
 //            shrinkResources true
