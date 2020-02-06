@@ -6,10 +6,26 @@ package com.tokopedia.sellerhome
 object WidgetType {
 
     const val CARD = "card"
-    const val LINE_GRAPH = "line_graph"
-    const val CAROUSEL = "carousel"
+    const val LINE_GRAPH = "lineGraph"
+    const val CAROUSEL = "carouselImage"
     const val DESCRIPTION = "description"
     const val SECTION = "section"
-    const val PROGRESS = "progress_bar"
+    const val PROGRESS = "progressBar"
     const val POST = "post"
+
+    fun isValidWidget(widgetType: String): Boolean {
+        return getWidgetList().contains(widgetType)
+    }
+
+    fun getWidgetList(): List<String> {
+        return listOf(
+                CARD,
+                CAROUSEL,
+                DESCRIPTION,
+                LINE_GRAPH,
+                POST,
+                PROGRESS,
+                SECTION
+        )
+    }
 }

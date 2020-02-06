@@ -25,15 +25,7 @@ class CardViewHolder(
         observeState(element)
         listener.getCardData()
 
-        with(itemView) {
-            tvCardTitle.text = element.title
-
-            setOnClickListener {
-                if (element.appLink.isNotBlank()) {
-                    RouteManager.route(context, element.appLink)
-                }
-            }
-        }
+        itemView.tvCardTitle.text = element.title
     }
 
     private fun observeState(element: CardWidgetUiModel) {
@@ -72,6 +64,12 @@ class CardViewHolder(
             tvCardTitle.text = element.title
             tvCardValue.text = element.data?.value ?: "0"
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
+
+            setOnClickListener {
+                if (element.appLink.isNotBlank()) {
+                    RouteManager.route(context, element.appLink)
+                }
+            }
         }
     }
 

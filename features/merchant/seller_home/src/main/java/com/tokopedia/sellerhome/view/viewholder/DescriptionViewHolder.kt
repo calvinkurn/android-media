@@ -28,7 +28,7 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
 
     private fun setupDetails(element: DescriptionWidgetUiModel) {
         with(itemView) {
-            if (element.ctaText.isNotEmpty() && element.appLink.isNotEmpty()) {
+            if (element.ctaText.isNotBlank() && element.appLink.isNotBlank()) {
                 tv_description_url.text = element.ctaText
                 tv_description_url.visibility = View.VISIBLE
                 iv_description_arrow.visibility = View.VISIBLE

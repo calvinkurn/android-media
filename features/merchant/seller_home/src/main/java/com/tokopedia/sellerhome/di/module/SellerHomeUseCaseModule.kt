@@ -1,12 +1,8 @@
 package com.tokopedia.sellerhome.di.module
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
-import com.tokopedia.sellerhome.domain.mapper.CardMapper
-import com.tokopedia.sellerhome.domain.mapper.LineGraphMapper
-import com.tokopedia.sellerhome.domain.mapper.ProgressMapper
-import com.tokopedia.sellerhome.domain.mapper.PostMapper
+import com.tokopedia.sellerhome.domain.mapper.*
 import com.tokopedia.sellerhome.domain.usecase.GetCardDataUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetLayoutUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetLineGraphDataUseCase
@@ -25,8 +21,11 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
-    fun provideGetSellerHomeLayoutUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase): GetLayoutUseCase {
-        return GetLayoutUseCase(multiRequestGraphqlUseCase)
+    fun provideGetSellerHomeLayoutUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: LayoutMapper
+    ): GetLayoutUseCase {
+        return GetLayoutUseCase(gqlRepository, mapper)
     }
 
     @SellerHomeScope
@@ -57,7 +56,7 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
-    fun provideGetPostDataUseCasde(
+    fun provideGetPostDataUseCase(
             gqlRepository: GraphqlRepository,
             mapper: PostMapper
     ): GetPostDataUseCase {

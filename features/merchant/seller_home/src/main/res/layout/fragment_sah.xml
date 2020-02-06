@@ -6,54 +6,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:background="@color/Neutral_N50">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
+            android:id="@+id/relTicker"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/Neutral_N50">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
 
-            <RelativeLayout
-                android:id="@+id/relTicker"
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                android:layout_marginStart="-4dp"
+                android:layout_marginLeft="-4dp"
+                android:layout_marginTop="-6dp"
+                android:layout_marginEnd="-4dp"
+                android:layout_marginRight="-4dp"
+                android:layout_marginBottom="-6dp"
+                app:tickerShapeType="full"
+                app:tickerType="information" />
+        </RelativeLayout>
 
-                <com.tokopedia.unifycomponents.ticker.Ticker
-                    android:id="@+id/tickerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="-4dp"
-                    android:layout_marginLeft="-4dp"
-                    android:layout_marginTop="-6dp"
-                    android:layout_marginEnd="-4dp"
-                    android:layout_marginRight="-4dp"
-                    android:layout_marginBottom="-6dp"
-                    app:tickerShapeType="full"
-                    app:tickerType="information" />
-            </RelativeLayout>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relTicker"
+            app:layout_constraintVertical_bias="0.0">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 android:paddingStart="4dp"
                 android:paddingLeft="4dp"
                 android:paddingEnd="4dp"
-                android:paddingRight="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/relTicker"
-                app:layout_constraintVertical_bias="0.0" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+                android:paddingRight="4dp" />
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
