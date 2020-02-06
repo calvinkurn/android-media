@@ -8,6 +8,7 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
@@ -80,8 +81,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     }
 
     private String getMessageId(String appLinks) {
-        String startString = "tokopedia://topchat/";
-        int lengthStart = startString.length();
+        String startString = ApplinkConst.TOPCHAT_IDLESS;
+        int lengthStart = startString.length() + 1;
         int lastIndex = appLinks.lastIndexOf("?");
         return appLinks.substring(lengthStart, lastIndex);
     }
