@@ -11,7 +11,6 @@ import com.tokopedia.logisticdata.data.apiservice.TrackingOrderApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
 import com.tokopedia.logisticdata.data.repository.TrackingPageRepository;
-import com.tokopedia.logisticorder.di.TrackingPageScope;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
