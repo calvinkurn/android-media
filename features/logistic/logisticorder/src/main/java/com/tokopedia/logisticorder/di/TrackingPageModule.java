@@ -3,7 +3,7 @@ package com.tokopedia.logisticorder.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.readystatesoftware.chuck.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -31,7 +31,6 @@ import com.tokopedia.logisticorder.view.OrderAnalyticsOrderTracking;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
-
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -39,11 +38,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 /**
  * Created by kris on 5/9/18. Tokopedia
  */
-
 @Module
 public class TrackingPageModule {
 
@@ -89,7 +86,7 @@ public class TrackingPageModule {
                         userSession));
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(new HttpLoggingInterceptor())
-                    .addInterceptor(new ChuckInterceptor(context));
+                    .addInterceptor(new ChuckerInterceptor(context));
         }
         return builder.build();
     }
