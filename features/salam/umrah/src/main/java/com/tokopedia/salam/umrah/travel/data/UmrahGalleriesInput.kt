@@ -6,8 +6,8 @@ package com.tokopedia.salam.umrah.travel.data
  */
 
 data class UmrahGalleriesInput(
-        val page : Int = 1,
-        val limit : Int = 20,
-        val entityName : List<String> = arrayListOf(),
-        val entitySlugName : String = ""
+        var page : Int = 0,
+        var limit : Int = 0,
+        var entityName : List<String> = listOf(),
+        var entitySlugName : String = ""
 )

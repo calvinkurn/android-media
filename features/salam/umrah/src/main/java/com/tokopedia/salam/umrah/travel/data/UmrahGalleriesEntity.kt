@@ -2,6 +2,9 @@ package com.tokopedia.salam.umrah.travel.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelGalleryAdapterTypeFactory
+import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelProductAdapterTypeFactory
 
 /**
  * @author by Firman on 3/2/20
@@ -12,7 +15,6 @@ data class UmrahGalleriesEntity(
         @Expose
         val umrahGalleries: List<UmrahGallery> = emptyList()
 )
-
 data class UmrahGallery(
         @SerializedName("id")
         @Expose
@@ -35,7 +37,10 @@ data class UmrahGallery(
         @SerializedName("medias")
         @Expose
         val medias: List<Media> = emptyList()
-)
+): Visitable<UmrahTravelGalleryAdapterTypeFactory> {
+        override fun type(typeFactory: UmrahTravelGalleryAdapterTypeFactory?): Int =
+                typeFactory?.type(type, medias.size) ?: 0
+}
 
 data class Media(
         @SerializedName("title")

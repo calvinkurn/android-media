@@ -15,9 +15,9 @@ class UmrahTravelAgentViewPagerAdapter(fm: FragmentManager, val slugName: String
     override fun getItem(position: Int): Fragment {
         return when(position){
             0 -> UmrahTravelAgentProductsFragment.createInstance(slugName)
-            1 -> UmrahTravelAgentGalleryFragment()
+            1 -> UmrahTravelAgentGalleryFragment.createInstance(slugName)
             2 -> UmrahTravelAgentInfoFragment.createInstance(slugName)
-            else -> UmrahTravelAgentProductsFragment()
+            else -> UmrahTravelAgentInfoFragment.createInstance(slugName)
         }
     }
 

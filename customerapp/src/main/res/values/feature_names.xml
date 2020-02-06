@@ -205,6 +205,7 @@
     <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
     <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
     <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+    <string name="umrah_travel_agent_title">Penyelenggara Umroh</string>
 
 
     <!-- Dynamic feature for user identification commmon-->

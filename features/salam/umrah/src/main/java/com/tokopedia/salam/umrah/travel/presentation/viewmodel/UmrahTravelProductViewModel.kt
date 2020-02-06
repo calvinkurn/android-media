@@ -50,5 +50,4 @@ class UmrahTravelProductViewModel @Inject constructor(private val graphqlReposit
         const val PARAM_LIMIT = 5
         const val PARAM_SORT_METHOD = "3"
     }
-
 }

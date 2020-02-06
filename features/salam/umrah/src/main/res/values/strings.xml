@@ -271,5 +271,9 @@
     <string name="umrah_travel_product_duration">%s Hari</string>
     <string name="umrah_travel_read_more">Baca Selengkapnya</string>
     <string name="umrah_travel_hide_more">Sembunyikan</string>
+    <string name="umrah_travel_empty_gallery_title">Belum ada foto atau video di sini
+</string>
+    <string name="umrah_travel_empty_gallery_sub_title">Kamu tetap bisa cek informasi tentang penyelenggara umroh ini di menu Info.</string>
+
 
 </resources>

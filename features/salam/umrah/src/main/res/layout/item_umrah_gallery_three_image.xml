@@ -18,7 +18,7 @@
         >
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_umrah_gallery_one_image_title"
+            android:id="@+id/tg_umrah_gallery_three_image_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Perjalanan Umroh"
@@ -29,27 +29,24 @@
             />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_umrah_gallery_one_image_sub_title"
+            android:id="@+id/tg_umrah_gallery_three_image_sub_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="20 Nov - 29 Nov 2018"
             app:typographyType="body_3"
             android:layout_marginLeft="@dimen/dp_12"
             />
-
+<!--        Youtube Player-->
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iw_umrah_gallery_one_image"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
+            android:id="@+id/iw_umrah_gallery_three_image_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
             />
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_umrah_gallery_one_image_desc"
+            android:id="@+id/tg_umrah_gallery_three_image_desc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:text="Alhamdulillah ibadah umroh kami berjalan dengan lancar tanpa halangan berarti."
