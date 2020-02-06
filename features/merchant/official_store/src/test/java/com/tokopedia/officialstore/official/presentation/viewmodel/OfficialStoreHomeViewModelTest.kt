@@ -33,7 +33,7 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             onGetOfficialStoreBanners_thenReturn(osBanners)
             onGetOfficialStoreBenefits_thenReturn(osBenefits)
             onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
-            onSetupDynamicChannelParams_completeWith(channelType)
+            onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
             viewModel.loadFirstData(category)
 
@@ -60,19 +60,14 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             val category = createCategory(prefixUrl, slug)
             val channelType = "$prefixUrl$slug"
 
-            onGetOfficialStoreBanners_thenReturn(error)
-            onGetOfficialStoreBenefits_thenReturn(error)
-            onGetOfficialStoreFeaturedShop_thenReturn(error)
-            onSetupDynamicChannelParams_completeWith(channelType)
+            onGetOfficialStoreData_thenReturn(error)
+            onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
             viewModel.loadFirstData(category)
 
             val expectedError = Fail(NullPointerException())
 
-            verifyOfficialStoreBannersError(expectedError)
-            verifyOfficialStoreBenefitsError(expectedError)
-            verifyOfficialStoreFeaturedShopError(expectedError)
-            verifyOfficialStoreDynamicChannelError(expectedError)
+            verifyLiveDataValueError(expectedError)
             verifyDynamicChannelParamsEquals(channelType)
         }
     }
@@ -160,7 +155,7 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             val recommendation = createRecommendation(productId, isTopAds)
             val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
 
-            onAddWishListCompleted(withProductId = productId, withUserId = userId)
+            onAddWishList_thenCompleteWith(productId, userId)
 
             viewModel.addWishlist(recommendation, callback)
 
@@ -179,7 +174,7 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
             val recommendation = createRecommendation(productId, isTopAds)
             val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
 
-            onAddWishListCompleted(withProductId = productId, withUserId = userId)
+            onAddWishList_thenCompleteWith(productId, userId)
 
             viewModel.addWishlist(recommendation, callback)
 

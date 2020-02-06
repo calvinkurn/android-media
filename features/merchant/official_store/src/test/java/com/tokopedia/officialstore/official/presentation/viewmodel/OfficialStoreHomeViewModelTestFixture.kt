@@ -110,17 +110,17 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coEvery { getRecommendationUseCase.createObservable(any()) } returns mockObservable(recommendations)
     }
 
-    protected fun onSetupDynamicChannelParams_completeWith(withChannelType: String) {
-        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(withChannelType) } returns Unit
+    protected fun onSetupDynamicChannelParams_thenCompleteWith(channelType: String) {
+        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) } returns Unit
     }
 
     protected fun onAddTopAdsWishList_thenReturn(wishList: WishlistModel) {
         coEvery { topAdsWishlishedUseCase.createObservable(any()) } returns mockObservable(wishList)
     }
 
-    protected fun onAddWishListCompleted(withProductId: String, withUserId: String) {
-        coEvery { userSessionInterface.userId } returns withUserId
-        coEvery { addWishListUseCase.createObservable(withProductId, withUserId, any()) } returns Unit
+    protected fun onAddWishList_thenCompleteWith(productId: String, userId: String) {
+        coEvery { userSessionInterface.userId } returns userId
+        coEvery { addWishListUseCase.createObservable(productId, userId, any()) } returns Unit
     }
 
     protected fun onRemoveWishList_thenCompleteWith(productId: String, userId: String) {
@@ -132,15 +132,15 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         every { userSessionInterface.isLoggedIn } returns loggedIn
     }
 
-    protected fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
+    private fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } throws error
     }
 
-    protected fun onGetOfficialStoreBenefits_thenReturn(error: Throwable) {
+    private fun onGetOfficialStoreBenefits_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreBenefitUseCase.executeOnBackground() } throws error
     }
 
-    protected fun onGetOfficialStoreFeaturedShop_thenReturn(error: Throwable) {
+    private fun onGetOfficialStoreFeaturedShop_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } throws error
     }
 
@@ -150,6 +150,12 @@ abstract class OfficialStoreHomeViewModelTestFixture {
 
     protected fun onAddTopAdsWishList_thenReturn(error: Throwable) {
         coEvery { topAdsWishlishedUseCase.createObservable(any()) } throws error
+    }
+
+    protected fun onGetOfficialStoreData_thenReturn(error: NullPointerException) {
+        onGetOfficialStoreBanners_thenReturn(error)
+        onGetOfficialStoreBenefits_thenReturn(error)
+        onGetOfficialStoreFeaturedShop_thenReturn(error)
     }
     // endregion
 
@@ -195,6 +201,13 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) }
     }
 
+    protected fun verifyLiveDataValueError(expectedError: Fail) {
+        verifyOfficialStoreBannersError(expectedError)
+        verifyOfficialStoreBenefitsError(expectedError)
+        verifyOfficialStoreFeaturedShopError(expectedError)
+        verifyOfficialStoreDynamicChannelError(expectedError)
+    }
+
     protected fun verifyOfficialStoreProductRecommendationEquals(
         expectedProductRecommendation: Success<RecommendationWidget>
     ) {
@@ -232,28 +245,28 @@ abstract class OfficialStoreHomeViewModelTestFixture {
         assertEquals(expectedError, actualError)
     }
 
-    protected fun verifyOfficialStoreBannersError(expectedError: Fail) {
+    private fun verifyOfficialStoreBannersError(expectedError: Fail) {
         verifyGetOfficialStoreBannersUseCaseCalled()
 
         viewModel.officialStoreBannersResult
             .assertError(expectedError)
     }
 
-    protected fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
+    private fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
         verifyGetOfficialStoreBannersUseCaseCalled()
 
         viewModel.officialStoreBenefitsResult
             .assertError(expectedError)
     }
 
-    protected fun verifyOfficialStoreFeaturedShopError(expectedError: Fail) {
+    private fun verifyOfficialStoreFeaturedShopError(expectedError: Fail) {
         verifyGetOfficialStoreFeaturedShopUseCaseCalled()
 
         viewModel.officialStoreFeaturedShopResult
             .assertError(expectedError)
     }
 
-    protected fun verifyOfficialStoreDynamicChannelError(expectedError: Fail) {
+    private fun verifyOfficialStoreDynamicChannelError(expectedError: Fail) {
         val error = expectedError.throwable
         verifyGetOfficialDynamicChannelCalled(error)
 
