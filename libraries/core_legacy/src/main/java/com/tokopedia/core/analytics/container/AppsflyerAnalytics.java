@@ -299,11 +299,13 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
     }
 
-    public static String getDefferedDeeplinkPathIfExists() {
+    @Override
+    public String getDefferedDeeplinkPathIfExists() {
         return deferredDeeplinkPath;
     }
 
-    public static void setDefferedDeeplinkPathIfExists(String deeplinkPath) {
+    public void setDefferedDeeplinkPathIfExists(String deeplinkPath) {
         deferredDeeplinkPath = deeplinkPath;
+
     }
 }

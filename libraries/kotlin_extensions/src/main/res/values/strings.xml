@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">kotlin_extensions</string>
+    <string name="title_try_again">Coba Lagi</string>
+    <string name="title_ok">OK</string>
 </resources>

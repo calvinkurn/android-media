@@ -1,16 +1,17 @@
 package com.tokopedia.flight.cancellation.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightAmenityType;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;

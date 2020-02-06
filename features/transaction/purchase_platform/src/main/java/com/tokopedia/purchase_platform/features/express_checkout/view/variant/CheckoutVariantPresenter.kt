@@ -10,6 +10,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCa
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.CheckoutUseCase
@@ -23,7 +24,6 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.ma
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.subscriber.*
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductChild
-import com.tokopedia.transaction.common.sharedata.EditAddressParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.android.schedulers.AndroidSchedulers

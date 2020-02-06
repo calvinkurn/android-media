@@ -2,11 +2,12 @@ package com.tokopedia.profile.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -62,8 +63,11 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun initInjector() {
         activity?.let {
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+
             GraphqlClient.init(it)
             DaggerProfileComponent.builder()
+                    .baseAppComponent(appComponent)
                     .build()
                     .inject(this)
         }

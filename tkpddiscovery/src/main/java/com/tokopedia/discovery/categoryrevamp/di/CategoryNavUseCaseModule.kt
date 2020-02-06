@@ -8,6 +8,7 @@ import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.tradein_common.repository.BaseRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -136,7 +137,7 @@ class CategoryNavUseCaseModule {
 
     @CategoryNavScope
     @Provides
-    fun provideResources(context: Context): Resources{
+    fun provideResources(context: Context): Resources {
         return context.resources
     }
 
@@ -144,6 +145,12 @@ class CategoryNavUseCaseModule {
     @Provides
     fun provideGraphQlRepo(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @CategoryNavScope
+    @Provides
+    fun provideBaseRepository(): BaseRepository {
+        return BaseRepository.repositoryInstance
     }
 
 }

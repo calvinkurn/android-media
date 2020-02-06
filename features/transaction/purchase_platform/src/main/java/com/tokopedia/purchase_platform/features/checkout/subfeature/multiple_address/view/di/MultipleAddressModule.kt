@@ -4,7 +4,6 @@ import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformCommonModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.ChangeShippingAddressUseCase
@@ -52,12 +51,10 @@ class MultipleAddressModule {
     @MultipleAddressScope
     fun providePresenter(changeShippingAddressUseCase: ChangeShippingAddressUseCase,
                          getCartMultipleAddressListUseCase: GetCartMultipleAddressListUseCase,
-                         cartApiRequestParamGenerator: CartApiRequestParamGenerator,
                          userSessionInterface: UserSessionInterface): IMultipleAddressPresenter {
         return MultipleAddressPresenter(
                 getCartMultipleAddressListUseCase,
                 changeShippingAddressUseCase,
-                cartApiRequestParamGenerator,
                 userSessionInterface
         )
     }

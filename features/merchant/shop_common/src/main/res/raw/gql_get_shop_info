@@ -23,7 +23,6 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
                 until
             }
             createInfo{
-                shopCreated
                 openSince
             }
             shopAssets{
@@ -48,10 +47,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
             }
             shopLastActive
             location
-            shopTerms
             isAllowManage
-            isOpen
-            isOwner
             goldOS {
                 isGold
                 isGoldBadge
@@ -74,11 +70,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
             }
             topContent{
                 topURL
-                bottomURL
             }
-        }
-        error {
-            message
         }
     }
 }

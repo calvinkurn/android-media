@@ -6,96 +6,108 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 2019-08-27.
  */
-data class SomDetailOrder (
-    @SerializedName("data")
-    @Expose
-    val data: Data = Data()) {
+data class SomDetailOrder(
+        @SerializedName("data")
+        @Expose
+        val data: Data = Data()) {
 
-    data class Data (
-         @SerializedName("get_som_detail")
-         @Expose
-         val getSomDetail: GetSomDetail = GetSomDetail()) {
-
-        data class GetSomDetail (
-            @SerializedName("order_id")
+    data class Data(
+            @SerializedName("get_som_detail")
             @Expose
-            val orderId: Int = 0,
+            val getSomDetail: GetSomDetail = GetSomDetail()) {
 
-            @SerializedName("status")
-            @Expose
-            val statusId: Int = 0,
+        data class GetSomDetail(
+                @SerializedName("order_id")
+                @Expose
+                val orderId: Int = 0,
 
-            @SerializedName("status_text")
-            @Expose
-            val statusText: String = "",
+                @SerializedName("status")
+                @Expose
+                val statusId: Int = 0,
 
-            @SerializedName("invoice")
-            @Expose
-            val invoice: String = "",
+                @SerializedName("status_text")
+                @Expose
+                val statusText: String = "",
 
-            @SerializedName("invoice_url")
-            @Expose
-            val invoiceUrl: String = "",
+                @SerializedName("invoice")
+                @Expose
+                val invoice: String = "",
 
-            @SerializedName("checkout_date")
-            @Expose
-            val checkoutDate: String = "",
+                @SerializedName("invoice_url")
+                @Expose
+                val invoiceUrl: String = "",
 
-            @SerializedName("payment_date")
-            @Expose
-            val paymentDate: String = "",
+                @SerializedName("checkout_date")
+                @Expose
+                val checkoutDate: String = "",
 
-            @SerializedName("notes")
-            @Expose
-            val notes: String = "",
+                @SerializedName("payment_date")
+                @Expose
+                val paymentDate: String = "",
 
-            @SerializedName("products")
-            @Expose
-            val listProduct: List<Products> = listOf(),
+                @SerializedName("notes")
+                @Expose
+                val notes: String = "",
 
-            @SerializedName("customer")
-            @Expose
-            val customer: Customer = Customer(),
+                @SerializedName("products")
+                @Expose
+                val listProduct: List<Products> = listOf(),
 
-            @SerializedName("shipment")
-            @Expose
-            val shipment: Shipment = Shipment(),
+                @SerializedName("customer")
+                @Expose
+                val customer: Customer = Customer(),
 
-            @SerializedName("booking_info")
-            @Expose
-            val bookingInfo: BookingInfo = BookingInfo(),
+                @SerializedName("dropshipper")
+                @Expose
+                val dropshipper: Dropshipper = Dropshipper(),
 
-            @SerializedName("receiver")
-            @Expose
-            val receiver: Receiver = Receiver(),
+                @SerializedName("shipment")
+                @Expose
+                val shipment: Shipment = Shipment(),
 
-            @SerializedName("deadline")
-            @Expose
-            val deadline: Deadline = Deadline(),
+                @SerializedName("booking_info")
+                @Expose
+                val bookingInfo: BookingInfo = BookingInfo(),
 
-            @SerializedName("insurance")
-            @Expose
-            val insurance: Insurance = Insurance(),
+                @SerializedName("receiver")
+                @Expose
+                val receiver: Receiver = Receiver(),
 
-            @SerializedName("label_info")
-            @Expose
-            val listLabelInfo: List<LabelInfo> = listOf(),
+                @SerializedName("deadline")
+                @Expose
+                val deadline: Deadline = Deadline(),
 
-            @SerializedName("flag_order_meta")
-            @Expose
-            val flagOrderMeta: FlagOrderMeta = FlagOrderMeta(),
+                @SerializedName("insurance")
+                @Expose
+                val insurance: Insurance = Insurance(),
 
-            @SerializedName("payment_method")
-            @Expose
-            val paymentMethod: List<PaymentMethod> = listOf(),
+                @SerializedName("label_info")
+                @Expose
+                val listLabelInfo: List<LabelInfo> = listOf(),
 
-            @SerializedName("payment_summary")
-            @Expose
-            val paymentSummary: PaymentSummary = PaymentSummary(),
+                @SerializedName("buyer_request_cancel")
+                @Expose
+                val buyerRequestCancel: BuyerRequestCancel = BuyerRequestCancel(),
 
-            @SerializedName("button")
-            @Expose
-            val button: List<Button> = listOf()) {
+                @SerializedName("flag_order_meta")
+                @Expose
+                val flagOrderMeta: FlagOrderMeta = FlagOrderMeta(),
+
+                @SerializedName("payment_method")
+                @Expose
+                val paymentMethod: List<PaymentMethod> = listOf(),
+
+                @SerializedName("payment_summary")
+                @Expose
+                val paymentSummary: PaymentSummary = PaymentSummary(),
+
+                @SerializedName("button")
+                @Expose
+                val button: List<Button> = listOf(),
+
+                @SerializedName("online_booking")
+                @Expose
+                val onlineBooking: OnlineBookingRoot = OnlineBookingRoot()) {
 
             data class Products(
                     @SerializedName("id")
@@ -162,6 +174,15 @@ data class SomDetailOrder (
                     @SerializedName("phone")
                     @Expose
                     val phone: String = "")
+
+            data class Dropshipper(
+                    @SerializedName("phone")
+                    @Expose
+                    val phone: String = "",
+
+                    @SerializedName("name")
+                    @Expose
+                    val name: String = "")
 
             data class Shipment(
                     @SerializedName("id")
@@ -244,6 +265,10 @@ data class SomDetailOrder (
                         @Expose
                         val message: String = "",
 
+                        @SerializedName("message_array")
+                        @Expose
+                        val messageArray: List<String> = arrayListOf(),
+
                         @SerializedName("barcode_type")
                         @Expose
                         val barcodeType: String = ""
@@ -313,6 +338,19 @@ data class SomDetailOrder (
                     @SerializedName("flag_background")
                     @Expose
                     val flagBg: String = "")
+
+            data class BuyerRequestCancel(
+                    @SerializedName("is_request_cancel")
+                    @Expose
+                    val isRequestCancel: Boolean = false,
+
+                    @SerializedName("request_cancel_time")
+                    @Expose
+                    val requestCancelTime: String = "",
+
+                    @SerializedName("reason")
+                    @Expose
+                    val reason: String = "")
 
             data class FlagOrderMeta(
                     @SerializedName("is_free_shipping_campaign")
@@ -401,6 +439,23 @@ data class SomDetailOrder (
                     @SerializedName("param")
                     @Expose
                     val param: String = "")
+
+            data class OnlineBookingRoot(
+                    @SerializedName("is_hide_input_awb")
+                    @Expose
+                    val isHideInputAwb: Boolean = false,
+
+                    @SerializedName("is_remove_input_awb")
+                    @Expose
+                    val isRemoveInputAwb: Boolean = false,
+
+                    @SerializedName("is_show_info")
+                    @Expose
+                    val isShowInfo: Boolean = false,
+
+                    @SerializedName("info_text")
+                    @Expose
+                    val infoText: String = "")
         }
     }
 }

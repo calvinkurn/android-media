@@ -31,6 +31,7 @@ public class InboxReputationDetailItemViewModel implements
     String reviewerName;
     String revieweeName;
     String reviewTime;
+    String orderId;
     ArrayList<ImageAttachmentViewModel> reviewAttachment;
     String review;
     int reviewStar;
@@ -62,7 +63,9 @@ public class InboxReputationDetailItemViewModel implements
                                               String revieweeName,
                                               int reviewerId,
                                               boolean isProductBanned,
-                                              int productStatus) {
+                                              int productStatus,
+                                              String orderId
+                                              ) {
         this.reputationId = reputationId;
         this.productId = productId;
         this.productName = productName;
@@ -88,7 +91,10 @@ public class InboxReputationDetailItemViewModel implements
         this.reviewerId = reviewerId;
         this.isProductBanned = isProductBanned;
         this.productStatus = productStatus;
+        this.orderId = orderId;
     }
+
+    public String getOrderId() { return orderId; }
 
     public String getReviewId() {
         return reviewId;

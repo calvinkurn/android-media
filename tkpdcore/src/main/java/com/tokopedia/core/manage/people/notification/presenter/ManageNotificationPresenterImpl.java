@@ -1,10 +1,9 @@
 package com.tokopedia.core.manage.people.notification.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
-import com.tokopedia.core.SettingsNotification;
 import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.notification.interactor.ManageNotificationCacheInteractor;
 import com.tokopedia.core.manage.people.notification.interactor.ManageNotificationCacheInteractorImpl;
@@ -85,11 +84,6 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
         setting.setFlagReview(viewListener.getFlagReview());
         setting.setFlagTalkProduct(viewListener.getFlagTalkProduct());
         return setting;
-    }
-
-    @Override
-    public void onGoToSetRing() {
-        viewListener.getActivity().startActivity(new Intent(viewListener.getActivity(), SettingsNotification.class));
     }
 
     @Override

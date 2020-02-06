@@ -7,22 +7,17 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent
-import com.tokopedia.flight.booking.di.FlightBookingComponent
+import com.tokopedia.flight.bookingV2.di.DaggerFlightBookingComponent
+import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingFragment
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.BaseFlightActivity
-import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Subscriber
 import javax.inject.Inject
 
 class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingComponent> {
-
-    lateinit var flightPassengerDeleteAllListUseCase: FlightPassengerDeleteAllListUseCase
-        @Inject set
 
     lateinit var userSession: UserSessionInterface
         @Inject set
@@ -48,40 +43,13 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
-        deleteAllPassengerList(false)
 
         if (!userSession.isLoggedIn) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         }
     }
 
-    override fun onBackPressed() {
-        deleteAllPassengerList(true)
-    }
-
     override fun getScreenName(): String = FlightAnalytics.Screen.BOOKING
-
-    private fun deleteAllPassengerList(shouldBackPress: Boolean) {
-        flightPassengerDeleteAllListUseCase.execute(
-                flightPassengerDeleteAllListUseCase.createEmptyRequestParams(),
-                object : Subscriber<Boolean>() {
-                    override fun onNext(t: Boolean?) {
-                        if (shouldBackPress) {
-                            finish()
-                        }
-                    }
-
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable?) {
-                        e?.printStackTrace()
-                        if (shouldBackPress) {
-                            finish()
-                        }
-                    }
-                }
-        )
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
