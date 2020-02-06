@@ -76,7 +76,7 @@
             android:exported="false">
 
             <intent-filter>
-                <action android:name="com.tokopedia.topchat.chatroom.service.NotificationChatService.REPLY_CHAT" />
+                <action android:name="NotificationChatService.REPLY_CHAT" />
             </intent-filter>
         </service>
     </application>

@@ -4,11 +4,11 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
@@ -18,6 +18,8 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
  */
 
 public class ChatNotificationFactory extends BaseNotificationFactory {
+
+    private static String INTENT_ACTION_REPLY = "NotificationChatService.REPLY_CHAT";
 
     private static String REPLY_KEY = "reply_chat_key";
     private static String REPLY_LABEL = "Reply";
@@ -71,7 +73,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
 
     private PendingIntent getReplyChatPendingIntent(String mMessageId, int notificationId) {
 
-        Intent intent = new Intent("com.tokopedia.topchat.chatroom.service.NotificationChatService.REPLY_CHAT");
+        Intent intent = new Intent(INTENT_ACTION_REPLY);
         intent.setPackage(context.getPackageName());
         intent.putExtra(MESSAGE_ID, mMessageId);
         intent.putExtra(NOTIFICATION_ID, notificationId);
@@ -81,10 +83,11 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     }
 
     private String getMessageId(String appLinks) {
-        String startString = ApplinkConst.TOPCHAT_IDLESS;
-        int lengthStart = startString.length() + 1;
-        int lastIndex = appLinks.lastIndexOf("?");
-        return appLinks.substring(lengthStart, lastIndex);
+        try {
+            return Uri.parse(appLinks).getLastPathSegment();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return "0";
+        }
     }
-
 }
