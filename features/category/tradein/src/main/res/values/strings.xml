@@ -113,4 +113,5 @@
     <string name="moneyin_text_not_upto_15min">Kurang dari 15 menit!
 \nCek fungsi plus kondisi fisik</string>
     <string name="tradein_requires_permission_for_diagnostic">Perkenankan izin yang hilang untuk memulai memeriksa fungsi</string>
+    <string name="trade_in_event_label_phone_type_min_price_max_price">phone type : %1$s - min price : %2$s - max price : %3$s</string>
 </resources>

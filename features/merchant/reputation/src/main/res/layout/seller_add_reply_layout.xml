@@ -23,7 +23,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_5"
-            app:srcCompat="@drawable/ic_add_black_48dp"
+            app:srcCompat="@drawable/reputation_ic_add_black_48dp"
             android:visibility="gone"
             tools:visibility="gone"/>
 

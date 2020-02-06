@@ -1,20 +1,20 @@
 package com.tokopedia.hotel.evoucher.presentation.fragment
 
 import android.app.ProgressDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
@@ -233,7 +233,11 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             phoneString += item.number
             if (index < data.hotelTransportDetails.contactInfo.size - 1) phoneString += ", "
         }
-        tv_property_phone.text = getString(R.string.hotel_e_voucher_phone, phoneString)
+        if (phoneString.isNotEmpty()) {
+            tv_property_phone.text = getString(R.string.hotel_e_voucher_phone, phoneString)
+        } else {
+            tv_property_phone.hide()
+        }
 
         if (data.hotelTransportDetails.cancellation.cancellationPolicies.isNotEmpty()) {
             renderCancellationPolicies(data.hotelTransportDetails.cancellation.cancellationPolicies)

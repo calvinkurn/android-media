@@ -19,6 +19,7 @@
         app:layout_constraintRight_toLeftOf="@id/imageView2"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:text="Search query" />
 
 

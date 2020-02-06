@@ -156,6 +156,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         }
 
         if (cityId.isEmpty()) {
+            if (webUrl.last() != '/') webUrl += "/"
             destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
         } else {
             destinationViewModel.getInitialList()

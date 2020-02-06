@@ -4,10 +4,13 @@ import android.text.TextUtils
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.home.beranda.data.datasource.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.datasource.remote.PlayRemoteDataSource
+import com.tokopedia.home.beranda.data.model.*
 import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import rx.Observable
 import javax.inject.Inject
@@ -15,7 +18,8 @@ import javax.inject.Inject
 class HomeRepositoryImpl @Inject constructor(
         private val homeDataSource: HomeDataSource,
         private val homeCachedDataSource: HomeCachedDataSource,
-        private val homeRemoteDataSource: HomeRemoteDataSource
+        private val homeRemoteDataSource: HomeRemoteDataSource,
+        private val playRemoteDataSource: PlayRemoteDataSource
 ): HomeRepository {
 
     override suspend fun getHomeData(): Flow<HomeData?> {
@@ -37,4 +41,8 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override fun sendGeolocationInfo(): Observable<Response<String>> = homeDataSource.sendGeolocationInfo()
+
+    override fun getPlayChannel(): Flow<PlayLiveDynamicChannelEntity> = flow {
+        emit(playRemoteDataSource.getPlayData(page = 1))
+    }
 }
