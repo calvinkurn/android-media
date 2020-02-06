@@ -326,8 +326,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onCreate() {
         super.onCreate();
         Hansel.init(this);
-        initializeDagger();
-        initDaggerInjector();
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
@@ -360,26 +358,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    private void initializeDagger() {
-        daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
-                .appComponent(getApplicationComponent())
-                .reactNativeModule(new ReactNativeModule(this));
-        daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent((this).getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-
-        tokopointComponent = DaggerTokopointComponent.builder()
-                .baseAppComponent((this).getBaseAppComponent())
-                .serviceApiModule(new ServiceApiModule())
-                .build();
-
-        omsComponent = DaggerOmsComponent.builder()
-                .baseAppComponent((this).getBaseAppComponent())
-                .build();
-    }
 
     private void initFirebase() {
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
@@ -396,6 +374,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public ShopComponent getShopComponent() {
         if (shopComponent == null) {
+            if(daggerShopBuilder == null){
+                daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+            }
             shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
         }
         return shopComponent;
@@ -698,6 +679,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private ReactNativeComponent getReactNativeComponent() {
+        if(daggerReactNativeBuilder == null){
+            daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
+                    .appComponent(getApplicationComponent())
+                    .reactNativeModule(new ReactNativeModule(ConsumerRouterApplication.this));
+        }
         if (reactNativeComponent == null)
             reactNativeComponent = daggerReactNativeBuilder.build();
         return reactNativeComponent;
@@ -922,6 +908,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
         params.putString(GetTokopointUseCase.KEY_PARAM,
                 GraphqlHelper.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
+        if(tokopointComponent == null){
+            tokopointComponent = DaggerTokopointComponent.builder()
+                    .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
+                    .serviceApiModule(new ServiceApiModule())
+                    .build();
+        }
         return this.tokopointComponent.getTokopointUseCase().createObservable(params)
                 .map(new Func1<TokoPointDrawerData, TokopointHomeDrawerData>() {
                     @Override
@@ -1021,6 +1013,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
         if (!isEventOMS) {
+            if(eventComponent == null){
+                eventComponent = DaggerEventComponent.builder()
+                        .baseAppComponent((this).getBaseAppComponent())
+                        .eventModule(new EventModule(this))
+                        .build();
+            }
             return eventComponent.getVerifyCartWrapper().verifyPromo(requestParams);
         } else {
             return new PostVerifyCartWrapper(this, eventComponent.getPostVerifyCartUseCase())
@@ -1030,6 +1028,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
+        if(omsComponent == null){
+            omsComponent = DaggerOmsComponent.builder()
+                    .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
+                    .build();
+        }
         return new PostVerifyCartWrapper(this, omsComponent.getPostVerifyCartUseCase())
                 .verifyPromo(requestParams);
     }
