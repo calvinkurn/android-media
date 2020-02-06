@@ -1,7 +1,7 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
@@ -24,12 +24,11 @@ class DigitalHomePageCategoryViewHolder(itemView: View?, val onItemBindListener:
         } else {
             itemView.categoryShimmering.show()
             itemView.category_recycler_view.hide()
-            onItemBindListener.onCategoryItemDigitalBind(element?.isLoadFromCloud)
         }
     }
 
     companion object {
         val LAYOUT = R.layout.layout_digital_home_category
-        val CATEGORY_SPAN_COUNT = 5
+        const val CATEGORY_SPAN_COUNT = 5
     }
 }
