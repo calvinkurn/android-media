@@ -1,7 +1,6 @@
 package com.tkpd.remoteresourcerequest.task
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.RawRes
 import androidx.work.*
 import kotlinx.coroutines.*
@@ -28,7 +27,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
             list.forEach {
                 val deferred =
                         async(Dispatchers.IO) {
-                            Log.d(WORKER_TAG, "start Download")
+                            // start Download
                             startDownload(it)
                         }
                 deferredList.add(deferred)
@@ -36,7 +35,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
             deferredList.awaitAll()
         }
         deferredList.clear()
-        Log.d(WORKER_TAG, "resume")
+        // work resumed after completing downloads for each pending downloads
         if (isDeferredWorkCompleted(context, resourceDownloadManager, resId))
             return Result.success()
         return Result.retry()
@@ -45,7 +44,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
     private suspend fun startDownload(remoteFileName: String): Boolean =
             suspendCancellableCoroutine { cont ->
                 cont.invokeOnCancellation {
-                    Log.d(WORKER_TAG, "Cont cancelled")
+                    // cont cancelled
                     cont.cancel()
                 }
                 resourceDownloadManager.startDownload(
@@ -53,7 +52,6 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                         null,
                         object : DeferredTaskCallback {
                             override fun onTaskCompleted(resourceUrl: String?) {
-                                Log.d(WORKER_TAG, "Cont call $resourceUrl")
                                 cont.resume(true)
                             }
                         })
@@ -86,15 +84,15 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                                 )
                                 .setInputData(createInputData(resourceId))
                                 .build()
+                        // worker is scheduled in if block
                         WorkManager.getInstance()
                                 .enqueueUniqueWork(WORKER_TAG, ExistingWorkPolicy.KEEP, pushWorker)
-                        Log.d(WORKER_TAG, "Worker Scheduled")
                     } else {
-                        Log.d(WORKER_TAG, "Worker Scheduling not required")
+                        // Worker Scheduling not required
                     }
                 }
             } catch (ex: Exception) {
-                Log.d(WORKER_TAG, "Worker ${ex.message}")
+
 
             }
         }
