@@ -4,12 +4,14 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -74,10 +76,6 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
 
             lateinit var result: Map<String, Any>
 
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData())
-            }
-
             When("generate add to cart recent view data analytics") {
                 result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), false)
             }
@@ -99,10 +97,6 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
         Scenario("1 item selected on empty cart") {
 
             lateinit var result: Map<String, Any>
-
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData())
-            }
 
             When("generate add to cart recent view data analytics") {
                 result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), true)

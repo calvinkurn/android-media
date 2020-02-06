@@ -12,7 +12,6 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -77,10 +76,6 @@ object CartListPresenterAddToCartWishlistAnalyticsTest : Spek({
 
             lateinit var result: Map<String, Any>
 
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData())
-            }
-
             When("generate add to cart wishlist data analytics") {
                 result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData(), AddToCartDataModel(), false)
             }
@@ -102,10 +97,6 @@ object CartListPresenterAddToCartWishlistAnalyticsTest : Spek({
         Scenario("1 item selected on empty cart") {
 
             lateinit var result: Map<String, Any>
-
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData())
-            }
 
             When("generate add to cart wishlist data analytics") {
                 result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData(), AddToCartDataModel(), true)
