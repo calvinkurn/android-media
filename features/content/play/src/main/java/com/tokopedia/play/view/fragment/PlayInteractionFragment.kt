@@ -233,6 +233,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            if (it.state == TokopediaPlayVideoState.Playing) PlayAnalytics.clickPlayVideo(channelId, playViewModel.isLive)
             if (it.state == TokopediaPlayVideoState.Ended) showInteractionIfWatchMode()
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -504,10 +505,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             playButtonComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            PlayButtonInteractionEvent.PlayClicked -> {
-                                PlayAnalytics.clickPlayVideo(channelId)
-                                playViewModel.startCurrentVideo()
-                            }
+                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
                         }
                     }
         }
