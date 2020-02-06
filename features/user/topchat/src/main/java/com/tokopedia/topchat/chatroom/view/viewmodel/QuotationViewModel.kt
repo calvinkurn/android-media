@@ -34,6 +34,7 @@ class QuotationViewModel(
         message
 ), Visitable<TopChatTypeFactory> {
 
+    val quotationId get() = quotationPojo.identifier
     val price get() = quotationPojo.price
     val title get() = quotationPojo.title
     val thumbnailUrl get() = quotationPojo.thumbnail

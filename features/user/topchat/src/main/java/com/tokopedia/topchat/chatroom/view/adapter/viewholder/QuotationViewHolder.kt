@@ -17,8 +17,14 @@ import kotlinx.android.synthetic.main.topchat_quotation_attachment.view.*
 
 class QuotationViewHolder(
         itemView: View?,
-        private val chatLinkHandlerListener: ChatLinkHandlerListener
+        private val chatLinkHandlerListener: ChatLinkHandlerListener,
+        private val listener: QuotationListener
+
 ) : BaseChatViewHolder<QuotationViewModel>(itemView) {
+
+    interface QuotationListener {
+        fun trackClickQuotation(msg: QuotationViewModel)
+    }
 
     private var chatStatus: ImageView? = null
 
@@ -77,6 +83,7 @@ class QuotationViewHolder(
 
     private fun bindClick(message: QuotationViewModel) {
         itemView.quotationAttachmentContainer?.setOnClickListener {
+            listener.trackClickQuotation(message)
             chatLinkHandlerListener.onGoToWebView(message.url, message.url)
         }
     }

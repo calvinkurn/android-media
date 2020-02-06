@@ -38,7 +38,8 @@ open class TopChatTypeFactoryImpl(
         productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
         private val voucherListener: TopChatVoucherListener,
-        private val invoiceThumbnailListener: InvoiceThumbnailListener
+        private val invoiceThumbnailListener: InvoiceThumbnailListener,
+        private val quotationListener: QuotationViewHolder.QuotationListener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -104,7 +105,7 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener)
+            QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener, quotationListener)
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
             RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent)
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
