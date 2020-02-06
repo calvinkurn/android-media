@@ -460,8 +460,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             return true;
         } else if (url.contains(PLAY_GOOGLE_URL)) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) { return false; }
         }
         if (!allowOverride) {
             return false;
