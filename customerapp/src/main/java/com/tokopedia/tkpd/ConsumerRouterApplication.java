@@ -22,6 +22,7 @@ import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
+import com.tkpd.remoteresourcerequest.utils.DeferredCallback;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -101,6 +102,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
@@ -225,6 +227,8 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -236,7 +240,10 @@ import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import tradein_common.TradeInUtils;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -251,6 +258,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
  * @author normansyahputa on 12/15/16.
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
+        DeferredCallback,
         TkpdCoreRouter,
         SellerModuleRouter,
         IDigitalModuleRouter,
@@ -300,6 +308,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private static final String EXTRA = "extra";
     public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
+    private static final String RELATIVE_URL = "/android/res/";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -334,8 +343,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
-        ResourceDownloadManager.Companion.getManager().initialize(this, R.raw.url_list);
+        initializeResourceDownloadManager();
     }
+
+    private void initializeResourceDownloadManager(){
+        Observable.fromCallable(() -> {
+
+            ResourceDownloadManager
+                    .Companion.getManager()
+                    .setBaseAndRelativeUrl(AccountHomeUrl.CDN_URL, RELATIVE_URL)
+                    .addDeferredCallback(this)
+                    .initialize(this, R.raw.url_list);
+        return true;
+        }).subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe();
+    }
+
 
     private void initDaggerInjector() {
         getReactNativeComponent().inject(this);
@@ -1562,5 +1585,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return null;
+    }
+
+    @Override
+    public void logDeferred(@NotNull String message) {
+        Timber.d(message);
+    }
+
+    @Override
+    public void onDownloadStateChanged(@NotNull String resUrl, boolean isFailed) {
+
+    }
+
+    @Override
+    public void onCacheHit(@NotNull String resUrl) {
+
     }
 }
