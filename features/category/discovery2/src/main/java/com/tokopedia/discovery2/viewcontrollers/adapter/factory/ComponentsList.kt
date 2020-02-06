@@ -1,7 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.factory
 
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.R
 
 
 enum class ComponentsList(val id: Int, val componentName: String) {
@@ -14,5 +14,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     BannerTimer(R.layout.banner_timer_layout, "timer_with_banner"),
     CpmTopAds(R.layout.cpm_topads_layout, "topads"),
     CpmTopAdsItem(R.layout.item_cpm_topads_shop_layout, ComponentNames.CpmTopAdsShopItem.componentName),
-    CpmTopAdsProductItem(R.layout.item_cpm_topads_product_layout, ComponentNames.CpmTopAdsProductItem.componentName)
+    CpmTopAdsProductItem(R.layout.item_cpm_topads_product_layout, ComponentNames.CpmTopAdsProductItem.componentName),
+    YouTubeView(R.layout.youtube_player_view, "video"),
+
 }
