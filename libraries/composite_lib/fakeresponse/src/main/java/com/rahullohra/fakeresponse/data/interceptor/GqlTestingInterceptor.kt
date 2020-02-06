@@ -26,7 +26,7 @@ class GqlTestingInterceptor(context: Context) : Interceptor {
             if (isGqlRequest(request)) {
                 if (!TextUtils.isEmpty(requestBody)) {
 //                val fakeResponse = requestParser.parse(requestBody, response.body?.string())
-                    val fakeResponse = requestParser.parse(requestBody, null)
+                    val fakeResponse = requestParser.parse(requestBody)
                     if (!TextUtils.isEmpty(fakeResponse)) {
                         return createResponseFromFakeResponse(fakeResponse!!, request)
                     }

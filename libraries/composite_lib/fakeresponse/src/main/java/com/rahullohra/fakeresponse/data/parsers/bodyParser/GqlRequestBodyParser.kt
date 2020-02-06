@@ -11,14 +11,12 @@ import org.json.JSONArray
 
 class GqlRequestBodyParser(gqlDao: GqlDao) : BodyParser {
     val parserFactory = ParserFactory()
-    val useCase =
-        GetResultFromDaoUseCase(LocalRepository(gqlDao))
+    val useCase = GetResultFromDaoUseCase(LocalRepository(gqlDao))
 
-    fun parse(requestBody: String, responseBody: String?):String? {
+    fun parse(requestBody: String): String? {
         try {
             val jsonArray = JSONArray(requestBody)
             for (i in 0 until jsonArray.length()) {
-                responseBody
                 val item = jsonArray.getJSONObject(i)
                 val operationName = item.optString("operationName")
                 val query = item.optString("query")
@@ -42,39 +40,22 @@ class GqlRequestBodyParser(gqlDao: GqlDao) : BodyParser {
     }
 
 
-
     fun getFormattedOperationNameNew(parserFactory: ParserFactory, rawQuery: String): String {
         var operationName = parserFactory.getMappedParser().parse(rawQuery)
-        if(!TextUtils.isEmpty(operationName)){
+        if (!TextUtils.isEmpty(operationName)) {
             return operationName
         }
 
         operationName = parserFactory.getSimpleParser().parse(rawQuery)
-        if(!TextUtils.isEmpty(operationName)){
+        if (!TextUtils.isEmpty(operationName)) {
             return operationName
         }
 
         operationName = parserFactory.getNestedQueryParser().parse(rawQuery)
-        if(!TextUtils.isEmpty(operationName)){
+        if (!TextUtils.isEmpty(operationName)) {
             return operationName
         }
         return ""
     }
-
-    val authentication = fun(next: GqlParserRule) =
-        fun(request: String): String {
-            if (!true) {
-                throw IllegalArgumentException()
-            }
-            return next.parse(request)
-        }
-
-    val basicAuthentication = fun(next: GqlParserRule) =
-        fun(request: String): String {
-            if (!true) {
-                throw IllegalArgumentException()
-            }
-            return next.parse(request)
-        }
 
 }
