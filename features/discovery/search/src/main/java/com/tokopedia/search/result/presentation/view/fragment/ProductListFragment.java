@@ -59,6 +59,7 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
@@ -66,6 +67,7 @@ import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedi
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
+import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
@@ -120,6 +122,7 @@ public class ProductListFragment
         BannerAdsListener,
         EmptyStateListener,
         RecommendationListener,
+        InspirationCarouselListener,
         BannedProductsRedirectToBrowserListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
@@ -281,7 +284,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this, this,
-                this,
+                this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -1621,5 +1624,15 @@ public class ProductListFragment
         if (searchNavigationListener != null) {
             searchNavigationListener.hideBottomNavigation();
         }
+    }
+
+    @Override
+    public void onInspirationCarouselProductClicked(InspirationCarouselViewModel.Option.Product product) {
+        redirectionStartActivity(product.getApplink(), product.getUrl());
+    }
+
+    @Override
+    public void onInspirationCarouselSeeAllClicked(@NotNull InspirationCarouselViewModel.Option option) {
+        redirectionStartActivity(option.getApplink(), option.getUrl());
     }
 }
