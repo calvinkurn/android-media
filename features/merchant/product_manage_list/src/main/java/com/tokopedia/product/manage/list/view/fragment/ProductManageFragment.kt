@@ -25,14 +25,14 @@ import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.appbar.AppBarLayout
-import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -731,7 +731,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun showActionProductDialog(productManageViewModel: ProductManageViewModel) {
 
         activity?.let {
-            CommonUtils.hideKeyboard(it, it.currentFocus)
+            KeyboardHandler.hideSoftKeyboard(it)
         }
 
         val bottomSheetBuilder = BottomSheetBuilder(activity)
@@ -801,7 +801,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                         },
 
                         DialogInterface.OnClickListener { dialog, _ ->
-                            ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.core2.R.string.title_cancel))
+                            ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.product.manage.item.R.string.label_cancel))
                             dialog.dismiss()
                         })
 
@@ -977,9 +977,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         activity?.let {
             val alertDialog = AlertDialog.Builder(it)
             alertDialog.setTitle(com.tokopedia.product.manage.item.R.string.label_delete)
-            alertDialog.setMessage(com.tokopedia.core2.R.string.dialog_delete_product)
+            alertDialog.setMessage(R.string.product_manage_dialog_delete_product)
             alertDialog.setPositiveButton(com.tokopedia.product.manage.item.R.string.label_delete, onClickListener)
-            alertDialog.setNegativeButton(com.tokopedia.core2.R.string.title_cancel, onCancelListener)
+            alertDialog.setNegativeButton(com.tokopedia.product.manage.item.R.string.label_cancel, onCancelListener)
             alertDialog.show()
         }
     }
