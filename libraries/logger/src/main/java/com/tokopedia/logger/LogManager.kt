@@ -17,7 +17,10 @@ import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.TimberReportingTree
 import com.tokopedia.logger.utils.encrypt
 import com.tokopedia.logger.utils.generateKey
-import kotlinx.coroutines.*
+import com.tokopedia.logger.utils.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
 
@@ -97,19 +100,16 @@ class LogManager(val application: Application) : CoroutineScope {
         @JvmStatic
         fun log(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
             instance?.run {
-                launch(Dispatchers.IO) {
-                    try {
-                        sendLogToDB(message, timeStamp, priority, serverChannel)
-                        if (android.os.Build.VERSION.SDK_INT > 21) {
-                            jobScheduler.schedule(jobInfo)
-                        } else {
-                            pi.send()
-                        }
+                globalScopeLaunch({
+                    sendLogToDB(message, timeStamp, priority, serverChannel)
+                    if (android.os.Build.VERSION.SDK_INT > 21) {
+                        jobScheduler.schedule(jobInfo)
+                    } else {
+                        pi.send()
                     }
-                    catch (throwable: Throwable) {
-                        throwable.printStackTrace()
-                    }
-                }
+                }, {
+                    it.printStackTrace()
+                })
             }
         }
 
