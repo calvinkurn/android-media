@@ -1,18 +1,15 @@
 package com.tokopedia.topads.view.fragment
 
-import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -22,11 +19,13 @@ import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
 import javax.inject.Inject
 import com.tokopedia.topads.data.response.ResponseGroupValidateName.TopAdsGroupValidateName
+import com.tokopedia.topads.view.activity.StepperActivity
 
 /**
  * Author errysuprayogi on 29,October,2019
  */
 class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,7 +45,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateGroupAdsViewModel::class.java)
-        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
     override fun initiateStepperModel() {
@@ -79,9 +78,18 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_submit.isEnabled = false
+     //   btn_submit.isEnabled = false
         btn_submit.setOnClickListener {
-            gotoNextPage()
+            if(group_name_input.text.toString()==""){
+                SnackbarManager.make(activity,
+                        "group name can't be empty",
+                        Snackbar.LENGTH_LONG)
+                        .show()
+            }
+            else {
+                validateGroup(group_name_input.text.toString())
+                gotoNextPage()
+            }
         }
         tip_btn.setOnClickListener {
             InfoSheetGroupList.newInstance(it.context).show()
@@ -116,6 +124,10 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun onSuccess(data: TopAdsGroupValidateName.Data) {
         btn_submit.isEnabled = true
+    }
+
+    override fun updateToolBar() {
+        (activity as StepperActivity).updateToolbarTitle(getString(R.string.group_name_step))
     }
 
 }

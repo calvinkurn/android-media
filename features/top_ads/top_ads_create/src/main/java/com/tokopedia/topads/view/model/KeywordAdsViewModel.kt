@@ -11,8 +11,11 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
+import com.tokopedia.topads.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
+import com.tokopedia.topads.internal.ParamObject.PRODUCT_IDS
+import com.tokopedia.topads.internal.ParamObject.SHOP_id
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,13 +32,8 @@ class KeywordAdsViewModel @Inject constructor(
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
-        private val repository: GraphqlRepository): BaseViewModel(dispatcher) {
+        private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    companion object {
-        const val PRODUCT_IDS = "product_ids"
-        const val GROUP_ID = "group_id"
-        const val SHOP_ID = "shop_id"
-    }
 
     private val selectedKeywordList = MutableLiveData<KeywordViewModel>()
     private val keywordList = HashSet<String>()
@@ -49,7 +47,7 @@ class KeywordAdsViewModel @Inject constructor(
                 block = {
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_keyword_sugestion),
-                                ResponseKeywordSuggestion.Result::class.java, mapOf(PRODUCT_IDS to productIds, GROUP_ID to groupId, SHOP_ID to Integer.parseInt(userSession.shopId)))
+                                ResponseKeywordSuggestion.Result::class.java, mapOf(PRODUCT_IDS to productIds, GROUP_ID to groupId, SHOP_id to Integer.parseInt(userSession.shopId)))
                         val cacheStrategy = GraphqlCacheStrategy
                                 .Builder(CacheType.CLOUD_THEN_CACHE).build()
                         repository.getReseponse(listOf(request), cacheStrategy)
@@ -81,10 +79,9 @@ class KeywordAdsViewModel @Inject constructor(
     }
 
     fun addNewKeyword(keyword: String): KeywordItemViewModel {
-        var item :KeywordItemViewModel = if (keywordList.contains(keyword) && searchCount.containsKey(keyword)) {
+        var item: KeywordItemViewModel = if (keywordList.contains(keyword) && searchCount.containsKey(keyword)) {
             KeywordItemViewModel(ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data(searchCount[keyword]?.get(0)!!, keyword, searchCount[keyword]?.get(1)!!.toString()))
-        }
-        else
+        } else
             KeywordItemViewModel(ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data(0, keyword, "Tidak diketahui"))
         selectedKeywordList.postValue(item)
         return item

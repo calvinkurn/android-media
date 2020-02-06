@@ -81,7 +81,7 @@ class ProductFilterSheetList {
         fun newInstance(context: Context): ProductFilterSheetList {
             val fragment = ProductFilterSheetList()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog!!.setContentView(R.layout.topads_create_fragment_product_list_sheet_filter)
+            fragment.dialog?.setContentView(R.layout.topads_create_fragment_product_list_sheet_filter)
             fragment.setupView(context)
             return fragment
         }

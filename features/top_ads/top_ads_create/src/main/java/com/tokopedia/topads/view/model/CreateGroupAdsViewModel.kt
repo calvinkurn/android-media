@@ -11,6 +11,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.internal.ParamObject
+import com.tokopedia.topads.internal.ParamObject.GROUP_NAME
+import com.tokopedia.topads.internal.ParamObject.SHOP_ID
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,12 +30,8 @@ class CreateGroupAdsViewModel @Inject constructor(
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
-        private val gqlRepository: GraphqlRepository): BaseViewModel(dispatcher) {
+        private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    companion object{
-        val SHOP_ID = "shopID"
-        val GROUP_NAME = "groupName"
-    }
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName.Data) -> Unit),
                       onError: ((Throwable) -> Unit)) {
@@ -46,7 +45,7 @@ class CreateGroupAdsViewModel @Inject constructor(
                         gqlRepository.getReseponse(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<ResponseGroupValidateName>().let {
-                        if(it.topAdsGroupValidateName.errors.isEmpty()){
+                        if (it.topAdsGroupValidateName.errors.isEmpty()) {
                             onSuccess(it.topAdsGroupValidateName.data)
                         } else {
                             onError(Exception(it.topAdsGroupValidateName.errors.get(0).detail))

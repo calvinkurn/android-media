@@ -83,6 +83,7 @@
     <string name="add_keywords">Tambah Kata Kunci</string>
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="_0_kata_kunci_dipilih">0 kata kunci dipilih</string>
+    <string name="bid_range">Rp %d - Rp %d</string>
     <string name="kata_kunci_count">Kata Kunci (%d)</string>
     <string name="min_bid_error">Biaya minimum %d rupiah</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
@@ -94,4 +95,11 @@
     <string name="error_keyword">Gunakan hanya huruf dan angka</string>
     <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
     <string name="error_max_length">Maksimum 70 karakter</string>
+    <string name="group_name_step">Buat Grup Iklan</string>
+    <string name="keyword_list_step">Pilih Kata Kunci</string>
+    <string name="bid_info_step">Atur Biaya Iklan</string>
+    <string name="summary_page_step">Ringkasan Iklan</string>
+    <string name="product_list_step">Pilih Produk</string>
+    <string name="daily_budget_error">Biaya minimum 25 rupiah</string>
+
 </resources>

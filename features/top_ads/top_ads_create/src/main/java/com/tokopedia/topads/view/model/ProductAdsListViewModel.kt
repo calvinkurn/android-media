@@ -1,28 +1,28 @@
 package com.tokopedia.topads.view.model
 
 import android.content.Context
-import android.content.res.Resources
-import android.util.Log
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.ResponseEtalase
 import com.tokopedia.topads.data.response.ResponseProductList
+import com.tokopedia.topads.internal.ParamObject.ETALASE
+import com.tokopedia.topads.internal.ParamObject.KEYWORD
+import com.tokopedia.topads.internal.ParamObject.ROWS
+import com.tokopedia.topads.internal.ParamObject.SHOP_ID
+import com.tokopedia.topads.internal.ParamObject.SHOP_Id
+import com.tokopedia.topads.internal.ParamObject.SORT_BY
+import com.tokopedia.topads.internal.ParamObject.START
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rx.plugins.RxJavaHooks.onError
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -34,14 +34,14 @@ class ProductAdsListViewModel @Inject constructor(
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
-        private val gqlRepository: GraphqlRepository): BaseViewModel(dispatcher) {
+        private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    fun etalaseList(onSuccess: ((List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>)->Unit), onError: ((Throwable) -> Unit)) {
+    fun etalaseList(onSuccess: ((List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_etalase_list),
-                                ResponseEtalase.Data::class.java, mapOf("shopId" to userSession.shopId))
+                                ResponseEtalase.Data::class.java, mapOf(SHOP_Id to userSession.shopId))
                         val cacheStrategy = GraphqlCacheStrategy
                                 .Builder(CacheType.CLOUD_THEN_CACHE).build()
                         gqlRepository.getReseponse(listOf(request), cacheStrategy)
@@ -61,12 +61,12 @@ class ProductAdsListViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     val queryMap = mutableMapOf<String, Any>(
-                            "keyword" to keyword,
-                            "etalase" to etalaseId,
-                            "sort_by" to sortBy,
-                            "rows" to rows,
-                            "start" to start,
-                            "shopID" to Integer.parseInt(userSession.shopId)
+                            KEYWORD to keyword,
+                            ETALASE to etalaseId,
+                            SORT_BY to sortBy,
+                            ROWS to rows,
+                            START to start,
+                            SHOP_ID to Integer.parseInt(userSession.shopId)
                     )
                     val result = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_productlist), ResponseProductList.Result::class.java, queryMap)

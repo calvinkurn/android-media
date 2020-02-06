@@ -9,17 +9,23 @@ import com.tokopedia.abstraction.base.view.model.StepperModel
  */
 open class CreateManualAdsStepperModel() : StepperModel {
 
-    var toolbarTitle:String= ""
     var groupId: String = ""
     var groupName: String = ""
     var selectedProductIds = mutableListOf<Int>()
     var selectedKeywords = mutableListOf<String>()
     var selectedSuggestBid = mutableListOf<Int>()
+    var suggestedBidPerClick =0
+    var maxBid =0
+    var minBid =0
+    var dailyBudget =0
 
     constructor(parcel: Parcel) : this() {
-        toolbarTitle = parcel.readString()
         groupId = parcel.readString()
         groupName = parcel.readString()
+        suggestedBidPerClick = parcel.readInt()
+        maxBid = parcel.readInt()
+        minBid = parcel.readInt()
+        dailyBudget = parcel.readInt()
         selectedProductIds = arrayListOf<Int>().apply {
             parcel.readList(this, Int::class.java.classLoader)
         }
@@ -33,11 +39,14 @@ open class CreateManualAdsStepperModel() : StepperModel {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(groupId)
-        parcel.writeString(toolbarTitle)
         parcel.writeString(groupName)
         parcel.writeList(selectedProductIds)
         parcel.writeList(selectedKeywords)
         parcel.writeList(selectedSuggestBid)
+        parcel.writeInt(suggestedBidPerClick)
+        parcel.writeInt(maxBid)
+        parcel.writeInt(minBid)
+        parcel.writeInt(dailyBudget)
     }
 
     override fun describeContents(): Int {

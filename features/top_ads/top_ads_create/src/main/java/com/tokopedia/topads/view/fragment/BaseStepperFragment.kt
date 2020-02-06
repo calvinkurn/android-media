@@ -20,9 +20,11 @@ abstract class BaseStepperFragment<T : CreateManualAdsStepperModel>: BaseDaggerF
     protected abstract fun saveStepperModel(stepperModel: T)
     protected abstract fun gotoNextPage()
     protected abstract fun populateView(stepperModel: T)
+    protected abstract fun updateToolBar()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        updateToolBar()
         arguments?.let {
             if (savedInstanceState == null){
                 stepperModel = it.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)

@@ -12,6 +12,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.DataSuggestions
 import com.tokopedia.topads.data.response.ResponseBidInfo
+import com.tokopedia.topads.internal.ParamObject.KEYWORD
+import com.tokopedia.topads.internal.ParamObject.PRODUCT
+import com.tokopedia.topads.internal.ParamObject.REQUEST_TYPE
+import com.tokopedia.topads.internal.ParamObject.SHOP_Id
+import com.tokopedia.topads.internal.ParamObject.SOURCE
+import com.tokopedia.topads.internal.ParamObject.SOURCE_VALUE
+import com.tokopedia.topads.internal.ParamObject.SUGGESTION
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -29,22 +36,13 @@ class BudgetingAdsViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
         private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    companion object {
-        const val SHOP_ID = "shopId"
-        const val SUGGESTION = "dataSuggestions"
-        const val SOURCE = "source"
-        const val SOURCE_VALUE = "sellerapp_create_group"
-        const val REQUEST_TYPE = "requestType"
-        const val KEYWORD = "keyword"
-        const val PRODUCT = "product"
-    }
 
     fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit, onError: ((Throwable) -> Unit), onEmpty: (() -> Unit)) {
 
         launchCatchError(
                 block = {
                     val queryMap = HashMap<String, Any?>()
-                    queryMap[SHOP_ID] = Integer.parseInt(userSession.shopId)
+                    queryMap[SHOP_Id] = Integer.parseInt(userSession.shopId)
                     queryMap[SOURCE] = SOURCE_VALUE
                     queryMap[SUGGESTION] = suggestions
                     queryMap[REQUEST_TYPE] = KEYWORD
@@ -73,7 +71,7 @@ class BudgetingAdsViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     val queryMap = HashMap<String, Any?>()
-                    queryMap[SHOP_ID] = Integer.parseInt(userSession.shopId)
+                    queryMap[SHOP_Id] = Integer.parseInt(userSession.shopId)
                     queryMap[SOURCE] = SOURCE_VALUE
                     queryMap[SUGGESTION] = suggestions
                     queryMap[REQUEST_TYPE] = PRODUCT

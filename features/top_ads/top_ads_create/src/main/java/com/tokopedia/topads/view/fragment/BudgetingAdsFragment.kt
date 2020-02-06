@@ -16,6 +16,7 @@ import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.DataSuggestions
 import com.tokopedia.topads.data.response.ResponseBidInfo
 import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapter
 import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapterTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
@@ -40,6 +41,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private lateinit var bidInfoAdapter: BidInfoAdapter
     private var maxBid = 0
     private var minBid = 0
+    private var suggestBid = 0
 
     companion object {
         val TAG = BudgetingAdsFragment::class.simpleName
@@ -61,6 +63,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun onClickCloseButton(pos: Int): Unit {
         bidInfoAdapter.items.removeAt(pos)
+        stepperModel!!.selectedKeywords.removeAt(pos)
         bidInfoAdapter.notifyDataSetChanged()
         updateString()
     }
@@ -73,6 +76,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
 
     override fun gotoNextPage() {
+        stepperModel?.suggestedBidPerClick = suggestBid
+        stepperModel?.maxBid = maxBid
+        stepperModel?.minBid = minBid
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -81,7 +87,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     override fun getScreenName(): String {
-        return CreateGroupAdsFragment::class.java.simpleName
+        return BudgetingAdsFragment::class.java.simpleName
     }
 
     override fun initInjector() {
@@ -111,14 +117,18 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun onDefaultSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
         recom_txt.text = String.format(getString(R.string.recommendated_bid_message), data[0].suggestionBid)
         budget.setText(data[0].suggestionBid.toString())
+        suggestBid = data[0].suggestionBid
         maxBid = data[0].maxBid
         minBid = data[0].minBid
+        error_text.text = String.format(getString(R.string.min_bid_error), minBid)
+
     }
 
     private fun onEmptySuggestion() {
         bidInfoAdapter.items.add(BidInfoEmptyViewModel())
         bidInfoAdapter.notifyDataSetChanged()
     }
+
     private fun onErrorSuggestion(throwable: Throwable) {
 
     }
@@ -155,21 +165,27 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val result = Integer.parseInt(budget.text.toString())
+                stepperModel?.suggestedBidPerClick = result
                 if (result < minBid) {
                     error_text.visibility = View.VISIBLE
                     recom_txt.visibility = View.GONE
-                    error_text.text = String.format(getString(R.string.min_bid_error), minBid)
                 } else {
                     error_text.visibility = View.GONE
                     recom_txt.visibility = View.VISIBLE
                 }
             }
             override fun afterTextChanged(s: Editable?) {
+
             }
 
         })
 
         bid_list.adapter = bidInfoAdapter
         bid_list.layoutManager = LinearLayoutManager(context)
+    }
+
+    override fun updateToolBar() {
+        (activity as StepperActivity).updateToolbarTitle(getString(R.string.bid_info_step))
+
     }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.ResponseEtalase
 import com.tokopedia.topads.data.response.ResponseProductList
 import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseViewModel
 import com.tokopedia.topads.view.adapter.product.ProductListAdapter
@@ -91,7 +92,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     override fun getScreenName(): String {
-        return CreateGroupAdsFragment::class.java.simpleName
+        return ProductAdsListFragment::class.java.simpleName
     }
 
     override fun initInjector() {
@@ -213,5 +214,12 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         data.forEachIndexed { index, result -> items.add(index, EtalaseItemViewModel(index == 0, result)) }
         filterSheetProductList.updateData(items)
     }
+
+    override fun updateToolBar() {
+        (activity as StepperActivity).updateToolbarTitle(getString(R.string.product_list_step))
+
+    }
+
+
 
 }

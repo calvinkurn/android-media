@@ -64,6 +64,17 @@
                 tools:visibility="visible"
                 android:hint="Rp"/>
 
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/error_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/bright_red"
+                    android:visibility="gone"
+                    android:layout_below="@id/daily_budget"
+                    app:typographyType="body_3"
+                    tools:text="@string/daily_budget_error"
+                    tools:visibility="visible" />
+
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
@@ -211,11 +222,13 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         style="@style/TextView.Micro"
+                        android:id="@+id/bid_range"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         app:typographyType="body_2"
+                        android:text="@string/bid_range"
                         tools:text="Rp 5.000 - Rp 10.000" />
                 </LinearLayout>
 
@@ -271,6 +284,7 @@
             android:text="Iklankan" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/info_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"

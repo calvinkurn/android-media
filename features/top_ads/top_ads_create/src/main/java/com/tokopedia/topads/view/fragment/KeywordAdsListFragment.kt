@@ -19,6 +19,7 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
 import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
@@ -131,10 +132,6 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     private fun onEmptySuggestion() {
         coachitem_title.visibility = View.GONE
         keywordListAdapter.items = mutableListOf(KeywordEmptyViewModel())
@@ -196,7 +193,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     override fun getScreenName(): String {
-        return CreateGroupAdsFragment::class.java.simpleName
+        return KeywordAdsListFragment::class.java.simpleName
     }
 
     override fun initInjector() {
@@ -274,6 +271,11 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         } else {
             null
         }
+    }
+
+    override fun updateToolBar() {
+        (activity as StepperActivity).updateToolbarTitle(getString(R.string.keyword_list_step))
+
     }
 
 }
