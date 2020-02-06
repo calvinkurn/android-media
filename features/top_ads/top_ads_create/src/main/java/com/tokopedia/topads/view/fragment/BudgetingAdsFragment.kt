@@ -61,9 +61,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     }
 
-    private fun onClickCloseButton(pos: Int): Unit {
+    private fun onClickCloseButton(pos: Int) {
         bidInfoAdapter.items.removeAt(pos)
-        stepperModel!!.selectedKeywords.removeAt(pos)
+        stepperModel?.selectedKeywords?.removeAt(pos)
         bidInfoAdapter.notifyDataSetChanged()
         updateString()
     }
@@ -100,7 +100,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val dummyId: MutableList<Int> = mutableListOf()
-        val productIds = stepperModel!!.selectedProductIds
+        val productIds = stepperModel?.selectedProductIds
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions("group", dummyId))
         val suggestionsDefault = ArrayList<DataSuggestions>()
@@ -133,7 +133,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
-        stepperModel!!.selectedKeywords.forEach { index ->
+        stepperModel?.selectedKeywords?.forEach { index ->
             bidInfoAdapter.items.add(BidInfoItemViewModel(data[0]))
         }
         bidInfoAdapter.notifyDataSetChanged()

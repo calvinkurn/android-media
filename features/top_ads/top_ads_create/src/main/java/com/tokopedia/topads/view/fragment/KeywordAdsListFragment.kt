@@ -172,21 +172,21 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun getFavouredData(): List<KeywordItemViewModel> {
-        val list = mutableListOf<KeywordItemViewModel>()
-        val list1 = mutableListOf<KeywordItemViewModel>()
-        list1.clear()
-        list1.addAll(keywordListAdapter.getSelectedItems())
-        list.addAll(keywordListAdapter.manualKeywords)
-        list.addAll(list1)
-        list1.forEach { index ->
+        val manual = mutableListOf<KeywordItemViewModel>()
+        val selected = mutableListOf<KeywordItemViewModel>()
+        selected.clear()
+        selected.addAll(keywordListAdapter.getSelectedItems())
+        manual.addAll(keywordListAdapter.manualKeywords)
+        manual.addAll(selected)
+        selected.forEach { index ->
             if (index is KeywordItemViewModel) {
                 if (index.data.totalSearch == "Tidak diketahui") {
-                    list.remove(index)
+                    manual.remove(index)
 
                 }
             }
         }
-        return list
+        return manual
     }
 
     override fun populateView(stepperModel: CreateManualAdsStepperModel) {

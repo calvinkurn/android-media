@@ -14,10 +14,10 @@ open class CreateManualAdsStepperModel() : StepperModel {
     var selectedProductIds = mutableListOf<Int>()
     var selectedKeywords = mutableListOf<String>()
     var selectedSuggestBid = mutableListOf<Int>()
-    var suggestedBidPerClick =0
-    var maxBid =0
-    var minBid =0
-    var dailyBudget =0
+    var suggestedBidPerClick = 0
+    var maxBid = 0
+    var minBid = 0
+    var dailyBudget = 0
     var adIds = mutableListOf<Int>()
 
     constructor(parcel: Parcel) : this() {

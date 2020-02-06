@@ -30,25 +30,15 @@ data class ResponseBidInfo(
 //
 //                    @field:SerializedName("min_daily_budget")
 //                    val minDailyBudget: Int = 0,
-//
-//                    @field:SerializedName("max_bid_fmt")
-//                    val maxBidFmt: String = "",
 
 //
 //                    @field:SerializedName("multiplier")
 //                    val multiplier: Int = 0,
 //
-//                    @field:SerializedName("suggestion_bid_fmt")
-//                    val suggestionBidFmt: String = "",
-//
-//                    @field:SerializedName("min_bid_fmt")
-//                    val minBidFmt: String = "",
-//
+
 //                    @field:SerializedName("id")
 //                    val id: Int = 0,
-//
-//                    @field:SerializedName("min_daily_budget_fmt")
-//                    val minDailyBudgetFmt: String = ""
+
             )
         }
     }

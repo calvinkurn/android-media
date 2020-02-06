@@ -54,20 +54,19 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
         return selected
     }
 
-    fun addNewKeyword(it: KeywordItemViewModel):Boolean {
+    fun addNewKeyword(it: KeywordItemViewModel): Boolean {
         if (items.size != 0 && items[0] is KeywordEmptyViewModel) {
             items.clear()
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
-        }
-        else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != "Kata Kunci Pilihan") {
+        } else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != "Kata Kunci Pilihan") {
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         }
-        favoured.forEachIndexed lit@{ index, keywordViewModel ->
-                if (favoured[index].data.keyword == it.data.keyword) {
-                        return true
-                    ind = index
-                    return@lit
-                }
+        favoured.forEachIndexed lit@{ index, _ ->
+            if (favoured[index].data.keyword == it.data.keyword) {
+                return true
+                ind = index
+                return@lit
+            }
         }
         if (ind != 0)
             items.remove(favoured[ind])
