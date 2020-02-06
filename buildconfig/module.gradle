@@ -21,7 +21,8 @@ android {
     }
 
     buildTypes {
-        debug{
+        debug {
+            ext.enableHansel = false
             testCoverageEnabled (project.hasProperty('coverage')? true : false)
         }
         release {
