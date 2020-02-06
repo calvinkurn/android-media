@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhome.domain.mapper
 
-import com.tokopedia.sellerhome.common.WidgetType
+import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.domain.model.WidgetModel
 import com.tokopedia.sellerhome.view.model.*
 import javax.inject.Inject
