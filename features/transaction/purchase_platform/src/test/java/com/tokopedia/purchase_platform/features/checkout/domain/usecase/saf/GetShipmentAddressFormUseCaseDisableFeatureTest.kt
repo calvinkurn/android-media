@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.checkout.domain.usecase.saf
 
 import com.google.gson.Gson
 import com.tokopedia.network.utils.TKPDMapParam
-import com.tokopedia.purchase_platform.*
+import com.tokopedia.purchase_platform.UnitTestFileUtils
 import com.tokopedia.purchase_platform.common.utils.each
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
 import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository
@@ -18,6 +18,14 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
 
+const val PATH_JSON_SAF_DISABLE_DROPSHIPPER = "assets/saf_disable_dropshipper.json"
+const val PATH_JSON_SAF_DISABLE_MULTIPLE_ADDRESS = "assets/saf_disable_multiple_address.json"
+const val PATH_JSON_SAF_DISABLE_ORDER_PRIORITAS = "assets/saf_disable_order_prioritas.json"
+const val PATH_JSON_SAF_DISABLE_EGOLD = "assets/saf_disable_egold.json"
+const val PATH_JSON_SAF_DISABLE_PPP = "assets/saf_disable_ppp.json"
+const val PATH_JSON_SAF_DISABLE_DONATION = "assets/saf_disable_donation.json"
+const val PATH_JSON_SAF_DISABLE_ALL = "assets/saf_disable_all.json"
+
 object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
 
     val repository = mockk<ICheckoutRepository>()
@@ -25,9 +33,11 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
     val useCase by memoized { GetShipmentAddressFormUseCase(repository, mapper) }
 
     val gson = Gson()
+    val unitTestFileUtils = UnitTestFileUtils()
     val param = RequestParams.create().apply {
         putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, TKPDMapParam<String, String>())
     }
+
 
     Feature("Disabled Features") {
 
@@ -38,7 +48,7 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureDropshipper, ShipmentAddressFormDataResponse::class.java))
+                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DROPSHIPPER), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("create observable") {
@@ -75,7 +85,7 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureMultipleAddress, ShipmentAddressFormDataResponse::class.java))
+                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_MULTIPLE_ADDRESS), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("create observable") {
@@ -112,7 +122,7 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureOrderPrioritas, ShipmentAddressFormDataResponse::class.java))
+                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ORDER_PRIORITAS), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("create observable") {
@@ -149,7 +159,7 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureEGold, ShipmentAddressFormDataResponse::class.java))
+                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_EGOLD), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("create observable") {
@@ -186,7 +196,7 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeaturePPP, ShipmentAddressFormDataResponse::class.java))
+                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_PPP), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("create observable") {
@@ -223,7 +233,7 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureDonation, ShipmentAddressFormDataResponse::class.java))
+                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DONATION), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("create observable") {
@@ -260,7 +270,7 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
             val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
-                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAll, ShipmentAddressFormDataResponse::class.java))
+                every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ALL), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("create observable") {

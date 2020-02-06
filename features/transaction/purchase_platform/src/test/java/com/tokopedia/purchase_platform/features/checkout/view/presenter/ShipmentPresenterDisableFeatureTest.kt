@@ -8,7 +8,7 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseC
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.purchase_platform.*
+import com.tokopedia.purchase_platform.UnitTestFileUtils
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
@@ -18,6 +18,7 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.*
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.saf.*
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter
@@ -62,6 +63,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
     val shipmentDataConverter = ShipmentDataConverter()
 
     val gson = Gson()
+    val unitTestFileUtils = UnitTestFileUtils()
 
     RxAndroidPlugins.getInstance().reset()
     RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
@@ -96,7 +98,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
         Scenario("Disable Dropshipper") {
 
             Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureDropshipper, ShipmentAddressFormDataResponse::class.java))
+                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DROPSHIPPER), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("process initial load checkout page") {
@@ -131,7 +133,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
         Scenario("Disable Multiple Address") {
 
             Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureMultipleAddress, ShipmentAddressFormDataResponse::class.java))
+                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_MULTIPLE_ADDRESS), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("process initial load checkout page") {
@@ -166,7 +168,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
         Scenario("Disable Order Prioritas") {
 
             Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureOrderPrioritas, ShipmentAddressFormDataResponse::class.java))
+                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ORDER_PRIORITAS), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("process initial load checkout page") {
@@ -201,7 +203,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
         Scenario("Disable Egold") {
 
             Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureEGold, ShipmentAddressFormDataResponse::class.java))
+                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_EGOLD), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("process initial load checkout page") {
@@ -236,7 +238,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
         Scenario("Disable PPP") {
 
             Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeaturePPP, ShipmentAddressFormDataResponse::class.java))
+                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_PPP), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("process initial load checkout page") {
@@ -271,7 +273,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
         Scenario("Disable Donation") {
 
             Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureDonation, ShipmentAddressFormDataResponse::class.java))
+                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DONATION), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("process initial load checkout page") {
@@ -306,7 +308,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
         Scenario("Disable all") {
 
             Given("mock response") {
-                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAll, ShipmentAddressFormDataResponse::class.java))
+                every { checkoutRepository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ALL), ShipmentAddressFormDataResponse::class.java))
             }
 
             When("process initial load checkout page") {
