@@ -53,14 +53,14 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
             adsInfoViewModel = ViewModelProviders.of(this, factory).get(TopAdsInfoViewModel::class.java)
             adsInfoViewModel.getShopAdsInfo(userSession.shopId.toInt(), this::onFailShopInfo)
             adsInfoViewModel.shopInfoData.observe(this, Observer {
-//                when(it!!.category){
-//                    1 -> noProduct()
-                   noAds()
-//                    3 -> manualAds()
-//                    4 -> autoAds()
-//                    else -> finish()
-//                }
-//                finish()
+                when(it!!.category){
+                    1 -> noProduct()
+                    2 -> noAds()
+                    3 -> manualAds()
+                    4 -> autoAds()
+                    else -> finish()
+                }
+                finish()
             })
         }
     }
