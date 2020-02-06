@@ -485,10 +485,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 try {
                     hasMoveToNativePage = true;
                     startActivity(intent);
-                    return true;
-                } catch (Exception ignored) {
-                    return false;
-                }
+                } catch (Exception ignored) { }
+                return true;
             } else {
                 // logging here, url might return blank page
                 // ask user to update app
