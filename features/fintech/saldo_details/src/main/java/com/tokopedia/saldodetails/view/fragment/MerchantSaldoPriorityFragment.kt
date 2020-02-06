@@ -195,7 +195,12 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
 
 
     private fun populateData() {
+        populateSellerDetail()
+        populateBoxDetail()
+        populateAnchorList()
+    }
 
+    private fun populateSellerDetail() {
         if (sellerDetails!!.isShowToggle) {
             spEnableSwitchCompat!!.show()
             spEnableSwitchCompat!!.isChecked = sellerDetails!!.isEnabled
@@ -223,7 +228,9 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         } else {
             spDescription!!.gone()
         }
+    }
 
+    private fun populateBoxDetail() {
         if (!TextUtils.isEmpty(sellerDetails!!.boxTitle)) {
             spKYCStatusLayout!!.show()
             spKYCShortDesc!!.show()
@@ -245,8 +252,9 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         } else {
             spKYCStatusLayout!!.gone()
         }
+    }
 
-
+    private fun populateAnchorList() {
         if (sellerDetails!!.infoList != null && sellerDetails!!.infoList!!.size > 0) {
             populateInfolistData(sellerDetails!!.infoList)
         }
@@ -254,7 +262,6 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         if (sellerDetails!!.anchorList != null && sellerDetails!!.anchorList!!.size > 0) {
             populateAnchorListData(sellerDetails!!.anchorList)
         }
-
     }
 
     private fun setBoxBackground() {
