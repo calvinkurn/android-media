@@ -45,23 +45,23 @@
         android:id="@+id/tv_see_details"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:lineSpacingExtra="6sp"
         android:textColor="@color/Green_G500"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_arrow_url"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
         app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyWeight="reguler" />
 
     <ImageView
         android:id="@+id/iv_arrow_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
         app:layout_constraintBottom_toBottomOf="@id/tv_see_details"
-        app:layout_constraintStart_toEndOf="@id/tv_see_details"
         app:layout_constraintTop_toTopOf="@id/tv_see_details"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_arrow_right_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
