@@ -51,9 +51,7 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
         Bundle intentExtras = getIntent().getExtras();
 
         if(intentData != null && intentExtras != null) {
-
             isFromApplink = (intentData.getPathSegments().size() > 0);
-
             if(isFromApplink) {
                 reputationId = intentData.getLastPathSegment();
             } else {
@@ -62,7 +60,6 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
                 }
                 reputationId = intentExtras.getString(REPUTATION_ID, "");
             }
-
         }
 
         return InboxReputationDetailFragment.createInstance(tab, isFromApplink, reputationId);
@@ -91,4 +88,6 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }
