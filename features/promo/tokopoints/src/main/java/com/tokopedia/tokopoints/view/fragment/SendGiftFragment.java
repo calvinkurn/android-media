@@ -26,7 +26,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
+import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.SendGiftContract;
 import com.tokopedia.tokopoints.view.presenter.SendGiftPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
