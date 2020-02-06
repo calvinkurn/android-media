@@ -75,7 +75,6 @@ object DeeplinkMapper {
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)
                     deeplink.startsWith(ApplinkConst.REPUTATION, true) -> getRegisteredNavigationReputation(deeplink)
-                    deeplink.startsWithPattern(ApplinkConst.SHOP) -> getRegisteredNavigationShopReview(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.SHOP_REVIEW) -> getRegisteredNavigationShopReview(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
