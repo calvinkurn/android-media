@@ -96,7 +96,7 @@ class ResourceDownloadManager private constructor() {
     ) {
         check(!(!::mBaseUrl.isInitialized || !::mRelativeUrl.isInitialized)) {
             "ResourceDownloadManager not initialized!! " +
-                    "Call ResourceDownloadManager.setBaseAndRelativeUrl(baseUrl, relativeUrl) first!!!!"
+                    "Call ResourceDownloadManager.setBaseAndRelativeUrl(baseUrl, relativeUrl) at least once!!!!"
         }
         check(::context.isInitialized) {
             "ResourceDownloadManager not initialized!! " +
