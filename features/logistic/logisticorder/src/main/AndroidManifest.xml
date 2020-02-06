@@ -10,11 +10,6 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.logisticorder.view.SimpleWebViewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
             android:name="com.tokopedia.logisticorder.view.uploadawb.UploadAwbLogisticActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

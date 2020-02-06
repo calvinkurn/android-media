@@ -61,7 +61,6 @@ import rx.schedulers.Schedulers;
 
 public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
-    private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
     private static final int PER_SECOND = 1000;
     private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
     private static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
@@ -387,10 +386,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
             }
         };
         mCountDownTimer.start();
-    }
-
-    private View.OnClickListener onFurtherInformationClicked() {
-        return view -> startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
     }
 
     private View.OnClickListener onLiveTrackingClickedListener() {
