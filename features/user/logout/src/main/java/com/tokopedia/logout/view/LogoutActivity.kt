@@ -58,7 +58,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private var isReturnToHome = true
 
-    lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     private var mIris: Iris? = null
     private var tetraDebugger: TetraDebugger? = null
@@ -78,9 +78,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         component.inject(this)
 
         getParams()
+
         initIris()
         initTetraDebugger()
         initObservable()
+        initGoogleClient()
 
         showLoading()
         logoutViewModel.doLogout()
@@ -92,7 +94,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
-    private fun init() {
+    private fun initGoogleClient() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).apply {
             requestIdToken(GOOGLE_API_KEY)
             requestEmail()

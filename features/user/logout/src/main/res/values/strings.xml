@@ -1,4 +1,7 @@
 <resources>
   <string name="app_name">logout</string>
   <string name="title_logout" translatable="false">logout</string>
+  
+  <string name="logout">Logout</string>
+  <string name="logout_failed">gagal logout</string>
 </resources>

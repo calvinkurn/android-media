@@ -38,7 +38,7 @@ class LogoutViewModel @Inject constructor(
                 if (t.is_success) {
                     logoutMutableLiveData.postValue(Success(t))
                 } else {
-                    logoutMutableLiveData.postValue(Fail(Throwable("logout failed")))
+                    logoutMutableLiveData.postValue(Fail(Throwable("gagal logout")))
                 }
             }
         })
