@@ -14,7 +14,7 @@
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
+        app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="Info Seller" />
 
@@ -30,7 +30,7 @@
         app:srcCompat="@drawable/ic_info" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_item_list"
+        android:id="@+id/rv_post"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -38,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_card_title"
         tools:itemCount="3"
-        tools:listitem="@layout/sah_item_list" />
+        tools:listitem="@layout/sah_item_post" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_see_details"
@@ -49,11 +49,12 @@
         android:text="@string/sah_more"
         android:textColor="@color/Green_G500"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_item_list"
+        app:layout_constraintTop_toBottomOf="@id/rv_post"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
     <ImageView
+        android:id="@+id/iv_see_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"

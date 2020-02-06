@@ -14,26 +14,36 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Neutral_N0">
+            android:background="@color/Neutral_N50">
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/tickerView"
-                android:layout_width="0dp"
+            <RelativeLayout
+                android:id="@+id/relTicker"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tickerShapeType="full"
-                app:tickerType="information"
-                tools:visibility="visible" />
+                tools:visibility="visible">
+
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/tickerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="-4dp"
+                    android:layout_marginLeft="-4dp"
+                    android:layout_marginTop="-6dp"
+                    android:layout_marginEnd="-4dp"
+                    android:layout_marginRight="-4dp"
+                    android:layout_marginBottom="-6dp"
+                    app:tickerShapeType="full"
+                    app:tickerType="information" />
+            </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
                 android:overScrollMode="never"
                 android:paddingStart="4dp"
                 android:paddingLeft="4dp"
@@ -42,7 +52,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tickerView"
+                app:layout_constraintTop_toBottomOf="@+id/relTicker"
                 app:layout_constraintVertical_bias="0.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

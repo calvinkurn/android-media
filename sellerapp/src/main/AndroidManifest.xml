@@ -95,7 +95,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.sellerhome.view.home.SellerHomeActivity"
+            android:name="com.tokopedia.sellerhome.view.home.SellerDashboardActivity"
             android:exported="true"
             android:label="@string/drawer_title_home"
             android:launchMode="singleTask"

@@ -11,5 +11,5 @@ object WidgetType {
     const val DESCRIPTION = "description"
     const val SECTION = "section"
     const val PROGRESS = "progress_bar"
-    const val LIST = "post"
+    const val POST = "post"
 }

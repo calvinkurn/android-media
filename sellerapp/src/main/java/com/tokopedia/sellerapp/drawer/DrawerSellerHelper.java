@@ -43,7 +43,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerhome.view.home.SellerHomeActivity;
+import com.tokopedia.sellerhome.view.home.SellerDashboardActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.view.SimpleWebViewActivity;
 
@@ -301,7 +301,7 @@ public class DrawerSellerHelper extends DrawerHelper
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
-                    context.startActivity(SellerHomeActivity.createInstance(context));
+                    context.startActivity(SellerDashboardActivity.createInstance(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
                     if (context.getApplication() instanceof AbstractionRouter) {

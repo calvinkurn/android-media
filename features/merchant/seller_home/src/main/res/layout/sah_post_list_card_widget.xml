@@ -3,15 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/layout_lvl1"
+    android:layout_marginStart="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginEnd="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginBottom="@dimen/layout_lvl1"
     android:descendantFocusability="blocksDescendants"
     app:cardCornerRadius="@dimen/layout_lvl1"
     app:contentPadding="@dimen/layout_lvl2">
 
-    <include layout="@layout/sah_partial_list_widget" />
+    <include layout="@layout/sah_partial_post_list_widget" />
 
-    <include layout="@layout/sah_partial_shimmering_list_widget" />
+    <include layout="@layout/sah_partial_shimmering_post_list_widget" />
 
-    <include layout="@layout/sah_partial_list_widget_error" />
+    <include layout="@layout/sah_partial_post_list_widget_error" />
 
 </androidx.cardview.widget.CardView>

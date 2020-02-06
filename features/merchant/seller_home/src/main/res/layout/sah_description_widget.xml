@@ -2,16 +2,21 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sah_description_layout"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="181dp"
-    android:layout_margin="@dimen/layout_lvl1"
+    android:layout_marginStart="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginEnd="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginBottom="@dimen/layout_lvl1"
+    android:orientation="vertical"
     android:padding="@dimen/dp_16"
     app:cardCornerRadius="@dimen/dp_8">
 
-    <include layout="@layout/partial_sah_description_widget"/>
+    <include layout="@layout/sah_partial_description_widget" />
 
-    <include layout="@layout/partial_sah_error_description_widget"/>
+    <include layout="@layout/sah_partial_description_error" />
 
-    <include layout="@layout/partial_sah_shimmering_description_widget"/>
+    <include layout="@layout/sah_partial_shimmering_description" />
 </androidx.cardview.widget.CardView>

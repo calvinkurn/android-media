@@ -18,7 +18,7 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
-import com.tokopedia.sellerhome.view.home.SellerHomeActivity;
+import com.tokopedia.sellerhome.view.home.SellerDashboardActivity;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -69,11 +69,11 @@ public class SplashScreenActivity extends SplashScreen {
                     intent.putExtras(bundle);
                     delegate.dispatchFrom(this, intent);
                 } else {
-                    startActivity(SellerHomeActivity.createInstance(this));
+                    startActivity(SellerDashboardActivity.createInstance(this));
                 }
             } else {
                 // Means it is a Seller
-                startActivity(SellerHomeActivity.createInstance(this));
+                startActivity(SellerDashboardActivity.createInstance(this));
             }
         } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(this))) {
             Intent intent = moveToCreateShop(this);

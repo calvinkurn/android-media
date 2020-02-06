@@ -4,16 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerhome.domain.usecase.GetCardDataUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetLayoutUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetLineGraphDataUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
+import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhome.util.TimeFormat
-import com.tokopedia.sellerhome.util.toJson
-import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
-import com.tokopedia.sellerhome.view.model.CardDataUiModel
-import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
-import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -36,6 +29,8 @@ class SellerHomeViewModel @Inject constructor(
         private val getLayoutUseCase: GetLayoutUseCase,
         private val getCardDataUseCase: GetCardDataUseCase,
         private val getLineGraphDataUseCase: GetLineGraphDataUseCase,
+        private val getProgressDataUseCase: GetProgressDataUseCase,
+        private val getPostDataUseCase: GetPostDataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -50,6 +45,8 @@ class SellerHomeViewModel @Inject constructor(
     val widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
     val cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
     val lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
+    val progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
+    val postWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
 
     fun getTicker() {
         launchCatchError(block = {
@@ -94,6 +91,28 @@ class SellerHomeViewModel @Inject constructor(
             })
         }, onError = {
             lineGraphWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getProgressWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            progressWidgetData.value = Success(withContext(Dispatchers.IO) {
+                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(userSession.shopId, "2020-02-02", dataKeys)
+                return@withContext getProgressDataUseCase.executeOnBackground()
+            })
+        }, onError = {
+            progressWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getPostWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            postWidgetData.value = Success(withContext(Dispatchers.IO) {
+                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
+                getPostDataUseCase.executeOnBackground()
+            })
+        }, onError = {
+            postWidgetData.value = Fail(it)
         })
     }
 }
