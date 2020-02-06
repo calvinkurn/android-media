@@ -8,7 +8,7 @@ data class SaldoHoldResponse(
 
         @SerializedName("saldoHoldDepositHistory")
         var saldoHoldDepositHistory: SaldoHoldDepositHistory? = null
-) : Parcelable {
+) /*: Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable<SaldoHoldDepositHistory>(SaldoHoldDepositHistory::class.java.classLoader)
     )
@@ -31,4 +31,4 @@ data class SaldoHoldResponse(
             return arrayOfNulls(size)
         }
     }
-}
+}*/

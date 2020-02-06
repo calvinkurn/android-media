@@ -35,7 +35,7 @@ data class SaldoHoldDepositHistory(
 
 	@SerializedName("buyer_data")
 	val buyerData: List<BuyerDataItem?>? = null
-):Parcelable {
+)/*:Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readArrayList(SellerDataItem::class.java.classLoader) as ArrayList<SellerDataItem>,
 			parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -76,3 +76,4 @@ data class SaldoHoldDepositHistory(
 		}
 	}
 }
+*/

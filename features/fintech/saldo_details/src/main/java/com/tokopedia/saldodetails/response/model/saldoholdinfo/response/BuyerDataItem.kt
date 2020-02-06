@@ -1,7 +1,5 @@
 package com.tokopedia.saldodetails.response.model.saldoholdinfo.response
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class BuyerDataItem(
@@ -26,7 +24,7 @@ data class BuyerDataItem(
 
         @SerializedName("type")
         val type: Int? = null
-) : Parcelable {
+) /*: Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
@@ -59,5 +57,5 @@ data class BuyerDataItem(
         override fun newArray(size: Int): Array<BuyerDataItem?> {
             return arrayOfNulls(size)
         }
-    }
-}
+    }*/
+//}

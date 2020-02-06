@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Tabs
 import com.tokopedia.saldodetails.R
@@ -46,6 +47,10 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     val SALDO_SELLER_AMOUNT = "SALDO_SELLER_AMOUNT"
     val SALDO_BUYER_AMOUNT = "SALDO_BUYER_AMOUNT"
     val RESULT_LIST = "RESULT_LIST"
+    val SAVE_INSTANCE_CACHEMANAGER_ID = "SAVE_INSTANCE_CACHEMANAGER_ID"
+    val KEY_TYPE = "KEY_TYPE"
+    val VALUE_SELLER_TYPE = 0
+    val VALUE_BUYER_TYPE = 1
 
     @Inject
     lateinit var saldoInfoPresenter: SaldoHoldInfoPresenter
@@ -56,7 +61,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         setContentView(R.layout.saldo_hold_info_tabview)
         SaldoDetailsComponentInstance.getComponent(application).inject(this)
         tabLayout = findViewById(R.id.tabs_saldo_info_type)
-        viewPager = findViewById<ViewPager>(R.id.view_pager_saldo_info_type)
+        viewPager = findViewById(R.id.view_pager_saldo_info_type)
         saldoInfoPresenter.attachView(this)
         saldoInfoPresenter.getSaldoHoldInfo()
         top_bar_close_button.setOnClickListener {
@@ -108,9 +113,17 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         if (sellerListSize == 0 && buyerListSize != 0) {
 
             val bundleBuyer = Bundle()
-
-            bundleBuyer.putParcelableArrayList(RESULT_LIST, arrayListBuyer as ArrayList<out Parcelable>)
-            buyerAmount?.let { bundleBuyer.putDouble(SALDO_BUYER_AMOUNT, it) }
+            val saveInstanceCacheManagerBuyer = SaveInstanceCacheManager(this, true)
+            saveInstanceCacheManagerBuyer.apply {
+                put(KEY_TYPE, VALUE_BUYER_TYPE)
+                put(RESULT_LIST, arrayListBuyer)
+                buyerAmount?.let {
+                    put(SALDO_BUYER_AMOUNT, it)
+                }
+                this.id?.let {
+                    bundleBuyer.putString(SAVE_INSTANCE_CACHEMANAGER_ID, id)
+                }
+            }
 
             val saldoHistoryTabItemBuyer = SaldoHistoryTabItem()
             saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundleBuyer)
@@ -120,9 +133,17 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         } else if (buyerListSize == 0 && sellerListSize != 0) {
 
             val bundleSeller = Bundle()
-
-            bundleSeller.putParcelableArrayList(RESULT_LIST, arrayListSeller as ArrayList<out Parcelable>)
-            sellerAmount?.let { bundleSeller.putDouble(SALDO_SELLER_AMOUNT, it) }
+            val saveInstanceCacheManagerSeller = SaveInstanceCacheManager(this, true)
+            saveInstanceCacheManagerSeller.apply {
+                put(KEY_TYPE, VALUE_SELLER_TYPE)
+                put(RESULT_LIST, arrayListSeller)
+                sellerAmount?.let {
+                    put(SALDO_SELLER_AMOUNT, it)
+                }
+                this.id?.let {
+                    bundleSeller.putString(SAVE_INSTANCE_CACHEMANAGER_ID, id)
+                }
+            }
 
             val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
             saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundleSeller)
@@ -132,9 +153,17 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         } else if (buyerListSize != 0 && sellerListSize != 0) {
 
             val bundlBuyer = Bundle()
-
-            bundlBuyer.putParcelableArrayList(RESULT_LIST, arrayListBuyer as ArrayList<out Parcelable>)
-            buyerAmount?.let { bundlBuyer.putDouble(SALDO_BUYER_AMOUNT, it) }
+            val saveInstanceCacheManagerBuyer = SaveInstanceCacheManager(this, true)
+            saveInstanceCacheManagerBuyer.apply {
+                put(KEY_TYPE, VALUE_BUYER_TYPE)
+                put(RESULT_LIST, arrayListBuyer)
+                buyerAmount?.let {
+                    put(SALDO_BUYER_AMOUNT, it)
+                }
+                this.id?.let {
+                    bundlBuyer.putString(SAVE_INSTANCE_CACHEMANAGER_ID, id)
+                }
+            }
 
             val saldoHistoryTabItemBuyer = SaldoHistoryTabItem()
             saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundlBuyer)
@@ -142,8 +171,19 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
             val bundleSeller = Bundle()
 
-            bundleSeller.putParcelableArrayList(RESULT_LIST, arrayListSeller as ArrayList<out Parcelable>)
-            sellerAmount?.let { bundleSeller.putDouble(SALDO_SELLER_AMOUNT, it) }
+            val saveInstanceCacheManagerSeller = SaveInstanceCacheManager(this, true)
+            saveInstanceCacheManagerSeller.apply {
+                put(KEY_TYPE, VALUE_SELLER_TYPE)
+                put(RESULT_LIST, arrayListSeller)
+                sellerAmount?.let {
+                    put(SALDO_SELLER_AMOUNT, it)
+                    bundleSeller.putInt("SELLER_TYPE", 0)
+
+                }
+                this.id?.let {
+                    bundleSeller.putString(SAVE_INSTANCE_CACHEMANAGER_ID, id)
+                }
+            }
 
             val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
             saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundleSeller)

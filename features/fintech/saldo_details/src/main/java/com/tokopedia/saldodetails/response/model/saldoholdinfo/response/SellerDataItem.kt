@@ -26,7 +26,7 @@ data class SellerDataItem(
 
         @SerializedName("type")
         val type: Int? = null
-) : Parcelable {
+) /*: Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
@@ -60,4 +60,4 @@ data class SellerDataItem(
             return arrayOfNulls(size)
         }
     }
-}
+}*/

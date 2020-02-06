@@ -8,7 +8,7 @@ import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.BuyerDat
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SellerDataItem
 import com.tokopedia.saldodetails.viewholder.SaldoInfoItemViewHolder
 
-class SaldoHoldInfoAdapter(val list: ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SaldoHoldInfoAdapter(val list: ArrayList<Any>, var type: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     lateinit var viewHolder: RecyclerView.ViewHolder
 
@@ -26,11 +26,10 @@ class SaldoHoldInfoAdapter(val list: ArrayList<Any>) : RecyclerView.Adapter<Recy
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         if (holder is SaldoInfoItemViewHolder)
-            if (list[position] is SellerDataItem) {
-                holder.bind1(list[position] as SellerDataItem)
-            } else if (list[position] is BuyerDataItem) {
-                holder.bind2(list[position] as BuyerDataItem)
+            when (type) {
+                1 -> holder.bind1(list[position] as SellerDataItem)
+                else ->
+                    holder.bind2(list[position] as BuyerDataItem)
             }
     }
-
 }
