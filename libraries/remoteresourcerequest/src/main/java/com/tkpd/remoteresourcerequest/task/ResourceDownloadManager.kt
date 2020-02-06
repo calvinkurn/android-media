@@ -119,7 +119,7 @@ class ResourceDownloadManager private constructor() {
             CallbackDispatcher.dispatchLog(deferredCallback,
                     "DOWNLOAD_ALREADY_IN_PROGRESS ${task.getDownloadUrl()}")
         }
-        map[customUrl]?.add(task)
+        map[customUrl]!!.add(task) // Added !! since null case handled in if case above
 
     }
 
