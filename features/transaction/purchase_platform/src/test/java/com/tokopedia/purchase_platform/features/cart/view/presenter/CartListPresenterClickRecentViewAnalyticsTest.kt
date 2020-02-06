@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -9,12 +8,12 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -30,7 +29,7 @@ import rx.subscriptions.CompositeSubscription
  * Created by Irfan Khoirul on 2020-01-31.
  */
 
-object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
+object CartListPresenterClickRecentViewAnalyticsTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -52,7 +51,7 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate add to cart data analytics on recent view") {
+    Feature("generate recent view data click analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -70,54 +69,46 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("1 item selected on non empty cart") {
+        Scenario("1 item selected and cart is not empty") {
 
             lateinit var result: Map<String, Any>
 
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData())
-            }
-
-            When("generate add to cart recent view data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), false)
+            When("generate recent view data click analytics") {
+                result = cartListPresenter.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
             }
 
             Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
+                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
+                val productList = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
             Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
+                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
+                val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
             }
 
         }
 
-        Scenario("1 item selected on empty cart") {
+        Scenario("1 item selected and cart is empty") {
 
             lateinit var result: Map<String, Any>
 
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData())
-            }
-
-            When("generate add to cart recent view data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), true)
+            When("generate recent view data click analytics") {
+                result = cartListPresenter.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
             }
 
             Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
-            Then("key `list` value should be `empty cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
+            Then("key `list` value should be `cart`") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
             }
 
         }

@@ -55,7 +55,7 @@ object CartListPresenterAddToCartWishlistAnalyticsTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate delete cart data analytics") {
+    Feature("generate add to cart data analytics on wishlist") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
