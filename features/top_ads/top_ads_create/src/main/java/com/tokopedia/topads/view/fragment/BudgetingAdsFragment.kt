@@ -44,7 +44,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var suggestBid = 0
 
     companion object {
-        val TAG = BudgetingAdsFragment::class.simpleName
+
         fun createInstance(): Fragment {
 
             val fragment = BudgetingAdsFragment()
@@ -83,7 +83,6 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     override fun populateView(stepperModel: CreateManualAdsStepperModel) {
-        Log.d(TAG, stepperModel.toString())
     }
 
     override fun getScreenName(): String {
