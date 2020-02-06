@@ -8,6 +8,6 @@ data class ProgressDataUiModel(
         val value: Int= 0,
         val maxValue: Int = 0,
         val colorState: ShopScorePMWidget.State = ShopScorePMWidget.State.GREEN,
-        val error: String = "",
+        override var error: String = "",
         val subtitle: String =""
 ): BaseDataUiModel

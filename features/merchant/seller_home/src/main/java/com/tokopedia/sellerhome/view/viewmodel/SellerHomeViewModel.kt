@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -34,12 +33,18 @@ class SellerHomeViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val shopId: String by lazy { "479066" /*userSession.shopId*/ }
-    private val now = Calendar.getInstance(Locale("id"))
-    private val last8daysTimeMillis = now.timeInMillis.minus(TimeUnit.DAYS.toMillis(8))
-    private val last1DayTimeMillis = now.timeInMillis.minus(TimeUnit.DAYS.toMillis(1))
-    private val startDate = TimeFormat.format(last8daysTimeMillis, "dd-MM-yyyy")
-    private val endDate = TimeFormat.format(last1DayTimeMillis, "dd-MM-yyyy")
+    private val shopId: String by lazy { userSession.shopId }
+
+    private val startDate: String by lazy {
+        val cal = Calendar.getInstance(Locale("id"))
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).minus(7))
+        return@lazy TimeFormat.format(cal.timeInMillis, "dd-MM-yyyy")
+    }
+    private val endDate: String by lazy {
+        val cal = Calendar.getInstance(Locale("id"))
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).minus(1))
+        return@lazy TimeFormat.format(cal.timeInMillis, "dd-MM-yyyy")
+    }
 
     val homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
     val widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -61,10 +66,10 @@ class SellerHomeViewModel @Inject constructor(
     fun getWidgetLayout() {
         launchCatchError(block = {
             widgetLayout.value = Success(withContext(Dispatchers.IO) {
-                getLayoutUseCase.executeOnBackground()
+                getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
+                val widgets: List<BaseWidgetUiModel<*>> = getLayoutUseCase.executeOnBackground()
+                return@withContext widgets
             })
-
-
         }, onError = {
             widgetLayout.value = Fail(it)
         })

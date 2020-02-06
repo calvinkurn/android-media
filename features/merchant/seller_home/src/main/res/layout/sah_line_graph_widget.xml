@@ -6,16 +6,17 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="4dp"
     android:layout_marginLeft="4dp"
-    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginTop="4dp"
     android:layout_marginEnd="4dp"
     android:layout_marginRight="4dp"
+    android:layout_marginBottom="4dp"
     android:background="@color/white"
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/layout_lvl1">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/sah_large_widget_height">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvLineGraphTitle"
@@ -38,12 +39,11 @@
 
         <ImageView
             android:id="@+id/btnLineGraphInformation"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:background="@android:color/transparent"
-            android:padding="3dp"
+            android:focusable="true"
+            android:padding="7dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphTitle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -79,19 +79,21 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/tvLineGraphValue"
             app:layout_constraintTop_toTopOf="@+id/tvLineGraphValue"
+            app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
         <LinearLayout
             android:id="@+id/linearLineGraphView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="bottom"
+            app:layout_constraintBottom_toTopOf="@+id/btnLineGraphMore"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue"
@@ -100,37 +102,42 @@
             <com.db.williamchart.view.LineChartView
                 android:id="@+id/lineGraphView"
                 android:layout_width="match_parent"
-                android:layout_height="185dp" />
+                android:layout_height="190dp" />
         </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btnLineGraphMore"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
-            android:background="@android:color/transparent"
-            android:drawablePadding="@dimen/layout_lvl1"
-            android:text="@string/sah_more"
-            android:textAllCaps="false"
+            android:gravity="end"
+            android:paddingStart="0dp"
+            android:paddingLeft="0dp"
+            android:paddingEnd="4dp"
+            android:paddingRight="4dp"
             android:textColor="@color/Green_G500"
             android:textSize="@dimen/fontSize_lvl3"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnLineGraphNext"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLineGraphView"
+            app:typographyType="body_2"
             app:typographyWeight="reguler" />
 
         <ImageView
             android:id="@+id/btnLineGraphNext"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl1"
-            app:layout_constraintBottom_toBottomOf="@+id/btnLineGraphMore"
-            app:layout_constraintStart_toEndOf="@+id/btnLineGraphMore"
-            app:layout_constraintTop_toTopOf="@+id/btnLineGraphMore"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/btnLineGraphMore"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btnLineGraphMore"
             app:srcCompat="@drawable/ic_arrow_right_default" />
 
         <include
@@ -140,7 +147,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphTitle" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             layout="@layout/sah_partial_line_graph_widget_loading"

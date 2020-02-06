@@ -1,9 +1,16 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.sellerhome.WidgetType
-import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerhome.domain.mapper.LayoutMapper
+import com.tokopedia.sellerhome.domain.model.GetLayoutResponse
+import com.tokopedia.sellerhome.util.getData
+import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -11,233 +18,59 @@ import com.tokopedia.usecase.coroutines.UseCase
  */
 
 class GetLayoutUseCase(
-        graphqlUseCase: MultiRequestGraphqlUseCase
+        private val gqlRepository: GraphqlRepository,
+        private val mapper: LayoutMapper
 ) : UseCase<List<BaseWidgetUiModel<*>>>() {
 
-    override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
+    var params: RequestParams = RequestParams.EMPTY
 
-        //handle request here
-        return listOf(
-                DescriptionWidgetUiModel(
-                        widgetType = WidgetType.DESCRIPTION,
-                        title = "Tampah produk pertamamu!",
-                        subtitle = "Maksimalkan penjualanmu dengan upgrade jadi Power Merchant! Tingkatkan penjualan dengan mengakses fitur dan promo khusus untuk Power Merchant",
-                        tooltip = null,
-                        url = "",
-                        appLink = ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM,
-                        dataKey = "",
-                        ctaText = "Tambah produk sekarang",
-                        data = null
-                ),
-                SectionWidgetUiModel(
-                        widgetType = WidgetType.SECTION,
-                        title = "Penting hari ini",
-                        subtitle = "",
-                        tooltip = TooltipUiModel(
-                                title = "Penting Hari Ini",
-                                content = "",
-                                list = listOf(
-                                        TooltipListItemUiModel("New Order", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Ready to ship", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Complaint", "Jumlah pemasukan dari produk terjual beserta ongkos kirim."),
-                                        TooltipListItemUiModel("Unread Chat", "Jumlah calon pembeli yang masuk ke halaman produkmu."),
-                                        TooltipListItemUiModel("Discussion", "Jumlah produk terjual dari setiap transaksi sukses"),
-                                        TooltipListItemUiModel("Product View", "Jumlah pemasukan dari produk terjual beserta ongkos kirim.")
-                                )
-                        ),
-                        url = "",
-                        appLink = "",
-                        dataKey = "",
-                        ctaText = "",
-                        data = null
-                ),
-                CardWidgetUiModel(
-                        widgetType = WidgetType.CARD,
-                        title = "New order",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "tokopedia://pesanan-baru/detail",
-                        dataKey = "newOrder",
-                        ctaText = "",
-                        data = null
-                ),
-                CardWidgetUiModel(
-                        widgetType = WidgetType.CARD,
-                        title = "Ready to ship",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "readyToShipOrder",
-                        ctaText = "",
-                        data = null
-                ),
-                CardWidgetUiModel(
-                        widgetType = WidgetType.CARD,
-                        title = "Complaint",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "complaint",
-                        ctaText = "",
-                        data = null
-                ),
-                CardWidgetUiModel(
-                        widgetType = WidgetType.CARD,
-                        title = "Unread Chat",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "unreadChat",
-                        ctaText = "",
-                        data = null
-                ),
-                CardWidgetUiModel(
-                        widgetType = WidgetType.CARD,
-                        title = "Discussion",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "discussion",
-                        ctaText = "",
-                        data = null
-                ),
-                CardWidgetUiModel(
-                        widgetType = WidgetType.CARD,
-                        title = "Product View",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "productViewStatistic",
-                        ctaText = "",
-                        data = null
-                ),
-                SectionWidgetUiModel(
-                        widgetType = WidgetType.SECTION,
-                        title = "Ringkasan penjualan",
-                        subtitle = "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "",
-                        ctaText = "",
-                        data = null
-                ),
-                CardWidgetUiModel(
-                        widgetType = WidgetType.CARD,
-                        title = "Shop Total Revenue",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "shopTotalRevenueStatistic",
-                        ctaText = "",
-                        data = null
-                ),
-                CardWidgetUiModel(
-                        widgetType = WidgetType.CARD,
-                        title = "Product Sold",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "productSoldStatistic",
-                        ctaText = "",
-                        data = null
-                ),
-                LineGraphWidgetUiModel(
-                        widgetType = WidgetType.LINE_GRAPH,
-                        title = "Total Pendapatan",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("Total Pendapatan", "Pendapatan harian bersih per hari", emptyList()),
-                        url = "",
-                        appLink = "tokopedia://pesanan-baru/detail",
-                        dataKey = "grossIncome",
-                        ctaText = "Selanjutnya",
-                        data = null
-                ),
-                SectionWidgetUiModel(
-                        widgetType = WidgetType.SECTION,
-                        title = "Performa toko",
-                        subtitle = "21 JAN 20 - 27 JAN 20",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "",
-                        ctaText = "",
-                        data = null
-                ),
-                ProgressWidgetUiModel(
-                        widgetType = WidgetType.PROGRESS,
-                        title = "Power Merchant (Aktif)",
-                        subtitle = "Skor",
-                        tooltip = null,
-                        url = "",
-                        appLink = ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL,
-                        dataKey = "shopScore",
-                        ctaText = "Selengkapnya",
-                        data = null
-                ),
-                CarouselWidgetUiModel(
-                        widgetType = WidgetType.CAROUSEL,
-                        title = "Khusus untukmu",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "testing",
-                        dataKey = "",
-                        ctaText = "Lihat Semua",
-                        data = CarouselDataUiModel(
-                                data = listOf(
-                                        CarouselDataModel(
-                                                id = "asasd",
-                                                url = "http://tokopedia.com/blablablaal",
-                                                applink = "https://seller.tokopedia.com/edu/cara-melihat-promosi-affiliate/",
-                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg"
-                                        ),
-                                        CarouselDataModel(
-                                                id = "",
-                                                url = "http://placekitten.com/300/101",
-                                                applink = "",
-                                                featuredMediaURL = "http://placekitten.com/300/102"
-                                        ),
-                                        CarouselDataModel(
-                                                id = "",
-                                                url = "http://placekitten.com/300/102",
-                                                applink = "",
-                                                featuredMediaURL = "http://placekitten.com/300/103"
-                                        )
-                                ),
-                                state = CarouselState.NORMAL
-                        )
-                ),
-                PostListWidgetUiModel(
-                        widgetType = WidgetType.POST,
-                        title = "Info Seller",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("Info Seller", "Skor ada little ipsum del amet, yang membawa per minggu", emptyList()),
-                        url = "",
-                        appLink = "tokopedia://pesanan-baru/detail",
-                        dataKey = "article",
-                        ctaText = "",
-                        data = null
-                ),
-                PostListWidgetUiModel(
-                        widgetType = WidgetType.POST,
-                        title = "Produk Terlaris",
-                        subtitle = "",
-                        tooltip = null,
-                        url = "",
-                        appLink = "",
-                        dataKey = "product",
-                        ctaText = "",
-                        data = null
-                )
-        )
+    override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
+        val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+
+       /* val response: GetLayoutResponse = Gson().fromJson(DummyLayout.JSON, GetLayoutResponse::class.java)
+
+        return mapper.mapRemoteModelToUiModel(response.layout?.widget.orEmpty())*/
+
+        val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetLayoutResponse>()
+            val widgetList = data.layout?.widget.orEmpty()
+            return mapper.mapRemoteModelToUiModel(widgetList)
+        } else {
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
+        }
+    }
+
+    companion object {
+
+        private const val SHOP_ID = "shopID"
+
+        fun getRequestParams(shopId: String): RequestParams = RequestParams.create().apply {
+            putInt(SHOP_ID, shopId.toIntOrZero())
+        }
+
+        const val QUERY = "query GetSellerDashboardLayout(\$shopID: Int!) {\n" +
+                "  GetSellerDashboardLayout(shopID: \$shopID) {\n" +
+                "    widget {\n" +
+                "      widgetType\n" +
+                "      title\n" +
+                "      subtitle\n" +
+                "      tooltip {\n" +
+                "        title\n" +
+                "        content\n" +
+                "        show\n" +
+                "        list {\n" +
+                "          title\n" +
+                "          description\n" +
+                "        }\n" +
+                "      }\n" +
+                "      url\n" +
+                "      applink\n" +
+                "      dataKey\n" +
+                "      ctaText\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n"
     }
 }

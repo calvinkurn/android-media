@@ -49,35 +49,6 @@ class LineGraphViewHolder(
         tvLineGraphValue.text = data?.header.orEmpty()
         tvLineGraphSubValue.text = data?.description.orEmpty().parseAsHtml()
 
-        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
-        val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
-        btnLineGraphMore.visibility = ctaVisibility
-        btnLineGraphNext.visibility = ctaVisibility
-        btnLineGraphMore.text = element.ctaText
-
-        if (isCtaVisible) {
-            btnLineGraphMore.setOnClickListener {
-                openAppLink(element.appLink)
-            }
-            btnLineGraphNext.setOnClickListener {
-                openAppLink(element.appLink)
-            }
-        }
-
-        element.tooltip?.let { tooltip ->
-            if (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty()) {
-                tvLineGraphTitle.setOnClickListener {
-                    listener.onTooltipClicked(element.tooltip)
-                }
-                btnLineGraphInformation.visibility = View.VISIBLE
-                btnLineGraphInformation.setOnClickListener {
-                    listener.onTooltipClicked(element.tooltip)
-                }
-            } else {
-                btnLineGraphInformation.visibility = View.GONE
-            }
-        }
-
         val colors = intArrayOf(context.getResColor(R.color.sah_green_light), Color.TRANSPARENT)
         lineGraphView.setGradientFillColors(colors)
     }
@@ -105,13 +76,31 @@ class LineGraphViewHolder(
             data.error.isNotBlank() -> {
                 onStateLoading(false)
                 showViewComponent(false, element)
+                setupTooltip(element)
                 onStateError(true)
             }
             else -> {
                 onStateLoading(false)
                 onStateError(false)
+                setupTooltip(element)
                 showViewComponent(true, element)
                 showLineGraph(element)
+            }
+        }
+    }
+
+    private fun setupTooltip(element: LineGraphWidgetUiModel) = with(itemView) {
+        element.tooltip?.let { tooltip ->
+            if (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty()) {
+                tvLineGraphTitle.setOnClickListener {
+                    listener.onTooltipClicked(element.tooltip)
+                }
+                btnLineGraphInformation.visibility = View.VISIBLE
+                btnLineGraphInformation.setOnClickListener {
+                    listener.onTooltipClicked(element.tooltip)
+                }
+            } else {
+                btnLineGraphInformation.visibility = View.GONE
             }
         }
     }
@@ -124,6 +113,7 @@ class LineGraphViewHolder(
         ImageHandler.loadImageWithId(imgLineGraphError, R.drawable.unify_globalerrors_connection)
         layoutLineGraphErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
         tvLineGraphTitle.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
+        btnLineGraphInformation.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
     }
 
     private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) = with(itemView) {
@@ -134,10 +124,22 @@ class LineGraphViewHolder(
         btnLineGraphMore.visibility = componentVisibility
         btnLineGraphNext.visibility = componentVisibility
         linearLineGraphView.visibility = componentVisibility
+        btnLineGraphInformation.visibility = componentVisibility
 
-        val isBtnMoreVisible = if (element.appLink.isNotBlank() && isShown) View.VISIBLE else View.GONE
-        btnLineGraphMore.visibility = isBtnMoreVisible
-        btnLineGraphNext.visibility = isBtnMoreVisible
+        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
+        val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+        btnLineGraphMore.visibility = ctaVisibility
+        btnLineGraphNext.visibility = ctaVisibility
+        btnLineGraphMore.text = element.ctaText
+
+        if (isCtaVisible) {
+            btnLineGraphMore.setOnClickListener {
+                openAppLink(element.appLink)
+            }
+            btnLineGraphNext.setOnClickListener {
+                openAppLink(element.appLink)
+            }
+        }
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
