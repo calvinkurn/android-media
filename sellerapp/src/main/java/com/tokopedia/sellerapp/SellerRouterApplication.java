@@ -138,7 +138,7 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
-import com.tokopedia.sellerhome.view.home.SellerDashboardActivity;
+import com.tokopedia.sellerhome.view.home.SellerHomeActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -392,7 +392,7 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
             if (SessionHandler.isUserHasShop(context)) {
-                return SellerDashboardActivity.createInstance(context);
+                return SellerHomeActivity.createInstance(context);
             } else {
                 return intent;
             }
@@ -409,7 +409,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         if (SessionHandler.isV4Login(context)) {
-            return SellerDashboardActivity.class;
+            return SellerHomeActivity.class;
         } else {
             return WelcomeActivity.class;
         }
@@ -451,7 +451,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void goToDefaultRoute(Context context) {
-        Intent intent = SellerDashboardActivity.createInstance(context);
+        Intent intent = SellerHomeActivity.createInstance(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -694,7 +694,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getSellerHomeIntent(Activity activity) {
-        return SellerDashboardActivity.createInstance(activity);
+        return SellerHomeActivity.createInstance(activity);
     }
 
     @Override

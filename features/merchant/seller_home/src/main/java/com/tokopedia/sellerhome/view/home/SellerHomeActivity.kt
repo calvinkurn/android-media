@@ -23,14 +23,14 @@ import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDash
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
+class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
 
     companion object {
         @JvmStatic
-        val TAG = SellerDashboardActivity::class.java.simpleName
+        val TAG = SellerHomeActivity::class.java.simpleName
 
         @JvmStatic
-        fun createInstance(context: Context) = Intent(context, SellerDashboardActivity::class.java)
+        fun createInstance(context: Context) = Intent(context, SellerHomeActivity::class.java)
     }
 
 //    @Inject
@@ -88,7 +88,7 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
             override fun onNeedUpdate(detail: DetailUpdate?) {
                 if (detail != null && !isFinishing) {
                     AppUpdateDialogBuilder(
-                            this@SellerDashboardActivity,
+                            this@SellerHomeActivity,
                             detail,
                             object : AppUpdateDialogBuilder.Listener {
                                 override fun onPositiveButtonClicked(detail: DetailUpdate?) {
