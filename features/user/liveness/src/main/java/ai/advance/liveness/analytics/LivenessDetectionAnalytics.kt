@@ -2,10 +2,9 @@ package ai.advance.liveness.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
-class LivenessDetectionAnalytics {
-
-    private var projectID = 0
+class LivenessDetectionAnalytics @Inject constructor() {
 
     private object Event {
         const val CLICK_ACCOUNT = "clickAccount"
@@ -47,12 +46,6 @@ class LivenessDetectionAnalytics {
         const val labelPreRecorded= "prerecorded"
         const val labelConnectionTimeout= "connection timeout"
         const val labelBlurry= "blurry"
-    }
-
-    fun createInstance(projectID: Int): LivenessDetectionAnalytics {
-        val livenessDetectionAnalytics = LivenessDetectionAnalytics()
-        livenessDetectionAnalytics.projectID = projectID
-        return livenessDetectionAnalytics
     }
 
     fun eventViewFaceInCenter() {

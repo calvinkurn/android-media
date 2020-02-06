@@ -22,5 +22,6 @@
     <color name="liveness_shadow_end_color">#0FA80B</color>
     <color name="liveness_color_gray">#666666</color>
     <color name="liveness_tip_text_color">#666666</color>
+    <color name="liveness_f531353b">#f531353b</color>
 
 </resources>

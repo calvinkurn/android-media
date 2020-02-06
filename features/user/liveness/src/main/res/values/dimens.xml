@@ -27,6 +27,7 @@
     <dimen name="liveness_30">30dp</dimen>
     <dimen name="liveness_50">50dp</dimen>
     <dimen name="liveness_52">52dp</dimen>
+    <dimen name="liveness_56">56dp</dimen>
     <dimen name="liveness_66">66dp</dimen>
     <dimen name="liveness_35">35dp</dimen>
     <dimen name="liveness_36">36dp</dimen>
@@ -46,6 +47,7 @@
     <dimen name="liveness_269">269dp</dimen>
     <dimen name="liveness_203">203dp</dimen>
 
+    <dimen name="liveness_text_spacing_5">5sp</dimen>
     <dimen name="liveness_text_spacing_6">6sp</dimen>
     <dimen name="liveness_text_28">@dimen/liveness_14</dimen>
     <dimen name="liveness_text_32">@dimen/liveness_16</dimen>

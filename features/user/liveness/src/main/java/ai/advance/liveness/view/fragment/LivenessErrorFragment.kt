@@ -1,24 +1,28 @@
 package ai.advance.liveness.view.fragment
 
-import ai.advance.liveness.LivenessConstants
-import ai.advance.liveness.view.OnBackListener
 import ai.advance.liveness.R
-import ai.advance.liveness.view.activity.LivenessFailedActivity
 import ai.advance.liveness.analytics.LivenessDetectionAnalytics
+import ai.advance.liveness.di.LivenessDetectionComponent
+import ai.advance.liveness.utils.LivenessConstants
+import ai.advance.liveness.view.OnBackListener
+import ai.advance.liveness.view.activity.LivenessFailedActivity
 import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import kotlinx.android.synthetic.main.fragment_liveness_error.*
+import javax.inject.Inject
 
-class LivenessErrorFragment : Fragment(), OnBackListener {
+class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
 
     private var failedType = -1
-    private var projectId = -1
-    private lateinit var analytics: LivenessDetectionAnalytics
+
+    @Inject
+    lateinit var analytics: LivenessDetectionAnalytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -27,9 +31,14 @@ class LivenessErrorFragment : Fragment(), OnBackListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        analytics = LivenessDetectionAnalytics().createInstance(projectId)
         failedType = arguments?.getInt("failed_type")?: -1
         initViews()
+    }
+
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
+        getComponent(LivenessDetectionComponent::class.java).inject(this)
     }
 
     private fun initViews(){
@@ -39,6 +48,11 @@ class LivenessErrorFragment : Fragment(), OnBackListener {
         }
 
         when(failedType) {
+            LivenessConstants.FAILED_GENERAL -> {
+                setViews(getString(R.string.liveness_failed_reason_general_title),
+                        getString(R.string.liveness_failed_reason_general),
+                        LivenessConstants.SCAN_FACE_FAIL_GENERAL)
+            }
             LivenessConstants.FAILED_BADNETWORK -> {
                 setViews(getString(R.string.liveness_failed_reason_bad_network_title),
                         getString(R.string.liveness_failed_reason_bad_network),
@@ -68,12 +82,13 @@ class LivenessErrorFragment : Fragment(), OnBackListener {
         when(failedType){
             LivenessConstants.FAILED_BADNETWORK -> {
                 analytics.eventClickConnectionTimeout()
+                activity?.setResult(Activity.RESULT_OK)
             }
             LivenessConstants.FAILED_TIMEOUT -> {
                 analytics.eventClickTimeout()
+                activity?.setResult(Activity.RESULT_OK)
             }
         }
-        activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
 

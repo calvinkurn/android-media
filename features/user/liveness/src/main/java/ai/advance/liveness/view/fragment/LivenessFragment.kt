@@ -1,19 +1,23 @@
 package ai.advance.liveness.view.fragment
 
 import ai.advance.common.entity.BaseResultEntity
-import ai.advance.liveness.LivenessConstants
 import ai.advance.liveness.R
 import ai.advance.liveness.analytics.LivenessDetectionAnalytics
+import ai.advance.liveness.data.model.response.LivenessData
+import ai.advance.liveness.di.LivenessDetectionComponent
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.impl.LivenessCallback
 import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback
+import ai.advance.liveness.utils.LivenessConstants
 import ai.advance.liveness.view.BackgroundOverlay
 import ai.advance.liveness.view.OnBackListener
 import ai.advance.liveness.view.activity.LivenessFailedActivity
+import ai.advance.liveness.view.viewmodel.LivenessDetectionViewModel
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.app.ProgressDialog
 import android.content.Intent
@@ -25,26 +29,46 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
+import javax.inject.Inject
 
-class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCallback, OnBackListener {
+class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, LivenessCallback, OnBackListener {
 
-    private var mLivenessView: LivenessView? = null
-    private var mTipLottieAnimationView: LottieAnimationView? = null
-    private var mTipTextView: TextView? = null
-    private var mProgressLayout: View? = null
-    private var mInitProgressDialog: ProgressDialog? = null
+    private var livenessView: LivenessView? = null
+    private var tipLottieAnimationView: LottieAnimationView? = null
+    private var tipTextView: TextView? = null
+    private var loader: View? = null
+    private var initProgressDialog: ProgressDialog? = null
+    private var loadingLayout: View? = null
+    private var mainLayout: View? = null
     private var bgOverlay: BackgroundOverlay? = null
-
     private var livenessWarnState: Detector.WarnCode? = null
     private var livenessActionState: Detector.DetectionType? = null
+    private var tkpdProjectId: String? = "1"
+    private var ktpPath: String = ""
+    private var facePath: String = ""
+    private var livenessResult: LivenessData? = null
 
-    private var projectId = -1
-    private lateinit var analytics: LivenessDetectionAnalytics
+    @Inject
+    lateinit var analytics: LivenessDetectionAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val livenessDetectionViewModel by lazy { viewModelProvider.get(LivenessDetectionViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_liveness, container, false)
@@ -52,30 +76,46 @@ class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCall
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        analytics = LivenessDetectionAnalytics().createInstance(projectId)
         findViews()
         initData()
     }
 
     private fun initData() {
-        mLivenessView?.startDetection(this)
+        arguments?.let {
+            ktpPath = it.getString(ApplinkConstInternalGlobal.PARAM_KTP_PATH, "")
+        }
+        tkpdProjectId = activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1).toString()
+        livenessDetectionViewModel.livenessDataResult.observe(this, Observer {
+            it?.let {
+                livenessResult = it
+            }
+        })
+        livenessView?.startDetection(this)
     }
 
     private fun findViews() {
         val activity = activity
         if (activity != null) {
-            mLivenessView = activity.findViewById(R.id.liveness_view)
-            mTipLottieAnimationView = activity.findViewById(R.id.tip_lottie_animation_view)
-            mTipTextView = activity.findViewById(R.id.tip_text_view)
-            mProgressLayout = activity.findViewById(R.id.progress_layout)
+            livenessView = activity.findViewById(R.id.liveness_view)
+            tipLottieAnimationView = activity.findViewById(R.id.tip_lottie_animation_view)
+            tipTextView = activity.findViewById(R.id.tip_text_view)
+            loadingLayout = activity.findViewById(R.id.loading_layout)
+            mainLayout = activity.findViewById(R.id.main_layout)
+            loader = activity.findViewById(R.id.loader)
             bgOverlay = activity.findViewById(R.id.background_overlay)
             val mBackView = activity.findViewById<View>(R.id.back_view_camera_activity)
             mBackView.setOnClickListener { activity.onBackPressed() }
         }
     }
 
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
+        getComponent(LivenessDetectionComponent::class.java).inject(this)
+    }
+
     private fun changeTipTextView(strResId: Int) {
-        mTipTextView?.setText(strResId)
+        tipTextView?.setText(strResId)
     }
 
     private fun updateTipUIView(warnCode: Detector.WarnCode?) {
@@ -124,7 +164,7 @@ class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCall
     }
 
     private fun showActionTipUIView() {
-        val currentDetectionType = mLivenessView?.currentDetectionType
+        val currentDetectionType = livenessView?.currentDetectionType
         livenessActionState = currentDetectionType
         if (currentDetectionType != null) {
             var detectionNameId = 0
@@ -154,26 +194,26 @@ class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCall
     }
 
     override fun onDetectorInitStart() {
-        if (mInitProgressDialog != null) {
-            mInitProgressDialog?.dismiss()
+        if (initProgressDialog != null) {
+            initProgressDialog?.dismiss()
         }
-        mInitProgressDialog = ProgressDialog(context)
-        mInitProgressDialog?.setMessage(getString(R.string.liveness_auth_check))
-        mInitProgressDialog?.setCanceledOnTouchOutside(false)
-        mInitProgressDialog?.show()
+        initProgressDialog = ProgressDialog(context)
+        initProgressDialog?.setMessage(getString(R.string.liveness_auth_check))
+        initProgressDialog?.setCanceledOnTouchOutside(false)
+        initProgressDialog?.show()
     }
 
     fun release() {
-        if (mInitProgressDialog != null) {
-            mInitProgressDialog?.dismiss()
+        if (initProgressDialog != null) {
+            initProgressDialog?.dismiss()
         }
-        mLivenessView?.destroy()
+        livenessView?.destroy()
     }
 
     override fun onDetectorInitComplete(isValid: Boolean, errorCode: String,
                                         message: String) {
-        if (mInitProgressDialog != null) {
-            mInitProgressDialog?.dismiss()
+        if (initProgressDialog != null) {
+            initProgressDialog?.dismiss()
         }
         if (isValid) {
             updateTipUIView(null)
@@ -212,15 +252,15 @@ class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCall
     }
 
     private fun setLottieFile(url: String) {
-        mTipLottieAnimationView?.cancelAnimation()
-        mTipLottieAnimationView?.clearAnimation()
-        mTipLottieAnimationView?.invalidate()
+        tipLottieAnimationView?.cancelAnimation()
+        tipLottieAnimationView?.clearAnimation()
+        tipLottieAnimationView?.invalidate()
 
         val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(requireContext(), url)
         lottieCompositionLottieTask.addListener { result ->
-            mTipLottieAnimationView?.setComposition(result)
-            mTipLottieAnimationView?.repeatCount = ValueAnimator.INFINITE
-            mTipLottieAnimationView?.playAnimation()
+            tipLottieAnimationView?.setComposition(result)
+            tipLottieAnimationView?.repeatCount = ValueAnimator.INFINITE
+            tipLottieAnimationView?.playAnimation()
         }
     }
 
@@ -250,13 +290,11 @@ class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCall
      */
     override fun onDetectionSuccess() {
         analytics.eventSuccessdHeadDetection()
-        mLivenessView?.getLivenessData(object : LivenessGetFaceDataCallback {
+        livenessView?.getLivenessData(object : LivenessGetFaceDataCallback {
 
             override fun onGetFaceDataStart() {
-                mProgressLayout?.visibility = View.VISIBLE
-                mLivenessView?.visibility = View.GONE
-                mTipLottieAnimationView?.visibility = View.GONE
-                mTipTextView?.visibility = View.GONE
+                loadingLayout?.visibility = View.VISIBLE
+                mainLayout?.visibility = View.GONE
             }
 
             override fun onGetFaceDataSuccess(entity: BaseResultEntity) {
@@ -276,15 +314,38 @@ class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCall
         val activity = activity
         if (activity != null) {
             val mImageBitmap = LivenessResult.livenessBitmap
-            val imagePath = saveToFile(mImageBitmap)
-            if (isFileExists(imagePath)) {
+            facePath = saveToFile(mImageBitmap)
+            if (isFileExists(facePath) && isFileExists(ktpPath)) {
                 val intent = Intent()
-                intent.putExtra("image_result", imagePath)
-                activity.setResult(RESULT_OK, intent)
+                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId?: "1",
+                object : LivenessDetectionViewModel.UploadState {
+                    override fun error(errorCode: Int) {
+                        when(errorCode) {
+                            LivenessConstants.FAILED_GENERAL -> {setFailedResultData(Detector.DetectionFailedType.GENERAL)}
+                            LivenessConstants.FAILED_TIMEOUT -> {setFailedResultData(Detector.DetectionFailedType.BADNETWORK)}
+                        }
+                        activity.setResult(RESULT_CANCELED)
+                    }
+
+                    override fun isSuccess(state: Boolean) {
+                        livenessResult?.isSuccessRegister.let {
+                            intent.putExtra("isSuccessRegister", it)
+                        }
+                        if (!state) {
+                            intent.putIntegerArrayListExtra("listRetake", livenessResult?.listRetake)
+                            intent.putStringArrayListExtra("listMessage", livenessResult?.listMessage)
+                            intent.putExtra("title", livenessResult?.apps?.title)
+                            intent.putExtra("subtitle", livenessResult?.apps?.subtitle)
+                            intent.putExtra("button", livenessResult?.apps?.button)
+                        }
+                        activity.setResult(RESULT_OK, intent)
+                        activity.finish()
+                    }
+                })
             } else {
-                activity.setResult(-7)
+                activity.setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
+                activity.finish()
             }
-            activity.finish()
         }
     }
 
@@ -292,6 +353,9 @@ class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCall
         if (activity != null) {
             val intent = Intent(activity, LivenessFailedActivity::class.java)
             when (failedType) {
+                Detector.DetectionFailedType.GENERAL -> {
+                    intent.putExtra("failed_type", LivenessConstants.FAILED_GENERAL)
+                }
                 Detector.DetectionFailedType.BADNETWORK -> {
                     intent.putExtra("failed_type", LivenessConstants.FAILED_BADNETWORK)
                 }
@@ -391,8 +455,10 @@ class LivenessFragment : Fragment(), Detector.DetectorInitCallback, LivenessCall
 
     companion object {
 
-        fun newInstance(): LivenessFragment {
-            return LivenessFragment()
+        fun newInstance(bundle: Bundle): LivenessFragment {
+            val fragment = LivenessFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 

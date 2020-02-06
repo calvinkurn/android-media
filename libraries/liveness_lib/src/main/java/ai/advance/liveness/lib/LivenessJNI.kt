@@ -62,9 +62,15 @@ internal object LivenessJNI {
                                 height: Int, detectionType: Int): String
 
     fun nativeInit(): Long {
-        return if (nativeEnable()) {
-            Oo0Oo(ModelUtils.MODEL_PATH)
-        } else 0
+        var result: Long = 0
+        if (nativeEnable()) {
+            try{
+                result = Oo0Oo(ModelUtils.MODEL_PATH)
+            } catch (e: Exception) {
+                return result
+            }
+        }
+        return result
     }
 
     /**

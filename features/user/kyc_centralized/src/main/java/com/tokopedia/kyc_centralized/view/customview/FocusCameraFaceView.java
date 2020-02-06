@@ -120,6 +120,6 @@ public class FocusCameraFaceView extends View {
 
         canvas.drawPath(mPath, mSemiBlackPaint);
         canvas.clipPath(mPath);
-        canvas.drawColor(Color.parseColor("#a642b549"));
+        canvas.drawColor(Color.parseColor("#ae000000"));
     }
 }

@@ -83,6 +83,9 @@ public class UserIdentificationFormKtpFragment extends
     }
 
     @Override
+    protected void initInjector() {}
+
+    @Override
     public void trackOnBackPressed() {
         analytics.eventClickBackKtpPage();
     }

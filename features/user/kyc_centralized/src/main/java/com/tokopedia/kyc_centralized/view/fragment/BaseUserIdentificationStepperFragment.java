@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -31,7 +31,7 @@ import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_
  */
 
 public abstract class BaseUserIdentificationStepperFragment<T extends
-        UserIdentificationStepperModel> extends TkpdBaseV4Fragment {
+        UserIdentificationStepperModel> extends BaseDaggerFragment {
 
     public final static String EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model";
 
@@ -41,6 +41,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     protected TextView button;
     protected UserIdentificationCommonAnalytics analytics;
     protected int projectId;
+    protected boolean isKycSelfie;
 
     protected T stepperModel;
 
@@ -90,8 +91,21 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == REQUEST_CODE_CAMERA_FACE) {
-                String faceFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
-                stepperModel.setFaceFile(faceFile);
+                if(isKycSelfie){
+                    String faceFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
+                    stepperModel.setFaceFile(faceFile);
+                } else {
+                    boolean isSuccessRegister = data.getBooleanExtra("isSuccessRegister", false);
+                    if(isSuccessRegister){
+                        stepperListener.finishPage();
+                    } else {
+                        stepperModel.setListRetake(data.getIntegerArrayListExtra("listRetake"));
+                        stepperModel.setListMessage(data.getStringArrayListExtra("listMessage"));
+                        stepperModel.setTitleText(data.getStringExtra("title"));
+                        stepperModel.setSubtitleText(data.getStringExtra("subtitle"));
+                        stepperModel.setButtonText(data.getStringExtra("button"));
+                    }
+                }
                 stepperListener.goToNextPage(stepperModel);
             } else if (requestCode == REQUEST_CODE_CAMERA_KTP) {
                 String ktpFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
@@ -119,6 +133,9 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
                 break;
         }
     }
+
+    @Override
+    protected abstract void initInjector();
 
     protected abstract void setContentView();
 }

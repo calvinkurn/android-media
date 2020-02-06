@@ -1,11 +1,13 @@
 package ai.advance.liveness.view.activity
 
 import ai.advance.common.utils.ScreenUtil
-import ai.advance.liveness.view.OnBackListener
 import ai.advance.liveness.R
-import ai.advance.liveness.view.fragment.LivenessFragment
+import ai.advance.liveness.di.DaggerLivenessDetectionComponent
+import ai.advance.liveness.di.LivenessDetectionComponent
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK
 import ai.advance.liveness.lib.LivenessResult
+import ai.advance.liveness.view.OnBackListener
+import ai.advance.liveness.view.fragment.LivenessFragment
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -18,13 +20,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
 
-class LivenessActivity : AppCompatActivity() {
+class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComponent> {
+
+    override fun getComponent(): LivenessDetectionComponent {
+        return DaggerLivenessDetectionComponent.builder().baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent).build()
+    }
+
     private var mLivenessFragment: LivenessFragment? = null
     private var mErrorDialog: AlertDialog? = null
 
     private val requiredPermissions: Array<String>
-        get() = arrayOf(Manifest.permission.CAMERA)
+        get() = arrayOf(Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +76,11 @@ class LivenessActivity : AppCompatActivity() {
     private fun attachFragment() {
         if (allPermissionsGranted()) {
             if (GuardianLivenessDetectionSDK.isDeviceSupportLiveness) {
-                mLivenessFragment = LivenessFragment.newInstance()
+                var extras = Bundle()
+                intent.extras?.let {
+                    extras = it
+                }
+                mLivenessFragment = LivenessFragment.newInstance(extras)
                 if (mLivenessFragment?.isAdded == false) {
                     mLivenessFragment?.let {fragment ->
                         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss()

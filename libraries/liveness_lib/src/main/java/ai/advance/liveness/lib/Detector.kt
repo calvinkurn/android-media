@@ -355,6 +355,7 @@ class Detector(context: Activity) {
         STRONGLIGHT,
         FACEMISSING,
         BADNETWORK,
+        GENERAL,
         MULTIPLEFACE,
         MUCHMOTION,
         UNAUTHORIZED,
