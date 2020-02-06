@@ -1,0 +1,238 @@
+{
+  "addressId": 99367774,
+  "courierPromoApplied": false,
+  "dropshipperNameValid": false,
+  "dropshipperPhoneValid": false,
+  "isBlackbox": false,
+  "isTradein": false,
+  "preorder": true,
+  "selectedCourier": {
+    "additionalPrice": 0,
+    "allowDropshiper": true,
+    "benefitAmount": 0,
+    "blackboxInfo": "",
+    "checksum": "2qGkJppqfwDXpZFMFswL9PqeeKY%3D",
+    "discountedRate": 0,
+    "estimatedTimeDelivery": "Reguler (2-4 hari)",
+    "hideShipperName": false,
+    "insurancePrice": 200,
+    "insuranceType": 2,
+    "insuranceUsedDefault": 2,
+    "insuranceUsedInfo": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+    "insuranceUsedType": 2,
+    "isNow": false,
+    "maxEtd": 172800,
+    "minEtd": 86400,
+    "name": "AnterAja",
+    "ontimeDelivery": {
+      "available": false,
+      "text_detail": "",
+      "text_label": "",
+      "url_detail": "",
+      "value": 0
+    },
+    "priorityCheckboxMessage": "",
+    "priorityDurationMessage": "",
+    "priorityFeeMessage": "",
+    "priorityFormattedPrice": "",
+    "priorityInnactiveMessage": "",
+    "priorityPdpMessage": "",
+    "priorityPrice": 0,
+    "priorityWarningboxMessage": "",
+    "promoCode": "",
+    "selected": true,
+    "serviceId": 1104,
+    "shipperFormattedPrice": "Rp10.000",
+    "shipperId": 23,
+    "shipperPrice": 10000,
+    "shipperProductId": 45,
+    "shippingRate": 0,
+    "usePinPoint": false,
+    "ut": "1580204486"
+  },
+  "shipmentCartData": {
+    "categoryIds": "753",
+    "deliveryPriceTotal": 0,
+    "destinationAddress": "jl prof dr satrio",
+    "destinationDistrictId": "2253",
+    "destinationLatitude": "-6.148635",
+    "destinationLongitude": "106.735185",
+    "destinationPostalCode": "11720",
+    "insurance": 1,
+    "orderValue": 24600,
+    "originDistrictId": "2267",
+    "originLatitude": "-6.2565354",
+    "originLongitude": "106.85040979999997",
+    "originPostalCode": "12750",
+    "productInsurance": 0,
+    "shippingNames": "jne,pos,gojek,ninja,grab,anteraja,lion",
+    "shippingServices": "regular,nextday,instant,sameday",
+    "shopShipments": [
+      {
+        "isDropshipEnabled": true,
+        "shipCode": "jne",
+        "shipId": 1,
+        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+        "shipName": "JNE",
+        "shipProds": [
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1004,
+            "shipGroupName": "regular",
+            "shipProdId": 1,
+            "shipProdName": "Reguler"
+          },
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1004,
+            "shipGroupName": "regular",
+            "shipProdId": 2,
+            "shipProdName": "OKE"
+          },
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1003,
+            "shipGroupName": "nextday",
+            "shipProdId": 6,
+            "shipProdName": "YES"
+          }
+        ]
+      },
+      {
+        "isDropshipEnabled": true,
+        "shipCode": "pos",
+        "shipId": 4,
+        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+        "shipName": "Pos Indonesia",
+        "shipProds": [
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1004,
+            "shipGroupName": "regular",
+            "shipProdId": 10,
+            "shipProdName": "Pos Kilat Khusus"
+          }
+        ]
+      },
+      {
+        "isDropshipEnabled": false,
+        "shipCode": "gojek",
+        "shipId": 10,
+        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+        "shipName": "GO-JEK",
+        "shipProds": [
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1000,
+            "shipGroupName": "instant",
+            "shipProdId": 28,
+            "shipProdName": "Instant Courier"
+          },
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1002,
+            "shipGroupName": "sameday",
+            "shipProdId": 20,
+            "shipProdName": "Same Day"
+          }
+        ]
+      },
+      {
+        "isDropshipEnabled": false,
+        "shipCode": "ninja",
+        "shipId": 12,
+        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-ninja.png",
+        "shipName": "Ninja Xpress",
+        "shipProds": [
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1004,
+            "shipGroupName": "regular",
+            "shipProdId": 25,
+            "shipProdName": "Reguler"
+          }
+        ]
+      },
+      {
+        "isDropshipEnabled": false,
+        "shipCode": "grab",
+        "shipId": 13,
+        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+        "shipName": "Grab",
+        "shipProds": [
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1000,
+            "shipGroupName": "instant",
+            "shipProdId": 37,
+            "shipProdName": "Instant"
+          },
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1002,
+            "shipGroupName": "sameday",
+            "shipProdId": 24,
+            "shipProdName": "Same Day"
+          }
+        ]
+      },
+      {
+        "isDropshipEnabled": true,
+        "shipCode": "anteraja",
+        "shipId": 23,
+        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+        "shipName": "AnterAja",
+        "shipProds": [
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1004,
+            "shipGroupName": "regular",
+            "shipProdId": 45,
+            "shipProdName": "Reguler"
+          },
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1004,
+            "shipGroupName": "regular",
+            "shipProdId": 46,
+            "shipProdName": "Next Day"
+          }
+        ]
+      },
+      {
+        "isDropshipEnabled": true,
+        "shipCode": "lion",
+        "shipId": 24,
+        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+        "shipName": "Lion Parcel",
+        "shipProds": [
+          {
+            "additionalFee": 0,
+            "minimumWeight": 0,
+            "shipGroupId": 1004,
+            "shipGroupName": "regular",
+            "shipProdId": 47,
+            "shipProdName": "Reguler"
+          }
+        ]
+      }
+    ],
+    "token": "Tokopedia+Kero:GrX4it8Rx1t4xrfhQ1ozDBXUKXc=",
+    "ut": "1580204484",
+    "weight": 224
+  },
+  "shopId": "1479278",
+  "totalQuantity": 2,
+  "usePartialOrder": false
+}

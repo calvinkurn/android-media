@@ -16,6 +16,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
@@ -257,5 +258,22 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                 eventAction,
                 ""
         );
+    }
+
+    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain ,String shopLocation,
+                                          Boolean isShopOfficaial, Boolean isFollowed) {
+        Map<String, Object> mapData = DataLayer.mapOf(
+                ShopPageTrackingConstant.SHOP_NAME ,shopName,
+                ShopPageTrackingConstant.SHOP_ID ,shopID,
+                ShopPageTrackingConstant.SHOP_LOCATION ,shopLocation,
+                ShopPageTrackingConstant.URL_SLUG ,shopDomain,
+                ShopPageTrackingConstant.IS_OFFICIAL_STORE ,isShopOfficaial
+        );
+        String eventName;
+        if (isFollowed)
+            eventName =  ShopPageTrackingConstant.SELLER_ADDED_TO_FAVORITE;
+        else
+            eventName = ShopPageTrackingConstant.SELLER_REMOVED_FROM_FAVORITE;
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(mapData,eventName);
     }
 }

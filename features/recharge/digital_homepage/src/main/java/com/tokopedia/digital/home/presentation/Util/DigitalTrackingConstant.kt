@@ -38,7 +38,7 @@ object DigitalHomepageTrackingLabelConstant {
 object DigitalHomepageTrackingEventNameConstant {
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
-    const val CLICK_HOMEPAGE = "clickHomepage"
+    const val CLICK_TOPUP_BILLS = "clickTopupTagihan"
 }
 
 object DigitaHomepageTrackingEEConstant {
@@ -48,6 +48,8 @@ object DigitaHomepageTrackingEEConstant {
     const val CREATIVE = "creative"
     const val CREATIVE_URL = "creative_url"
     const val CATEGORY = "category"
+    const val PROMO_ID = "promo_id"
+    const val PROMO_CODE = "promo_code"
 
     const val ECOMMERCE = "ecommerce"
     const val PROMOTIONS = "promotions"

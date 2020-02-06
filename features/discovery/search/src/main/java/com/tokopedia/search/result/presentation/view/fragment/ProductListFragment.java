@@ -954,8 +954,9 @@ public class ProductListFragment
 
     @Override
     public void onTickerDismissed() {
-        if (presenter != null) {
-            presenter.setIsTickerHasDismissed(true);
+        if (presenter != null && adapter != null) {
+            presenter.onPriceFilterTickerDismissed();
+            adapter.removePriceFilterTicker();
         }
     }
 

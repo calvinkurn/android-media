@@ -25,7 +25,7 @@ import java.util.*
 /**
  * Created by resakemal on 20/08/19.
  */
-class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context,
+open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context,
                                                            attrs: AttributeSet? = null,
                                                            defStyleAttr: Int = 0,
                                                            var actionListener: ActionListener? = null)
@@ -65,7 +65,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
             error_label.visibility = View.GONE
         }
 
-        ac_input.addTextChangedListener(getTextWatcher())
+        getTextWatcher()?.run { ac_input.addTextChangedListener(this) }
 
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -138,11 +138,11 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         if (value) iv_input_dropdown.show() else iv_input_dropdown.hide()
     }
 
-    open fun getLayout(): Int {
+    protected fun getLayout(): Int {
         return R.layout.view_topup_bills_input_field
     }
 
-    private fun getTextWatcher(): TextWatcher {
+    protected fun getTextWatcher(): TextWatcher? {
         return object : TextWatcher {
             var timer: Timer? = Timer()
 

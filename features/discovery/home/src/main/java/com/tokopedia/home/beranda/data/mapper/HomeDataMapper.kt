@@ -56,6 +56,7 @@ class HomeDataMapper(
                     homeData.homeFlag.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)
             ))
         }
+
         if (homeData.dynamicHomeChannel != null && homeData.dynamicHomeChannel.channels != null && !homeData.dynamicHomeChannel.channels.isEmpty()) {
             var position = 1
             val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
@@ -89,12 +90,12 @@ class HomeDataMapper(
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
                                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC || channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
-                                channel.promoName = String.format(PROMO_NAME_DC_MIX_BANNER, position.toString(), channel.getHeader().getName())
+                                channel.promoName = String.format(PROMO_NAME_DC_MIX_BANNER, position.toString(), channel.header.name)
                                 channel.setPosition(position)
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_REVIEW) {
                                 channel.setPosition(position)
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF) {
-                                channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.getHeader().getName())
+                                channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.header.name)
                                 channel.setPosition(position)
                             }
                         }
@@ -180,7 +181,7 @@ class HomeDataMapper(
                             if(!isCache) trackingQueue.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                         }
                         DynamicHomeChannel.Channels.LAYOUT_REVIEW -> if (!isCache) {
-                            list.add(mappingToReviewViewModel(channel))
+                            list.add(mappingToReviewViewModel())
                         }
                         DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> if (!isCache) {
                             val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
@@ -193,7 +194,7 @@ class HomeDataMapper(
         return HomeViewModel(homeData.homeFlag, list, isCache)
     }
 
-    private fun mappingToReviewViewModel(channel: DynamicHomeChannel.Channels): Visitable<*> {
+    private fun mappingToReviewViewModel(): Visitable<*> {
         return ReviewViewModel()
     }
 
@@ -330,9 +331,8 @@ class HomeDataMapper(
     private fun mappingPlayChannel(channel: DynamicHomeChannel.Channels,
                                    trackingData: MutableMap<String, Any>,
                                    isCache: Boolean): Visitable<*> {
-        val playCardViewModel = PlayCardViewModel()
+        val playCardViewModel = PlayCardViewModel(channel, null)
         if (!isCache) {
-            playCardViewModel.setChannel(channel)
             playCardViewModel.setTrackingData(trackingData)
         }
         return playCardViewModel

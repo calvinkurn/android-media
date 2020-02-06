@@ -93,7 +93,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_TEXT, true) ||
                         insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_NUMBER, true)) {
 
-                    val view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.application_detail_text, null, false)
+                    val view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.pp_detail_text, null, false)
 
                     view.findViewById<TextView>(R.id.tv_title).text = insuranceProductApplicationDetails.label
 
@@ -139,7 +139,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 } else if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DATE, true) ||
                         insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DROPDOWN, true)) {
 
-                    val view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.application_detail_date, null, false)
+                    val view = LayoutInflater.from(itemView.getContext()).inflate(R.layout.pp_detail_date, null, false)
 
                     (view.findViewById(R.id.title) as TextView).text = insuranceProductApplicationDetails.label
                     val subTitleTextView = view.findViewById<TextView>(R.id.sub_title)
