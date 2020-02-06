@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatroom.service
 
-import android.app.IntentService
 import android.content.Intent
+import androidx.core.app.JobIntentService
 import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.data.ReplyChatViewModel
@@ -11,7 +11,8 @@ import rx.Subscriber
 import javax.inject.Inject
 import androidx.core.app.NotificationManagerCompat
 
-class NotificationChatService : IntentService("NotificationChatService") {
+
+class NotificationChatService : JobIntentService() {
 
     private val REPLY_KEY = "reply_chat_key"
     private val MESSAGE_ID = "message_chat_id"
@@ -28,35 +29,31 @@ class NotificationChatService : IntentService("NotificationChatService") {
                 .inject(this)
     }
 
-    override fun onHandleIntent(intent: Intent?) {
-
+    override fun onHandleWork(intent: Intent) {
         val remoteInput = RemoteInput.getResultsFromIntent(intent)
 
-        if (intent != null) {
-            val messageId = intent.getStringExtra(MESSAGE_ID)
-            val message = remoteInput?.getCharSequence(REPLY_KEY)
-            val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
+        val messageId = intent.getStringExtra(MESSAGE_ID)
+        val message = remoteInput?.getCharSequence(REPLY_KEY)
+        val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
 
-            val requestParam = ReplyChatUseCase.generateParam(messageId, message.toString())
+        val requestParam = ReplyChatUseCase.generateParam(messageId, message.toString())
 
-            replyChatUseCase.execute(requestParam, object : Subscriber<ReplyChatViewModel>() {
-                override fun onNext(response: ReplyChatViewModel?) {
-                    if (response != null) {
-                        if (response.isSuccessReplyChat) {
-                            clearNotification(notificationId)
-                        }
+        replyChatUseCase.execute(requestParam, object : Subscriber<ReplyChatViewModel>() {
+            override fun onNext(response: ReplyChatViewModel?) {
+                if (response != null) {
+                    if (response.isSuccessReplyChat) {
+                        clearNotification(notificationId)
                     }
                 }
+            }
 
-                override fun onCompleted() {}
+            override fun onCompleted() {}
 
-                override fun onError(e: Throwable?) {
-                    clearNotification(notificationId)
-                }
+            override fun onError(e: Throwable?) {
+                clearNotification(notificationId)
+            }
+        })
 
-            })
-
-        }
     }
 
     private fun clearNotification(notificationId: Int) {
