@@ -31,11 +31,15 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
 
     private static final String ORDER_ID = "order_id";
-    private static final String FROM_PAYMENT = "from_payment";;
+    private static final String PAYMENT_ID = "payment_id";
+    private static final String CART_STRING = "cart_string";
+    private static final String FROM_PAYMENT = "from_payment";
     private static final String UPSTREAM = "upstream";
     private static final int REQUEST_CODE = 100;
     private String fromPayment = "false";
     private String orderId;
+    private String paymentId;
+    private String cartString;
     private OrderDetailsComponent orderListComponent;
     String category = null;
     String upstream = null;
@@ -61,7 +65,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
             if (category.contains(OrderCategory.DIGITAL)) {
                 return OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL);
             } else if (category.contains(OrderCategory.MARKETPLACE)) {
-                return MarketPlaceDetailFragment.getInstance(orderId, OrderCategory.MARKETPLACE);
+                return MarketPlaceDetailFragment.getInstance(orderId, OrderCategory.MARKETPLACE, paymentId, cartString);
             } else if(category.contains("")) {
                 return OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream);
             }
@@ -75,6 +79,8 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     protected void onCreate(Bundle arg) {
         if (getIntent().getExtras() != null) {
             orderId = getIntent().getStringExtra(ORDER_ID);
+            paymentId = getIntent().getStringExtra(PAYMENT_ID);
+            cartString = getIntent().getStringExtra(CART_STRING);
             Uri uri = getIntent().getData();
             if (uri != null) {
                 fromPayment = uri.getQueryParameter(FROM_PAYMENT);

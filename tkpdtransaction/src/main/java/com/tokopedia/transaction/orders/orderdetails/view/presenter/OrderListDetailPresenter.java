@@ -80,6 +80,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final int DEFAULT_TAB_ID = 1;
     private static final String DEVICE_ID = "device_id";
     private static final String CATEGORY_IDS = "category_ids";
+    private static final String PAYMENT_ID = "paymentId";
+    private static final String CART_STRING = "cartString";
     private static final int DEFAULT_DEVICE_ID = 5;
 
     GraphqlUseCase orderDetailsUseCase;
@@ -111,7 +113,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream) {
+    public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -123,7 +125,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         Map<String, Object> variables = new HashMap<>();
         if (orderCategory.equalsIgnoreCase("marketplace")) {
             variables.put("orderCategory", orderCategory);
-            variables.put(ORDER_ID, orderId);
+            variables.put(PAYMENT_ID, paymentId);
+            variables.put(CART_STRING, cartString);
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderdetail_marketplace), DetailsData.class, variables, false);

@@ -1,5 +1,5 @@
-query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
-  orderDetails(orderCategory: $orderCategory,orderId: $orderId) {
+query ORDERDETAIL($orderCategory: OrderCategory, $paymentId: String, $cartString: String) {
+  orderDetails(orderCategory: $orderCategory, paymentId: $paymentId, cartString: @cartString) {
     status {
       status
       statusText

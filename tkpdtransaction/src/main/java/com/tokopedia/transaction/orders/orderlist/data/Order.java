@@ -18,6 +18,9 @@ public class Order {
     @SerializedName("paymentID")
     @Expose
     private String paymentID;
+    @SerializedName("cartString")
+    @Expose
+    private String cartString;
     @SerializedName("categoryName")
     @Expose
     private String categoryName;
@@ -78,7 +81,7 @@ public class Order {
 
 
     public Order(ConditionalInfo conditionalInfo, ConditionalInfo conditionalInfoBottom,
-                 PaymentData paymentData, String paymentID, String categoryName,
+                 PaymentData paymentData, String paymentID, String cartString, String categoryName,
                  String category, String appLink, String upstream, String id, String createdAt,
                  int status, String statusStr, String statusColor, String invoiceRefNum,
                  String title, List<MetaData> metaData, List<DotMenuList> dotMenuList,
@@ -88,6 +91,7 @@ public class Order {
         this.conditionalInfoBottom = conditionalInfoBottom;
         this.paymentData = paymentData;
         this.paymentID = paymentID;
+        this.cartString = cartString;
         this.categoryName = categoryName;
         this.category = category;
         this.appLink = appLink;
@@ -123,6 +127,10 @@ public class Order {
 
     public String paymentID() {
         return paymentID;
+    }
+
+    public String cartString() {
+        return cartString;
     }
 
     public String categoryName() {
@@ -212,6 +220,7 @@ public class Order {
                 ", conditionalInfoBottom=" + conditionalInfoBottom +
                 ", paymentData=" + paymentData +
                 ", paymentID='" + paymentID + '\'' +
+                ", cartString='" + cartString + '\'' +
                 ", categoryName='" + categoryName + '\'' +
                 ", category='" + category + '\'' +
                 ", appLink='" + appLink + '\'' +

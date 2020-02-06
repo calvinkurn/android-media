@@ -1,6 +1,7 @@
 query ORDERLIST ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int,$Search: String, $StartDate: String, $EndDate: String, $Sort: String, $OrderStatus : Int) {
   orders(orderCategory: $orderCategory, Page: $Page, PerPage: $PerPage, Search:$Search, StartDate:$StartDate, EndDate:$EndDate, Sort: $Sort, OrderStatus : $OrderStatus) {
     categoryName
+    cartString
     beforeOrderId
     category
     id
