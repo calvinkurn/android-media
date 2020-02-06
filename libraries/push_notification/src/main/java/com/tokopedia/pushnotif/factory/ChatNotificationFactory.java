@@ -9,6 +9,7 @@ import android.net.Uri;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
@@ -51,8 +52,10 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 
-        builder.setShowWhen(true);
-        builder.addAction(replyAction(applinkNotificationModel.getApplinks(), notificationId));
+        if(GlobalConfig.isSellerApp()) {
+            builder.setShowWhen(true);
+            builder.addAction(replyAction(applinkNotificationModel.getApplinks(), notificationId));
+        }
 
         return builder.build();
     }
