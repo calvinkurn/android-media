@@ -29,6 +29,8 @@ internal class ProductCardTest {
             it[R.id.imageProduct] = isDisplayed()
             it[R.id.textViewProductName] = isDisplayed()
             it[R.id.textViewProductName] = withText(productCardModel.productName)
+            it[R.id.textViewPrice] = isDisplayed()
+            it[R.id.textViewPrice] = withText(productCardModel.formattedPrice)
             it[R.id.imageShopBadge] = isDisplayed()
             it[R.id.textViewShopLocation] = isDisplayed()
             it[R.id.textViewShopLocation] = withText(productCardModel.shopLocation)
