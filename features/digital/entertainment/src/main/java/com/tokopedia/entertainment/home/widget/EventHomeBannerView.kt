@@ -7,12 +7,12 @@ import androidx.annotation.Nullable
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.entertainment.R
-import com.tokopedia.officialstore.official.presentation.widget.EntertainmentHomeBannerAdapter
+import com.tokopedia.officialstore.official.presentation.widget.EventHomeBannerAdapter
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EntertainmentHomeBannerView(@NonNull context: Context, @Nullable attrs: AttributeSet) : BannerView(context, attrs) {
+class EventHomeBannerView(@NonNull context: Context, @Nullable attrs: AttributeSet) : BannerView(context, attrs) {
 
 //    override fun init() {
 //        val view = View.inflate(this.context, R.layout.ent_banner_view, this)
@@ -29,6 +29,6 @@ class EntertainmentHomeBannerView(@NonNull context: Context, @Nullable attrs: At
     }
 
     override fun getBannerAdapter(): BannerViewPagerAdapter {
-        return EntertainmentHomeBannerAdapter(promoImageUrls, onPromoClickListener)
+        return EventHomeBannerAdapter(promoImageUrls, onPromoClickListener)
     }
 }

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeViewHolder
+import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselViewModel
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventCarouselViewHolder(itemView: View): HomeViewHolder<EventCarouselViewModel>(itemView) {
+class EventCarouselEventViewHolder(itemView: View): HomeEventViewHolder<EventCarouselViewModel>(itemView) {
 
     var itemAdapter = ItemAdapter()
 

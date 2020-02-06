@@ -4,30 +4,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeViewHolder
-import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridViewModel
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.*
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.*
+import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationViewModel
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location.view.*
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adatper_item.view.*
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridViewHolder(itemView: View): HomeViewHolder<EventGridViewModel>(itemView) {
+class EventLocationEventViewHolder(itemView: View): HomeEventViewHolder<EventLocationViewModel>(itemView) {
 
     var itemAdapter = ItemAdapter()
 
     init {
         itemView.ent_recycle_view.apply {
-            layoutManager = GridLayoutManager(itemView.context, 2)
+            layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = itemAdapter
         }
     }
 
-    override fun bind(element: EventGridViewModel) {
+    override fun bind(element: EventLocationViewModel) {
         itemView.ent_title_card.text = element.titleCard
         itemAdapter.items = element.items
     }
@@ -35,14 +35,12 @@ class EventGridViewHolder(itemView: View): HomeViewHolder<EventGridViewModel>(it
     companion object {
         @LayoutRes
         @kotlin.jvm.JvmField
-        var LAYOUT: Int = R.layout.ent_layout_viewholder_event_grid
+        var LAYOUT: Int = R.layout.ent_layout_viewholder_event_location
     }
 
     data class EventItemModel(var imageUrl: String,
                               var title : String,
-                              var location: String,
-                              var slashedPrice: String,
-                              var price: String)
+                              var tagline: String)
 
     class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
@@ -52,15 +50,13 @@ class EventGridViewHolder(itemView: View): HomeViewHolder<EventGridViewModel>(it
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_layout_viewholder_event_grid_adapter_item, parent, false)
+                    .inflate(R.layout.ent_layout_viewholder_event_location_adatper_item, parent, false)
             return ItemViewHolder(view)
         }
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
             Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.image)
-            holder.view.txt_location.text = items.get(position).location
             holder.view.txt_title.text = items.get(position).title
-            holder.view.txt_start_title.text = items.get(position).slashedPrice
-            holder.view.txt_price.text = items.get(position).price
+            holder.view.txt_subtitle.text = items.get(position).tagline
         }
         override fun getItemCount() = items.size
     }

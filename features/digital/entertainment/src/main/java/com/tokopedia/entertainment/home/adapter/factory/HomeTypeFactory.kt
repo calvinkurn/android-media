@@ -1,7 +1,7 @@
 package com.tokopedia.entertainment.home.adapter.factory
 
 import android.view.ViewGroup
-import com.tokopedia.entertainment.home.adapter.HomeViewHolder
+import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
 
 /**
@@ -13,5 +13,5 @@ interface HomeTypeFactory {
     fun type(viewModel: EventCarouselViewModel): Int
     fun type(viewModel: EventGridViewModel): Int
     fun type(viewModel: EventLocationViewModel): Int
-    fun createViewHolder(view: ViewGroup, viewType: Int): HomeViewHolder<*>
+    fun createViewHolder(view: ViewGroup, viewType: Int): HomeEventViewHolder<*>
 }

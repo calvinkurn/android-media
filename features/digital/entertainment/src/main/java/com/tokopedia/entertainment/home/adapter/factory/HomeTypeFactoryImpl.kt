@@ -2,7 +2,7 @@ package com.tokopedia.entertainment.home.adapter.factory
 
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
-import com.tokopedia.entertainment.home.adapter.HomeViewHolder
+import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.*
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
 
@@ -12,40 +12,40 @@ import com.tokopedia.entertainment.home.adapter.viewmodel.*
 class HomeTypeFactoryImpl : HomeTypeFactory {
 
     override fun type(viewModel: BannerViewModel): Int {
-        return BannerViewHolder.LAYOUT
+        return BannerEventViewHolder.LAYOUT
     }
 
     override fun type(viewModel: CategoryViewModel): Int {
-        return CategoryViewHolder.LAYOUT
+        return CategoryEventViewHolder.LAYOUT
     }
 
     override fun type(viewModel: EventCarouselViewModel): Int {
-        return EventCarouselViewHolder.LAYOUT
+        return EventCarouselEventViewHolder.LAYOUT
     }
 
     override fun type(viewModel: EventGridViewModel): Int {
-        return EventGridViewHolder.LAYOUT
+        return EventGridEventViewHolder.LAYOUT
     }
 
     override fun type(viewModel: EventLocationViewModel): Int {
-        return EventLocationViewHolder.LAYOUT
+        return EventLocationEventViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(view: ViewGroup, type: Int): HomeViewHolder<*> {
-        val creatViewHolder: HomeViewHolder<*>
-        creatViewHolder = if (type == BannerViewHolder.LAYOUT) {
-            BannerViewHolder(view)
-        } else if (type == CategoryViewHolder.LAYOUT) {
-            CategoryViewHolder(view)
-        } else if (type == EventGridViewHolder.LAYOUT) {
-            EventGridViewHolder(view)
-        } else if (type == EventCarouselViewHolder.LAYOUT) {
-            EventCarouselViewHolder(view)
-        } else if (type == EventLocationViewHolder.LAYOUT) {
-            EventLocationViewHolder(view)
+    override fun createViewHolder(view: ViewGroup, type: Int): HomeEventViewHolder<*> {
+        val creatEventViewHolder: HomeEventViewHolder<*>
+        creatEventViewHolder = if (type == BannerEventViewHolder.LAYOUT) {
+            BannerEventViewHolder(view)
+        } else if (type == CategoryEventViewHolder.LAYOUT) {
+            CategoryEventViewHolder(view)
+        } else if (type == EventGridEventViewHolder.LAYOUT) {
+            EventGridEventViewHolder(view)
+        } else if (type == EventCarouselEventViewHolder.LAYOUT) {
+            EventCarouselEventViewHolder(view)
+        } else if (type == EventLocationEventViewHolder.LAYOUT) {
+            EventLocationEventViewHolder(view)
         } else {
             throw TypeNotSupportedException.create("Layout not supported")
         }
-        return creatViewHolder
+        return creatEventViewHolder
     }
 }

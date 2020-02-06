@@ -9,24 +9,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Author errysuprayogi on 30,January,2020
  */
-public class EntertainmentHomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
+public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventViewHolder> {
 
-    private final List<HomeItem> items;
+    public List<HomeEventItem> items;
     private HomeTypeFactory factory;
 
-    public EntertainmentHomeAdapter(HomeTypeFactory factory, List<HomeItem> items) {
-        this.items = items;
+    public HomeEventAdapter(HomeTypeFactory factory) {
+        this.items = new ArrayList<>();
         this.factory = factory;
+    }
+
+    public void setItems(List<HomeEventItem> items) {
+        this.items = items;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public HomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HomeEventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         return factory.createViewHolder((ViewGroup) view, viewType);
     }
@@ -37,7 +43,7 @@ public class EntertainmentHomeAdapter extends RecyclerView.Adapter<HomeViewHolde
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HomeEventViewHolder holder, int position) {
         holder.bind(items.get(position));
     }
 

@@ -8,7 +8,7 @@ import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.entertainment.R
 
-class EntertainmentHomeBannerAdapter(
+class EventHomeBannerAdapter(
         bannerImageUrls: List<String>,
         onPromoClickListener: BannerView.OnPromoClickListener) : BannerViewPagerAdapter(bannerImageUrls, onPromoClickListener) {
 
