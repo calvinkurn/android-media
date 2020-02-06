@@ -75,55 +75,73 @@ object DFInstallerLogUtil {
                            modulesName: String,
                            previousFreeSpace: Long = 0,
                            moduleSize: Long = 0,
-                           errorCode: List<String> = emptyList(),
+                           errorList: List<String> = emptyList(),
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false,
                            tag: String = DFM_TAG) {
 
         GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ ->  }) {
-            val messageStringBuilder = StringBuilder()
-            messageStringBuilder.append("$message {$modulesName};")
-            if (downloadTimes > 0) {
-                messageStringBuilder.append("times_dl:{$downloadTimes};")
+            val messageBuilder = StringBuilder()
+            messageBuilder.append("#msg:$message")
+
+            messageBuilder.append("#mod_name:$modulesName")
+
+            messageBuilder.append("#success:$isSuccess")
+
+            messageBuilder.append("#times_dl:$downloadTimes")
+
+            messageBuilder.append("#err:")
+            if (errorList.isNotEmpty()) {
+                messageBuilder.append(errorList.joinToString("|"))
+            } else {
+                messageBuilder.append("--")
             }
-            if (errorCode.isNotEmpty()) {
-                messageStringBuilder.append("err:{${errorCode.joinToString("|")}};")
+
+            messageBuilder.append("#mod_size:")
+            if (moduleSize > 0) {
+                messageBuilder.append(getSizeInMB(moduleSize))
+            } else {
+                messageBuilder.append(-1)
             }
-            if (isSuccess) {
-                messageStringBuilder.append("success;")
-            }
+
+            messageBuilder.append("#phone_size:")
             val phoneSize = getTotalInternalSpaceBytes(context)
             if (phoneSize > 0) {
-                messageStringBuilder.append("phone:{")
-                val phoneSizeInMB = String.format("%.2fMB", phoneSize.toDouble() / MEGA_BYTE)
-                messageStringBuilder.append("$phoneSizeInMB};")
-            }
-            messageStringBuilder.append("free:{")
-            if (previousFreeSpace > 0) {
-                val previousFreeSpaceSizeInMB = String.format("%.2fMB", previousFreeSpace.toDouble() / MEGA_BYTE)
-                messageStringBuilder.append(previousFreeSpaceSizeInMB)
+                val phoneSizeInMB = getSizeInMB(phoneSize)
+                messageBuilder.append(phoneSizeInMB)
             } else {
-                messageStringBuilder.append("0")
+                messageBuilder.append(-1)
             }
-            try {
-                val freeSpaceBytes = getFreeSpaceBytes(context)
-                val totalFreeSpaceSizeInMB = String.format("%.2fMB", freeSpaceBytes.toDouble() / MEGA_BYTE)
-                messageStringBuilder.append("|$totalFreeSpaceSizeInMB")
-            } catch (ignored: Exception) {
-            }
-            messageStringBuilder.append("};")
 
-            if (moduleSize > 0) {
-                val moduleSizeInMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
-                messageStringBuilder.append("size:{$moduleSizeInMB};")
+            messageBuilder.append("#free_bef:")
+            if (previousFreeSpace > 0) {
+                messageBuilder.append(getSizeInMB(previousFreeSpace))
+            } else {
+                messageBuilder.append(-1)
             }
+
+            messageBuilder.append("#free_aft:")
+            try {
+                messageBuilder.append(getSizeInMB(getFreeSpaceBytes(context)))
+            } catch (ignored: Exception) {
+                messageBuilder.append(-1)
+            }
+
+            messageBuilder.append("#play_srv:")
             try {
                 val playServiceVersion = PackageInfoCompat.getLongVersionCode(
-                    context.packageManager.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0)
+                        context.packageManager.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0)
                 )
-                messageStringBuilder.append("play_srv:{$playServiceVersion}")
-            } catch (e: Exception) { }
-            Timber.w("P1#$tag#$messageStringBuilder")
+                messageBuilder.append(playServiceVersion)
+            } catch (e: Exception) {
+                messageBuilder.append(-1)
+            }
+
+            Timber.w("P1#$tag$messageBuilder")
         }
+    }
+
+    private fun getSizeInMB(size: Long) : String {
+        return String.format("%.2f", size.toDouble() / MEGA_BYTE)
     }
 }
