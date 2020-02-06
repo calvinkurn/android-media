@@ -76,6 +76,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun gotoNextPage() {
         stepperModel?.selectedProductIds = getSelectedProduct()
+        stepperModel?.adIds = getSelectedProductAdId()
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -83,6 +84,13 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         var list = mutableListOf<Int>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productID)
+        }
+        return list
+    }
+    private fun getSelectedProductAdId(): MutableList<Int> {
+        var list = mutableListOf<Int>()
+        productListAdapter.getSelectedItems().forEach {
+            list.add(it.adID)
         }
         return list
     }

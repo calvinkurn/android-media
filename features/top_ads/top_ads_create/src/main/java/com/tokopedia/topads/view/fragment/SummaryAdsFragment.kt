@@ -16,6 +16,7 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.*
 import com.tokopedia.topads.data.response.*
 import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.view.activity.NoCreditActivity
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.activity.SuccessActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
@@ -32,17 +33,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private lateinit var viewModel: SummaryViewModel
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    var createAdModel = CreateAdModel()
-    var createAdItemModel = CreateAdItemModel()
-    var createAdGroupModel = CreateAdGroupModel()
-    var createKeywordItemModel = CreateKeywordItemModel()
-    var createAdResponseModel = CreateAdResponseModel()
     var map = HashMap<String, Any>()
     private var input = InputCreateGroup()
     var keyword = KeywordsItem()
     var group = Group()
-    private var keywordsList:MutableList<KeywordsItem> = mutableListOf()
-    private var adsItemsList:MutableList<AdsItem> = mutableListOf()
+    private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
+    private var adsItemsList: MutableList<AdsItem> = mutableListOf()
 
 
     companion object {
@@ -102,27 +98,13 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
             viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
             var map = convertToParam(view)
-            if (true) {
-                var intent = Intent(context, SuccessActivity::class.java)
-                startActivity(intent)
-
-            }
-
-            //TODO check credits and redirect
-
-//            startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT))
-//            activity!!.finish()
-//
-//            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
-
-
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
         }
+        stepperModel?.dailyBudget = stepperModel?.suggestedBidPerClick!! * 40
         toggle.setOnClickListener {
             if (toggle.isChecked) {
                 daily_budget.visibility = View.VISIBLE
-                daily_budget.setText(((stepperModel?.suggestedBidPerClick!!)*40).toString())
-                stepperModel?.dailyBudget = Integer.parseInt(daily_budget.text.toString())
+                daily_budget.setText(((stepperModel?.suggestedBidPerClick!!) * 40).toString())
             } else
                 daily_budget.visibility = View.GONE
         }
@@ -157,7 +139,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 RouteManager.route(context, "https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/")
 
             }
-
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
 
@@ -167,16 +148,18 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         info_text.movementMethod = LinkMovementMethod.getInstance()
         info_text.append(spannableText)
 
-        bid_range.text = String.format(resources.getString(R.string.bid_range),stepperModel?.minBid,stepperModel?.maxBid)
+        bid_range.text = String.format(resources.getString(R.string.bid_range), stepperModel?.minBid, stepperModel?.maxBid)
     }
 
     private fun convertToParam(view: View): HashMap<String, Any> {
         var userSession = UserSession(view.context)
 
         input.shopID = userSession.shopId
-        input.group.groupName = stepperModel?.groupName?:""
-        input.group.priceBid = stepperModel?.suggestedBidPerClick?:0
-        input.group.priceDaily = stepperModel?.dailyBudget?:0
+        input.group.groupName = stepperModel?.groupName ?: ""
+        input.group.priceBid = stepperModel?.suggestedBidPerClick ?: 0
+        input.group.priceDaily = stepperModel?.dailyBudget ?: 0
+        keywordsList.clear()
+        adsItemsList.clear()
 
         if (stepperModel!!.selectedKeywords.count() > 0) {
             stepperModel!!.selectedKeywords.forEachIndexed { index, _ ->
@@ -192,41 +175,27 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             stepperModel!!.selectedProductIds.forEachIndexed { index, _ ->
                 var add = AdsItem()
                 add.productID = stepperModel!!.selectedProductIds[index].toString()
+                add.ad.adID = stepperModel!!.adIds[index].toString()
+                add.ad.adType = "1"
                 adsItemsList.add(add)
+
             }
             input.group.ads = adsItemsList
         }
-
         map.put("input", input)
         return map
     }
 
     private fun onSuccessActivation(data: ResponseCreateGroup) {
-       var group= data.topadsCreateGroupAds.data.group
-        mapper(group.ads)
+        var group = data.topadsCreateGroupAds.data.group
+        if (group.isEnoughDeposit) {
+            var intent = Intent(context, SuccessActivity::class.java)
+            startActivity(intent)
 
-
-    }
-
-    private fun mapper(ads: List<ResponseCreateGroup.AdsItem>) {
-        val adsItemList= ArrayList<AdsItem>()
-        adsItemList.clear()
-        try {
-            for (item in ads) {
-                val ad = Ad()
-                var adsItem = AdsItem()
-                ad.adType = item.ad.adType
-                ad.adID = item.ad.adID
-                adsItem.ad = ad
-                adsItemList.add(adsItem)
-
-            }
-        } catch (e: NullPointerException) {
-            e.printStackTrace()
+        } else {
+            var intent = Intent(context, NoCreditActivity::class.java)
+            startActivity(intent)
         }
-
-
-        input.group.ads = adsItemList
 
     }
 
@@ -241,7 +210,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         group_name.text = stepperModel?.groupName
 
     }
-
 
     override fun updateToolBar() {
         (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))

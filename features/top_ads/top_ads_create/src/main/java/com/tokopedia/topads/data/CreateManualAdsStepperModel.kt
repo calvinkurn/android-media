@@ -18,6 +18,7 @@ open class CreateManualAdsStepperModel() : StepperModel {
     var maxBid =0
     var minBid =0
     var dailyBudget =0
+    var adIds = mutableListOf<Int>()
 
     constructor(parcel: Parcel) : this() {
         groupId = parcel.readString()
@@ -27,6 +28,9 @@ open class CreateManualAdsStepperModel() : StepperModel {
         minBid = parcel.readInt()
         dailyBudget = parcel.readInt()
         selectedProductIds = arrayListOf<Int>().apply {
+            parcel.readList(this, Int::class.java.classLoader)
+        }
+        adIds = arrayListOf<Int>().apply {
             parcel.readList(this, Int::class.java.classLoader)
         }
         selectedKeywords = arrayListOf<String>().apply {
@@ -47,6 +51,7 @@ open class CreateManualAdsStepperModel() : StepperModel {
         parcel.writeInt(maxBid)
         parcel.writeInt(minBid)
         parcel.writeInt(dailyBudget)
+        parcel.writeList(adIds)
     }
 
     override fun describeContents(): Int {
