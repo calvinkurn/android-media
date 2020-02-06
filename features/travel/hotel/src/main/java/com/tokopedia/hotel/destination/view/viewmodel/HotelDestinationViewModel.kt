@@ -122,7 +122,7 @@ class HotelDestinationViewModel @Inject constructor(
     fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
         locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        locationRequest.interval = 10 * 1000
+        locationRequest.interval = LOCATION_REQUEST_INTERVAL
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
@@ -156,6 +156,8 @@ class HotelDestinationViewModel @Inject constructor(
     }
 
     companion object {
+        private const val LOCATION_REQUEST_INTERVAL : Long = 10 * 1000
+
         private val TYPE_POPULAR_RESPONSE = PopularSearch.Response::class.java
         private val TYPE_SEARCH_RESPONSE = HotelSuggestion.Response::class.java
 
