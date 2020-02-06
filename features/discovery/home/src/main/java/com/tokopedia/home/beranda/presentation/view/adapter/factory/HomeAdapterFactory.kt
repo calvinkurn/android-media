@@ -8,10 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.listener.HomeFeedsListener
-import com.tokopedia.home.beranda.listener.HomeInspirationListener
-import com.tokopedia.home.beranda.listener.HomeReviewListener
+import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
@@ -167,6 +164,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
              * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
              */
             DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
 
             /**

@@ -7,6 +7,7 @@ import com.tokopedia.iris.util.DEFAULT_MAX_ROW
 import com.tokopedia.iris.util.MAX_ROW
 import rx.Observable
 import rx.schedulers.Schedulers
+import timber.log.Timber
 
 /**
  * Created by meta on 28/05/19.
@@ -24,6 +25,8 @@ class IrisBroadcastReceiver : BroadcastReceiver() {
                     IrisService.enqueueWork(context, i)
                 }
             }
-            .subscribe({}, {})
+            .subscribe({}, {
+                Timber.e("P1#IRIS#onReceiver %s", it.toString())
+            })
     }
 }

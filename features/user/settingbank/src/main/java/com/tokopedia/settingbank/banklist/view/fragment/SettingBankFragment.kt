@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RestrictTo
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,6 +31,7 @@ import com.tokopedia.settingbank.banklist.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
 import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent
+import com.tokopedia.settingbank.banklist.di.SettingBankComponent
 import kotlinx.android.synthetic.main.fragment_setting_bank.*
 import javax.inject.Inject
 
@@ -37,7 +39,7 @@ import javax.inject.Inject
  * @author by nisie on 6/7/18.
  */
 
-class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, EmptyBankAccountListener,
+open class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, EmptyBankAccountListener,
         BaseDaggerFragment() {
 
     private val REQUEST_ADD_BANK: Int = 101
@@ -67,17 +69,6 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         return SettingBankAnalytics.SCREEN_NAME
     }
 
-    override fun initInjector() {
-        if (activity != null && (activity as Activity).application != null) {
-            val addSettingBankComponent = DaggerSettingBankComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                    .build()
-
-            addSettingBankComponent.inject(this)
-            presenter.attachView(this)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (activity != null && activity!!.applicationContext != null) {
@@ -89,6 +80,17 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         super.onStart()
         if (activity != null) {
             analyticTracker.sendScreen(activity!!, screenName)
+        }
+    }
+
+    override fun initInjector() {
+        if (activity != null && (activity as Activity).application != null) {
+            val addSettingBankComponent = DaggerSettingBankComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+
+            addSettingBankComponent.inject(this)
+            presenter.attachView(this)
         }
     }
 
@@ -124,7 +126,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         })
     }
 
-    private fun getBankList() {
+    override fun getBankList() {
         presenter.getBankListFirstTime()
     }
 

@@ -130,6 +130,18 @@ public interface ProductListSectionContract {
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
 
         void renderFailRequestDynamicFilter();
+
+        boolean isFirstActiveTab();
+
+        void setupSearchNavigation();
+
+        void trackScreenAuthenticated();
+
+        void reloadData();
+
+        void showBottomNavigation();
+
+        void hideBottomNavigation();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -154,9 +166,7 @@ public interface ProductListSectionContract {
 
         boolean isUserLoggedIn();
 
-        void setIsFirstTimeLoad(boolean isFirstTimeLoad);
-
-        void setIsTickerHasDismissed(boolean isTickerHasDismissed);
+        void onPriceFilterTickerDismissed();
 
         boolean getIsTickerHasDismissed();
 
@@ -167,5 +177,9 @@ public interface ProductListSectionContract {
         void setStartFrom(int startFrom);
 
         int getStartFrom();
+
+        void onViewCreated();
+
+        void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
     }
 }

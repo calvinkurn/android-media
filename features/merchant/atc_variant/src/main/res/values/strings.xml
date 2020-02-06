@@ -17,4 +17,5 @@
     <string name="atc_variant_label_size_chart_guideline">Panduan Ukuran</string>
     <string name="atc_variant_label_prescription_warning">Wajib upload resep melalui formulir yang dikirim di Chat setelah pembayaran berhasil</string>
     <string name="atc_variant_label_total_price">Total Harga</string>
+    <string name="trade_in_event_label_phone_type_phone_price_diagnostic_id">phone type : %1$s - phone price : %2$s - diagnostic id : %3$s</string>
 </resources>
