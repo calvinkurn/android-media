@@ -148,6 +148,8 @@
 /features/user/attachinvoice/                           @tokopedia/minion-kevin
 /features/user/attachvoucher/                           @tokopedia/minion-kevin
 /features/user/attachcommon/                            @tokopedia/minion-kevin
+/features/user/stickylogin/                             @tokopedia/minion-kevin
+/features/user/campaign_shake_landing/                  @tokopedia/minion-kevin
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
