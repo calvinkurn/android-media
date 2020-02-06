@@ -17,6 +17,6 @@ class UmrahTravelAgentProductLoadingViewHolder (itemView: View): AbstractViewHol
     }
 
     companion object{
-        val LAYOUT  = R.layout.partial_umrah_travel_product_shimmering
+        val LAYOUT = R.layout.item_umrah_search_shimmering
     }
 }

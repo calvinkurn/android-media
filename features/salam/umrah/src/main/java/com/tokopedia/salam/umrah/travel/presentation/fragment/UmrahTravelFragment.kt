@@ -126,10 +126,10 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
         showLayout()
         setupTravelAgent(travelAgentBySlugName.umrahTravelAgentBySlug)
         setupViewPager(travelAgentBySlugName)
-        setupFAB()
+        setupChat()
     }
 
-    private fun setupFAB(){
+    private fun setupChat(){
         btn_umrah_travel_contact.setOnClickListener {
             checkChatSession()
         }
