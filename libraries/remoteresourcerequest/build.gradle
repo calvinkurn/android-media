@@ -28,29 +28,25 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation "android.arch.work:work-runtime:1.0.1"
-    implementation 'com.squareup.okhttp3:okhttp:3.12.3'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.3'
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation (rootProject.ext.miscDependencies.workManager) {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
+    // Room
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     //test
-
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
 
-
-    implementation 'androidx.room:room-runtime:2.1.0'
-    kapt 'androidx.room:room-compiler:2.1.0'
-    implementation 'androidx.room:room-ktx:2.1.0'
-    androidTestImplementation 'androidx.room:room-testing:2.1.0'
 }
