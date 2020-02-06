@@ -60,7 +60,7 @@
                         android:orientation="vertical" />
 
                     <com.tokopedia.unifycomponents.UnifyButton
-                        android:id="@+id/enquiry_button"
+                        android:id="@+id/recharge_general_enquiry_button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_8"
