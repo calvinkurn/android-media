@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:elevation="@dimen/dp_10">
@@ -21,9 +22,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
+                android:elevation="@dimen/spacing_lvl2"
                 app:theme="?toolbarTheme"
                 app:titleTextAppearance="?titleTextAppearance"
-                app:subtitleTextAppearance="?subtitleTextAppearance"/>
+                app:subtitleTextAppearance="?subtitleTextAppearance" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

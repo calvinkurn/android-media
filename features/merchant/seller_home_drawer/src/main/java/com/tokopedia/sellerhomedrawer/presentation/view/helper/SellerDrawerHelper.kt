@@ -30,7 +30,6 @@ import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGr
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerHomeWebViewActivity
-import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerSimpleWebViewActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -141,11 +140,11 @@ class SellerDrawerHelper(val context: Activity,
                 SellerHomeState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP -> {
                     //TODO : Check if you can use intent to move between activities in library (not features)
                     eventClickPaymentAndTopupOnDrawer()
-                    context.startActivity(SellerSimpleWebViewActivity.createIntent(context, DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA))
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,  DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA)
                 }
                 SellerHomeState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL -> {
                     eventClickDigitalTransactionListOnDrawer()
-                    context.startActivity(SellerSimpleWebViewActivity.createIntent(context, DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA))
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA)
                 }
                 SellerHomeState.DrawerPosition.DRAFT_PRODUCT -> {
                     eventDrawerClick(EventLabel.DRAFT_PRODUCT)
