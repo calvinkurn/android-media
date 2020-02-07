@@ -23,7 +23,6 @@ import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
 import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
-import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel
 import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel
 import kotlinx.android.synthetic.main.fragment_product_manage_filter.*
@@ -36,6 +35,7 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
         const val CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED"
         const val ADDITIONAL_OPTION = "additional_option"
+        const val SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID"
 
         fun createInstance(productManageFilterModel: ProductManageFilterModel) = ProductManageFilterFragment().also {
             it.arguments = Bundle().apply {
@@ -153,7 +153,9 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_PREORDER, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_preorder)))
         myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_ALL_SHOWCASE, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_all_showcase)))
         productManageFilterModel?.let {
-            val intent = EtalaseDynamicPickerActivity.createInstance(activity, it.etalaseProductOption.toLong(), myEtalaseItemViewModels)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.ETALASE_DYNAMIC_PICKER)
+            intent.putExtra(SELECTED_ETALASE_ID, it.etalaseProductOption.toLong())
+            intent.putParcelableArrayListExtra(ADDITIONAL_OPTION, myEtalaseItemViewModels)
             startActivityForResult(intent, ProductManageListConstant.REQUEST_CODE_ETALASE)
         }
     }

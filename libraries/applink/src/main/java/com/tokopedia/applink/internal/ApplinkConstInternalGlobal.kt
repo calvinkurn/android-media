@@ -369,4 +369,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/category-dynamic-picker
     @JvmField
     val CATEGORY_DYNAMIC_PICKER = "$INTERNAL_GLOBAL/category-dynamic-picker"
+
+    // EtalaseDynamicPickerActivity
+    // tokopedia-android-internal://global/etalase-dynamic-picker
+    @JvmField
+    val ETALASE_DYNAMIC_PICKER = "$INTERNAL_GLOBAL/etalase-dynamic-picker"
 }
