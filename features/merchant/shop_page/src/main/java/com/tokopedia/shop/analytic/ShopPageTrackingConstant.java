@@ -16,6 +16,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SHOP_MANAGE = "clickManageShop";
     public static final String CLICK_SHOP_MESSAGE = "clickMessageShop";
     public static final String CLICK_TOP_NAV = "clickTopNav";
+    public static final String SELLER_ADDED_TO_FAVORITE = "Seller_Added_To_Favorite";
+    public static final String SELLER_REMOVED_FROM_FAVORITE = "Seller_Removed_From_Favorite";
 
     public static final String CLICK_MEMBERSHIP_EVENT = "clickShopPage";
 
@@ -137,6 +139,9 @@ public class ShopPageTrackingConstant {
     public static final String DIMENSION83 = "dimension83";
     public static final String FREE_ONGKIR = "bebas ongkir";
     public static final String NONE_OR_OTHER = "none / other";
+    public static final String SHOP_LOCATION = "shop_location";
+    public static final String URL_SLUG = "url_slug";
+    public static final String IS_OFFICIAL_STORE = "is_official_store";
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";

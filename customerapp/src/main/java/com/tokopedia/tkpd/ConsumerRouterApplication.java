@@ -21,6 +21,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -152,7 +153,6 @@ import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
-import com.tokopedia.officialstore.reactnative.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -203,6 +203,7 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -294,11 +295,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ResolutionRouter,
         ProductDetailRouter,
-        KYCRouter {
+        KYCRouter,
+        CustomerRouter.IrisInstallRouter {
 
     private static final String EXTRA = "extra";
     public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
+    public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
+    public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -311,7 +315,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
-    private RemoteConfig remoteConfig;
     private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
@@ -323,16 +326,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onCreate() {
         super.onCreate();
         Hansel.init(this);
-        initializeDagger();
-        initDaggerInjector();
         initFirebase();
-        initRemoteConfig();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         initCMPushNotification();
         initIris();
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        ResourceDownloadManager.Companion.getManager().initialize(this, R.raw.url_list);
     }
 
     private void initDaggerInjector() {
@@ -357,26 +358,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    private void initializeDagger() {
-        daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
-                .appComponent(getApplicationComponent())
-                .reactNativeModule(new ReactNativeModule(this));
-        daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent((this).getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-
-        tokopointComponent = DaggerTokopointComponent.builder()
-                .baseAppComponent((this).getBaseAppComponent())
-                .serviceApiModule(new ServiceApiModule())
-                .build();
-
-        omsComponent = DaggerOmsComponent.builder()
-                .baseAppComponent((this).getBaseAppComponent())
-                .build();
-    }
 
     private void initFirebase() {
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
@@ -390,13 +371,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
-    }
-
     @Override
     public ShopComponent getShopComponent() {
         if (shopComponent == null) {
+            if(daggerShopBuilder == null){
+                daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+            }
             shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
         }
         return shopComponent;
@@ -586,8 +566,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Interceptor getChuckInterceptor() {
-        return getAppComponent().chuckInterceptor();
+    public Interceptor getChuckerInterceptor() {
+        return getAppComponent().ChuckerInterceptor();
     }
 
 
@@ -699,6 +679,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private ReactNativeComponent getReactNativeComponent() {
+        if(daggerReactNativeBuilder == null){
+            daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
+                    .appComponent(getApplicationComponent())
+                    .reactNativeModule(new ReactNativeModule(ConsumerRouterApplication.this));
+        }
         if (reactNativeComponent == null)
             reactNativeComponent = daggerReactNativeBuilder.build();
         return reactNativeComponent;
@@ -923,6 +908,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
         params.putString(GetTokopointUseCase.KEY_PARAM,
                 GraphqlHelper.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
+        if(tokopointComponent == null){
+            tokopointComponent = DaggerTokopointComponent.builder()
+                    .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
+                    .serviceApiModule(new ServiceApiModule())
+                    .build();
+        }
         return this.tokopointComponent.getTokopointUseCase().createObservable(params)
                 .map(new Func1<TokoPointDrawerData, TokopointHomeDrawerData>() {
                     @Override
@@ -979,6 +970,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
+        return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
     public void goToWebview(Context context, String url) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
@@ -1017,6 +1013,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
         if (!isEventOMS) {
+            if(eventComponent == null){
+                eventComponent = DaggerEventComponent.builder()
+                        .baseAppComponent((this).getBaseAppComponent())
+                        .eventModule(new EventModule(this))
+                        .build();
+            }
             return eventComponent.getVerifyCartWrapper().verifyPromo(requestParams);
         } else {
             return new PostVerifyCartWrapper(this, eventComponent.getPostVerifyCartUseCase())
@@ -1026,6 +1028,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
+        if(omsComponent == null){
+            omsComponent = DaggerOmsComponent.builder()
+                    .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
+                    .build();
+        }
         return new PostVerifyCartWrapper(this, omsComponent.getPostVerifyCartUseCase())
                 .verifyPromo(requestParams);
     }
@@ -1044,7 +1051,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareEvent(Context context, String uri, String name, String imageUrl,String desktopUrl) {
+    public void shareEvent(Context context, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType("")
                 .setName(name)
@@ -1228,12 +1235,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
-        boolean enableOsNative = getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OFFICIAL_STORE_OS, true);
-        if (enableOsNative) {
-            return OfficialHomeContainerFragment.newInstance(bundle);
-        } else {
-            return ReactNativeOfficialStoreFragment.Companion.createInstance();
-        }
+        return OfficialHomeContainerFragment.newInstance(bundle);
     }
 
     @Override
@@ -1530,6 +1532,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
+    }
+
+    @Override
+    public void sendIrisInstallEvent() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_INSTALL);
+        mIris.sendEvent(map);
     }
 
     @Override

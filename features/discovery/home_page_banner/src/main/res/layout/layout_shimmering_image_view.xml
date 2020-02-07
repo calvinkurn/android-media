@@ -4,12 +4,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.tokopedia.home_page_banner.presenter.widgets.BottomCropImage
+        <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:focusable="true"
             android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:foreground="?attr/selectableItemBackground"
             app:layout_constraintDimensionRatio="H,4:3"
             app:layout_constrainedWidth="true"

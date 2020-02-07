@@ -88,6 +88,9 @@ object RouteManagerKt{
                 RouteManager.route(activity, ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url)
                 return true
             }
+            DeepLinkChecker.TRAVEL_HOMEPAGE -> {
+                return RouteManager.route(activity, url)
+            }
         }
         return false
     }
