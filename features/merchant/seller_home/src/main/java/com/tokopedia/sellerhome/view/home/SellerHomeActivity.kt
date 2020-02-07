@@ -1,40 +1,39 @@
-package com.tokopedia.sellerhomedrawer.presentation.view.dashboard
+package com.tokopedia.sellerhome.view.home
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
-import com.tokopedia.core.ManageGeneral
-import com.tokopedia.core.gcm.FCMCacheManager
-import com.tokopedia.core.gcm.NotificationModHandler
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
 import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
-import com.tokopedia.sellerhomedrawer.di.component.DaggerSellerHomeDashboardComponent
-import com.tokopedia.sellerhomedrawer.di.module.SellerHomeDashboardModule
 import com.tokopedia.sellerhomedrawer.domain.firebase.SellerFirebaseRemoteAppUpdate
+import com.tokopedia.sellerhomedrawer.domain.usecase.FlashSaleGetSellerStatusUseCase
+import com.tokopedia.sellerhomedrawer.domain.usecase.GetShopStatusUseCase
 import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract
 import com.tokopedia.sellerhomedrawer.presentation.view.drawer.BaseSellerReceiverDrawerActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.sh_drawer_layout.*
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSessionInterface
 
-class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
+class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
 
     companion object {
         @JvmStatic
-        val TAG = SellerDashboardActivity::class.java.simpleName
+        val TAG = SellerHomeActivity::class.java.simpleName
 
         @JvmStatic
-        fun createInstance(context: Context) = Intent(context, SellerDashboardActivity::class.java)
+        fun createInstance(context: Context) = Intent(context, SellerHomeActivity::class.java)
     }
 
-    @Inject
+//    @Inject
     lateinit var sellerHomeDashboardDrawerPresenter: SellerHomeDashboardDrawerPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,11 +59,6 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
     override fun onResume() {
         sellerHomeDashboardDrawerPresenter.attachView(this)
         super.onResume()
-
-        //TODO: Remove core woi
-        FCMCacheManager.checkAndSyncFcmId(applicationContext)
-        NotificationModHandler.showDialogNotificationIfNotShowing(this,
-                ManageGeneral.getCallingIntent(this, ManageGeneral.TAB_POSITION_MANAGE_APP))
     }
 
     override fun setDrawerPosition(): Int {
@@ -75,7 +69,7 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
         val sellerDrawerAdapter = sellerDrawerHelper.sellerDrawerAdapter
         if (isVisible != sellerDrawerAdapter?.isFlashSaleVisible) {
             sellerDrawerAdapter?.isFlashSaleVisible = isVisible
-            left_drawer.post {
+            findViewById<RecyclerView>(R.id.left_drawer).post {
                 sellerDrawerAdapter?.renderFlashSaleDrawer()
             }
         }
@@ -94,7 +88,7 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
             override fun onNeedUpdate(detail: DetailUpdate?) {
                 if (detail != null && !isFinishing) {
                     AppUpdateDialogBuilder(
-                            this@SellerDashboardActivity,
+                            this@SellerHomeActivity,
                             detail,
                             object : AppUpdateDialogBuilder.Listener {
                                 override fun onPositiveButtonClicked(detail: DetailUpdate?) {
@@ -147,10 +141,17 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
 
     private fun initInjector() {
 
-        val component = DaggerSellerHomeDashboardComponent.builder()
-                .sellerHomeDashboardModule(SellerHomeDashboardModule(this))
-                .build()
-        component.inject(this)
+//        val component = DaggerSellerHomeDashboardComponent.builder()
+//                .sellerHomeDashboardModule(SellerHomeDashboardModule(this))
+//                .build()
+//        component.inject(this)
+
+        //Dagger injecting still fails, will do manual injection
+        val userSession: UserSessionInterface = UserSession(context)
+        val graphqlUseCase = GraphqlUseCase()
+        val getShopStatusUseCase = GetShopStatusUseCase(graphqlUseCase, GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status))
+        val flashSaleGetSellerStatusUseCase = FlashSaleGetSellerStatusUseCase(graphqlUseCase)
+        sellerHomeDashboardDrawerPresenter = SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession)
 
         sellerHomeDashboardDrawerPresenter.attachView(this)
     }

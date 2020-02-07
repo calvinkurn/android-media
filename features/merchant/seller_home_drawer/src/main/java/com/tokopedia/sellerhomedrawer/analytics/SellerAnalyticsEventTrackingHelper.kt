@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
-import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper.sendEventToAnalytics
 import java.util.*
 
 class SellerAnalyticsEventTrackingHelper {
@@ -92,9 +91,11 @@ class SellerAnalyticsEventTrackingHelper {
             map[FirebaseParams.Home.LANDING_SCREEN_NAME] = landingScreen
             sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_TOKOCARD, map)
         }
+
+        fun sendEventToAnalytics(context: Context, eventName: String, data: Map<String, Any>) {
+            TrackAnalytics.sendEvent(eventName, data, context)
+        }
     }
 
-    fun sendEventToAnalytics(context: Context, eventName: String, data: Map<String, Any>) {
-        TrackAnalytics.sendEvent(eventName, data, context)
-    }
+
 }

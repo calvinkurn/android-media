@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomedrawer.domain.util
 
 import android.content.Context
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
 import com.tokopedia.sellerhomedrawer.data.SellerHomeHeaderWalletAction
 import com.tokopedia.sellerhomedrawer.data.SellerTokoCashData
@@ -138,9 +137,9 @@ class SellerTokoCashUtil {
             data.isVisibleActionButton = sellerTokoCashData.action?.visibility != null && sellerTokoCashData.action?.visibility == "1"
             sellerTokoCashData.linked?.let { isLinked ->
                 data.typeAction = if (isLinked)
-                    DrawerWalletAction.TYPE_ACTION_BALANCE
+                    SellerDrawerWalletAction.TYPE_ACTION_BALANCE
                 else
-                    DrawerWalletAction.TYPE_ACTION_ACTIVATION
+                    SellerDrawerWalletAction.TYPE_ACTION_ACTIVATION
             }
             data.appLinkActionButton = if (sellerTokoCashData.action?.applinks == null)
                 ""
