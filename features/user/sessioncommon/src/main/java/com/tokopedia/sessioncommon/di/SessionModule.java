@@ -3,8 +3,8 @@ package com.tokopedia.sessioncommon.di;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -71,8 +71,8 @@ public class SessionModule {
 
     @SessionCommonScope
     @Provides
-    ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+    ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
     @SessionCommonScope
@@ -100,7 +100,7 @@ public class SessionModule {
     @Provides
     @Named(TOKEN)
     OkHttpClient provideTokenOkHttpClient(BasicInterceptor basicInterceptor,
-                                          ChuckInterceptor chuckInterceptor,
+                                          ChuckerInterceptor chuckInterceptor,
                                           DebugInterceptor debugInterceptor,
                                           HttpLoggingInterceptor httpLoggingInterceptor,
                                           FingerprintInterceptor fingerprintInterceptor) {

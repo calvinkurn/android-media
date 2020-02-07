@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.di.net;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.autocomplete.di.AutoCompleteScope;
@@ -23,7 +23,7 @@ public class AutoCompleteOkHttpClientModule {
     @NoAuth
     @Provides
     public OkHttpClient provideOkHttpClientNoAuth(OkHttpRetryPolicy okHttpRetryPolicy,
-                                                  ChuckInterceptor chuckInterceptor,
+                                                  ChuckerInterceptor chuckInterceptor,
                                                   DebugInterceptor debugInterceptor,
                                                   CacheApiInterceptor cacheApiInterceptor,
                                                   TkpdAuthInterceptor tkpdAuthInterceptor) {
