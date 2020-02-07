@@ -7,12 +7,9 @@ import android.os.Bundle;
 
 import com.tokopedia.user.session.UserSession;
 
-import java.util.concurrent.TimeUnit;
-
 public class UserIdSubscriber implements Application.ActivityLifecycleCallbacks {
 
     private String userId = "";
-    private Long lastTimeChanged = System.currentTimeMillis();
     private Context appcontext;
     private UserIdChangeCallback callback;
 
@@ -24,8 +21,7 @@ public class UserIdSubscriber implements Application.ActivityLifecycleCallbacks 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         UserSession userSession = new UserSession(appcontext);
-        if(!userId.equals(userSession.getUserId()) && lastTimeChanged < (System.currentTimeMillis() - TimeUnit.HOURS.toMillis(1))) {
-            lastTimeChanged = System.currentTimeMillis();
+        if(!userId.equals(userSession.getUserId())) {
             userId = userSession.getUserId();
             callback.onUserIdChanged();
         }
