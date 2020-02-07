@@ -154,13 +154,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
         return when (layout) {
             /**
-             * refer to hero product item layout {@link com.tokopedia.home.R.layout#layout_hero_product_item}
-             * no further development for this viewholder
-             * backend already not supporting this layout
-             */
-            DynamicHomeChannel.Channels.LAYOUT_HERO -> DynamicChannelHeroViewHolder.LAYOUT
-
-            /**
              * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
              */
             DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
@@ -201,7 +194,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
             SellViewHolder.LAYOUT -> viewHolder = SellViewHolder(view, listener)
             OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
-            DynamicChannelHeroViewHolder.LAYOUT -> viewHolder = DynamicChannelHeroViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             TopAdsViewHolder.LAYOUT -> viewHolder = TopAdsViewHolder(view)
             TopAdsDynamicChannelViewHolder.LAYOUT -> viewHolder = TopAdsDynamicChannelViewHolder(view, inspirationListener)

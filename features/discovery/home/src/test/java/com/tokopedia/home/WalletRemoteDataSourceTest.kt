@@ -1,6 +1,6 @@
-package com.example.home
+package com.tokopedia.home
 
-import com.example.home.rules.CoroutinesMainDispatcherRule
+import com.tokopedia.home.rules.CoroutinesMainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule

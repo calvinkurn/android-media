@@ -1,4 +1,4 @@
-package com.example.tkpdhome.rules
+package com.tokopedia.home.rules
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
