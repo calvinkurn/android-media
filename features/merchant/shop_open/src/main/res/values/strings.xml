@@ -13,8 +13,22 @@
     <string name="open_shop_choose_city">Pilih Kota Terlebih Dahulu</string>
     <string name="open_shop_null_zip_code">Kota/Kecamatan tidak didukung oleh kurir pengiriman</string>
 
+    <string name="open_shop_revamp_default_hint_input_shop">Nama yang menarik lebih mudah diingat pembeli \nNama yang sudah dipilih tidak dapat diubah</string>
+    <string name="open_shop_revamp_error_shop_name_too_short">Nama Toko terlalu pendek, minimum 3 karakter</string>
+    <string name="open_shop_revamp_error_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
+    <string name="open_shop_revamp_error_shop_name_already_taken_hint_input_shop">Maaf nama toko tersebut telah digunakan</string>
+    <string name="open_shop_revamp_error_domain_already_taken_hint_input_shop">Domain sudah terdaftar. Coba rekomendasi ini</string>
+    <string name="open_shop_revamp_error_shop_name_unavailable">Nama Toko Tidak Tersedia</string>
+    <string name="open_shop_revamp_error_domain_unavailable">Domain Toko Tidak Tersedia</string>
+    <string name="open_shop_revamp_tnc_open_shop">Syarat dan Ketentuan dan Kebijakan Privasi.</string>
+    <string name="open_shop_revamp_tnc_webview_title">Syarat dan Ketentuan </string>
+    <string name="open_shop_revamp_tnc_unclickable">dan </string>
+    <string name="open_shop_revamp_tnc_privacy_policy_webview_title">Kebijakan Privasi</string>
+
     <string name="open_shop_logout_title">Keluar dari Tokopedia</string>
     <string name="open_shop_logout_confirm">Apakah Anda ingin keluar?</string>
     <string name="open_shop_logout_button">Keluar</string>
     <string name="open_shop_cancel">Batal</string>
+    <string name="masukkan_info_toko">Masukkan info Toko</string>
+    <string name="nama_domain">Nama Domain</string>
 </resources>
