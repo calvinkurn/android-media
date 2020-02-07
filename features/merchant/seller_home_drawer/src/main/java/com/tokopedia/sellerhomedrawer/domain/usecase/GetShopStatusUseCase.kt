@@ -1,12 +1,11 @@
 package com.tokopedia.sellerhomedrawer.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.gm.common.constant.GMParamApiContant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -18,7 +17,7 @@ class GetShopStatusUseCase @Inject constructor(private val graphqlUseCase: Graph
     companion object {
         fun createRequestParams(shopId: String): RequestParams {
             return RequestParams.create().apply {
-                putInt(GMParamApiContant.SHOP_ID, shopId.toIntOrNull() ?: 0)
+                putInt(SellerHomeParamConstant.SHOP_ID, shopId.toIntOrNull() ?: 0)
             }
         }
     }

@@ -4,5 +4,5 @@ import javax.inject.Scope
 
 @Scope
 @Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class SellerHomeDashboardScope

@@ -25,6 +25,6 @@ class RetrofitModule {
 
     @Provides
     fun provideNetworkRouter(context: Context): NetworkRouter {
-        return context as NetworkRouter
+        return (context.applicationContext as NetworkRouter)
     }
 }

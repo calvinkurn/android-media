@@ -186,4 +186,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
 
+    //SellerDashboardActivity
+    @JvmField
+    val SELLER_HOME = "$INTERNAL_MARKETPLACE/sellerhome"
+
 }

@@ -60,6 +60,10 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(context, deeplink)
                     deeplink.startsWith(ApplinkConst.CHAT_BOT, true) ->
                         getChatbotDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) ->
+                        getRegisteredNavigationMarketplace(deeplink)
+                    deeplink.startsWith(ApplinkConst.SHOP_SCORE_DETAIL) ->
+                        getRegisteredNavigationMarketplace(deeplink)
                     else -> {
                         if (query?.isNotEmpty() == true) {
                             val tempDL = if (deeplink.contains('?')) {

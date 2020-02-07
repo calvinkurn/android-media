@@ -10,7 +10,6 @@
         android:id="@+id/rv_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_banner_recycler_margin_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_height="wrap_content" />
@@ -20,8 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_banner"/>
@@ -35,7 +34,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/unify_banner_default_margin"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/unify_banner_default_margin"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="false"

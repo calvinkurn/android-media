@@ -1,9 +1,9 @@
 package com.tokopedia.sellerhomedrawer.domain.usecase
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification
 import com.tokopedia.sellerhomedrawer.data.drawernotification.InfoPenjualNotification
 import com.tokopedia.sellerhomedrawer.data.drawernotification.NotificationModel
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.TopChatNotificationModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -35,7 +35,7 @@ class NewNotificationUseCase @Inject constructor(val notificationUseCase: Notifi
         val notif = notificationUseCase.createObservable(requestParams)
         val notifTopChat = getChatNotificationUseCase.createObservable(RequestParams.EMPTY)
         val infoPenjualNotification = getInfoPenjualNotificationUseCase.createObservable(
-                com.tokopedia.core.drawer2.domain.interactor.GetInfoPenjualNotificationUseCase.createParams(2)
+                GetInfoPenjualNotificationUseCase.createParams(2)
         )
 
         return Observable.zip<NotificationModel, TopChatNotificationModel, InfoPenjualNotification, NotificationModel>(notif, notifTopChat, infoPenjualNotification, { notificationModel, chatNotificationModel, infoPenjualNotif ->
@@ -46,9 +46,9 @@ class NewNotificationUseCase @Inject constructor(val notificationUseCase: Notifi
             notificationModel.setNotificationData(data)
             val notifUnreadsSeller = chatNotificationModel.getNotifUnreadsSeller()
             val notifInfoPenjual = infoPenjualNotif.getNotifUnreadInt()!!.toInt()
-            drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsSeller)
-            drawerCache.putInt(DrawerNotification.CACHE_INBOX_SELLER_INFO, notifInfoPenjual)
-            drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, data.getTotalNotif())
+            drawerCache.putInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsSeller)
+            drawerCache.putInt(SellerDrawerNotification.CACHE_INBOX_SELLER_INFO, notifInfoPenjual)
+            drawerCache.putInt(SellerDrawerNotification.CACHE_TOTAL_NOTIF, data.getTotalNotif())
             drawerCache.applyEditor()
             notificationModel
         })
