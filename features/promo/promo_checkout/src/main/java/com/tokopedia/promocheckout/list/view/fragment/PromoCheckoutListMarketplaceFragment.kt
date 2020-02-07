@@ -23,7 +23,6 @@ import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarke
 import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
-import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.model.listpromocatalog.CatalogListItem
 import com.tokopedia.promocheckout.list.model.listpromocatalog.TokopointsCatalogHighlight
 import com.tokopedia.promocheckout.list.model.listpromolastseen.GetPromoSuggestion
@@ -92,7 +91,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         textInputCoupon.setText(promoCode)
         view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
         // Change last seen promo text style
-        promo_checkout_list_last_seen_label.fontType = Typography.HEADING_4
+        promo_checkout_list_last_seen_label.setType(Typography.HEADING_4)
         initViewExchangeCoupon(view)
     }
 
