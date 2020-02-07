@@ -14,6 +14,8 @@ import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickList
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
@@ -21,7 +23,6 @@ import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
 import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
-import com.tokopedia.seller.product.category.view.activity.CategoryDynamicPickerActivity
 import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel
 import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel
@@ -33,6 +34,8 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
     companion object {
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
+        const val CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED"
+        const val ADDITIONAL_OPTION = "additional_option"
 
         fun createInstance(productManageFilterModel: ProductManageFilterModel) = ProductManageFilterFragment().also {
             it.arguments = Bundle().apply {
@@ -167,7 +170,10 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
 
         val categoryViewModels = ArrayList<ProductManageCategoryViewModel>()
         categoryViewModels.add(ProductManageCategoryViewModel(getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_menu_category_all), ProductManageListConstant.FILTER_ALL_CATEGORY, false))
-        val intent = CategoryDynamicPickerActivity.createIntent(activity, categoryId, categoryViewModels)
+
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CATEGORY_DYNAMIC_PICKER)
+        intent.putExtra(CATEGORY_ID_INIT_SELECTED, categoryId)
+        intent.putParcelableArrayListExtra(ADDITIONAL_OPTION, categoryViewModels)
         startActivityForResult(intent, ProductManageListConstant.REQUEST_CODE_CATEGORY)
     }
 

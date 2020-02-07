@@ -364,4 +364,9 @@ object ApplinkConstInternalGlobal {
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
+
+    // CategoryDynamicPickerActivity
+    // tokopedia-android-internal://global/category-dynamic-picker
+    @JvmField
+    val CATEGORY_DYNAMIC_PICKER = "$INTERNAL_GLOBAL/category-dynamic-picker"
 }
