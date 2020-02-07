@@ -83,7 +83,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
                 .shadowColorRes(R.color.shadow)
                 .textColorRes(R.color.grey_400)
                 .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
+                .titleTextSizeRes(R.dimen.spacing_lvl4)
                 .clickable(true)
                 .useArrow(true)
                 .build()
