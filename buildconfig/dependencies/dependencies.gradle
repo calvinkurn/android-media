@@ -268,7 +268,8 @@ ext {
             platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
             junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0",
             archCoreTesting    : "androidx.arch.core:core-testing:$lifeCycleVersion",
-            couroutinesTest    : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion"
+            couroutinesTest    : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion",
+            json               : "org.json:json:20140107"
     ]
 
     debugToolsDependencies = [
