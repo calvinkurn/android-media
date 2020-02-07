@@ -126,7 +126,6 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.getChannelInfo(channelId)
 
         observeSocketInfo()
         observeEventUserInfo()
@@ -135,6 +134,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
         }
