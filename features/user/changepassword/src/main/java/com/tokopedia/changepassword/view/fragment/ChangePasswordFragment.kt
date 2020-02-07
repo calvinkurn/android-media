@@ -84,7 +84,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                             setPrimaryCTAClickListener {
                                 RouteManager.route(context, ApplinkConst.HOME)
                             }
-                        }
+                        }.show()
                     }
                 }
             }
