@@ -51,7 +51,6 @@ import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
@@ -505,33 +504,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
-    }
-
-
-    @Override
-    public void setCategoryAbTestingConfig() {
-        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(),
-                // do not replace with method reference "this::openNewBelanja", will not work in dynamic feature
-                new Function1<Context, Intent>() {
-                    @Override
-                    public Intent invoke(Context context) {
-                        return ConsumerMainApplication.this.openNewBelanja(context);
-                    }
-                },
-                // do not replace with method reference "this::openOldBelanja", will not work in dynamic feature
-                new Function1<Context, Intent>() {
-                    @Override
-                    public Intent invoke(Context context) {
-                        return ConsumerMainApplication.this.openOldBelanja(context);
-                    }
-                });
-    }
-
-    Intent openNewBelanja(Context context) {
-        return null;
-    }
-
-    Intent openOldBelanja(Context context) {
-        return null;
     }
 }

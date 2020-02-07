@@ -81,28 +81,26 @@ public class ShipmentMapper implements IShipmentMapper {
         boolean isDisablePPP = false;
         boolean isDisableDonation = false;
 
-        if (shipmentAddressFormDataResponse.isNewBuyer()) {
-            for (String disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
-                switch (disabledFeature) {
-                    case CheckoutDisabledFeaturesKt.dropshipper:
-                        dataResult.setDropshipperDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.multiAddress:
-                        dataResult.setMultipleDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.orderPrioritas:
-                        dataResult.setOrderPrioritasDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.egold:
-                        isDisableEgold = true;
-                        break;
-                    case CheckoutDisabledFeaturesKt.ppp:
-                        isDisablePPP = true;
-                        break;
-                    case CheckoutDisabledFeaturesKt.donation:
-                        isDisableDonation = true;
-                        break;
-                }
+        for (String disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
+            switch (disabledFeature) {
+                case CheckoutDisabledFeaturesKt.dropshipper:
+                    dataResult.setDropshipperDisable(true);
+                    break;
+                case CheckoutDisabledFeaturesKt.multiAddress:
+                    dataResult.setMultipleDisable(true);
+                    break;
+                case CheckoutDisabledFeaturesKt.orderPrioritas:
+                    dataResult.setOrderPrioritasDisable(true);
+                    break;
+                case CheckoutDisabledFeaturesKt.egold:
+                    isDisableEgold = true;
+                    break;
+                case CheckoutDisabledFeaturesKt.ppp:
+                    isDisablePPP = true;
+                    break;
+                case CheckoutDisabledFeaturesKt.donation:
+                    isDisableDonation = true;
+                    break;
             }
         }
 

@@ -315,9 +315,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE -> if (data != null)
-                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE))
                 ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> if (data != null)
-                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE))
                 REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
                 REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)
                 REQUEST_CODE_LOGIN_THEN_TRADE_IN -> {
@@ -831,7 +835,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         })
     }
 
-    private fun onGotoTradeinShipment(deviceid: String) {
+    private fun onGotoTradeinShipment(deviceid: String, phoneType: String, phonePrice: String) {
         tempQuantity = 1
         isTradeIn = 1
         addToCart(true, onFinish = { message: String?, cartId: String? ->
@@ -842,7 +846,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         selectedVariantId ?: "",
                         this, quantity,
                         shopId, shopType, shopName, cartId,
-                        trackerAttribution, trackerListName)
+                        trackerAttribution, trackerListName,
+                        getString(R.string.trade_in_event_label_phone_type_phone_price_diagnostic_id, phoneType, phonePrice, deviceid))
             }
             activity?.run {
                 val shipmentFormRequest = ShipmentFormRequest.BundleBuilder()
@@ -856,7 +861,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 startActivity(intent)
             }
         }, onRetryWhenError = {
-            onGotoTradeinShipment(deviceid)
+            onGotoTradeinShipment(deviceid, phoneType, phonePrice)
         })
     }
 

@@ -108,6 +108,9 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseT
                                 //                                finalPriceData.setValue(inData);
                                 val result = HomeResult()
                                 result.isSuccess = true
+                                if (homeResultData.value?.deviceDisplayName != null) {
+                                    result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+                                }
                                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
                                 homeResultData.setValue(result)
                             } else {
@@ -198,6 +201,8 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseT
         }
         val result = HomeResult()
         result.isSuccess = true
+        result.maxPrice = maxPrice
+        result.minPrice = minPrice
         if (diagnosedPrice > 0) {
             if (tradeInType != TRADEIN_MONEYIN) {
                 if (diagnosedPrice > tradeInParams.newPrice) {
@@ -215,7 +220,11 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseT
             result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
 
         }
-        result.deviceDisplayName = devicedisplayname
+        if (homeResultData.value?.deviceDisplayName != null) {
+            result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+        } else {
+            result.deviceDisplayName = devicedisplayname
+        }
         progBarVisibility.value = false
         homeResultData.value = result
     }

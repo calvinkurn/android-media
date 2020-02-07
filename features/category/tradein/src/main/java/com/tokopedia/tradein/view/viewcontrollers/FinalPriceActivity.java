@@ -39,6 +39,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
     private final static int PINPOINT_ACTIVITY_REQUEST_CODE = 1302;
     public static final String PARAM_PROJECTID_TRADEIN = "TRADEIN_PROJECT";
+    public static final String PARAM_TRADEIN_PHONE_TYPE = "PARAM_TRADEIN_PHONE_TYPE";
     private final static String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
     private static final int PROJECT_ID = 4;
     private FinalPriceViewModel viewModel;
@@ -69,6 +70,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private int tradeInStringId = R.string.tukar_tambah;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_HARGA_FINAL;
     private static final String KERO_TOKEN = "token";
+    private String phoneType = "", price = "";
 
     public static Intent getHargaFinalIntent(Context context) {
         return new Intent(context, FinalPriceActivity.class);
@@ -204,6 +206,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         TradeInParams tradeInData = viewModel.getTradeInParams();
         tvTitle.setText(String.format(getString(R.string.moneyin_price_elligible), getString(tradeInStringId)));
         if (tradeInData != null && TRADEIN_TYPE != TRADEIN_MONEYIN) {
+            price = String.valueOf(deviceDataResponse.getOldPrice());
+            phoneType = getIntent().getStringExtra(PARAM_TRADEIN_PHONE_TYPE);
             mTvModelNew.setText(tradeInData.getProductName());
             mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
         }
@@ -245,7 +249,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         sendGeneralEvent(viewEvent,
                 category,
                 TradeInGTMConstants.ACTION_VIEW_HARGA_FINAL,
-                TRADEIN_TYPE == TRADEIN_MONEYIN ? String.format("diagnostic id - %s", deviceId) : "");
+                TRADEIN_TYPE == TRADEIN_MONEYIN ? String.format("diagnostic id - %s", deviceId) : String.format("phone type : %s - phone price : %s - diagnostic id : %s", phoneType, price, deviceId));
     }
 
     private void setVisibilityGroup(int visibility) {
@@ -291,7 +295,11 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             viewModel.getAddress();
         } else {
-            setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId));
+            Intent intent = new Intent(Constants.ACTION_GO_TO_SHIPMENT);
+            intent.putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId);
+            intent.putExtra(TradeInParams.PARAM_PHONE_TYPE, phoneType);
+            intent.putExtra(TradeInParams.PARAM_PHONE_PRICE, price);
+            setResult(Activity.RESULT_OK, intent);
             finish();
         }
 
@@ -349,8 +357,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
             sendGeneralEvent(clickEvent,
                     category,
                     "click lanjut foto ktp",
-                    "");
-
+                    TRADEIN_TYPE != TRADEIN_MONEYIN ? String.format("phone type : %s - phone price : %s - diagnostic id : %s", phoneType, price, deviceId) : "");
         });
     }
 
@@ -378,6 +385,5 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         sendGeneralEvent("clickTradeIn",
                 "harga final trade in",
                 "click syarat dan ketentuan",
-                "");
-    }
+                TRADEIN_TYPE != TRADEIN_MONEYIN ? String.format("phone type : %s - phone price : %s - diagnostic id : %s", phoneType, price, deviceId) : "");    }
 }

@@ -28,7 +28,7 @@
 /features/home/navigation-common/                   	@tokopedia/minion-dave
 /features/home/searchbar/                           	@tokopedia/minion-dave
 /features/content/play/                                 @tokopedia/minion-dave
-/features/content/play-common/                          @tokopedia/minion-dave
+/features/content/play_common/                          @tokopedia/minion-dave
 /features/content/interest_pick_common                  @tokopedia/minion-dave
 /features/discovery/discovery_common                    @tokopedia/minion-dave
 /features/discovery/recommendation_widget_common        @tokopedia/minion-dave
@@ -148,6 +148,8 @@
 /features/user/attachinvoice/                           @tokopedia/minion-kevin
 /features/user/attachvoucher/                           @tokopedia/minion-kevin
 /features/user/attachcommon/                            @tokopedia/minion-kevin
+/features/user/stickylogin/                             @tokopedia/minion-kevin
+/features/user/campaign_shake_landing/                  @tokopedia/minion-kevin
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
