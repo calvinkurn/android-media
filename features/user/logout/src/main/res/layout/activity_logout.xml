@@ -9,8 +9,8 @@
   
   <com.tokopedia.unifycomponents.LoaderUnify
     android:id="@+id/logoutLoading"
-    android:layout_width="@dimen/dp_32"
-    android:layout_height="@dimen/dp_32"
+    android:layout_width="@dimen/spacing_lvl6"
+    android:layout_height="@dimen/spacing_lvl6"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
