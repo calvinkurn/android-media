@@ -18,9 +18,9 @@ import com.google.gson.Gson;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.pushnotif.Constant.NotificationChannel;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.product.manage.item.BuildConfig;
 import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.common.util.UploadProductErrorHandler;
@@ -249,7 +249,7 @@ public class UploadProductService extends Service implements AddProductServiceLi
         if (!GlobalConfig.isSellerApp()) {
             largeIconRes = R.drawable.ic_stat_notify;
         }
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NotificationChannel.GENERAL)
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
