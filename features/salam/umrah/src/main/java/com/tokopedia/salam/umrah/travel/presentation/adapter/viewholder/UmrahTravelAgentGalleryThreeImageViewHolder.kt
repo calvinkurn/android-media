@@ -19,18 +19,22 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View) : AbstractViewHold
             if(element.description.isNotEmpty()) tg_umrah_gallery_three_image_desc.text = element.description
             else tg_umrah_gallery_three_image_desc.gone()
 
-            if(element.medias[0].source.isNotEmpty()) iw_umrah_gallery_three_image_first.loadImage(element.medias[0].source)
+            if(element.medias.size >= 1 && element.medias[0].source.isNotEmpty())
+                iw_umrah_gallery_three_image_first.loadImage(element.medias[0].source)
             else iw_umrah_gallery_three_image_first.invisible()
 
-            if(element.medias[1].source.isNotEmpty()) iw_umrah_gallery_three_image_second.loadImage(element.medias[1].source)
+            if(element.medias.size >= 2 && element.medias[1].source.isNotEmpty())
+                iw_umrah_gallery_three_image_second.loadImage(element.medias[1].source)
             else iw_umrah_gallery_three_image_second.invisible()
 
-            if(element.medias[2].source.isNotEmpty()) iw_umrah_gallery_three_image_third.loadImage(element.medias[2].source)
+            if(element.medias.size >= 3 && element.medias[2].source.isNotEmpty())
+                iw_umrah_gallery_three_image_third.loadImage(element.medias[2].source)
             else iw_umrah_gallery_three_image_third.invisible()
 
             if(element.medias.size>3) {
                 tg_umrah_gallery_three_next_label.show()
-                tg_umrah_gallery_three_next_label.text = getString(R.string.umrah_travel_gallery_next_images,(element.medias.size - 3).toString())
+                tg_umrah_gallery_three_next_label.text =
+                        getString(R.string.umrah_travel_gallery_next_images,(element.medias.size - 3).toString())
             }
         }
     }

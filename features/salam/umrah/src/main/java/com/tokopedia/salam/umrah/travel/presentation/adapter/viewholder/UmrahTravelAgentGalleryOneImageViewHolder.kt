@@ -20,7 +20,8 @@ class UmrahTravelAgentGalleryOneImageViewHolder(view: View) : AbstractViewHolder
             if(element.description.isNotEmpty()) tg_umrah_gallery_one_image_desc.text = element.description
             else tg_umrah_gallery_one_image_desc.gone()
 
-            if(element.medias[0].source.isNotEmpty()) iw_umrah_gallery_one_image.loadImage(element.medias[0].source)
+            if(element.medias.isNullOrEmpty() && element.medias[0].source.isNotEmpty())
+                iw_umrah_gallery_one_image.loadImage(element.medias[0].source)
             else iw_umrah_gallery_one_image.gone()
         }
     }
