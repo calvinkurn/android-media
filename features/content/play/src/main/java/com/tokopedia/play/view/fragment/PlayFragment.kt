@@ -192,7 +192,7 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success ->
-                    PlayAnalytics.sendScreen(channelId, playViewModel.isLive)
+                    PlayAnalytics.sendScreen(channelId, it.data.isLive)
             }
         })
     }
