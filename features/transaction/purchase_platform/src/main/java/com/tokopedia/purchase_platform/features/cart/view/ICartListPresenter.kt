@@ -80,7 +80,7 @@ interface ICartListPresenter {
 
     fun dataHasChanged(): Boolean
 
-    fun processGetRecentViewData()
+    fun processGetRecentViewData(allProductIds: List<String>)
 
     fun processGetWishlistData()
 

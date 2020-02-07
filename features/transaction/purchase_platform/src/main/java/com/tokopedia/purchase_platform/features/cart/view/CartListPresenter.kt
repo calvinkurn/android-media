@@ -888,10 +888,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return hasChanges
     }
 
-    override fun processGetRecentViewData() {
+    override fun processGetRecentViewData(allProductIds: List<String>) {
         try {
             val userId = Integer.parseInt(userSessionInterface.userId)
-            getRecentViewUseCase?.createObservable(userId, GetRecentViewSubscriber(view))
+            getRecentViewUseCase?.createObservable(userId, allProductIds, GetRecentViewSubscriber(view))
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }

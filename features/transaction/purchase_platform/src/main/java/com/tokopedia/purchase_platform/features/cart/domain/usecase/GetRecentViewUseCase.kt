@@ -1,18 +1,11 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
-import android.content.Context
-
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-
-import java.util.HashMap
-
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
 import rx.Subscriber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -23,10 +16,14 @@ class GetRecentViewUseCase @Inject constructor() {
 
     val graphqlUseCase = GraphqlUseCase()
 
-    fun createObservable(userId: Int, graphqlResponseSubscriber: Subscriber<GraphqlResponse>) {
+    fun createObservable(userId: Int, allProductIds: List<String>, graphqlResponseSubscriber: Subscriber<GraphqlResponse>) {
         graphqlUseCase.clearRequest()
         val variables = HashMap<String, Any>()
         variables[USER_ID] = userId
+        variables[FILTER] = mapOf(
+                SOURCE to CART,
+                BLACKLISTPRODUCTIDS to allProductIds.joinToString()
+        )
 
         val graphqlRequest = GraphqlRequest(QUERY, GqlRecentViewResponse::class.java, variables)
 
@@ -40,6 +37,10 @@ class GetRecentViewUseCase @Inject constructor() {
 
     companion object {
         private val USER_ID = "userID"
+        private val FILTER = "filter"
+        private val BLACKLISTPRODUCTIDS = "blacklistProductIds"
+        private val SOURCE = "source"
+        private val CART = "cart"
     }
 
     val QUERY = """
