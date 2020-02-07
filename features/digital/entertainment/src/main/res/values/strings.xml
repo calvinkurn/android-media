@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">entertainment</string>
-    <string name="entertainment_event_hiburan"><![CDATA[Event & Hiburan]]></string>
-    <string name="cari_kegiatan_atau_lokasi">Cari kegiatan atau lokasi</string>
-    <string name="yang_seru_buat_kamu">Yang seru buat kamu</string>
-    <string name="lihat_semua">Lihat Semua</string>
-    <string name="lihat_semuanya">Lihat Semuanya</string>
-</resources>

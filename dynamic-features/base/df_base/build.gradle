@@ -103,4 +103,6 @@ dependencies {
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
+    //Entertainment
+    implementation project(rootProject.ext.features.eventHome)
 }
