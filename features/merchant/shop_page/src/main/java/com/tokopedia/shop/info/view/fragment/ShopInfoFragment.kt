@@ -129,6 +129,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun onClickBackButton() {
         shopPageTracking.clickBackArrow(false, customDimensionShopPage)
+        activity?.onBackPressed()
     }
 
     override fun onEmptyButtonClicked() {

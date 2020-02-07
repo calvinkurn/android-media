@@ -200,6 +200,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     private fun clickBackButton() {
         shopPageSettingTracking.clickBackArrow(true, customDimensionShopPage)
+        activity?.onBackPressed()
     }
 
     override fun getScreenName(): String? {
