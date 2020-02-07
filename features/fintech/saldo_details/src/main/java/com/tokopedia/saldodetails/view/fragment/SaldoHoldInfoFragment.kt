@@ -6,23 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHoldInfoAdapter
-import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.BuyerDataItem
-import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SellerDataItem
+import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
+import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity.Companion.TAG
 import kotlinx.android.synthetic.main.fragment_container_saldo_info.*
-import kotlin.math.absoluteValue
 
 class SaldoHoldInfoFragment : Fragment() {
 
     val SALDO_SELLER_AMOUNT = "SALDO_SELLER_AMOUNT"
     val SALDO_BUYER_AMOUNT = "SALDO_BUYER_AMOUNT"
-    val RESULT_LIST = "RESULT_LIST"
     var sellerAmount: Double? = 0.0
     var buyerAmount: Double? = 0.0
-    var resultList: ArrayList<Any>? = null
+    var resultList: ArrayList<SaldoHoldInfoItem>? = null
     var saveInstanceCacheManager: SaveInstanceCacheManager? = null
     var saveInstanceCacheManagerId: String? = null
     var type: Int? = 0
@@ -47,10 +46,9 @@ class SaldoHoldInfoFragment : Fragment() {
         saveInstanceCacheManager = context?.let { SaveInstanceCacheManager(it, saveInstanceCacheManagerId) }
 
         type = saveInstanceCacheManager?.get("KEY_TYPE", Int::class.java)
-        if (type == typeSeler) {
-            resultList = saveInstanceCacheManager?.get(RESULT_LIST, ArrayList<SellerDataItem>()::class.java)
-        } else
-            resultList = saveInstanceCacheManager?.get(RESULT_LIST, ArrayList<BuyerDataItem>()::class.java)
+
+        val turnsType = object : TypeToken<List<SaldoHoldInfoItem>>() {}.type
+        resultList = saveInstanceCacheManager?.get(TAG, turnsType)
 
         sellerAmount = saveInstanceCacheManager?.get(SALDO_SELLER_AMOUNT, Double::class.java) ?: 0.0
         buyerAmount = saveInstanceCacheManager?.get(SALDO_BUYER_AMOUNT, Double::class.java) ?: 0.0
@@ -81,7 +79,7 @@ class SaldoHoldInfoFragment : Fragment() {
         rv_container.adapter = saldoHoldInfoAdapter
 
         saldoHoldInfoAdapter.list.clear()
-        saldoHoldInfoAdapter.list.addAll(resultList as ArrayList<Any>)
+        resultList?.let { saldoHoldInfoAdapter.list.addAll(it) }
         saldoHoldInfoAdapter.type = type
         saldoHoldInfoAdapter.notifyDataSetChanged()
 

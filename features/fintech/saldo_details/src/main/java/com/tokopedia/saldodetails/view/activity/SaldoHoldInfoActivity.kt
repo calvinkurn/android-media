@@ -20,9 +20,8 @@ import com.tokopedia.saldodetails.contract.SaldoHoldInfoContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
-import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.BuyerDataItem
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldDepositHistory
-import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SellerDataItem
+import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
 import com.tokopedia.saldodetails.view.fragment.SaldoHoldInfoFragment
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import kotlinx.android.synthetic.main.saldo_hold_info_tabview.*
@@ -37,8 +36,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     var sellerListSize: Int? = 0
     var buyerListSize: Int? = 0
     var viewPager: ViewPager? = null
-    var arrayListSeller: ArrayList<SellerDataItem>? = null
-    var arrayListBuyer: ArrayList<BuyerDataItem>? = null
+    var arrayListSeller: ArrayList<SaldoHoldInfoItem>? = null
+    var arrayListBuyer: ArrayList<SaldoHoldInfoItem>? = null
     var sellerAmount: Double? = 0.0
     var buyerAmount: Double? = 0.0
     var item: ArrayList<SaldoHistoryTabItem>? = null
@@ -51,6 +50,10 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     val KEY_TYPE = "KEY_TYPE"
     val VALUE_SELLER_TYPE = 0
     val VALUE_BUYER_TYPE = 1
+
+    companion object {
+        val TAG: String = SaldoHoldInfoItem::class.java.simpleName
+    }
 
     @Inject
     lateinit var saldoInfoPresenter: SaldoHoldInfoPresenter
@@ -85,8 +88,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             tv_valueTotalSaldoHold.text = it.totalFmt
             sellerListSize = it.sellerData?.size
             buyerListSize = it.buyerData?.size
-            arrayListSeller = it.sellerData as ArrayList<SellerDataItem>
-            arrayListBuyer = it.buyerData as ArrayList<BuyerDataItem>
+            arrayListSeller = it.sellerData as ArrayList<SaldoHoldInfoItem>
+            arrayListBuyer = it.buyerData as ArrayList<SaldoHoldInfoItem>
 
             sellerListSize?.let {
                 for (i in 0 until it) {
@@ -116,7 +119,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             val saveInstanceCacheManagerBuyer = SaveInstanceCacheManager(this, true)
             saveInstanceCacheManagerBuyer.apply {
                 put(KEY_TYPE, VALUE_BUYER_TYPE)
-                put(RESULT_LIST, arrayListBuyer)
+                put(TAG, arrayListBuyer)
                 buyerAmount?.let {
                     put(SALDO_BUYER_AMOUNT, it)
                 }
@@ -136,7 +139,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             val saveInstanceCacheManagerSeller = SaveInstanceCacheManager(this, true)
             saveInstanceCacheManagerSeller.apply {
                 put(KEY_TYPE, VALUE_SELLER_TYPE)
-                put(RESULT_LIST, arrayListSeller)
+                put(TAG, arrayListSeller)
                 sellerAmount?.let {
                     put(SALDO_SELLER_AMOUNT, it)
                 }
@@ -156,7 +159,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             val saveInstanceCacheManagerBuyer = SaveInstanceCacheManager(this, true)
             saveInstanceCacheManagerBuyer.apply {
                 put(KEY_TYPE, VALUE_BUYER_TYPE)
-                put(RESULT_LIST, arrayListBuyer)
+                put(TAG, arrayListBuyer)
                 buyerAmount?.let {
                     put(SALDO_BUYER_AMOUNT, it)
                 }
@@ -174,7 +177,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             val saveInstanceCacheManagerSeller = SaveInstanceCacheManager(this, true)
             saveInstanceCacheManagerSeller.apply {
                 put(KEY_TYPE, VALUE_SELLER_TYPE)
-                put(RESULT_LIST, arrayListSeller)
+                put(TAG, arrayListSeller)
                 sellerAmount?.let {
                     put(SALDO_SELLER_AMOUNT, it)
                     bundleSeller.putInt("SELLER_TYPE", 0)
