@@ -78,8 +78,8 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                 REQUEST_LOGOUT -> {
                     context?.let {
                         DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-                            setTitle(getString(R.string.change_password_app_name))
-                            setDescription("${getString(R.string.success_change_password)}. Silahkan login kembali.")
+                            setTitle(getString(R.string.password))
+                            setDescription(getString(R.string.success_change_password))
                             setPrimaryCTAText("Ya")
                             setPrimaryCTAClickListener {
                                 RouteManager.route(context, ApplinkConst.HOME)
