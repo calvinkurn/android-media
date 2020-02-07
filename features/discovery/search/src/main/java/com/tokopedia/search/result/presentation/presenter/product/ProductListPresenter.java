@@ -618,6 +618,8 @@ final class ProductListPresenter
                 if (data.getPosition() < getView().getLastProductItemPositionFromCache()) {
                     Visitable product = productList.get(data.getPosition());
                     list.add(list.indexOf(product), data);
+                    getView().sendImpressionInspirationCarousel(data);
+                    getView().saveInspirationCarouselProductImageToCache(getListOfImageUrl(data));
                     inspirationCarouselViewModelIterator.remove();
                 }
             }
@@ -993,8 +995,9 @@ final class ProductListPresenter
                 if (data.getPosition() < list.size()) {
                     Visitable product = productList.get(data.getPosition());
                     list.add(list.indexOf(product), data);
-                    inspirationCarouselViewModelIterator.remove();
                     getView().sendImpressionInspirationCarousel(data);
+                    getView().saveInspirationCarouselProductImageToCache(getListOfImageUrl(data));
+                    inspirationCarouselViewModelIterator.remove();
                 }
             }
         }
@@ -1069,6 +1072,17 @@ final class ProductListPresenter
 
         return false;
     }
+
+    private List<String> getListOfImageUrl(InspirationCarouselViewModel data){
+        List<String> urlImages = new ArrayList<>();
+        for(InspirationCarouselViewModel.Option option : data.getOptions()){
+            for(InspirationCarouselViewModel.Option.Product product : option.getProduct()){
+                urlImages.add(product.getImgUrl());
+            }
+        }
+        return urlImages;
+    }
+
 
     private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();

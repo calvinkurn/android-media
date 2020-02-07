@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -1655,5 +1656,14 @@ public class ProductListFragment
             }
         }
         SearchTracking.trackImpressionInspirationCarousel(getQueryKey(), products);
+    }
+
+    @Override
+    public void saveInspirationCarouselProductImageToCache(List<String> list){
+        for(String url : list){
+            if (getContext() != null) {
+                Glide.with(getContext()).downloadOnly().load(url).submit();
+            }
+        }
     }
 }

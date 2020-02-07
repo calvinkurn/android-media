@@ -145,6 +145,8 @@ public interface ProductListSectionContract {
         void hideBottomNavigation();
 
         void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
+
+        void saveInspirationCarouselProductImageToCache(final List<String> list);
     }
 
     interface Presenter extends CustomerPresenter<View> {
