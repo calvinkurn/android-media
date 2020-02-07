@@ -619,7 +619,6 @@ final class ProductListPresenter
                     Visitable product = productList.get(data.getPosition());
                     list.add(list.indexOf(product), data);
                     getView().sendImpressionInspirationCarousel(data);
-                    getView().saveInspirationCarouselProductImageToCache(getListOfImageUrl(data));
                     inspirationCarouselViewModelIterator.remove();
                 }
             }
@@ -996,7 +995,6 @@ final class ProductListPresenter
                     Visitable product = productList.get(data.getPosition());
                     list.add(list.indexOf(product), data);
                     getView().sendImpressionInspirationCarousel(data);
-                    getView().saveInspirationCarouselProductImageToCache(getListOfImageUrl(data));
                     inspirationCarouselViewModelIterator.remove();
                 }
             }

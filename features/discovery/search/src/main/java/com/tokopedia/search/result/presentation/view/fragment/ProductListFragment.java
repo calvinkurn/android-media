@@ -1657,13 +1657,4 @@ public class ProductListFragment
         }
         SearchTracking.trackImpressionInspirationCarousel(getQueryKey(), products);
     }
-
-    @Override
-    public void saveInspirationCarouselProductImageToCache(List<String> list){
-        for(String url : list){
-            if (getContext() != null) {
-                Glide.with(getContext()).downloadOnly().load(url).submit();
-            }
-        }
-    }
 }
