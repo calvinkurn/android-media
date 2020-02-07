@@ -187,7 +187,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
-            ext.enableHansel = false
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic HTTP/S network request monitoring
@@ -199,7 +199,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            ext.enableHansel = true
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
             if (project.hasProperty("enable-shrinkresource")) {
@@ -318,8 +318,6 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.homeRecom)
-    implementation project(rootProject.ext.features.homeWishlist)
-    implementation project(rootProject.ext.features.smartRecycler)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)

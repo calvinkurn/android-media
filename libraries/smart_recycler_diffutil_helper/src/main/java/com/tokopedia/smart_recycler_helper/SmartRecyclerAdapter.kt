@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 abstract class SmartRecyclerAdapter<T, V : SmartTypeFactory>(
         appExecutors: SmartExecutors,
@@ -25,7 +24,7 @@ abstract class SmartRecyclerAdapter<T, V : SmartTypeFactory>(
 
     override fun onBindViewHolder(holder: SmartAbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()){
-            bind(holder as SmartAbstractViewHolder<Visitable<*>>, getItem(position), payloads)
+            bind(holder as SmartAbstractViewHolder<SmartVisitable<*>>, getItem(position), payloads)
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }
@@ -36,12 +35,12 @@ abstract class SmartRecyclerAdapter<T, V : SmartTypeFactory>(
     }
 
     override fun onBindViewHolder(holder: SmartAbstractViewHolder<*>, position: Int) {
-        bind(holder as SmartAbstractViewHolder<Visitable<*>>, getItem(position))
+        bind(holder as SmartAbstractViewHolder<SmartVisitable<*>>, getItem(position))
     }
 
-    protected abstract fun bind(visitable: SmartAbstractViewHolder<Visitable<*>>, item: T)
+    protected abstract fun bind(visitable: SmartAbstractViewHolder<SmartVisitable<*>>, item: T)
 
-    protected abstract fun bind(visitable: SmartAbstractViewHolder<Visitable<*>>, item: T, payloads: MutableList<Any>)
+    protected abstract fun bind(visitable: SmartAbstractViewHolder<SmartVisitable<*>>, item: T, payloads: MutableList<Any>)
 
 
     abstract override fun getItemViewType(position: Int): Int

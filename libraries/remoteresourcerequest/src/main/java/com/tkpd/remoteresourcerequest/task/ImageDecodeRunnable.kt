@@ -5,8 +5,7 @@ import android.graphics.BitmapFactory
 import android.util.DisplayMetrics
 import kotlin.math.max
 
-
-internal class ImageDecodeRunnable(
+class ImageDecodeRunnable(
         private val task: TaskDecodeProperties
 ) : Runnable {
 
