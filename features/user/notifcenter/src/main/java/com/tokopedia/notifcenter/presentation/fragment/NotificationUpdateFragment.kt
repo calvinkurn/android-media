@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -64,6 +65,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     private var lastItem = 0
     private var markAllReadCounter = 0L
     private var _isFirstLoaded = true
+    private var _isSellerDataFiltered = false
 
     private lateinit var bottomActionView: BottomActionView
 
@@ -151,8 +153,23 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         filterRecyclerView.addItemDecoration(ChipFilterItemDivider(context))
     }
 
+    private fun initSellerApp() {
+        _isSellerDataFiltered = true
+        val filter = HashMap<String, Int>()
+        filter[FILTER_SELLER_TYPE_KEY] = FILTER_SELLER_TYPE_VALUE
+        updateFilter(filter)
+    }
+
     override fun updateFilter(filter: HashMap<String, Int>) {
-        presenter.updateFilter(filter)
+        if (GlobalConfig.isSellerApp()) {
+            val filterSeller = HashMap<String, Int>()
+            filterSeller[FILTER_SELLER_TYPE_KEY] = FILTER_SELLER_TYPE_VALUE
+            filterSeller[FILTER_SELLER_TAG_KEY] = filter[FILTER_SELLER_TAG_KEY] ?:
+                    NotificationUpdateFilterAdapter.NONE_SELECTED_POSITION
+            presenter.updateFilter(filterSeller)
+        } else {
+            presenter.updateFilter(filter)
+        }
         cursor = ""
         loadInitialData()
     }
@@ -245,12 +262,19 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                         && endlessRecyclerViewScrollListener != null && canLoadMore) {
                     endlessRecyclerViewScrollListener.loadMoreNextPage()
                 }
+
+                if (GlobalConfig.isSellerApp() && !_isSellerDataFiltered) {
+                    initSellerApp()
+                }
             }
         }
     }
 
     private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
+            if (GlobalConfig.isSellerApp() && it.isNotEmpty()) {
+                it.removeAt(0)
+            }
             filterAdapter?.updateData(it)
         }
     }
@@ -392,5 +416,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         const val PARAM_CTA_APPLINK = "cta applink"
         const val PARAM_BUTTON_TEXT = "button text"
         const val PARAM_TEMPLATE_KEY = "template key"
+
+        const val FILTER_SELLER_TYPE_KEY = "typeId"
+        const val FILTER_SELLER_TYPE_VALUE = 2
+        const val FILTER_SELLER_TAG_KEY = "tagId"
     }
 }

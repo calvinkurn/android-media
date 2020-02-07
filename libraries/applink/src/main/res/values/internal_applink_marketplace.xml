@@ -62,5 +62,6 @@
     <string name="title_ovop2p">OVO P2P Transfer</string>
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
+    <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
 
 </resources>

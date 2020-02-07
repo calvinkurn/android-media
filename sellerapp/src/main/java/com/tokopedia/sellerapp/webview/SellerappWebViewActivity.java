@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.webview;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -24,7 +25,8 @@ public class SellerappWebViewActivity extends BaseSimpleActivity {
         return intent;
     }
 
-    @DeepLink({ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW})
+    // example url: tokopedia://sellerinfo/detail?url=http%3A%2F%2Ftkp.me%2Fta43
+    @DeepLink({ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL})
     public static Intent createApplinkIntent(Context context, Bundle bundle) {
         return createIntent(context, bundle.getString(KEY_APP_LINK_QUERY_URL, TkpdBaseURL.MOBILE_DOMAIN));
     }
