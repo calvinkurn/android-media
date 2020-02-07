@@ -20,12 +20,10 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:minHeight="?attr/actionBarSize"
-                app:theme="@style/AppBarTheme"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:titleTextAppearance="@style/ToolbarText"
-                app:subtitleTextAppearance="@style/ToolbarSubtitleText"/>
+                app:theme="?toolbarTheme"
+                app:titleTextAppearance="?titleTextAppearance"
+                app:subtitleTextAppearance="?subtitleTextAppearance"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 

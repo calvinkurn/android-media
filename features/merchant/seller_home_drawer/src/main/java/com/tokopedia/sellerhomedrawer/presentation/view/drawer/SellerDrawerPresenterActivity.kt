@@ -70,7 +70,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
 
         injectDependency()
         setupDrawer()
-        setupToolbar()
+//        setupToolbar()
         setupDrawerStatusBar()
     }
 
@@ -278,7 +278,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     protected fun setToolbarTitle(title: String) {
-        toolbarTitle.actionbar_title.text = title
+        updateTitle(title)
     }
 
     private fun setupToolbar() {
