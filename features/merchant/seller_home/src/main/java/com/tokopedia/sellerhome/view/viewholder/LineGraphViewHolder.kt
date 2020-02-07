@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.TooltipClickListener
+import com.tokopedia.sellerhome.common.TooltipClickListener
 import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.util.getResDrawable
 import com.tokopedia.sellerhome.util.parseAsHtml

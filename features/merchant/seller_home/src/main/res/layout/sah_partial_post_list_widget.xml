@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sah_list_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/sah_large_widget_height"
+    android:padding="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_card_title"
@@ -38,33 +39,41 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:clipToPadding="true"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintBottom_toTopOf="@+id/tv_see_details"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_card_title"
+        app:layout_constraintVertical_bias="0.0"
         tools:itemCount="3"
-        tools:listitem="@layout/sah_item_post" />
+        tools:listitem="@layout/sah_item_post"
+        tools:targetApi="lollipop" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_see_details"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:drawablePadding="@dimen/layout_lvl1"
+        android:gravity="end"
+        android:maxLines="1"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
+        android:paddingEnd="4dp"
+        android:paddingRight="4dp"
         android:text="@string/sah_more"
-        android:textAllCaps="false"
         android:textColor="@color/Green_G500"
         android:textSize="@dimen/fontSize_lvl3"
-        app:layout_constraintEnd_toStartOf="@id/iv_see_details"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/iv_see_details"
+        app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 
     <ImageView
         android:id="@+id/iv_see_details"
-        android:layout_width="@dimen/layout_lvl3"
+        android:layout_width="@dimen/layout_lvl2"
         android:layout_height="wrap_content"
-        android:paddingBottom="2dp"
+        android:layout_marginTop="2dp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_see_details"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_see_details"

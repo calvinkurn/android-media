@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sellerhome.GraphqlQuery
 import com.tokopedia.sellerhome.domain.mapper.PostMapper
 import com.tokopedia.sellerhome.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhome.util.getData
@@ -21,7 +20,7 @@ class GetPostDataUseCase(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): List<PostListDataUiModel> {
-        val gqlRequest = GraphqlRequest(GraphqlQuery.GET_POST_DATA, GetPostDataResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(GET_POST_DATA, GetPostDataResponse::class.java, params.parameters)
         val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPostDataResponse::class.java)
@@ -51,5 +50,21 @@ class GetPostDataUseCase(
             putString(START_DATE, startDate)
             putString(END_DATE, endDate)
         }
+
+        const val GET_POST_DATA = "query getPostWidgetData(\$dataKey: [String!]!, \$shopId: Int!, \$startDate: String!, \$endDate: String!) {\n" +
+                "  getPostWidgetData(dataKey: \$dataKey, shopID: \$shopId, startDate: \$startDate, endDate: \$endDate) {\n" +
+                "    data {\n" +
+                "      datakey\n" +
+                "      list {\n" +
+                "        title\n" +
+                "        url\n" +
+                "        applink\n" +
+                "        subtitle\n" +
+                "        featuredMediaURL\n" +
+                "      }\n" +
+                "      errorMsg\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
     }
 }

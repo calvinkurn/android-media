@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
-import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,11 +21,6 @@ abstract class SellerHomeViewModelModule {
     @Binds
     @SellerHomeScope
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SharedViewModel::class)
-    abstract fun shareViewModel(sharedViewModel: SharedViewModel): ViewModel
 
     @Binds
     @IntoMap

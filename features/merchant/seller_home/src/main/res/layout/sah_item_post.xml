@@ -24,6 +24,7 @@
         android:layout_marginLeft="12dp"
         android:ellipsize="end"
         android:maxLines="2"
+        android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_post"
         app:layout_constraintTop_toTopOf="parent"
