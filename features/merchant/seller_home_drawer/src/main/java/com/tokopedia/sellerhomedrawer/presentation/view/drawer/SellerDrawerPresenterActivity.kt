@@ -259,8 +259,9 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         super.onBackPressed()
     }
 
-    private fun Toolbar.initNotificationMenu() {
-        val notif = layoutInflater.inflate(R.layout.sh_custom_actionbar_drawer_notification, null)
+    open fun Toolbar.initNotificationMenu() {
+        //TODO: Put default layout
+        val notif = layoutInflater.inflate(R.layout.custom_actionbar_drawer_notification, null)
         val drawerToggle = notif.findViewById<ImageView>(R.id.toggle_but_ab)
         drawerToggle.setOnClickListener {
             if (sellerDrawerHelper.isOpened())
@@ -271,17 +272,20 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         this.navigationIcon = null
     }
 
-    private fun Toolbar.initTitle() {
-        toolbarTitle = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
+    open fun Toolbar.initTitle() {
+        //TODO: Put default layout
+        toolbarTitle = layoutInflater.inflate(R.layout.custom_action_bar_title, null)
         toolbarTitle.actionbar_title.text = title
         this.addView(toolbarTitle)
     }
 
-    protected fun setToolbarTitle(title: String) {
+    open fun setToolbarTitle(title: String) {
+        //TODO: Put default layout
         toolbar.actionbar_title.text = title
     }
 
-    private fun setupToolbar() {
+    open fun setupToolbar() {
+        //TODO: Put default layout
         toolbar.apply {
             removeAllViews()
             initNotificationMenu()
@@ -296,7 +300,8 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         }
     }
 
-    private fun setupDrawerStatusBar() {
+    open fun setupDrawerStatusBar() {
+        //TODO: Put default layout
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.apply {
                 addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
