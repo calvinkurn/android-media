@@ -2,8 +2,7 @@ package com.tokopedia.seller.product.draft.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
 
 import java.util.ArrayList;
