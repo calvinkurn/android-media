@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.model
 
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
@@ -29,8 +30,36 @@ class InspirationCarouselViewModel(
             var rating: Int = 0,
             var countReview: Int = 0,
             var url: String = "",
-            var applink: String = ""
-        )
+            var applink: String = "",
+            var optionPosition: Int = 0
+        ){
+            fun getProductAsObjectDataLayer(): Any {
+                return DataLayer.mapOf(
+                        "name", name,
+                        "id", id,
+                        "price", price,
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
+                        "list", "/search - carousel",
+                        "position", optionPosition,
+                        "attribution", "none / other"
+                )
+            }
+
+            fun getProductImpressionAsObjectDataLayer(): Any {
+                return DataLayer.mapOf(
+                        "name", name,
+                        "id", id,
+                        "price", price,
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
+                        "list", "/search - carousel",
+                        "position", optionPosition
+                )
+            }
+        }
     }
 }
 
