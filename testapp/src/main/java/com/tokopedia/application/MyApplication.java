@@ -310,7 +310,6 @@ public class MyApplication extends BaseMainApplication
         return false;
     }
 
-
     @Override
     public FingerprintModel getFingerprintModel() {
         return DataSource.generateFingerprintModel();

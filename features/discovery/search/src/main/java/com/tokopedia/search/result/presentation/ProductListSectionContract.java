@@ -166,7 +166,7 @@ public interface ProductListSectionContract {
 
         boolean isUserLoggedIn();
 
-        void setIsTickerHasDismissed(boolean isTickerHasDismissed);
+        void onPriceFilterTickerDismissed();
 
         boolean getIsTickerHasDismissed();
 

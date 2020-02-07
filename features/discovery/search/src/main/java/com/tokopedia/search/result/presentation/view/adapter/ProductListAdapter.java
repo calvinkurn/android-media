@@ -18,6 +18,7 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProductViewMode
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
+import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
@@ -25,6 +26,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
@@ -250,6 +252,23 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
 
     public boolean isListEmpty() {
         return list.isEmpty();
+    }
+
+    public void removePriceFilterTicker() {
+        int i = 0;
+        Iterator iterator = list.iterator();
+
+        while(iterator.hasNext()) {
+            Object visitable = iterator.next();
+
+            if (visitable instanceof TickerViewModel) {
+                iterator.remove();
+                notifyItemRangeRemoved(i, 1);
+                return;
+            }
+
+            i++;
+        }
     }
 
     public interface OnItemChangeView {
