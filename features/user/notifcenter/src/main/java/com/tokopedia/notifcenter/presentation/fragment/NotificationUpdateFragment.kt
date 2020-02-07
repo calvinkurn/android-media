@@ -64,8 +64,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     private var cursor = ""
     private var lastItem = 0
     private var markAllReadCounter = 0L
-    private var _isFirstLoaded = true
-    private var _isSellerDataFiltered = false
+    private var isFirstLoaded = true
+    private var isSellerDataFiltered = false
 
     private lateinit var bottomActionView: BottomActionView
 
@@ -154,7 +154,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun initSellerApp() {
-        _isSellerDataFiltered = true
+        isSellerDataFiltered = true
         val filter = HashMap<String, Int>()
         filter[FILTER_SELLER_TYPE_KEY] = FILTER_SELLER_TYPE_VALUE
         updateFilter(filter)
@@ -236,7 +236,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             hideLoading()
             _adapter.removeEmptyState()
 
-            if (_isFirstLoaded && it.list.isEmpty()) {
+            if (isFirstLoaded && it.list.isEmpty()) {
                 filterRecyclerView.hide()
             }
 
@@ -252,7 +252,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                     notificationUpdateListener?.onSuccessLoadNotifUpdate()
                 }
 
-                _isFirstLoaded = false
+                isFirstLoaded = false
                 filterRecyclerView.show()
 
                 _adapter.addElement(it.list)
@@ -263,7 +263,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                     endlessRecyclerViewScrollListener.loadMoreNextPage()
                 }
 
-                if (GlobalConfig.isSellerApp() && !_isSellerDataFiltered) {
+                if (GlobalConfig.isSellerApp() && !isSellerDataFiltered) {
                     initSellerApp()
                 }
             }
