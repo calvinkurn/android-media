@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.WidgetType
+import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
@@ -122,6 +125,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         adapter.notifyDataSetChanged()
         showGetWidgetShimmer(false)
         sellerHomeViewModel.getWidgetLayout()
+    }
+
+    fun setShopStatus(shopStatus: ShopStatus) = view?.run {
+        when (shopStatus) {
+            ShopStatus.OFFICIAL_STORE -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            }
+            ShopStatus.POWER_MERCHANT -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            }
+            else -> {
+                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+            }
+        }
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sah_progress_layout_shimmering"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/sah_medium_widget_height"
+    android:padding="16dp"
     android:visibility="gone">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
