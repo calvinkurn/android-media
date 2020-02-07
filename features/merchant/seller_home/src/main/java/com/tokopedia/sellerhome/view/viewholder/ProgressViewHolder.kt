@@ -57,7 +57,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
             with(element) {
                 itemView.tv_card_title.text = title
                 itemView.tv_description.text = data?.subtitle
-                setupProgressBar(barTitle, valueTxt, maxValueTxt, value, maxValue, colorState)
+                setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
                 setupDetails(this)
             }
         }
