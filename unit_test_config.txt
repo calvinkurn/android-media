@@ -1,3 +1,0 @@
-:features:discovery:search|features/discovery/search
-:features:content:feed|features/content/feed
-false|false

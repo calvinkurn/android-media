@@ -82,6 +82,7 @@
     <string name="similar_search_app_name">similarsearch</string>
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_autocomplete_module_name" >Pencarian</string>
+    <string name="title_home_wishlist_module_name">Wishlist</string>
     <string name="autocomplete_app_name">autocomplete</string>
     <string name="title_search_result" >Pencarian</string>
     <string name="title_search_result_module_name" >Pencarian</string>

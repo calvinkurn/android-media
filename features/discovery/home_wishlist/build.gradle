@@ -23,36 +23,6 @@ repositories {
 }
 
 
-String findAllReports() {
-    def file = "${rootProject.buildDir}/reports"
-
-    def sonarEnabledProjects = rootProject.subprojects
-            .findAll { p -> p.sonarqube.getProperties().get("skipProject") == false }
-            *.name
-            .collect { projectName -> "$file/jacocoTestReport-${projectName}.xml" }
-            .join(",")
-
-    return sonarEnabledProjects
-}
-
-sonarqube {
-    properties {
-        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-27/android.jar"/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
-        property "sonar.verbose", true
-        property "sonar.sources", "src/main/java"
-        property "sonar.binaries", "build/intermediates/classes/debug"
-        property "sonar.libraries", libraries
-        property "sonar.tests", "src/test/java, src/androidTest/java"
-        property "sonar.java.test.binaries", "build/intermediates/javac/debugUnitTest/classes/"
-        property "sonar.java.test.libraries", libraries
-        property "sonar.coverage.jacoco.xmlReportPaths", findAllReports()
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.junit.reportsPath", "build/test-results/testDebugUnitTest"
-        property "sonar.android.lint.report", "build/reports/lint-results.xml"
-    }
-}
-
-
 buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -68,23 +38,23 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
-    implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.carouselProductCard)
-    implementation project(rootProject.ext.features.smartRecycler)
+    implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.wishlistCommon)
 
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.diffUtilRecycler)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.unifyDependencies.icon
@@ -130,3 +100,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
