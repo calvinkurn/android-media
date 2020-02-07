@@ -100,7 +100,6 @@ import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.seller.common.utils.KMNumbers
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -1064,7 +1063,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     val imageUrls = it.getStringArrayListExtra(PICKER_RESULT_PATHS)
                     val imageDescList = it.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
                     if (imageUrls != null && imageUrls.size > 0) {
-                        ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
+                        openProductDraftList(imageUrls, imageDescList)
                     }
                 }
                 REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
@@ -1097,4 +1096,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
+    private fun openProductDraftList(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.PRODUCT_DRAFT)
+        intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, imageUrls)
+        intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
+        startActivity(intent)
+    }
+
+    companion object {
+        private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
+        private const val DESC_IMAGE_LIST = "desc_img_list"
+    }
 }
