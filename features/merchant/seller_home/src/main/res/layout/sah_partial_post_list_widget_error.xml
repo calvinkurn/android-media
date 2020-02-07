@@ -15,7 +15,7 @@
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
+        app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Power Merchant (Aktif)" />
 
