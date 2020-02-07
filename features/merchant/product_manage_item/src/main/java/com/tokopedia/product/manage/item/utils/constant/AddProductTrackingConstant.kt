@@ -8,7 +8,7 @@ object AddProductTrackingConstant {
 
     object Category{
         const val ADD_PRODUCT_PAGE = "add product page"
-
+        const val ADD_PRODUCT = "Add Product"
     }
 
     object Action{

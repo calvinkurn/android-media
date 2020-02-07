@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -171,9 +170,9 @@ public class UploadProductService extends Service implements AddProductServiceLi
 
     public void eventAddProductErrorServer(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
-                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
-                AppEventTracking.AddProduct.EVENT_ACTION_ERROR_SERVER,
+                AddProductTrackingConstant.Event.CLICK_ADD_PRODUCT,
+                AddProductTrackingConstant.Category.ADD_PRODUCT,
+                AddProductTrackingConstant.Action.CLICK_ADD_ERROR_SERVER_VALIDATION,
                 label);
     }
 
