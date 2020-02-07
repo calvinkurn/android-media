@@ -290,18 +290,19 @@ public class ProductViewModelMapper {
         List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
+            int position = inspirationCarouselOptions.indexOf(opt) + 1;
             options.add(new InspirationCarouselViewModel.Option(
                     opt.getTitle(),
                     opt.getUrl(),
                     opt.getApplink(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts())
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position)
             ));
         }
 
         return options;
     }
 
-    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct) {
+    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct, int position) {
         List<InspirationCarouselViewModel.Option.Product> products = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
@@ -314,7 +315,8 @@ public class ProductViewModelMapper {
                     product.getRating(),
                     product.countReview(),
                     product.getUrl(),
-                    product.getApplink()
+                    product.getApplink(),
+                    position
             ));
         }
 

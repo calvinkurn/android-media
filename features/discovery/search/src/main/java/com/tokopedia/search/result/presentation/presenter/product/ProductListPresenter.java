@@ -994,6 +994,7 @@ final class ProductListPresenter
                     Visitable product = productList.get(data.getPosition());
                     list.add(list.indexOf(product), data);
                     inspirationCarouselViewModelIterator.remove();
+                    getView().sendImpressionInspirationCarousel(data);
                 }
             }
         }
