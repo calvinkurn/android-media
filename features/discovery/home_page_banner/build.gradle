@@ -10,6 +10,7 @@ dependencies {
         }
     }
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.analytics)
 }
 
 
