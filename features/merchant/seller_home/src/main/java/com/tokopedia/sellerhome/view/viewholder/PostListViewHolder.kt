@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.viewholder
 
 import android.view.View
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -8,7 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.TooltipClickListener
+import com.tokopedia.sellerhome.common.TooltipClickListener
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
@@ -146,6 +147,7 @@ class PostListViewHolder(
 
     private fun setupPostList(posts: List<PostUiModel>) {
         adapter = BaseListAdapter<PostUiModel, ListAdapterTypeFactory>(ListAdapterTypeFactory(), this@PostListViewHolder)
+        ViewCompat.setNestedScrollingEnabled(itemView.rv_post, false)
         itemView.rv_post.apply {
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = this@PostListViewHolder.adapter

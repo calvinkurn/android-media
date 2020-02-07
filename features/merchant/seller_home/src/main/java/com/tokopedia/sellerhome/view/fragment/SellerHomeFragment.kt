@@ -1,10 +1,10 @@
 package com.tokopedia.sellerhome.view.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.WidgetType
+import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.util.getResColor
@@ -108,9 +108,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
             }
         }
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
         recyclerView.layoutManager = gridLayoutManager
 
         swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = false
             refreshWidget()
         }
     }
@@ -123,7 +125,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         widgetHasMap.clear()
         adapter.data.clear()
         adapter.notifyDataSetChanged()
-        showGetWidgetShimmer(false)
+        showGetWidgetShimmer(true)
         sellerHomeViewModel.getWidgetLayout()
     }
 
@@ -190,18 +192,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun showGetWidgetShimmer(isShown: Boolean) {
-        view?.swipeRefreshLayout?.isRefreshing = isShown
-    }
-
-    private fun showSwipeProgress(isShown: Boolean) {
-        view?.swipeRefreshLayout?.isRefreshing = isShown
+        view?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
     private fun getWidgetsLayout() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    showGetWidgetShimmer(false)
                     renderList(result.data)
                     result.data.forEach {
                         if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
@@ -210,12 +207,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                         }
                         widgetHasMap[it.widgetType]?.add(it)
                     }
+                    showGetWidgetShimmer(false)
                 }
                 is Fail -> {
                     showGetWidgetShimmer(false)
                 }
             }
         })
+
         showGetWidgetShimmer(true)
         sellerHomeViewModel.getWidgetLayout()
     }
@@ -239,17 +238,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private fun getTickerView() {
         sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-                    showSwipeProgress(false)
-                    onSuccessGetTickers(it.data)
-                }
-                is Fail -> {
-                    showSwipeProgress(false)
-                    view?.relTicker?.visibility = View.GONE
-                }
+                is Success -> onSuccessGetTickers(it.data)
+                is Fail -> view?.relTicker?.visibility = View.GONE
             }
         })
-        showSwipeProgress(true)
         sellerHomeViewModel.getTicker()
     }
 

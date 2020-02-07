@@ -1,16 +1,13 @@
 package com.tokopedia.sellerhome.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sellerhome.GraphqlQuery
 import com.tokopedia.sellerhome.domain.mapper.CardMapper
 import com.tokopedia.sellerhome.domain.model.GetCardDataResponse
 import com.tokopedia.sellerhome.util.getData
-import com.tokopedia.sellerhome.util.toJson
 import com.tokopedia.sellerhome.view.model.CardDataUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -27,7 +24,7 @@ class GetCardDataUseCase(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): List<CardDataUiModel> {
-        val gqlRequest = GraphqlRequest(GraphqlQuery.GET_CARD_DATA, GetCardDataResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(GET_CARD_DATA, GetCardDataResponse::class.java, params.parameters)
         val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetCardDataResponse::class.java)
@@ -57,5 +54,17 @@ class GetCardDataUseCase(
             putString(START_DATE, startDate)
             putString(END_DATE, endDate)
         }
+
+        const val GET_CARD_DATA = "query getCardWidgetData(\$shopID: Int!, \$dataKey: [String!]!, \$startDate: String!, \$endDate: String!) {\n" +
+                "  getCardWidgetData(shopID: \$shopID, dataKey: \$dataKey, startDate: \$startDate, endDate: \$endDate) {\n" +
+                "    data {\n" +
+                "      dataKey\n" +
+                "      value\n" +
+                "      description\n" +
+                "      state\n" +
+                "      errorMsg\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
     }
 }

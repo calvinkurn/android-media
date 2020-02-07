@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sah_error_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/sah_large_widget_height"
     android:visibility="gone">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -21,7 +21,7 @@
 
     <ImageView
         android:id="@+id/iv_error"
-        android:layout_width="107dp"
+        android:layout_width="110dp"
         android:layout_height="80dp"
         android:layout_marginTop="98dp"
         android:adjustViewBounds="true"
@@ -37,8 +37,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginBottom="83dp"
+        android:layout_marginBottom="80dp"
         android:text="@string/sah_widget_error_message"
+        android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

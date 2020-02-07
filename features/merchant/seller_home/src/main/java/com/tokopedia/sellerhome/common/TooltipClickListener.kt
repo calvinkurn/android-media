@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome
+package com.tokopedia.sellerhome.common
 
 import com.tokopedia.sellerhome.view.model.TooltipUiModel
 
