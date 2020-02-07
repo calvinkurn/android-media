@@ -7,7 +7,8 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.travel.data.UmrahGallery
 import kotlinx.android.synthetic.main.item_umrah_gallery_three_image.view.*
 
-class UmrahTravelAgentGalleryThreeImageViewHolder(view: View) : AbstractViewHolder<UmrahGallery>(view){
+class UmrahTravelAgentGalleryThreeImageViewHolder(view: View, val listener : SetOnClickListener) :
+        AbstractViewHolder<UmrahGallery>(view){
     override fun bind(element: UmrahGallery) {
         with(itemView){
             if (element.title.isNotEmpty()) tg_umrah_gallery_three_image_title.text = element.title
@@ -36,9 +37,17 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View) : AbstractViewHold
                 tg_umrah_gallery_three_next_label.text =
                         getString(R.string.umrah_travel_gallery_next_images,(element.medias.size - 3).toString())
             }
+
+            container_umrah_gallery_three_images.setOnClickListener {
+                listener.onClickThreeImage(adapterPosition)
+            }
         }
     }
     companion object {
         val LAYOUT = R.layout.item_umrah_gallery_three_image
+    }
+
+    interface SetOnClickListener{
+        fun onClickThreeImage(position: Int)
     }
 }

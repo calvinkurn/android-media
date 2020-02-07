@@ -13,20 +13,27 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesEntity
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesInput
 import com.tokopedia.salam.umrah.travel.data.UmrahGallery
+import com.tokopedia.salam.umrah.travel.data.UmrahGalleryImageMapper
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelGalleryAdapterTypeFactory
+import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTravelAgentGalleryOneImageViewHolder
+import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTravelAgentGalleryThreeImageViewHolder
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragment.Companion.EXTRA_SLUGNAME
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelGalleryViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTravelGalleryAdapterTypeFactory>(), BaseEmptyViewHolder.Callback{
+class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTravelGalleryAdapterTypeFactory>(),
+        BaseEmptyViewHolder.Callback,
+        UmrahTravelAgentGalleryThreeImageViewHolder.SetOnClickListener,
+        UmrahTravelAgentGalleryOneImageViewHolder.SetOnClickListener {
 
     @Inject
     lateinit var umrahTravelGalleryViewModel: UmrahTravelGalleryViewModel
@@ -34,8 +41,8 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
     @Inject
     lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
 
-    var galleries : UmrahGalleriesEntity = UmrahGalleriesEntity()
-    var galleriesParam : UmrahGalleriesInput = UmrahGalleriesInput()
+    var galleries: List<UmrahGallery> = emptyList()
+    var galleriesParam: UmrahGalleriesInput = UmrahGalleriesInput()
 
     private var slugName: String? = ""
 
@@ -49,7 +56,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun getAdapterTypeFactory(): UmrahTravelGalleryAdapterTypeFactory = UmrahTravelGalleryAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): UmrahTravelGalleryAdapterTypeFactory = UmrahTravelGalleryAdapterTypeFactory(this, this,this)
 
     override fun loadData(page: Int) {
         requestData(page)
@@ -92,25 +99,27 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
         })
     }
 
-    private fun onSuccessGetResult(data : List<UmrahGallery>){
-        renderList(data,data.size >= galleriesParam.limit)
+    private fun onSuccessGetResult(data: List<UmrahGallery>) {
+        galleries = data
+        renderList(data, data.size >= galleriesParam.limit)
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rv_umrah_travel_galleries
 
 
-    private fun requestData(page:Int){
+    private fun requestData(page: Int) {
         slugName?.let {
             umrahTravelGalleryViewModel.getDataGallery(page, it,
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_travel_agent_gallery))
         }
     }
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() = getComponent(UmrahTravelComponent::class.java).inject(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_umrah_travel_agent_gallery,container, false)
+            inflater.inflate(R.layout.fragment_umrah_travel_agent_gallery, container, false)
 
     companion object {
         fun createInstance(slugName: String) =
@@ -119,5 +128,23 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
                         putString(EXTRA_SLUGNAME, slugName)
                     }
                 }
+    }
+
+    override fun onClickThreeImage(position: Int) {
+        showImagePreview(position)
+    }
+
+    override fun onClickOneImage(position: Int) {
+        showImagePreview(position)
+    }
+
+    private fun showImagePreview(position: Int) {
+        val mappedSource = UmrahGalleryImageMapper.galleryImageSource(galleries[position].medias)
+        val mappedThumbail = UmrahGalleryImageMapper.galleryImageThumbnail(galleries[position].medias)
+        context?.run {
+            startActivity(ImagePreviewSliderActivity.getCallingIntent(
+                    this, getString(R.string.umrah_home_page_partner_label), mappedSource, mappedThumbail, position
+            ))
+        }
     }
 }

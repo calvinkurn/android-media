@@ -12,7 +12,10 @@ import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTra
 import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTravelAgentGalleryThreeImageViewHolder
 import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTravelAgentGalleryVideoViewHolder
 
-class UmrahTravelGalleryAdapterTypeFactory (private val callback: BaseEmptyViewHolder.Callback): BaseAdapterTypeFactory(){
+class UmrahTravelGalleryAdapterTypeFactory (private val callback: BaseEmptyViewHolder.Callback,
+                                            private val listenerThreeImage: UmrahTravelAgentGalleryThreeImageViewHolder.SetOnClickListener,
+                                            private val listenerOneImage: UmrahTravelAgentGalleryOneImageViewHolder.SetOnClickListener):
+        BaseAdapterTypeFactory(){
 
     fun type(type:String, size:Int) : Int {
          return if((type.equals(TYPE_DOCUMENTATION) || type.equals(TYPE_TOOL)) && size ==1) UmrahTravelAgentGalleryOneImageViewHolder.LAYOUT
@@ -25,8 +28,8 @@ class UmrahTravelGalleryAdapterTypeFactory (private val callback: BaseEmptyViewH
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when(type){
-                UmrahTravelAgentGalleryOneImageViewHolder.LAYOUT -> UmrahTravelAgentGalleryOneImageViewHolder(parent)
-                UmrahTravelAgentGalleryThreeImageViewHolder.LAYOUT -> UmrahTravelAgentGalleryThreeImageViewHolder(parent)
+                UmrahTravelAgentGalleryOneImageViewHolder.LAYOUT -> UmrahTravelAgentGalleryOneImageViewHolder(parent, listenerOneImage)
+                UmrahTravelAgentGalleryThreeImageViewHolder.LAYOUT -> UmrahTravelAgentGalleryThreeImageViewHolder(parent, listenerThreeImage)
                 UmrahTravelAgentGalleryVideoViewHolder.LAYOUT -> UmrahTravelAgentGalleryVideoViewHolder(parent)
                 UmrahTravelAgentGalleryLoadingViewHolder.LAYOUT -> UmrahTravelAgentGalleryLoadingViewHolder(parent)
                 EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
