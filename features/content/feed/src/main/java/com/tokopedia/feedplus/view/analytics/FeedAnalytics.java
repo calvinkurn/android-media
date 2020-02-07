@@ -268,8 +268,8 @@ public class FeedAnalytics {
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
-                        String.format("click avatar - %s recommendation", authorType),
-                        String.valueOf(authorId),
+                        "click",
+                        String.format("avatar - %s recommendation - %s", authorType, authorId),
                         promotionList,
                         userId
                 )
