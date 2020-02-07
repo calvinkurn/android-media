@@ -6,6 +6,9 @@ import android.os.Build
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
+import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
@@ -191,6 +194,8 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(NOTIFICATION) }, DFM_BASE, R.string.title_notification_center))
+
+            add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_BASE, R.string.title_wishlist))
         }
     }
 

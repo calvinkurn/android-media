@@ -57,6 +57,7 @@ ext {
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
             shakeDetect             : ":libraries:shake_detect",
             sharedata               : ":libraries:sharedata",
+            diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",
             travelCalendar          : ":libraries:travel_calendar",
