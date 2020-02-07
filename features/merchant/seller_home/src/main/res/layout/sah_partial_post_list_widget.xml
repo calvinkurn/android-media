@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:clipToPadding="true"
+        android:focusable="false"
         android:nestedScrollingEnabled="false"
         app:layout_constraintBottom_toTopOf="@+id/tv_see_details"
         app:layout_constraintEnd_toEndOf="parent"

@@ -147,7 +147,7 @@ class PostListViewHolder(
 
     private fun setupPostList(posts: List<PostUiModel>) {
         adapter = BaseListAdapter<PostUiModel, ListAdapterTypeFactory>(ListAdapterTypeFactory(), this@PostListViewHolder)
-        ViewCompat.setNestedScrollingEnabled(itemView.rv_post, false)
+        ViewCompat.setNestedScrollingEnabled(itemView.rv_post, true)
         itemView.rv_post.apply {
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = this@PostListViewHolder.adapter
