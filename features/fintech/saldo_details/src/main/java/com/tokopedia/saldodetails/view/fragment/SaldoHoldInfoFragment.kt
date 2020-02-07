@@ -25,11 +25,8 @@ class SaldoHoldInfoFragment : Fragment() {
     var saveInstanceCacheManager: SaveInstanceCacheManager? = null
     var saveInstanceCacheManagerId: String? = null
     var type: Int? = 0
-    val typeSeler = 1
-    val typeBuyer = 2
 
-
-    val saldoHoldInfoAdapter: SaldoHoldInfoAdapter by lazy { SaldoHoldInfoAdapter(ArrayList(), 0) }
+    val saldoHoldInfoAdapter: SaldoHoldInfoAdapter by lazy { SaldoHoldInfoAdapter(ArrayList()) }
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
@@ -62,14 +59,12 @@ class SaldoHoldInfoFragment : Fragment() {
     }
 
     fun initView() {
-        var type = 0
+
         var resultAmount: Double? = 0.0
         if (sellerAmount == 0.0) {
-            type = 1
             resultAmount = buyerAmount
             title_saldo.text = resources.getString(R.string.saldo_total_balance_buyer)
         } else if (buyerAmount == 0.0) {
-            type = 2
             resultAmount = sellerAmount
             title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
         }
@@ -80,7 +75,6 @@ class SaldoHoldInfoFragment : Fragment() {
 
         saldoHoldInfoAdapter.list.clear()
         resultList?.let { saldoHoldInfoAdapter.list.addAll(it) }
-        saldoHoldInfoAdapter.type = type
         saldoHoldInfoAdapter.notifyDataSetChanged()
 
     }

@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.view.activity
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -45,7 +44,6 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     lateinit var helpdialog: CloseableBottomSheetDialog
     val SALDO_SELLER_AMOUNT = "SALDO_SELLER_AMOUNT"
     val SALDO_BUYER_AMOUNT = "SALDO_BUYER_AMOUNT"
-    val RESULT_LIST = "RESULT_LIST"
     val SAVE_INSTANCE_CACHEMANAGER_ID = "SAVE_INSTANCE_CACHEMANAGER_ID"
     val KEY_TYPE = "KEY_TYPE"
     val VALUE_SELLER_TYPE = 0
@@ -85,6 +83,13 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     override fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?) {
         saldoHoldDepositHistory?.let {
 
+            it.tickerMessageIsshow?.let { tickerMessageIsShow ->
+                if (tickerMessageIsShow) {
+                    saldo_hold_info_ticker.visibility = View.VISIBLE
+                } else {
+                    saldo_hold_info_ticker.visibility = View.GONE
+                }
+            }
             tv_valueTotalSaldoHold.text = it.totalFmt
             sellerListSize = it.sellerData?.size
             buyerListSize = it.buyerData?.size

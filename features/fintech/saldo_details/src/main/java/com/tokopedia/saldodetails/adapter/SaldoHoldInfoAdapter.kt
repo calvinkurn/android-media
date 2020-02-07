@@ -7,7 +7,7 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
 import com.tokopedia.saldodetails.viewholder.SaldoInfoItemViewHolder
 
-class SaldoHoldInfoAdapter(val list: ArrayList<SaldoHoldInfoItem>, var type: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SaldoHoldInfoAdapter(val list: ArrayList<SaldoHoldInfoItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     lateinit var viewHolder: RecyclerView.ViewHolder
 
