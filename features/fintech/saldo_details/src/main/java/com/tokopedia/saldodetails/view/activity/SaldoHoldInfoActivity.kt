@@ -83,13 +83,6 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     override fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?) {
         saldoHoldDepositHistory?.let {
 
-            it.tickerMessageIsshow?.let { tickerMessageIsShow ->
-                if (tickerMessageIsShow) {
-                    saldo_hold_info_ticker.visibility = View.VISIBLE
-                } else {
-                    saldo_hold_info_ticker.visibility = View.GONE
-                }
-            }
             tv_valueTotalSaldoHold.text = it.totalFmt
             sellerListSize = it.sellerData?.size
             buyerListSize = it.buyerData?.size
@@ -108,6 +101,13 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             }
             isTickerShow = it.tickerMessageIsshow
             tickerMessage = it.tickerMessageId
+
+            if (isTickerShow != null && isTickerShow == true) {
+                saldo_hold_info_ticker.visibility = View.VISIBLE
+                saldo_hold_info_ticker.setTextDescription(tickerMessage.toString())
+            } else
+                saldo_hold_info_ticker.visibility = View.GONE
+
         }
 
         setUpViewPager(sellerListSize, buyerListSize)
