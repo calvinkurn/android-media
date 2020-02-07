@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.service
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.core.app.JobIntentService
 import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -10,6 +11,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import rx.Subscriber
 import javax.inject.Inject
 import androidx.core.app.NotificationManagerCompat
+import java.lang.IllegalStateException
 
 
 class NotificationChatService : JobIntentService() {
@@ -43,14 +45,18 @@ class NotificationChatService : JobIntentService() {
                 if (response != null) {
                     if (response.isSuccessReplyChat) {
                         clearNotification(notificationId)
+                        return
                     }
                 }
+                onError(IllegalStateException())
             }
 
             override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
-                clearNotification(notificationId)
+                Toast.makeText(this@NotificationChatService,
+                        "Gagal mengirim pesan // Need wording",
+                        Toast.LENGTH_LONG).show()
             }
         })
 
