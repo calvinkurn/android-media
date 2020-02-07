@@ -15,7 +15,6 @@ import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
-import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
 import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
@@ -23,7 +22,6 @@ import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
 import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
 import com.tokopedia.seller.product.category.view.activity.CategoryDynamicPickerActivity
-import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity
 import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel
 import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel
@@ -33,6 +31,9 @@ import java.util.*
 class ProductManageFilterFragment : BaseDaggerFragment() {
 
     companion object {
+        const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
+        const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
+
         fun createInstance(productManageFilterModel: ProductManageFilterModel) = ProductManageFilterFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(EXTRA_FILTER_SELECTED, productManageFilterModel)
@@ -235,8 +236,8 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         when (requestCode) {
             ProductManageListConstant.REQUEST_CODE_CATEGORY -> if (resultCode == Activity.RESULT_OK) {
                 data?.run {
-                    val categoryId = getLongExtra(CategoryPickerActivity.CATEGORY_RESULT_ID, -1)
-                    val categoryName = getStringExtra(CategoryPickerActivity.CATEGORY_RESULT_NAME)
+                    val categoryId = getLongExtra(CATEGORY_RESULT_ID, -1)
+                    val categoryName = getStringExtra(CATEGORY_RESULT_NAME)
                     productManageFilterModel?.let {
                         it.categoryId = categoryId.toString()
                         it.categoryName = categoryName
