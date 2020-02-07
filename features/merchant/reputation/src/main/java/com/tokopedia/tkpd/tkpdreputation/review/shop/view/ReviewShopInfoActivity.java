@@ -28,9 +28,7 @@ public class ReviewShopInfoActivity extends BaseSimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(savedInstanceState == null){
-            setupOpenReviewShopInfo(getIntent().getData(), getIntent().getExtras());
-        }
+        setupOpenReviewShopInfo(getIntent().getData(), getIntent().getExtras());
         super.onCreate(savedInstanceState);
     }
 
