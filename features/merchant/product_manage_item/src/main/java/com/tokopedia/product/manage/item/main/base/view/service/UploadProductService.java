@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.item.main.base.view.service;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -18,7 +19,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -53,7 +53,7 @@ import timber.log.Timber;
 
 import static com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.PRODUCT_VIEW_MODEL;
 
-public class UploadProductService extends BaseService implements AddProductServiceListener {
+public class UploadProductService extends Service implements AddProductServiceListener {
     public static final String TAG = "upload_product";
 
     public static final String ACTION_DRAFT_CHANGED = "com.tokopedia.draft.changed";
