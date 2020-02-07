@@ -31,8 +31,8 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -106,7 +106,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: ShopPageProductListResultViewModel
 
-    internal var shopPageTracking: NewShopPageTrackingBuyer? = null
+    internal var shopPageTracking: ShopPageTrackingBuyer? = null
 
     private var shopId: String? = null
     private var keyword: String = ""
@@ -234,7 +234,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         super.onCreate(savedInstanceState)
         context?.let {
-            shopPageTracking = NewShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListResultViewModel::class.java)
     }
@@ -469,7 +469,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
 
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
+                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, selectedEtalaseName)
                         ?: ""))
     }
 

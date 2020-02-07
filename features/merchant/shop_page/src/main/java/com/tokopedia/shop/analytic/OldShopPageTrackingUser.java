@@ -20,61 +20,61 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT_FROM_ZERO_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CART_BUTTON;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DISCUSSION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOWER_LIST;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_HOW_TO_ACTIVATE_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MANAGE_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MENU;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MENU_FROM_MORE_MENU;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MORE_MENU;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OPEN_OPERATIONAL_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_READ_NOTES;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REQUEST_OPEN_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REVIEW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE_BUTTON;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TAB;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OF_REQUEST_OPEN_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OPEN_OPERATIONAL_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.INFO;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.USE_VOUCHER;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_ADD_NOTE;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_ADD_PRODUCT;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_ADD_PRODUCT_FROM_ZERO_PRODUCT;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_CART_BUTTON;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_DISCUSSION;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_FOLLOWER_LIST;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_HOW_TO_ACTIVATE_SHOP;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_MANAGE_SHOP;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_MENU;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_MENU_FROM_MORE_MENU;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_MORE_MENU;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_OPEN_OPERATIONAL_SHOP;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_READ_NOTES;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_REQUEST_OPEN_SHOP;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_REVIEW;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_SHARE_BUTTON;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_SHOP_PAGE;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_SORT;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_SORT_BY;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_TAB;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.CLICK_VIEW_ALL;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ECOMMERCE;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.IMPRESSION;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.IMPRESSION_OF_REQUEST_OPEN_SHOP;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.IMPRESSION_OPEN_OPERATIONAL_SHOP;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.INFO;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.MANAGE_PRODUCT;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.MANAGE_SHOP;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.MERCHANT_VOUCHER;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.MVC_DETAIL;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.NO_SEARCH_RESULT;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.PRODUCT_NAVIGATION;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.PROMO_CLICK;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.PROMO_VIEW;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SEARCH;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SEARCH_BAR;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SEARCH_RESULT;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SEE_ALL;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SHOP_PAGE_BUYER;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SHOP_PAGE_SELLER;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.TOP_SECTION;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.USE_VOUCHER;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.VIEW_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.model.ListTitleTypeDef.HIGHLIGHTED;
 
-public class ShopPageTrackingUser {
+public class OldShopPageTrackingUser {
     public static final String SHOPPAGE = "/shoppage";
     public static final String SHOP_PAGE = "Shop page";
 
     protected final TrackingQueue trackingQueue;
 
-    public ShopPageTrackingUser(
+    public OldShopPageTrackingUser(
             TrackingQueue trackingQueue) {
         this.trackingQueue = trackingQueue;
     }
@@ -112,12 +112,12 @@ public class ShopPageTrackingUser {
             if (viewModel.isAvailable()) {
                 list.add(
                         DataLayer.mapOf(
-                                ShopPageTrackingConstant.ID, shopId,
-                                ShopPageTrackingConstant.NAME, joinDash(SHOP_PAGE, String.valueOf(position), viewModel.getVoucherName()),
-                                ShopPageTrackingConstant.POSITION, position,
-                                ShopPageTrackingConstant.CREATIVE, "",
-                                ShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(), //optional
-                                ShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherCode() //optional
+                                OldShopPageTrackingConstant.ID, shopId,
+                                OldShopPageTrackingConstant.NAME, joinDash(SHOP_PAGE, String.valueOf(position), viewModel.getVoucherName()),
+                                OldShopPageTrackingConstant.POSITION, position,
+                                OldShopPageTrackingConstant.CREATIVE, "",
+                                OldShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(), //optional
+                                OldShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherCode() //optional
                         )
                 );
             }
@@ -133,18 +133,18 @@ public class ShopPageTrackingUser {
     protected HashMap<String, Object> createMap(String event, String category, String action, String label,
                                                 @Nullable CustomDimensionShopPage customDimensionShopPage) {
         HashMap<String, Object> eventMap = new HashMap<>();
-        eventMap.put(ShopPageTrackingConstant.EVENT, event);
-        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, category);
-        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, action);
-        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, label);
+        eventMap.put(OldShopPageTrackingConstant.EVENT, event);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_CATEGORY, category);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_ACTION, action);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_LABEL, label);
         if (customDimensionShopPage != null) {
             addCustomDimension(eventMap, customDimensionShopPage);
             if (customDimensionShopPage instanceof CustomDimensionShopPageProduct) {
-                eventMap.put(ShopPageTrackingConstant.PRODUCT_ID,
+                eventMap.put(OldShopPageTrackingConstant.PRODUCT_ID,
                         ((CustomDimensionShopPageProduct) customDimensionShopPage).productId);
             }
             if (customDimensionShopPage instanceof CustomDimensionShopPageAttribution) {
-                eventMap.put(ShopPageTrackingConstant.ATTRIBUTION,
+                eventMap.put(OldShopPageTrackingConstant.ATTRIBUTION,
                         ((CustomDimensionShopPageAttribution) customDimensionShopPage).attribution);
             }
         }
@@ -161,9 +161,9 @@ public class ShopPageTrackingUser {
 
     private void addCustomDimension(HashMap<String, Object> eventMap,
                                     CustomDimensionShopPage customDimensionShopPage) {
-        eventMap.put(ShopPageTrackingConstant.SHOP_ID, customDimensionShopPage.shopId);
-        eventMap.put(ShopPageTrackingConstant.SHOP_TYPE, customDimensionShopPage.shopType);
-        eventMap.put(ShopPageTrackingConstant.PAGE_TYPE, SHOPPAGE);
+        eventMap.put(OldShopPageTrackingConstant.SHOP_ID, customDimensionShopPage.shopId);
+        eventMap.put(OldShopPageTrackingConstant.SHOP_TYPE, customDimensionShopPage.shopType);
+        eventMap.put(OldShopPageTrackingConstant.PAGE_TYPE, SHOPPAGE);
     }
 
     protected String joinDash(String... s) {
@@ -410,21 +410,21 @@ public class ShopPageTrackingUser {
 
     public void clickSeeAllMerchantVoucher(boolean isOwner) {
         Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put(ShopPageTrackingConstant.EVENT, CLICK_SHOP_PAGE);
-        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, shopPageBuyerOrSeller(isOwner));
-        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, SEE_ALL));
-        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, "");
+        eventMap.put(OldShopPageTrackingConstant.EVENT, CLICK_SHOP_PAGE);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_CATEGORY, shopPageBuyerOrSeller(isOwner));
+        eventMap.put(OldShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, SEE_ALL));
+        eventMap.put(OldShopPageTrackingConstant.EVENT_LABEL, "");
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
     public void clickDetailMerchantVoucher(boolean isOwner, String voucherId) {
         Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put(ShopPageTrackingConstant.EVENT, CLICK_SHOP_PAGE);
-        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, shopPageBuyerOrSeller(isOwner));
-        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, MVC_DETAIL));
-        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, "");
-        eventMap.put(ShopPageTrackingConstant.EVENT_PROMO_ID, voucherId);
+        eventMap.put(OldShopPageTrackingConstant.EVENT, CLICK_SHOP_PAGE);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_CATEGORY, shopPageBuyerOrSeller(isOwner));
+        eventMap.put(OldShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, MVC_DETAIL));
+        eventMap.put(OldShopPageTrackingConstant.EVENT_LABEL, "");
+        eventMap.put(OldShopPageTrackingConstant.EVENT_PROMO_ID, voucherId);
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
@@ -438,15 +438,15 @@ public class ShopPageTrackingUser {
         if (viewModelList.isEmpty()) return;
 
         HashMap<String, Object> eventMap = new HashMap<>();
-        eventMap.put(ShopPageTrackingConstant.EVENT, PROMO_CLICK);
-        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, SHOP_PAGE_BUYER);
-        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, USE_VOUCHER));
-        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, "");
-        eventMap.put(ShopPageTrackingConstant.EVENT_PROMO_ID, String.valueOf(viewModel.getVoucherId()));
+        eventMap.put(OldShopPageTrackingConstant.EVENT, PROMO_CLICK);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_CATEGORY, SHOP_PAGE_BUYER);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, USE_VOUCHER));
+        eventMap.put(OldShopPageTrackingConstant.EVENT_LABEL, "");
+        eventMap.put(OldShopPageTrackingConstant.EVENT_PROMO_ID, String.valueOf(viewModel.getVoucherId()));
         eventMap.put(
-                ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
-                        ShopPageTrackingConstant.PROMO_CLICK, DataLayer.mapOf(
-                                ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, shopId, positionIndex)
+                OldShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
+                        OldShopPageTrackingConstant.PROMO_CLICK, DataLayer.mapOf(
+                                OldShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, shopId, positionIndex)
                         )
                 )
         );
@@ -460,15 +460,15 @@ public class ShopPageTrackingUser {
         int index = 0;
         String voucherId = String.valueOf(merchantVoucherViewModelList.get(index).getVoucherId());
         HashMap<String, Object> eventMap = new HashMap<>();
-        eventMap.put(ShopPageTrackingConstant.EVENT, PROMO_VIEW);
-        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, SHOP_PAGE_BUYER);
-        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, joinDash(IMPRESSION, MERCHANT_VOUCHER, USE_VOUCHER));
-        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, "");
-        eventMap.put(ShopPageTrackingConstant.EVENT_PROMO_ID, voucherId);
+        eventMap.put(OldShopPageTrackingConstant.EVENT, PROMO_VIEW);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_CATEGORY, SHOP_PAGE_BUYER);
+        eventMap.put(OldShopPageTrackingConstant.EVENT_ACTION, joinDash(IMPRESSION, MERCHANT_VOUCHER, USE_VOUCHER));
+        eventMap.put(OldShopPageTrackingConstant.EVENT_LABEL, "");
+        eventMap.put(OldShopPageTrackingConstant.EVENT_PROMO_ID, voucherId);
         eventMap.put(
-                ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
-                        ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf(
-                                ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(merchantVoucherViewModelList, shopId, index)
+                OldShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
+                        OldShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf(
+                                OldShopPageTrackingConstant.PROMOTIONS, createMvcListMap(merchantVoucherViewModelList, shopId, index)
                         )
                 )
         );

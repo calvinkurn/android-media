@@ -26,7 +26,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.NewShopPageTrackingShopPageSetting
+import com.tokopedia.shop.analytic.ShopPageTrackingShopPageSetting
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.setting.di.component.ShopPageSettingComponent
@@ -67,7 +67,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var shopPageSettingViewModel: ShopPageSettingViewModel
 
-    lateinit var shopPageSettingTracking: NewShopPageTrackingShopPageSetting
+    lateinit var shopPageSettingTracking: ShopPageTrackingShopPageSetting
     lateinit var remoteConfig: RemoteConfig
 
     private lateinit var errorView: View
@@ -88,7 +88,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         remoteConfig = FirebaseRemoteConfigImpl(activity)
 
         activity?.let {
-            shopPageSettingTracking = NewShopPageTrackingShopPageSetting(TrackingQueue(it))
+            shopPageSettingTracking = ShopPageTrackingShopPageSetting(TrackingQueue(it))
         }
 
         // get data from extra

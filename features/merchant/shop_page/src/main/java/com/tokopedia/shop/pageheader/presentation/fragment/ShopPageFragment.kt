@@ -39,7 +39,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
-import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
@@ -119,7 +119,7 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     private var performanceMonitoring: PerformanceMonitoring? = null
-    var shopPageTracking: NewShopPageTrackingBuyer? =  null
+    var shopPageTracking: ShopPageTrackingBuyer? =  null
     var titles = listOf<String>()
     var shopId: String? = null
     var shopDomain: String? = null
@@ -273,7 +273,7 @@ class ShopPageFragment :
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
             performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-            shopPageTracking = NewShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID)
                 shopDomain = getStringExtra(SHOP_DOMAIN)

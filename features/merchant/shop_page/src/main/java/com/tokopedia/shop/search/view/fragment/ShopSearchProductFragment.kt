@@ -36,9 +36,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.NewShopPageTrackingShopSearchProduct
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingOldShopSearchProduct
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -116,10 +116,10 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var shopPageTrackingShopSearchProduct: ShopPageTrackingShopSearchProduct
+    lateinit var shopPageTrackingShopSearchProduct: ShopPageTrackingOldShopSearchProduct
 
     @Inject
-    lateinit var newShopPageTrackingShopSearchProduct: NewShopPageTrackingShopSearchProduct
+    lateinit var newShopPageTrackingShopSearchProduct: ShopPageTrackingShopSearchProduct
 
     @Inject
     lateinit var userSession: UserSessionInterface

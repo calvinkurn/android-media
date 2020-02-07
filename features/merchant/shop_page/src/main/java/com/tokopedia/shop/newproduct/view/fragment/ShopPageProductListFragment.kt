@@ -32,8 +32,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.NewShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopParamConstant
@@ -120,7 +120,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     lateinit var viewModel: ShopPageProductListViewModel
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var shopPageTracking: NewShopPageTrackingBuyer? = null
+    private var shopPageTracking: ShopPageTrackingBuyer? = null
     private var lastQuestId: Int = 0
     private var recyclerView: RecyclerView? = null
     private var isPaddingSet = false
@@ -614,7 +614,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context?.let { shopPageTracking = NewShopPageTrackingBuyer(TrackingQueue(it)) }
+        context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
     }

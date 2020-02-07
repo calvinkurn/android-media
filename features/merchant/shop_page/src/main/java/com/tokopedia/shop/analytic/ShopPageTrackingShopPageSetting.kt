@@ -1,13 +1,13 @@
 package com.tokopedia.shop.analytic
 
-import com.tokopedia.shop.analytic.NewShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 
-class NewShopPageTrackingShopPageSetting(
+class ShopPageTrackingShopPageSetting(
         trackingQueue: TrackingQueue
-) : NewShopPageTracking(trackingQueue) {
+) : ShopPageTracking(trackingQueue) {
     override fun clickBackArrow(isMyShop: Boolean, customDimensionShopPage: CustomDimensionShopPage?) {
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SETTING_PAGE_SELLER,

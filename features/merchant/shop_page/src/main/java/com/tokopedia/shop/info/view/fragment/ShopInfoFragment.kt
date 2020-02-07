@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -26,8 +25,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.NewShopPageTrackingShopPageInfo
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -65,7 +63,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var shopPageConfig: ShopPageConfig
     private lateinit var shopViewModel: ShopInfoViewModel
-    private lateinit var shopPageTracking: NewShopPageTrackingShopPageInfo
+    private lateinit var shopPageTracking: ShopPageTrackingShopPageInfo
     private lateinit var noteAdapter: BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>
 
     private var shopInfo: ShopInfoData? = null
@@ -87,7 +85,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         super.onViewCreated(view, savedInstanceState)
 
         shopInfo = arguments?.getParcelable(EXTRA_SHOP_INFO)
-        shopPageTracking = NewShopPageTrackingShopPageInfo(TrackingQueue(context!!))
+        shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(context!!))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
 
