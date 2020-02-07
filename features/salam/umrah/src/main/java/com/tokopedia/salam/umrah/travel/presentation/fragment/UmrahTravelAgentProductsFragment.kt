@@ -63,7 +63,7 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
 
 
     private fun onSuccessGetResult(data: List<UmrahTravelProduct>){
-        renderList(data, true)
+        renderList(data, data.size >= searchParam.limit)
     }
 
     private fun requestData(page:Int){

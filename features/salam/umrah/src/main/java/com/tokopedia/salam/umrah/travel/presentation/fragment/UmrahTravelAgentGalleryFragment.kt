@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesEntity
+import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesInput
 import com.tokopedia.salam.umrah.travel.data.UmrahGallery
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelGalleryAdapterTypeFactory
@@ -34,6 +35,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
     lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
 
     var galleries : UmrahGalleriesEntity = UmrahGalleriesEntity()
+    var galleriesParam : UmrahGalleriesInput = UmrahGalleriesInput()
 
     private var slugName: String? = ""
 
@@ -91,7 +93,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
     }
 
     private fun onSuccessGetResult(data : List<UmrahGallery>){
-        renderList(data,true)
+        renderList(data,data.size >= galleriesParam.limit)
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rv_umrah_travel_galleries

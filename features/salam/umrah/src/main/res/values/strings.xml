@@ -274,6 +274,7 @@
     <string name="umrah_travel_empty_gallery_title">Belum ada foto atau video di sini
 </string>
     <string name="umrah_travel_empty_gallery_sub_title">Kamu tetap bisa cek informasi tentang penyelenggara umroh ini di menu Info.</string>
+    <string name="umrah_travel_gallery_next_images">+%s</string>
 
 
 </resources>

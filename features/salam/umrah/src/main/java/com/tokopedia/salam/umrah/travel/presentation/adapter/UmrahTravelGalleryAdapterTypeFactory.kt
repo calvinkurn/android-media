@@ -15,9 +15,10 @@ import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTra
 class UmrahTravelGalleryAdapterTypeFactory (private val callback: BaseEmptyViewHolder.Callback): BaseAdapterTypeFactory(){
 
     fun type(type:String, size:Int) : Int {
-         return if((type.equals("DOCUMENTATION") || type.equals("TOOL")) && size ==1) UmrahTravelAgentGalleryOneImageViewHolder.LAYOUT
-         else if ((type.equals("DOCUMENTATION") || type.equals("TOOL")) && size >1) UmrahTravelAgentGalleryThreeImageViewHolder.LAYOUT
-         else UmrahTravelAgentGalleryVideoViewHolder.LAYOUT
+         return if((type.equals(TYPE_DOCUMENTATION) || type.equals(TYPE_TOOL)) && size ==1) UmrahTravelAgentGalleryOneImageViewHolder.LAYOUT
+         else if ((type.equals(TYPE_DOCUMENTATION) || type.equals(TYPE_TOOL)) && size >1) UmrahTravelAgentGalleryThreeImageViewHolder.LAYOUT
+         else if (type.equals(TYPE_VIDEO)) UmrahTravelAgentGalleryVideoViewHolder.LAYOUT
+         else 0
     }
 
     override fun type(viewModel: LoadingModel?): Int  = UmrahTravelAgentGalleryLoadingViewHolder.LAYOUT
@@ -31,4 +32,11 @@ class UmrahTravelGalleryAdapterTypeFactory (private val callback: BaseEmptyViewH
                 EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
                 else -> super.createViewHolder(parent, type)
             }
+
+    companion object{
+        const val TYPE_DOCUMENTATION = "DOCUMENTATION"
+        const val TYPE_TOOL = "TOOL"
+        const val TYPE_VIDEO = "VIDEO"
+    }
+
 }

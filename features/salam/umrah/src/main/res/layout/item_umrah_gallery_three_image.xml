@@ -40,51 +40,76 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iw_umrah_gallery_three_image_first"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_120"
                 android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_1"
                 android:layout_marginBottom="@dimen/dp_12"
                 android:layout_weight="1"
-                android:adjustViewBounds="true" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iw_umrah_gallery_three_image_second"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_1"
-                android:layout_marginBottom="@dimen/dp_12"
-                android:layout_weight="1"
-                android:adjustViewBounds="true" />
-
-            <FrameLayout
-                android:id="@+id/fr_plus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_12"
-                android:layout_weight="1">
+                app:cardElevation="0dp"
+                app:cardCornerRadius="@dimen/dp_8">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iw_umrah_gallery_three_image_third"
+                    android:id="@+id/iw_umrah_gallery_three_image_first"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true" />
+                    android:layout_height="@dimen/dp_120"
+                    android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
 
-                <com.tokopedia.unifyprinciples.Typography
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_120"
+                android:layout_marginLeft="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_1"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_weight="1"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="@dimen/dp_8">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iw_umrah_gallery_three_image_second"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:background="@drawable/umrah_bg_rounded_image"
-                    android:gravity="center"
-                    android:text="+5"
-                    android:textColor="@color/white" />
-            </FrameLayout>
+                    android:layout_height="@dimen/dp_120"
+                    android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_120"
+                android:layout_marginLeft="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_weight="1"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="@dimen/dp_8">
+
+                <FrameLayout
+                    android:id="@+id/fr_plus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iw_umrah_gallery_three_image_third"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_120"
+                        android:scaleType="centerCrop" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tg_umrah_gallery_three_next_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_120"
+                        android:layout_gravity="center"
+                        android:background="@drawable/umrah_bg_rounded_image"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:visibility="invisible"
+                        app:typographyType="heading_6"
+                        app:typographyWeight="bold"
+                        tools:text="+5" />
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
