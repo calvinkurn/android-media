@@ -20,6 +20,7 @@ import com.tokopedia.analytics.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.FCMCacheManager
@@ -125,9 +126,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 is Fail -> {
                     hideLoading()
                     DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-                        setTitle("Logout")
+                        setTitle(getString(R.string.logout))
                         setDescription(it.throwable.message.toString())
-                        setPrimaryCTAText("Coba lagi")
+                        setPrimaryCTAText(getString(R.string.try_again))
                         setCancelable(false)
                         setOverlayClose(false)
                         setPrimaryCTAClickListener {
@@ -149,6 +150,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         PersistentCacheManager.instance.delete()
         AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
         NotificationModHandler.clearCacheAllNotification(applicationContext)
+        CacheApiClearAllUseCase(applicationContext).executeSync()
 
         val notify = NotificationModHandler(applicationContext)
         notify.dismissAllActivedNotifications()
