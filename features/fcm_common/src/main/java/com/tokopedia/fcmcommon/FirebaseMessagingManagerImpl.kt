@@ -34,10 +34,8 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 
     override fun onNewToken(newToken: String?) {
         if (newToken == null || !isNewToken(newToken)) return
-        launch {
-            withContext(coroutineContextProvider.IO) {
-                updateTokenOnServer(newToken)
-            }
+        launch(coroutineContextProvider.IO) {
+            updateTokenOnServer(newToken)
         }
     }
 
