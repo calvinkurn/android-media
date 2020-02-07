@@ -105,7 +105,7 @@ class InspirationCarouselViewHolder(
         }
 
         private fun getTopOffset(): Int {
-            return (margin / 2) - (cardViewVerticalOffset / 2)
+            return margin - cardViewVerticalOffset
         }
 
         private fun getRightOffset(cardView: CardView, parent: RecyclerView): Int {
