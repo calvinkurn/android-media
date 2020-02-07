@@ -13,6 +13,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
@@ -63,14 +64,15 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         activity?.finish()
     }
 
-    override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
-        textInputCoupon.setText(promoHistoryItem.promoCode)
+    override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
+        textInputCoupon.setText(promoCheckoutLastSeenModel.promoCode)
     }
 
     override fun loadData(page: Int) {
         if(isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
+        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
     }
 
     override fun initInjector() {
@@ -80,9 +82,6 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     override fun onDestroyView() {
         promoCheckoutListDigitalPresenter.detachView()
         super.onDestroyView()
-    }
-
-    override fun onClickRedeemCoupon(catalog_id: Int?, slug: String?, title: String, creativeName: String, position: Int) {
     }
 
     companion object {
