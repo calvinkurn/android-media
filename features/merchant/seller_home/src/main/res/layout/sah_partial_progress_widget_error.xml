@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sah_error_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/sah_medium_widget_height"
+    android:padding="16dp"
     android:visibility="gone">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -21,23 +22,24 @@
 
     <ImageView
         android:id="@+id/iv_error"
-        android:layout_width="107dp"
+        android:layout_width="110dp"
         android:layout_height="80dp"
         android:layout_marginTop="30dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/unify_globalerrors_connection"
         app:layout_constraintBottom_toTopOf="@id/tv_error_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:src="@drawable/unify_globalerrors_connection" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:text="@string/sah_widget_error_message"
+        android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

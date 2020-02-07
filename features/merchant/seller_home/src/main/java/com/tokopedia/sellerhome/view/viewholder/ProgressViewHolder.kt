@@ -1,13 +1,12 @@
 package com.tokopedia.sellerhome.view.viewholder
 
 import android.view.View
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.view.model.ProgressDataUiModel
 import com.tokopedia.sellerhome.view.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import kotlinx.android.synthetic.main.sah_partial_progress_widget.view.*
@@ -73,6 +72,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
         hideProgressLayout()
         hideShimmeringLayout()
         itemView.tv_error_card_title.text = element.title
+        ImageHandler.loadImageWithId(itemView.iv_error, R.drawable.unify_globalerrors_connection)
         showErrorLayout()
     }
 
@@ -94,7 +94,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
 
     private fun setupDetails(element: ProgressWidgetUiModel) {
         with(itemView) {
-            if(element.ctaText.isNotEmpty() && element.appLink.isNotEmpty() ) {
+            if (element.ctaText.isNotEmpty() && element.appLink.isNotEmpty()) {
                 tv_see_details.text = element.ctaText
                 tv_see_details.visibility = View.VISIBLE
                 iv_arrow_url.visibility = View.VISIBLE
