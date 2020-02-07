@@ -33,8 +33,7 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_PRODUCT
+import com.tokopedia.shop.analytic.NewShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopParamConstant
@@ -112,6 +111,12 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         get() = if (shopInfo != null && ::viewModel.isInitialized) {
             shopId?.let { viewModel.isMyShop(it) } ?: false
         } else false
+
+    private val isLoggedIn: Boolean
+        get() = if (::viewModel.isInitialized) {
+            viewModel.isLoggedIn()
+        } else false
+
     lateinit var viewModel: ShopPageProductListViewModel
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -251,20 +256,20 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onButtonClaimClicked(questId: Int) {
-        shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_COUPON_CLAIM)
+        shopPageTracking?.sendEventMembership(MEMBERSHIP_COUPON_CLAIM)
         lastQuestId = questId
         viewModel.claimMembershipBenefit(questId)
     }
 
     override fun goToVoucherOrRegister(url: String?, clickOrigin: String?) {
         val intent: Intent = if (url == null) {
-            shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_COUPON_CHECK)
+            shopPageTracking?.sendEventMembership(MEMBERSHIP_COUPON_CHECK)
             RouteManager.getIntent(context, ApplinkConst.COUPON_LISTING)
         } else {
             if (clickOrigin == GO_TO_MEMBERSHIP_DETAIL) {
-                shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_DETAIL_PAGE)
+                shopPageTracking?.sendEventMembership(MEMBERSHIP_DETAIL_PAGE)
             } else {
-                shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_CLICK_MEMBER)
+                shopPageTracking?.sendEventMembership(MEMBERSHIP_CLICK_MEMBER)
             }
             RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         }
@@ -353,7 +358,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         goToPDP(
                 shopProductViewModel.id ?: "",
                 attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, shopProductAdapter.shopProductEtalaseListViewModel?.selectedEtalaseName)
+                shopPageTracking?.getListNameOfProduct(PRODUCT, shopProductAdapter.shopProductEtalaseListViewModel?.selectedEtalaseName)
                         ?: ""
         )
     }
@@ -574,11 +579,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun onAddProductClicked() {
         context?.let {
-            shopPageTracking?.clickAddProduct(CustomDimensionShopPage.create(
-                    shopId ?: "",
-                    isOfficialStore,
-                    isGoldMerchant
-            ))
+            shopPageTracking?.clickAddProduct(customDimensionShopPage)
             RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
         }
     }

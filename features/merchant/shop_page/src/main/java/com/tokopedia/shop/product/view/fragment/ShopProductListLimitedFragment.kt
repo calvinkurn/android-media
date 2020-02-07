@@ -926,7 +926,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 promoClicked(urlNeedTobBeProceed)
             }
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK && data != null) {
-                val sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                val sortName = data.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 if (shopId == null)
                     return
 

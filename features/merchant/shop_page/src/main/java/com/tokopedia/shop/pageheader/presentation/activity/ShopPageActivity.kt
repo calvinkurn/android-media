@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -157,7 +158,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return false
+    }
 
     private fun openOldShopPage() {
         val oldShopPageIntent = Intent(intent)

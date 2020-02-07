@@ -29,16 +29,6 @@ class NewShopPageTrackingShopSearchProduct(
         )
     }
 
-    fun clickManualSearch(pageName: String, keyword: String, pageUrl: String) {
-        sendEvent(
-                CLICK_TOP_NAV,
-                String.format(TOP_NAV, pageName),
-                SHOP_SEARCH_PRODUCT_CLICK_SEARCH,
-                String.format(LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_PAGEURL, keyword, pageUrl),
-                null
-        )
-    }
-
     fun clickAutocompleteInternalShopPage(isOwner: Boolean, keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
         sendGeneralEvent(
                 "",

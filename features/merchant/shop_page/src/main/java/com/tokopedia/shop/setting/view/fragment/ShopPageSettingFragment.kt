@@ -154,6 +154,22 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingList.add(Product())
         shopPageSettingList.add(Support())
         shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+        shopPageSettingList.add(Shipping())
+
         shopPageSettingAdapter.setShopPageSettingList(shopPageSettingList)
 
         // get shop info

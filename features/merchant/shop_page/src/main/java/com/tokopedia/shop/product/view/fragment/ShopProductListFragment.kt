@@ -699,7 +699,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
                 val sortId = data!!.getStringExtra(ShopProductSortActivity.SORT_ID)
-                sortValue = data.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                sortValue = data.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 this.isLoadingInitialData = true
                 loadInitialData()
                 shopInfo?.let {

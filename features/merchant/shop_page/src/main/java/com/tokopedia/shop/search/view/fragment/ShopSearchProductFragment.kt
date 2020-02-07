@@ -219,14 +219,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onItemClicked(dataModel: ShopSearchProductDataModel) {
         when (dataModel.type) {
             ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP -> {
-                if(isNewShopPageEnabled()){
-                    newShopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
-                            isMyShop,
-                            searchQuery,
-                            customDimensionShopPage
-                    )
-                }
-                else {
+                if(!isNewShopPageEnabled()){
                     shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
                             SCREEN_SHOP_PAGE,
                             searchQuery,
@@ -245,13 +238,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                if(isNewShopPageEnabled()) {
-                    newShopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
-                            isMyShop,
-                            searchQuery,
-                            customDimensionShopPage
-                    )
-                }else{
+                if(!isNewShopPageEnabled()) {
                     shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
                             SCREEN_SHOP_PAGE,
                             searchQuery,
@@ -329,14 +316,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 goToCart()
             }
             REQUEST_CODE_SORT -> {
-                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME)
-                sortName?.let {
+                val sortValue = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE)
+                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?:  ""
+                sortValue?.let {
                     newShopPageTrackingShopSearchProduct.clickSortBy(
                             isMyShop,
-                            sortName,
+                            sortValue,
                             customDimensionShopPage
                     )
-                    sortValue = sortName
+                    this.sortValue = sortValue
                     searchQuery = editTextSearchProduct.text.toString()
                     redirectToShopProductListPage()
                     activity?.finish()
@@ -622,6 +610,10 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun onClickSort() {
+        redirectToShopProductSortPage()
+    }
+
+    private fun redirectToShopProductSortPage() {
         val intent = ShopProductSortActivity.createIntent(activity, sortValue)
         startActivityForResult(intent, REQUEST_CODE_SORT)
     }

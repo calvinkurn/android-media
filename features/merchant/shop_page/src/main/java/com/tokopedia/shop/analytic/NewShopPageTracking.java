@@ -310,8 +310,8 @@ public class NewShopPageTracking {
                           CustomDimensionShopPage customDimensionShopPage) {
         sendEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
-                joinDash(PRODUCT_NAVIGATION, CLICK),
                 CLICK_SORT,
+                "",
                 customDimensionShopPage);
     }
 
@@ -472,5 +472,15 @@ public class NewShopPageTracking {
 
     public void clickSettingButton(CustomDimensionShopPage customDimension) {
         sendGeneralEvent(CLICK_SHOP_PAGE, SHOP_PAGE_SELLER, CLICK_SETTING, "", customDimension);
+    }
+
+    public void sortProduct(String sortName, boolean isOwner, CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                SORT_PRODUCT,
+                String.format(CLICK_SORT_BY, sortName),
+                customDimensionShopPage
+        );
     }
 }

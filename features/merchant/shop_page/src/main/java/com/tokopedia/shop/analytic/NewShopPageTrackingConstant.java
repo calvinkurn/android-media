@@ -6,7 +6,8 @@ package com.tokopedia.shop.analytic;
 
 public class NewShopPageTrackingConstant {
 
-    public static final String FEATURED_PRODUCT = "Produk Unggulan";
+    public static final String FEATURED_PRODUCT = "top product";
+    public static final String HIGHLIGHT_SOLD_PRODUCT = "sold product";
 
     //event
     public static final String CLICK_SHOP_PAGE = "clickShopPage";
@@ -48,8 +49,7 @@ public class NewShopPageTrackingConstant {
     public static final String CLICK_SEND_CHAT = "click on kirim pesan";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_CART_BUTTON = "click cart button - search result";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
-    public static final String SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX = "click search box";
-    public static final String SHOP_SEARCH_PRODUCT_CLICK_SEARCH = "click - search";
+    public static final String CLICK_SEARCH = "click search";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
@@ -116,6 +116,12 @@ public class NewShopPageTrackingConstant {
     public static final String MEMBERSHIP_COUPON_CLAIM = "click klaim kupon";
     public static final String MEMBERSHIP_COUPON_CHECK = "click cek kupon saya";
     public static final String ETALASE_X = "etalase %1s";
+    public static final String CLICK_PRODUCT = "click product";
+    public static final String SEARCH_PRODUCT = "search product";
+    public static final String SEARCH_PRODUCT_RESULT = "search result";
+    public static final String SEARCH_PRODUCT_NO_RESULT = "no search result";
+
+
 
     //key
     public static final String EVENT = "event";

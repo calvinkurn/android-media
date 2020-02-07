@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
-                                       private val shopPageTracking: NewShopPageTrackingBuyer,
+                                       private val shopPageTracking: NewShopPageTrackingBuyer?,
                                        private val context: Context) {
     private var isShopFavourited = false
     private var isShopRequestedModerate = false
@@ -114,14 +114,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 when (shopInfo.statusInfo.shopStatus) {
                     ShopStatusDef.CLOSED -> {
-                        shopPageTracking.sendOpenShop()
-                        shopPageTracking.clickOpenOperationalShop(CustomDimensionShopPage
+                        shopPageTracking?.sendOpenShop()
+                        shopPageTracking?.clickOpenOperationalShop(CustomDimensionShopPage
                                 .create(shopInfo.shopCore.shopID,
                                         shopInfo.goldOS.isOfficial == 1,
                                         shopInfo.goldOS.isGold == 1))
                     }
                     ShopStatusDef.NOT_ACTIVE -> {
-                        shopPageTracking.clickHowToActivateShop(CustomDimensionShopPage
+                        shopPageTracking?.clickHowToActivateShop(CustomDimensionShopPage
                                 .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
                                         shopInfo.goldOS.isGold == 1))
                     }

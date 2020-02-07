@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
@@ -13,6 +14,8 @@ import com.tokopedia.shop.analytic.model.TrackShopTypeDef;
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,10 +121,11 @@ public class NewShopPageTrackingBuyer extends NewShopPageTracking {
 
     public void clickFollowUnfollowShop(boolean isFollow,
                                         CustomDimensionShopPage customDimensionShopPage) {
+        String followUnfollow = isFollow ? FOLLOW : UNFOLLOW;
         sendEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
-                joinDash(TOP_SECTION, CLICK),
-                joinSpace(CLICK, isFollow ? FOLLOW : UNFOLLOW),
+                joinSpace(CLICK, followUnfollow),
+                "",
                 customDimensionShopPage);
     }
 
@@ -156,15 +160,23 @@ public class NewShopPageTrackingBuyer extends NewShopPageTracking {
                              ShopProductViewModel shopProductViewModel,
                              int productPosStart,
                              String shopId, String shopName, boolean isActiveFreeOngkir) {
-        sendDataLayerEvent(
-                createProductClickMap(PRODUCT_CLICK,
-                        getShopPageCategory(isOwner),
-                        joinDash(joinSpace(listType, sectionName), CLICK),
-                        CLICK_PRODUCT_PICTURE,
-                        customDimensionShopPage,
-                        shopProductViewModel,
-                        listType, sectionName,
-                        productPosStart, shopId, shopName, isActiveFreeOngkir));
+        if (isOwner) {
+            sendEvent(CLICK_SHOP_PAGE,
+                    SHOP_PAGE_SELLER,
+                    joinDash(joinSpace(listType, sectionName), CLICK),
+                    CLICK_PRODUCT_PICTURE,
+                    customDimensionShopPage);
+        } else {
+            sendDataLayerEvent(
+                    createProductClickMap(PRODUCT_CLICK,
+                            SHOP_PAGE_BUYER,
+                            joinDash(joinSpace(listType, sectionName), CLICK),
+                            CLICK_PRODUCT_PICTURE,
+                            customDimensionShopPage,
+                            shopProductViewModel,
+                            listType, sectionName,
+                            productPosStart, shopId, shopName, isActiveFreeOngkir));
+        }
     }
 
     public void impressionProductList(boolean isOwner,
@@ -209,13 +221,13 @@ public class NewShopPageTrackingBuyer extends NewShopPageTracking {
                 SHOP_PAGE, CLICK_SEND_CHAT, "");
     }
 
-    public void clickSearchBox(String pageName) {
+    public void clickSearch(boolean isOwner, CustomDimensionShopPage customDimensionShopPage) {
         sendEvent(
-                CLICK_TOP_NAV,
-                String.format(TOP_NAV, pageName),
-                SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX,
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                CLICK_SEARCH,
                 "",
-                null
+                customDimensionShopPage
         );
     }
 
@@ -237,11 +249,11 @@ public class NewShopPageTrackingBuyer extends NewShopPageTracking {
     }
 
     public void clickFollowUnfollow(boolean isShopFavorited, CustomDimensionShopPage customDimensionShopPage) {
-        String  action;
-        if(!isShopFavorited){
-            action= CLICK_FOLLOW;
-        }else{
-            action= CLICK_UNFOLLOW;
+        String action;
+        if (!isShopFavorited) {
+            action = CLICK_FOLLOW;
+        } else {
+            action = CLICK_UNFOLLOW;
         }
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
@@ -260,20 +272,36 @@ public class NewShopPageTrackingBuyer extends NewShopPageTracking {
                 customDimensionShopPage);
     }
 
-    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain ,String shopLocation,
+    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation,
                                           Boolean isShopOfficaial, Boolean isFollowed) {
         Map<String, Object> mapData = DataLayer.mapOf(
-                ShopPageTrackingConstant.SHOP_NAME ,shopName,
-                ShopPageTrackingConstant.SHOP_ID ,shopID,
-                ShopPageTrackingConstant.SHOP_LOCATION ,shopLocation,
-                ShopPageTrackingConstant.URL_SLUG ,shopDomain,
-                ShopPageTrackingConstant.IS_OFFICIAL_STORE ,isShopOfficaial
+                ShopPageTrackingConstant.SHOP_NAME, shopName,
+                ShopPageTrackingConstant.SHOP_ID, shopID,
+                ShopPageTrackingConstant.SHOP_LOCATION, shopLocation,
+                ShopPageTrackingConstant.URL_SLUG, shopDomain,
+                ShopPageTrackingConstant.IS_OFFICIAL_STORE, isShopOfficaial
         );
         String eventName;
         if (isFollowed)
-            eventName =  ShopPageTrackingConstant.SELLER_ADDED_TO_FAVORITE;
+            eventName = ShopPageTrackingConstant.SELLER_ADDED_TO_FAVORITE;
         else
             eventName = ShopPageTrackingConstant.SELLER_REMOVED_FROM_FAVORITE;
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(mapData,eventName);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(mapData, eventName);
+    }
+
+    public void searchProduct(
+            String keyword,
+            boolean isProductSearchResultEmpty,
+            boolean isOwner,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        String productResultLabel = isProductSearchResultEmpty ? SEARCH_PRODUCT_NO_RESULT : SEARCH_PRODUCT_RESULT;
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                SEARCH_PRODUCT,
+                joinSpace(SEARCH, joinDash(keyword, productResultLabel)),
+                customDimensionShopPage
+        );
     }
 }

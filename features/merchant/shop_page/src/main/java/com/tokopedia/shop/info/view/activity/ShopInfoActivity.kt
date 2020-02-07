@@ -3,6 +3,7 @@ package com.tokopedia.shop.info.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -38,6 +39,10 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
     override fun getComponent(): ShopComponent = ShopComponentInstance.getComponent(application)
 
     override fun getNewFragment(): Fragment? = createShopInfoFragment()
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return false
+    }
 
     private fun createShopInfoFragment(): ShopInfoFragment {
         val shopId = intent.getStringExtra(SHOP_ID) ?: intent.data?.lastPathSegment.orEmpty()
