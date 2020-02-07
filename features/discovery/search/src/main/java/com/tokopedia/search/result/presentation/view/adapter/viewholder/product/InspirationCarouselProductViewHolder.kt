@@ -1,12 +1,8 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
@@ -54,26 +50,15 @@ class InspirationCarouselProductViewHolder(
         itemView.viewAllOption?.setOnClickListener { _ ->
             inspirationCarouselListener.onInspirationCarouselSeeAllClicked(item)
         }
-        itemView.productOption?.setOnClickListener { _ ->
+        itemView.optionCardView?.setOnClickListener { _ ->
             inspirationCarouselListener.onInspirationCarouselProductClicked(item.product[0])
         }
     }
 
     private fun bindProductImage(imgUrl: String) {
         itemView.productImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
-            it.loadProductImageRounded(imgUrl)
+            ImageHandler.loadImageFitCenter(itemView.context, it, imgUrl)
         }
-    }
-
-    private fun ImageView.loadProductImageRounded(url: String) {
-        Glide.with(context)
-                .load(url)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .transform(RoundedCorners(6))
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.search_inspiration_carousel_error_product_image)
-                .error(R.drawable.search_inspiration_carousel_error_product_image)
-                .into(this)
     }
 
     private fun bindProductName(productName: String) {
