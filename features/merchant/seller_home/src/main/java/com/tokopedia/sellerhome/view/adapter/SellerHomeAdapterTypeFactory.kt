@@ -32,7 +32,7 @@ class SellerHomeAdapterTypeFactory(
         return DescriptionViewHolder.RES_LAYOUT
     }
 
-    override fun type(sectionWdget: SectionWidgetUiModel): Int {
+    override fun type(sectionWidget: SectionWidgetUiModel): Int {
         return SectionViewHolder.RES_LAYOUT
     }
 
