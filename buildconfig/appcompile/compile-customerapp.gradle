@@ -89,7 +89,7 @@ include "features:im:referral"
 include "features:kyc"
 include "features:scanner"
 
-include "features:logistic:tracking"
+include "features:logistic:logisticorder"
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
@@ -192,7 +192,6 @@ include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
-include "features:discovery:smart_recycler_diffutil_helper"
 include "features:user:seamless_login"
 
 include 'features:fcm_common'
