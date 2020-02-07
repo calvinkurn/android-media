@@ -47,7 +47,7 @@ class ShopInfoUseCase @Inject constructor(
         }
 
         response.getError(ShopInfoPojo::class.java)?.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)) {
                     return onFailedGetShopInfo(Throwable(it[0].message))
                 }

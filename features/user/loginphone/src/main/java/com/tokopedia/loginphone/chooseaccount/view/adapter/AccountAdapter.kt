@@ -49,11 +49,11 @@ class AccountAdapter private constructor(
         holder.name.text = MethodChecker.fromHtml(userDetail.fullname)
         holder.email.text = userDetail.email
         val shopDetail = userDetail.shopDetail
-        if (shopDetail != null) {
-            if (!shopDetail.name.isEmpty()) {
-                holder.shopView.visibility = View.VISIBLE
-                holder.shopName.text = userDetail.shopDetail!!.name
-            }
+        if (shopDetail != null && shopDetail.name.isNotEmpty()) {
+            holder.shopView.visibility = View.VISIBLE
+            holder.shopName.text = shopDetail.name
+        } else {
+            holder.shopView.visibility = View.GONE
         }
     }
 

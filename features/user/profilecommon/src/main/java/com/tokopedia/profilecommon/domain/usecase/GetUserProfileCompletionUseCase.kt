@@ -42,7 +42,7 @@ class GetUserProfileCompletionUseCase @Inject constructor(
         }
 
         response.getError(GetUserProfileCompletionPojo::class.java)?.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)) {
                     return onFailedGetUserProfile(Throwable(it[0].message))
                 }

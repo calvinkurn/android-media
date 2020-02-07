@@ -87,19 +87,19 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initVar() {
         val phone = arguments?.getString(ApplinkConstInternalGlobal.PARAM_PHONE, "")
-        if(phone != null)
+        if (phone != null)
             this.phone = phone
     }
 
     private fun initView() {
         textFieldName.textFieldInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) { }
+            override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 s?.let {
-                     when {
+                    when {
                         it.length < MINIMUM_LENGTH -> {
                             textFieldName.setMessage(getString(R.string.error_minimal_name))
                             textFieldName.setError(true)
@@ -126,7 +126,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
 
         textFieldName.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus) {
+            if (hasFocus) {
                 LetUtil.ifLet(context, v) { (context, view) ->
                     showKeyboardFrom(context as Context, view as View)
                 }
@@ -139,15 +139,15 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 it.isFocusable = false
             }
 
-            LetUtil.ifLet(context, view?.parent) {  (context, view) ->
+            LetUtil.ifLet(context, view?.parent) { (context, view) ->
                 hideKeyboardFrom(context as Context, view as View)
             }
         }
 
-        if(phone.isEmpty()) {
+        if (phone.isEmpty()) {
             buttonContinue.setOnClickListener {
                 val name = textFieldName.textFieldInput.text.toString()
-                if(name.isNotEmpty()) {
+                if (name.isNotEmpty()) {
                     buttonContinue.isLoading = true
                     shopCreationViewModel.addName(name)
                 } else {
@@ -157,7 +157,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         } else {
             buttonContinue.setOnClickListener {
                 val name = textFieldName.textFieldInput.text.toString()
-                if(name.isNotEmpty()) {
+                if (name.isNotEmpty()) {
                     buttonContinue.isLoading = true
                     shopCreationViewModel.registerPhoneAndName(phone, name)
                 } else {
@@ -245,11 +245,11 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         textFieldName.setMessage("")
     }
 
-    private fun toastError (throwable: Throwable) {
+    private fun toastError(throwable: Throwable) {
         throwable.message?.let { toastError(it) }
     }
 
-    private fun toastError (message: String) {
+    private fun toastError(message: String) {
         view?.run {
             Toaster.make(this, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
         }

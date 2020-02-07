@@ -169,7 +169,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 userSession.name.isEmpty()) {
             goToNameShopCreation()
         } else {
-            goToShopName()
+            if (userSession.hasShop())
+                shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
+            else goToShopName()
         }
     }
 
@@ -181,13 +183,11 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun onSuccessGetShopInfo(shopInfoByID: ShopInfoByID) {
-        if (!userSession.hasShop()){
+        if (!userSession.hasShop()) {
             goToShopName()
-        }
-        else if(shopInfoByID.result.isNotEmpty() && shopInfoByID.result[0].shippingLoc.provinceID < 1) {
+        } else if (shopInfoByID.result.isNotEmpty() && shopInfoByID.result[0].shippingLoc.provinceID < 1) {
             goToShopLogistic()
-        }
-        else goToShopPage(userSession.shopId)
+        } else goToShopPage(userSession.shopId)
     }
 
     private fun onFailedGetShopInfo(throwable: Throwable) {
@@ -224,8 +224,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun goToShopLogistic() {
         activity?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            intent.putExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, true)
             it.startActivity(intent)
             it.finish()
         }
@@ -245,17 +246,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             Activity.RESULT_OK -> {
                 when (requestCode) {
                     REQUEST_CODE_PHONE_SHOP_CREATION -> {
-                        if(data != null) {
-                            data.extras?.run {
-                                if(getBoolean(ApplinkConstInternalGlobal.PARAM_IS_HAVE_STORE, false)) {
-                                    goToShopPage(getString(ApplinkConstInternalGlobal.PARAM_SHOP_ID, ""))
-                                } else {
-                                    shopCreationViewModel.getUserInfo()
-                                }
-                            }
-                        } else {
-                            shopCreationViewModel.getUserInfo()
-                        }
+                        shopCreationViewModel.getUserInfo()
                     }
                     REQUEST_CODE_NAME_SHOP_CREATION -> {
                         shopCreationViewModel.getUserInfo()
@@ -287,6 +278,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         super.onDestroy()
         shopCreationViewModel.getUserProfileResponse.removeObservers(this)
         shopCreationViewModel.getUserInfoResponse.removeObservers(this)
+        shopCreationViewModel.getShopInfoResponse.removeObservers(this)
         shopCreationViewModel.flush()
     }
 

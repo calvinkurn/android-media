@@ -45,8 +45,6 @@ object ApplinkConstInternalGlobal {
     val PARAM_LOGIN_TYPE = "loginType"
     @JvmField
     val PARAM_IS_SQ_CHECK = "isSqCheck"
-    @JvmField
-    val PARAM_IS_HAVE_STORE = "isHaveStore"
 
     //VerificationActivity Param
     @JvmField

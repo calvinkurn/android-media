@@ -88,9 +88,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     lateinit var mIris: Iris
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
 
-    private var isHaveStore: Boolean = false
-    private var shopId: String = ""
-
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -235,14 +232,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun loginToken(account: UserDetail?, phone: String) {
         account?.let {
-            it.shopDetail?.let { shopDetail ->
-                if (shopDetail.name.isNotEmpty() &&
-                        shopDetail.id.isNotEmpty()) {
-                    isHaveStore = true
-                    shopId = shopDetail.id
-                }
-            }
-
             when (viewModel.loginType) {
                 FACEBOOK_LOGIN_TYPE -> {
                     if (phone.isNotEmpty()) {
@@ -271,10 +260,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             setTrackingUserId(userId)
             setFCM()
 
-            val intent = Intent()
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_HAVE_STORE, isHaveStore)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SHOP_ID, shopId)
-            it.setResult(Activity.RESULT_OK, intent)
+            it.setResult(Activity.RESULT_OK)
             it.finish()
         }
     }

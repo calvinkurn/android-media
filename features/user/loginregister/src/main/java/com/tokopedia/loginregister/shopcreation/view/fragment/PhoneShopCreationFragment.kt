@@ -92,7 +92,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         textFieldPhone.textFieldInput.addTextChangedListener(object : PhoneNumberTextWatcher(textFieldPhone.textFieldInput) {
             override fun onTextChanged(s: CharSequence, cursorPosition: Int, before: Int, count: Int) {
                 super.onTextChanged(s, cursorPosition, before, count)
-                if(isValidPhone(s.toString())) {
+                if (isValidPhone(s.toString())) {
                     buttonContinue.isEnabled = true
                     textFieldPhone.setError(false)
                     clearMessageFieldPhone()
@@ -106,8 +106,8 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
 
         textFieldPhone.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus) {
-                LetUtil.ifLet(context, v) {  (context, view) ->
+            if (hasFocus) {
+                LetUtil.ifLet(context, v) { (context, view) ->
                     showKeyboardFrom(context as Context, view as View)
                 }
             }
@@ -116,10 +116,10 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         buttonContinue.setOnClickListener {
             shopCreationAnalytics.eventClickContinuePhoneShopCreation()
             phone = textFieldPhone.textFieldInput.text.toString().trim()
-            if(phone.isNotEmpty()){
+            if (phone.isNotEmpty()) {
                 phone = "0$phone"
                 buttonContinue.isLoading = true
-                if(userSession.isLoggedIn) {
+                if (userSession.isLoggedIn) {
                     shopCreationViewModel.validateUserProfile(phone.replace("-", ""))
                 } else {
                     shopCreationViewModel.registerCheck(phone.replace("-", ""))
@@ -135,7 +135,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 it.isFocusable = false
             }
 
-            LetUtil.ifLet(context, view?.parent) {  (context, view) ->
+            LetUtil.ifLet(context, view?.parent) { (context, view) ->
                 hideKeyboardFrom(context as Context, view as View)
             }
         }
@@ -196,7 +196,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                         }
                     }
                     REQUEST_REGISTER_PHONE -> {
-                        if(phone.isNotEmpty())
+                        if (phone.isNotEmpty())
                             goToRegisterAddNamePage(phone.replace("-", ""))
                     }
                     REQUEST_NAME_SHOP_CREARION -> {
@@ -206,7 +206,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                         }
                     }
                     REQUEST_COTP_PHONE_VERIFICATION -> {
-                        if(phone.isNotEmpty()) {
+                        if (phone.isNotEmpty()) {
                             shopCreationViewModel.addPhone(phone.replace("-", ""))
                         } else {
                             toastError(getString(R.string.please_fill_phone_number))
@@ -214,10 +214,8 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                     REQUEST_CHOOSE_ACCOUNT -> {
                         activity?.let {
-                            data?.run {
-                                it.setResult(Activity.RESULT_OK, this)
-                                it.finish()
-                            }
+                            it.setResult(Activity.RESULT_OK)
+                            it.finish()
                         }
                     }
                 }
@@ -228,13 +226,13 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun storeLocalSession(phone: String){
+    private fun storeLocalSession(phone: String) {
         userSession.setIsMSISDNVerified(true)
         userSession.phoneNumber = phone
     }
 
     private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
-        when(registerCheckData.registerType) {
+        when (registerCheckData.registerType) {
             PHONE_TYPE -> {
                 if (registerCheckData.isExist) {
                     goToLoginPhoneVerifyPage(registerCheckData.view.replace("-", ""))
@@ -266,7 +264,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun onSuccessValidateUserProfile(userProfileValidate: UserProfileValidate) {
-        if(userProfileValidate.isValid && phone.isNotEmpty()) {
+        if (userProfileValidate.isValid && phone.isNotEmpty()) {
             goToAddPhoneVerifyPage(phone.replace("-", ""))
         } else {
             toastError(getString(R.string.please_fill_phone_number))
@@ -305,11 +303,11 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun toastError (throwable: Throwable) {
+    private fun toastError(throwable: Throwable) {
         throwable.message?.let { toastError(it) }
     }
 
-    private fun toastError (message: String) {
+    private fun toastError(message: String) {
         view?.run {
             Toaster.make(this, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
         }
@@ -349,7 +347,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
     }
 
-    private fun goToRegisterAddNamePage (phone: String) {
+    private fun goToRegisterAddNamePage(phone: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
 
@@ -365,7 +363,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onBackPressed(): Boolean {
         shopCreationAnalytics.eventClickBackPhoneShopCreation()
-        LetUtil.ifLet(context, view?.parent) {  (context, view) ->
+        LetUtil.ifLet(context, view?.parent) { (context, view) ->
             hideKeyboardFrom(context as Context, view as View)
         }
         return true

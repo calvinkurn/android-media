@@ -45,7 +45,7 @@ class ValidateUserProfileUseCase @Inject constructor(
         }
 
         response.getError(UserProfileValidatePojo::class.java)?.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)) {
                     return onFailedValidateUserProfile(Throwable(it[0].message))
                 }

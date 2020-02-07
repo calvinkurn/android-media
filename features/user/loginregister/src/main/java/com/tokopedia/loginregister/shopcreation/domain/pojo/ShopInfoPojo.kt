@@ -8,26 +8,26 @@ import com.google.gson.annotations.SerializedName
  * ade.hadian@tokopedia.com
  */
 
-data class ShopInfoPojo (
-    @SerializedName("shopInfoByID")
-    @Expose
-    var data: ShopInfoByID = ShopInfoByID()
+data class ShopInfoPojo(
+        @SerializedName("shopInfoByID")
+        @Expose
+        var data: ShopInfoByID = ShopInfoByID()
 )
 
-data class ShopInfoByID (
-    @SerializedName("result")
-    @Expose
-    var result: List<TokoShopData> = listOf()
+data class ShopInfoByID(
+        @SerializedName("result")
+        @Expose
+        var result: List<TokoShopData> = listOf()
 )
 
-data class TokoShopData (
-    @SerializedName("shippingLoc")
-    @Expose
-    var shippingLoc: ShippingLocData = ShippingLocData()
+data class TokoShopData(
+        @SerializedName("shippingLoc")
+        @Expose
+        var shippingLoc: ShippingLocData = ShippingLocData()
 )
 
-data class ShippingLocData (
-    @SerializedName("provinceID")
-    @Expose
-    var provinceID: Int = 0
+data class ShippingLocData(
+        @SerializedName("provinceID")
+        @Expose
+        var provinceID: Int = 0
 )

@@ -45,7 +45,7 @@ class RegisterCheckUseCase @Inject constructor(
         }
 
         response.getError(RegisterCheckPojo::class.java)?.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)) {
                     return onFailedRegisterCheck(Throwable(it[0].message))
                 }

@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 
 @ShopCreationScope
 @Module
-class ShopCreationModule{
+class ShopCreationModule {
 
     @ShopCreationScope
     @Provides

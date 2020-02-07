@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Neutral_N0"
+    android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/dp_56"
         android:background="@drawable/bg_landing_shop_creation"
+        android:paddingTop="@dimen/dp_56"
         android:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -21,19 +20,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:lineSpacingExtra="@dimen/sp_6"
             android:gravity="center_horizontal"
+            android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/title_landing_shop_creation"
+            android:textAlignment="center"
             android:textColor="#f531353b"
             android:textSize="25sp"
-            android:textAlignment="center"
-            app:typographyWeight="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_view_desc"
@@ -41,19 +40,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:textSize="@dimen/sp_14"
-            android:textColor="#f531353b"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/desc_landing_shop_creation"
             android:textAlignment="center"
-            app:typographyType="body_1"
-            app:typographyWeight="reguler"
+            android:textColor="#f531353b"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title_landing"/>
+            app:layout_constraintTop_toBottomOf="@id/title_landing"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"
@@ -61,28 +60,28 @@
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="@dimen/dp_45"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:text="@string/free_open_shop"
             android:textAllCaps="false"
-            app:unifyButtonSize="large"
-            app:unifyButtonType="main"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_desc" />
+            app:layout_constraintTop_toBottomOf="@+id/text_view_desc"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main" />
 
         <ImageView
             android:id="@+id/landing_shop_creation_image"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_26"
-            android:layout_marginLeft="@dimen/dp_24"
-            android:layout_marginRight="@dimen/dp_30"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
             android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginRight="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_26"
+            android:adjustViewBounds="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -95,12 +94,12 @@
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_shop_creation"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:theme="@style/CustomActionBar"/>
+        android:theme="@style/CustomActionBar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

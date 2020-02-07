@@ -14,7 +14,7 @@ import com.tokopedia.loginregister.R
  * ade.hadian@tokopedia.com
  */
 
-abstract class BaseShopCreationFragment: BaseDaggerFragment() {
+abstract class BaseShopCreationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -46,7 +46,7 @@ class UpdateUserProfileUseCase @Inject constructor(
         }
 
         response.getError(UserProfileUpdatePojo::class.java)?.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it.first().message)) {
                     return onFailedUpdateUserProfile(Throwable(it.first().message))
                 }
