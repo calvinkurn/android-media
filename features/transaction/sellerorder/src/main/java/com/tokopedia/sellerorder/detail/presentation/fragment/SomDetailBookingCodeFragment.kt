@@ -112,7 +112,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
         val params = barcode_img?.layoutParams
         var widthHeight = dp
         displayMetrics?.let {
-            widthHeight = dp.dpToPx(displayMetrics)
+            widthHeight = dp.dpToPx(it)
         }
         params?.width = barcode_img?.width?.plus(widthHeight)
         params?.height = barcode_img?.height?.plus(widthHeight)
