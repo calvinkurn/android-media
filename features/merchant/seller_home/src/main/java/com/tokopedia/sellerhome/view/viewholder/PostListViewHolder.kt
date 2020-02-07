@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.TooltipClickListener
-import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
@@ -99,12 +98,14 @@ class PostListViewHolder(
     }
 
     private fun setupTooltip(tooltip: TooltipUiModel?) = with(itemView) {
-        if (tooltip == null) {
-            iv_info.gone()
-        } else {
-            iv_info.visible()
-            iv_info.setOnClickListener { showBottomSheet(tooltip) }
-            tv_card_title.setOnClickListener { showBottomSheet(tooltip) }
+        tooltip?.run {
+            if (content.isNotBlank() || list.isNotEmpty()) {
+                iv_info.visible()
+                iv_info.setOnClickListener { showBottomSheet(tooltip) }
+                tv_card_title.setOnClickListener { showBottomSheet(tooltip) }
+            } else {
+                iv_info.gone()
+            }
         }
     }
 
@@ -148,6 +149,7 @@ class PostListViewHolder(
         itemView.rv_post.apply {
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = this@PostListViewHolder.adapter
+            isNestedScrollingEnabled = true
         }
         adapter.run {
             data.addAll(posts)

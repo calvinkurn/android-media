@@ -14,26 +14,30 @@
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
+        app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Info Seller" />
 
     <ImageView
         android:id="@+id/iv_info"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_margin="@dimen/layout_lvl1"
-        android:padding="3dp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_card_title"
-        app:layout_constraintStart_toEndOf="@id/tv_card_title"
-        app:layout_constraintTop_toTopOf="@id/tv_card_title"
-        app:srcCompat="@drawable/ic_info" />
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:background="@android:color/transparent"
+        android:padding="7dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_card_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tv_card_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_card_title"
+        app:srcCompat="@drawable/ic_info"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_post"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:clipToPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_card_title"
@@ -42,26 +46,28 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_see_details"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:lineSpacingExtra="@dimen/spacing_lvl3"
+        android:background="@android:color/transparent"
+        android:drawablePadding="@dimen/layout_lvl1"
         android:text="@string/sah_more"
+        android:textAllCaps="false"
         android:textColor="@color/Green_G500"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_post"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintEnd_toStartOf="@id/iv_see_details"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyWeight="reguler" />
 
     <ImageView
         android:id="@+id/iv_see_details"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl3"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
-        app:layout_constraintBottom_toBottomOf="@id/tv_see_details"
-        app:layout_constraintStart_toEndOf="@id/tv_see_details"
-        app:layout_constraintTop_toTopOf="@id/tv_see_details"
+        android:paddingBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_see_details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_see_details"
         app:srcCompat="@drawable/ic_arrow_right_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

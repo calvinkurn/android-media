@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.model.PostUiModel
@@ -27,7 +26,7 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
         if (featuredMediaURL.isNotEmpty()) {
             ImageHandler.loadImageRounded(context, iv_post, featuredMediaURL, 20f)
         } else {
-            iv_post.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.error_drawable))
+            ImageHandler.loadImageRounded2(context, iv_post, R.drawable.error_drawable, 20f)
         }
     }
 }

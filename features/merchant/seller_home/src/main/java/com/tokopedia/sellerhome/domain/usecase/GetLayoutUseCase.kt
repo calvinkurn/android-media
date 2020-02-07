@@ -120,7 +120,7 @@ class GetLayoutUseCase(
                 SectionWidgetUiModel(
                         widgetType = WidgetType.SECTION,
                         title = "Ringkasan penjualan",
-                        subtitle = "21 JAN 20 - 27 JAN 20",
+                        subtitle = "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
                         tooltip = null,
                         url = "",
                         appLink = "",
