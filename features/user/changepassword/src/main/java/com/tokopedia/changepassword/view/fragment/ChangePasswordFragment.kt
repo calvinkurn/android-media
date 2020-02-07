@@ -20,6 +20,7 @@ import com.tokopedia.changepassword.common.analytics.ChangePasswordAnalytics
 import com.tokopedia.changepassword.common.di.ChangePasswordDependencyInjector
 import com.tokopedia.changepassword.view.listener.ChangePasswordContract
 import com.tokopedia.changepassword.view.presenter.ChangePasswordPresenter
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_change_password.*
@@ -33,7 +34,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     lateinit var newPasswordTextField : TextFieldUnify
     lateinit var confPasswordTextField : TextFieldUnify
 
-    var userSession = UserSession(context)
+    private var userSession = UserSession(context)
 
     override fun getScreenName(): String {
         return ChangePasswordAnalytics.SCREEN_NAME
@@ -73,7 +74,20 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            RouteManager.route(context, ApplinkConst.HOME)
+            when(resultCode) {
+                REQUEST_LOGOUT -> {
+                    context?.let {
+                        DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                            setTitle(getString(R.string.change_password_app_name))
+                            setDescription("${getString(R.string.success_change_password)}.\n\nSilahkan login kembali.")
+                            setPrimaryCTAText("Ya")
+                            setPrimaryCTAClickListener {
+                                RouteManager.route(context, ApplinkConst.HOME)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -137,7 +151,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onSuccessChangePassword() {
         hideLoading()
-        RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LOGOUT)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
+        startActivityForResult(intent, REQUEST_LOGOUT)
     }
 
     override fun onErrorOldPass(errorMessage: String?) {
@@ -167,8 +183,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     override fun onErrorChangePassword(errorMessage: String) {
         hideLoading()
         if (TextUtils.isEmpty(errorMessage)) {
-            NetworkErrorHelper.showRedSnackbar(activity, getString(R.string
-                    .default_request_error_unknown))
+            NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.default_request_error_unknown))
         } else {
             NetworkErrorHelper.showRedSnackbar(activity, errorMessage)
         }
@@ -197,5 +212,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                 }
             }
         }
+    }
+
+    companion object {
+        private const val REQUEST_LOGOUT = 1000;
     }
 }
