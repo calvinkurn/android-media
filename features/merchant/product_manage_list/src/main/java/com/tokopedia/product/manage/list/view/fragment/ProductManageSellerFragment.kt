@@ -6,9 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -36,7 +34,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         if (rowCount == 0L) {
             tvDraftProductInfo.visibility = View.GONE
         } else {
-            tvDraftProductInfo.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
+            tvDraftProductInfo.text = MethodChecker.fromHtml(getString(com.tokopedia.product.manage.list.R.string.product_manage_you_have_x_unfinished_product, rowCount))
             tvDraftProductInfo.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
                 startActivity(Intent(activity, ProductDraftListActivity::class.java))
@@ -45,9 +43,13 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_manage_product_seller, container, false)
-    }
+    override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
+
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
+
+    override fun getSearchInputViewResourceId(): Int = R.id.search_input_view_list
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
     override fun onDraftCountLoadError() {
         // delete all draft when error loading draft
@@ -57,7 +59,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tvDraftProductInfo = view.findViewById(R.id.tv_draft_product)
+        tvDraftProductInfo = view.findViewById(com.tokopedia.product.manage.list.R.id.tv_draft_product)
         tvDraftProductInfo.visibility = View.GONE
     }
 

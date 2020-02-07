@@ -1,7 +1,6 @@
 query tickerLoginRegister($page: String!){
   ticker {
     tickers(page:$page){
-      id
       title
       message
       color

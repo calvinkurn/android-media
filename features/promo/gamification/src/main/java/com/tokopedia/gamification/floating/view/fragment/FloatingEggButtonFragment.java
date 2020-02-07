@@ -40,6 +40,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
@@ -122,7 +123,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn) {
             shiftEggTowardsLeftOrRight(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(),
-                    vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth() );
+                    vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth());
             if (isRight)
                 isMinimized = false;
             else
@@ -146,7 +147,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         rotateRight.setDuration(SHORT_ANIMATION_DURATION);
         rotateRight.playTogether(rotateMinimizeAnimator, translateEggXAnimator);
         rotateRight.start();
-        saveCoordPreference((int)newX, (int)vgFloatingEgg.getY());
+        saveCoordPreference((int) newX, (int) vgFloatingEgg.getY());
     }
 
     @Override
@@ -409,7 +410,15 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
+
+                if (!TextUtils.isEmpty(appLink)) {
+                    boolean isSupported = RouteManager.route(getActivity(), appLink, null);
+                    if (!isSupported) {
+                        ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
+                    }
+                } else {
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
+                }
                 trackingEggClick(tokenData.getId(), tokenData.getName());
             }
         });
@@ -648,7 +657,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
-    private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX){
+    private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX) {
         AnimatorSet rotateRightAnimatorSet = new AnimatorSet();
         final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, newAngle);
         final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, newX);
@@ -657,6 +666,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         rotateRightAnimatorSet.playTogether(animator, rotateMinimizeAnimator, translateEggXAnimator);
         rotateRightAnimatorSet.start();
     }
+
     @Override
     protected String getScreenName() {
         return null;

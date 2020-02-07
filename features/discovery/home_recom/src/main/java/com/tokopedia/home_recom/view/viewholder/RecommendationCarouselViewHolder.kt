@@ -40,7 +40,7 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
 
     private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
         val products = dataModel.products
-        recyclerView.initCarouselProductCardView(
+        recyclerView.bindCarouselProductCardView(
                 isScrollable = true,
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {

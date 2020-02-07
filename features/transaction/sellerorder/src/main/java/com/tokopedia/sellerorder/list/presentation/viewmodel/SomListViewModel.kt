@@ -31,8 +31,8 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val filterListResult: LiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>
         get() = _filterListResult
 
-    private val _orderListResult = MutableLiveData<Result<MutableList<SomListOrder.Data.OrderList.Order>>>()
-    val orderListResult: LiveData<Result<MutableList<SomListOrder.Data.OrderList.Order>>>
+    private val _orderListResult = MutableLiveData<Result<SomListOrder.Data.OrderList>>()
+    val orderListResult: LiveData<Result<SomListOrder.Data.OrderList>>
         get() = _orderListResult
 
     fun loadSomListData(tickerQuery: String, filterQuery: String) {
@@ -80,7 +80,7 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 graphqlRepository.getReseponse(listOf(orderRequest))
                         .getSuccessData<SomListOrder.Data>()
             }
-            _orderListResult.postValue(Success(orderListData.orderList.orders.toMutableList()))
+            _orderListResult.postValue(Success(orderListData.orderList))
         }, onError = {
             _orderListResult.postValue(Fail(it))
         })

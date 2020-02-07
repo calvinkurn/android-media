@@ -214,6 +214,12 @@ public class FeedPlusModule {
         return Dispatchers.getMain();
     }
 
+    @Provides
+    @FeedPlusScope
+    FeedDispatcherProvider provideFeedDispatcherProvider() {
+        return new FeedProductionDispatcherProvider();
+    }
+
     @FeedPlusScope
     @Provides
     UserSessionInterface provideUserSession(@ApplicationContext Context context) {

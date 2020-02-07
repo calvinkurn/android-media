@@ -22,7 +22,7 @@ object DigitalHomepageTrackingActionConstant {
     const val SPOTLIGHT_IMPRESSION = "impression spotlight banner"
     const val SPOTLIGHT_BANNER_CLICK = "click spotlight banner"
     const val SUBHOME_WIDGET_IMPRESSION = "impression subhome wisget"
-    const val SUBHOME_WIDGET_CLICK = "click spotlight banner"
+    const val SUBHOME_WIDGET_CLICK = "click subhome widget"
     const val SEARCH_RESULT_PAGE_ICON_IMPRESSION = "impression SRP icon"
     const val SEARCH_RESULT_PAGE_ICON_CLICK = "click SRP icon"
 }

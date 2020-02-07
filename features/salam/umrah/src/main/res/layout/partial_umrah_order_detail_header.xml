@@ -91,7 +91,7 @@
         android:lineHeight="@dimen/dp_18"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_status_detail"
+        app:layout_constraintTop_toBottomOf="@+id/divider_status_detail"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
         tools:text="IVR/20170713/XVII/VII/16205811" />
@@ -106,7 +106,7 @@
         android:textColor="@color/Green_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_status_detail"
+        app:layout_constraintTop_toBottomOf="@+id/divider_status_detail"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
         app:typographyWeight="bold" />

@@ -36,7 +36,9 @@ public class CheckoutMapper implements ICheckoutMapper {
         checkoutData.setError(checkoutDataResponse.getSuccess() != 1);
         checkoutData.setErrorMessage(checkoutDataResponse.getError());
 
-        if (checkoutDataResponse.getData().getPriceValidation() != null && checkoutDataResponse.getData().getPriceValidation().isUpdated() &&
+        if (checkoutDataResponse.getData() != null &&
+                checkoutDataResponse.getData().getPriceValidation() != null &&
+                checkoutDataResponse.getData().getPriceValidation().isUpdated() &&
                 checkoutDataResponse.getData().getPriceValidation().getMessage() != null) {
             Message message = checkoutDataResponse.getData().getPriceValidation().getMessage();
             MessageData messageData = new MessageData();

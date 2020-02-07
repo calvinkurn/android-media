@@ -3,8 +3,7 @@ package com.tokopedia.flight.common.data.source.cloud.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
-import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
@@ -14,9 +13,6 @@ import com.tokopedia.flight.country.data.FlightCountryEntity;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
-import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
-import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
-import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -32,10 +28,8 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
-import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -97,24 +91,8 @@ public interface FlightApi {
     @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)
     Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest, @Header("x-tkpd-userid") String userId);
 
-    @GET
-    Observable<Response<DataResponse<List<BannerDetail>>>> getBanners(@Url String url, @QueryMap Map<String, String> params);
-
     @GET(FlightUrl.FLIGHT_EMAIL)
     Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);
-
-    @GET(FlightUrl.FLIGHT_PASSENGER_SAVED)
-    Observable<Response<FlightDataResponse<List<PassengerListEntity>>>> getSavedPassengerData();
-
-    @Headers({"Content-Type: application/json"})
-    @HTTP(method = "DELETE", path = FlightUrl.FLIGHT_PASSENGER_SAVED, hasBody = true)
-    Observable<Response<Object>> deleteSavedPassengerData(@Body DataRequest<DeletePassengerRequest> request,
-                                                          @Header("Idempotency-Key") String idemPotencyKeyHeader);
-
-    @Headers({"Content-Type: application/json"})
-    @PATCH(FlightUrl.FLIGHT_PASSENGER_SAVED)
-    Observable<Response<FlightDataResponse<PassengerListEntity>>> updatePassengerListData(@Body DataRequest<UpdatePassengerRequest> request,
-                                                                                          @Header("Idempotency-Key") String idemPotencyKeyHeader);
 
     @GET(FlightUrl.FLIGHT_CANCELLATION_PASSENGER)
     Observable<Response<String>> getCancellablePassenger(@Query("invoice_id") String invoiceId);

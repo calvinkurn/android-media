@@ -7,4 +7,7 @@
     <color name="bg_tips">#fafbfc</color>
     <color name="pale_grey">#F3F4F5</color>
 
+    <color name="trans_black_70">#B3000000</color>
+    <color name="black_70b">#b3000000</color>
+
 </resources>

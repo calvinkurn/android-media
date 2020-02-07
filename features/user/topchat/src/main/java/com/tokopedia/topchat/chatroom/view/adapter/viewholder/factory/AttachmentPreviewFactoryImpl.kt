@@ -5,11 +5,11 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.InvoicePreviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.ProductPreviewViewHolder
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 
 class AttachmentPreviewFactoryImpl : AttachmentPreviewFactory {
 
-    override fun type(productPreviewViewModel: ProductPreviewViewModel): Int {
+    override fun type(sendableProductPreview: SendableProductPreview): Int {
         return ProductPreviewViewHolder.LAYOUT
     }
 
