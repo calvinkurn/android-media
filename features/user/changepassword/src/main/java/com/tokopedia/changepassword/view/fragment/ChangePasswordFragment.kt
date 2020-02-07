@@ -74,12 +74,12 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            when(resultCode) {
+            when(requestCode) {
                 REQUEST_LOGOUT -> {
                     context?.let {
                         DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                             setTitle(getString(R.string.change_password_app_name))
-                            setDescription("${getString(R.string.success_change_password)}.\n\nSilahkan login kembali.")
+                            setDescription("${getString(R.string.success_change_password)}. Silahkan login kembali.")
                             setPrimaryCTAText("Ya")
                             setPrimaryCTAClickListener {
                                 RouteManager.route(context, ApplinkConst.HOME)
