@@ -430,7 +430,6 @@ dependencies {
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
-    implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.shakeDetect)
     implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.libraries.deviceInfo)
@@ -483,7 +482,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
-    implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
