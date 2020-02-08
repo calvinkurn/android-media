@@ -61,13 +61,9 @@ class ShopOpenRevampViewModel @Inject constructor(
     fun checkShopName(shopName: String) {
         validateDomainShopNameUseCase.cancelJobs()
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val shopNameValidationData = getValidationShopName(shopName)
-                    shopNameValidationData.let {
-                        checkShopNameResponse.postValue(Success(it))
-                    }
-                }
+            val shopNameValidationData = getValidationShopName(shopName)
+            shopNameValidationData.let {
+                checkShopNameResponse.postValue(Success(it))
             }
         }) {
             checkShopNameResponse.value = Fail(it)
@@ -77,13 +73,9 @@ class ShopOpenRevampViewModel @Inject constructor(
     fun getDomainShopNameSuggestions(shopName: String) {
         getDomainNameSuggestionUseCase.cancelJobs()
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val domainShopNameValidationData = getDomainShopNameSuggestion(shopName)
-                    domainShopNameValidationData.let {
-                        domainShopNameSuggestionsResponse.postValue(Success(it))
-                    }
-                }
+            val domainShopNameValidationData = getDomainShopNameSuggestion(shopName)
+            domainShopNameValidationData.let {
+                domainShopNameSuggestionsResponse.postValue(Success(it))
             }
         }) {
             checkDomainAndShopNameResponse.value = Fail(it)
@@ -92,13 +84,9 @@ class ShopOpenRevampViewModel @Inject constructor(
 
     fun getSurveyQuizionaireData() {
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val surveyData = getSurveyQuizionaireDataResult()
-                    surveyData.let {
-                        getSurveyDataResponse.postValue(Success(it))
-                    }
-                }
+            val surveyData = getSurveyQuizionaireDataResult()
+            surveyData.let {
+                getSurveyDataResponse.postValue(Success(it))
             }
         }) {
             getSurveyDataResponse.value = Fail(it)
@@ -107,13 +95,9 @@ class ShopOpenRevampViewModel @Inject constructor(
 
     fun createShop(domain: String, shopName: String) {
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val createShopData = submitShop(domain, shopName)
-                    createShopData.let {
-                        createShopOpenResponse.postValue(Success(it))
-                    }
-                }
+            val createShopData = submitShop(domain, shopName)
+            createShopData.let {
+                createShopOpenResponse.postValue(Success(it))
             }
         }) {
             createShopOpenResponse.value = Fail(it)
@@ -127,12 +111,8 @@ class ShopOpenRevampViewModel @Inject constructor(
 
     fun sendSurveyData(dataSurveyInput: Map<String, Any>) {
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val sendSurveyData = sendSurvey(dataSurveyInput)
-                    sendSurveyDataResponse.postValue(Success(sendSurveyData))
-                }
-            }
+            val sendSurveyData = sendSurvey(dataSurveyInput)
+            sendSurveyDataResponse.postValue(Success(sendSurveyData))
         }) {
             sendSurveyDataResponse.value = Fail(it)
         }
@@ -147,14 +127,10 @@ class ShopOpenRevampViewModel @Inject constructor(
             long: String
     ) {
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val dataParam = saveShopShippingLocation(
-                            shopId, postCode, courierOrigin, addrStreet, lat, long)
-                    val saveShipmentLocation = saveShopShippingLocation(dataParam)
-                    saveShopShipmentLocationResponse.postValue(Success(saveShipmentLocation))
-                }
-            }
+            val dataParam = saveShopShippingLocation(
+                    shopId, postCode, courierOrigin, addrStreet, lat, long)
+            val saveShipmentLocation = saveShopShippingLocation(dataParam)
+            saveShopShipmentLocationResponse.postValue(Success(saveShipmentLocation))
         }) {
             saveShopShipmentLocationResponse.value = Fail(it)
         }
