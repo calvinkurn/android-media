@@ -394,11 +394,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onOpenShopClicked() {
-        if (userSession.isMsisdnVerified()) {
-            moveToCreateShop();
-        } else {
-            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.PHONE_VERIFICATION), REQUEST_PHONE_VERIFICATION);
-        }
+        moveToCreateShop();
     }
 
 
