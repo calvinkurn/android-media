@@ -65,7 +65,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
                 view.context,
                 imageViewShopCreated,
                 IMG_SHOP_OPEN_SPLASH_SCREEN,
-                R.drawable.ic_loading_placeholder
+                null
         )
     }
 
