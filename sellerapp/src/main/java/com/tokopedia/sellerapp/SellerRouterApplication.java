@@ -315,11 +315,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getHomeHotlistIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getInboxReputationIntent(Context context) {
         return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
     }
