@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -34,6 +35,10 @@ public class ShopOpenRoutingActivity extends BaseSimpleActivity implements HasCo
 
         if (enableOPenShopRevamp) {
             Intent intent = new Intent(this, ShopOpenRevampActivity.class);
+            if (intent.getExtras() != null) {
+                boolean isNeedLocation = intent.getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, false);
+                intent.putExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, isNeedLocation);
+            }
             startActivity(intent);
             finish();
         }
