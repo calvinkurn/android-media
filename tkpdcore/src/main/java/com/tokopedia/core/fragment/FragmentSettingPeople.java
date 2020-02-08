@@ -34,7 +34,6 @@ import java.util.ArrayList;
 
 public class FragmentSettingPeople extends TkpdFragment implements ManageConstant {
 
-    private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
 
     private SimpleListTabViewAdapter lvAdapter;
@@ -100,10 +99,6 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.message_success_change_profile));
-        } else if (requestCode == REQUEST_CHANGE_PASSWORD && resultCode == Activity.RESULT_OK) {
-            com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-                    .showGreenCloseSnackbar(getActivity(), getString(R.string
-                            .message_success_change_password));
         }
     }
 
@@ -142,8 +137,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
-                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
+                            RouteManager.route(getActivity(), ApplinkConst.CHANGE_PASSWORD);
                         } else {
                             intentToAddPassword();
                         }
