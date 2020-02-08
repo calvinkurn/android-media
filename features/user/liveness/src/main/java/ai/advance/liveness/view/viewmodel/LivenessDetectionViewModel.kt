@@ -2,15 +2,16 @@ package ai.advance.liveness.view.viewmodel
 
 import ai.advance.liveness.data.model.response.LivenessData
 import ai.advance.liveness.domain.UploadLivenessResultUseCase
-import ai.advance.liveness.utils.LivenessConstants
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class LivenessDetectionViewModel @Inject constructor(
@@ -18,27 +19,18 @@ class LivenessDetectionViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    val livenessDataResult = MutableLiveData<LivenessData>() //TODO please check the Result by Coroutine in ProfileInfoViewModel
+    private val _livenessResponse = MutableLiveData<Result<LivenessData>>()
+    val livenessResponseLiveData : LiveData<Result<LivenessData>>
+        get() = _livenessResponse
 
-    interface UploadState {
-        fun isSuccess(state: Boolean)
-        fun error(errorCode: Int)
-    }
-
-    fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String, uploadState: UploadState) {
+    fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String) {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val livenessResponseResult = uploadLivenessResultUseCase.uploadImages(ktpPath, facePath, tkpdProjectId)
-                uploadState.isSuccess(livenessResponseResult?.isSuccessRegister?: false)
-                livenessDataResult.postValue(livenessResponseResult)
+                _livenessResponse.postValue(Success(livenessResponseResult))
             }
         }) {
-            Log.e("API ERROR", it.message)
-            if(it is SocketTimeoutException){
-                uploadState.error(LivenessConstants.FAILED_TIMEOUT)
-            } else {
-                uploadState.error(LivenessConstants.FAILED_GENERAL)
-            }
+            _livenessResponse.postValue(Fail(it))
         }
     }
 }

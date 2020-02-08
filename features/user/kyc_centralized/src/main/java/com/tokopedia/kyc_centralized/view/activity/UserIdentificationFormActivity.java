@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
@@ -65,12 +64,13 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         try {
             projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
-            analytics = UserIdentificationCommonAnalytics.createInstance(projectId);
         } catch (NumberFormatException | NullPointerException e) {
             projectId = KYCConstant.STATUS_DEFAULT;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId);
 
         if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA);
@@ -128,15 +128,14 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     @Override
     protected void onBackEvent() {
         if(getListFragment().size()  == currentPosition) {
+            int fragmentId = getListFragment().get(currentPosition-1).getId();
+            UserIdentificationFormFinalFragment fragment = (UserIdentificationFormFinalFragment) getSupportFragmentManager().findFragmentById(fragmentId);
+            if(fragment != null) {
+                fragment.clickBackTracker();
+            }
             showDocumentAlertDialog();
         }else{
-            FragmentManager fm = getSupportFragmentManager();
-            Fragment currentFragment = fm.findFragmentByTag("fragment_scan_face_failed");
-            if(currentFragment != null && currentFragment.isVisible()){
-                fm.popBackStack();
-            }else{
-                backToPreviousFragment();
-            }
+            backToPreviousFragment();
         }
     }
 

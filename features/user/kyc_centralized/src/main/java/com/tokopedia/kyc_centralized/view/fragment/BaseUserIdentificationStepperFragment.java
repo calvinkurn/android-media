@@ -94,19 +94,10 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
                 if(isKycSelfie){
                     String faceFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
                     stepperModel.setFaceFile(faceFile);
+                    stepperListener.goToNextPage(stepperModel);
                 } else {
-                    boolean isSuccessRegister = data.getBooleanExtra("isSuccessRegister", false);
-                    if(isSuccessRegister){
-                        stepperListener.finishPage();
-                    } else {
-                        stepperModel.setListRetake(data.getIntegerArrayListExtra("listRetake"));
-                        stepperModel.setListMessage(data.getStringArrayListExtra("listMessage"));
-                        stepperModel.setTitleText(data.getStringExtra("title"));
-                        stepperModel.setSubtitleText(data.getStringExtra("subtitle"));
-                        stepperModel.setButtonText(data.getStringExtra("button"));
-                    }
+                    getLivenessResult(data);
                 }
-                stepperListener.goToNextPage(stepperModel);
             } else if (requestCode == REQUEST_CODE_CAMERA_KTP) {
                 String ktpFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
                 stepperModel.setKtpFile(ktpFile);
@@ -119,6 +110,23 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_cant_be_accessed));
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void getLivenessResult(Intent data){
+        boolean isSuccessRegister = data.getBooleanExtra("isSuccessRegister", false);
+        stepperModel.setFaceFile(data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH));
+        if(isSuccessRegister){
+            getActivity().setResult(Activity.RESULT_OK);
+            stepperListener.finishPage();
+        } else {
+            stepperModel.setFaceFile(data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH));
+            stepperModel.setListRetake(data.getIntegerArrayListExtra("listRetake"));
+            stepperModel.setListMessage(data.getStringArrayListExtra("listMessage"));
+            stepperModel.setTitleText(data.getStringExtra("title"));
+            stepperModel.setSubtitleText(data.getStringExtra("subtitle"));
+            stepperModel.setButtonText(data.getStringExtra("button"));
+            stepperListener.goToNextPage(stepperModel);
+        }
     }
 
     private void sendAnalyticErrorImageTooLarge(int requestCode) {

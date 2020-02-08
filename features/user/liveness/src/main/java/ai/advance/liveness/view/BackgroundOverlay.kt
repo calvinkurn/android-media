@@ -11,7 +11,6 @@ import android.view.View
 
 class BackgroundOverlay : View {
 
-    private var mTransparentPaint: Paint? = null
     private var mSemiBlackPaint: Paint? = null
     private var mStatusPaint: Paint? = null
     private val mPath = Path()
@@ -33,10 +32,6 @@ class BackgroundOverlay : View {
 
         val strokeWidthDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, CONST_STROKE_WIDTH, resources.displayMetrics)
         val borderStrokeWidthDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, CONST_BORDER_STROKE_WIDTH, resources.displayMetrics)
-
-        mTransparentPaint = Paint()
-        mTransparentPaint?.color = Color.TRANSPARENT
-        mTransparentPaint?.strokeWidth = strokeWidthDp
 
         mSemiBlackPaint = Paint()
         mSemiBlackPaint?.color = Color.TRANSPARENT

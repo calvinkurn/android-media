@@ -54,7 +54,7 @@ class LivenessDetectionUploadImagesModule {
     @Provides
     fun provideWsV4RetrofitWithErrorHandler(okHttpClient: OkHttpClient,
                                             retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl("http://172.18.1.28/").client(okHttpClient).build()
+        return retrofitBuilder.baseUrl("https://accounts-staging.tokopedia.com/").client(okHttpClient).build()
     }
 
     @LivenessDetectionScope

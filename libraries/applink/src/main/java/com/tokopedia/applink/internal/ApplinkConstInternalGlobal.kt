@@ -47,6 +47,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_SQ_CHECK = "isSqCheck"
     @JvmField
     val PARAM_KTP_PATH = "ktpPath"
+    @JvmField
+    val PARAM_FACE_PATH = "facePath"
 
     //VerificationActivity Param
     @JvmField

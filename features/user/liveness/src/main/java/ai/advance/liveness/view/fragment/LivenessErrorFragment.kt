@@ -82,13 +82,12 @@ class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
         when(failedType){
             LivenessConstants.FAILED_BADNETWORK -> {
                 analytics.eventClickConnectionTimeout()
-                activity?.setResult(Activity.RESULT_OK)
             }
             LivenessConstants.FAILED_TIMEOUT -> {
                 analytics.eventClickTimeout()
-                activity?.setResult(Activity.RESULT_OK)
             }
         }
+        activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="liveness_failed_reason_timeout_title" translatable="false">Yaa, waktu habis</string>
+    <string name="liveness_failed_reason_timeout_title">Yaa, waktu habis</string>
     <string name="liveness_failed_reason_timeout">Kamu telah melebihi batas waktu.\n Coba lagi dan ikuti instruksinya, ya.</string>
 
     <string name="liveness_failed_reason_facemissing_blink_mouth">No face detected,\n please avoid fast motion and find a brighter place</string>
@@ -19,4 +19,10 @@
 
     <string name="liveness_failed_reason_general_title" translatable="false">Ada gangguan di rumah Toped</string>
     <string name="liveness_failed_reason_general">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+
+    <string name="liveness_failed_face_detection_title"> Verifikasi wajah gagal</string>
+    <string name="liveness_failed_reason_prerecord">Verifikasi wajah tidak dapat mendeteksi video rekaman. Biar proses ini berhasil, scan wajahmu secara langsung, ya.</string>
+    <string name="liveness_failed_reason_blurry">Gambar terlihat gelap. Saran kami, coba di tempat terang, biar scan wajah berhasil.</string>
+
+    <string name="liveness_failed_file_not_found">Terjadi kesalahan, silahkan coba lagi</string>
 </resources>

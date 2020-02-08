@@ -25,6 +25,9 @@
     <string name="liveness_tip_move_furthre">Arahkan wajah lebih jauh ke layar</string>
     <string name="liveness_device_not_support">The device does not support liveness detection</string>
 
+    <string name="exit">Keluar</string>
+    <string name="default_error_unknown">Terjadi kesalahan, Ulangi beberapa saat lagi.</string>
+
     <string name="liveness_retry" translatable="false">Coba Lagi</string>
     <string name="upload_loading_title" translatable="false">Tunggu sebentar, ya…</string>
     <string name="upload_loading_subtitle" translatable="false">Dokumenmu sedang di-upload</string>

@@ -59,9 +59,12 @@ public class UserIdentificationCommonAnalytics {
         private static final String VIEW_FINAL_FORM_PAGE = "view on preview KTP and selfie";
         private static final String CLICK_BACK_FINAL_FORM_PAGE = "click on back preview KTP and selfie";
         private static final String CLICK_CHANGE_KTP_FINAL_FORM_PAGE = "click on ubah foto KTP";
+        private static final String CLICK_RETAKE_KTP_FINAL_FORM_PAGE = "click on button foto ulang ktp";
         private static final String CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE = "click on ubah foto selfie KTP";
+        private static final String CLICK_RETAKE_SELFIE_FINAL_FORM_PAGE = "click on button verifikasi ulang wajah";
         private static final String CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE = "click on syarat dan ketentuan";
         private static final String CLICK_UPLOAD_PHOTOS = "click on unggah foto KTP";
+        private static final String CLICK_RETAKE_KTP_SELFIE_FINAL_FORM_PAGE = "click on button coba lagi";
 
         private static final String CLICK_ON_BUTTON_EXIT = "click on button keluar";
         private static final String CLICK_ON_BUTTON_STAY = "click on button lanjut kirim";
@@ -336,12 +339,21 @@ public class UserIdentificationCommonAnalytics {
             sendTradeInClickEvent(Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,"");
         } else {
             TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,
+                    Event.CLICK_ACCOUNT,
+                    Category.KYC_SUBMISSION_PAGE,
+                    Action.CLICK_RETAKE_KTP_FINAL_FORM_PAGE,
                     ""
             ));
         }
+    }
+
+    public void eventClickBackChangeKtpFinalFormPage(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SUBMISSION_PAGE,
+                Action.CLICK_ON_BUTTON_BACK,
+                Label.labelOne
+        ));
     }
 
     public void eventClickChangeSelfieFinalFormPage() {
@@ -349,12 +361,39 @@ public class UserIdentificationCommonAnalytics {
             sendTradeInClickEvent(Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,"");
         } else {
             TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,
+                    Event.CLICK_ACCOUNT,
+                    Category.KYC_SUBMISSION_PAGE,
+                    Action.CLICK_RETAKE_SELFIE_FINAL_FORM_PAGE,
                     ""
             ));
         }
+    }
+
+    public void eventClickBackChangeSelfieFinalFormPage(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SUBMISSION_PAGE,
+                Action.CLICK_ON_BUTTON_BACK,
+                Label.labelTwo
+        ));
+    }
+
+    public void eventClickChangeKtpSelfieFinalFormPage(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SUBMISSION_PAGE,
+                Action.CLICK_RETAKE_KTP_SELFIE_FINAL_FORM_PAGE,
+                ""
+        ));
+    }
+
+    public void eventClickBackChangeKtpSelfieFinalFormPage(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SUBMISSION_PAGE,
+                Action.CLICK_ON_BUTTON_BACK,
+                Label.labelThree
+        ));
     }
 
     public void eventClickUploadPhotos() {

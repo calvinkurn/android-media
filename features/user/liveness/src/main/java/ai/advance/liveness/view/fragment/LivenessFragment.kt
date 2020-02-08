@@ -3,7 +3,6 @@ package ai.advance.liveness.view.fragment
 import ai.advance.common.entity.BaseResultEntity
 import ai.advance.liveness.R
 import ai.advance.liveness.analytics.LivenessDetectionAnalytics
-import ai.advance.liveness.data.model.response.LivenessData
 import ai.advance.liveness.di.LivenessDetectionComponent
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.LivenessResult
@@ -27,18 +26,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, LivenessCallback, OnBackListener {
@@ -53,10 +56,9 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     private var bgOverlay: BackgroundOverlay? = null
     private var livenessWarnState: Detector.WarnCode? = null
     private var livenessActionState: Detector.DetectionType? = null
-    private var tkpdProjectId: String? = "1"
+    private var tkpdProjectId: String? = null
     private var ktpPath: String = ""
     private var facePath: String = ""
-    private var livenessResult: LivenessData? = null
 
     @Inject
     lateinit var analytics: LivenessDetectionAnalytics
@@ -78,33 +80,64 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         super.onActivityCreated(savedInstanceState)
         findViews()
         initData()
+        initObserver()
+        livenessView?.startDetection(this)
     }
 
     private fun initData() {
         arguments?.let {
             ktpPath = it.getString(ApplinkConstInternalGlobal.PARAM_KTP_PATH, "")
+            tkpdProjectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1).toString()
+            facePath = it.getString(ApplinkConstInternalGlobal.PARAM_FACE_PATH, "")
+
+            if(isFileExists(facePath)){
+                loadingLayout?.visibility = View.VISIBLE
+                mainLayout?.visibility = View.GONE
+                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId?: "1")
+            }
         }
-        tkpdProjectId = activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1).toString()
-        livenessDetectionViewModel.livenessDataResult.observe(this, Observer {
-            it?.let {
-                livenessResult = it
+    }
+
+    private fun initObserver() {
+        livenessDetectionViewModel.livenessResponseLiveData.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    val intent = Intent()
+                    intent.putExtra("isSuccessRegister", it.data.isSuccessRegister)
+                    if (it.data.isSuccessRegister == false) {
+                        if(it.data.listRetake?.contains(2) == false){
+                            intent.putExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH, facePath)
+                        }
+                        intent.putIntegerArrayListExtra("listRetake", it.data.listRetake)
+                        intent.putStringArrayListExtra("listMessage", it.data.listMessage)
+                        intent.putExtra("title", it.data.apps?.title)
+                        intent.putExtra("subtitle", it.data.apps?.subtitle)
+                        intent.putExtra("button", it.data.apps?.button)
+                    }
+                    activity?.setResult(RESULT_OK, intent)
+                    activity?.finish()
+                }
+                is Fail -> {
+                    when(it.throwable) {
+                        is SocketTimeoutException -> {setFailedResultData(Detector.DetectionFailedType.BADNETWORK)}
+                        else -> {setFailedResultData(Detector.DetectionFailedType.GENERAL)}
+                    }
+                }
             }
         })
-        livenessView?.startDetection(this)
     }
 
     private fun findViews() {
-        val activity = activity
-        if (activity != null) {
-            livenessView = activity.findViewById(R.id.liveness_view)
-            tipLottieAnimationView = activity.findViewById(R.id.tip_lottie_animation_view)
-            tipTextView = activity.findViewById(R.id.tip_text_view)
-            loadingLayout = activity.findViewById(R.id.loading_layout)
-            mainLayout = activity.findViewById(R.id.main_layout)
-            loader = activity.findViewById(R.id.loader)
-            bgOverlay = activity.findViewById(R.id.background_overlay)
-            val mBackView = activity.findViewById<View>(R.id.back_view_camera_activity)
-            mBackView.setOnClickListener { activity.onBackPressed() }
+        activity?.run{
+            livenessView = findViewById(R.id.liveness_view)
+            tipLottieAnimationView = findViewById(R.id.tip_lottie_animation_view)
+            tipTextView = findViewById(R.id.tip_text_view)
+            loadingLayout = findViewById(R.id.loading_layout)
+            mainLayout = findViewById(R.id.main_layout)
+            loader = findViewById(R.id.loader)
+            bgOverlay = findViewById(R.id.background_overlay)
+            val mBackView = findViewById<View>(R.id.back_view_camera_activity)
+            mBackView.setOnClickListener { onBackPressed() }
         }
     }
 
@@ -223,19 +256,26 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             } else {
                 message
             }
-            val activity = activity
-            if (activity != null) {
-                AlertDialog.Builder(activity).setMessage(errorMessage).setPositiveButton(R.string.liveness_perform) { dialog, _ ->
-                    LivenessResult.errorMsg = errorMessage
-                    val fragmentActivity = getActivity()
-                    dialog.dismiss()
-                    if (fragmentActivity != null) {
-                        fragmentActivity.setResult(RESULT_OK)
-                        fragmentActivity.finish()
-                    }
-                }.create().show()
+            activity?.run {
+                showAlertDialog(errorMessage, this)
             }
         }
+    }
+
+    private fun showAlertDialog(message: String, activity: FragmentActivity) {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(message)
+        dialog?.setDescription(getString(R.string.default_error_unknown))
+        dialog?.setOverlayClose(false)
+        dialog?.setPrimaryCTAText(getString(R.string.exit))
+
+        dialog?.setPrimaryCTAClickListener {
+            activity.setResult(RESULT_OK)
+            activity.finish()
+            dialog.dismiss()
+            Unit
+        }
+        dialog?.show()
     }
 
     private fun getLottieFile(detectionType: Detector.DetectionType?): String {
@@ -311,40 +351,14 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun setSuccessResultData() {
-        val activity = activity
-        if (activity != null) {
+        activity?.run {
             val mImageBitmap = LivenessResult.livenessBitmap
             facePath = saveToFile(mImageBitmap)
             if (isFileExists(facePath) && isFileExists(ktpPath)) {
-                val intent = Intent()
-                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId?: "1",
-                object : LivenessDetectionViewModel.UploadState {
-                    override fun error(errorCode: Int) {
-                        when(errorCode) {
-                            LivenessConstants.FAILED_GENERAL -> {setFailedResultData(Detector.DetectionFailedType.GENERAL)}
-                            LivenessConstants.FAILED_TIMEOUT -> {setFailedResultData(Detector.DetectionFailedType.BADNETWORK)}
-                        }
-                        activity.setResult(RESULT_CANCELED)
-                    }
-
-                    override fun isSuccess(state: Boolean) {
-                        livenessResult?.isSuccessRegister.let {
-                            intent.putExtra("isSuccessRegister", it)
-                        }
-                        if (!state) {
-                            intent.putIntegerArrayListExtra("listRetake", livenessResult?.listRetake)
-                            intent.putStringArrayListExtra("listMessage", livenessResult?.listMessage)
-                            intent.putExtra("title", livenessResult?.apps?.title)
-                            intent.putExtra("subtitle", livenessResult?.apps?.subtitle)
-                            intent.putExtra("button", livenessResult?.apps?.button)
-                        }
-                        activity.setResult(RESULT_OK, intent)
-                        activity.finish()
-                    }
-                })
+                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId?: "1")
             } else {
-                activity.setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
-                activity.finish()
+                setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
+                finish()
             }
         }
     }
@@ -364,7 +378,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 }
                 else -> {}
             }
-            activity?.startActivityForResult(intent, 0)
+            activity?.startActivityForResult(intent, RESULT_CANCELED)
         }
     }
 
@@ -375,12 +389,10 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             if (cameraResultFile.exists()) {
                 return cameraResultFile.absolutePath
             } else {
-                Toast.makeText(context, "Terjadi kesalahan, silahkan coba lagi", Toast
-                        .LENGTH_LONG).show()
+                NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
             }
         } catch (error: Throwable) {
-            Toast.makeText(context, "Terjadi kesalahan, silahkan coba lagi", Toast
-                    .LENGTH_LONG).show()
+            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
         }
         return ""
     }

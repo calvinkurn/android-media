@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 data class LivenessAppsModel(
         @SerializedName("title")
         @Expose
-        val title: String? = null,
+        var title: String? = null,
 
         @SerializedName("subtitle")
         @Expose
-        val subtitle: String? = null,
+        var subtitle: String? = null,
 
         @SerializedName("button")
         @Expose
-        val button: String? = null
+        var button: String? = null
 )

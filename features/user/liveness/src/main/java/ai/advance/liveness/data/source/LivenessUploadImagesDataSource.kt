@@ -6,7 +6,7 @@ import okhttp3.RequestBody
 import javax.inject.Inject
 
 class LivenessUploadImagesDataSource @Inject constructor(private val uploadImageDataSourceCloud: LivenessUploadImagesDataSourceCloud) {
-    suspend fun uploadImages(projectId: RequestBody, params: RequestBody, ktpImage: MultipartBody.Part, faceImage: MultipartBody.Part): LivenessData? {
+    suspend fun uploadImages(projectId: RequestBody, params: RequestBody, ktpImage: MultipartBody.Part, faceImage: MultipartBody.Part): LivenessData {
         return uploadImageDataSourceCloud.uploadImage(projectId, params, ktpImage, faceImage)
     }
 }

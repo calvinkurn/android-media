@@ -9,7 +9,7 @@ import retrofit2.http.Part
 
 interface LivenessDetectionApi {
     @Multipart
-    @POST("api/v1/validate-register")
+    @POST("kycapp/api/v1/validate-register")
     suspend fun uploadImages(@Part("project_id") projectId: RequestBody,
                              @Part("params") params: RequestBody,
                              @Part ktpImage: MultipartBody.Part,

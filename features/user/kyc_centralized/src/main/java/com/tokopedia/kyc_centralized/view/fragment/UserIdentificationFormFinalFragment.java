@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
@@ -47,7 +48,8 @@ import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscribe
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -67,8 +69,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     private ConstraintLayout loadingLayout;
     private ConstraintLayout mainLayout;
-    private ImageView imageKtp;
-    private ImageView imageFace;
     private ImageView resultImageKtp;
     private ImageView resultImageFace;
     private TextView resultTextKtp;
@@ -81,6 +81,9 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     private StepperListener stepperListener;
     private UserIdentificationCommonAnalytics analytics;
+
+    private ArrayList<Integer> listRetake;
+    private boolean isKycSelfie;
 
     private static int projectId;
 
@@ -152,86 +155,89 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     private void openCameraView(int viewMode, int requestCode){
-        analytics.eventClickChangeKtpFinalFormPage();
         Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                 viewMode);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
         startActivityForResult(intent, requestCode);
     }
 
+    private void openLivenessView(){
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.LIVENESS_DETECTION);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_KTP_PATH, stepperModel.getKtpFile());
+        if(!stepperModel.getListRetake().contains(2)){
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH, stepperModel.getFaceFile());
+        }
+        startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
+    }
+
     private void setContentView() {
         loadingLayout.setVisibility(View.GONE);
-        boolean isKycSelfie = remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE, false);
+        isKycSelfie = remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE, false);
         if(isKycSelfie){
-            if (getActivity() instanceof UserIdentificationFormActivity) {
-                ((UserIdentificationFormActivity) getActivity())
-                        .updateToolbarTitle(getString(R.string.title_kyc_form_upload));
-            }
-            setResultViews(KycUrl.KTP_VERIF_OK,
-                    KycUrl.FACE_VERIF_OK,
-                    "",
-                    getString(R.string.form_final_info),
-                    ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
-                    ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
-                    getString(R.string.upload_button));
-            generateLink();
-            uploadButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    analytics.eventClickUploadPhotos();
-                    checkKtp();
-                }
-            });
+            setKycSelfieView();
         } else {
-            int state = 0;
-            switch (state) {
-                case 0 : {
-//                setResultViews(KycUrl.KTP_VERIF_OK,
-//                        KycUrl.FACE_VERIF_FAIL,
-//                        getString(R.string.kyc_ktp_ok_face_fail_verification_subtitle),
-//                        getString(R.string.kyc_ktp_ok_face_fail_verification_info),
-//                        ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
-//                        null,
-//                        getString(R.string.kyc_ktp_ok_face_fail_button));
-                    setResultViews(KycUrl.KTP_VERIF_OK,
-                            KycUrl.FACE_VERIF_FAIL,
-                            stepperModel.getTitleText(),
-                            stepperModel.getSubtitleText(),
-                            ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
-                            null,
-                            stepperModel.getButtonText());
-                    break;
-                }
-                case 1 : {
-                    setResultViews(KycUrl.KTP_VERIF_FAIL,
-                            KycUrl.FACE_VERIF_FAIL,
-                            getString(R.string.kyc_ktp_face_fail_verification_subtitle),
-                            getString(R.string.kyc_ktp_face_fail_verification_info),
-                            null,
-                            null,
-                            getString(R.string.kyc_ktp_face_fail_button));
-                    ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_face_fail_info_1), getContext(), bulletTextLayout);
-                    ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_face_fail_info_2), getContext(), bulletTextLayout);
-                    ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_face_fail_info_3), getContext(), bulletTextLayout);
-                    break;
-                }
-                case 2 : {
-                    setResultViews(KycUrl.KTP_VERIF_FAIL,
-                            KycUrl.FACE_VERIF_OK,
-                            getString(R.string.kyc_ktp_fail_face_ok_verification_subtitle),
-                            getString(R.string.kyc_ktp_fail_face_ok_verification_info),
-                            null,
-                            ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
-                            getString(R.string.kyc_ktp_fail_face_ok_button));
-                    ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_1), getContext(), bulletTextLayout);
-                    ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_2), getContext(), bulletTextLayout);
-                    break;
-                }
+            setKycLivenessView();
+        }
+    }
+
+    private void setKycSelfieView(){
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity())
+                    .updateToolbarTitle(getString(R.string.title_kyc_form_upload));
+        }
+        setResultViews(KycUrl.KTP_VERIF_OK, KycUrl.FACE_VERIF_OK, "", getString(R.string.form_final_info),
+                ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
+                ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
+                getString(R.string.upload_button));
+        generateLink();
+        uploadButton.setOnClickListener(v -> {
+            analytics.eventClickUploadPhotos();
+            checkKtp();
+        });
+    }
+
+    private void setKycLivenessView(){
+        listRetake = stepperModel.getListRetake();
+        ArrayList<String> listMessage = stepperModel.getListMessage();
+        String imageKtp = KycUrl.KTP_VERIF_FAIL;
+        String imageFace = KycUrl.FACE_VERIF_FAIL;
+        Integer colorKtp = null;
+        Integer colorFace = null;
+
+        if(listRetake.size() == 1) {
+            if (listRetake.get(0) == 1) {
+                imageFace = KycUrl.FACE_VERIF_OK;
+                colorFace = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null);
+                uploadButton.setOnClickListener(v -> {
+                    analytics.eventClickChangeKtpFinalFormPage();
+                    openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
+                });
             }
-            if (getActivity() instanceof UserIdentificationFormActivity) {
-                ((UserIdentificationFormActivity) getActivity())
-                        .updateToolbarTitle(getString(R.string.title_kyc_form_fail_verification));
+            if (listRetake.get(0) == 2) {
+                imageKtp = KycUrl.KTP_VERIF_OK;
+                colorKtp = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null);
+                uploadButton.setOnClickListener(v -> {
+                    analytics.eventClickChangeSelfieFinalFormPage();
+                    openLivenessView();
+                });
             }
+        } else if(listRetake.size() == 2){ //if ktp and face failed
+            uploadButton.setOnClickListener(v -> {
+                analytics.eventClickChangeKtpSelfieFinalFormPage();
+                openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
+            });
+        }
+
+        setResultViews(imageKtp, imageFace, stepperModel.getTitleText(), stepperModel.getSubtitleText(), colorKtp, colorFace, stepperModel.getButtonText());
+
+        for (int i=0; i<listMessage.size(); i++){
+            ((UserIdentificationFormActivity) Objects.requireNonNull(getActivity())).setTextViewWithBullet(listMessage.get(i), getContext(), bulletTextLayout);
+        }
+
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity())
+                    .updateToolbarTitle(getString(R.string.title_kyc_form_fail_verification));
         }
     }
 
@@ -249,7 +255,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         info.setGravity(Gravity.LEFT);
         info.setText(infoText);
         uploadButton.setText(buttonText);
-//        subtitle.setText(getResources().getString(R.string.form_final_subtitle));
     }
 
     private void checkKtp(){
@@ -262,25 +267,9 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         presenter.uploadImage(stepperModel, projectId);
     }
 
-    private void setImageKtp(String imagePath) {
-        File ktpFile = new File(imagePath);
-        if (ktpFile.exists()) {
-            ImageHandler.loadImageFromFile(getContext(), imageKtp, ktpFile);
-        }
-    }
-
-    private void setImageFace(String imagePath) {
-        File faceFile = new File(imagePath);
-        if (faceFile.exists()) {
-            ImageHandler.loadImageFromFile(getContext(), imageFace, faceFile);
-        }
-    }
-
     private void initView(View view) {
         loadingLayout = view.findViewById(R.id.user_identification_final_loading_layout);
         mainLayout = view.findViewById(R.id.layout_main);
-        imageKtp = view.findViewById(R.id.image_ktp);
-        imageFace = view.findViewById(R.id.image_face);
         resultImageKtp = view.findViewById(R.id.result_image_ktp);
         resultImageFace = view.findViewById(R.id.result_image_face);
         resultTextKtp = view.findViewById(R.id.result_text_ktp);
@@ -291,25 +280,58 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         uploadButton = view.findViewById(R.id.upload_button);
     }
 
+    private void getLivenessResult(Intent data){
+        boolean isSuccessRegister = data.getBooleanExtra("isSuccessRegister", false);
+        if(!isSuccessRegister){
+            stepperModel.setListRetake(data.getIntegerArrayListExtra("listRetake"));
+            stepperModel.setListMessage(data.getStringArrayListExtra("listMessage"));
+            stepperModel.setTitleText(data.getStringExtra("title"));
+            stepperModel.setSubtitleText(data.getStringExtra("subtitle"));
+            stepperModel.setButtonText(data.getStringExtra("button"));
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.detach(this).attach(this).commit();
+        }else{
+            getActivity().setResult(Activity.RESULT_OK);
+            stepperListener.finishPage();
+        }
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
+            retakeAction(requestCode, data);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void retakeAction(int requestCode, Intent data){
+        if(!isKycSelfie){
+            switch (requestCode) {
+                case REQUEST_CODE_CAMERA_KTP:
+                    stepperModel.setKtpFile(data.getStringExtra(EXTRA_STRING_IMAGE_RESULT));
+                    openLivenessView();
+                    break;
+                case REQUEST_CODE_CAMERA_FACE:
+                    stepperModel.setFaceFile(data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH));
+                    getLivenessResult(data);
+                    break;
+                default:
+                    break;
+            }
+        } else {
             String imagePath = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
             switch (requestCode) {
                 case REQUEST_CODE_CAMERA_KTP:
                     stepperModel.setKtpFile(imagePath);
-                    setImageKtp(imagePath);
-                    hideKtpInvalidView();
                     break;
                 case REQUEST_CODE_CAMERA_FACE:
                     stepperModel.setFaceFile(imagePath);
-                    setImageFace(imagePath);
                     break;
                 default:
                     break;
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -383,33 +405,43 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         presenter.detachView();
     }
 
-    private void hideKtpInvalidView(){
-        uploadButton.setText(getResources().getString(R.string.upload_button));
-        uploadButton.setOnClickListener(v -> {
-            analytics.eventClickUploadPhotos();
-            checkKtp();
-        });
-        hideLoading();
-    }
-
     private void showKtpInvalidView(){
         uploadButton.setOnClickListener(v -> {
+            analytics.eventClickChangeKtpFinalFormPage();
             openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
         });
-        setResultViews(KycUrl.KTP_VERIF_FAIL,
-                KycUrl.FACE_VERIF_OK,
-                getString(R.string.kyc_ktp_fail_face_ok_verification_subtitle),
+        setResultViews(KycUrl.KTP_VERIF_FAIL, KycUrl.FACE_VERIF_OK, getString(R.string.kyc_ktp_fail_face_ok_verification_subtitle),
                 getString(R.string.kyc_ktp_fail_face_ok_verification_info),
-                null,
-                ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
+                null, ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
                 getString(R.string.kyc_ktp_fail_face_ok_button));
-        ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_1), getContext(), bulletTextLayout);
-        ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_2), getContext(), bulletTextLayout);
+        ((UserIdentificationFormActivity) getActivity())
+                .setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_1), getContext(), bulletTextLayout);
+        ((UserIdentificationFormActivity) getActivity())
+                .setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_2), getContext(), bulletTextLayout);
+    }
+
+    public void clickBackTracker(){
+        if(listRetake.size() == 1){
+            switch (listRetake.get(0)){
+                case 1 : {
+                    analytics.eventClickBackChangeKtpFinalFormPage();
+                }
+                case 2 : {
+                    analytics.eventClickBackChangeSelfieFinalFormPage();
+                }
+            }
+        }else if(listRetake.size() == 2){
+            analytics.eventClickBackChangeKtpSelfieFinalFormPage();
+        }
     }
 
     @Override
     public void trackOnBackPressed() {
-        analytics.eventClickBackFinalForm();
+        if(!isKycSelfie){
+            clickBackTracker();
+        } else {
+            analytics.eventClickBackFinalForm();
+        }
     }
 
     @Override
@@ -430,4 +462,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         hideLoading();
         uploadImage();
     }
+
+
 }

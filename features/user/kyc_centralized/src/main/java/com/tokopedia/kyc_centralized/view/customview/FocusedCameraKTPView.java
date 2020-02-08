@@ -24,7 +24,6 @@ public class FocusedCameraKTPView extends View {
     private final static int CONST_RADIUS = 20;
     private final static int CONST_STROKE_WIDTH = 10;
 
-    private Paint mTransparentPaint;
     private Paint mSemiBlackPaint;
     private Paint mWhitePaint;
     private Path mPath = new Path();
@@ -46,10 +45,6 @@ public class FocusedCameraKTPView extends View {
 
 
     private void initPaints() {
-        mTransparentPaint = new Paint();
-        mTransparentPaint.setColor(Color.TRANSPARENT);
-        mTransparentPaint.setStrokeWidth(CONST_STROKE_WIDTH);
-
         mSemiBlackPaint = new Paint();
         mSemiBlackPaint.setColor(Color.TRANSPARENT);
         mSemiBlackPaint.setStrokeWidth(CONST_STROKE_WIDTH);

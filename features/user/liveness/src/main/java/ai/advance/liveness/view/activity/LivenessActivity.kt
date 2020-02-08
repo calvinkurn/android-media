@@ -32,6 +32,7 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
 
     private var mLivenessFragment: LivenessFragment? = null
     private var mErrorDialog: AlertDialog? = null
+    private var extras = Bundle()
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.CAMERA,
@@ -51,21 +52,9 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
         setContentView(R.layout.activity_liveness)
         ScreenUtil.init(this)
 
-        changeAppBrightness(255)
         if (GuardianLivenessDetectionSDK.isSDKHandleCameraPermission && !allPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE)
         }
-    }
-
-    private fun changeAppBrightness(brightness: Int) {
-        val window = this.window
-        val lp = window.attributes
-        if (brightness == -1) {
-            lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
-        } else {
-            lp.screenBrightness = (if (brightness <= 0) 1 else brightness) / 255f
-        }
-        window.attributes = lp
     }
 
     override fun onResume() {
@@ -76,7 +65,6 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
     private fun attachFragment() {
         if (allPermissionsGranted()) {
             if (GuardianLivenessDetectionSDK.isDeviceSupportLiveness) {
-                var extras = Bundle()
                 intent.extras?.let {
                     extras = it
                 }
@@ -119,7 +107,7 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == 0) {
+        if (resultCode == Activity.RESULT_CANCELED) {
             finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -149,8 +137,7 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
         AlertDialog.Builder(this).setMessage(getString(R.string.liveness_no_camera_permission)).setPositiveButton(getString(R.string.liveness_perform)) { dialog, which -> finish() }.create().show()
     }
 
-    override fun onRequestPermissionsResult(
-            requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             if (!allGranted(grantResults)) {

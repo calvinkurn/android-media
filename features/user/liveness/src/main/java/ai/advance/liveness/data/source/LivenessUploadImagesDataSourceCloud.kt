@@ -9,9 +9,9 @@ import javax.inject.Inject
 
 class LivenessUploadImagesDataSourceCloud @Inject constructor(
     private val retrofit: Retrofit) {
-    private var livenessData: LivenessData? = null
+    private var livenessData = LivenessData()
 
-    suspend fun uploadImage(projectId: RequestBody, params: RequestBody, ktpImage: MultipartBody.Part, faceImage: MultipartBody.Part): LivenessData? {
+    suspend fun uploadImage(projectId: RequestBody, params: RequestBody, ktpImage: MultipartBody.Part, faceImage: MultipartBody.Part): LivenessData {
         livenessData =  retrofit.create(LivenessDetectionApi::class.java).uploadImages(projectId, params, ktpImage, faceImage).data
         return livenessData
     }

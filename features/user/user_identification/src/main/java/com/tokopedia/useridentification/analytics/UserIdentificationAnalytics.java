@@ -16,7 +16,7 @@ public class UserIdentificationAnalytics {
         private static final String CLICK_ACCOUNT = "clickAccount";
         private static final String VIEW_KYC = "viewKYC";
         private static final String CLICK_KYC = "clickKYC";
-        private static final String VIEW_TRADEIN = "viewTradeIn"; //from start
+        private static final String VIEW_TRADEIN = "viewTradeIn";
         private static final String CLICK_TRADEIN = "clickTradeIn";
     }
 

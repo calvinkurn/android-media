@@ -43,9 +43,7 @@ class LivenessDetectionAnalytics @Inject constructor() {
         const val labelSix= "6"
         const val labelSeven= "7"
         const val labelTimeout= "timeout"
-        const val labelPreRecorded= "prerecorded"
         const val labelConnectionTimeout= "connection timeout"
-        const val labelBlurry= "blurry"
     }
 
     fun eventViewFaceInCenter() {
@@ -201,24 +199,6 @@ class LivenessDetectionAnalytics @Inject constructor() {
         ))
     }
 
-    fun eventClickPreRecorded() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_LIVENESS_FAILED_PAGE,
-                Action.CLICK_ON_BUTTON_COBA_LAGI,
-                Label.labelPreRecorded
-        ))
-    }
-
-    fun eventClickBackPreRecorded() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_LIVENESS_FAILED_PAGE,
-                Action.CLICK_ON_BUTTON_BACK,
-                Label.labelPreRecorded
-        ))
-    }
-
     fun eventClickConnectionTimeout() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
@@ -234,24 +214,6 @@ class LivenessDetectionAnalytics @Inject constructor() {
                 Category.KYC_LIVENESS_FAILED_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 Label.labelConnectionTimeout
-        ))
-    }
-
-    fun eventClickBlurry() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_LIVENESS_FAILED_PAGE,
-                Action.CLICK_ON_BUTTON_COBA_LAGI,
-                Label.labelBlurry
-        ))
-    }
-
-    fun eventClickBackBlurry() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_LIVENESS_FAILED_PAGE,
-                Action.CLICK_ON_BUTTON_BACK,
-                Label.labelBlurry
         ))
     }
 }

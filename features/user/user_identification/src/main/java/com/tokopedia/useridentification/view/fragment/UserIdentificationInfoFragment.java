@@ -239,7 +239,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void showStatusPending() {
         ImageHandler.LoadImage(image, KycUrl.ICON_WAITING);
-//        button.setVisibility(View.GONE);
         title.setText(R.string.kyc_pending_title);
         text.setText(R.string.kyc_pending_text);
         button.setText(R.string.kyc_pending_button);
@@ -343,10 +342,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void goToFormActivity() {
         if(getActivity() != null){
-//            ArrayList<String> DFMList =  new ArrayList<>();
-//            DFMList.add(DFM_FACE_DETECTION);
-//            new DFInstaller().installOnBackground(getActivity().getApplicationContext(), DFMList, null, null);
-//            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
         }

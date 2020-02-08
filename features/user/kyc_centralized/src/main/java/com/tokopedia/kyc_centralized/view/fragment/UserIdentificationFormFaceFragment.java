@@ -66,28 +66,40 @@ public class UserIdentificationFormFaceFragment extends
         button.setText(R.string.face_button);
         button.setOnClickListener(v -> {
             analytics.eventClickNextSelfiePage();
-            isKycSelfie = remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE, true);
+            isKycSelfie = remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE, false);
             if(isKycSelfie){
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), PARAM_VIEW_MODE_FACE);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
+                goToKycSelfie();
             } else {
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.LIVENESS_DETECTION);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_KTP_PATH, stepperModel.getKtpFile());
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
+                goToKycLiveness();
             }
         });
+        setLottieAnimation();
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity())
+                    .updateToolbarTitle(getString(R.string.title_kyc_form_face));
+        }
+    }
+
+    private void setLottieAnimation(){
         LottieTask<LottieComposition> lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(requireContext(), KycUrl.SCAN_FACE);
         lottieCompositionLottieTask.addListener(result -> {
             onboardingImage.setComposition(result);
             onboardingImage.setRepeatCount(ValueAnimator.INFINITE);
             onboardingImage.playAnimation();
         });
+    }
 
-        if (getActivity() instanceof UserIdentificationFormActivity) {
-            ((UserIdentificationFormActivity) getActivity())
-                    .updateToolbarTitle(getString(R.string.title_kyc_form_face));
-        }
+    private void goToKycSelfie(){
+        Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), PARAM_VIEW_MODE_FACE);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
+        startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
+    }
+
+    private void goToKycLiveness(){
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.LIVENESS_DETECTION);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_KTP_PATH, stepperModel.getKtpFile());
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
+        startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
     }
 
     @Override

@@ -61,12 +61,25 @@ public class UserIdentificationFormKtpFragment extends
         int paddingDp = 16;
         float scale = getResources().getDisplayMetrics().density;
         onboardingImage.setPadding(0, (int) (paddingDp * scale + 0.5F), 0, 0);
+        setTextView();
+        setButtonView();
+        ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_KTP);
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity())
+                    .updateToolbarTitle(getString(R.string.title_kyc_info));
+        }
+    }
+
+    private void setTextView(){
         title.setText(R.string.ktp_title);
         subtitle.setText(MethodChecker.fromHtml(getString(R.string.ktp_subtitle)));
         subtitle.setGravity(Gravity.LEFT);
         ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.ktp_body_1), getContext(), bulletTextLayout);
         ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.ktp_body_2), getContext(), bulletTextLayout);
         ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.ktp_body_3), getContext(), bulletTextLayout);
+    }
+
+    private void setButtonView(){
         button.setText(R.string.ktp_button);
         button.setOnClickListener(v -> {
             analytics.eventClickNextKtpPage();
@@ -75,11 +88,6 @@ public class UserIdentificationFormKtpFragment extends
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
             startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
         });
-        ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_KTP);
-        if (getActivity() instanceof UserIdentificationFormActivity) {
-            ((UserIdentificationFormActivity) getActivity())
-                    .updateToolbarTitle(getString(R.string.title_kyc_info));
-        }
     }
 
     @Override
