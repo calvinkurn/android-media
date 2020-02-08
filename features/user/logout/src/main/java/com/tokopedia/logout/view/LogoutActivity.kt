@@ -162,7 +162,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
 
         if (isReturnToHome) {
-            RouteManager.route(applicationContext, ApplinkConst.HOME)
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(applicationContext, ApplinkConst.SellerApp.SELLER_APP_HOME)
+            } else {
+                RouteManager.route(applicationContext, ApplinkConst.HOME)
+            }
         } else {
             setResult(Activity.RESULT_OK)
             finish()
