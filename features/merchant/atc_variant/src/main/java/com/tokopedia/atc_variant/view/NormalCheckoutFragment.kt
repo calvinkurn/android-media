@@ -1205,6 +1205,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         }
         selectedVariantId = inputSelectedVariantId
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
+        selectedVariantId = (selectedProductInfo?.basic?.id ?: inputSelectedVariantId).toString()
         selectedProductInfo?.let {
             val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
                     originalProduct.productVariant, notes, quantity)
