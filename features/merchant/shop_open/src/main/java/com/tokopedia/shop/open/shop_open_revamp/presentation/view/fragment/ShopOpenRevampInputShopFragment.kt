@@ -117,7 +117,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     isEditShopName = true
                     CoroutineScope(Dispatchers.IO).launch {
                         delay(900)
-                        // viewModel.cancelUseCaseCheckDomainShopName()
                         viewModel.checkShopName(shopNameValue)
                     }
                 }
@@ -158,8 +157,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
         btnShopRegistration.setOnClickListener {
-            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
+            activity?.let {
+                val imm = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+            }
             if (domainNameValue.isNotEmpty() && shopNameValue.isNotEmpty()) {
                 viewModel.createShop(domainNameValue, shopNameValue)
             }
@@ -243,12 +244,12 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     val isSuccess = true
                     userSession.shopId = it.data.createShop.createdId
                     fragmentNavigationInterface.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
-                    // shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
+                    shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                 }
                 is Fail -> {
                     val isSuccess = false
                     showErrorNetwork(it.throwable)
-                    // shopOpenRevampTracking?.clickCreateShop(isSuccess, )
+                    shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                 }
             }
         })

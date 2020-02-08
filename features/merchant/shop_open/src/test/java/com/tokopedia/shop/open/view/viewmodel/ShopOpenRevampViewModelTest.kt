@@ -64,7 +64,7 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
-    fun testValidateShopName() {
+    fun `given shop name validation when shop name is not empty`() {
         mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
@@ -82,7 +82,7 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
-    fun testValidateDomainAndShopName() {
+    fun `given shop and domain name validation when shop name and domain name is not empty`() {
         mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
@@ -100,7 +100,7 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
-    fun testGetDomainNameSuggestions() {
+    fun `given domain name suggestion when shop name is provided`() {
         mockkObject(ShopOpenRevampGetDomainNameSuggestionUseCase)
         coEvery {
             getDomainNameSuggestionUseCase.executeOnBackground()
@@ -118,7 +118,7 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
-    fun testCreateShop() {
+    fun `given shop id when valid shop name and valid domain name are provided`() {
         mockkObject(ShopOpenRevampCreateShopUseCase)
         coEvery {
             createShopUseCase.executeOnBackground()
@@ -135,7 +135,7 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
-    fun testSendSurveyData() {
+    fun `given success param when send survey data`() {
         mockkObject(ShopOpenRevampSendSurveyUseCase)
         coEvery {
             sendSurveyUseCase.executeOnBackground()
@@ -153,7 +153,7 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
-    fun testSaveShopShipmentLocation() {
+    fun `given success message when shopId, postCode, courierOrigin, addrStreet, lat, long are provided`() {
         mockkObject(ShopOpenRevampSaveShipmentLocationUseCase)
         coEvery {
             saveShopShipmentLocationUseCase.executeOnBackground()
@@ -161,10 +161,20 @@ class ShopOpenRevampViewModelTest  {
         viewModel.saveShippingLocation(
                 anyInt(), anyString(), anyInt(), anyString(), anyString(), anyString()
         )
+
+        val anyMap: MutableMap<String, Any> = anyMap()
+        verify {
+            ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(anyMap)
+        }
+        Assert.assertTrue(saveShopShipmentLocationUseCase.params.parameters.isNotEmpty())
+        coVerify {
+            saveShopShipmentLocationUseCase.executeOnBackground()
+        }
+        Assert.assertTrue(viewModel.saveShopShipmentLocationResponse.value is Success)
     }
 
     @Test
-    fun testGetSurveyData() {
+    fun `given quisionaire data when request is executed`() {
         mockkObject(ShopOpenRevampGetSurveyUseCase)
         coEvery {
             getSurveyUseCase.executeOnBackground()

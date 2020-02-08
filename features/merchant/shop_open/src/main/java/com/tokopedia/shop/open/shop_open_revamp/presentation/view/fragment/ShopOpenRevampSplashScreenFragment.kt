@@ -6,10 +6,13 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.open.R
+import com.tokopedia.shop.open.shop_open_revamp.common.ImageAssets.IMG_SHOP_OPEN_SPLASH_SCREEN
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInterface
 import com.tokopedia.user.session.UserSession
@@ -22,6 +25,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     private val handler = Handler()
     lateinit var fragmentNavigationInterface: FragmentNavigationInterface
+    private lateinit var imageViewShopCreated: ImageView
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
@@ -38,6 +42,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  inflater.inflate(R.layout.fragment_shop_open_revamp_splash_screen, container, false)
+        imageViewShopCreated = view.findViewById(R.id.img_icon_open_shop_finish)
         return view
     }
 
@@ -56,11 +61,12 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
     }
 
     private fun setupIconImage(view: View) {
-        val imageIllustration = "https://ecs7.tokopedia.net/android/splash_screen/drawable-xxxhdpi/illustration_1.png"
-        Glide.with(view.context)
-                .load(imageIllustration)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(img_icon_open_shop_finish)
+        ImageHandler.loadImage(
+                view.context,
+                imageViewShopCreated,
+                IMG_SHOP_OPEN_SPLASH_SCREEN,
+                R.drawable.ic_loading_placeholder
+        )
     }
 
 }

@@ -67,7 +67,7 @@ public class GetSellerAccountUseCase extends UseCase<SellerViewModel> {
                         String shopLocationQuery = requestParam.getString(SHOP_LOCATION_QUERY, "");
                         graphqlUseCase.addRequest(createGraphqlRequest(
                                 shopLocationQuery,
-                                creteShopLocationRequestParam(shopId))
+                                createShopLocationRequestParam(shopId))
                         );
 
                         return graphqlUseCase.createObservable(null);
@@ -78,15 +78,15 @@ public class GetSellerAccountUseCase extends UseCase<SellerViewModel> {
                 .map(mapper);
     }
 
-    private RequestParams creteShopLocationRequestParam(String shopId) {
+    private RequestParams createShopLocationRequestParam(String shopId) {
         String SHOP_ID = "shopID";
 
         RequestParams param = RequestParams.create();
-        int ShopIdInt = 0;
+        int shopIdInt = 0;
         if (shopId == "0") {
-            ShopIdInt = Integer.parseInt(shopId);
+            shopIdInt = Integer.parseInt(shopId);
         }
-        param.putInt(SHOP_ID, ShopIdInt);
+        param.putInt(SHOP_ID, shopIdInt);
         return param;
     }
 

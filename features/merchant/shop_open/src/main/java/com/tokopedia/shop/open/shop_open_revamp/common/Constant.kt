@@ -25,3 +25,7 @@ object TermsAndConditionsLink {
     const val URL_TNC = "https://www.tokopedia.com/terms.pl"
     const val URL_PRIVACY_POLICY = "https://www.tokopedia.com/privacy.pl"
 }
+
+object ImageAssets {
+    val IMG_SHOP_OPEN_SPLASH_SCREEN = "https://ecs7.tokopedia.net/android/splash_screen/drawable-xxxhdpi/illustration_1.png"
+}

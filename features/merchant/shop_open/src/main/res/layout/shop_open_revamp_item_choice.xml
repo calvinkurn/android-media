@@ -17,9 +17,9 @@
             android:layout_alignParentLeft="true"
             android:layout_marginBottom="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_18"
-            android:textColor="#f531353b"
-            android:lineSpacingExtra="6sp"
-            android:text="Pernah berjualan di e -commerce lain" />
+            android:textColor="@color/title_text"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/text_default_choice_item" />
 
         <CheckBox
             android:id="@+id/checkbox_choice"
@@ -34,8 +34,8 @@
     </RelativeLayout>
 
     <View
-        android:background="#f2f2f2"
-        android:layout_height="2dp"
+        android:background="@color/line_separator"
+        android:layout_height="@dimen/dp_2"
         android:layout_width="fill_parent">
     </View>
 

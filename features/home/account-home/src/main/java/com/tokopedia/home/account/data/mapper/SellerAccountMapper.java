@@ -76,7 +76,10 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         }
         SellerViewModel sellerViewModel;
         int provinceId = 0;
-        if (shopInfoLocation != null) {
+        if (shopInfoLocation != null
+                && shopInfoLocation.getShopInfoByID() != null
+                && shopInfoLocation.getShopInfoByID().getResult().size() > 0
+                && shopInfoLocation.getShopInfoByID().getResult().get(0).getShippingLoc() != null) {
             provinceId = shopInfoLocation.getShopInfoByID().getResult().get(0).getShippingLoc().getProvinceID();
         }
 

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/chip_container"
     android:orientation="horizontal"
-    android:layout_width="180dp"
+    android:layout_width="@dimen/dp_180"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -18,16 +18,15 @@
             android:background="@drawable/unify_chips_bg_img_rounded_corner"
             android:layout_gravity="center_vertical"
             android:scaleType="centerCrop"
-            android:layout_width="24dp"
-            android:layout_height="24dp"/>
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"/>
 
         <TextView
             android:id="@+id/chip_text"
             android:layout_gravity="center_vertical"
-            android:text="Sample Chip with Icon"
             android:maxLines="1"
             android:textColor="@color/Neutral_N700_68"
-            android:textSize="14sp"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -38,8 +37,8 @@
         android:id="@+id/chip_close_icon"
         android:src="@drawable/unify_chips_ic_close"
         android:layout_gravity="center_vertical"
-        android:layout_width="14dp"
-        android:layout_height="14dp"/>
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"/>
 
 
 

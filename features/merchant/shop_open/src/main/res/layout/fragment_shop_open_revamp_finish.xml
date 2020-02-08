@@ -9,8 +9,8 @@
 
     <TextView
         android:id="@+id/txt_greeting"
-        android:text="Selamat Name, \nTokomu sudah jadi!"
-        android:textColor="#f531353b"
+        android:text="@string/title_text_greeting"
+        android:textColor="@color/title_text"
         android:lineSpacingExtra="@dimen/sp_6"
         android:letterSpacing="0.01"
         android:textStyle="bold"
@@ -27,8 +27,8 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="#f531353b"
-        android:text="Tambah produk dan mulai usahamu"
+        android:textColor="@color/title_text"
+        android:text="@string/text_add_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

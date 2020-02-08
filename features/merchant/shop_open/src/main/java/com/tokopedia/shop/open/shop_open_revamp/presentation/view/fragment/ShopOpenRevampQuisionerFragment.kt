@@ -120,7 +120,7 @@ class ShopOpenRevampQuisionerFragment :
         questionsAndAnswersId?.let {
             if (it.containsKey(questionId)) {
                 it[questionId]?.remove(choiceId)
-                if (it.get(questionId)?.isEmpty()!!) {
+                if (it.get(questionId)?.isEmpty() == true) {
                     btnNext.isEnabled = false
                 }
             }

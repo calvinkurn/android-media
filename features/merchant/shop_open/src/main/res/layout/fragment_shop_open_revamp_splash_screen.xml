@@ -28,8 +28,8 @@
 
     <TextView
         android:id="@+id/txt_greeting"
-        android:text="Hore Name!"
-        android:textColor="#f531353b"
+        android:text="@string/horay_name"
+        android:textColor="@color/title_text"
         android:lineSpacingExtra="@dimen/sp_6"
         android:letterSpacing="0.01"
         android:textStyle="bold"
@@ -45,14 +45,14 @@
         android:textSize="@dimen/sp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="#f531353b"
-        android:text="Tokomu sebentar lagi jadi. Ada yang segera ganti status jadi pengusaha nih…"
+        android:textColor="@color/title_text"
+        android:text="@string/shop_splash_screen_sub_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/img_icon_open_shop_finish"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="@dimen/dp_64"
         android:src="@drawable/ic_icon_toped_announce"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitXY"
