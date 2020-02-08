@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/text_choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_18"
+            android:textColor="#f531353b"
+            android:lineSpacingExtra="6sp"
+            android:text="Pernah berjualan di e -commerce lain" />
+
+        <CheckBox
+            android:id="@+id/checkbox_choice"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            style="@style/checkBoxStyle"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"/>
+
+    </RelativeLayout>
+
+    <View
+        android:background="#f2f2f2"
+        android:layout_height="2dp"
+        android:layout_width="fill_parent">
+    </View>
+
+</LinearLayout>
