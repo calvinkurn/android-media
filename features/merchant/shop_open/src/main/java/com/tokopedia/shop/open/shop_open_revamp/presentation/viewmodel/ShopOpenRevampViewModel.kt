@@ -1,5 +1,6 @@
 package com.tokopedia.shop.open.shop_open_revamp.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.shop.open.shop_open_revamp.data.model.*
@@ -10,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class ShopOpenRevampViewModel @Inject constructor(
         private val validateDomainShopNameUseCase: ShopOpenRevampValidateDomainShopNameUseCase,
@@ -28,113 +30,77 @@ class ShopOpenRevampViewModel @Inject constructor(
         const val QUESTION_ID = "questionID"
         const val CHOICES = "choices"
     }
+    
 
-    val checkDomainAndShopNameResponse = MutableLiveData<Result<ValidateShopDomainNameResult>>()
-    val checkShopNameResponse = MutableLiveData<Result<ValidateShopDomainNameResult>>()
-    val domainShopNameSuggestionsResponse = MutableLiveData<Result<ShopDomainSuggestionResult>>()
-    val getSurveyDataResponse = MutableLiveData<Result<GetSurveyData>>()
-    val sendSurveyDataResponse = MutableLiveData<Result<SendSurveyData>>()
-    val createShopOpenResponse = MutableLiveData<Result<CreateShop>>()
-    val saveShopShipmentLocationResponse = MutableLiveData<Result<SaveShipmentLocation>>()
+    private val _checkDomainNameResponse = MutableLiveData<Result<ValidateShopDomainNameResult>>()
+    val checkDomainNameResponse: LiveData<Result<ValidateShopDomainNameResult>>
+        get() = _checkDomainNameResponse
 
-    fun cancelUseCaseCheckDomainShopName() {
-        validateDomainShopNameUseCase.cancelJobs()
-        getDomainNameSuggestionUseCase.cancelJobs()
-    }
+    private val _getSurveyDataResponse = MutableLiveData<Result<GetSurveyData>>()
+    val getSurveyDataResponse: LiveData<Result<GetSurveyData>>
+        get() = _getSurveyDataResponse
 
-    fun checkDomainAndShopName(domain: String, shopName: String) {
-        validateDomainShopNameUseCase.cancelJobs()
-        launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val domainShopNameValidationData = getValidationDomainShopName(domain, shopName)
-                    domainShopNameValidationData.let {
-                        checkDomainAndShopNameResponse.postValue(Success(it))
-                    }
-                }
-            }
-        }) {
-            checkDomainAndShopNameResponse.value = Fail(it)
-        }
-    }
+    private val _domainShopNameSuggestionsResponse = MutableLiveData<Result<ShopDomainSuggestionResult>>()
+    val domainShopNameSuggestionsResponse: LiveData<Result<ShopDomainSuggestionResult>>
+        get() = _domainShopNameSuggestionsResponse
+
+    private val _saveShopShipmentLocationResponse = MutableLiveData<Result<SaveShipmentLocation>>()
+    val saveShopShipmentLocationResponse: LiveData<Result<SaveShipmentLocation>>
+        get() = _saveShopShipmentLocationResponse
+
+    private val _createShopOpenResponse = MutableLiveData<Result<CreateShop>>()
+    val createShopOpenResponse: LiveData<Result<CreateShop>>
+        get() = _createShopOpenResponse
+
+    private val _sendSurveyDataResponse = MutableLiveData<Result<SendSurveyData>>()
+    val sendSurveyDataResponse: LiveData<Result<SendSurveyData>>
+        get() = _sendSurveyDataResponse
+
+    private val _checkShopNameResponse = MutableLiveData<Result<ValidateShopDomainNameResult>>()
+    val checkShopNameResponse: LiveData<Result<ValidateShopDomainNameResult>>
+        get() = _checkShopNameResponse
+
 
     fun checkShopName(shopName: String) {
         validateDomainShopNameUseCase.cancelJobs()
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val shopNameValidationData = getValidationShopName(shopName)
-                    shopNameValidationData.let {
-                        checkShopNameResponse.postValue(Success(it))
-                    }
+            withContext(Dispatchers.IO) {
+                validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
+                val validateShopNameResult = validateDomainShopNameUseCase.executeOnBackground()
+                validateShopNameResult.let {
+                    _checkShopNameResponse.postValue(Success(validateShopNameResult))
                 }
             }
         }) {
-            checkShopNameResponse.value = Fail(it)
+            _checkShopNameResponse.value = Fail(it)
+        }
+    }
+
+    fun getSurveyQuizionaireData() {
+        launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                val surveyDataResult = getSurveyUseCase.executeOnBackground()
+                surveyDataResult.let {
+                    _getSurveyDataResponse.postValue(Success(it))
+                }
+            }
+        }) {
+            _getSurveyDataResponse.value = Fail(it)
         }
     }
 
     fun getDomainShopNameSuggestions(shopName: String) {
         getDomainNameSuggestionUseCase.cancelJobs()
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val domainShopNameValidationData = getDomainShopNameSuggestion(shopName)
-                    domainShopNameValidationData.let {
-                        domainShopNameSuggestionsResponse.postValue(Success(it))
-                    }
+            withContext(Dispatchers.IO) {
+                getDomainNameSuggestionUseCase.params = ShopOpenRevampGetDomainNameSuggestionUseCase.createRequestParams(shopName)
+                val shopSuggestionsResult = getDomainNameSuggestionUseCase.executeOnBackground()
+                shopSuggestionsResult.let {
+                    _domainShopNameSuggestionsResponse.postValue(Success(it))
                 }
             }
         }) {
-            checkDomainAndShopNameResponse.value = Fail(it)
-        }
-    }
-
-    fun getSurveyQuizionaireData() {
-        launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val surveyData = getSurveyQuizionaireDataResult()
-                    surveyData.let {
-                        getSurveyDataResponse.postValue(Success(it))
-                    }
-                }
-            }
-        }) {
-            getSurveyDataResponse.value = Fail(it)
-        }
-    }
-
-    fun createShop(domain: String, shopName: String) {
-        launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val createShopData = submitShop(domain, shopName)
-                    createShopData.let {
-                        createShopOpenResponse.postValue(Success(it))
-                    }
-                }
-            }
-        }) {
-            createShopOpenResponse.value = Fail(it)
-        }
-    }
-
-    fun sendInputSurveyData(dataSurvey: MutableMap<Int, MutableList<Int>>) {
-        val dataSurveyInput = getDataSurveyInput(dataSurvey)
-        sendSurveyData(dataSurveyInput)
-    }
-
-    fun sendSurveyData(dataSurveyInput: Map<String, Any>) {
-        launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val sendSurveyData = sendSurvey(dataSurveyInput)
-                    sendSurveyDataResponse.postValue(Success(sendSurveyData))
-                }
-            }
-        }) {
-            sendSurveyDataResponse.value = Fail(it)
+            // _checkDomainAndShopNameResponse.value = Fail(it)
         }
     }
 
@@ -147,16 +113,17 @@ class ShopOpenRevampViewModel @Inject constructor(
             long: String
     ) {
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val dataParam = saveShopShippingLocation(
-                            shopId, postCode, courierOrigin, addrStreet, lat, long)
-                    val saveShipmentLocation = saveShopShippingLocation(dataParam)
-                    saveShopShipmentLocationResponse.postValue(Success(saveShipmentLocation))
+            withContext(Dispatchers.IO) {
+                val dataParam = saveShopShippingLocation(
+                        shopId, postCode, courierOrigin, addrStreet, lat, long)
+                saveShopShipmentLocationUseCase.params = ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(dataParam)
+                val saveShipmentLocationData = saveShopShipmentLocationUseCase.executeOnBackground()
+                saveShipmentLocationData.let {
+                    _saveShopShipmentLocationResponse.postValue(Success(it))
                 }
             }
         }) {
-            saveShopShipmentLocationResponse.value = Fail(it)
+            _saveShopShipmentLocationResponse.value = Fail(it)
         }
     }
 
@@ -167,7 +134,7 @@ class ShopOpenRevampViewModel @Inject constructor(
             addrStreet: String,
             lat: String,
             long: String
-            ): MutableMap<String, Any> {
+    ): MutableMap<String, Any> {
         val shipmentPayload = mutableMapOf<String, Any>()
         val SHOP_ID = "shop_id"
         val POSTAL_CODE = "postal_code"
@@ -185,12 +152,45 @@ class ShopOpenRevampViewModel @Inject constructor(
         return shipmentPayload
     }
 
+    fun createShop(domain: String, shopName: String) {
+        launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                createShopUseCase.params = ShopOpenRevampCreateShopUseCase.createRequestParams(domain, shopName)
+                val shopRegistrationResult = createShopUseCase.executeOnBackground()
+                shopRegistrationResult.let {
+                    _createShopOpenResponse.postValue(Success(it))
+                }
+            }
+        }) {
+            _createShopOpenResponse.value = Fail(it)
+        }
+    }
+
+    fun sendInputSurveyData(dataSurvey: MutableMap<Int, MutableList<Int>>) {
+        val dataSurveyInput = getDataSurveyInput(dataSurvey)
+        sendSurveyData(dataSurveyInput)
+    }
+
+    fun sendSurveyData(dataSurveyInput: Map<String, Any>) {
+        launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                sendSurveyUseCase.params = ShopOpenRevampSendSurveyUseCase.createRequestParams(dataSurveyInput)
+                val sendSurveyData = sendSurveyUseCase.executeOnBackground()
+                sendSurveyData.let {
+                    _sendSurveyDataResponse.postValue(Success(it))
+                }
+            }
+        }) {
+            _sendSurveyDataResponse.value = Fail(it)
+        }
+    }
+
     private fun getDataSurveyInput(
             dataSurveys: MutableMap<Int, MutableList<Int>>
     ): MutableMap<String, Any> {
         val surveyPayload = mutableMapOf<String, Any>()
         var questionsAndChoices = mutableMapOf<String, Any>()
-        dataSurveys.toList().forEachIndexed { index, dataSurvey ->
+        dataSurveys.toList().forEachIndexed { _, dataSurvey ->
             questionsAndChoices.put(QUESTION_ID, dataSurvey.first)
             questionsAndChoices.put(CHOICES, dataSurvey.second)
         }
@@ -199,73 +199,19 @@ class ShopOpenRevampViewModel @Inject constructor(
         return surveyPayload
     }
 
-    private suspend fun saveShopShippingLocation(dataParam: Map<String, Any>): SaveShipmentLocation {
-        var saveShipmentLocation = SaveShipmentLocation()
-        try {
-            saveShopShipmentLocationUseCase.params = ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(dataParam)
-            saveShipmentLocation = saveShopShipmentLocationUseCase.executeOnBackground()
-        } catch (t: Throwable) {
+    fun checkDomainName(domain: String) {
+        validateDomainShopNameUseCase.cancelJobs()
+        launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domain)
+                val validateShopDomainNameResult = validateDomainShopNameUseCase.executeOnBackground()
+                validateShopDomainNameResult.let {
+                    _checkDomainNameResponse.postValue(Success(it))
+                }
+            }
+        }) {
+            _checkDomainNameResponse.value = Fail(it)
         }
-        return saveShipmentLocation
-    }
-
-    private suspend fun sendSurvey(dataSurveys: Map<String, Any>): SendSurveyData {
-        var sendSurveyData = SendSurveyData()
-        try {
-            sendSurveyUseCase.params = ShopOpenRevampSendSurveyUseCase.createRequestParams(dataSurveys)
-            sendSurveyData = sendSurveyUseCase.executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return sendSurveyData
-    }
-
-    private suspend fun submitShop(domain: String, shopName: String): CreateShop {
-        var shopRegistrationResult = CreateShop()
-        try {
-            createShopUseCase.params = ShopOpenRevampCreateShopUseCase.createRequestParams(domain, shopName)
-            shopRegistrationResult = createShopUseCase.executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return shopRegistrationResult
-    }
-
-    private suspend fun getSurveyQuizionaireDataResult(): GetSurveyData {
-        var surveyDataResult = GetSurveyData()
-        try {
-            surveyDataResult = getSurveyUseCase.executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return surveyDataResult
-    }
-
-    private suspend fun getValidationDomainShopName(domain: String, shopName: String): ValidateShopDomainNameResult {
-        var validateShopDomainNameResult = ValidateShopDomainNameResult()
-        try {
-            validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(domain, shopName)
-            validateShopDomainNameResult = validateDomainShopNameUseCase.executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return validateShopDomainNameResult
-    }
-
-    private suspend fun getValidationShopName(shopName: String): ValidateShopDomainNameResult {
-        var validateShopNameResult = ValidateShopDomainNameResult()
-        try {
-            validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
-            validateShopNameResult = validateDomainShopNameUseCase.executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return validateShopNameResult
-    }
-
-    private suspend fun getDomainShopNameSuggestion(shopName: String): ShopDomainSuggestionResult {
-        var shopSuggestionsResult = ShopDomainSuggestionResult()
-        try {
-            getDomainNameSuggestionUseCase.params = ShopOpenRevampGetDomainNameSuggestionUseCase.createRequestParams(shopName)
-            shopSuggestionsResult = getDomainNameSuggestionUseCase.executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return shopSuggestionsResult
     }
 
 }

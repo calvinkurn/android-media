@@ -46,6 +46,10 @@ class ShopOpenRevampValidateDomainShopNameUseCase @Inject constructor(
             putString(DOMAIN_NAME, domainName)
         }
 
+        fun createRequestParam(domainName: String): RequestParams = RequestParams.create().apply {
+            putString(DOMAIN_NAME, domainName)
+        }
+
         fun createRequestParams(shopName: String): RequestParams = RequestParams.create().apply {
             putString(SHOP_NAME, shopName)
         }
