@@ -56,6 +56,7 @@ class ShopOpenRevampQuisionerFragment :
     private var recyclerView: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: ShopOpenRevampQuisionerAdapter? = null
+    private var isNeedLocation = false
 
     companion object {
         const val THREE_FRAGMENT_TAG = "three"
@@ -233,6 +234,7 @@ class ShopOpenRevampQuisionerFragment :
                 }
                 setSecondaryCTAText("Keluar")
                 setSecondaryCTAClickListener {
+                    this.dismiss()
                     activity?.finish()
                 }
                 show()
@@ -245,8 +247,8 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun setupPreconditions() {
-        var isNeedLocation = false
         arguments?.let {
+            // Check the needs to bypass to logistic without opening survey page
             isNeedLocation = it.getBoolean(
                     ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC,
                     false)
@@ -282,6 +284,10 @@ class ShopOpenRevampQuisionerFragment :
                                 latitudeString,
                                 longitudeString)
                     }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                if (isNeedLocation)  {
+                    activity?.finish()
                 }
             }
         }

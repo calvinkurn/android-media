@@ -314,6 +314,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 }
                 setSecondaryCTAText("Keluar")
                 setSecondaryCTAClickListener {
+                    this.dismiss()
                     activity?.finish()
                 }
                 show()
