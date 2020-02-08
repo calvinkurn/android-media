@@ -33,12 +33,14 @@ public class ShopOpenRoutingActivity extends BaseSimpleActivity implements HasCo
         remoteConfig = new FirebaseRemoteConfigImpl(this);
         enableOPenShopRevamp = remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_OPEN_SHOP_REVAMP, true);
 
+        boolean isNeedLocation = false;
+        if (getIntent().getExtras() != null) {
+            isNeedLocation = getIntent().getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, false);
+        }
+
         if (enableOPenShopRevamp) {
             Intent intent = new Intent(this, ShopOpenRevampActivity.class);
-            if (intent.getExtras() != null) {
-                boolean isNeedLocation = intent.getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, false);
-                intent.putExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, isNeedLocation);
-            }
+            intent.putExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, isNeedLocation);
             startActivity(intent);
             finish();
         }
