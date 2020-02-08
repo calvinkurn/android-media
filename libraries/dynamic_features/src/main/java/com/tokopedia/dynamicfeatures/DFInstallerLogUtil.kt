@@ -82,29 +82,29 @@ object DFInstallerLogUtil {
 
         GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ ->  }) {
             val messageBuilder = StringBuilder()
-            messageBuilder.append("msg=$message")
+            messageBuilder.append(message)
 
-            messageBuilder.append("#mod_name=$modulesName")
+            messageBuilder.append(";mod_name=$modulesName")
 
-            messageBuilder.append("#success=$isSuccess")
+            messageBuilder.append(";success=$isSuccess")
 
-            messageBuilder.append("#dl_times=$downloadTimes")
+            messageBuilder.append(";dl_times=$downloadTimes")
 
-            messageBuilder.append("#err=")
+            messageBuilder.append(";err=")
             if (errorList.isNotEmpty()) {
                 messageBuilder.append(errorList.joinToString("|"))
             } else {
                 messageBuilder.append("--")
             }
 
-            messageBuilder.append("#mod_size=")
+            messageBuilder.append(";mod_size=")
             if (moduleSize > 0) {
                 messageBuilder.append(getSizeInMB(moduleSize))
             } else {
                 messageBuilder.append(-1)
             }
 
-            messageBuilder.append("#phone_size=")
+            messageBuilder.append(";phone_size=")
             val phoneSize = getTotalInternalSpaceBytes(context)
             if (phoneSize > 0) {
                 val phoneSizeInMB = getSizeInMB(phoneSize)
@@ -113,23 +113,23 @@ object DFInstallerLogUtil {
                 messageBuilder.append(-1)
             }
 
-            messageBuilder.append("#free_bef=")
+            messageBuilder.append(";free_bef=")
             if (previousFreeSpace > 0) {
                 messageBuilder.append(getSizeInMB(previousFreeSpace))
             } else {
                 messageBuilder.append(-1)
             }
 
-            messageBuilder.append("#free_aft=")
+            messageBuilder.append(";free_aft=")
             try {
                 messageBuilder.append(getSizeInMB(getFreeSpaceBytes(context)))
             } catch (ignored: Exception) {
                 messageBuilder.append(-1)
             }
 
-            messageBuilder.append("#play_str=${getPlayStoreVersionName(context)}")
-            messageBuilder.append("#play_str_l=${getPlayStoreLongVersionCode(context)}")
-            messageBuilder.append("#play_srv=${getPlayServiceLongVersionCode(context)}")
+            messageBuilder.append(";play_str=${getPlayStoreVersionName(context)}")
+            messageBuilder.append(";play_str_l=${getPlayStoreLongVersionCode(context)}")
+            messageBuilder.append(";play_srv=${getPlayServiceLongVersionCode(context)}")
 
             Timber.w("P1#$tag#$messageBuilder")
         }

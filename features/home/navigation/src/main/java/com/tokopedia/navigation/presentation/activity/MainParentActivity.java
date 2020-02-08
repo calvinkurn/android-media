@@ -267,9 +267,12 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.ONBOARDING);
-        startActivity(intent);
-        finish();
+        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
+            Intent intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ONBOARDING);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void setDefaultShakeEnable() {
