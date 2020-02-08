@@ -15,6 +15,7 @@ class CarouselBannerViewModel(val application: Application, components: Componen
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val seeAllButton: MutableLiveData<String> = MutableLiveData()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -22,6 +23,7 @@ class CarouselBannerViewModel(val application: Application, components: Componen
     init {
         componentData.value = components
         listData.value = convertToComponentList(components)
+        seeAllButton.value = components.data?.get(0)?.buttonApplink
     }
 
     private fun convertToComponentList(components: ComponentsItem): ArrayList<ComponentsItem> {
@@ -34,6 +36,7 @@ class CarouselBannerViewModel(val application: Application, components: Componen
             componentsItem.data = dataItem
             list.add(componentsItem)
         }
+        list[1].name = "banner_image"
         return list
     }
 
@@ -43,6 +46,10 @@ class CarouselBannerViewModel(val application: Application, components: Componen
 
     fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return listData
+    }
+
+    fun getSeeAllButtonLiveData(): LiveData<String> {
+        return seeAllButton
     }
 
     override fun initDaggerInject() {

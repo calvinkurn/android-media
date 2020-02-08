@@ -52,7 +52,7 @@ class SliderBannerView @JvmOverloads constructor(context: Context, attrs: Attrib
         attrs?.let {
             context.theme.obtainStyledAttributes(attrs, R.styleable.SliderBannerView, 0, 0).apply {
                 try {
-                    autoScrollEnabled = getBoolean(R.styleable.SliderBannerView_autoScroll, false)
+                    autoScrollEnabled = getBoolean(R.styleable.SliderBannerView_autoScroll, true)
                 } finally {
                     recycle()
                 }

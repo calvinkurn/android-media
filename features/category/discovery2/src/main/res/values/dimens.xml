@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="itemDecorationOuterPadding">8dp</dimen>
+    <dimen name="radius">4dp</dimen>
+    <dimen name="itemDecorationInnerPadding">5dp</dimen>
+</resources>
