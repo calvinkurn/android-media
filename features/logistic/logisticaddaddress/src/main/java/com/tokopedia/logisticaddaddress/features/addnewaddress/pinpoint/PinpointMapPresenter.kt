@@ -55,12 +55,17 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         autofillUseCase.execute(param)
                 .subscribe(
                         {
-                            if (it.err_message.isNotEmpty()
-                                    && it.err_message[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
+                            if (it.err_message.isNotEmpty() && it.err_message[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
                                 view.showOutOfReachDialog()
-                            } else view.onSuccessAutofill(it.data)
+                            } else {
+                                var errMsg = ""
+                                if (it.err_message.isNotEmpty()) errMsg = it.err_message[0]
+                                view.onSuccessAutofill(it.data, errMsg)
+                            }
                         },
-                        { it?.printStackTrace() }, {}
+                        {
+                            it?.printStackTrace()
+                        }, {}
                 )
     }
 
