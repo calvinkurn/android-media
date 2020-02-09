@@ -155,11 +155,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             public void onDatePicked(DatePickerV2.Date date) {
                 startDate.setText(date.getDate());
             }
-
-            @Override
-            public void onCancel() {
-
-            }
         };
     }
 
@@ -168,11 +163,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public void onDatePicked(DatePickerV2.Date date) {
                 endDate.setText(date.getDate());
-            }
-
-            @Override
-            public void onCancel() {
-
             }
         };
     }

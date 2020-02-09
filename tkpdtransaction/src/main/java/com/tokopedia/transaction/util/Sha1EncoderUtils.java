@@ -1,4 +1,4 @@
-package com.tokopedia.core.util;
+package com.tokopedia.transaction.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
