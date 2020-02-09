@@ -70,9 +70,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     // Will be deleted once old shop page removed
     private var shouldInitView = true
-    val isOfficial: Boolean
+    private val isOfficial: Boolean
         get() = shopInfo?.isOfficial == 1
-    val isGold: Boolean
+    private val isGold: Boolean
         get() = shopInfo?.isGold == 1
     private val customDimensionShopPage: CustomDimensionShopPage
         get() = CustomDimensionShopPage.create(getShopId(),isOfficial,isGold)

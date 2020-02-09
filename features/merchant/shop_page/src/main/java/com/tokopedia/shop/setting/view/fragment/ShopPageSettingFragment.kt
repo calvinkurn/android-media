@@ -75,9 +75,9 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private lateinit var shopPageSettingView: RecyclerView
     private lateinit var retryMessageView: TextView
     private lateinit var retryButton: Button
-    val isOfficial: Boolean
+    private val isOfficial: Boolean
         get() = shopInfo?.goldOS?.isOfficial == 1
-    val isGold: Boolean
+    private val isGold: Boolean
         get() = shopInfo?.goldOS?.isGold == 1
     private val customDimensionShopPage: CustomDimensionShopPage
         get() = CustomDimensionShopPage.create(shopId,isOfficial,isGold)
@@ -154,22 +154,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingList.add(Product())
         shopPageSettingList.add(Support())
         shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-        shopPageSettingList.add(Shipping())
-
         shopPageSettingAdapter.setShopPageSettingList(shopPageSettingList)
 
         // get shop info

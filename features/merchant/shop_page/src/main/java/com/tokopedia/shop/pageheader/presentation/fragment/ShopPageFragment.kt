@@ -39,6 +39,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
@@ -597,8 +598,7 @@ class ShopPageFragment :
 
     private fun getListFragment(): List<Fragment> {
         val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-        val shopReviewFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-//        (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
+        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
         val homeFragment = HomeProductFragment.createInstance()
         val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
         getShopInfoData()?.let {

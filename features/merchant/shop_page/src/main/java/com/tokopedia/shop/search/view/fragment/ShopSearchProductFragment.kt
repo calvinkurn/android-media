@@ -124,18 +124,18 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    val shopId: String
+    private val shopId: String
         get() = shopInfo?.shopCore?.shopID ?: ""
-    val isOfficial: Boolean
+    private val isOfficial: Boolean
         get() = shopInfo?.goldOS?.isOfficial == 1
-    val isGold: Boolean
+    private val isGold: Boolean
         get() = shopInfo?.goldOS?.isGold == 1
     private val customDimensionShopPage: CustomDimensionShopPage
         get() = CustomDimensionShopPage.create(shopId,isOfficial,isGold)
 
     private lateinit var viewModel: ShopSearchProductViewModel
 
-    val isMyShop: Boolean
+    private val isMyShop: Boolean
         get() = if (::viewModel.isInitialized) {
             shopInfo?.shopCore?.shopID?.let { viewModel.isMyShop(it) } ?: false
         } else false
