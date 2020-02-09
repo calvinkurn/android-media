@@ -8,18 +8,21 @@ import java.util.*
  */
 class Utils {
 
-    var sdf: SimpleDateFormat = SimpleDateFormat("dd'/'MM'/'yy", Locale("in", "ID", ""))
-    var newsdf: SimpleDateFormat = SimpleDateFormat("dd':'MMM'", Locale("in", "ID", ""))
 
-
-    fun formatedSchedule(schedule: String): String {
-        var date = Date()
-        if(schedule.contains("-")){
-            var arr = schedule.split("-")
-            date = sdf.parse(arr[0].trim())
-        } else{
-            date = sdf.parse(schedule)
+    fun formatedSchedule(schedule: String): String? {
+        return try {
+            val sdf = SimpleDateFormat("dd/MM/yy")
+            val newsdf = SimpleDateFormat("dd\nMMM")
+            val date: Date
+            date = if (schedule.contains("-")) {
+                val arr = schedule.split("-").toTypedArray()
+                sdf.parse(arr[0].trim { it <= ' ' })
+            } else {
+                sdf.parse(schedule)
+            }
+            newsdf.format(date).toUpperCase()
+        } catch (e: Exception) {
+            ""
         }
-        return newsdf.format(date)
     }
 }

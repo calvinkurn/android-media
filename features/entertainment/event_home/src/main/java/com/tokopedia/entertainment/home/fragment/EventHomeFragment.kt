@@ -7,7 +7,10 @@ import android.view.*
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_FAVORITE
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventAdapter
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
@@ -18,8 +21,8 @@ import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModelFactory
 import com.tokopedia.entertainment.home.widget.MenuSheet
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_home_fragment.*
-import okhttp3.Route
 import javax.inject.Inject
 
 /**
@@ -37,6 +40,8 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     @Inject
     lateinit var factory : HomeEventViewModelFactory
+    @Inject
+    lateinit var userSession: UserSessionInterface
     lateinit var viewModel : HomeEventViewModel
     lateinit var homeAdapter:  HomeEventAdapter
 
@@ -105,7 +110,11 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     private fun actionMenuFavorite() {
-        Log.d(TAG, "actionMenuFavorite")
+        if(userSession.isLoggedIn) {
+            RouteManager.route(context, ApplinkConstInternalEntertainment.EVENT_FAVORITE)
+        } else {
+            RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        }
     }
 
     override fun onMenuPromoClick() {
@@ -117,7 +126,11 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     override fun onMenuTransactionListClick() {
-
+        if(userSession.isLoggedIn){
+            RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
+        } else {
+            RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        }
     }
 
     override fun getRes(): Resources = resources

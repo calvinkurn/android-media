@@ -27,9 +27,9 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
     var el: BannerViewModel? = null
 
     init {
-        context = itemView.context;
-        itemView.banner_home_ent?.setOnPromoClickListener(this)
-        itemView.banner_home_ent?.setOnPromoAllClickListener(this)
+        context = itemView.context
+        itemView.banner_home_ent?.onPromoClickListener = this
+        itemView.banner_home_ent?.onPromoAllClickListener = this
         itemView.banner_home_ent?.onPromoScrolledListener = this
         itemView.banner_home_ent?.setOnPromoDragListener(this)
         itemView.banner_home_ent?.customWidth = getDisplayMetric(context).widthPixels -
@@ -41,8 +41,8 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
 
     private fun getDisplayMetric(context: Context): DisplayMetrics {
         val displayMetrics = DisplayMetrics()
-        (context as Activity).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics)
-        return displayMetrics;
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics
     }
 
     override fun onPromoClick(p: Int) {
@@ -66,6 +66,7 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
     }
 
     override fun bind(element: BannerViewModel) {
+        el = element
         itemView.banner_home_ent?.setPromoList(element.items)
         itemView.banner_home_ent?.buildView()
     }

@@ -13,7 +13,7 @@ class EventCarouselViewModel(var layout: EventHomeDataResponse.Data.EventHome.La
     var items : MutableList<EventCarouselEventViewHolder.EventItemModel> = mutableListOf()
 
     init {
-        layout?.items.forEach {
+        layout.items.forEach {
             items.add(EventCarouselEventViewHolder.EventItemModel(
                     it.imageApp,
                     it.title,

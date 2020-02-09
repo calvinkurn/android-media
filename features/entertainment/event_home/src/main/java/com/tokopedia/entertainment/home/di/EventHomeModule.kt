@@ -39,7 +39,10 @@ class EventHomeModule {
 
     @EventHomeScope
     @Provides
-    fun provideViewModelFactory(dispatcher: CoroutineDispatcher, repository: GraphqlRepository):
-            HomeEventViewModelFactory = HomeEventViewModelFactory(dispatcher, repository)
+    fun provideViewModelFactory(@ApplicationContext context: Context,
+                                dispatcher: CoroutineDispatcher,
+                                repository: GraphqlRepository,
+                                userSession: UserSessionInterface):
+            HomeEventViewModelFactory = HomeEventViewModelFactory(context, dispatcher, repository, userSession)
 
 }

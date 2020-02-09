@@ -15,8 +15,8 @@ class EventGridViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
     var items : MutableList<EventGridEventViewHolder.EventItemModel> = mutableListOf()
 
     init {
-        title = layout?.title
-        layout?.items.forEachIndexed { index, it ->
+        title = layout.title
+        layout.items.forEachIndexed { index, it ->
             if(index < 4) {
                 items.add(EventGridEventViewHolder.EventItemModel(
                         it.imageApp,

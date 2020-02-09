@@ -12,7 +12,7 @@ class BannerViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout): 
     var items : MutableList<String> = mutableListOf()
 
     init {
-        layout?.items.forEach {
+        layout.items.forEach {
             items.add(it.imageApp)
         }
     }

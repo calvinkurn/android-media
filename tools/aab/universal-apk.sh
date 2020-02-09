@@ -25,9 +25,12 @@ APP_NAME=${arr[0]}
 COMPILE_TYPE=${arr[1]#"bundle"}
 COMPILE_TYPE=$(echo $COMPILE_TYPE | awk '{$1=tolower(substr($1,0,1))substr($1,2)}1')
 
+# Kill All Java Process
+killall java
+
 # Generate app bundle
 ./gradlew $APP_COMPILE
-AAB_FILE_PATH="$APP_NAME/build/outputs/bundle/$COMPILE_TYPE/$APP_NAME.aab"
+AAB_FILE_PATH="$APP_NAME/build/outputs/bundle/$COMPILE_TYPE/$APP_NAME-live-dev-debug.aab"
 if [ ! -f "$AAB_FILE_PATH" ]; then
 	echo "$AAB_FILE_PATH does not exist, please try again"
     exit 1

@@ -1,7 +1,11 @@
 package com.tokopedia.entertainment.home.viewmodel
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
@@ -12,6 +16,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,8 +27,10 @@ import javax.inject.Inject
  */
 
 class HomeEventViewModel @Inject constructor(
+        private val context: Context,
         private val dispatcher: CoroutineDispatcher,
-        private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
+        private val repository: GraphqlRepository,
+        private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     companion object{
         val TAG = HomeEventViewModel::class.java.simpleName
@@ -51,14 +58,14 @@ class HomeEventViewModel @Inject constructor(
 
     private fun mappingItem(data: EventHomeDataResponse.Data): MutableList<HomeEventItem<*>> {
         val items: MutableList<HomeEventItem<*>> = mutableListOf()
-        val layouts = data.eventHome?.layout
-        val bannerItem: EventHomeDataResponse.Data.EventHome.Layout? = layouts?.find { it.id.toInt() == 0}
+        val layouts = data.eventHome.layout
+        val bannerItem: EventHomeDataResponse.Data.EventHome.Layout? = layouts.find { it.id.toInt() == 0}
         bannerItem?.let {
             items.add(BannerViewModel(it))
-            layouts?.remove(it)
+            layouts.remove(it)
         }
         items.add(CategoryViewModel(data.eventChildCategory))
-        layouts?.let {
+        layouts.let {
             it.forEachIndexed { index, it ->
                 if(index == 2){
                     items.add(EventLocationViewModel(data.eventLocationSearch))
@@ -71,4 +78,5 @@ class HomeEventViewModel @Inject constructor(
         }
         return items
     }
+
 }

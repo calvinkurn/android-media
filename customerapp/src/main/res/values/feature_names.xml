@@ -218,4 +218,7 @@
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
     <string name="sbank_confirm_bank_account">Konfirmasi rekening bank</string>
 
+    <!-- Dynamic feature for event-->
+    <string name="entertainment_event_hiburan"><![CDATA[Event & Hiburan]]></string>
+
 </resources>

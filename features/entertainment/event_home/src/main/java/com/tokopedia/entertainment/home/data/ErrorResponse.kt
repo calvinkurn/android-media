@@ -10,5 +10,5 @@ data class ErrorResponse(
         @SerializedName("path")
         val path: List<String> = listOf(String())
 ) {
-    class Extensions()
+    class Extensions
 }

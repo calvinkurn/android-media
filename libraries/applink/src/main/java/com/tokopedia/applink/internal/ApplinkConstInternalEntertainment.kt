@@ -9,12 +9,16 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 object ApplinkConstInternalEntertainment {
 
     @JvmField
-    val HOST_ENTERTAINMENT = "entertainment"
+    val HOST_EVENT = "event"
 
     @JvmField
-    val INTERNAL_ENTERTAINMENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ENTERTAINMENT"
+    val INTERNAL_EVENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_EVENT"
 
     @JvmField
-    val ENTERTAINMENT_HOME = "$INTERNAL_ENTERTAINMENT/home"
+    val EVENT_HOME = "$INTERNAL_EVENT/home"
+    @JvmField
+    val EVENT_FAVORITE = "$INTERNAL_EVENT/favorite"
+    @JvmField
+    val EVENT_SEARCH = "$INTERNAL_EVENT/search"
 
 }

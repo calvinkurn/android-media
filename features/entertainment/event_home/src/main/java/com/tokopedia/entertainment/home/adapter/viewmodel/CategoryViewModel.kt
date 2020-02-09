@@ -13,7 +13,7 @@ class CategoryViewModel(var category : EventHomeDataResponse.Data.EventChildCate
     var items : MutableList<CategoryEventViewHolder.CategoryItemModel> = mutableListOf()
 
     init {
-        category?.categories.forEach {
+        category.categories.forEach {
             items.add(CategoryEventViewHolder.CategoryItemModel(it.mediaUrl, it.title, it.appUrl))
         }
     }

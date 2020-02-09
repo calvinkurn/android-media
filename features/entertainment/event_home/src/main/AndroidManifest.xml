@@ -18,8 +18,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_entertainment"
-                    android:path="@string/path_entertainment_home"
+                    android:host="@string/host_event"
+                    android:path="@string/path_event_home"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
