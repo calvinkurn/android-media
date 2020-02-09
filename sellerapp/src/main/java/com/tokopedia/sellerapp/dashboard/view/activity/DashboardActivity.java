@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -25,7 +24,6 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
-import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
 
@@ -69,14 +67,6 @@ public class DashboardActivity extends BaseTemporaryDrawerActivity implements
                     .commit();
         }
         checkAppUpdate();
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == DrawerSellerHelper.REQUEST_CODE_SDCARD_READ){
-            ((DrawerSellerHelper) drawerHelper).handlePermissionResult();
-        }
     }
 
     private void checkAppUpdate() {

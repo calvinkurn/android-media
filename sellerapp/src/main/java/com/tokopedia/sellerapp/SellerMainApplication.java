@@ -39,6 +39,7 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
+import com.tokopedia.tokofix.TokoFix;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 
@@ -153,7 +154,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         TimberWrapper.init(this);
         super.onCreate();
-
+        TokoFix.init(this);
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();

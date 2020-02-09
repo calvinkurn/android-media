@@ -65,6 +65,7 @@ ext {
             promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
-            translator              : ":libraries:translator"
+            translator              : ":libraries:translator",
+            tokofix                 : ":libraries:tokofix"
     ]
 }
