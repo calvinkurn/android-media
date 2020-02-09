@@ -85,9 +85,4 @@ public abstract class UseCase<T> implements Interactor<T> {
             compositeSubscription.unsubscribe();
         }
     }
-
-    @Override
-    public Observable<T> getExecuteObservable(RequestParams requestParams) {
-        return createObservable(requestParams);
-    }
 }
