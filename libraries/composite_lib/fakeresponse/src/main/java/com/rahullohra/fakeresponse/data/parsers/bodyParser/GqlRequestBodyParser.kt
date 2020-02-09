@@ -1,6 +1,5 @@
 package com.rahullohra.fakeresponse.data.parsers.bodyParser
 
-import android.text.TextUtils
 import android.util.Log
 import com.rahullohra.fakeresponse.data.parsers.GetResultFromDaoUseCase
 import com.rahullohra.fakeresponse.data.parsers.ParserRuleProvider
@@ -20,7 +19,7 @@ class GqlRequestBodyParser(gqlDao: GqlDao) : BodyParser {
                 val operationName = item.optString("operationName")
                 val query = item.optString("query")
 
-                val formattedOperationName = getFormattedOperationNameNew(parserRuleProvider, query)
+                val formattedOperationName = parserRuleProvider.parse(query)
                 val fakeResponse = getFakeResponseFromGqlDatabase(formattedOperationName)
                 return fakeResponse
             }
@@ -33,28 +32,4 @@ class GqlRequestBodyParser(gqlDao: GqlDao) : BodyParser {
     fun getFakeResponseFromGqlDatabase(operationName: String): String? {
         return useCase.getResponseFromDao(operationName)
     }
-
-    fun getFormattedOperationName(parserRuleProvider: ParserRuleProvider, rawQuery: String): String {
-        return parserRuleProvider.getSimpleParser().parse(rawQuery)
-    }
-
-
-    fun getFormattedOperationNameNew(parserRuleProvider: ParserRuleProvider, rawQuery: String): String {
-        var operationName = parserRuleProvider.getMappedParser().parse(rawQuery)
-        if (!TextUtils.isEmpty(operationName)) {
-            return operationName
-        }
-
-        operationName = parserRuleProvider.getSimpleParser().parse(rawQuery)
-        if (!TextUtils.isEmpty(operationName)) {
-            return operationName
-        }
-
-        operationName = parserRuleProvider.getNestedQueryParser().parse(rawQuery)
-        if (!TextUtils.isEmpty(operationName)) {
-            return operationName
-        }
-        return ""
-    }
-
 }
