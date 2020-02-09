@@ -18,8 +18,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.brandlist.BrandlistInstance
-import com.tokopedia.brandlist.BuildConfig
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_category.data.model.BrandlistCategories
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
@@ -140,10 +140,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG) {
-                        it.throwable.printStackTrace()
-                    }
-
                     NetworkErrorHelper.showEmptyState(context, view) {
                         viewModel.getBrandlistCategories()
                     }
@@ -243,7 +239,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
     private fun configMainToolbar(view: View) {
         mainToolbar = view.findViewById(R.id.maintoolbar)
-//        mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
+        mainToolbar?.searchApplink = ApplinkConstInternalMechant.BRANDLIST_SEARCH
         mainToolbar?.setQuerySearch(getString(R.string.bl_query_search))
         mainToolbar?.getBtnWishlist()?.hide()
         mainToolbar?.getBtnInbox()?.hide()

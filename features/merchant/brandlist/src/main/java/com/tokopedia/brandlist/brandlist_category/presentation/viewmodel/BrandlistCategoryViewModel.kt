@@ -1,6 +1,5 @@
 package com.tokopedia.brandlist.brandlist_category.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.brandlist.brandlist_category.data.model.BrandlistCategories
