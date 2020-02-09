@@ -22,7 +22,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:text="@string/choose_account_title"
             android:textColor="#f531353b"
-            android:textSize="25sp"
+            android:textSize="@dimen/sp_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
