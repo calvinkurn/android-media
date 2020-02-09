@@ -31,12 +31,14 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
         // populate tab models
         populateBrandListTabModels(tabModels)
 
+        // the tab layout needs to be setup first
+        // before populated with contents
+        setupWithViewPager(viewPager)
+
         // populate tabLayout.tab contents
         for (tabIndex in 0 until tabCount) {
             populateTabContent(getTabAt(tabIndex), tabModels[tabIndex])
         }
-
-        setupWithViewPager(viewPager)
 
         // add on tab selected listener
         clearOnTabSelectedListeners()

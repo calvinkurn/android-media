@@ -1,0 +1,19 @@
+query OfficialStoreBrands($userID: Int, $categoryIDs: String) {
+    OfficialStoreBrands(userID: $userID, device: 4, widgetName: "POPULAR", categoryIDs: $categoryIDs) {
+        totalShops
+        shops {
+          id
+          name
+          url
+          logoUrl
+          imageUrl
+          additionalInformation
+          exclusive_logo_url
+        }
+        header {
+          title
+          ctaText
+          link
+        }
+    }
+}

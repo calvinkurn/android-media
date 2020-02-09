@@ -1,10 +1,13 @@
 package com.tokopedia.brandlist.brandlist_category.presentation.fragment
 
+import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.lifecycle.Observer
@@ -30,11 +33,10 @@ import com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistC
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class BrandlistContainerFragment : BaseDaggerFragment(),
@@ -55,6 +57,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: BrandlistCategoryViewModel
 
+    private var rootView: View? = null
     private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: BrandlistCategoryTabLayout? = null
@@ -80,13 +83,14 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_brandlist_category, container, false)
+        rootView = inflater.inflate(R.layout.fragment_brandlist_category, container, false)
+        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
-        observeBrandlistCategoriesData()
+        observeBrandListCategoriesData()
         viewModel.getBrandlistCategories()
     }
 
@@ -128,7 +132,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         tabLayout?.setupWithViewPager(viewPager)
     }
 
-    private fun observeBrandlistCategoriesData() {
+    private fun observeBrandListCategoriesData() {
         viewModel.brandlistCategoriesResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
@@ -157,19 +161,11 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         val categorySelected = getSelectedCategory(brandlistCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
 
-        val category = tabAdapter.categories[0]
-//        tracking.eventImpressionCategory(
-//                category.title,
-//                category.categoryId,
-//                0,
-//                category.icon
-//        )
-
-        tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+        tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val categoryReselected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
                 categoryReselected?.let {
-//                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
+                    //                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
             }
 
@@ -177,9 +173,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val categorySelected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
-                categorySelected?.let {
-//                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
-                }
             }
 
         })
@@ -202,7 +195,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         return 0
     }
 
-    //status bar background compability
     private fun configStatusBar(view: View) {
         statusBar = view.findViewById(R.id.statusbar)
         activity?.let {
@@ -213,6 +205,35 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
             else -> View.GONE
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            var flags: Int? = rootView?.systemUiVisibility
+            flags = flags?.or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+            flags?.let { rootView?.setSystemUiVisibility(it) }
+            activity?.window?.statusBarColor = Color.WHITE
+        }
+
+        if (Build.VERSION.SDK_INT in 19..20) {
+            activity?.let { setWindowFlag(it, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true) }
+        }
+        if (Build.VERSION.SDK_INT >= 19) {
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
+        if (Build.VERSION.SDK_INT >= 21) {
+            activity?.let { setWindowFlag(it, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false) }
+            activity?.window?.statusBarColor = Color.TRANSPARENT
+        }
+    }
+
+    private fun setWindowFlag(activity: Activity, bits: Int, on: Boolean) {
+        val win = activity.window
+        val winParams = win.attributes
+        if (on) {
+            winParams.flags = winParams.flags or bits
+        } else {
+            winParams.flags = winParams.flags and bits.inv()
+        }
+        win.attributes = winParams
     }
 
     private fun removeLoading() {

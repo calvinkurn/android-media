@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/white"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent" >
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <View
-        android:visibility="invisible"
-        app:layout_collapseMode="pin"
         android:id="@+id/statusbar"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl5"/>
+        android:layout_height="@dimen/spacing_lvl5"
+        android:background="@color/white"
+        android:visibility="invisible"
+        app:layout_collapseMode="pin" />
 
     <com.tokopedia.searchbar.MainToolbar
         android:id="@+id/maintoolbar"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/white"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp" />
 
@@ -33,32 +33,32 @@
             android:id="@+id/appbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:animateLayoutChanges="true"
+            android:background="@color/white"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
-                app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed"
                 android:id="@+id/collapsing_toolbar"
-                android:minHeight="@dimen/dp_40"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:minHeight="@dimen/dp_40"
+                app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
                 <com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout
                     android:id="@+id/tablayout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl7"
                     android:background="@color/white"
-                    app:tabMode="scrollable"
                     app:layout_collapseMode="pin"
-                    app:tabIndicatorColor="@color/Purple_P600" />
+                    app:tabIndicatorColor="@color/Purple_P600"
+                    app:tabMode="scrollable" />
 
                 <include
                     android:id="@+id/view_category_tab_loading"
                     layout="@layout/view_brandlist_category_loading"
-                    android:visibility="visible"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"  />
+                    android:layout_height="wrap_content"
+                    android:visibility="visible" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
