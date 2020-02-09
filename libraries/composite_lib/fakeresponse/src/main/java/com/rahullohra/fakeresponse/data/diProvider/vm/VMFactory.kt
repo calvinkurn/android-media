@@ -14,7 +14,6 @@ class VMFactory(application: Application, val list: Array<Any>) :
         if (modelClass.isAssignableFrom(AddGqlVM::class.java)) {
             return AddGqlVM(
                 list[0] as CoroutineDispatcher,
-                list[1] as CoroutineDispatcher,
                 list[2] as AddToDbUseCase
             ) as T
         } else if (modelClass.isAssignableFrom(DownloadFragmentVM::class.java)) {

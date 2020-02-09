@@ -25,4 +25,12 @@ class RestRepository(val dao: RestDao) : BaseRepository {
         return dao.getRestResponse(url, method, enable)
     }
 
+    fun updateResponse(restResponse: RestResponse) {
+        return dao.update(restResponse)
+    }
+
+    fun getResponse(id: Int): RestResponse {
+        return dao.getRestResponse(id)
+    }
+
 }

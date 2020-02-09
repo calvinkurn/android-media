@@ -6,10 +6,12 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rahullohra.fakeresponse.R
+import com.rahullohra.fakeresponse.ResponseItemType
 import com.rahullohra.fakeresponse.ResponseListData
+import com.rahullohra.fakeresponse.Router
 
 class ResponseVH(itemView: View, val itemClickCallback: (ResponseListData, Boolean) -> Unit) :
-    RecyclerView.ViewHolder(itemView) {
+        RecyclerView.ViewHolder(itemView) {
 
     companion object {
         fun getLayout() = R.layout.item_response
@@ -28,11 +30,18 @@ class ResponseVH(itemView: View, val itemClickCallback: (ResponseListData, Boole
             tvCustomName.visibility = View.GONE
         }
 
-        cb.isChecked = data.isChecked
         cb.setOnCheckedChangeListener(null)
+        cb.isChecked = data.isChecked
         cb.setOnCheckedChangeListener { buttonView, isChecked ->
             itemClickCallback.invoke(data, isChecked)
-//            cb.setOnCheckedChangeListener(null)
+        }
+
+        itemView.setOnClickListener {
+            if (data.responseType == ResponseItemType.REST) {
+                Router.routeToAddRest(it.context, data.id)
+            } else {
+                Router.routeToAddGql(it.context, data.id)
+            }
         }
     }
 

@@ -11,5 +11,5 @@ data class RestResponse(
     val updatedAt: Long,
     val enabled: Boolean,
     val url: String,
-    val httpMethod: String
+    var httpMethod: String
 )

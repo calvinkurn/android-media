@@ -12,26 +12,45 @@ import java.util.*
 class AddRestDaoUseCase(val repository: RestRepository) : BaseUseCase<RestRepository>(repository) {
 
     fun addRestRecord(data: AddRestData): Long {
+        validateData(data)
+        return repository.addToDb(gqlDataToRest(data))
+    }
+
+    fun updateRestRecord(id:Int, data: AddRestData) {
+        validateData(data)
+        val restResponse = getRecordFromTable(id)
+        restResponse.httpMethod = data.methodName
+        return repository.updateResponse(gqlDataToRest(data))
+    }
+
+    private fun validateData(data: AddRestData) {
         if (TextUtils.isEmpty(data.url)) throw EmptyException("url cannot be empty")
         if (TextUtils.isEmpty(data.methodName)) throw EmptyException("httpMethod cannot be empty")
         if (TextUtils.isEmpty(data.response)) throw NoResponseException()
+        validateJson(data)
+    }
+
+    private fun validateJson(data: AddRestData) {
         val either = isJSONValid(data.response!!)
-        return when (either) {
-            is Either.Left -> throw either.a
-            else -> repository.addToDb(gqlDataToRest(data))
+        if (either is Either.Left) {
+            throw either.a
         }
+    }
+
+    fun getRecordFromTable(id: Int): RestResponse {
+        return repository.getResponse(id)
     }
 
     protected fun gqlDataToRest(data: AddRestData): RestResponse {
         val date = Date()
 
         return RestResponse(
-            url = data.url!!,
-            httpMethod = data.methodName,
-            createdAt = date.time,
-            updatedAt = date.time,
-            enabled = false,
-            response = data.response!!
+                url = data.url!!,
+                httpMethod = data.methodName,
+                createdAt = date.time,
+                updatedAt = date.time,
+                enabled = true,
+                response = data.response!!
         )
     }
 }

@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.data.diProvider.activities.AddGqlActivityProvider
+import com.rahullohra.fakeresponse.db.entities.FakeGql
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
 import com.rahullohra.fakeresponse.presentaiton.livedata.Success
@@ -19,11 +20,13 @@ class AddGqlActivity : BaseActivity() {
 
     lateinit var etGqlName: EditText
     lateinit var etCustomName: EditText
-    lateinit var etResponse: EditText 
+    lateinit var etResponse: EditText
     lateinit var toolbar: Toolbar
 
     override fun getLayout() = R.layout.activity_add_gql
     lateinit var viewModel: AddGqlVM
+
+    var id: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,13 @@ class AddGqlActivity : BaseActivity() {
         initVars()
         initUi()
         setListeners()
+        getDataFromId()
+    }
+
+    fun getDataFromId() {
+        id?.let {
+            viewModel.loadRecord(it)
+        }
     }
 
     fun initUi() {
@@ -47,10 +57,34 @@ class AddGqlActivity : BaseActivity() {
     }
 
     fun setListeners() {
-        viewModel.liveData.observe(this, Observer {
+
+        viewModel.liveDataGqlResponse.observe(this, Observer {
+            when (it) {
+                is Success<FakeGql> -> {
+                    etGqlName.setText(it.data.gqlOperationName)
+                    etResponse.setText(it.data.response)
+                    etCustomName.setText(it.data.customTag)
+                }
+            }
+        })
+
+        viewModel.liveDataCreate.observe(this, Observer {
             when (it) {
                 is Success<Long> -> {
                     toast("New entry added")
+                }
+                is Fail -> {
+                    toast(it.ex.message)
+                }
+                is Loading -> {
+                }
+            }
+        })
+
+        viewModel.liveDataGqlUpdate.observe(this, Observer {
+            when (it) {
+                is Success<Boolean> -> {
+                    toast("New entry updated")
                 }
                 is Fail -> {
                     toast(it.ex.message)
@@ -81,7 +115,16 @@ class AddGqlActivity : BaseActivity() {
         val response = etResponse.text.toString()
 
         val addGqlData =
-            AddGqlData(gqlQueryName = gqlName, response = response, customTag = customName)
-        viewModel.addToDb(addGqlData)
+                AddGqlData(gqlQueryName = gqlName, response = response, customTag = customName)
+
+        if (isExistingRecord()) {
+            viewModel.updateRecord(addGqlData)
+        } else {
+            viewModel.addToDb(addGqlData)
+        }
+    }
+
+    fun isExistingRecord(): Boolean {
+        return id != null
     }
 }

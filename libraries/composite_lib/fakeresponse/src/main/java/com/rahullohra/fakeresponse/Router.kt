@@ -9,12 +9,18 @@ class Router {
 
     companion object {
 
-        fun routeToAddGql(context: Context?) {
-            context?.startActivity(Intent(context, AddGqlActivity::class.java))
+        const val BUNDLE_ARGS_ID = "id"
+
+        fun routeToAddGql(context: Context?, id: Int? = null) {
+            val intent = Intent(context, AddGqlActivity::class.java)
+            intent.putExtra(BUNDLE_ARGS_ID, id)
+            context?.startActivity(intent)
         }
 
-        fun routeToAddRest(context: Context?) {
-            context?.startActivity(Intent(context, AddRestResponseActivity::class.java))
+        fun routeToAddRest(context: Context?, id: Int? = null) {
+            val intent = Intent(context, AddRestResponseActivity::class.java)
+            intent.putExtra(BUNDLE_ARGS_ID, id)
+            context?.startActivity(intent)
         }
     }
 }

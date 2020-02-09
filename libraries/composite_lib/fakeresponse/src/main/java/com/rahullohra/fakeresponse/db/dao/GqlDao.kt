@@ -22,6 +22,9 @@ interface GqlDao {
     @Query("Select * FROM FakeGql where gqlOperationName = :gqlOperationName AND enabled = :isEnabled")
     fun getRecordFromGqlQuery(gqlOperationName: String, isEnabled: Boolean = true): FakeGql
 
+    @Query("Select * FROM FakeGql where id= :id")
+    fun getRecordFromGqlQuery(id: Int): FakeGql
+
     @Query("DELETE from FakeGql")
     fun deleteAll()
 }

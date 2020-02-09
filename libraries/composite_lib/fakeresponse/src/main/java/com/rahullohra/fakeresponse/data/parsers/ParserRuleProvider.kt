@@ -5,7 +5,7 @@ import com.rahullohra.fakeresponse.data.parsers.rules.MapQueryParserRule
 import com.rahullohra.fakeresponse.data.parsers.rules.NestedQueryParserRule
 import com.rahullohra.fakeresponse.data.parsers.rules.SimpleParserRule
 
-class ParserFactory {
+class ParserRuleProvider {
 
     fun getSimpleParser(): GqlParserRule {
         return SimpleParserRule()

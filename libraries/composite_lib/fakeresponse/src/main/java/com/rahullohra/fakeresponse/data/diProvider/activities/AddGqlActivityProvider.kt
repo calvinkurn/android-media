@@ -13,14 +13,13 @@ class AddGqlActivityProvider :
     DiProvider<AddGqlActivity> {
 
     override fun inject(t: AddGqlActivity) {
-        val uiDispatcher = Dispatchers.Main
         val workerDispatcher = Dispatchers.IO
 
         val gqlDao = getDatabase(t).gqlDao()
         val localRepository = LocalRepository(gqlDao)
         val addToDbUseCase = AddToDbUseCase(localRepository)
 
-        val list = arrayOf(uiDispatcher, workerDispatcher, addToDbUseCase)
+        val list = arrayOf(workerDispatcher, addToDbUseCase)
         val vmFactory = ViewModelProvider(t,
             VMFactory(t.application, list)
         )

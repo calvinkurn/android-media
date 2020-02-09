@@ -5,7 +5,6 @@ import android.text.TextUtils
 import com.rahullohra.fakeresponse.data.parsers.bodyParser.RestBodyParser
 import com.rahullohra.fakeresponse.db.AppDatabase
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okio.Buffer
 
 class RestInterceptor(context: Context) : Interceptor {
@@ -17,8 +16,8 @@ class RestInterceptor(context: Context) : Interceptor {
         try {
             val request = chain.request()
             val buffer = Buffer()
-            request.body?.writeTo(buffer)
-            val fakeResponse = requestParser.getFakeResponse(request.url, request.method)
+            request.body()?.writeTo(buffer)
+            val fakeResponse = requestParser.getFakeResponse(request.url(), request.method())
             if (!TextUtils.isEmpty(fakeResponse)) {
                 return createResponseFromFakeResponse(fakeResponse!!, request)
             }
@@ -30,7 +29,7 @@ class RestInterceptor(context: Context) : Interceptor {
 
     fun createResponseFromFakeResponse(fakeResponse: String, request: Request): Response {
         val formattedResponse = fakeResponse
-        val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+        val mediaType = MediaType.parse("application/json; charset=utf-8")
         return Response.Builder()
             .code(200)
             .message(fakeResponse)

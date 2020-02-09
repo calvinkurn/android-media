@@ -7,7 +7,9 @@ import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.rahullohra.fakeresponse.R
+import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.data.diProvider.activities.RestActivityDiProvider
+import com.rahullohra.fakeresponse.db.entities.RestResponse
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
 import com.rahullohra.fakeresponse.presentaiton.livedata.Success
@@ -17,7 +19,7 @@ import com.rahullohra.fakeresponse.toast
 
 class AddRestResponseActivity : BaseActivity() {
 
-    lateinit var etRest: EditText
+    lateinit var etRestUrl: EditText
     lateinit var etMethodName: EditText
     lateinit var etResponse: EditText
     lateinit var toolbar: Toolbar
@@ -25,19 +27,30 @@ class AddRestResponseActivity : BaseActivity() {
     override fun getLayout() = R.layout.activity_add_rest
     lateinit var viewModel: AddRestVM
 
+    var id: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayout())
         initVars()
         initUi()
         setListeners()
+        getDataFromId()
+    }
+
+    fun getDataFromId() {
+        id?.let {
+            viewModel.loadRecord(it)
+        }
     }
 
     fun initUi() {
-        etRest = findViewById(R.id.etRest)
+        etRestUrl = findViewById(R.id.etRest)
         etMethodName = findViewById(R.id.etMethodName)
         etResponse = findViewById(R.id.etResponse)
         toolbar = findViewById(R.id.toolbar)
+
+        id = intent.extras?.get(Router.BUNDLE_ARGS_ID) as Int?
 
         setSupportActionBar(toolbar)
     }
@@ -47,10 +60,34 @@ class AddRestResponseActivity : BaseActivity() {
     }
 
     fun setListeners() {
-        viewModel.liveData.observe(this, Observer {
+
+        viewModel.liveDataRestResponse.observe(this, Observer {
+            when (it) {
+                is Success<RestResponse> -> {
+                    etMethodName.setText(it.data.httpMethod)
+                    etRestUrl.setText(it.data.url)
+                    etResponse.setText(it.data.response)
+                }
+            }
+        })
+
+        viewModel.liveDataCreate.observe(this, Observer {
             when (it) {
                 is Success<Long> -> {
-                    toast("New entry added")
+                    toast("New entry Added")
+                }
+                is Fail -> {
+                    toast(it.ex.message)
+                }
+                is Loading -> {
+                }
+            }
+        })
+
+        viewModel.liveDataUpdate.observe(this, Observer {
+            when (it) {
+                is Success<Boolean> -> {
+                    toast("New entry Updated")
                 }
                 is Fail -> {
                     toast(it.ex.message)
@@ -78,11 +115,20 @@ class AddRestResponseActivity : BaseActivity() {
     fun saveData() {
 
         val addRestData = AddRestData(
-            etRest.text.toString(),
-            etMethodName.text.toString(),
-            etResponse.text.toString()
+                etRestUrl.text.toString(),
+                etMethodName.text.toString(),
+                etResponse.text.toString()
         )
 
-        viewModel.addToDb(addRestData)
+        if (isExistingRecord()) {
+            viewModel.updateRecord(id!!, addRestData)
+        } else {
+            viewModel.addRecord(addRestData)
+        }
+
+    }
+
+    fun isExistingRecord(): Boolean {
+        return id != null
     }
 }

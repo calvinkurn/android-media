@@ -19,7 +19,14 @@ interface RestDao {
     fun toggle(restResponseId: Int, isEnabled: Boolean)
 
     @Query("Select * FROM RestResponse where url = :formattedUrl AND httpMethod = :method AND enabled = :isEnabled")
-    fun getRestResponse(formattedUrl: String, method:String, isEnabled: Boolean = true): RestResponse
+    fun getRestResponse(
+            formattedUrl: String,
+            method: String,
+            isEnabled: Boolean = true
+    ): RestResponse
+
+    @Query("Select * FROM RestResponse where id = :id")
+    fun getRestResponse(id: Int): RestResponse
 
 
     @Query("DELETE from RestResponse")

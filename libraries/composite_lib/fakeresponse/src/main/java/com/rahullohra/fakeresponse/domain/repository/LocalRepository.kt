@@ -24,4 +24,12 @@ class LocalRepository (val dao: GqlDao) :BaseRepository{
     fun getGqlQueryResponse(gqlQuery:String, enable: Boolean) :FakeGql{
         return dao.getRecordFromGqlQuery(gqlQuery, enable)
     }
+
+    fun getGqlRecord(id: Int): FakeGql {
+        return dao.getRecordFromGqlQuery(id)
+    }
+
+    fun updateResponse(fakeGql: FakeGql) {
+        return dao.updateGql(fakeGql)
+    }
 }
