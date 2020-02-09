@@ -64,7 +64,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     private var loadingLayout: View? = null
     private var viewPager: ViewPager? = null
     private var appbarCategory: AppBarLayout? = null
-    private var keyCategory = "0"
+
     private var categorySlug = "0"
 
     private val tabAdapter: BrandlistContainerAdapter by lazy {
@@ -153,19 +153,24 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     private fun populateCategoriesData(brandlistCategories: BrandlistCategories) {
+
         brandlistCategories.categories.forEachIndexed { _, category ->
             tabAdapter.categories.add(category)
         }
+
         tabAdapter.notifyDataSetChanged()
-        tabLayout?.setup(viewPager!!, convertToCategoryTabModels(brandlistCategories.categories), appbarCategory!!)
-        val categorySelected = getSelectedCategory(brandlistCategories)
-        tabLayout?.getTabAt(categorySelected)?.select()
+
+        tabLayout?.setup(viewPager, convertToCategoryTabModels(brandlistCategories.categories), appbarCategory)
+
+        tabLayout?.getTabAt(0)?.select()
 
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val categoryReselected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
-                categoryReselected?.let {
-                    //                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
+                categoryReselected.let {
+                    val tabPosition = tab?.position
+                    if (tabPosition != null) viewPager?.currentItem = tabPosition
+
                 }
             }
 
@@ -173,6 +178,10 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val categorySelected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
+                categorySelected.let {
+                    val tabPosition = tab?.position
+                    if (tabPosition != null) viewPager?.currentItem = tabPosition
+                }
             }
 
         })
@@ -184,15 +193,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             categoryTabModels.add(BrandlistCategoryTabLayout.CategoryTabModel(it.title, it.icon, it.imageInactiveURL))
         }
         return categoryTabModels
-    }
-
-    private fun getSelectedCategory(brandlistCategories: BrandlistCategories): Int {
-        brandlistCategories.categories.forEachIndexed { index, category ->
-            if (keyCategory !== "0" && category.categoryId == keyCategory) {
-                return index
-            }
-        }
-        return 0
     }
 
     private fun configStatusBar(view: View) {
