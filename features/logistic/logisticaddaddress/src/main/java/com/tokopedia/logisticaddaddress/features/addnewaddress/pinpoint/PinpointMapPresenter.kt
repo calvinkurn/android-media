@@ -60,7 +60,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                             } else {
                                 var errMsg = ""
                                 if (it.err_message.isNotEmpty()) errMsg = it.err_message[0]
-                                view.onSuccessAutofill(it.data, errMsg)
+                                view?.onSuccessAutofill(it.data, errMsg)
                             }
                         },
                         {
