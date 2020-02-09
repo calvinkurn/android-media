@@ -199,46 +199,59 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     private void setKycLivenessView(){
         listRetake = stepperModel.getListRetake();
-        ArrayList<String> listMessage = stepperModel.getListMessage();
-        String imageKtp = KycUrl.KTP_VERIF_FAIL;
-        String imageFace = KycUrl.FACE_VERIF_FAIL;
-        Integer colorKtp = null;
-        Integer colorFace = null;
+        String imageKtp = KycUrl.KTP_VERIF_OK;
+        String imageFace = KycUrl.FACE_VERIF_OK;
+        Integer colorKtp = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null);
+        Integer colorFace = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null);
 
-        if(listRetake.size() == 1) {
-            if (listRetake.get(0) == 1) {
-                imageFace = KycUrl.FACE_VERIF_OK;
-                colorFace = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null);
-                uploadButton.setOnClickListener(v -> {
-                    analytics.eventClickChangeKtpFinalFormPage();
-                    openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
-                });
+        for(int i=0; i<listRetake.size(); i++){
+            switch (listRetake.get(i)){
+                case 1 : {
+                    imageKtp = KycUrl.KTP_VERIF_FAIL;
+                    colorKtp = null;
+                    setKtpUploadButtonListener();
+                    break;
+                }
+                case 2 : {
+                    imageFace = KycUrl.FACE_VERIF_FAIL;
+                    colorFace = null;
+                    setFaceUploadButtonListener();
+                    break;
+                }
             }
-            if (listRetake.get(0) == 2) {
-                imageKtp = KycUrl.KTP_VERIF_OK;
-                colorKtp = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null);
-                uploadButton.setOnClickListener(v -> {
-                    analytics.eventClickChangeSelfieFinalFormPage();
-                    openLivenessView();
-                });
-            }
-        } else if(listRetake.size() == 2){ //if ktp and face failed
-            uploadButton.setOnClickListener(v -> {
-                analytics.eventClickChangeKtpSelfieFinalFormPage();
-                openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
-            });
+        }
+
+        if(listRetake.size() == 2){
+            setKtpFaceUploadButtonListener();
         }
 
         setResultViews(imageKtp, imageFace, stepperModel.getTitleText(), stepperModel.getSubtitleText(), colorKtp, colorFace, stepperModel.getButtonText());
-
-        for (int i=0; i<listMessage.size(); i++){
-            ((UserIdentificationFormActivity) Objects.requireNonNull(getActivity())).setTextViewWithBullet(listMessage.get(i), getContext(), bulletTextLayout);
-        }
 
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())
                     .updateToolbarTitle(getString(R.string.title_kyc_form_fail_verification));
         }
+    }
+
+    private void setKtpUploadButtonListener(){
+        uploadButton.setOnClickListener(v -> {
+            analytics.eventClickChangeKtpFinalFormPage();
+            openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
+        });
+    }
+
+    private void setFaceUploadButtonListener(){
+        uploadButton.setOnClickListener(v -> {
+            analytics.eventClickChangeSelfieFinalFormPage();
+            openLivenessView();
+        });
+    }
+
+    private void setKtpFaceUploadButtonListener(){
+        uploadButton.setOnClickListener(v -> {
+            analytics.eventClickChangeKtpSelfieFinalFormPage();
+            openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
+        });
     }
 
     private void setResultViews(String urlKtp, String urlFace, String subtitleText, String infoText, Integer colorKtp, Integer colorFace, String buttonText){
@@ -255,6 +268,11 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         info.setGravity(Gravity.LEFT);
         info.setText(infoText);
         uploadButton.setText(buttonText);
+
+        ArrayList<String> listMessage = stepperModel.getListMessage();
+        for (int i=0; i<listMessage.size(); i++){
+            ((UserIdentificationFormActivity) Objects.requireNonNull(getActivity())).setTextViewWithBullet(listMessage.get(i), getContext(), bulletTextLayout);
+        }
     }
 
     private void checkKtp(){
