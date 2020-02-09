@@ -2,7 +2,13 @@ package com.tokopedia.sellerhome.view.home
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
+import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder
@@ -22,6 +28,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.drawer.BaseSellerReceive
 import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
 
 class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
 
@@ -155,4 +162,52 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
         sellerHomeDashboardDrawerPresenter.attachView(this)
     }
+
+    override fun setupToolbar() {
+        toolbar.apply {
+            removeAllViews()
+            initNotificationMenu()
+            initTitle()
+        }
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayShowCustomEnabled(true)
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowTitleEnabled(false)
+            setHomeButtonEnabled(false)
+        }
+    }
+
+    override fun setupDrawerStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.apply {
+                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                statusBarColor = ContextCompat.getColor(context, com.tokopedia.design.R.color.white_95)
+            }
+        }
+    }
+
+    override fun setToolbarTitle(title: String) {
+        toolbar.actionbar_title.text = title
+    }
+
+    override fun Toolbar.initNotificationMenu() {
+        val notif = layoutInflater.inflate(R.layout.sh_custom_actionbar_drawer_notification, null)
+        val drawerToggle = notif.findViewById<ImageView>(R.id.toggle_but_ab)
+        drawerToggle.setOnClickListener {
+            if (sellerDrawerHelper.isOpened())
+                sellerDrawerHelper.closeDrawer()
+            else sellerDrawerHelper.openDrawer()
+        }
+        this.addView(notif)
+        this.navigationIcon = null
+    }
+
+    override fun Toolbar.initTitle() {
+        toolbarTitle = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
+        toolbarTitle.actionbar_title.text = title
+        this.addView(toolbarTitle)
+    }
+
 }
