@@ -1,19 +1,23 @@
 package com.tokopedia.core.util.toolargetool;
 
 import android.app.Activity;
+import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-import android.util.Log;
+
 import com.crashlytics.android.Crashlytics;
+
 import java.util.WeakHashMap;
 
 /**
  * {@link android.app.Application.ActivityLifecycleCallbacks} implementation that logs information
  * about the saved state of Activities.
  */
-public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
+public class ActivitySavedStateLogger implements Application.ActivityLifecycleCallbacks {
 
     private final int priority;
     @NonNull
@@ -40,6 +44,21 @@ public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
                     .getSupportFragmentManager()
                     .registerFragmentLifecycleCallbacks(fragmentLogger, true);
         }
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
+
     }
 
     @Override

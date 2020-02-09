@@ -21,9 +21,4 @@ public class ProductDetailRouter {
     public static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
     public static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
 
-    public static Intent createInstanceProductDetailInfoActivity(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, PRODUCT_DETAIL_INFO_ACTIVITY);
-        return intent;
-    }
-
 }

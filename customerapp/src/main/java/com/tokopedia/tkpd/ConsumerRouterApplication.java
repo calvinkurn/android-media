@@ -76,8 +76,6 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -259,7 +257,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TransactionRouter,
         ReactApplication,
         TkpdInboxRouter,
-        IWalletRouter,
         ReputationRouter,
         AbstractionRouter,
         LogisticRouter,
@@ -421,12 +418,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
         return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
-    }
-
-    @Override
-    public void openImagePreview(Context context, ArrayList<String> images,
-                                 int position) {
-        ImageReviewGalleryActivity.Companion.moveTo(context, images, position);
     }
 
     /**
@@ -711,51 +702,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToGMSubscribe(Activity activity) {
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
         activity.startActivity(intent);
-    }
-
-    @Override
-    public void navigateAppLinkWallet(Context context,
-                                      String appLinkScheme,
-                                      String alternateRedirectUrl,
-                                      Bundle bundlePass) {
-        context.startActivity(getIntentAppLinkWallet(context, appLinkScheme, alternateRedirectUrl));
-    }
-
-    @Override
-    public void navigateAppLinkWallet(Activity activity,
-                                      int requestCode,
-                                      String appLinkScheme,
-                                      String alternateRedirectUrl,
-                                      Bundle bundlePass) {
-        activity.startActivityForResult(
-                getIntentAppLinkWallet(activity, appLinkScheme, alternateRedirectUrl), requestCode
-        );
-    }
-
-    @Override
-    public void navigateAppLinkWallet(android.app.Fragment fragment,
-                                      int requestCode,
-                                      String appLinkScheme,
-                                      String alternateRedirectUrl,
-                                      Bundle bundlePass) {
-        fragment.startActivityForResult(
-                getIntentAppLinkWallet(
-                        fragment.getActivity(), appLinkScheme, alternateRedirectUrl
-                ), requestCode
-        );
-    }
-
-    @Override
-    public void navigateAppLinkWallet(Fragment fragmentSupport,
-                                      int requestCode,
-                                      String appLinkScheme,
-                                      String alternateRedirectUrl,
-                                      Bundle bundlePass) {
-        fragmentSupport.startActivityForResult(
-                getIntentAppLinkWallet(fragmentSupport.getActivity(),
-                        appLinkScheme, alternateRedirectUrl
-                ), requestCode
-        );
     }
 
     /**
@@ -1384,43 +1330,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMitraToppersActivityIntent(Context context) {
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
-    }
-
-    @Override
-    public void eventClickFilterReview(Context context,
-                                       String filterName,
-                                       String productId) {
-        String KEY_PRODUCT_ID = "productId";
-        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
-                CLICK_PDP,
-                PRODUCT_DETAIL_PAGE,
-                String.format(
-                        "click - filter review by %s",
-                        filterName.toLowerCase()
-                ),
-                productId
-        );
-        mapEvent.put(KEY_PRODUCT_ID, productId);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
-    }
-
-    @Override
-    public void eventImageClickOnReview(Context context,
-                                        String productId,
-                                        String reviewId) {
-        String KEY_PRODUCT_ID = "productId";
-        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
-                CLICK_PDP,
-                PRODUCT_DETAIL_PAGE,
-                "click - review gallery on rating list",
-                String.format(
-                        "product_id: %s - review_id : %s",
-                        productId,
-                        reviewId
-                )
-        );
-        mapEvent.put(KEY_PRODUCT_ID, productId);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
 
     @Override
