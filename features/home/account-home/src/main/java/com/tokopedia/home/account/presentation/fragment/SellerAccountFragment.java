@@ -128,7 +128,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                     GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
                     GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit),
                     saldoQuery,
-                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_shop_location));
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_shop_location)
+            );
             isLoaded = !isLoaded;
         }
     }
@@ -217,7 +218,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         if (resultCode == OPEN_SHOP_SUCCESS) {
             isLoaded = false;
             getData();
-        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION) {
+        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION) {
             userSession.setIsMSISDNVerified(true);
             moveToCreateShop();
         }
