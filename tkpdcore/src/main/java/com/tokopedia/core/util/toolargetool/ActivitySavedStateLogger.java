@@ -81,7 +81,7 @@ public class ActivitySavedStateLogger implements Application.ActivityLifecycleCa
         if (savedState != null) {
             String message = activity.getClass().getSimpleName() + ".onSaveInstanceState wrote: " + TooLargeTool.bundleBreakdown(savedState);
             log(message);
-            if (TooLargeTool.isPotentialCrash(savedState) && !com.tokopedia.core.util.GlobalConfig.DEBUG)
+            if (TooLargeTool.isPotentialCrash(savedState) && !com.tokopedia.config.GlobalConfig.DEBUG)
                 Crashlytics.logException(new Throwable(message));
         }
     }
