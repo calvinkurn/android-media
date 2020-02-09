@@ -6,7 +6,6 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -47,8 +46,6 @@ class PlayConnectionMonitor(context: Context) {
             connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
         }
     }
-
-
 
     fun getObservablePlayConnectionState(): LiveData<PlayConnectionState> = _observablePlayConnectionState
 
