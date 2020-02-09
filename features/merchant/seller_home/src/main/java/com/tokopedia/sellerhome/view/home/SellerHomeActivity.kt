@@ -209,4 +209,5 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         toolbarTitle.actionbar_title.text = title
         this.addView(toolbarTitle)
     }
+
 }

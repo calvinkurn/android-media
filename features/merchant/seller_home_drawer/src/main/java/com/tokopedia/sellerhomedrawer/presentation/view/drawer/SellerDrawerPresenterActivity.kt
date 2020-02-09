@@ -35,7 +35,7 @@ import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataList
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
+import kotlinx.android.synthetic.main.custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_custom_actionbar_drawer_notification.view.*
 import rx.Observable
 import javax.inject.Inject
