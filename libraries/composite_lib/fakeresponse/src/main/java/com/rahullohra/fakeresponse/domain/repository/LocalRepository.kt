@@ -1,15 +1,15 @@
 package com.rahullohra.fakeresponse.domain.repository
 
 import com.rahullohra.fakeresponse.db.dao.GqlDao
-import com.rahullohra.fakeresponse.db.entities.FakeGql
+import com.rahullohra.fakeresponse.db.entities.GqlRecord
 
 class LocalRepository (val dao: GqlDao) :BaseRepository{
 
-    fun addToDb(fakeGql: FakeGql): Long {
-        return dao.insertGql(fakeGql)
+    fun addToDb(gqlRecord: GqlRecord): Long {
+        return dao.insertGql(gqlRecord)
     }
 
-    fun getAllGql(): List<FakeGql> {
+    fun getAllGql(): List<GqlRecord> {
         return dao.getAll()
     }
 
@@ -21,15 +21,15 @@ class LocalRepository (val dao: GqlDao) :BaseRepository{
         return dao.toggleGql(gqlRecord, enable)
     }
 
-    fun getGqlQueryResponse(gqlQuery:String, enable: Boolean) :FakeGql{
+    fun getGqlQueryResponse(gqlQuery:String, enable: Boolean) :GqlRecord{
         return dao.getRecordFromGqlQuery(gqlQuery, enable)
     }
 
-    fun getGqlRecord(id: Int): FakeGql {
+    fun getGqlRecord(id: Int): GqlRecord {
         return dao.getRecordFromGqlQuery(id)
     }
 
-    fun updateResponse(fakeGql: FakeGql) {
-        return dao.updateGql(fakeGql)
+    fun updateResponse(gqlRecord: GqlRecord) {
+        return dao.updateGql(gqlRecord)
     }
 }

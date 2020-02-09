@@ -2,12 +2,11 @@ package com.rahullohra.fakeresponse.domain.usecases
 
 import android.text.TextUtils
 import com.rahullohra.fakeresponse.data.models.Either
-import com.rahullohra.fakeresponse.db.entities.FakeGql
+import com.rahullohra.fakeresponse.db.entities.GqlRecord
 import com.rahullohra.fakeresponse.domain.exceptions.EmptyException
 import com.rahullohra.fakeresponse.domain.exceptions.NoResponseException
 import com.rahullohra.fakeresponse.domain.repository.LocalRepository
 import com.rahullohra.fakeresponse.presentaiton.viewmodels.data.AddGqlData
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.data.AddRestData
 import java.util.*
 
 
@@ -23,7 +22,7 @@ class AddToDbUseCase(val repository: LocalRepository) : BaseUseCase<LocalReposit
         return repository.updateResponse(gqlDataToGql(data))
     }
 
-    fun getRecordFromTable(id: Int): FakeGql {
+    fun getRecordFromTable(id: Int): GqlRecord {
         return repository.getGqlRecord(id)
     }
 
@@ -40,10 +39,10 @@ class AddToDbUseCase(val repository: LocalRepository) : BaseUseCase<LocalReposit
         }
     }
 
-    protected fun gqlDataToGql(data: AddGqlData): FakeGql {
+    protected fun gqlDataToGql(data: AddGqlData): GqlRecord {
         val date = Date()
 
-        val gql = FakeGql(
+        val gql = GqlRecord(
                 gqlOperationName = data.gqlQueryName!!,
                 javaQueryName = data.javaQueryName,
                 createdAt = date.time,

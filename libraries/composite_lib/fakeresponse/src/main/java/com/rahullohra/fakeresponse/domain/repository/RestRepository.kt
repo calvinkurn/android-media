@@ -1,15 +1,15 @@
 package com.rahullohra.fakeresponse.domain.repository
 
 import com.rahullohra.fakeresponse.db.dao.RestDao
-import com.rahullohra.fakeresponse.db.entities.RestResponse
+import com.rahullohra.fakeresponse.db.entities.RestRecord
 
 class RestRepository(val dao: RestDao) : BaseRepository {
 
-    fun addToDb(restResponse: RestResponse): Long {
-        return dao.insert(restResponse)
+    fun addToDb(restRecord: RestRecord): Long {
+        return dao.insert(restRecord)
     }
 
-    fun getAll(): List<RestResponse> {
+    fun getAll(): List<RestRecord> {
         return dao.getAll()
     }
 
@@ -21,15 +21,15 @@ class RestRepository(val dao: RestDao) : BaseRepository {
         return dao.toggle(restRecord, enable)
     }
 
-    fun getResponse(url: String, method:String, enable: Boolean): RestResponse {
+    fun getResponse(url: String, method:String, enable: Boolean): RestRecord {
         return dao.getRestResponse(url, method, enable)
     }
 
-    fun updateResponse(restResponse: RestResponse) {
-        return dao.update(restResponse)
+    fun updateResponse(restRecord: RestRecord) {
+        return dao.update(restRecord)
     }
 
-    fun getResponse(id: Int): RestResponse {
+    fun getResponse(id: Int): RestRecord {
         return dao.getRestResponse(id)
     }
 

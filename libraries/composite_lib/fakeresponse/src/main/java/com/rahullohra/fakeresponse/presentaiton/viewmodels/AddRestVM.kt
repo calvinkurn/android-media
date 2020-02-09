@@ -2,7 +2,7 @@ package com.rahullohra.fakeresponse.presentaiton.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rahullohra.fakeresponse.db.entities.RestResponse
+import com.rahullohra.fakeresponse.db.entities.RestRecord
 import com.rahullohra.fakeresponse.domain.usecases.AddRestDaoUseCase
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.LiveDataResult
@@ -21,7 +21,7 @@ class AddRestVM constructor(
 
     val liveDataCreate = MutableLiveData<LiveDataResult<Long>>()
     val liveDataUpdate = MutableLiveData<LiveDataResult<Boolean>>()
-    val liveDataRestResponse = MutableLiveData<LiveDataResult<RestResponse>>()
+    val liveDataRestResponse = MutableLiveData<LiveDataResult<RestRecord>>()
 
     override val coroutineContext: CoroutineContext
         get() = workerDispatcher + ceh

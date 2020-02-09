@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.data.diProvider.activities.AddGqlActivityProvider
-import com.rahullohra.fakeresponse.db.entities.FakeGql
+import com.rahullohra.fakeresponse.db.entities.GqlRecord
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
 import com.rahullohra.fakeresponse.presentaiton.livedata.Success
@@ -60,7 +60,7 @@ class AddGqlActivity : BaseActivity() {
 
         viewModel.liveDataGqlResponse.observe(this, Observer {
             when (it) {
-                is Success<FakeGql> -> {
+                is Success<GqlRecord> -> {
                     etGqlName.setText(it.data.gqlOperationName)
                     etResponse.setText(it.data.response)
                     etCustomName.setText(it.data.customTag)

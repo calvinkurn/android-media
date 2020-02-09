@@ -1,30 +1,30 @@
 package com.rahullohra.fakeresponse.db.dao
 
 import androidx.room.*
-import com.rahullohra.fakeresponse.db.entities.FakeGql
+import com.rahullohra.fakeresponse.db.entities.GqlRecord
 
 
 @Dao
 interface GqlDao {
 
-    @Query("Select * FROM FakeGql")
-    fun getAll(): List<FakeGql>
+    @Query("Select * FROM GqlRecord")
+    fun getAll(): List<GqlRecord>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGql(fakeGql: FakeGql): Long
+    fun insertGql(gqlRecord: GqlRecord): Long
 
     @Update
-    fun updateGql(fakeGql: FakeGql)
+    fun updateGql(gqlRecord: GqlRecord)
 
-    @Query("Update FakeGql SET enabled =:isEnabled where id = :gqlId")
+    @Query("Update GqlRecord SET enabled =:isEnabled where id = :gqlId")
     fun toggleGql(gqlId: Int, isEnabled: Boolean)
 
-    @Query("Select * FROM FakeGql where gqlOperationName = :gqlOperationName AND enabled = :isEnabled")
-    fun getRecordFromGqlQuery(gqlOperationName: String, isEnabled: Boolean = true): FakeGql
+    @Query("Select * FROM GqlRecord where gqlOperationName = :gqlOperationName AND enabled = :isEnabled")
+    fun getRecordFromGqlQuery(gqlOperationName: String, isEnabled: Boolean = true): GqlRecord
 
-    @Query("Select * FROM FakeGql where id= :id")
-    fun getRecordFromGqlQuery(id: Int): FakeGql
+    @Query("Select * FROM GqlRecord where id= :id")
+    fun getRecordFromGqlQuery(id: Int): GqlRecord
 
-    @Query("DELETE from FakeGql")
+    @Query("DELETE from GqlRecord")
     fun deleteAll()
 }

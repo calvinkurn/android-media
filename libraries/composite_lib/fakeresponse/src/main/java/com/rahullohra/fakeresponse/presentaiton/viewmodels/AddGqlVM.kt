@@ -2,14 +2,12 @@ package com.rahullohra.fakeresponse.presentaiton.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rahullohra.fakeresponse.db.entities.FakeGql
-import com.rahullohra.fakeresponse.db.entities.RestResponse
+import com.rahullohra.fakeresponse.db.entities.GqlRecord
 import com.rahullohra.fakeresponse.domain.usecases.AddToDbUseCase
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.LiveDataResult
 import com.rahullohra.fakeresponse.presentaiton.livedata.Success
 import com.rahullohra.fakeresponse.presentaiton.viewmodels.data.AddGqlData
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.data.AddRestData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +20,7 @@ class AddGqlVM constructor(
 ) : ViewModel(), CoroutineScope {
 
     val liveDataCreate = MutableLiveData<LiveDataResult<Long>>()
-    val liveDataGqlResponse = MutableLiveData<LiveDataResult<FakeGql>>()
+    val liveDataGqlResponse = MutableLiveData<LiveDataResult<GqlRecord>>()
     val liveDataGqlUpdate = MutableLiveData<LiveDataResult<Boolean>>()
 
     override val coroutineContext: CoroutineContext

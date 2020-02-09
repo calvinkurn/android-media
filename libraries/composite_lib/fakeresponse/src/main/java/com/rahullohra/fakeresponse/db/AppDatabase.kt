@@ -6,10 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.rahullohra.fakeresponse.db.dao.GqlDao
 import com.rahullohra.fakeresponse.db.dao.RestDao
-import com.rahullohra.fakeresponse.db.entities.FakeGql
-import com.rahullohra.fakeresponse.db.entities.RestResponse
+import com.rahullohra.fakeresponse.db.entities.GqlRecord
+import com.rahullohra.fakeresponse.db.entities.RestRecord
 
-@Database(entities = [FakeGql::class, RestResponse::class], version = AppDatabase.DB_VERSION)
+@Database(entities = [GqlRecord::class, RestRecord::class], version = AppDatabase.DB_VERSION)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun gqlDao(): GqlDao
     abstract fun restDao(): RestDao

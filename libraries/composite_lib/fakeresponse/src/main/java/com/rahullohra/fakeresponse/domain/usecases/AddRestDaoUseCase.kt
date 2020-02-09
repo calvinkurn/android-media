@@ -2,7 +2,7 @@ package com.rahullohra.fakeresponse.domain.usecases
 
 import android.text.TextUtils
 import com.rahullohra.fakeresponse.data.models.Either
-import com.rahullohra.fakeresponse.db.entities.RestResponse
+import com.rahullohra.fakeresponse.db.entities.RestRecord
 import com.rahullohra.fakeresponse.domain.exceptions.EmptyException
 import com.rahullohra.fakeresponse.domain.exceptions.NoResponseException
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
@@ -37,14 +37,14 @@ class AddRestDaoUseCase(val repository: RestRepository) : BaseUseCase<RestReposi
         }
     }
 
-    fun getRecordFromTable(id: Int): RestResponse {
+    fun getRecordFromTable(id: Int): RestRecord {
         return repository.getResponse(id)
     }
 
-    protected fun gqlDataToRest(data: AddRestData): RestResponse {
+    protected fun gqlDataToRest(data: AddRestData): RestRecord {
         val date = Date()
 
-        return RestResponse(
+        return RestRecord(
                 url = data.url!!,
                 httpMethod = data.methodName,
                 createdAt = date.time,

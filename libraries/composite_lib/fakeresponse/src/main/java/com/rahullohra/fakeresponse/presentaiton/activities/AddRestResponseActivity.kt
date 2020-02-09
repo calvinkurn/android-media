@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.data.diProvider.activities.RestActivityDiProvider
-import com.rahullohra.fakeresponse.db.entities.RestResponse
+import com.rahullohra.fakeresponse.db.entities.RestRecord
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
 import com.rahullohra.fakeresponse.presentaiton.livedata.Success
@@ -63,7 +63,7 @@ class AddRestResponseActivity : BaseActivity() {
 
         viewModel.liveDataRestResponse.observe(this, Observer {
             when (it) {
-                is Success<RestResponse> -> {
+                is Success<RestRecord> -> {
                     etMethodName.setText(it.data.httpMethod)
                     etRestUrl.setText(it.data.url)
                     etResponse.setText(it.data.response)
