@@ -49,7 +49,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.abstraction.common.utils.DateFormatUtils;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;

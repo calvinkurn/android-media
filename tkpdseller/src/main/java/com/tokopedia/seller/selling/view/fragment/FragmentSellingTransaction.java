@@ -42,7 +42,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.ValidationTextUtil;
@@ -58,6 +57,9 @@ import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.TransactionViewHolder;
 import com.tokopedia.transaction.common.TransactionRouter;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
@@ -133,10 +135,18 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     private void setDate() {
         try {
-            startDate.setText(DateFormatUtils.getStringDateAfter(-30));
-            endDate.setText(DateFormatUtils.getStringDateAfter(0));
+            startDate.setText(getStringDateAfter(-30));
+            endDate.setText(getStringDateAfter(0));
         } catch (NullPointerException e) {
         }
+    }
+
+    private static String getStringDateAfter(int count) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_YEAR, count);
+        Date newDate = calendar.getTime();
+        return new SimpleDateFormat("dd/MM/yyyy").format(newDate);
     }
 
     private DatePickerV2.OnDatePickerV2Listener onStartPicked() {
