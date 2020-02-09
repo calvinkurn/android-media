@@ -100,7 +100,7 @@ class ShopOpenRevampViewModel @Inject constructor(
                 }
             }
         }) {
-            // _checkDomainAndShopNameResponse.value = Fail(it)
+             _domainShopNameSuggestionsResponse.value = Fail(it)
         }
     }
 
