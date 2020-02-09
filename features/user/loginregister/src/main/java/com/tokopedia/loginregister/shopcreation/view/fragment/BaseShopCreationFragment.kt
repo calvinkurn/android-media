@@ -16,13 +16,13 @@ import com.tokopedia.loginregister.R
 
 abstract class BaseShopCreationFragment : BaseDaggerFragment() {
 
+    abstract fun getToolbar(): Toolbar
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initToolbar()
     }
-
-    abstract fun getToolbar(): Toolbar
 
     private fun initToolbar() {
         (activity as AppCompatActivity).let {

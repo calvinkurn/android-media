@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.shopcreation.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -26,7 +25,6 @@ import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.view.util.PhoneNumberTextWatcher
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
-import com.tokopedia.profilecommon.domain.pojo.UserProfileUpdate
 import com.tokopedia.profilecommon.domain.pojo.UserProfileValidate
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -44,12 +42,12 @@ import javax.inject.Inject
 
 class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
-    lateinit var toolbarShopCreation: Toolbar
-    lateinit var container: View
-    lateinit var buttonContinue: UnifyButton
-    lateinit var textFieldPhone: TextFieldUnify
-    lateinit var errorMessage: Typography
-    lateinit var phone: String
+    private lateinit var toolbarShopCreation: Toolbar
+    private lateinit var container: View
+    private lateinit var buttonContinue: UnifyButton
+    private lateinit var textFieldPhone: TextFieldUnify
+    private lateinit var errorMessage: Typography
+    private lateinit var phone: String
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -57,8 +55,13 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     lateinit var shopCreationAnalytics: ShopCreationAnalytics
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val shopCreationViewModel by lazy { viewModelProvider.get(ShopCreationViewModel::class.java) }
+
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val shopCreationViewModel by lazy {
+        viewModelProvider.get(ShopCreationViewModel::class.java)
+    }
 
     override fun getScreenName(): String = SCREEN_REGISTRATION_SHOP_CREATION
 
@@ -85,6 +88,64 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initObserver()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                when (requestCode) {
+                    REQUEST_LOGIN_PHONE -> {
+                        data?.extras?.run {
+                            val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                            val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                            goToChooseAccountPage(accessToken, phoneNumber)
+                        }
+                    }
+                    REQUEST_REGISTER_PHONE -> {
+                        if (phone.isNotEmpty())
+                            goToRegisterAddNamePage(phone.replace("-", ""))
+                    }
+                    REQUEST_NAME_SHOP_CREARION -> {
+                        activity?.let {
+                            it.setResult(Activity.RESULT_OK)
+                            it.finish()
+                        }
+                    }
+                    REQUEST_COTP_PHONE_VERIFICATION -> {
+                        if (phone.isNotEmpty()) {
+                            shopCreationViewModel.addPhone(phone.replace("-", ""))
+                        } else {
+                            toastError(getString(R.string.please_fill_phone_number))
+                        }
+                    }
+                    REQUEST_CHOOSE_ACCOUNT -> {
+                        activity?.let {
+                            it.setResult(Activity.RESULT_OK)
+                            it.finish()
+                        }
+                    }
+                }
+            }
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        shopCreationAnalytics.eventClickBackPhoneShopCreation()
+        LetUtil.ifLet(context, view?.parent) { (context, view) ->
+            hideKeyboardFrom(context as Context, view as View)
+        }
+        return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        shopCreationViewModel.addPhoneResponse.removeObservers(this)
+        shopCreationViewModel.validateUserProfileResponse.removeObservers(this)
+        shopCreationViewModel.registerCheckResponse.removeObservers(this)
+        shopCreationViewModel.flush()
     }
 
     private fun initView() {
@@ -145,7 +206,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         shopCreationViewModel.addPhoneResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessAddPhone(it.data)
+                    onSuccessAddPhone()
                 }
                 is Fail -> {
                     onFailedAddPhone(it.throwable)
@@ -184,48 +245,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                when (requestCode) {
-                    REQUEST_LOGIN_PHONE -> {
-                        data?.extras?.run {
-                            val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                            val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
-                            goToChooseAccountPage(accessToken, phoneNumber)
-                        }
-                    }
-                    REQUEST_REGISTER_PHONE -> {
-                        if (phone.isNotEmpty())
-                            goToRegisterAddNamePage(phone.replace("-", ""))
-                    }
-                    REQUEST_NAME_SHOP_CREARION -> {
-                        activity?.let {
-                            it.setResult(Activity.RESULT_OK)
-                            it.finish()
-                        }
-                    }
-                    REQUEST_COTP_PHONE_VERIFICATION -> {
-                        if (phone.isNotEmpty()) {
-                            shopCreationViewModel.addPhone(phone.replace("-", ""))
-                        } else {
-                            toastError(getString(R.string.please_fill_phone_number))
-                        }
-                    }
-                    REQUEST_CHOOSE_ACCOUNT -> {
-                        activity?.let {
-                            it.setResult(Activity.RESULT_OK)
-                            it.finish()
-                        }
-                    }
-                }
-            }
-            else -> {
-                super.onActivityResult(requestCode, resultCode, data)
-            }
-        }
-    }
-
     private fun storeLocalSession(phone: String) {
         userSession.setIsMSISDNVerified(true)
         userSession.phoneNumber = phone
@@ -249,9 +268,10 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun onFailedRegisterCheck(throwable: Throwable) {
         toastError(throwable)
         buttonContinue.isLoading = false
+        buttonContinue.isEnabled = false
     }
 
-    private fun onSuccessAddPhone(userProfileUpdate: UserProfileUpdate) {
+    private fun onSuccessAddPhone() {
         storeLocalSession(phone.replace("-", ""))
         activity?.let {
             it.setResult(Activity.RESULT_OK)
@@ -276,6 +296,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun onFailedValidateUserProfile(throwable: Throwable) {
         toastError(throwable)
         buttonContinue.isLoading = false
+        buttonContinue.isEnabled = false
     }
 
     private fun emptyStatePhoneField() {
@@ -361,22 +382,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
     }
 
-    override fun onBackPressed(): Boolean {
-        shopCreationAnalytics.eventClickBackPhoneShopCreation()
-        LetUtil.ifLet(context, view?.parent) { (context, view) ->
-            hideKeyboardFrom(context as Context, view as View)
-        }
-        return true
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        shopCreationViewModel.addPhoneResponse.removeObservers(this)
-        shopCreationViewModel.validateUserProfileResponse.removeObservers(this)
-        shopCreationViewModel.registerCheckResponse.removeObservers(this)
-        shopCreationViewModel.flush()
-    }
-
     companion object {
 
         private const val REQUEST_LOGIN_PHONE = 112
@@ -388,6 +393,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val OTP_TYPE_PHONE_VERIFICATION = 11
         private const val OTP_TYPE_REGISTER_PHONE_NUMBER = 116
         private const val OTP_TYPE_LOGIN_PHONE_NUMBER = 112
+
         private const val PHONE_TYPE = "phone"
 
         fun createInstance(bundle: Bundle): PhoneShopCreationFragment {
@@ -396,7 +402,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             return fragment
         }
 
-        @JvmStatic
         fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() &&
                 phone.length >= 6
     }
