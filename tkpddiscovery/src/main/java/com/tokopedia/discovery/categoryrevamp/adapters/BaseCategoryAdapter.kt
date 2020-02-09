@@ -9,6 +9,7 @@ import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFa
 abstract class BaseCategoryAdapter(val itemChangeView: OnItemChangeView) :
         RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
+    abstract fun setDimension(dimension:String)
 
     fun changeListView() {
         getTypeFactory().setRecyclerViewItem(CategoryNavConstants.RecyclerView.VIEW_PRODUCT)

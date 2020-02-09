@@ -40,12 +40,13 @@ data class Variant(
         @Expose
         val options: List<Option> = listOf()
 ) {
-        companion object {
-                const val SIZE = "size" // this is from api
-                const val COLOR = "colour" // this is from api
-        }
-        val isSizeIdentifier: Boolean
-                get() = SIZE.equals(identifier, false)
+    companion object {
+        const val SIZE = "size" // this is from api
+        const val COLOR = "colour" // this is from api
+    }
+
+    val isSizeIdentifier: Boolean
+        get() = SIZE.equals(identifier, false)
 }
 
 data class Option(
@@ -69,4 +70,8 @@ data class Option(
         @SerializedName("picture")
         @Expose
         val picture: Picture? = null
-)
+) {
+    fun isColor(): Boolean {
+        return hex != null
+    }
+}

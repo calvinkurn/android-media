@@ -1,24 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.salam.umrah">
 
     <application>
         <activity
-            android:name=".orderdetail.presentation.activity.UmrahOrderDetailActivity"
-            android:label="@string/umrah_order_detail_activity_label"
+            android:name=".search.presentation.activity.UmrahSearchActivity"
+            android:label="@string/umrah_search_title"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_order_detail_umrah"
-                    android:pathPattern="@string/path_umrah_order_detail"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umrah_path_search"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umrah_path_category"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".pdp.presentation.activity.UmrahPdpActivity"
+            android:label=""
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umrah_path_pdp"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".pdp.presentation.activity.UmrahPdpDetailActivity"
+            android:label="@string/umrah_label_pdp"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".search.presentation.activity.UmrahSearchFilterActivity"
+            android:label="@string/umrah_label_filter"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".homepage.presentation.activity.UmrahHomepageActivity"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umrah_home_page_path"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".orderdetail.presentation.activity.UmrahOrderDetailActivity"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/umrah_host_order_detail"
+                    android:pathPattern="@string/umrah_path_order_detail"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".checkout.presentation.activity.UmrahCheckoutActivity"
+            android:label="@string/umrah_checkout_title_activity"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umrah_checkout_path"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".checkout.presentation.activity.UmrahCheckoutPilgrimsActivity"
+            android:label="@string/umrah_checkout_pilgrims_title_activity"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".checkout.presentation.activity.UmrahCheckoutInstallmentActivity"
+            android:label="@string/umrah_checkout_installment_title_activity"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".checkout.presentation.activity.UmrahCheckoutContactDataActivity"
+            android:label="@string/umrah_checkout_contact_title_activity"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

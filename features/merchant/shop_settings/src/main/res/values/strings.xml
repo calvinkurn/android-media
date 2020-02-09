@@ -148,5 +148,7 @@
 
     <string name="pm_label_price_cashback_shop_settings">Sisa biaya bulanan Power Merchant per <b>1 Juli 2019</b> akan dikembalikan ke <b>Saldo Penghasilan.</b></string>
     <string name="pm_upgrade_shop_settings">Upgrade Tokomu</string>
+    <string name="shop_settings_information_edit">Ubah Informasi</string>
+    <string name="shop_settings_set_shop_status">Atur Status Toko</string>
 
 </resources>

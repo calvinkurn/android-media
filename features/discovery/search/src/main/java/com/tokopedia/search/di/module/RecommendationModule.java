@@ -20,7 +20,7 @@ public class RecommendationModule {
     @SearchScope
     @Named("recommendationQuery")
     String provideRecommendationRawQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_recommendation_widget);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget);
     }
 
     @Provides

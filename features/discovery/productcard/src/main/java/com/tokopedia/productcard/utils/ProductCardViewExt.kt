@@ -72,7 +72,3 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
         this.visibility = View.GONE
     }
 }
-
-internal operator fun Boolean.divAssign(toCompare: Boolean) {
-    this || toCompare
-}

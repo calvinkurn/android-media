@@ -115,10 +115,16 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     public static void moveTo(Context context, String categoryUrl, @NonNull Bundle bundle) {
         if (context != null) {
-            Intent intent = new Intent(context, CategoryActivity.class);
-            bundle.putString(BrowseProductRouter.EXTRA_CATEGORY_URL, categoryUrl);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
+            if (CategoryNavActivity.isCategoryRevampEnabled(context)) {
+                Intent intent = new Intent(context, CategoryNavActivity.class);
+                intent.putExtra(BrowseProductRouter.EXTRA_CATEGORY_URL, categoryUrl);
+                context.startActivity(intent);
+            } else {
+                Intent intent = new Intent(context, CategoryActivity.class);
+                bundle.putString(BrowseProductRouter.EXTRA_CATEGORY_URL, categoryUrl);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
         }
     }
 

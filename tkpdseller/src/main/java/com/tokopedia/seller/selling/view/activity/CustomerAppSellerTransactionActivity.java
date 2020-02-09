@@ -42,14 +42,15 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+//import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.view.fragment.FragmentOpportunity;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingDelivered;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipped;
@@ -332,7 +333,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         if (getIntent().hasExtra(EXTRA_QUERY)) {
             query = getIntent().getStringExtra(EXTRA_QUERY);
         }
-        fragmentList.add(OpportunityListFragment.newInstance(query));
+        fragmentList.add(FragmentOpportunity.newInstance());
         fragmentList.add(FragmentSellingNewOrder.createInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingShipped.newInstance());
