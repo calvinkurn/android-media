@@ -66,7 +66,6 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -94,7 +93,6 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
-import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
@@ -212,10 +210,8 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.url.TokopediaUrl;
@@ -240,8 +236,6 @@ import tradein_common.TradeInUtils;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory.PRODUCT_DETAIL_PAGE;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName.CLICK_PDP;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 
@@ -295,9 +289,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         KYCRouter,
         CustomerRouter.IrisInstallRouter {
 
-    private static final String EXTRA = "extra";
-    public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
-    public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
     public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
     public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
 
@@ -704,23 +695,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         activity.startActivity(intent);
     }
 
-    /**
-     * @param context
-     * @param appLinkScheme
-     * @param alternateRedirectUrl
-     * @return
-     */
-
-    private Intent getIntentAppLinkWallet(Context context, String appLinkScheme,
-                                          String alternateRedirectUrl) {
-
-        return appLinkScheme == null || appLinkScheme.isEmpty() ?
-                getWebviewActivityWithIntent(context, alternateRedirectUrl)
-                : isSupportedDelegateDeepLink(appLinkScheme)
-                ? getApplinkIntent(context, appLinkScheme).setData(Uri.parse(appLinkScheme))
-                : getWebviewActivityWithIntent(context, appLinkScheme);
-    }
-
     @Override
     public String getFlavor() {
         return BuildConfig.FLAVOR;
@@ -1039,14 +1013,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public ApplinkDelegate applinkDelegate() {
         return DeeplinkHandlerActivity.getApplinkDelegateInstance();
-    }
-
-    public static void eventTopAdsSwitcher(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.NAVIGATION_DRAWER,
-                AppEventTracking.Category.TOPADS_SWITCHER,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.OPEN_TOP_SELLER + label);
     }
 
     @Override
