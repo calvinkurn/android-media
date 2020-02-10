@@ -23,11 +23,11 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
         val list = deferredWorkerHelper.getPendingDeferredResourceURLs(resId)
 
         val deferredList: ArrayList<Deferred<Boolean>> = arrayListOf()
+
         coroutineScope {
             list.forEach {
                 val deferred =
                         async(Dispatchers.IO) {
-                            // start Download
                             startDownload(it)
                         }
                 deferredList.add(deferred)
@@ -35,16 +35,19 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
             deferredList.awaitAll()
         }
         deferredList.clear()
-        // work resumed after completing downloads for each pending downloads
-        if (isDeferredWorkCompleted(context, resourceDownloadManager, resId))
+
+        if (isDeferredWorkCompleted(context, resourceDownloadManager, resId)) {
+            resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG successfully completed with #taskcount ${list.size}")
             return Result.success()
+
+        }
+        resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG RETRY NEXT TIME")
         return Result.retry()
     }
 
     private suspend fun startDownload(remoteFileName: String): Boolean =
             suspendCancellableCoroutine { cont ->
                 cont.invokeOnCancellation {
-                    // cont cancelled
                     cont.cancel()
                 }
                 resourceDownloadManager.startDownload(
@@ -84,14 +87,15 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                                 )
                                 .setInputData(createInputData(resourceId))
                                 .build()
-                        // worker is scheduled in if block
                         WorkManager.getInstance()
                                 .enqueueUniqueWork(WORKER_TAG, ExistingWorkPolicy.KEEP, pushWorker)
+                        resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG Worker Scheduled")
                     } else {
-                        // Worker Scheduling not required
+                        resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG Worker Scheduling not required")
                     }
                 }
             } catch (ex: Exception) {
+                resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG Worker Scheduling not required")
 
 
             }

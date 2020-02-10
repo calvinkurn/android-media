@@ -40,7 +40,7 @@ class ResourceDownloadManager private constructor() {
 
     private lateinit var mClient: OkHttpClient
 
-    private var deferredCallback: DeferredCallback? = null
+    internal var deferredCallback: DeferredCallback? = null
 
     private var density: String = ""
 
