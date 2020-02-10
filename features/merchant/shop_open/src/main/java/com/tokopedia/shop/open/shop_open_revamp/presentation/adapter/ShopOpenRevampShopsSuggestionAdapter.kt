@@ -11,13 +11,14 @@ import com.tokopedia.shop.open.shop_open_revamp.data.model.ValidateShopDomainSug
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.listener.InputShopInterface
+import com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment.ShopOpenRevampInputShopFragment
 
 class ShopOpenRevampShopsSuggestionAdapter(
         val listener: InputShopInterface
 ) : RecyclerView.Adapter<ShopOpenRevampShopsSuggestionAdapter.ShopOpenRevampShopsSuggestionViewHolder>() {
 
     private var shopDomainNameSuggestions: MutableList<String> = mutableListOf()
-    var selectedPosition = -1
+    var selectedPosition = ShopOpenRevampInputShopFragment.DEFAULT_SELECTED_POSITION
 
     fun updateDataShopSuggestions(shopDomains: ValidateShopDomainSuggestionResult) {
         shopDomainNameSuggestions = shopDomains.shopDomains.toMutableList()

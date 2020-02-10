@@ -38,6 +38,7 @@ class ShopOpenRevampChoiceItemAdapter(
         val context: Context
         val txtChoice: TextView
         val checkBox: CheckBox
+        var isOnChecked = false
 
         init {
             context = itemView.context
@@ -49,11 +50,32 @@ class ShopOpenRevampChoiceItemAdapter(
             txtChoice.text = choice.choice
             checkBox.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener() { buttonView, isChecked ->
                 if (isChecked) {
-                    listener.onCheckedCheckbox(questionId, id)
+                    isOnChecked = true
+                    checkedCheckbox(id)
                 } else {
-                    listener.onUncheckedCheckbox(questionId, id)
+                    isOnChecked = false
+                    uncheckedCheckbox(id)
                 }
             })
+            txtChoice.setOnClickListener {
+                if (isOnChecked) {
+                    isOnChecked = false
+                    checkBox.isChecked = false
+                    uncheckedCheckbox(id)
+                } else {
+                    isOnChecked = true
+                    checkBox.isChecked = true
+                    checkedCheckbox(id)
+                }
+            }
+        }
+
+        private fun checkedCheckbox(id: Int) {
+            listener.onCheckedCheckbox(questionId, id)
+        }
+
+        private fun uncheckedCheckbox(id: Int) {
+            listener.onUncheckedCheckbox(questionId, id)
         }
     }
 }

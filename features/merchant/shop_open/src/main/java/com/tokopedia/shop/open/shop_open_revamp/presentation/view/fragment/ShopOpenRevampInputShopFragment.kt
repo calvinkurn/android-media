@@ -32,6 +32,7 @@ import com.tokopedia.shop.open.shop_open_revamp.common.ExitDialog
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.common.TermsAndConditionsLink.URL_PRIVACY_POLICY
 import com.tokopedia.shop.open.shop_open_revamp.common.TermsAndConditionsLink.URL_TNC
+import com.tokopedia.shop.open.shop_open_revamp.data.model.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.shop_open_revamp.di.DaggerShopOpenRevampComponent
 import com.tokopedia.shop.open.shop_open_revamp.di.ShopOpenRevampComponent
 import com.tokopedia.shop.open.shop_open_revamp.di.ShopOpenRevampModule
@@ -79,9 +80,11 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private var isValidDomainName = false
     private var shopNameValue = ""
     private var domainNameValue = ""
+    private var shopNameSuggestionList = ValidateShopDomainSuggestionResult()
 
     companion object {
         const val FIRST_FRAGMENT_TAG = "first"
+        const val DEFAULT_SELECTED_POSITION = -1
     }
 
     override fun onAttach(context: Context) {
@@ -128,6 +131,8 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
             override fun afterTextChanged(s: Editable?) {
                 val domainInputStr = txtInputDomainName.getEditableValue()
                 txtInputDomainName.setError(false)
+                adapter?.selectedPosition = DEFAULT_SELECTED_POSITION
+                adapter?.notifyDataSetChanged()
                 if (domainInputStr.length < MIN_SHOP_NAME_LENGTH) {
                     isValidDomainName = false
                     txtInputDomainName.setError(true)
@@ -135,6 +140,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MIN_SHOP_NAME_LENGTH) {
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
+                    reselectChipSuggestionDomainName()
                     CoroutineScope(Dispatchers.IO).launch {
                         delay(700)
                         viewModel.checkDomainName(domainNameValue)
@@ -215,6 +221,17 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         adapter?.notifyDataSetChanged()
     }
 
+    private fun reselectChipSuggestionDomainName() {
+        if (domainNameValue.isNotEmpty()) {
+            shopNameSuggestionList.shopDomains.forEachIndexed { index, item ->
+                if (domainNameValue == item) {
+                    adapter?.selectedPosition = index
+                    adapter?.notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
     private fun observeShopNameValidationData() {
         viewModel.checkShopNameResponse.observe(this, Observer {
             when (it) {
@@ -287,7 +304,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     txtInputDomainName.textFieldInput.setText(it.data.shopDomainSuggestion.result.shopDomain.toString())
                     btnShopRegistration.isEnabled
-                    val shopNameSuggestionList = it.data.shopDomainSuggestion.result
+                    shopNameSuggestionList = it.data.shopDomainSuggestion.result
                     adapter?.updateDataShopSuggestions(shopNameSuggestionList)
                 }
                 is Fail -> {
