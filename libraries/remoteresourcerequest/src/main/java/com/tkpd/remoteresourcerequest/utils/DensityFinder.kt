@@ -40,13 +40,6 @@ class DensityFinder {
                 DisplayMetrics.DENSITY_XXHIGH, DisplayMetrics.DENSITY_340,
                 DisplayMetrics.DENSITY_360, DisplayMetrics.DENSITY_400,
                 DisplayMetrics.DENSITY_420, DisplayMetrics.DENSITY_440,
-                DisplayMetrics.DENSITY_450 -> {
-                    CallbackDispatcher.dispatchLog(
-                            callback,
-                            "device density = XXHDPI"
-                    )
-                    return "xxhdpi"
-                }
                 DisplayMetrics.DENSITY_XXXHIGH, DisplayMetrics.DENSITY_560 -> {
                     CallbackDispatcher.dispatchLog(
                             callback,
