@@ -11,6 +11,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import rx.Subscriber
 import javax.inject.Inject
 import androidx.core.app.NotificationManagerCompat
+import com.tokopedia.usecase.RequestParams
 import java.lang.IllegalStateException
 
 
@@ -38,17 +39,15 @@ class NotificationChatService : JobIntentService() {
         val message = remoteInput?.getCharSequence(REPLY_KEY)
         val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
 
-        val requestParam = ReplyChatUseCase.generateParam(messageId, message.toString())
+        val params: RequestParams = ReplyChatUseCase.generateParam(messageId, message.toString())
 
-        replyChatUseCase.execute(requestParam, object : Subscriber<ReplyChatViewModel>() {
-            override fun onNext(response: ReplyChatViewModel?) {
-                if (response != null) {
-                    if (response.isSuccessReplyChat) {
-                        clearNotification(notificationId)
-                        return
-                    }
+        replyChatUseCase.execute(params, object : Subscriber<ReplyChatViewModel>() {
+            override fun onNext(response: ReplyChatViewModel) {
+                if (response.isSuccessReplyChat) {
+                    clearNotification(notificationId)
+                } else {
+                    onError(IllegalStateException())
                 }
-                onError(IllegalStateException())
             }
 
             override fun onCompleted() {}
