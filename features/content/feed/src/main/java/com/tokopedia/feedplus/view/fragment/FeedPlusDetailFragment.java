@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
 import com.tokopedia.feedcomponent.util.util.DataMapper;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
@@ -116,6 +117,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Inject
     FeedAnalytics analytics;
+
+    @Inject
+    FeedAnalyticTracker feedAnalytics;
 
     @Inject
     UserSessionInterface userSession;
@@ -272,7 +276,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToShopDetail(Integer shopId) {
+    public void onGoToShopDetail(String activityId, Integer shopId) {
         if (getArguments() != null) {
             goToShopDetail(shopId);
             analytics.eventFeedViewShop(
@@ -280,6 +284,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                     String.valueOf(shopId),
                     getArguments().getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
                             + FeedTrackingEventLabel.View.PRODUCTLIST_SHOP);
+            feedAnalytics.eventClickFeedDetailAvatar(activityId, shopId.toString());
         }
 
     }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -25,7 +26,7 @@ import com.tokopedia.officialstore.category.di.OfficialStoreCategoryModule
 import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeContainerAdapter
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
-import com.tokopedia.officialstore.common.RecyclerViewScrollListener
+import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -40,6 +41,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
+        const val KEY_CATEGORY = "key_category"
     }
 
     @Inject
@@ -49,8 +51,10 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var viewPager: ViewPager? = null
+    private var appbarCategory: AppBarLayout? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
+    private var keyCategory = "0"
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
@@ -62,6 +66,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
+        arguments?.let {
+            keyCategory = it.getString(KEY_CATEGORY, "0")
+        }
         context?.let {
             tracking = OfficialStoreTracking(it)
         }
@@ -136,13 +143,23 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         })
     }
 
+    private fun getSelectedCategory(officialStoreCategories: OfficialStoreCategories): Int {
+        officialStoreCategories.categories.forEachIndexed { index, category ->
+            if (keyCategory !== "0" && category.categoryId == keyCategory) {
+                return index
+            }
+        }
+        return 0
+    }
+
     private fun populateCategoriesData(officialStoreCategories: OfficialStoreCategories) {
         officialStoreCategories.categories.forEachIndexed { _, category ->
             tabAdapter.categoryList.add(category)
         }
         tabAdapter.notifyDataSetChanged()
-        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
-        tabLayout?.getTabAt(0)?.select()
+        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories), appbarCategory!!)
+        val categorySelected = getSelectedCategory(officialStoreCategories)
+        tabLayout?.getTabAt(categorySelected)?.select()
 
         val category = tabAdapter.categoryList[0]
         tracking.eventImpressionCategory(
@@ -185,6 +202,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         viewPager = view.findViewById(R.id.viewpager)
+        appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
     }

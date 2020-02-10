@@ -17,6 +17,7 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.navigation_common.model.VccUserStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +26,26 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.home.account.AccountConstants.VccStatus.ACTIVE;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.BLOCKED;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.DEACTIVATED;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.ELIGIBLE;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.HOLD;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.KYC_PENDING;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.REJECTED;
+
 /**
  * @author by alvinatin on 10/08/18.
  */
 
 public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String OVO = "OVO";
+    private static final String OVO_PAY_LATER = "OVO PayLater";
+    private static final String LABEL_ELIGIBLE = "Aktifkan";
+    private static final String LABEL_HOLD = "Sedang Diproses";
+    private static final String LABEL_BLOCKED = "Layanan Terblokir";
+    private static final String LABEL_DEACTIVATED = "Dinonaktifkan";
+    private static final String LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu";
     private Context context;
     private RemoteConfig remoteConfig;
 
@@ -114,7 +129,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         } else {
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
-            tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
+            tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus() == null ? "" : accountModel.getVccUserStatus().getTitle());
             tokopediaPayViewModel.setRightSaldo(false);
             tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
             tokopediaPayViewModel.setVccUserStatus(accountModel.getVccUserStatus().getStatus());
@@ -156,6 +171,64 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(tokopediaPayViewModel);
         }
 
+        if (accountModel.getVccUserStatus() != null &&
+                accountModel.getVccUserStatus().getTitle() != null &&
+                accountModel.getVccUserStatus().getTitle().equalsIgnoreCase(OVO_PAY_LATER)) {
+            VccUserStatus vccUserStatus = accountModel.getVccUserStatus();
+            TokopediaPayBSModel tokopediaPayBSModel = new TokopediaPayBSModel();
+
+            tokopediaPayViewModel.setIconUrlCentre(vccUserStatus.getIcon());
+            tokopediaPayViewModel.setApplinkCentre(vccUserStatus.getRedirectionUrl());
+
+            tokopediaPayViewModel.setAmountCentre(accountModel.getVccUserStatus().getBody());
+
+            switch (vccUserStatus.getStatus()) {
+                case ELIGIBLE:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre(LABEL_ELIGIBLE);
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case HOLD:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre(LABEL_HOLD);
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case ACTIVE:
+                    tokopediaPayViewModel.setLabelCentre(vccUserStatus.getTitle());
+                    String oplLimit;
+                    try {
+                        oplLimit = CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(vccUserStatus.getBody()), false);
+                    } catch (Exception e) {
+                        oplLimit = vccUserStatus.getBody();
+                    }
+                    tokopediaPayViewModel.setAmountCentre(oplLimit);
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case REJECTED:
+                    tokopediaPayViewModel.setLabelCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setBsDataCentre(null);
+                    break;
+                case BLOCKED:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre(LABEL_BLOCKED);
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case DEACTIVATED:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre(LABEL_DEACTIVATED);
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case KYC_PENDING:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre(LABEL_KYC_PENDING);
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+
+            }
+
+        } else {
+            tokopediaPayViewModel.setBsDataCentre(null);
+        }
         items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel, remoteConfig));
         model.setItems(items);
 

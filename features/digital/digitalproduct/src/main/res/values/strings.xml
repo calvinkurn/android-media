@@ -176,4 +176,5 @@
     <string name="digital_title_nominal">Nominal</string>
 
     <string name="digital_egold_more_info">Pelajari lebih lanjut</string>
+    <string name="digital_success_message_scan_ocr">Nomor kartu berhasil dipindai</string>
 </resources>

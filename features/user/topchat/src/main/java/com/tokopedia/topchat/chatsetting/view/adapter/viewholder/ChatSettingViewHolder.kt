@@ -13,14 +13,16 @@ class ChatSettingViewHolder(itemView: View?, val listener: ChatSettingListener)
 
     interface ChatSettingListener {
         fun isTabSeller(): Boolean
+        fun eventClickChatSetting(element: ChatSetting)
     }
 
     override fun bind(element: ChatSetting?) {
         if (element == null) return
-        with (itemView) {
+        with(itemView) {
             tvTitle?.text = element.alias
 
             setOnClickListener {
+                listener.eventClickChatSetting(element)
                 val intent = RouteManager.getIntent(itemView.context, element.link).apply {
                     putExtra(TemplateChatActivity.PARAM_IS_SELLER, listener.isTabSeller())
                 }

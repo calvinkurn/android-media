@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categoryrevamp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -27,6 +28,9 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
 
     private val bigListShimmerModel: BigListShimmerModel by lazy { BigListShimmerModel() }
 
+    private var currentDimension: String = ""
+    private val defaultSortFilterMostAppropriate = "ob=23"
+
     val viewMap = HashMap<Int, Boolean>()
     var viewedProductList = ArrayList<Visitable<ProductTypeFactory>>()
     var viewedTopAdsList = ArrayList<Visitable<ProductTypeFactory>>()
@@ -34,7 +38,15 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
 
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
+        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        when(visitables[position]){
+            is LoadingMoreModel -> layout.isFullSpan = true
+        }
         holder.bind(visitables[position])
+    }
+
+    override fun setDimension(dimension: String) {
+        currentDimension = dimension
     }
 
     override fun getTypeFactory(): BaseProductTypeFactory {
@@ -157,6 +169,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             if (!viewMap.containsKey(position)) {
                 viewMap[position] = true
                 val item = visitables[position] as ProductsItem
+                item.dimension = if (currentDimension.isNotEmpty()) currentDimension else defaultSortFilterMostAppropriate
                 item.adapter_position = position
 
                 if (item.isTopAds) {

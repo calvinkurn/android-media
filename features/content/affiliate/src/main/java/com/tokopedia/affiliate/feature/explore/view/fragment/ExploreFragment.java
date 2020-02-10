@@ -4,20 +4,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -26,14 +26,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
-import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
-import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
@@ -56,7 +52,9 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChil
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ProductTitleViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
-import com.tokopedia.affiliate.util.AffiliateHelper;
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking;
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -64,16 +62,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -124,16 +116,14 @@ public class ExploreFragment
 
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
-    private ImageView ivBack, ivBantuan, ivProfile;
+    private ImageView ivBack;
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty;
-    private FrameLayout layoutProfile;
     private BottomActionView bottomActionView;
     private FloatingActionButton btnBackToTop;
-    private BadgeView badgeView;
 
     private boolean isCanDoAction;
     private boolean isTraceStopped;
@@ -171,12 +161,9 @@ public class ExploreFragment
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         searchView = view.findViewById(R.id.search_input_view);
         ivBack = view.findViewById(R.id.iv_back);
-        ivBantuan = view.findViewById(R.id.action_bantuan);
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
-        layoutProfile = view.findViewById(R.id.action_profile);
-        ivProfile = view.findViewById(R.id.iv_profile);
         bottomActionView = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
@@ -201,7 +188,6 @@ public class ExploreFragment
         layoutEmpty.setVisibility(View.GONE);
         dropKeyboard();
         initEmptyResultModel();
-        initProfileSection();
         autoCompleteLayout.setVisibility(View.GONE);
         btnBackToTop.hide();
         exploreParams = new ExploreParams();
@@ -245,56 +231,14 @@ public class ExploreFragment
         );
     }
 
-    private void initProfileSection() {
-        //init image
-        if (userSession.isLoggedIn()) {
-            ImageHandler.loadImageCircle2(getActivity(), ivProfile,
-                    userSession.getProfilePicture(), com.tokopedia.topads.sdk.R.drawable.loading_page);
-        }
-
-        if (getActivity() == null) {
-            return;
-        }
-
-        //init red dot
-        if (AffiliateHelper.isFirstTimeOpenProfileFromExplore(getActivity())) {
-            if (badgeView == null) {
-                badgeView = new BadgeView(getActivity());
-            }
-            badgeView.bindTarget(layoutProfile);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(-1);
-        } else {
-            if (badgeView != null) {
-                badgeView.hide(true);
-            }
-        }
-        if (!ShowCasePreference.hasShown(getActivity(), TAG_SHOWCASE)) {
-            showShowCase();
-        }
-    }
-
     private void initListener() {
         if (getActivity() == null) {
             return;
         }
 
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
-        ivBantuan.setOnClickListener(view -> {
-            affiliateAnalytics.onInfoClicked();
-            goToEducation();
-        });
+
         btnBackToTop.setOnClickListener(view -> rvExplore.scrollToPosition(0));
-        layoutProfile.setOnClickListener(view -> {
-            if (!userSession.isLoggedIn()) {
-                goToLogin();
-            } else {
-                AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
-                goToProfile();
-                initProfileSection();
-                affiliateAnalytics.onProfileClicked(userSession.getUserId());
-            }
-        });
         bottomActionView.setButton2OnClickListener(view -> {
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(
@@ -935,8 +879,6 @@ public class ExploreFragment
                 SortViewModel selectedSort =
                         data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
                 getSortedData(selectedSort);
-            } else if (requestCode == LOGIN_CODE) {
-                initProfileSection();
             } else if (requestCode == REQUEST_CREATE_POST) {
                 onRefresh();
             }
@@ -955,7 +897,7 @@ public class ExploreFragment
         presenter.detachView();
     }
 
-    private void trackImpressionSearch(List<Visitable<?>> visitables, String keyword){
+    private void trackImpressionSearch(List<Visitable<?>> visitables, String keyword) {
         for (int i = 0; i < visitables.size(); i++) {
             Visitable visitable = visitables.get(i);
 
@@ -1025,7 +967,7 @@ public class ExploreFragment
                 position
         );
 
-        if (!TextUtils.isEmpty(exploreParams.getKeyword())){
+        if (!TextUtils.isEmpty(exploreParams.getKeyword())) {
             affiliateAnalytics.onProductSearchClicked(
                     exploreParams.getKeyword(),
                     card.getAdId(),
@@ -1057,34 +999,5 @@ public class ExploreFragment
             startActivity(intent);
             affiliatePreference.setFirstTimeEducation(userSession.getUserId());
         }
-    }
-
-    private void showShowCase() {
-        ShowCaseDialog showCaseDialog = createShowCase();
-
-        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-        showcases.add(new ShowCaseObject(
-                layoutProfile,
-                getString(R.string.aff_title_showcase),
-                getString(R.string.aff_desc_showcase),
-                ShowCaseContentPosition.UNDEFINED));
-
-        showCaseDialog.show(getActivity(), TAG_SHOWCASE, showcases);
-    }
-
-    private ShowCaseDialog createShowCase() {
-        return new ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                .shadowColorRes(com.tokopedia.coachmark.R.color.shadow)
-                .titleTextColorRes(com.tokopedia.topads.sdk.R.color.white)
-                .textColorRes(com.tokopedia.design.R.color.grey_400)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
-                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .nextStringRes(com.tokopedia.showcase.R.string.next)
-                .prevStringRes(com.tokopedia.showcase.R.string.previous)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
     }
 }

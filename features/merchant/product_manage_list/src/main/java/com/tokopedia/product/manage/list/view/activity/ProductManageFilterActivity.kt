@@ -26,12 +26,12 @@ class ProductManageFilterActivity: BaseSimpleActivity() {
     override fun isShowCloseButton(): Boolean = true
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_filter_product, menu)
+        menuInflater.inflate(com.tokopedia.product.manage.list.R.menu.menu_filter_product, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.reset_menu) {
+        if(item.itemId == com.tokopedia.product.manage.list.R.id.reset_menu) {
             (fragment as ProductManageFilterFragment).onResetFilter()
         }
         return super.onOptionsItemSelected(item)

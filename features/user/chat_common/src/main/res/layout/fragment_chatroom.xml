@@ -119,18 +119,10 @@
                 android:paddingStart="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_12"
                 android:paddingEnd="@dimen/dp_16"
+                android:visibility="gone"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:orientation="horizontal"
                 tools:scrollbars="horizontal" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_quick_reply"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_3"
-                android:layout_marginTop="@dimen/dp_3"
-                android:layout_marginRight="@dimen/dp_3"
-                android:visibility="gone" />
 
             <include layout="@layout/layout_product_preview" />
 

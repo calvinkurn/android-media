@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.data.EventRepositoryData;
 import com.tokopedia.events.data.EventsDataStoreFactory;
+import com.tokopedia.events.data.source.EventErrorResponse;
 import com.tokopedia.events.data.source.EventsApi;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.di.scope.EventScope;
@@ -118,7 +119,7 @@ public class EventModule {
 
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor, @ApplicationContext Context context) {
+                                            @EventQualifier HeaderErrorResponseInterceptor errorResponseInterceptor, @ApplicationContext Context context) {
         UserSession userSession = new UserSession(context);
         return new OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
@@ -268,5 +269,11 @@ public class EventModule {
     @EventScope
     SelectEventDateBottomSheet providesSelectEventDateBottomSheet() {
         return new SelectEventDateBottomSheet();
+    }
+
+    @Provides
+    @EventQualifier
+    HeaderErrorResponseInterceptor provideHeaderErrorResponseInterceptor() {
+        return new HeaderErrorResponseInterceptor(EventErrorResponse.class);
     }
 }

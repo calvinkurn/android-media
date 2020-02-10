@@ -133,15 +133,15 @@ public class SearchTracking {
         );
     }
 
-    public static void eventSearchResultShopItemClick(Object shopItem, String keyword) {
+    public static void eventSearchResultShopItemClick(Object shopItem, String shopId, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - shop",
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
-                                        "promotions", shopItem
+                                        "promotions", DataLayer.listOf(shopItem)
                                 )
                         )
                 )
@@ -179,15 +179,15 @@ public class SearchTracking {
         );
     }
 
-    public static void eventSearchResultShopItemClosedClick(Object shopItemClosed, String keyword) {
+    public static void eventSearchResultShopItemClosedClick(Object shopItemClosed, String shopId, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - shop - inactive",
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
-                                        "promotions", shopItemClosed
+                                        "promotions", DataLayer.listOf(shopItemClosed)
                                 )
                         )
                 )
@@ -336,23 +336,26 @@ public class SearchTracking {
                                            String keyword, String screenName,
                                            Map<String, String> selectedFilter) {
 
-        eventSearchNoResult(keyword, screenName, selectedFilter, "", "");
+        eventSearchNoResult(keyword, screenName, selectedFilter, "", "", "");
     }
 
     public static void eventSearchNoResult(String keyword, String screenName,
                                            Map<String, String> selectedFilter,
                                            String alternativeKeyword,
-                                           String resultCode) {
+                                           String resultCode,
+                                           String keywordProcess) {
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.EVENT_VIEW_SEARCH_RESULT,
                 SearchEventTracking.Category.EVENT_TOP_NAV,
                 String.format(SearchEventTracking.Action.NO_SEARCH_RESULT_WITH_TAB, screenName),
-                String.format("keyword: %s - type: %s - alternative: %s - param: %s",
+                String.format("keyword: %s - type: %s - alternative: %s - param: %s - treatment: %s",
                         keyword,
                         !TextUtils.isEmpty(resultCode) ? resultCode : "none/other",
                         !TextUtils.isEmpty(alternativeKeyword) ? alternativeKeyword : "none/other",
-                        generateFilterEventLabel(selectedFilter))
+                        generateFilterEventLabel(selectedFilter),
+                        !TextUtils.isEmpty(keywordProcess) ? keywordProcess : "none / other"
+                )
         );
     }
 
@@ -586,6 +589,24 @@ public class SearchTracking {
         );
     }
 
+    public static void trackEventImpressionSortPriceMinTicker(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.IMPRESSION_SORT_PRICE_MIN_TICKER,
+                keyword
+        );
+    }
+
+    public static void trackEventClickSortPriceMinTicker(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_SORT_PRICE_MIN_TICKER,
+                keyword
+        );
+    }
+
     public static void trackEventClickGoToBrowserBannedProductsWithResult(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,
@@ -609,21 +630,26 @@ public class SearchTracking {
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
-    public static void trackGTMEventSearchAttempt(String query, boolean hasProductList, Map<String, String> category) {
-        if (category == null) {
-            category = new HashMap<>();
-        }
-
+    public static void trackGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel) {
         Map<String, Object> value = DataLayer.mapOf(
                 EVENT, SearchEventTracking.Event.CLICK_SEARCH,
                 EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
-                EVENT_ACTION, SearchEventTracking.Action.CLICK_SEARCH,
-                EVENT_LABEL, String.format(SearchEventTracking.Label.KEYWORD, query),
-                IS_RESULT_FOUND, hasProductList,
-                CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())),
-                CATEGORY_NAME_MAPPING, new JSONArray(category.values())
+                EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
+                EVENT_LABEL, getGTMEventSearchAttemptLabel(generalSearchTrackingModel),
+                IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound(),
+                CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(generalSearchTrackingModel.getCategory().keySet().toArray())),
+                CATEGORY_NAME_MAPPING, new JSONArray(generalSearchTrackingModel.getCategory().values())
         );
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(value);
+    }
+
+    private static String getGTMEventSearchAttemptLabel(GeneralSearchTrackingModel generalSearchTrackingModel) {
+        return String.format(
+                SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                generalSearchTrackingModel.getKeyword(),
+                generalSearchTrackingModel.getTreatment(),
+                generalSearchTrackingModel.getResponse()
+        );
     }
 }

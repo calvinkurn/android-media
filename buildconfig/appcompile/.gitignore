@@ -2,3 +2,4 @@
 /compile-customerapp-no-op.gradle
 /compile-posapp-no-op.gradle
 /compile-sellerapp-no-op.gradle
+/compile-testapp-plugin.gradle

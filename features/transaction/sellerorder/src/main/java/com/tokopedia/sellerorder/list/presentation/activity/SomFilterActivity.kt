@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
@@ -66,4 +67,9 @@ class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
         DaggerSomListComponent.builder()
                 .somComponent(SomComponentInstance.getSomComponent(application))
                 .build()
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        SomAnalytics.eventClickBackButtonOnFilterPage()
+    }
 }
