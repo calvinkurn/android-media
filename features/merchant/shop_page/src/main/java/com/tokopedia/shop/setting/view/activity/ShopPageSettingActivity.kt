@@ -36,7 +36,8 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSetti
                 .build()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return false
+    override fun onBackPressed() {
+        super.onBackPressed()
+        (fragment as? ShopPageSettingFragment)?.onBackPressed()
     }
 }

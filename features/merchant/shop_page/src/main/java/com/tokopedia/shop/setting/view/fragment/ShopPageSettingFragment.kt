@@ -175,16 +175,12 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
             R.id.action_share ->  {
                 clickShareButton()
             }
-            android.R.id.home -> {
-                clickBackButton()
-            }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun clickBackButton() {
+    fun onBackPressed() {
         shopPageSettingTracking.clickBackArrow(true, customDimensionShopPage)
-        activity?.onBackPressed()
     }
 
     override fun getScreenName(): String? {

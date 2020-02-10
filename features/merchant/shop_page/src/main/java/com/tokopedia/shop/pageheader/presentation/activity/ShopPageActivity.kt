@@ -158,8 +158,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return false
+    override fun onBackPressed() {
+        super.onBackPressed()
+        (fragment as? ShopPageFragment)?.onBackPressed()
     }
 
     private fun openOldShopPage() {

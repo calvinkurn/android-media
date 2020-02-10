@@ -120,16 +120,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             R.id.action_share  ->  {
                 onClickShareShop()
             }
-            android.R.id.home ->{
-                onClickBackButton()
-            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun onClickBackButton() {
-        shopPageTracking.clickBackArrow(false, customDimensionShopPage)
-        activity?.onBackPressed()
     }
 
     override fun onEmptyButtonClicked() {
@@ -489,6 +481,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             initView()
             shouldInitView = false
         }
+    }
+
+    fun onBackPressed() {
+        shopPageTracking.clickBackArrow(false, customDimensionShopPage)
     }
 
     companion object {

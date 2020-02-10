@@ -9,10 +9,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Navigate to ShopInfoActivity
@@ -42,6 +44,11 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return false
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        (fragment as? ShopInfoFragment)?.onBackPressed()
     }
 
     private fun createShopInfoFragment(): ShopInfoFragment {

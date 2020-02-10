@@ -120,7 +120,7 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     private var performanceMonitoring: PerformanceMonitoring? = null
-    var shopPageTracking: ShopPageTrackingBuyer? =  null
+    var shopPageTracking: ShopPageTrackingBuyer? = null
     var titles = listOf<String>()
     var shopId: String? = null
     var shopDomain: String? = null
@@ -460,18 +460,12 @@ class ShopPageFragment :
             R.id.menu_action_settings -> clickSettingButton()
             R.id.menu_action_cart -> redirectToCartPage()
             R.id.menu_action_shop_info -> redirectToShopInfoPage()
-            android.R.id.home -> clickBackArrow()
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun clickSearch() {
         redirectToShopSearchProduct()
-    }
-
-    private fun clickBackArrow() {
-        shopPageTracking?.clickBackArrow(isMyShop, customDimensionShopPage)
-        activity?.onBackPressed()
     }
 
     private fun clickSettingButton() {
@@ -546,6 +540,9 @@ class ShopPageFragment :
         swipeToRefresh.isRefreshing = false
     }
 
+    fun onBackPressed() {
+        shopPageTracking?.clickBackArrow(isMyShop, customDimensionShopPage)
+    }
 
     override fun onPause() {
         super.onPause()
