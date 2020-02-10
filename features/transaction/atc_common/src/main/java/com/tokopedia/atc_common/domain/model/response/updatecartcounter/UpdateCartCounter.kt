@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.data.model.response.updatecartcounter
+package com.tokopedia.atc_common.domain.model.response.updatecartcounter
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

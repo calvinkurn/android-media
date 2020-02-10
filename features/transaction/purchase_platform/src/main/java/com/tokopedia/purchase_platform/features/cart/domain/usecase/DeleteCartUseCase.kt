@@ -1,12 +1,10 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.usecase.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartGqlResponse
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData

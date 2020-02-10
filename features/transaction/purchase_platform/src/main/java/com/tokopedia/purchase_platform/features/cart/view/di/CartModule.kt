@@ -5,7 +5,9 @@ import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -181,6 +183,7 @@ class CartModule {
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
                                   seamlessLoginUsecase: SeamlessLoginUsecase,
+                                  updateCartCounterUseCase: UpdateCartCounterUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
                 updateCartUseCase, checkPromoStackingCodeUseCase, compositeSubscription,
@@ -188,13 +191,14 @@ class CartModule {
                 userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                 getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                updateInsuranceProductDataUsecase, seamlessLoginUsecase, schedulers
+                updateInsuranceProductDataUsecase, seamlessLoginUsecase,
+                updateCartCounterUseCase, schedulers
         )
     }
 
     @Provides
     @CartScope
-    @Named(CartConstant.MUTATION_UPDATE_CART_COUNTER)
+    @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
     }

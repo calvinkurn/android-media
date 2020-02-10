@@ -27,7 +27,7 @@ import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
-import com.tokopedia.purchase_platform.common.usecase.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest

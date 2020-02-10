@@ -12,5 +12,4 @@ object CartConstant {
     const val SCREEN_NAME_CART_NEW_USER = "/user/address/create/cart"
     const val SCREEN_NAME_CART_EXISTING_USER = "/cart/address/create"
     const val CHECKOUT_LEASING_ID = "vehicle_leasing_id"
-    const val MUTATION_UPDATE_CART_COUNTER = "update_cart_counter"
 }
