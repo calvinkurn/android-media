@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.tokopointsUseCase.TokopointsListDataUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -17,8 +16,7 @@ import kotlin.coroutines.CoroutineContext
 
 class TokopointsViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
     private val tokopointsComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private lateinit var tokopointsList: ArrayList<DataItem>
-    private val tokopointsMutableComponentData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val tokopointsList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     @Inject
     lateinit var tokopointsListDataUseCase: TokopointsListDataUseCase
     private val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
@@ -42,23 +40,21 @@ class TokopointsViewModel(val application: Application, components: ComponentsIt
                 .inject(this)
     }
 
-    fun getComponentData() = tokopointsComponentData
-    fun getTokopointsMutableListData() = tokopointsMutableComponentData
+    fun getTokopointsComponentData() = tokopointsComponentData
+    fun getTokopointsItemsListData() = tokopointsList
 
     fun fetchTokopointsListData() {
-        tokopointsList = ArrayList()
         launchCatchError(block = {
-            tokopointsMutableComponentData.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id!!, getQueryParamterMap())
+            tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id!!, getQueryParameterMap())
         }, onError = {
             it.printStackTrace()
         })
     }
 
-    private fun getQueryParamterMap(): MutableMap<String, Any> {
-        val queryParamterMap = mutableMapOf<String, Any>()
-        queryParamterMap[RPC_PAGE_NUMBER_KEY] = pageNumber.toString()
-        queryParamterMap[RPC_PAGE_SIZE] = productPerPage.toString()
-        return queryParamterMap
+    private fun getQueryParameterMap(): MutableMap<String, Any> {
+        val queryParameterMap = mutableMapOf<String, Any>()
+        queryParameterMap[RPC_PAGE_NUMBER_KEY] = pageNumber.toString()
+        queryParameterMap[RPC_PAGE_SIZE] = productPerPage.toString()
+        return queryParameterMap
     }
-
 }

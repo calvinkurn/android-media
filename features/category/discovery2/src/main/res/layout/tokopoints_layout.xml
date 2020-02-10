@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,17 +9,14 @@
         android:id="@+id/tokopoints_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:lineSpacingExtra="6sp"
-        android:textColor="@color/black"
+        android:visibility="gone"
+        android:textSize="@dimen/sp_20"
         app:typographyType="heading_3"
-        tools:text="Kupon Toko Flash" />
+        android:textColor="@color/clr_f531353b"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tokopoints_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:itemCount="2"
-        tools:listitem="@layout/tokopoints_item_layout" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
