@@ -211,8 +211,12 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun checkAccountNumber() {
-        bankSettingAnalytics.eventOnPericsaButtonClick()
-        checkAccountNumberViewModel.checkAccountNumber(bank.bankID, etBankAccountNumber.text.toString())
+        if(::bank.isInitialized) {
+            bankSettingAnalytics.eventOnPericsaButtonClick()
+            checkAccountNumberViewModel.checkAccountNumber(bank.bankID, etBankAccountNumber.text.toString())
+        }else{
+            openBankListForSelection()
+        }
     }
 
     private fun openBankListForSelection() {
