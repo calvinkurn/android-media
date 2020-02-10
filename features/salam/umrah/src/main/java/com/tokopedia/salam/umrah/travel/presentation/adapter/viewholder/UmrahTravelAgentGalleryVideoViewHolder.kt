@@ -40,6 +40,4 @@ class UmrahTravelAgentGalleryVideoViewHolder(view: View, val listener: OnYoutube
     interface OnYoutubeClick {
         fun onPlayYoutube(url: String)
     }
-
-
 }
