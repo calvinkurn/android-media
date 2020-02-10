@@ -13,11 +13,6 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
-
-/**
- * A ViewPager that auto-scrolls, and supports infinite scroll.
- * For infinite Scroll, you may use LoopingPagerAdapter.
- */
 @Suppress("unused")
 @SuppressLint("SyntheticAccessor")
 open class CircularViewPager : FrameLayout, CoroutineScope{
@@ -113,8 +108,9 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
                 if (progress == 0f || progress > 1) return
                 if (scrollState == SCROLL_STATE_DRAGGING) {
                     if (isToTheRight && abs(realPosition - currentPagePosition) == 2 ||
-                            !isToTheRight && realPosition == currentPagePosition) { //If this happens, it means user is fast scrolling where onPageSelected() is not fast enough
-//to catch up with the scroll, thus produce wrong position value.
+                            !isToTheRight && realPosition == currentPagePosition) {
+                        //If this happens, it means user is fast scrolling where onPageSelected() is not fast enough
+                        //to catch up with the scroll, thus produce wrong position value.
                         return
                     }
                 }
@@ -124,8 +120,9 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
                 listener?.onPageScrollStateChanged(state)
                 previousScrollState = scrollState
                 scrollState = state
-                if (state == SCROLL_STATE_IDLE) { // Below are code to achieve infinite scroll.
-//We silently and immediately flip the item to the first / last.
+                if (state == SCROLL_STATE_IDLE) {
+                    // Below are code to achieve infinite scroll.
+                    //We silently and immediately flip the item to the first / last.
                     if (isInfinite) {
                         resumeAutoScroll()
                         if (adapter == null) return
@@ -169,7 +166,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     fun pauseAutoScroll() {
         isAutoScrollResumed = false
         masterJob.cancelChildren()
-    } //Dummy first item is selected. Indicator should be at the first one//Dummy last item is selected. Indicator should be at the last one
+    }
 
     /**
      * A method that helps you integrate a ViewPager Indicator.
@@ -237,7 +234,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
      * This function needs to be called if dataSet has changed,
      * in order to reset current selected item and currentPagePosition and autoPageSelectionLock.
      */
-    fun reset() {
+    private fun reset() {
         currentPagePosition = if (isInfinite) {
             viewPager.setCurrentItem(1, false)
             1
