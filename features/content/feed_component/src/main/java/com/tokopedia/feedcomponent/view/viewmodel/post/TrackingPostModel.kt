@@ -13,7 +13,8 @@ data class TrackingPostModel (
         val redirectUrl: String = "",
         val authorId: String = "",
         val postId: Int = 0,
-        val totalContent: Int = 0
+        val totalContent: Int = 0,
+        val recomId: Int = 0
 ) {
     fun copy(): TrackingPostModel {
         return TrackingPostModel(templateType,

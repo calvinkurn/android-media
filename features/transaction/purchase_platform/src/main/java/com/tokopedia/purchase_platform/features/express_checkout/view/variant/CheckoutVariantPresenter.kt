@@ -1,15 +1,15 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.network.utils.TKPDMapParam
-import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
@@ -22,8 +22,8 @@ import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.
 import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.DoCheckoutExpressUseCase
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.subscriber.*
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductChild
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.FragmentUiModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProductChild
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.android.schedulers.AndroidSchedulers
@@ -36,8 +36,9 @@ import javax.inject.Inject
 
 class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCase: DoAtcExpressUseCase,
                                                    private val doCheckoutExpressUseCase: DoCheckoutExpressUseCase,
-                                                   private val getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
+                                                   private val ratesUseCase: GetRatesUseCase,
                                                    private val addToCartOcsUseCase: AddToCartOcsUseCase,
+                                                   private val stateConverter: RatesResponseStateConverter,
                                                    private val atcDomainModelMapper: AtcDomainModelMapper,
                                                    private val checkoutDomainModelMapper: CheckoutDomainModelMapper,
                                                    private var viewModelMapper: ViewModelMapper,
@@ -50,7 +51,7 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
     override fun detachView() {
         doAtcExpressUseCase.unsubscribe()
-        getCourierRecommendationUseCase.unsubscribe()
+        ratesUseCase.unsubscribe()
         doCheckoutExpressUseCase.unsubscribe()
         addToCartOcsUseCase.unsubscribe()
         super.detachView()
@@ -73,16 +74,22 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
     }
 
     override fun loadShippingRates(price: Long, quantity: Int, selectedServiceId: Int, selectedSpId: Int) {
-        val query = GraphqlHelper.loadRawString(view.getActivityContext()?.resources, R.raw.rates_v3_query)
         val shippingParam = getShippingParam(quantity, price)
 
         val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
+                ?: arrayListOf()
 
         view?.showLoading()
-        getCourierRecommendationUseCase.execute(
-                query, -1, false, false, "", 0, 0, shopShipmentModels, shippingParam,
-                GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
-        )
+
+        val param = RatesParam.Builder(shopShipmentModels, shippingParam).build()
+        ratesUseCase.execute(param)
+                .map { shippingRecommendationData ->
+                    stateConverter.fillState(shippingRecommendationData, shopShipmentModels,
+                            selectedSpId, selectedServiceId)
+                }
+                .subscribe(
+                        GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
+                )
     }
 
     override fun getShippingParam(quantity: Int, price: Long): ShippingParam {
@@ -109,29 +116,29 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
         return shippingParam
     }
 
-    override fun checkoutExpress(fragmentViewModel: FragmentViewModel, trackerAttribution: String?,
+    override fun checkoutExpress(fragmentUiModel: FragmentUiModel, trackerAttribution: String?,
                                  trackerListName: String?) {
         view?.showLoadingDialog()
         view?.generateFingerprintPublicKey()
-        if (fragmentViewModel.getProfileViewModel()?.isStateHasRemovedProfile == false) {
-            doCheckoutExpressUseCase.setParams(fragmentViewModel, getDataCheckoutRequest(fragmentViewModel))
+        if (fragmentUiModel.getProfileViewModel()?.isStateHasRemovedProfile == false) {
+            doCheckoutExpressUseCase.setParams(fragmentUiModel, getDataCheckoutRequest(fragmentUiModel))
             doCheckoutExpressUseCase.execute(RequestParams.create(), DoCheckoutExpressSubscriber(view, this, checkoutDomainModelMapper))
         } else {
-            checkoutOneClickShipment(fragmentViewModel, trackerAttribution, trackerListName)
+            checkoutOneClickShipment(fragmentUiModel, trackerAttribution, trackerListName)
         }
     }
 
-    override fun checkoutOneClickShipment(fragmentViewModel: FragmentViewModel, trackerAttribution: String?,
+    override fun checkoutOneClickShipment(fragmentUiModel: FragmentUiModel, trackerAttribution: String?,
                                           trackerListName: String?) {
         val requestParams = RequestParams.create()
         val addToCartOcsRequestParams = AddToCartOcsRequestParams()
-        addToCartOcsRequestParams.productId = getProductId(fragmentViewModel).toLong()
-        addToCartOcsRequestParams.shopId = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.shopId
+        addToCartOcsRequestParams.productId = getProductId(fragmentUiModel).toLong()
+        addToCartOcsRequestParams.shopId = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.shopId
                 ?: 0
-        addToCartOcsRequestParams.quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                ?: fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity
+        addToCartOcsRequestParams.quantity = fragmentUiModel.getQuantityViewModel()?.orderQuantity
+                ?: fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity
                         ?: 0
-        addToCartOcsRequestParams.notes = fragmentViewModel.getNoteViewModel()?.note ?: ""
+        addToCartOcsRequestParams.notes = fragmentUiModel.getNoteViewModel()?.note ?: ""
         addToCartOcsRequestParams.warehouseId = 0
         addToCartOcsRequestParams.trackerAttribution = trackerAttribution ?: ""
         addToCartOcsRequestParams.trackerListName = trackerListName ?: ""
@@ -145,17 +152,19 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
                 .subscribe(DoOneClickShipmentAtcSubscriber(view, this))
     }
 
-    override fun updateAddress(fragmentViewModel: FragmentViewModel, latitude: String, longitude: String) {
-        val addressModel = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel
+    override fun updateAddress(fragmentUiModel: FragmentUiModel, latitude: String, longitude: String) {
+        val addressModel = fragmentUiModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel
         val requestParamsMap = AuthHelper.generateParamsNetwork(
                 userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam<String, String>())
         requestParamsMap.put(EditAddressParam.ADDRESS_ID, addressModel?.addressId?.toString() ?: "")
         requestParamsMap.put(EditAddressParam.ADDRESS_NAME, addressModel?.addressName ?: "")
         requestParamsMap.put(EditAddressParam.ADDRESS_STREET, addressModel?.addressStreet ?: "")
         requestParamsMap.put(EditAddressParam.POSTAL_CODE, addressModel?.postalCode ?: "")
-        requestParamsMap.put(EditAddressParam.DISTRICT_ID, addressModel?.districtId?.toString() ?: "")
+        requestParamsMap.put(EditAddressParam.DISTRICT_ID, addressModel?.districtId?.toString()
+                ?: "")
         requestParamsMap.put(EditAddressParam.CITY_ID, addressModel?.cityId?.toString() ?: "")
-        requestParamsMap.put(EditAddressParam.PROVINCE_ID, addressModel?.provinceId?.toString() ?: "")
+        requestParamsMap.put(EditAddressParam.PROVINCE_ID, addressModel?.provinceId?.toString()
+                ?: "")
         requestParamsMap.put(EditAddressParam.RECEIVER_NAME, addressModel?.receiverName ?: "")
         requestParamsMap.put(EditAddressParam.RECEIVER_PHONE, addressModel?.phone ?: "")
         requestParamsMap.put(EditAddressParam.LATITUDE, latitude)
@@ -169,10 +178,10 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
                 .subscribe(DoEditAddressSubscriber(view, this, latitude, longitude))
     }
 
-    private fun getProductId(fragmentViewModel: FragmentViewModel): Int {
+    private fun getProductId(fragmentUiModel: FragmentUiModel): Int {
         var productId = 0
-        if (fragmentViewModel.getProductViewModel()?.productChildrenList?.isNotEmpty() == true) {
-            val productChildrenList = fragmentViewModel.getProductViewModel()?.productChildrenList
+        if (fragmentUiModel.getProductViewModel()?.productChildrenList?.isNotEmpty() == true) {
+            val productChildrenList = fragmentUiModel.getProductViewModel()?.productChildrenList
             if (productChildrenList != null) {
                 for (productChild: ProductChild in productChildrenList) {
                     if (productChild.isSelected) {
@@ -182,52 +191,52 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
                 }
             }
         } else {
-            productId = fragmentViewModel.getProductViewModel()?.parentId ?: 0
+            productId = fragmentUiModel.getProductViewModel()?.parentId ?: 0
         }
         return productId
     }
 
-    private fun getDataCheckoutRequest(fragmentViewModel: FragmentViewModel): DataCheckoutRequest {
+    private fun getDataCheckoutRequest(fragmentUiModel: FragmentUiModel): DataCheckoutRequest {
         val dropshipDataCheckoutRequest = DropshipDataCheckoutRequest()
         dropshipDataCheckoutRequest.name = ""
         dropshipDataCheckoutRequest.telpNo = ""
 
         val productDataCheckoutRequest = ProductDataCheckoutRequest()
-        productDataCheckoutRequest.productId = getProductId(fragmentViewModel)
-        productDataCheckoutRequest.productQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                ?: fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity
+        productDataCheckoutRequest.productId = getProductId(fragmentUiModel)
+        productDataCheckoutRequest.productQuantity = fragmentUiModel.getQuantityViewModel()?.orderQuantity
+                ?: fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity
                         ?: 1
-        productDataCheckoutRequest.productNotes = fragmentViewModel.getNoteViewModel()?.note
+        productDataCheckoutRequest.productNotes = fragmentUiModel.getNoteViewModel()?.note
         productDataCheckoutRequest.isPurchaseProtection = false
 
         val shippingInfoCheckoutRequest = ShippingInfoCheckoutRequest()
         shippingInfoCheckoutRequest.ratesId = 0.toString()
-        shippingInfoCheckoutRequest.shippingId = fragmentViewModel.getInsuranceViewModel()?.shippingId
+        shippingInfoCheckoutRequest.shippingId = fragmentUiModel.getInsuranceViewModel()?.shippingId
                 ?: 0
-        shippingInfoCheckoutRequest.spId = fragmentViewModel.getInsuranceViewModel()?.spId ?: 0
+        shippingInfoCheckoutRequest.spId = fragmentUiModel.getInsuranceViewModel()?.spId ?: 0
 
         val shopProductCheckoutRequest = ShopProductCheckoutRequest()
         shopProductCheckoutRequest.isDropship = 0
-        shopProductCheckoutRequest.finsurance = if (fragmentViewModel.getInsuranceViewModel()?.isChecked == true) 1 else 0
-        shopProductCheckoutRequest.isPreorder = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productIsPreorder
+        shopProductCheckoutRequest.finsurance = if (fragmentUiModel.getInsuranceViewModel()?.isChecked == true) 1 else 0
+        shopProductCheckoutRequest.isPreorder = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productIsPreorder
                 ?: 0
-        shopProductCheckoutRequest.shopId = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.shopId
+        shopProductCheckoutRequest.shopId = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.shopId
                 ?: 0
         shopProductCheckoutRequest.dropshipData = dropshipDataCheckoutRequest
         shopProductCheckoutRequest.productData = arrayListOf(productDataCheckoutRequest)
         shopProductCheckoutRequest.shippingInfo = shippingInfoCheckoutRequest
 
         val dataCheckoutRequest = DataCheckoutRequest()
-        dataCheckoutRequest.addressId = fragmentViewModel.getProfileViewModel()?.addressId ?: 0
+        dataCheckoutRequest.addressId = fragmentUiModel.getProfileViewModel()?.addressId ?: 0
         dataCheckoutRequest.shopProducts = arrayListOf(shopProductCheckoutRequest)
 
         return dataCheckoutRequest
     }
 
-    override fun hitOldCheckout(fragmentViewModel: FragmentViewModel) {
+    override fun hitOldCheckout(fragmentUiModel: FragmentUiModel) {
         view?.showLoadingDialog()
         val requestParams = RequestParams.create()
-        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, getOldCheckoutParams(fragmentViewModel))
+        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, getOldCheckoutParams(fragmentUiModel))
         requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, true)
         requestParams.putBoolean(CheckoutUseCase.PARAM_IS_EXPRESS, true)
 
@@ -238,11 +247,11 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
                 .subscribe(DoCheckoutSubscriber(view, this))
     }
 
-    private fun getOldCheckoutParams(fragmentViewModel: FragmentViewModel): CheckoutRequest {
+    private fun getOldCheckoutParams(fragmentUiModel: FragmentUiModel): CheckoutRequest {
         val checkoutRequest = CheckoutRequest.Builder()
                 .isDonation(0)
                 .promoCode("")
-                .data(arrayListOf(getDataCheckoutRequest(fragmentViewModel)))
+                .data(arrayListOf(getDataCheckoutRequest(fragmentUiModel)))
 
         return checkoutRequest.build()
     }

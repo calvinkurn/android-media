@@ -96,6 +96,7 @@ import javax.inject.Inject;
 import static com.tokopedia.applink.DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
 
 /**
  * Created by meta on 19/06/18.
@@ -178,10 +179,18 @@ public class MainParentActivity extends BaseActivity implements
         return intent;
     }
 
-    @DeepLink({ApplinkConst.HOME_ACCOUNT})
+    @DeepLink(ApplinkConst.HOME_ACCOUNT)
     public static Intent getApplinkAccountIntent(Context context, Bundle bundle) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
+        return intent;
+    }
+
+    @DeepLink(ApplinkConst.HOME_ACCOUNT_SELLER)
+    public static Intent getApplinkAccountSellerIntent(Context context) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
+        intent.putExtra(GlobalNavConstant.ACCOUNT_TAB, GlobalNavConstant.ACCOUNT_TAB_SELLER);
         return intent;
     }
 
@@ -230,11 +239,11 @@ public class MainParentActivity extends BaseActivity implements
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
 
-        initCategoryConfig();
-    }
-
-    private void initCategoryConfig() {
-        ((GlobalNavRouter) getApplicationContext()).setCategoryAbTestingConfig();
+        if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
+            new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
+        }
     }
 
     @Override
@@ -561,6 +570,8 @@ public class MainParentActivity extends BaseActivity implements
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
+
+        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
     }
 
     @Override
@@ -602,7 +613,7 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
             Fragment cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
             fragmentList.add(cartFragment);
-            fragmentList.add(AccountHomeFragment.newInstance());
+            fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         }
         return fragmentList;
     }
@@ -951,7 +962,7 @@ public class MainParentActivity extends BaseActivity implements
                         if (!userSession.hasShop()) {
                             shopIntent = RouteManager.getIntent(getContext(), OPEN_SHOP);
                         } else {
-                            shopIntent = ((GlobalNavRouter) getApplication()).getShopPageIntent(this, shopID);
+                            shopIntent = RouteManager.getIntent(getContext(), SHOP_PAGE, shopID);
                         }
 
                         shopIntent.setAction(Intent.ACTION_VIEW);

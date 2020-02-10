@@ -44,6 +44,17 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         }
     }
 
+    override fun setupToolbar() {
+        super.setupToolbar()
+        decreaseToolbarElevation()
+    }
+
+    private fun decreaseToolbarElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 0f
+        }
+    }
+
     companion object {
 
         public val REQUEST_CODE_CHAT_IMAGE = 2325

@@ -27,12 +27,6 @@ public interface AbstractionRouter {
 
     void refreshToken() throws IOException;
 
-    void init();
-
-    void registerShake(String screenName,Activity activity);
-
-    void unregisterShake();
-
     /**
      * Use PersistentCacheManager library
      * @return
@@ -43,6 +37,4 @@ public interface AbstractionRouter {
     void logInvalidGrant(Response response);
 
     boolean isAllowLogOnChuckInterceptorNotification();
-
-    void onActivityDestroyed(String screenName, Activity baseActivity);
 }

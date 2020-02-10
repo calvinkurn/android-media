@@ -14,6 +14,8 @@ object ApplinkConstInternalPromo {
     const val PROMO_LIST_FLIGHT = "${INTERNAL_PROMO}/list/flight"
     const val PROMO_DETAIL_FLIGHT = "${INTERNAL_PROMO}/detail/flight"
 
+    const val PROMO_CAMPAIGN_SHAKE_LANDING = "${INTERNAL_PROMO}/campaign-shake-landing/{is_long_shake}/"
+
     /**
      * PromoCheckoutListHotelActivity
      * PromoCheckoutDetailHotelActivity
@@ -34,4 +36,11 @@ object ApplinkConstInternalPromo {
     const val TOKOPOINTS_COUPON = "${INTERNAL_TOKOPOINTS}/kupon-saya"
     const val TOKOPOINTS_CATALOG_DETAIL = "${INTERNAL_TOKOPOINTS}/tukar-detail/{catalog_code}"
     const val TOKOPOINTS_CATALOG_LISTING = "${INTERNAL_TOKOPOINTS}/tukar-point/{slug_category}/{slug_sub_category}"
+
+    /**
+     * This const used to redirect to PromoCheckoutListUmrahActivity
+     * This const used to redirect to PromoCheckoutDetailUmrahActivity
+     */
+    const val PROMO_LIST_UMROH = "$INTERNAL_PROMO/list/umroh"
+    const val PROMO_DETAIL_UMROH = "$INTERNAL_PROMO/detail/umroh"
 }

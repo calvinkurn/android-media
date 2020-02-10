@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.product_card_layout_v2_small_grid.view.*
 
 /**
  * ProductCardView with Small Grid layout.
@@ -21,6 +22,10 @@ class ProductCardViewSmallGrid: ProductCardView {
 
     private var imageShop: ImageView? = null
     private var textViewAddToCart: Typography? = null
+    private var labelSoldOut: Label? = null
+    private var layoutEmptyStock: View? = null
+    private var labelPreOrder: Label? = null
+    private var labelWholesale: Label? = null
 
     /**
      * View components of a Skeleton ProductCardView
@@ -88,6 +93,34 @@ class ProductCardViewSmallGrid: ProductCardView {
         skeleton_labelCredibility = inflatedView.findViewById(R.id.skeleton_labelCredibility)
         skeleton_imageFreeOngkirPromo = inflatedView.findViewById(R.id.skeleton_imageFreeOngkirPromo)
         skeleton_labelOffers = inflatedView.findViewById(R.id.skeleton_labelOffers)
+        labelSoldOut = inflatedView.findViewById(R.id.labelEmptyStock)
+        layoutEmptyStock = inflatedView.findViewById(R.id.layout_empty_stock)
+        labelPreOrder= inflatedView.findViewById(R.id.label_pre_order)
+        labelWholesale= inflatedView.findViewById(R.id.label_wholesale)
+    }
+
+    override fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig) {
+        super.setProductModel(productCardModel, blankSpaceConfig)
+        initLabelSoldOut(productCardModel.isProductSoldOut)
+        initLabelPreOrder(productCardModel.isProductPreOrder)
+        initLabelWholesale(productCardModel.isProductWholesale)
+    }
+
+    private fun initLabelWholesale(productWholesale: Boolean) {
+        labelWholesale?.visibility = if (productWholesale) View.VISIBLE else View.GONE
+    }
+
+    private fun initLabelPreOrder(productPreOrder: Boolean) {
+        labelPreOrder?.visibility = if (productPreOrder) View.VISIBLE else View.GONE
+    }
+
+    private fun initLabelSoldOut(productSoldOut: Boolean) {
+        val drawable =  MethodChecker.getDrawable(context, R.drawable.sold_out_label_bg)
+        drawable?.let{
+            labelSoldOut?.background = it
+        }
+        labelSoldOut?.visibility = if (productSoldOut) View.VISIBLE else View.GONE
+        layoutEmptyStock?.visibility = if (productSoldOut) View.VISIBLE else View.GONE
     }
 
     fun setImageShopVisible(isVisible: Boolean) {
@@ -259,7 +292,7 @@ class ProductCardViewSmallGrid: ProductCardView {
         initFreeOngkir(productCardModel.freeOngkir)
         initTopAdsIcon(productCardModel.isTopAds)
 
-//        realignLayout()
+        realignLayout()
     }
 
     internal fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
@@ -269,5 +302,17 @@ class ProductCardViewSmallGrid: ProductCardView {
         else {
             View.GONE
         }
+    }
+
+    fun setFreeOngkirInvisible(isInvisible: Boolean){
+        imageFreeOngkirPromo?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
+    fun setLabelPreOrderInvisible(isInvisible: Boolean){
+        label_pre_order?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
+    fun setlabelDiscountInvisible(isInvisible: Boolean) {
+        labelDiscount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
     }
 }

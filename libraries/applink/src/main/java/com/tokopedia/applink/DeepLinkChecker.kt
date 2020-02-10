@@ -58,6 +58,7 @@ object DeepLinkChecker {
     const val PROMO_LIST = 34
     const val PRODUCT_REVIEW = 35
     const val DEALS = 36
+    const val TRAVEL_HOMEPAGE = 37
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -69,12 +70,12 @@ object DeepLinkChecker {
         }
         var host = uriData.host ?: return false
         var path = uriData.path ?: return false
-        host = host.replaceFirstWww()
+        host = host.replaceFirstWww().replaceFirstM()
         path = path.replaceLastSlash()
         val uriWithoutParam = "$host$path"
         val excludedHostList = excludedHost.split(",".toRegex())
                 .filter { it.isNotEmpty() }
-                .map { it.replaceFirstWww().replaceLastSlash() }
+                .map { it.replaceFirstWww().replaceFirstM().replaceLastSlash() }
         for (excludedString in excludedHostList) {
             if (uriWithoutParam.startsWith(excludedString)) {
                 return true
@@ -105,6 +106,13 @@ object DeepLinkChecker {
     private fun String.replaceFirstWww(): String {
         if (startsWith("www.")) {
             return replaceFirst("www.", "")
+        }
+        return this
+    }
+
+    private fun String.replaceFirstM(): String {
+        if (startsWith("m.")) {
+            return replaceFirst("m.", "")
         }
         return this
     }
@@ -229,9 +237,6 @@ object DeepLinkChecker {
         val intent: Intent
         if (departmentId.isNullOrEmpty()) {
             intent = RouteManager.getIntent(context, constructSearchApplink(uriData))
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtras(bundle)
         } else {
             intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)

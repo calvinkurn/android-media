@@ -298,7 +298,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         if (lat == 0.0 && long == 0.0) {
             currentLat = DEFAULT_LAT
             currentLong = DEFAULT_LONG
-            zoomLevel = 5f
         } else {
             currentLat = lat
             currentLong = long
