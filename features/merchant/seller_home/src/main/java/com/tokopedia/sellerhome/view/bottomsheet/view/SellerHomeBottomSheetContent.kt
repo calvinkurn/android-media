@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.util.getResDrawable
 import com.tokopedia.sellerhome.view.bottomsheet.adapter.BottomSheetAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.model.BaseBottomSheetUiModel
 import com.tokopedia.sellerhome.view.bottomsheet.model.BottomSheetContentUiModel
@@ -17,8 +17,7 @@ import kotlinx.android.synthetic.main.sah_bottom_sheet_content.view.*
 
 class SellerHomeBottomSheetContent : LinearLayout {
 
-    private var tooltip: TooltipUiModel? = null
-    private lateinit var adapter: BaseListAdapter<BaseBottomSheetUiModel, BottomSheetAdapterTypeFactory>
+    private var adapter: BaseListAdapter<BaseBottomSheetUiModel, BottomSheetAdapterTypeFactory>? = null
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -35,35 +34,33 @@ class SellerHomeBottomSheetContent : LinearLayout {
     private fun initView(context: Context) {
         View.inflate(context, R.layout.sah_bottom_sheet_content, this)
 
-        adapter = BaseListAdapter(BottomSheetAdapterTypeFactory())
+        if (null == adapter)
+            adapter = BaseListAdapter(BottomSheetAdapterTypeFactory())
 
-        rv_bottom_sheet_content.apply {
+        rvBottomSheetContent.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@SellerHomeBottomSheetContent.adapter
-            val divider = ContextCompat.getDrawable(context, R.drawable.sah_tooltip_item_divider)
-            divider?.apply {
-                addItemDecoration(SellerHomeTooltipItemDivider(this))
-            }
+            val divider = context.getResDrawable(R.drawable.sah_tooltip_item_divider)
+            addItemDecoration(SellerHomeTooltipItemDivider(divider ?: return))
         }
     }
 
     fun setTooltipData(tooltip: TooltipUiModel) {
-        this.tooltip = tooltip
         with(tooltip) {
-            val items = mutableListOf<BaseBottomSheetUiModel>()
+
+            adapter?.data?.clear()
 
             if (content.isNotEmpty()) {
-                items.add(BottomSheetContentUiModel(content))
+                adapter?.data?.add(BottomSheetContentUiModel(content))
             }
 
             if (!list.isNullOrEmpty()) {
-                items.addAll(list.map { item -> BottomSheetListItemUiModel(item.title, item.description) })
+                adapter?.data?.addAll(list.map { item -> BottomSheetListItemUiModel(item.title, item.description) })
             }
+        }
 
-            adapter.data.clear()
-            adapter.data.addAll(items)
-
-            adapter.notifyDataSetChanged()
+        rvBottomSheetContent.post {
+            adapter?.notifyDataSetChanged()
         }
     }
 }

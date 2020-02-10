@@ -141,7 +141,7 @@
             app:srcCompat="@drawable/ic_arrow_right_default" />
 
         <include
-            layout="@layout/sah_partial_line_graph_widget_error"
+            layout="@layout/sah_partial_common_widget_state_error"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

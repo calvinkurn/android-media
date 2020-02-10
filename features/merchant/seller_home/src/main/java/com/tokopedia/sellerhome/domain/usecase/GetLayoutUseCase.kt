@@ -27,12 +27,10 @@ class GetLayoutUseCase(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
+        //return DummyLayout.getDummyData(mapper)
+
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
         val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
-
-       /* val response: GetLayoutResponse = Gson().fromJson(DummyLayout.JSON, GetLayoutResponse::class.java)
-
-        return mapper.mapRemoteModelToUiModel(response.layout?.widget.orEmpty())*/
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {

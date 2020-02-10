@@ -22,11 +22,3 @@ class CarouselWidgetUiModel(
         return typeFactory.type(this)
     }
 }
-
-enum class CarouselState {
-    LOADING,
-    NORMAL,
-    ERROR,
-    IMPERFECT_WITHOUT_SEE_ALL,
-    IMPERFECT_WITHOUT_BOTTOM_ITEM
-}
