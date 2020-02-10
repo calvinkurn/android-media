@@ -148,4 +148,23 @@ internal val productCardModelGridTestData = mutableListOf<ProductCardModel>().al
                 textGroups.add(TextGroup(position = TEXT_CREDIBILITY, title = "Terjual 122", type = BODY_3, weight = BOLD, color = "#ae31353b"))
             }
     ))
+
+    it.add(8, ProductCardModel(
+            productName = veryLongProductName,
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingString = "4.5",
+            reviewCount = 60,
+            hasOptions = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
+            },
+            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
+                textGroups.add(TextGroup(position = TEXT_SHIPPING, title = "Ongkir Rp11 rb", type = BODY_3, color = "#7031353b"))
+            }
+    ))
 }

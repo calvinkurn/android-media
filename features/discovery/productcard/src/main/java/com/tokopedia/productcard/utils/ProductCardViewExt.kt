@@ -134,7 +134,7 @@ internal fun String?.toUnifyLabelType(): Int {
     }
 }
 
-internal fun Label.init(labelGroup: ProductCardModel.LabelGroup?) {
+internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) hide()
     else showLabel(labelGroup)
 }
@@ -170,7 +170,7 @@ internal fun String?.toUnifyTypographyWeight(): Int {
     }
 }
 
-internal fun Typography.init(textGroup: ProductCardModel.TextGroup?) {
+internal fun Typography.initTextGroup(textGroup: ProductCardModel.TextGroup?) {
     if (textGroup == null) hide()
     else showTypography(textGroup)
 }

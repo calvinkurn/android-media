@@ -2,20 +2,21 @@ package com.tokopedia.productcard.v3
 
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.productcard.utils.init
+import com.tokopedia.productcard.utils.initLabelGroup
+import com.tokopedia.productcard.utils.initTextGroup
 import com.tokopedia.productcard.utils.loadIcon
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
-    textViewGimmick?.init(productCardModel.getTextGimmick())
+    textViewGimmick?.initTextGroup(productCardModel.getTextGimmick())
 
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
         it.text = productCardModel.productName
     }
 
-    labelPrice?.init(productCardModel.getLabelPrice())
+    labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         it.text = "${productCardModel.discountPercentage}%"
@@ -46,9 +47,11 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
         it.text = "(${productCardModel.reviewCount})"
     }
 
-    textViewCredibility?.init(productCardModel.getTextCredibility())
+    textViewCredibility?.initTextGroup(productCardModel.getTextCredibility())
 
     imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.freeOngkir.isActive) {
         it.loadIcon(productCardModel.freeOngkir.imageUrl)
     }
+
+    textViewShipping?.initTextGroup(productCardModel.getTextShipping())
 }

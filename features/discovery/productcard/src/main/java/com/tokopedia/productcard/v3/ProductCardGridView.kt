@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.utils.init
+import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -32,7 +32,7 @@ class ProductCardGridView: BaseCustomView {
     fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-        labelProductStatus?.init(productCardModel.getLabelProductStatus())
+        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 

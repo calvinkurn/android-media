@@ -1,7 +1,5 @@
 package com.tokopedia.productcard.test
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
@@ -10,26 +8,17 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.productcard.test.ProductCardActivityTest.ViewHolder
 import org.hamcrest.Matcher
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
 
 
 internal class ProductCardTest {
 
-    private val screenshotWatcher = ScreenshotWatcher()
-    private val grantPermissionRule = GrantPermissionRule.grant(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)
-    private val activityTestRule = ActivityTestRule<ProductCardActivityTest>(ProductCardActivityTest::class.java)
-
     @Rule
     @JvmField
-    val ruleChain: RuleChain =
-            RuleChain.outerRule(screenshotWatcher)
-            .around(grantPermissionRule)
-            .around(activityTestRule)
+    val activityTestRule = ActivityTestRule<ProductCardActivityTest>(ProductCardActivityTest::class.java)
 
     @Test
     fun testProductCardGrid() {
@@ -42,6 +31,7 @@ internal class ProductCardTest {
                 .checkProductCardAtPosition(5, getProductCardMatchersPosition5())
                 .checkProductCardAtPosition(6, getProductCardMatchersPosition6())
                 .checkProductCardAtPosition(7, getProductCardMatchersPosition7())
+                .checkProductCardAtPosition(8, getProductCardMatchersPosition8())
     }
 
     private fun ViewInteraction.checkProductCardAtPosition(position: Int, elementMatchers: Map<Int, Matcher<View?>>): ViewInteraction {
@@ -213,6 +203,29 @@ internal class ProductCardTest {
             it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
             it[R.id.textViewCredibility] = isDisplayedWithText(textCredibility.title)
             it[R.id.imageFreeOngkirPromo] = isDisplayed()
+            it[R.id.imageThreeDots] = isDisplayed()
+        }
+    }
+
+    private fun getProductCardMatchersPosition8(): Map<Int, Matcher<View?>> {
+        val position = 8
+        val productCardModel = productCardModelGridTestData[position]
+
+        val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
+
+        val textShipping = productCardModel.getTextShipping() ?: throw Exception("Product Card Position $position has no text shipping")
+
+        return mutableMapOf<Int, Matcher<View?>>().also {
+            it[R.id.imageProduct] = isDisplayed()
+            it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+            it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+            it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+            it[R.id.imageShopBadge] = isDisplayed()
+            it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+            it[R.id.imageRatingString] = isDisplayed()
+            it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+            it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+            it[R.id.textViewShipping] = isDisplayedWithText(textShipping.title)
             it[R.id.imageThreeDots] = isDisplayed()
         }
     }
