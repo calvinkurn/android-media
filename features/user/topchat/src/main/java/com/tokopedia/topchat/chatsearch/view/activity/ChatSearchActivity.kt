@@ -37,9 +37,8 @@ class ChatSearchActivity : BaseSimpleActivity(),
         fun onSearchQueryChanged(query: String)
     }
 
-    override fun getNewFragment(): Fragment {
-        return ChatSearchFragment.createFragment()
-    }
+    override fun getNewFragment() = ChatSearchFragment.createFragment()
+    override fun getParentViewResourceID() = R.id.parent_view
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
