@@ -141,7 +141,7 @@ class LogManager(val application: Application) : CoroutineScope {
         }
 
         suspend fun getCount(): Int {
-            if(::loggerRepository.isInitialized) {
+            if(!::loggerRepository.isInitialized) {
                 return 0
             }
             return loggerRepository.getCount()
