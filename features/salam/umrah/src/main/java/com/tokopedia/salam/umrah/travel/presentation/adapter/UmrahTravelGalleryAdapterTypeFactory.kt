@@ -14,7 +14,8 @@ import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTra
 
 class UmrahTravelGalleryAdapterTypeFactory (private val callback: BaseEmptyViewHolder.Callback,
                                             private val listenerThreeImage: UmrahTravelAgentGalleryThreeImageViewHolder.SetOnClickListener,
-                                            private val listenerOneImage: UmrahTravelAgentGalleryOneImageViewHolder.SetOnClickListener):
+                                            private val listenerOneImage: UmrahTravelAgentGalleryOneImageViewHolder.SetOnClickListener,
+                                            private val listenerYoutube: UmrahTravelAgentGalleryVideoViewHolder.OnYoutubeClick):
         BaseAdapterTypeFactory(){
 
     fun type(type:String, size:Int) : Int {
@@ -30,7 +31,7 @@ class UmrahTravelGalleryAdapterTypeFactory (private val callback: BaseEmptyViewH
             when(type){
                 UmrahTravelAgentGalleryOneImageViewHolder.LAYOUT -> UmrahTravelAgentGalleryOneImageViewHolder(parent, listenerOneImage)
                 UmrahTravelAgentGalleryThreeImageViewHolder.LAYOUT -> UmrahTravelAgentGalleryThreeImageViewHolder(parent, listenerThreeImage)
-                UmrahTravelAgentGalleryVideoViewHolder.LAYOUT -> UmrahTravelAgentGalleryVideoViewHolder(parent)
+                UmrahTravelAgentGalleryVideoViewHolder.LAYOUT -> UmrahTravelAgentGalleryVideoViewHolder(parent,listenerYoutube)
                 UmrahTravelAgentGalleryLoadingViewHolder.LAYOUT -> UmrahTravelAgentGalleryLoadingViewHolder(parent)
                 EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
                 else -> super.createViewHolder(parent, type)

@@ -275,6 +275,7 @@
 </string>
     <string name="umrah_travel_empty_gallery_sub_title">Kamu tetap bisa cek informasi tentang penyelenggara umroh ini di menu Info.</string>
     <string name="umrah_travel_gallery_next_images">+%s</string>
+    <string name="UMRAH_GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
 
 
 </resources>

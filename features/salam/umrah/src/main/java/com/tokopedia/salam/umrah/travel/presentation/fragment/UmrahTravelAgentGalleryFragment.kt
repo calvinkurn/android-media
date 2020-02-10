@@ -1,11 +1,15 @@
 package com.tokopedia.salam.umrah.travel.presentation.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.google.android.youtube.player.YouTubeApiServiceUtil
+import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -21,9 +25,11 @@ import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesInput
 import com.tokopedia.salam.umrah.travel.data.UmrahGallery
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleryImageMapper
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
+import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahYoutubePlayerActivity
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelGalleryAdapterTypeFactory
 import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTravelAgentGalleryOneImageViewHolder
 import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTravelAgentGalleryThreeImageViewHolder
+import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTravelAgentGalleryVideoViewHolder
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragment.Companion.EXTRA_SLUGNAME
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelGalleryViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,7 +39,8 @@ import javax.inject.Inject
 class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTravelGalleryAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback,
         UmrahTravelAgentGalleryThreeImageViewHolder.SetOnClickListener,
-        UmrahTravelAgentGalleryOneImageViewHolder.SetOnClickListener {
+        UmrahTravelAgentGalleryOneImageViewHolder.SetOnClickListener,
+        UmrahTravelAgentGalleryVideoViewHolder.OnYoutubeClick {
 
     @Inject
     lateinit var umrahTravelGalleryViewModel: UmrahTravelGalleryViewModel
@@ -56,7 +63,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun getAdapterTypeFactory(): UmrahTravelGalleryAdapterTypeFactory = UmrahTravelGalleryAdapterTypeFactory(this, this,this)
+    override fun getAdapterTypeFactory(): UmrahTravelGalleryAdapterTypeFactory = UmrahTravelGalleryAdapterTypeFactory(this, this, this, this)
 
     override fun loadData(page: Int) {
         requestData(page)
@@ -97,6 +104,18 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
 
             }
         })
+    }
+
+    override fun onPlayYoutube(url: String) {
+        context?.let {
+            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(view?.context?.applicationContext)
+                    == YouTubeInitializationResult.SUCCESS) {
+                it.startActivity(UmrahYoutubePlayerActivity.createIntent(it, url))
+            } else {
+                it.startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://www.youtube.com/watch?v=" + url)))
+            }
+        }
     }
 
     private fun onSuccessGetResult(data: List<UmrahGallery>) {
