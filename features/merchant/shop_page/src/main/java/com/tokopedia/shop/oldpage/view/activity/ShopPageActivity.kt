@@ -41,13 +41,12 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
@@ -62,7 +61,6 @@ import com.tokopedia.shop.oldpage.di.module.OldShopPageModule
 import com.tokopedia.shop.oldpage.view.ShopPageViewModel
 import com.tokopedia.shop.oldpage.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.oldpage.view.holder.ShopPageHeaderViewHolder
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -94,7 +92,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var shopViewModel: ShopPageViewModel
 
-    lateinit var shopPageTracking: ShopPageTrackingBuyer
+    lateinit var shopPageTracking: OldShopPageTrackingBuyer
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
@@ -169,7 +167,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         remoteConfig = FirebaseRemoteConfigImpl(this)
         cartLocalCacheHandler = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-        shopPageTracking = ShopPageTrackingBuyer(
+        shopPageTracking = OldShopPageTrackingBuyer(
                 TrackingQueue(this))
 
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
