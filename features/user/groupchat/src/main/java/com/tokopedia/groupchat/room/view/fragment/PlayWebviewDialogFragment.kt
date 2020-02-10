@@ -309,7 +309,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 val intent = RouteManager.getIntent(this, requestUrl)
                 startActivityForResult(intent, REQUEST_CODE_LOGIN)
                 return true
-            } else if (RouteManager.isSupportApplink(this, requestUrl)) {
+            } else if (!URLUtil.isNetworkUrl(requestUrl) && RouteManager.isSupportApplink(this, requestUrl)) {
                 RouteManager.route(this, requestUrl)
                 return true
             } else {

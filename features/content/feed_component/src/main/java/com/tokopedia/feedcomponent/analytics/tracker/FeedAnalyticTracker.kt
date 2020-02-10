@@ -63,6 +63,7 @@ class FeedAnalyticTracker
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
 
         const val CONTENT_DETAIL = "$USER_PROFILE_SOCIALCOMMERCE - content detail"
+        const val MY_CONTENT_DETAIL = "$MY_PROFILE_SOCIALCOMMERCE - content detail"
 
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
         const val CONTENT_HASHTAG = "content hashtag"
@@ -72,6 +73,7 @@ class FeedAnalyticTracker
     }
 
     private object Action {
+        const val CLICK = "click"
         const val CLICK_BUY = "click beli"
         const val CLICK_SEE = "click lihat"
         const val CLICK_MEDIA = "click media"
@@ -90,6 +92,8 @@ class FeedAnalyticTracker
         const val CLICK_UNFOLLOW = "click unfollow"
         const val CLICK_FOLLOW_ALL = "click follow semua"
         const val CLICK_FEED_PRODUCT_DETAIL = "click - shop"
+        const val CLICK_CONTENT_DETAIL_SHOP = "click - shop"
+        const val CLICK_CONTENT_DETAIL_AFFILIATE = "click - user"
 
         const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
         const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
@@ -98,8 +102,8 @@ class FeedAnalyticTracker
 
         const val PARAM_ACTION_LOGIN = "login"
         const val PARAM_ACTION_NONLOGIN = "nonlogin"
-        const val ACTION_FEED_RECOM_USER = "click - %s - recommendation - %s"
-        const val ACTION_CLICK_FEED_AVATAR = "click - %s - %s - %s"
+        const val ACTION_FEED_RECOM_USER = "avatar - %s recommendation - %s"
+        const val ACTION_CLICK_FEED_AVATAR = "click avatar - %s - %s - %s"
         const val ACTION_CLICK_MEDIAPREVIEW_AVATAR = "click - %s - media preview - %s"
         const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
         const val FORMAT_TWO_PARAM = "%s - %s"
@@ -136,6 +140,10 @@ class FeedAnalyticTracker
         const val NAME = "name"
         const val CREATIVE = "creative"
         const val POSITION = "position"
+        const val CREATIVE_URL = "creative_url"
+        const val CATEGORY = "category"
+        const val PROMO_ID = "promo_id"
+        const val PROMO_CODE = "promo_code"
     }
 
     private object Product {
@@ -167,6 +175,28 @@ class FeedAnalyticTracker
         const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
     }
 
+    //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
+    //    screenshot 47
+    fun eventContentDetailClickShopNameAvatar(activityId: String, shopId: String) {
+        trackGeneralEvent(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (shopId.equals(userSessionInterface.shopId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
+                Action.CLICK_CONTENT_DETAIL_SHOP,
+                String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
+    //    screenshot 47
+    fun eventContentDetailClickAffiliateNameAvatar(activityId: String, userId: String) {
+        trackGeneralEvent(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (userId.equals(userSessionInterface.userId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
+                Action.CLICK_CONTENT_DETAIL_AFFILIATE,
+                String.format(Action.FORMAT_TWO_PARAM, userId, activityId)
+        )
+    }
+
 
     //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
     //    screenshot 21
@@ -174,9 +204,8 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_FEED,
                 Category.CATEGORY_FEED_TIMELINE,
-                String.format(Action.ACTION_FEED_RECOM_USER, targetType,
-                        if (userSessionInterface.isLoggedIn()) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN),
-                targetId
+                Action.CLICK,
+                String.format(Action.ACTION_FEED_RECOM_USER, targetType, targetId)
         )
     }
 
@@ -669,6 +698,38 @@ class FeedAnalyticTracker
 
     /**
      *
+     * docs: https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
+     * Screenshot xx (not included)
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     */
+    fun eventShopPageClickPost(activityId: String, activityName: String, mediaType: String, imageUrl: String, rowNumber: Int) {
+        eventClickReadMore(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_SHOP_PAGE,
+                activityId,
+                activityName,
+                mediaType
+        )
+        trackEnhancedEcommerceEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_SHOP_PAGE,
+                Action.CLICK,
+                String.format("post - %s - %s - %s", activityName, activityId, mediaType),
+                getPromoClickData(getPromotionsData(
+                        listOf(getPromotionData(
+                                activityId,
+                                String.format("/feed shop page - %s - %s", activityName, mediaType),
+                                imageUrl,
+                                rowNumber))
+                ))
+                )
+    }
+
+    /**
+     *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      * Screenshot 4
      *
@@ -1009,13 +1070,20 @@ class FeedAnalyticTracker
             id: String,
             name: String,
             creative: String,
-            position: Int
+            position: Int,
+            creativeUrl: String = "",
+            category: String = "",
+            promoId: String = "",
+            promoCode: String = ""
     ): Map<String, Any> = DataLayer.mapOf(
             Promotion.ID, id,
             Promotion.NAME, name,
             Promotion.CREATIVE, creative,
-            Promotion.POSITION, position
-    )
+            Promotion.POSITION, position,
+            Promotion.CREATIVE_URL, creativeUrl,
+            Promotion.CATEGORY, category,
+            Promotion.PROMO_ID, promoId,
+            Promotion.PROMO_CODE, promoCode)
 
     private fun getAddData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.ADD, data)
 

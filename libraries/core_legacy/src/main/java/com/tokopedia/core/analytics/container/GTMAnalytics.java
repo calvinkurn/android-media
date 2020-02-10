@@ -14,6 +14,7 @@ import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.analytics.debugger.AnalyticsLogger;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -50,6 +51,10 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 150; // 150 minutes (2.5 hours)
     private static final String KEY_GTM_EXPIRED_TIME = "android_gtm_expired_time";
+
+    private static final String EMPTY_DEFAULT_VALUE = "none / other";
+
+    private static final String KEY_DIMENSION_40 = "dimension40";
 
     private static final String KEY_EVENT = "event";
     private static final String KEY_CATEGORY = "eventCategory";
@@ -112,8 +117,9 @@ public class GTMAnalytics extends ContextAnalytics {
                 return;
             pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
         } catch (Exception e) {
+            GtmLogger.getInstance(context).saveError(stacktrace.toString());
             if (e != null && !TextUtils.isEmpty(e.getMessage())) {
-                Timber.e("P2[GTMAnalytic Error]%s %s", e.getMessage(), stacktrace.toString());
+                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
             }
         }
     }
@@ -509,7 +515,7 @@ public class GTMAnalytics extends ContextAnalytics {
         private static final String KEY_BRAND = "brand";
         private static final String KEY_CAT = "category";
         private static final String KEY_VARIANT = "variant";
-        private static final String KEY_POSITION = "quantity";
+        private static final String KEY_POSITION = "position";
         private static final String KEY_LIST = "list";
     }
 
@@ -533,12 +539,30 @@ public class GTMAnalytics extends ContextAnalytics {
         String position = bruteForceCastToString(value.remove(ProductKey.KEY_POSITION));
         String list = bruteForceCastToString(value.remove(ProductKey.KEY_LIST));
 
+        if (TextUtils.isEmpty(brand)) {
+            brand = EMPTY_DEFAULT_VALUE;
+        }
+
+        if (TextUtils.isEmpty(category)) {
+            category = EMPTY_DEFAULT_VALUE;
+        }
+
+        if (TextUtils.isEmpty(variant)) {
+
+            variant = (String) value.remove("varian"); // tolerate typo from developers
+
+            if (TextUtils.isEmpty(variant)) {
+                variant = EMPTY_DEFAULT_VALUE;
+            }
+        }
+
         Bundle product1 = new Bundle();
         product1.putString(FirebaseAnalytics.Param.ITEM_ID, id);                    // dimension69 (Product_ID), mandatory
         product1.putString(FirebaseAnalytics.Param.ITEM_NAME, name);   // Product Name, mandatory
         product1.putString(FirebaseAnalytics.Param.ITEM_BRAND, brand);        // if not applicable pass “none / other”, in the future, need brand name and also ID, optional
         product1.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, category);      // Product category {{level1_name}} / {{level2_name}} / {{level3_name}} / {{childCatID}}
         product1.putString(FirebaseAnalytics.Param.ITEM_VARIANT, variant);              // If not applicable pass “none / other”, optional
+        product1.putString(KEY_DIMENSION_40, list);              // Using customDimension for substituting list that cannot be sent multiple in v5
 
         product1.putDouble(FirebaseAnalytics.Param.PRICE, Double.valueOf(PriceUtil.from(price)));
         if (position != null && !TextUtils.isEmpty(position)) {
@@ -828,9 +852,18 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle = new Bundle();
         bundle.putString("screenName", screenName);
         bundle.putString("appsflyerId", afUniqueId);
-        bundle.putString("userId", sessionHandler.getLoginID());
+        if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
+            bundle.putString("userId", sessionHandler.getLoginID());
+        }else{
+            bundle.putString("userId", "");
+        }
         bundle.putString("clientId", getClientIDString());
         bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
+        if(!TextUtils.isEmpty(sessionHandler.getShopId())) {
+            bundle.putString("shopId", sessionHandler.getShopId());
+        }else{
+            bundle.putString("shopId", "");
+        }
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
@@ -1053,7 +1086,10 @@ public class GTMAnalytics extends ContextAnalytics {
 
         bundle.putString("screenName", (String) param.get("screenName"));
 
-        bundle.putString("gclid", (String) param.get(AppEventTracking.GTM.UTM_GCLID));
+        String gclid = (String) param.get(AppEventTracking.GTM.UTM_GCLID);
+        if(!TextUtils.isEmpty(gclid)) {
+            bundle.putString("gclid", gclid);
+        }
         bundle.putString("utmSource", (String) param.get(AppEventTracking.GTM.UTM_SOURCE));
         bundle.putString("utmMedium", (String) param.get(AppEventTracking.GTM.UTM_MEDIUM));
         bundle.putString("utmCampaign", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
@@ -1100,7 +1136,6 @@ public class GTMAnalytics extends ContextAnalytics {
     public void logEvent(String eventName, Bundle bundle, Context context) {
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
-            log(context, eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1113,11 +1148,28 @@ public class GTMAnalytics extends ContextAnalytics {
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     log(getContext(), null, it);
+                    logIrisAnalytics(values);
                     TagManager.getInstance(getContext()).getDataLayer().push(it);
                     pushIris("", it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
+    }
+
+    private void logIrisAnalytics(Map<String, Object> values) {
+        try {
+            if ("clickTopNav".equals(values.get(KEY_EVENT)) &&
+                    values.get(KEY_CATEGORY).toString().startsWith("top nav") &&
+                    "click search box".equals(values.get(KEY_ACTION))) {
+                Timber.w("P1#IRIS_COLLECT#GA_CLICKSEARCHBOX");
+            } else if ("clickPDP".equals(values.get(KEY_EVENT)) &&
+                    "product detail page".equals(values.get(KEY_CATEGORY)) &&
+                    "click - tambah ke keranjang".equals(values.get(KEY_ACTION))){
+                Timber.w("P1#IRIS_COLLECT#GA_PDP_ATC");
+            }
+        } catch (Exception exception) {
+            Timber.e("P1#IRIS#logIrisAnalyticsGA %s", exception.toString());
+        }
     }
 
     public void pushUserId(String userId) {
@@ -1158,7 +1210,11 @@ public class GTMAnalytics extends ContextAnalytics {
                         "promotions", null,
                         "ecommerce", null,
                         "currentSite", null,
-                        "channelId", null
+                        "channelId", null,
+                        "attribution", null,
+                        "affinityLabel", null,
+                        "categoryId", null,
+                        "shopId", null
                 )
         );
     }

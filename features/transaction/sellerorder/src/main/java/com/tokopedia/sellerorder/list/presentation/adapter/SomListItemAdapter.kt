@@ -13,8 +13,8 @@ import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_600
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_699
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
 import com.tokopedia.unifyprinciples.Typography
@@ -66,7 +66,9 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(somItemList[position].statusColor))
         }
         holder.itemView.label_invoice.text = somItemList[position].orderResi
-        holder.itemView.ic_product.loadImage(somItemList[position].listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+        if (somItemList[position].listOrderProduct.isNotEmpty()) {
+            holder.itemView.ic_product.loadImage(somItemList[position].listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+        }
         holder.itemView.label_date_order.text = somItemList[position].orderDate
         holder.itemView.label_buyer_name.text = somItemList[position].buyerName
 
@@ -74,7 +76,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             holder.itemView.label_due_response.visibility = View.GONE
             holder.itemView.ic_label_due_card.visibility = View.GONE
         } else {
-            if (somItemList[position].orderStatusId == STATUS_ORDER_600 || somItemList[position].orderStatusId == STATUS_ORDER_699) {
+            if (somItemList[position].orderStatusId == STATUS_ORDER_DELIVERED || somItemList[position].orderStatusId == STATUS_ORDER_DELIVERED_DUE_LIMIT) {
                 holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline_done)
             } else {
                 holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline)

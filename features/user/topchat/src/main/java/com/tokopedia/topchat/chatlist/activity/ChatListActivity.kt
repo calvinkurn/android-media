@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
@@ -44,6 +43,7 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -265,7 +265,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
-        debug(TAG, incomingChatWebSocketModel.toString())
+        Timber.d(incomingChatWebSocketModel.toString())
         val contactId = incomingChatWebSocketModel.getContactId()
         val tag = incomingChatWebSocketModel.getTag()
         val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
@@ -274,7 +274,7 @@ class ChatListActivity : BaseTabActivity()
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
-        debug(TAG, incomingTypingWebSocketModel.toString())
+        Timber.d(incomingTypingWebSocketModel.toString())
         val contactId = incomingTypingWebSocketModel.getContactId()
         val tag = incomingTypingWebSocketModel.getTag()
         val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
@@ -448,9 +448,9 @@ class ChatListActivity : BaseTabActivity()
     override fun onDestroy() {
         super.onDestroy()
         webSocketViewModel.itemChat.removeObservers(this)
-        webSocketViewModel.clear()
+        webSocketViewModel.flush()
         chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
-        chatNotifCounterViewModel.clear()
+        chatNotifCounterViewModel.flush()
     }
 
     override fun getComponent(): ChatListComponent {

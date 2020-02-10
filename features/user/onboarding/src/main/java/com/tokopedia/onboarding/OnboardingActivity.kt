@@ -74,7 +74,6 @@ class OnboardingActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        analytics.sendScreen(currentPosition)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -197,7 +196,6 @@ class OnboardingActivity : BaseActivity() {
 
     private fun finishOnBoarding() {
         userSession.setFirstTimeUserOnboarding(false)
-        DFInstaller().uninstallOnBackground(this.application, listOf(DeeplinkDFMapper.DFM_ONBOARDING))
         finish()
     }
 

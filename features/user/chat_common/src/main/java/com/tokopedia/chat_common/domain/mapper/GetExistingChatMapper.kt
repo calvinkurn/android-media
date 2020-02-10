@@ -60,7 +60,10 @@ open class GetExistingChatMapper @Inject constructor() {
                 interlocutor.thumbnail,
                 interlocutor.status.timestampStr,
                 interlocutor.status.isOnline,
-                interlocutor.shopId
+                interlocutor.shopId,
+                interlocutor.isOfficial,
+                interlocutor.isGold,
+                interlocutor.badge
         )
     }
 
@@ -209,7 +212,8 @@ open class GetExistingChatMapper @Inject constructor() {
                     pojoAttribute.productProfile.playStoreData,
                     pojoAttribute.productProfile.minOrder,
                     pojoAttribute.productProfile.remainingStock,
-                    pojoAttribute.productProfile.status
+                    pojoAttribute.productProfile.status,
+                    pojoAttribute.productProfile.wishList
             )
         }
 
@@ -243,7 +247,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.productProfile.playStoreData,
                 pojoAttribute.productProfile.minOrder,
                 pojoAttribute.productProfile.remainingStock,
-                pojoAttribute.productProfile.status
+                pojoAttribute.productProfile.status,
+                pojoAttribute.productProfile.wishList
         )
     }
 
@@ -267,7 +272,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 invoiceSentPojo.invoiceLink.attributes.statusId,
                 invoiceSentPojo.invoiceLink.attributes.status,
                 invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceSentPojo.invoiceLink.attributes.hrefUrl
+                invoiceSentPojo.invoiceLink.attributes.hrefUrl,
+                invoiceSentPojo.invoiceLink.attributes.createTime
         )
 
     }

@@ -50,6 +50,17 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         }
     }
 
+    override fun setupToolbar() {
+        super.setupToolbar()
+        decreaseToolbarElevation()
+    }
+
+    private fun decreaseToolbarElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 0f
+        }
+    }
+
     private fun scanPathQuery(data: Uri?) {
         data?.let {
             val pathSegments = it.pathSegments

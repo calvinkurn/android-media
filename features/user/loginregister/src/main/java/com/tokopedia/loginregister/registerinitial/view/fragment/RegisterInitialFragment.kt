@@ -62,6 +62,7 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
@@ -105,6 +106,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private var email: String = ""
     private var isSmartLogin: Boolean = false
     private var isPending: Boolean = false
+    private var isShowTicker: Boolean = false
 
     @field:Named(SESSION_MODULE)
     @Inject
@@ -226,11 +228,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fetchRemoteConfig()
         initObserver()
         initData()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu?.let {
             it.add(Menu.NONE, ID_ACTION_LOGIN, 0, "")
             val menuItem = it.findItem(ID_ACTION_LOGIN)
@@ -243,14 +246,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         item?.let {
             activity?.run {
                 val id = it.itemId
                 if (id == ID_ACTION_LOGIN) {
                     if (activity != null) {
                         registerAnalytics.trackClickTopSignInButton()
-                        finish()
                         goToLoginPage()
                     }
                     return true
@@ -261,16 +263,44 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         return super.onOptionsItemSelected(item)
     }
 
+    private fun fetchRemoteConfig() {
+        context?.let {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
+            isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
+        }
+    }
+
     private fun initData() {
         showLoadingDiscover()
         registerInitialViewModel.getProvider()
         partialRegisterInputView.setListener(this)
-        registerInitialViewModel.getTickerInfo()
+
+        if (!GlobalConfig.isSellerApp()) {
+            if (isFromAtc() && isShowTicker) {
+                tickerAnnouncement.visibility = View.VISIBLE
+                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
+                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
+                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+                })
+                tickerAnnouncement.setOnClickListener {
+                    registerAnalytics.trackClickTicker()
+                }
+            } else {
+                registerInitialViewModel.getTickerInfo()
+            }
+        }
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
+
     }
 
     @SuppressLint("RtlHardcoded")
@@ -663,8 +693,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun goToLoginPage() {
         activity?.let {
-            val intent = LoginActivity.DeepLinkIntents.getCallingIntent(it)
-            startActivity(intent)
+            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            it.startActivity(intent)
+            it.finish()
         }
     }
 
@@ -1057,9 +1090,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     }
 
-    private fun isFromAccount(): Boolean {
-        return source == "account"
-    }
+    private fun isFromAccount(): Boolean = source == SOURCE_ACCOUNT
+
+    private fun isFromAtc(): Boolean = source == SOURCE_ATC
 
     private fun onGoToChangeName() {
         activity?.let {
@@ -1201,7 +1234,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.goToActivationPageAfterRelogin.removeObservers(this)
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.removeObservers(this)
         combineLoginTokenAndValidateToken.removeObservers(this)
-        registerInitialViewModel.clear()
+        registerInitialViewModel.flush()
     }
 
     companion object {
@@ -1230,7 +1263,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
 
+        private const val SOURCE_ACCOUNT = "account"
+        private const val SOURCE_ATC = "atc"
+
         private const val FACEBOOK_LOGIN_TYPE = "fb"
+
+        private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
 
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()

@@ -9,7 +9,7 @@
     android:background="@drawable/bg_shadow_top">
 
     <LinearLayout android:id="@+id/btn_buy"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/orange_red"
         android:gravity="center"
@@ -18,8 +18,8 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/btn_promote_topads"
-        app:layout_constraintEnd_toStartOf="@+id/btn_promote_topads"
+        app:layout_constraintRight_toLeftOf="@+id/container_btn_promote_topads"
+        app:layout_constraintEnd_toStartOf="@+id/container_btn_promote_topads"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -36,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/buy"
+            android:textStyle="bold"
             android:textColor="@color/color_href_link"
             android:gravity="center"
             android:layout_marginLeft="@dimen/dp_4"
@@ -45,24 +46,26 @@
 
     </LinearLayout>
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/btn_promote_topads"
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:id="@+id/container_btn_promote_topads"
+        android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:text="@string/promote_topads"
-        android:gravity="center"
-        android:textColor="@color/color_href_link"
-        android:background="@drawable/rect_orange"
-        android:visibility="gone"
         tools:visibility="gone"
-        app:fontSize="title"
-        app:weight="medium"
-        app:layout_constraintLeft_toRightOf="@+id/btn_buy"
-        app:layout_constraintStart_toEndOf="@+id/btn_buy"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_buy"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/btn_buy"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/btn_promote_topads"
+            style="@style/BtnTopAdsPDPIklankan"
+            android:text="@string/promote_topads"
+            app:fontSize="title" />
+    </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_byme"
@@ -97,6 +100,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_8"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_goneMarginLeft="@dimen/dp_16"
         app:layout_goneMarginStart="@dimen/dp_16"
         app:srcCompat="@drawable/ic_topchat"
@@ -132,6 +136,7 @@
             android:layout_height="wrap_content"
             android:text="@string/buy_now"
             android:textColor="@color/orange_red"
+            android:textStyle="bold"
             android:layout_gravity="center"
             android:paddingLeft="@dimen/dp_8"
             android:paddingStart="@dimen/dp_8"
@@ -177,6 +182,7 @@
             android:paddingStart="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
+            android:textStyle="bold"
             app:textViewTheme="darkPrimary"
             app:fontSize="micro" />
 

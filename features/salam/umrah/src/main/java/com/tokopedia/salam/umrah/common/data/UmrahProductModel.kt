@@ -111,22 +111,11 @@ data class UmrahProductModel(
                 val departureDate: String = "",
 
                 @SerializedName("returningDate")
-                val returningDate: String = ""
-        )
+                val returningDate: String = "",
 
-        data class TravelAgent(
-                @SerializedName("id")
+                @SerializedName("availableSeat")
                 @Expose
-                val id: String = "",
-                @SerializedName("name")
-                @Expose
-                val name: String = "",
-                @SerializedName("logoUrl")
-                @Expose
-                val imageUrl: String = "",
-                @SerializedName("permissionOfUmrah")
-                @Expose
-                val permissionOfUmrah: String = ""
+                val availableSeat: String = ""
         )
 
         data class UmrahFAQ(
