@@ -259,13 +259,6 @@ class ShopPageFragment :
                 }
             }
         })
-
-        shopViewModel.shopModerateResp.observe(this, Observer { shopModerate ->
-            when (shopModerate) {
-                is Success -> onSuccessGetModerateInfo(shopModerate.data)
-                is Fail -> onErrorModerateListener(shopModerate.throwable)
-            }
-        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -522,9 +515,7 @@ class ShopPageFragment :
                         CustomDimensionShopPage.create(shopCore.shopID, goldOS.isOfficial == 1,
                                 goldOS.isGold == 1))
             }
-            if (shopInfo.statusInfo.shopStatus != ShopStatusDef.OPEN) {
-                shopViewModel.getModerateShopInfo()
-            }
+            shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
         }
         swipeToRefresh.isRefreshing = false
     }
@@ -627,13 +618,6 @@ class ShopPageFragment :
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
             errorButton.setOnClickListener { getShopInfo() }
             swipeToRefresh.isRefreshing = false
-        }
-    }
-
-    private fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
-        val statusModerate = shopModerateRequestData.shopModerateRequestStatus.result.status
-        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
-            shopPageFragmentHeaderViewHolder.updateViewModerateStatus(statusModerate, it, shopViewModel.isMyShop(it.shopCore.shopID))
         }
     }
 
@@ -787,19 +771,6 @@ class ShopPageFragment :
 
     override fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
-    }
-
-    private fun onErrorModerateListener(e: Throwable?) {
-        activity?.run {
-            val errorMessage = if (e == null) {
-                getString(R.string.moderate_shop_error)
-            } else {
-                ErrorHandler.getErrorMessage(this, e)
-            }
-            ToasterError.make(window.decorView.rootView, errorMessage, BaseToaster.LENGTH_INDEFINITE)
-                    .setAction(R.string.title_ok) {}
-                    .show()
-        }
     }
 
     private fun getShopInfoPosition(): Int = viewPagerAdapter.count - 1
