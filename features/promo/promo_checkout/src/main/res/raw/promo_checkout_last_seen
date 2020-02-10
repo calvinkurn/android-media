@@ -1,4 +1,4 @@
-query rechargePromoBanner($categoryIDs: [Int]!){
+query rechargeLastSeenPromo($categoryIDs: [Int]!){
   rechargePromoBanner(categoryIDs: $categoryIDs) {
     id
     title

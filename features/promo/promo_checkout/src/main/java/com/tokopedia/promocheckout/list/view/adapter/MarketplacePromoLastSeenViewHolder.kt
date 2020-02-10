@@ -10,7 +10,7 @@ class MarketplacePromoLastSeenViewHolder(val view: View, private val listenerLas
         view.tvPromoCode.text = data.promoCode
         view.tvTitleLastCard.text = data.promoContent?.description
         view.btnGunakanLast.setOnClickListener { listenerLastSeen.onClickItemLastSeen(data) }
-        if (data.promoCode?.isEmpty()!!) {
+        if (data.promoCode?.isEmpty() == true) {
             view.ticketPromoHistory.visibility = View.GONE
         } else {
             view.ticketPromoHistory.visibility = View.VISIBLE

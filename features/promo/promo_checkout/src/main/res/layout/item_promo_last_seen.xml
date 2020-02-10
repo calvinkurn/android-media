@@ -17,9 +17,11 @@
         android:orientation="vertical"
         android:padding="@dimen/dp_16">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/descPromo"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
             android:layout_marginBottom="@dimen/dp_10"
             android:ellipsize="end"
             android:maxLines="2"
@@ -37,12 +39,12 @@
                 android:layout_marginRight="@dimen/dp_5"
                 app:srcCompat="@drawable/ic_voucher_promo_green" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 style="@style/TextView.Micro.BlackSecondary"
                 android:layout_marginRight="@dimen/dp_5"
                 android:text="@string/promo_label_promo_code" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/voucherCode"
                 style="@style/TextView.Micro.Orange.Bold"
                 tools:text="VOUCHER HEMAT" />

@@ -95,10 +95,15 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         initViewExchangeCoupon(view)
     }
 
-    fun initViewExchangeCoupon(view: View) {
-        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
-        view.rv_carousel.addItemDecoration(dividerItemDecoration)
+    private fun initViewExchangeCoupon(view: View) {
+        context?.let { context ->
+            val dividerDrawable = ContextCompat.getDrawable(context, R.drawable.divider_horizontal_custom_quick_filter)
+            dividerDrawable?.let { drawable ->
+                val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
+                dividerItemDecoration.setDrawable(drawable)
+                view.rv_carousel.addItemDecoration(dividerItemDecoration)
+            }
+        }
         view.rv_carousel.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         view.rv_carousel.adapter = promoCheckoutExchangeCouponAdapter
 
@@ -115,7 +120,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         view?.text_title?.text = data.title
         view?.text_sub_title?.text = data.subTitle
         promoCheckoutExchangeCouponAdapter.items?.clear()
-        promoCheckoutExchangeCouponAdapter.items?.addAll(data.catalogList as ArrayList<CatalogListItem>)//data.catalogList)
+        promoCheckoutExchangeCouponAdapter.items?.addAll(data.catalogList as ArrayList<CatalogListItem>)
         promoCheckoutExchangeCouponAdapter.notifyDataSetChanged()
         populateExchangeCouponList()
     }
