@@ -136,10 +136,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
 
-    private val customDimensionShopPage: CustomDimensionShopPage
-        get() {
-            return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-        }
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+    }
     private val isMyShop: Boolean
         get() = if (::viewModel.isInitialized) {
             shopId?.let { viewModel.isMyShop(it) } ?: false
@@ -548,6 +547,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         this.shopId = shopInfo.shopCore.shopID
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
+        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         onShopProductListFragmentListener?.updateUIByShopName(shopInfo.shopCore.name)
         shopPageProductListResultFragmentListener?.updateShopInfo(shopInfo)
         loadInitialData()
@@ -722,7 +722,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
                     sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-                    val sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME) ?:  ""
+                    val sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
                     this.isLoadingInitialData = true
                     loadInitialData()

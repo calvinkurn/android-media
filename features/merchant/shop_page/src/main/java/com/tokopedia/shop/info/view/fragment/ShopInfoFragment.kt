@@ -74,8 +74,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         get() = shopInfo?.isOfficial == 1
     private val isGold: Boolean
         get() = shopInfo?.isGold == 1
-    private val customDimensionShopPage: CustomDimensionShopPage
-        get() = CustomDimensionShopPage.create(getShopId(),isOfficial,isGold)
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(getShopId(),isOfficial,isGold)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_info, container, false)
@@ -180,6 +181,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private fun observeShopInfo() {
         observe(shopViewModel.shopInfo) {
             shopInfo = it
+            customDimensionShopPage.updateCustomDimensionData(getShopId(), isOfficial, isGold)
             showShopInfo()
         }
     }

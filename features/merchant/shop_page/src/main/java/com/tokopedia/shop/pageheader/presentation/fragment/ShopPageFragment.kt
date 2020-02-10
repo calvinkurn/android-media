@@ -141,10 +141,9 @@ class ShopPageFragment :
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
     private val intentData: Intent = Intent()
-    private val customDimensionShopPage: CustomDimensionShopPage
-        get() {
-            return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-        }
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+    }
 
 
     val isMyShop: Boolean
@@ -520,6 +519,7 @@ class ShopPageFragment :
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             isGoldMerchant = (goldOS.isGoldBadge == 1)
+            customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
             shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             setupTabs()
             if (!isMyShop) {

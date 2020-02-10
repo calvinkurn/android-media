@@ -79,8 +79,9 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         get() = shopInfo?.goldOS?.isOfficial == 1
     private val isGold: Boolean
         get() = shopInfo?.goldOS?.isGold == 1
-    private val customDimensionShopPage: CustomDimensionShopPage
-        get() = CustomDimensionShopPage.create(shopId,isOfficial,isGold)
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(shopId, isOfficial, isGold)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -171,8 +172,8 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.action_share ->  {
+        when (item.itemId) {
+            R.id.action_share -> {
                 clickShareButton()
             }
         }
@@ -193,6 +194,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
+        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
         setViewState(VIEW_CONTENT)
     }
 

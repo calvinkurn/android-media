@@ -130,8 +130,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         get() = shopInfo?.goldOS?.isOfficial == 1
     private val isGold: Boolean
         get() = shopInfo?.goldOS?.isGold == 1
-    private val customDimensionShopPage: CustomDimensionShopPage
-        get() = CustomDimensionShopPage.create(shopId,isOfficial,isGold)
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(shopId, isOfficial, isGold)
+    }
 
     private lateinit var viewModel: ShopSearchProductViewModel
 
@@ -219,7 +220,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onItemClicked(dataModel: ShopSearchProductDataModel) {
         when (dataModel.type) {
             ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP -> {
-                if(!isNewShopPageEnabled()){
+                if (!isNewShopPageEnabled()) {
                     shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
                             SCREEN_SHOP_PAGE,
                             searchQuery,
@@ -238,7 +239,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                if(!isNewShopPageEnabled()) {
+                if (!isNewShopPageEnabled()) {
                     shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
                             SCREEN_SHOP_PAGE,
                             searchQuery,
@@ -317,7 +318,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             }
             REQUEST_CODE_SORT -> {
                 val sortValue = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?:  ""
+                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                 sortValue?.let {
                     newShopPageTrackingShopSearchProduct.clickSortBy(
                             isMyShop,
@@ -560,6 +561,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 get(ShopInfo.TAG, ShopInfo::class.java)
             }
         }
+        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
     }
 
     private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
