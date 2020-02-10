@@ -113,7 +113,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         if(userSession.isLoggedIn) {
             RouteManager.route(context, ApplinkConstInternalEntertainment.EVENT_FAVORITE)
         } else {
-            RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
 
@@ -129,7 +129,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         if(userSession.isLoggedIn){
             RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
         } else {
-            RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
 
