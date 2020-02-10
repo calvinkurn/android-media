@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.draft.view.presenter;
+package com.tokopedia.product.manage.list.view.presenter;
 
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;

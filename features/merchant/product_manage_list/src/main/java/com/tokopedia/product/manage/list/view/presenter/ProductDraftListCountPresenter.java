@@ -1,7 +1,7 @@
-package com.tokopedia.seller.product.draft.view.presenter;
+package com.tokopedia.product.manage.list.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
+import com.tokopedia.product.manage.list.view.listener.ProductDraftListCountView;
 
 /**
  * Created by User on 6/20/2017.

@@ -18,8 +18,8 @@ import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent
 import com.tokopedia.product.manage.list.utils.ProductManageTracking
-import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView
-import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter
+import com.tokopedia.product.manage.list.view.listener.ProductDraftListCountView
+import com.tokopedia.product.manage.list.view.presenter.ProductDraftListCountPresenter
 import javax.inject.Inject
 
 class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCountView {
