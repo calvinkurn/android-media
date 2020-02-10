@@ -254,7 +254,6 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
  * @author normansyahputa on 12/15/16.
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
-        DeferredCallback,
         TkpdCoreRouter,
         SellerModuleRouter,
         IDigitalModuleRouter,
@@ -306,7 +305,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
     public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
     public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
-    private static final String RELATIVE_URL = "/android/res/";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -337,22 +335,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
-        initializeResourceDownloadManager();
+        initResourceDownloadManager();
     }
 
-    private void initializeResourceDownloadManager(){
-        Observable.fromCallable(() -> {
-
-            ResourceDownloadManager
-                    .Companion.getManager()
-                    .setBaseAndRelativeUrl(AccountHomeUrl.CDN_URL, RELATIVE_URL)
-                    .addDeferredCallback(this)
-                    .initialize(this, R.raw.url_list);
-        return true;
-        }).subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe();
+    private void initResourceDownloadManager() {
+        (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
     }
-
 
     private void initDaggerInjector() {
         getReactNativeComponent().inject(this);
@@ -1562,20 +1550,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return null;
-    }
-
-    @Override
-    public void logDeferred(@NotNull String message) {
-        Timber.d(message);
-    }
-
-    @Override
-    public void onDownloadStateChanged(@NotNull String resUrl, boolean isFailed) {
-
-    }
-
-    @Override
-    public void onCacheHit(@NotNull String resUrl) {
-
     }
 }

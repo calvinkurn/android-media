@@ -44,12 +44,13 @@ class ResourceDownloadManager private constructor() {
 
     private var density: String = ""
 
-    fun initialize(context: Context, @RawRes resourceId: Int) {
+    fun initialize(context: Context, @RawRes resourceId: Int) : ResourceDownloadManager{
         initializeFields()
         this.context = WeakReference(context.applicationContext)
         roomDB = ResourceDB.getDatabase(context)
         density = getDisplayDensity(context)
         DeferredWorker.schedulePeriodicWorker(context, this, resourceId)
+        return this
     }
 
     fun addDeferredCallback(deferredCallback: DeferredCallback): ResourceDownloadManager {

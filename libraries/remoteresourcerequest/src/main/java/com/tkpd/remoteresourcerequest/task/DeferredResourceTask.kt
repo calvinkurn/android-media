@@ -25,7 +25,7 @@ class DeferredResourceTask(
 
     private var byteArray: ByteArray? = null
 
-    private var mThread: Thread? = null
+    private var currentThread: Thread? = null
 
     private var bitmap: Bitmap? = null
 
@@ -55,11 +55,11 @@ class DeferredResourceTask(
     }
 
     override fun setCurrentThread(thread: Thread?) {
-        this.mThread = thread
+        this.currentThread = thread
     }
 
     override fun getCurrentThread(): Thread? {
-        return mThread
+        return currentThread
     }
 
     override fun setImage(image: Bitmap) {
