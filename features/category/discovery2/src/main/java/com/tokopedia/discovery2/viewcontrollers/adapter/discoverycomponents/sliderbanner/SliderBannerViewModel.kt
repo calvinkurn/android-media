@@ -28,7 +28,7 @@ class SliderBannerViewModel(val application: Application, components: Components
         val list = ArrayList<ComponentsItem>()
         components.data?.forEach {
             val componentsItem = ComponentsItem()
-            componentsItem.name = "slider_banner_item"
+            componentsItem.name = "banner_image"
             val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem

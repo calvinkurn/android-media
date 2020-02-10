@@ -19,10 +19,15 @@ import com.tokopedia.unifyprinciples.Typography
 
 
 class BannerDotIndicator(private val radius: Int, private val indicatorItemPadding: Int, private val indicatorPadding: Int,
-                         @ColorInt colorActive: Int, @ColorInt colorInactive: Int) : ItemDecoration() {
+                         @ColorInt colorActive: Int, @ColorInt colorInactive: Int, private val indicatorType: Int) : ItemDecoration() {
     private val inactivePaint: Paint = Paint()
     private val activePaint: Paint = Paint()
     private var btnAppLink: String = ""
+
+    companion object{
+        const val SLIDER_BANNER_INDICATOR = 0
+        const val CAROUSEL_BANNER_INDICATOR = 1
+    }
 
     init {
         val strokeWidth: Float = Resources.getSystem().displayMetrics.density * 1
@@ -97,7 +102,17 @@ class BannerDotIndicator(private val radius: Int, private val indicatorItemPaddi
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
-        outRect.bottom = indicatorPadding * 2
+        when(indicatorType){
+
+            SLIDER_BANNER_INDICATOR -> {
+
+            }
+
+            CAROUSEL_BANNER_INDICATOR -> {
+                outRect.bottom = indicatorPadding * 2
+            }
+
+        }
     }
 
     fun setBtnAppLink(btnAppLink: String) {

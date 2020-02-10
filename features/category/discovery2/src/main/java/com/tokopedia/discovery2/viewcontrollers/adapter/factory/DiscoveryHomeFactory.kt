@@ -15,8 +15,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bran
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations.BrandRecommendationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -38,7 +36,6 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.CarouselBanner, ::CarouselBannerViewHolder, ::CarouselBannerViewModel)
             initializeComponent(ComponentsList.CarouselBannerItemView, ::CarouselBannerItemViewHolder, ::CarouselBannerItemViewModel)
             initializeComponent(ComponentsList.SliderBanner, ::SliderBannerViewHolder, ::SliderBannerViewModel)
-            initializeComponent(ComponentsList.SliderBannerItemView, ::SliderBannerItemViewHolder, ::SliderBannerItemViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>, componentViewModel: KFunction<T>) {

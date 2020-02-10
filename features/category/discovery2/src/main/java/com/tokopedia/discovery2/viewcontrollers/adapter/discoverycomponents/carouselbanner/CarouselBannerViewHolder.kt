@@ -62,7 +62,7 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                 carouselBannerPagerSnapHelper = CarouselBannerPagerSnapHelper(this)
                 carouselBannerPagerSnapHelper?.attachToRecyclerView(this)
-                addItemDecoration(getBannerDotIndicator(this.context))
+                addItemDecoration(bannerDotIndicator)
             }
         }
     }
@@ -74,7 +74,7 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
             val indicatorPadding = resources.getDimensionPixelSize(R.dimen.itemDecorationOuterPadding)
             val activeColor = ContextCompat.getColor(context, R.color.activeBannerDot)
             val inActiveColor = ContextCompat.getColor(context, R.color.inActiveBannerDot)
-            return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor)
+            return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.CAROUSEL_BANNER_INDICATOR)
         }
     }
 

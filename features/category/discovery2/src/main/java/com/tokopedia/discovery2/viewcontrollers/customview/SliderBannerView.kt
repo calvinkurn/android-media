@@ -2,49 +2,26 @@ package com.tokopedia.discovery2.viewcontrollers.customview
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 
-private const val SLIDE_DELAY: Long = 5000
 private const val SAVED = "instance state BannerView.class"
 private const val SAVE_STATE_AUTO_SCROLL_ON_PROGRESS = "auto_scroll_on_progress"
 
 class SliderBannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private var bannerHandler: Handler? = null
-    private var runnableScrollBanner: Runnable? = null
-    private var bannerRecyclerView: RecyclerView? = null
-    private var bannerIndicator: ViewGroup? = null
     private var autoScrollEnabled: Boolean = false
-    private var autoScrollOnProgress = false
-
-    private var indicatorItems = ArrayList<ImageView>()
-    private var impressionStatusList = ArrayList<Boolean>()
-    private var sliderDataItems: ArrayList<ComponentsItem> = ArrayList()
-    private var currentPosition = 0
-    private var sliderBannerAdapter: DiscoveryRecycleAdapter? = null
+    private var autoScrollOnProgressLiveData = MutableLiveData<Boolean>()
+    private var sliderBannerViewInteraction: SliderBannerViewInteraction? = null
 
     init {
-        val view = View.inflate(context, R.layout.widget_slider_banner, this)
-        bannerRecyclerView = view.findViewById(R.id.banner_slider_recyclerview)
-        bannerIndicator = view.findViewById(R.id.indicator_banner_container)
-        indicatorItems = ArrayList()
-        impressionStatusList = ArrayList()
-        sliderDataItems = ArrayList()
+        View.inflate(context, R.layout.widget_slider_banner, this)
         getDataFromAttrs(attrs)
     }
 
@@ -69,15 +46,19 @@ class SliderBannerView @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun onRestoreInstanceState(state: Parcelable?) {
         var savedState = state
         if (state is Bundle) {
-            setAutoScrollOnProgress(state.getBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS))
+            setAutoScrollOnProgressValue(state.getBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS))
             if (isAutoScrollOnProgress()) {
-                startAutoScrollBanner()
+                sliderBannerViewInteraction?.attachAndStartScrolling()
             } else {
-                stopAutoScrollBanner()
+                sliderBannerViewInteraction?.detachAndStopScrolling()
             }
             savedState = state.getParcelable(SAVED)
         }
         super.onRestoreInstanceState(savedState)
+    }
+
+    private fun isAutoScrollOnProgress(): Boolean {
+        return autoScrollOnProgressLiveData.value ?: false
     }
 
     override fun onSaveInstanceState(): Parcelable? {
@@ -89,149 +70,32 @@ class SliderBannerView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        stopAutoScrollBanner()
+        sliderBannerViewInteraction?.detachAndStopScrolling()
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        startAutoScrollBanner()
+        sliderBannerViewInteraction?.attachAndStartScrolling()
     }
 
-    fun buildView() {
-        this.show()
-        this.resetImpressionStatus()
-        this.bannerIndicator?.show()
-        this.indicatorItems.clear()
-        this.bannerIndicator?.removeAllViews()
-        this.bannerRecyclerView?.setHasFixedSize(true)
-        this.indicatorItems.clear()
-        this.bannerIndicator?.removeAllViews()
-        val layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-        this.bannerRecyclerView?.layoutManager = layoutManager
-        this.bannerRecyclerView?.adapter = sliderBannerAdapter
-        for (item in sliderDataItems) {
-            val pointView = ImageView(this.context)
-            pointView.setPadding(5, 0, 5, 0)
-            if (sliderDataItems.indexOf(item) == 0) {
-                pointView.setImageResource(this.getIndicatorFocus())
-            } else {
-                pointView.setImageResource(this.getIndicator())
-            }
-            this.indicatorItems.add(pointView)
-            this.bannerIndicator?.addView(pointView)
-        }
-
-        this.bannerRecyclerView?.clearOnScrollListeners()
-        this.bannerRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (recyclerView.layoutManager != null) {
-                    this@SliderBannerView.currentPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findFirstCompletelyVisibleItemPosition()
-                }
-
-                this@SliderBannerView.setCurrentIndicator()
-                if (!this@SliderBannerView.isCurrentPositionHasImpression(this@SliderBannerView.currentPosition)) {
-                    this@SliderBannerView.impressionStatusList[this@SliderBannerView.currentPosition] = true
-                }
-            }
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == 1 && recyclerView.isInTouchMode) {
-                    this@SliderBannerView.stopAutoScrollBanner()
-                }
-            }
-        })
-        if (this.sliderDataItems.size == 1) {
-            this.bannerIndicator?.hide()
-        }
-
-        val snapHelper = PagerSnapHelper()
-        this.bannerRecyclerView?.onFlingListener = null
-        snapHelper.attachToRecyclerView(this.bannerRecyclerView)
-        if (this.bannerHandler == null && this.runnableScrollBanner == null) {
-            this.bannerHandler = Handler()
-
-            this.runnableScrollBanner = object : Runnable {
-                override fun run() {
-                    if (this@SliderBannerView.bannerRecyclerView != null && this@SliderBannerView.bannerRecyclerView?.adapter != null) {
-                        if (this@SliderBannerView.currentPosition == this@SliderBannerView.bannerRecyclerView?.adapter?.itemCount!! - 1) {
-                            this@SliderBannerView.currentPosition = -1
-                        }
-                        this@SliderBannerView.bannerRecyclerView?.smoothScrollToPosition(this@SliderBannerView.currentPosition + 1)
-                        this@SliderBannerView.bannerHandler?.postDelayed(this, SLIDE_DELAY)
-                    }
-                }
-            }
-
-            this.startAutoScrollBanner()
-        }
+    interface SliderBannerViewInteraction {
+        fun attachAndStartScrolling()
+        fun detachAndStopScrolling()
     }
 
-    private fun startAutoScrollBanner() {
-        if (autoScrollEnabled && bannerHandler != null && runnableScrollBanner != null && !isAutoScrollOnProgress()) {
-            setAutoScrollOnProgress(true)
-            bannerHandler?.postDelayed(runnableScrollBanner, SLIDE_DELAY)
-        }
+    fun setSliderBannerViewInteraction(sliderBannerViewInteraction: SliderBannerViewInteraction) {
+        this.sliderBannerViewInteraction = sliderBannerViewInteraction
     }
 
-    private fun stopAutoScrollBanner() {
-        if (autoScrollEnabled && bannerHandler != null && runnableScrollBanner != null) {
-            setAutoScrollOnProgress(false)
-            bannerHandler?.removeCallbacks(runnableScrollBanner)
-        }
+    fun setAutoScrollOnProgressValue(value: Boolean) {
+        this.autoScrollOnProgressLiveData.postValue(value)
     }
 
-    private fun setAutoScrollOnProgress(autoScrollOnProgress: Boolean) {
-        this.autoScrollOnProgress = autoScrollOnProgress
+    fun getAutoScrollOnProgressLiveData(): LiveData<Boolean> {
+        return autoScrollOnProgressLiveData
     }
 
-    private fun isAutoScrollOnProgress(): Boolean {
-        return autoScrollOnProgress
-    }
-
-    fun setCurrentIndicator() {
-        for (i in indicatorItems.indices) {
-            if (currentPosition != i) {
-                indicatorItems[i].setImageResource(getIndicator())
-            } else {
-                indicatorItems[i].setImageResource(getIndicatorFocus())
-            }
-        }
-    }
-
-    fun isCurrentPositionHasImpression(currentPosition: Int): Boolean {
-        return if (currentPosition >= 0 && currentPosition < impressionStatusList.size) {
-            impressionStatusList[currentPosition]
-        } else {
-            true
-        }
-    }
-
-    private fun resetImpressionStatus() {
-        impressionStatusList.clear()
-        for (i in sliderDataItems.indices) {
-            impressionStatusList.add(false)
-        }
-    }
-
-    private fun getIndicatorFocus(): Int {
-        return R.drawable.indicator_focus
-    }
-
-    private fun getIndicator(): Int {
-        return R.drawable.indicator
-
-    }
-
-    fun setAdapter(recycleAdapter: DiscoveryRecycleAdapter) {
-        sliderBannerAdapter = recycleAdapter
-    }
-
-    fun setDataItems(item: ArrayList<ComponentsItem>?) {
-        item?.let {
-            sliderDataItems = item
-        }
-
+    fun getAutoScrollEnabled(): Boolean {
+        return autoScrollEnabled
     }
 }
