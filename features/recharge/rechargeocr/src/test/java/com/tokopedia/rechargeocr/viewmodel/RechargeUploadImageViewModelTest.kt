@@ -4,11 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.rechargeocr.RechargeCameraUtil
 import com.tokopedia.rechargeocr.data.RechargeOcrResponse
 import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.rechargeocr.data.ResultOcr
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.*
@@ -32,63 +32,60 @@ class RechargeUploadImageViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        mockkObject(RechargeCameraUtil.Companion)
         rechargeUploadImageViewModel = RechargeUploadImageViewModel(rechargeUploadImageUseCase,
                 graphqlRepository, Dispatchers.Unconfined)
     }
 
     @Test
-    fun uploadImage_takePictureFromOCR_ReturnSuccess() {
+    fun uploadImage_CropAndUpload_ReturnSuccess() {
         //given
+        coEvery { RechargeCameraUtil.trimBitmap("", "") } returns ""
+
         val stringUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/12/17/image2.jpg"
-        val expectedUrlImage = "https://ecs7.tokopedia.net/img/cache/500/attachment/2019/12/17/image2.jpg"
         coEvery { rechargeUploadImageUseCase.execute(any()) } returns RechargeUploadImageResponse(
                 RechargeUploadImageResponse.RechargeUploadImageData(picSrc = stringUrl))
 
-        //when
-        rechargeUploadImageViewModel.uploadImageRecharge("")
-
-        //then
-        val actualUrl = rechargeUploadImageViewModel.urlImage.value
-        assertNotNull(actualUrl)
-        assertEquals(expectedUrlImage, rechargeUploadImageViewModel.urlImage.value)
-    }
-
-    @Test
-    fun uploadImage_takePictureFromOCR_ReturnFailedFromServer() {
-        //given
-        val expectedUrlImage = ""
-        coEvery { rechargeUploadImageUseCase.execute(any()) } coAnswers { throw Throwable() }
-
-        //when
-        rechargeUploadImageViewModel.uploadImageRecharge("")
-
-        //then
-        val actualUrl = rechargeUploadImageViewModel.urlImage.value
-        assertNotNull(actualUrl)
-        assertEquals(expectedUrlImage, rechargeUploadImageViewModel.urlImage.value)
-    }
-
-    @Test
-    fun getResultOCR_uploadUrlImage_ReturnSuccessCardNumber() {
-        // given
         val expectedData = "12345678910"
         val gqlResponseSuccess = GraphqlResponse(
                 mapOf(RechargeOcrResponse::class.java to RechargeOcrResponse(ResultOcr(expectedData))),
                 mapOf(), false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        // when
-        rechargeUploadImageViewModel.getResultOcr("", "")
+        //when
+        rechargeUploadImageViewModel.uploadImageRecharge("", "", "")
 
-        // then the result should be success
+        //then
         val actualData = rechargeUploadImageViewModel.resultDataOcr.value
         assertNotNull(actualData)
         assertEquals(expectedData, actualData)
     }
 
     @Test
-    fun getResultOCR_uploadUrlImage_ReturnFailedErrorFromServer() {
+    fun uploadImage_takePictureFromOCR_ReturnUploadFailed() {
+        //given
+        val errorThrowable = Throwable("error upload")
+        coEvery { RechargeCameraUtil.trimBitmap("", "") } returns ""
+        coEvery { rechargeUploadImageUseCase.execute(any()) } coAnswers { throw errorThrowable }
+
+        //when
+        rechargeUploadImageViewModel.uploadImageRecharge("", "", "")
+
+        //then
+        val actualData = rechargeUploadImageViewModel.errorActionOcr.value
+        assertNotNull(actualData)
+        assertEquals(errorThrowable.message, actualData)
+    }
+
+    @Test
+    fun getResultOCR_CropAndUpload_ReturnFailedErrorFromServer() {
         // given
+        coEvery { RechargeCameraUtil.trimBitmap("", "") } returns ""
+
+        val stringUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/12/17/image2.jpg"
+        coEvery { rechargeUploadImageUseCase.execute(any()) } returns RechargeUploadImageResponse(
+                RechargeUploadImageResponse.RechargeUploadImageData(picSrc = stringUrl))
+
         val errorMessage = "Nomor kartu tidak terdeteksi"
         val errorGql = GraphqlError()
         errorGql.message = errorMessage
@@ -97,7 +94,7 @@ class RechargeUploadImageViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         // when
-        rechargeUploadImageViewModel.getResultOcr("", "")
+        rechargeUploadImageViewModel.uploadImageRecharge("", "", "")
 
         // then the result should be success
         val actualData = rechargeUploadImageViewModel.errorActionOcr.value

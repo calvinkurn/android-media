@@ -311,12 +311,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-
-    }
-
-
-    @Override
     public FingerprintModel getFingerprintModel() {
         return DataSource.generateFingerprintModel();
     }

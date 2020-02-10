@@ -51,7 +51,6 @@ import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
@@ -81,6 +80,7 @@ import java.util.concurrent.TimeUnit;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
+import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
@@ -129,14 +129,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         initReact();
-
-        Weaver.Companion.executeWeaveCoRoutine(this::executePreCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+        createAndCallPreSeq();
 
         super.onCreate();
 
         initGqlNWClient();
-        Weaver.Companion.executeWeaveCoRoutine(this::executePostCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
-        Weaver.Companion.executeWeaveCoRoutine(this::loadFontsInBg, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
+        createAndCallPostSeq();
+        createAndCallFontLoad();
         ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
@@ -144,6 +143,42 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         });
         registerActivityLifecycleCallbacks(shakeSubscriber);
+    }
+
+    private void createAndCallPreSeq(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface preWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePreCreateSequence();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(preWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+    }
+
+    private void createAndCallPostSeq(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface postWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePostCreateSequence();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(postWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+    }
+
+    private void createAndCallFontLoad(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface fontWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return loadFontsInBg();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(fontWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
     }
 
     @NotNull
@@ -505,33 +540,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
-    }
-
-
-    @Override
-    public void setCategoryAbTestingConfig() {
-        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(),
-                // do not replace with method reference "this::openNewBelanja", will not work in dynamic feature
-                new Function1<Context, Intent>() {
-                    @Override
-                    public Intent invoke(Context context) {
-                        return ConsumerMainApplication.this.openNewBelanja(context);
-                    }
-                },
-                // do not replace with method reference "this::openOldBelanja", will not work in dynamic feature
-                new Function1<Context, Intent>() {
-                    @Override
-                    public Intent invoke(Context context) {
-                        return ConsumerMainApplication.this.openOldBelanja(context);
-                    }
-                });
-    }
-
-    Intent openNewBelanja(Context context) {
-        return null;
-    }
-
-    Intent openOldBelanja(Context context) {
-        return null;
     }
 }
