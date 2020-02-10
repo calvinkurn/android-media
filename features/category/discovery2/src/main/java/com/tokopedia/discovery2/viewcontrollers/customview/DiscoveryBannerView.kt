@@ -13,23 +13,23 @@ import com.tokopedia.discovery2.R
 private const val SAVED = "instance state BannerView.class"
 private const val SAVE_STATE_AUTO_SCROLL_ON_PROGRESS = "auto_scroll_on_progress"
 
-class SliderBannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class DiscoveryBannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var autoScrollEnabled: Boolean = false
     private var autoScrollOnProgressLiveData = MutableLiveData<Boolean>()
-    private var sliderBannerViewInteraction: SliderBannerViewInteraction? = null
+    private var discoveryBannerViewInteraction: DiscoveryBannerViewInteraction? = null
 
     init {
-        View.inflate(context, R.layout.widget_slider_banner, this)
+        View.inflate(context, R.layout.widget_recycler_view, this)
         getDataFromAttrs(attrs)
     }
 
     private fun getDataFromAttrs(attrs: AttributeSet?) {
         attrs?.let {
-            context.theme.obtainStyledAttributes(attrs, R.styleable.SliderBannerView, 0, 0).apply {
+            context.theme.obtainStyledAttributes(attrs, R.styleable.DiscoveryBannerView, 0, 0).apply {
                 try {
-                    autoScrollEnabled = getBoolean(R.styleable.SliderBannerView_autoScroll, true)
+                    autoScrollEnabled = getBoolean(R.styleable.DiscoveryBannerView_autoScroll, true)
                 } finally {
                     recycle()
                 }
@@ -48,9 +48,9 @@ class SliderBannerView @JvmOverloads constructor(context: Context, attrs: Attrib
         if (state is Bundle) {
             setAutoScrollOnProgressValue(state.getBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS))
             if (isAutoScrollOnProgress()) {
-                sliderBannerViewInteraction?.attachAndStartScrolling()
+                discoveryBannerViewInteraction?.startScrolling()
             } else {
-                sliderBannerViewInteraction?.detachAndStopScrolling()
+                discoveryBannerViewInteraction?.stopScrolling()
             }
             savedState = state.getParcelable(SAVED)
         }
@@ -70,21 +70,22 @@ class SliderBannerView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        sliderBannerViewInteraction?.detachAndStopScrolling()
+        discoveryBannerViewInteraction?.stopScrolling()
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        sliderBannerViewInteraction?.attachAndStartScrolling()
+        discoveryBannerViewInteraction?.startScrolling()
     }
 
-    interface SliderBannerViewInteraction {
-        fun attachAndStartScrolling()
-        fun detachAndStopScrolling()
+    interface DiscoveryBannerViewInteraction {
+        fun attachRecyclerView()
+        fun startScrolling()
+        fun stopScrolling()
     }
 
-    fun setSliderBannerViewInteraction(sliderBannerViewInteraction: SliderBannerViewInteraction) {
-        this.sliderBannerViewInteraction = sliderBannerViewInteraction
+    fun setCarouselBannerViewInteraction(discoveryBannerViewInteraction: DiscoveryBannerViewInteraction) {
+        this.discoveryBannerViewInteraction = discoveryBannerViewInteraction
     }
 
     fun setAutoScrollOnProgressValue(value: Boolean) {

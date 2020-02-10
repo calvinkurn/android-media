@@ -36,7 +36,7 @@ abstract class BannerPagerSnapHelper(private val bannerRecyclerView: RecyclerVie
         }
     }
 
-    private fun startAutoScrollBanner() {
+    fun startAutoScrollBanner() {
         if (isAutoScrollEnabled() && bannerHandler != null && runnableScrollBanner != null && !isAutoScrollOnProgress()) {
             setAutoScrollOnProgress(true)
             bannerHandler?.postDelayed(runnableScrollBanner, SLIDE_DELAY)

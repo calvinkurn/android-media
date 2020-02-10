@@ -13,15 +13,15 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.BannerDotIndicator
 import com.tokopedia.discovery2.viewcontrollers.customview.BannerPagerSnapHelper
-import com.tokopedia.discovery2.viewcontrollers.customview.CarouselBannerView
+import com.tokopedia.discovery2.viewcontrollers.customview.DiscoveryBannerView
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.widget_carousel_banner.view.*
+import kotlinx.android.synthetic.main.widget_recycler_view.view.*
 
-class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), CarouselBannerView.CarouselBannerViewInteraction {
+class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), DiscoveryBannerView.DiscoveryBannerViewInteraction {
 
     private val carouselBannerTitle: Typography = itemView.findViewById(R.id.title)
-    private val carouselBannerView: CarouselBannerView = itemView.findViewById(R.id.carousel_banner_view)
+    private val discoveryBannerView: DiscoveryBannerView = itemView.findViewById(R.id.carousel_banner_view)
     private lateinit var carouselBannerViewModel: CarouselBannerViewModel
     private var carouselBannerRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
     private var carouselBannerPagerSnapHelper: CarouselBannerPagerSnapHelper? = null
@@ -31,7 +31,8 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
         fragment.context?.let {
             bannerDotIndicator = getBannerDotIndicator(it)
         }
-        carouselBannerView.setCarouselBannerViewInteraction(this)
+        discoveryBannerView.setCarouselBannerViewInteraction(this)
+        attachRecyclerView()
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -40,24 +41,30 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun setUpObservers() {
-        carouselBannerViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            carouselBannerTitle.setTextAndCheckShow(item.title)
-        })
+        if (!carouselBannerViewModel.getComponentLiveData().hasActiveObservers()) {
+            carouselBannerViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+                carouselBannerTitle.setTextAndCheckShow(item.title)
+            })
+        }
 
-        carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            carouselBannerRecycleAdapter.setDataList(item)
-        })
+        if (!carouselBannerViewModel.getListDataLiveData().hasActiveObservers()) {
+            carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+                carouselBannerRecycleAdapter.setDataList(item)
+            })
+        }
 
-        carouselBannerViewModel.getSeeAllButtonLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            it?.let {
-                bannerDotIndicator.setBtnAppLink(it)
-            }
-        })
+        if (carouselBannerViewModel.getSeeAllButtonLiveData().hasActiveObservers()) {
+            carouselBannerViewModel.getSeeAllButtonLiveData().observe(fragment.viewLifecycleOwner, Observer {
+                it?.let {
+                    bannerDotIndicator.setBtnAppLink(it)
+                }
+            })
+        }
     }
 
-    override fun attachAndStartScrolling() {
-        carouselBannerView.apply {
-            bannerCarouselRecyclerView.apply {
+    override fun attachRecyclerView() {
+        discoveryBannerView.apply {
+            bannerRecyclerView.apply {
                 adapter = carouselBannerRecycleAdapter
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                 carouselBannerPagerSnapHelper = CarouselBannerPagerSnapHelper(this)
@@ -65,6 +72,10 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
                 addItemDecoration(bannerDotIndicator)
             }
         }
+    }
+
+    override fun startScrolling() {
+        carouselBannerPagerSnapHelper?.startAutoScrollBanner()
     }
 
     private fun getBannerDotIndicator(context: Context): BannerDotIndicator {
@@ -78,23 +89,23 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
         }
     }
 
-    override fun detachAndStopScrolling() {
+    override fun stopScrolling() {
         carouselBannerPagerSnapHelper?.stopAutoScrollBanner()
     }
 
     inner class CarouselBannerPagerSnapHelper(recyclerView: RecyclerView) : BannerPagerSnapHelper(recyclerView) {
         override fun setAutoScrollOnProgress(autoScrollOnProgress: Boolean) {
-            carouselBannerView.apply {
+            discoveryBannerView.apply {
                 setAutoScrollOnProgressValue(autoScrollOnProgress)
             }
         }
 
         override fun isAutoScrollEnabled(): Boolean {
-            return carouselBannerView.getAutoScrollEnabled()
+            return discoveryBannerView.getAutoScrollEnabled()
         }
 
         override fun isAutoScrollOnProgress(): Boolean {
-            return carouselBannerView.getAutoScrollOnProgressLiveData().value ?: false
+            return discoveryBannerView.getAutoScrollOnProgressLiveData().value ?: false
         }
     }
 }
