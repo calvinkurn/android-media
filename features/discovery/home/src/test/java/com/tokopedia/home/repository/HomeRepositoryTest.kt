@@ -4,10 +4,7 @@ import com.tokopedia.createHomeRepositoryImpl
 import com.tokopedia.createHomeRepositoryTestInstance
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
-import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.home.beranda.data.datasource.remote.PlayRemoteDataSource
 import com.tokopedia.home.beranda.data.repository.HomeRepository
-import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import io.mockk.coEvery
