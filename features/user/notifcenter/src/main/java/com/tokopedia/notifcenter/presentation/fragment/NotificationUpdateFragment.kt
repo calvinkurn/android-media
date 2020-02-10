@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -54,24 +53,23 @@ import javax.inject.Inject
 /**
  * @author : Steven 10/04/19
  */
-class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
+open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         NotificationUpdateContract.View,
         NotificationItemListener,
         NotificationUpdateFilterAdapter.FilterAdapterListener,
         NotificationUpdateLongerTextFragment.LongerContentListener {
 
-    private var cursor = ""
+    var cursor = ""
+    var isFirstLoaded = true
     private var lastItem = 0
     private var markAllReadCounter = 0L
-    private var isFirstLoaded = true
-    private var isSellerDataFiltered = false
 
     private lateinit var bottomActionView: BottomActionView
 
-    private lateinit var filterRecyclerView: RecyclerView
+    lateinit var filterRecyclerView: RecyclerView
     private lateinit var longerTextDialog: BottomSheetDialogFragment
-    private var filterAdapter: NotificationUpdateFilterAdapter? = null
+    var filterAdapter: NotificationUpdateFilterAdapter? = null
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return NotificationUpdateTypeFactoryImpl(this)
@@ -80,9 +78,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     @Inject lateinit var presenter: NotificationUpdatePresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
 
-    private var notificationUpdateListener: NotificationUpdateListener? = null
-
-    private val _adapter by lazy { adapter as NotificationUpdateAdapter }
+    var notificationUpdateListener: NotificationUpdateListener? = null
+    val notificationUpdateAdapter by lazy { adapter as NotificationUpdateAdapter }
 
     interface NotificationUpdateListener {
         fun onSuccessLoadNotifUpdate()
@@ -153,23 +150,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         filterRecyclerView.addItemDecoration(ChipFilterItemDivider(context))
     }
 
-    private fun initSellerApp() {
-        isSellerDataFiltered = true
-        val filter = HashMap<String, Int>()
-        filter[FILTER_SELLER_TYPE_KEY] = FILTER_SELLER_TYPE_VALUE
-        updateFilter(filter)
-    }
-
     override fun updateFilter(filter: HashMap<String, Int>) {
-        if (GlobalConfig.isSellerApp()) {
-            val filterSeller = HashMap<String, Int>()
-            filterSeller[FILTER_SELLER_TYPE_KEY] = FILTER_SELLER_TYPE_VALUE
-            filterSeller[FILTER_SELLER_TAG_KEY] = filter[FILTER_SELLER_TAG_KEY] ?:
-                    NotificationUpdateFilterAdapter.NONE_SELECTED_POSITION
-            presenter.updateFilter(filterSeller)
-        } else {
-            presenter.updateFilter(filter)
-        }
+        presenter.updateFilter(filter)
         cursor = ""
         loadInitialData()
     }
@@ -231,10 +213,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    private fun onSuccessInitiateData(): (NotificationViewData) -> Unit {
+    open fun onSuccessInitiateData(): (NotificationViewData) -> Unit {
         return {
             hideLoading()
-            _adapter.removeEmptyState()
+            notificationUpdateAdapter.removeEmptyState()
 
             if (isFirstLoaded && it.list.isEmpty()) {
                 filterRecyclerView.hide()
@@ -242,7 +224,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
-                _adapter.addElement(EmptyDataStateProvider.emptyData())
+                notificationUpdateAdapter.addElement(EmptyDataStateProvider.emptyData())
             } else {
                 val canLoadMore = it.paging.hasNext
                 if (canLoadMore && !it.list.isEmpty()) {
@@ -255,30 +237,22 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                 isFirstLoaded = false
                 filterRecyclerView.show()
 
-                _adapter.addElement(it.list)
+                notificationUpdateAdapter.addElement(it.list)
                 updateScrollListenerState(canLoadMore)
 
-                if (_adapter.dataSize < minimumScrollableNumOfItems
+                if (notificationUpdateAdapter.dataSize < minimumScrollableNumOfItems
                         && endlessRecyclerViewScrollListener != null && canLoadMore) {
                     endlessRecyclerViewScrollListener.loadMoreNextPage()
                 }
-
-                if (GlobalConfig.isSellerApp() && !isSellerDataFiltered) {
-                    initSellerApp()
-                }
             }
         }
     }
 
-    private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
+    open fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
-            if (GlobalConfig.isSellerApp() && it.isNotEmpty()) {
-                it.removeAt(0)
-            }
             filterAdapter?.updateData(it)
         }
     }
-
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
@@ -416,9 +390,5 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         const val PARAM_CTA_APPLINK = "cta applink"
         const val PARAM_BUTTON_TEXT = "button text"
         const val PARAM_TEMPLATE_KEY = "template key"
-
-        const val FILTER_SELLER_TYPE_KEY = "typeId"
-        const val FILTER_SELLER_TYPE_VALUE = 2
-        const val FILTER_SELLER_TAG_KEY = "tagId"
     }
 }

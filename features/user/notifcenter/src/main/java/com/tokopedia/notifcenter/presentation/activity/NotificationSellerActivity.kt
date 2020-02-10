@@ -4,16 +4,16 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
+import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateSellerFragment
 
 /**
- * Created by faisalramd on 05/02/19.
+ * Created by faisalramd on 05/02/20.
  */
 
 class NotificationSellerActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
-        return NotificationUpdateFragment()
+        return NotificationUpdateSellerFragment()
     }
 
     companion object {
