@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.test
+package com.tokopedia.productcard.test.grid
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView
@@ -8,17 +8,21 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.productcard.test.ProductCardActivityTest.ViewHolder
+import com.tokopedia.productcard.test.R
+import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest.ViewHolder
+import com.tokopedia.productcard.test.isDisplayedWithText
+import com.tokopedia.productcard.test.productCardInPosition
+import com.tokopedia.productcard.test.productCardModelTestData
 import org.hamcrest.Matcher
 import org.junit.Rule
 import org.junit.Test
 
 
-internal class ProductCardTest {
+internal class ProductCardGridTest {
 
     @Rule
     @JvmField
-    val activityTestRule = ActivityTestRule<ProductCardActivityTest>(ProductCardActivityTest::class.java)
+    val activityTestRule = ActivityTestRule<ProductCardGridActivityTest>(ProductCardGridActivityTest::class.java)
 
     @Test
     fun testProductCardGrid() {
@@ -40,7 +44,7 @@ internal class ProductCardTest {
     }
 
     private fun getProductCardMatchersPosition0(): Map<Int, Matcher<View?>> {
-        val productCardModel = productCardModelGridTestData[0]
+        val productCardModel = productCardModelTestData[0]
 
         return mutableMapOf<Int, Matcher<View?>>().also {
             it[R.id.imageProduct] = isDisplayed()
@@ -57,7 +61,7 @@ internal class ProductCardTest {
     }
 
     private fun getProductCardMatchersPosition1(): Map<Int, Matcher<View?>> {
-        val productCardModel = productCardModelGridTestData[1]
+        val productCardModel = productCardModelTestData[1]
 
         return mutableMapOf<Int, Matcher<View?>>().also {
             it[R.id.imageProduct] = isDisplayed()
@@ -76,7 +80,7 @@ internal class ProductCardTest {
     }
 
     private fun getProductCardMatchersPosition2(): Map<Int, Matcher<View?>> {
-        val productCardModel = productCardModelGridTestData[2]
+        val productCardModel = productCardModelTestData[2]
 
         return mutableMapOf<Int, Matcher<View?>>().also {
             it[R.id.imageProduct] = isDisplayed()
@@ -94,7 +98,7 @@ internal class ProductCardTest {
 
     private fun getProductCardMatchersPosition3(): Map<Int, Matcher<View?>> {
         val position = 3
-        val productCardModel = productCardModelGridTestData[position]
+        val productCardModel = productCardModelTestData[position]
 
         val labelProductStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position $position has no label status")
         val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
@@ -121,7 +125,7 @@ internal class ProductCardTest {
 
     private fun getProductCardMatchersPosition4(): Map<Int, Matcher<View?>> {
         val position = 4
-        val productCardModel = productCardModelGridTestData[position]
+        val productCardModel = productCardModelTestData[position]
 
         val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
 
@@ -144,7 +148,7 @@ internal class ProductCardTest {
 
     private fun getProductCardMatchersPosition5(): Map<Int, Matcher<View?>> {
         val position = 5
-        val productCardModel = productCardModelGridTestData[position]
+        val productCardModel = productCardModelTestData[position]
 
         val labelProductStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position $position has no label status")
         val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
@@ -167,7 +171,7 @@ internal class ProductCardTest {
 
     private fun getProductCardMatchersPosition6(): Map<Int, Matcher<View?>> {
         val position = 6
-        val productCardModel = productCardModelGridTestData[position]
+        val productCardModel = productCardModelTestData[position]
 
         val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
 
@@ -188,7 +192,7 @@ internal class ProductCardTest {
 
     private fun getProductCardMatchersPosition7(): Map<Int, Matcher<View?>> {
         val position = 7
-        val productCardModel = productCardModelGridTestData[position]
+        val productCardModel = productCardModelTestData[position]
 
         val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
 
@@ -209,7 +213,7 @@ internal class ProductCardTest {
 
     private fun getProductCardMatchersPosition8(): Map<Int, Matcher<View?>> {
         val position = 8
-        val productCardModel = productCardModelGridTestData[position]
+        val productCardModel = productCardModelTestData[position]
 
         val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
 

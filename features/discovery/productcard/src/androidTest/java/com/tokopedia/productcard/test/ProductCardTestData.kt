@@ -9,7 +9,7 @@ private const val officialStoreBadgeImageUrl = "https://ecs7.tokopedia.net/img/o
 private const val freeOngkirImageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
 private const val veryLongProductName = "2 Lines Product Name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla"
 
-internal val productCardModelGridTestData = mutableListOf<ProductCardModel>().also {
+internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
     it.add(0, ProductCardModel(
             productName = "Product Name",
             productImageUrl = productImageUrl,

@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.test
+package com.tokopedia.productcard.test.grid
 
 import android.graphics.Rect
 import android.os.Bundle
@@ -10,12 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.productcard.test.R
+import com.tokopedia.productcard.test.productCardModelTestData
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v3.ProductCardGridView
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
-internal class ProductCardActivityTest: AppCompatActivity() {
+internal class ProductCardGridActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +48,11 @@ internal class ProductCardActivityTest: AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return productCardModelGridTestData.size
+            return productCardModelTestData.size
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(productCardModelGridTestData[position])
+            holder.bind(productCardModelTestData[position])
         }
     }
 

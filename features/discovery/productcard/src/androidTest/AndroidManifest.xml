@@ -9,7 +9,7 @@
         tools:replace="android:label">
 
         <activity
-            android:name=".ProductCardActivityTest"
+            android:name=".grid.ProductCardGridActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>
