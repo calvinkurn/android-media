@@ -553,22 +553,22 @@ class ShopPageFragment :
         titles = when {
             isShowFeed and isOfficialStore -> {
                 listOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.shop_info_title_tab_product),
+                        getString(R.string.new_shop_info_title_tab_product),
                         getString(R.string.shop_info_title_tab_feed),
                         getString(R.string.shop_info_title_tab_review))
             }
             isShowFeed -> {
-                listOf(getString(R.string.shop_info_title_tab_product),
+                listOf(getString(R.string.new_shop_info_title_tab_product),
                         getString(R.string.shop_info_title_tab_feed),
                         getString(R.string.shop_info_title_tab_review))
             }
             isOfficialStore -> {
                 listOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.shop_info_title_tab_product),
+                        getString(R.string.new_shop_info_title_tab_product),
                         getString(R.string.shop_info_title_tab_review))
             }
             else -> {
-                listOf(getString(R.string.shop_info_title_tab_product),
+                listOf(getString(R.string.new_shop_info_title_tab_product),
                         getString(R.string.shop_info_title_tab_review))
             }
         }
