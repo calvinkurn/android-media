@@ -79,16 +79,18 @@ class ProductRecommendationViewHolder(private val view: View,
                     }
 
                     override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        val productRecommendation = product.recommendationItemList[adapterPosition]
-                        val topAdsImageUrl = productRecommendation.trackerImageUrl
-                        if (productCardModel.isTopAds) {
-                            ImpresionTask().execute(topAdsImageUrl)
-                        }
+                        if (product.recommendationItemList.size > adapterPosition) {
+                            val productRecommendation = product.recommendationItemList[adapterPosition]
+                            val topAdsImageUrl = productRecommendation.trackerImageUrl
+                            if (productCardModel.isTopAds) {
+                                ImpresionTask().execute(topAdsImageUrl)
+                            }
 
-                        listener.eventRecommendationImpression(productRecommendation,
-                                adapterPosition,
-                                product.pageName,
-                                product.title)
+                            listener.eventRecommendationImpression(productRecommendation,
+                                    adapterPosition,
+                                    product.pageName,
+                                    product.title)
+                        }
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf())

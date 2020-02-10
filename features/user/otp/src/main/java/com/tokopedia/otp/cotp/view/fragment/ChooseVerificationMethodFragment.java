@@ -30,7 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.component.Dialog;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.analytics.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
@@ -46,6 +46,8 @@ import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 /**
  * @author by nisie on 11/29/17.
@@ -200,19 +202,22 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     private void showInterruptDialog(final MethodItem methodItem) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(methodItem.getPopUpHeader());
-        dialog.setDesc(methodItem.getPopUpBody());
-        dialog.setBtnOk(getString(R.string.btn_continue));
-        dialog.setOnOkClickListener(v -> {
+        dialog.setDescription(methodItem.getPopUpBody());
+        dialog.setPrimaryCTAText(getString(R.string.btn_continue));
+        dialog.setPrimaryCTAClickListener(() -> {
             dialog.dismiss();
             if (getActivity() instanceof VerificationActivity) {
                 ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
             }
+            return Unit.INSTANCE;
         });
-        dialog.setBtnCancel(getString(R.string.btn_cancel));
-        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        dialog.setSecondaryCTAText(getString(R.string.btn_cancel));
+        dialog.setSecondaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
+        });
         dialog.show();
     }
 
