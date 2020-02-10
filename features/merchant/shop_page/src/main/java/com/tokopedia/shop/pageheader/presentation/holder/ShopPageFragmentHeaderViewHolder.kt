@@ -25,12 +25,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
                                        private val context: Context) {
     private var isShopFavourited = false
-    private var isShopRequestedModerate = false
 
     companion object {
-        private const val IS_MODERATED = 1
-        private const val MODERATE_OPTION_ONE = 0
-        private const val MODERATE_OPTION_TWO = 1
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
     }
 
@@ -89,12 +85,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         updateFavoriteButton()
     }
 
-    fun updateViewModerateStatus(moderateStatus: Int, shopInfo: ShopInfo, isMyShop: Boolean) {
-        isShopRequestedModerate = moderateStatus == IS_MODERATED
-        updateViewShopStatus(shopInfo, isMyShop)
-    }
-
-    private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
+    fun updateShopTicker(shopInfo: ShopInfo, isMyShop: Boolean) {
         if(shouldShowShopStatusTicker(shopInfo.statusInfo.statusTitle, shopInfo.statusInfo.statusMessage)){
             showShopStatusTicker(shopInfo, isMyShop)
         }else{

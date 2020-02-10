@@ -376,27 +376,27 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : DataEndlessScrollListener(recyclerView?.layoutManager, shopProductAdapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
+                shopProductAdapter.showLoading()
                 loadData(page)
             }
         }
     }
 
-    private fun renderProductList(list: List<ShopProductViewModel>, hasNextPage: Boolean) {
+    private fun renderProductList(productList: List<ShopProductViewModel>, hasNextPage: Boolean) {
         shopInfo?.let {
-            if (list.isNotEmpty()) {
+            if (productList.isNotEmpty()) {
                 shopPageTracking?.impressionProductList(
                         viewModel.isMyShop(it.shopCore.shopID),
                         if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                         selectedEtalaseName, CustomDimensionShopPageAttribution.create(it.shopCore.shopID,
                         it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution),
-                        list, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name, it.freeOngkir.isActive
+                        productList, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name, it.freeOngkir.isActive
                 )
             }
             if (!TextUtils.isEmpty(keyword) && prevAnalyticKeyword != keyword) {
                 shopPageTracking?.searchKeyword(viewModel.isMyShop(it.shopCore.shopID),
                         keyword,
-                        list.isNotEmpty(),
+                        productList.isNotEmpty(),
                         CustomDimensionShopPage.create(it.shopCore.shopID,
                                 it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
                 prevAnalyticKeyword = keyword
@@ -409,15 +409,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductAdapter.clearProductList()
             endlessRecyclerViewScrollListener.resetState()
         }
-        shopProductAdapter.setProductListDataModel(list)
+        shopProductAdapter.setProductListDataModel(productList)
         updateScrollListenerState(hasNextPage)
 
         if (shopProductAdapter.shopProductViewModelList.size == 0) {
-            shopProductAdapter.addElement(emptyDataViewModel)
+            shopProductAdapter.addEmptyDataModel(emptyDataViewModel)
         } else {
             isLoadingInitialData = false
         }
-        shopProductAdapter.notifyDataSetChanged()
     }
 
     override fun onItemClicked(baseShopProductViewModel: BaseShopProductViewModel) {

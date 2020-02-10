@@ -135,13 +135,13 @@ abstract public class BaseAnalyticsDebuggerFragment
 
     @Override
     public void onLoadMoreCompleted(List<Visitable> visitables) {
-        renderList(visitables, true);
+        renderList(visitables, !visitables.isEmpty());
     }
 
     @Override
     public void onReloadCompleted(List<Visitable> visitables) {
         isLoadingInitialData = true;
-        renderList(visitables, true);
+        renderList(visitables, !visitables.isEmpty());
     }
 
     @Override

@@ -22,12 +22,14 @@ import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -56,6 +58,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = job + dispatchers.main
 
+    private val cornerRadius = 16f.dpToPx()
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -66,6 +70,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     private lateinit var viewModel: PlayVideoViewModel
 
     private var channelId: String = ""
+
+    private lateinit var containerVideo: RoundedConstraintLayout
 
     override fun getScreenName(): String = "Play Video"
 
@@ -88,6 +94,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_video, container, false)
+        containerVideo = view.findViewById(R.id.container_video)
         initComponents(view as ViewGroup)
         return view
     }
@@ -130,6 +137,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun observeKeyboardState() {
         playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
+            if (::containerVideo.isInitialized) {
+                if (it.isShown) containerVideo.setCornerRadius(cornerRadius)
+                else containerVideo.setCornerRadius(0f)
+            }
+
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))

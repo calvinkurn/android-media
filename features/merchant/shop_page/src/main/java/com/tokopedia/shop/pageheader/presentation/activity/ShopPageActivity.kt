@@ -75,9 +75,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
             }
         }
 
-        private fun openNewShopPageIfEnabled(context: Context) {
+        private fun openNewShopPageIfEnabled(context: Context, uri: Uri.Builder, extras: Bundle) {
             if (isNewShopPageEnabled(context)) {
                 val intent = Intent(context, ShopPageActivity::class.java)
+                intent.setData(uri.build())
+                        .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                        .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                        .putExtras(extras)
                 context.startActivity(intent)
             }
         }
@@ -111,7 +115,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         @DeepLink(ApplinkConst.SHOP_INFO)
         fun getCallingIntentInfoSelected(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            openNewShopPageIfEnabled(context)
+            openNewShopPageIfEnabled(context, uri, extras)
 
             return getShopInfoIntent(context)
                     .setData(uri.build())
@@ -126,7 +130,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         @DeepLink(ApplinkConst.SHOP_NOTE)
         fun getCallingIntentNoteSelected(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            openNewShopPageIfEnabled(context)
+            openNewShopPageIfEnabled(context, uri, extras)
 
             return getShopInfoIntent(context)
                     .setData(uri.build())
