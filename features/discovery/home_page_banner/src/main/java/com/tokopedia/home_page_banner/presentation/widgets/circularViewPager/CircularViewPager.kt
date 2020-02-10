@@ -6,7 +6,8 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.*
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING
 import com.tokopedia.home_page_banner.R
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -46,7 +47,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
         if ((adapter != null) || isAutoScroll || (adapter?.itemCount ?: 0 >= 2)) {
-            if (!isInfinite && adapter!!.itemCount - 1 == currentPagePosition) {
+            if (!isInfinite && (adapter?.itemCount ?: 0) - 1 == currentPagePosition) {
                 currentPagePosition = 0
             } else {
                 currentPagePosition++
@@ -60,14 +61,6 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     private var previousScrollState = SCROLL_STATE_IDLE
     private var scrollState = SCROLL_STATE_IDLE
     private var isToTheRight = true
-    /**
-     * This boolean indicates whether LoopingViewPager needs to continuously tell the indicator about
-     * the progress of the scroll, even after onIndicatorPageChange().
-     * If indicator is smart, it should be able to finish the animation by itself after we told it that a position has been selected.
-     * If indicator is not smart, then LoopingViewPager will continue to fire onIndicatorProgress() to update the indicator
-     * transition position.
-     */
-    private var isIndicatorSmart = false
 
     constructor(context: Context) : super(context) {
         init()
@@ -94,9 +87,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
             override fun onPageSelected(position: Int) {
                 previousPosition = currentPagePosition
                 currentPagePosition = position
-                if (indicatorPageChangeListener != null) {
-                    indicatorPageChangeListener!!.onIndicatorPageChange(indicatorPosition)
-                }
+                indicatorPageChangeListener?.onIndicatorPageChange(indicatorPosition)
                 if (isAutoScrollResumed) {
                     masterJob.cancelChildren()
                     autoScrollLauncher()
@@ -120,28 +111,17 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
                     if (isToTheRight) positionOffset else 1 - positionOffset
                 }
                 if (progress == 0f || progress > 1) return
-                if (isIndicatorSmart) {
-                    if (scrollState != SCROLL_STATE_DRAGGING) return
-                    indicatorPageChangeListener!!.onIndicatorProgress(realPosition, progress)
-                } else {
-                    if (scrollState == SCROLL_STATE_DRAGGING) {
-                        if (isToTheRight && abs(realPosition - currentPagePosition) == 2 ||
-                                !isToTheRight && realPosition == currentPagePosition) { //If this happens, it means user is fast scrolling where onPageSelected() is not fast enough
+                if (scrollState == SCROLL_STATE_DRAGGING) {
+                    if (isToTheRight && abs(realPosition - currentPagePosition) == 2 ||
+                            !isToTheRight && realPosition == currentPagePosition) { //If this happens, it means user is fast scrolling where onPageSelected() is not fast enough
 //to catch up with the scroll, thus produce wrong position value.
-                            return
-                        }
+                        return
                     }
-                    indicatorPageChangeListener!!.onIndicatorProgress(realPosition, progress)
                 }
             }
 
             override fun onPageScrollStateChanged(state: Int) {
                 listener?.onPageScrollStateChanged(state)
-                if (!isIndicatorSmart) {
-                    if (scrollState == SCROLL_STATE_SETTLING && state == SCROLL_STATE_DRAGGING) {
-                        indicatorPageChangeListener?.onIndicatorProgress(getSelectingIndicatorPosition(isToTheRight), 1f)
-                    }
-                }
                 previousScrollState = scrollState
                 scrollState = state
                 if (state == SCROLL_STATE_IDLE) { // Below are code to achieve infinite scroll.
@@ -149,7 +129,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
                     if (isInfinite) {
                         resumeAutoScroll()
                         if (adapter == null) return
-                        val itemCount = adapter!!.itemCount
+                        val itemCount = adapter?.itemCount ?: 0
                         if (itemCount < 2) {
                             return
                         }
@@ -160,7 +140,6 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
                             viewPager.setCurrentItem(1, false) //Real first item
                         }
                     }
-                    indicatorPageChangeListener?.onIndicatorProgress(indicatorPosition, 1f)
                 } else if(state == SCROLL_STATE_DRAGGING){
                     pauseAutoScroll()
                 }
@@ -268,10 +247,6 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
         }
     }
 
-    fun setIndicatorSmart(isIndicatorSmart: Boolean) {
-        this.isIndicatorSmart = isIndicatorSmart
-    }
-
     fun setIndicatorPageChangeListener(callback: IndicatorPageChangeListener?) {
         indicatorPageChangeListener = callback
     }
@@ -281,7 +256,6 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     }
 
     interface IndicatorPageChangeListener {
-        fun onIndicatorProgress(selectingPosition: Int, progress: Float)
         fun onIndicatorPageChange(newIndicatorPosition: Int)
     }
 
