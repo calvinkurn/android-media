@@ -65,12 +65,13 @@ object TargetedPromotionAnalytics {
     }
 
     //7
-    fun claimSucceedPopup(){
+    fun claimSucceedPopup(label:String){
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = VIEW_TARGETED_PROMO_IRIS
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
-        map[KEY_EVENT_ACTION] = "click cek Kupon saya"
+        map[KEY_EVENT_ACTION] = "auto-apply case, when user has dismissed the dialog/pop-up after claiming coupon"
+        map[KEY_EVENT_LABEL] = label
         getTracker().sendGeneralEvent(map)
     }
 

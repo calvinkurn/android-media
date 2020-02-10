@@ -350,7 +350,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
                     if (messageList != null && messageList.isNotEmpty()) {
                         CustomToast.show(activityContext, messageList[0].toString())
-                        TargetedPromotionAnalytics.claimSucceedPopup()
+                        TargetedPromotionAnalytics.claimSucceedPopup(messageList[0].toString())
                     }
                 }
             }
