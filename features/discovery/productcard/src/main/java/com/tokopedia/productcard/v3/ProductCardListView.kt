@@ -29,10 +29,10 @@ class ProductCardListView: BaseCustomView {
     }
 
     fun setProductModel(productCardModel: ProductCardModel) {
-        imageProduct.loadImageRounded(productCardModel.productImageUrl)
+        imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
         renderProductCardContent(productCardModel)
 
-        imageThreeDots.showWithCondition(productCardModel.hasOptions)
+        imageThreeDots?.showWithCondition(productCardModel.hasOptions)
     }
 }

@@ -99,14 +99,21 @@ internal class ProductCardTest {
     }
 
     private fun getProductCardMatchersPosition3(): Map<Int, Matcher<View?>> {
-        val productCardModel = productCardModelSmallGridList[3]
+        val position = 3
+        val productCardModel = productCardModelSmallGridList[position]
 
-        val labelStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position 3 has no label status")
-        val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position 3 has no label price")
+        val labelProductStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position $position has no label status")
+        val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
+
+        val textGimmick = productCardModel.getTextGimmick() ?: throw Exception("Product Card Position $position has no text gimmick")
 
         return mutableMapOf<Int, Matcher<View?>>().also {
             it[R.id.imageProduct] = isDisplayed()
+            it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+            it[R.id.textTopAds] = isDisplayed()
+            it[R.id.textViewGimmick] = isDisplayedWithText(textGimmick.title)
             it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+            it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
             it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
             it[R.id.imageShopBadge] = isDisplayed()
             it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
@@ -115,9 +122,6 @@ internal class ProductCardTest {
             it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
             it[R.id.imageFreeOngkirPromo] = isDisplayed()
             it[R.id.imageThreeDots] = isDisplayed()
-            it[R.id.labelProductStatus] = isDisplayedWithText(labelStatus.title)
-            it[R.id.textTopAds] = isDisplayed()
-            it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         }
     }
 }

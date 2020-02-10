@@ -26,7 +26,8 @@ data class ProductCardModel (
         val isTopAds: Boolean = false,
         val ratingString: String = "",
         val hasOptions: Boolean = false,
-        val labelGroupList: List<Label> = listOf()
+        val labelGroupList: List<LabelGroup> = listOf(),
+        val textGroupList: List<TextGroup> = listOf()
 ) {
     var isProductSoldOut: Boolean = false
     var isProductPreOrder: Boolean = false
@@ -48,28 +49,45 @@ data class ProductCardModel (
             val imageUrl: String = ""
     )
 
-    fun getLabelProductStatus(): Label? {
-        return findLabel(LABEL_PRODUCT_STATUS)
+    data class LabelGroup(
+            val position: String = "",
+            val title: String = "",
+            val type: String = ""
+    )
+
+    data class TextGroup(
+            val position: String = "",
+            val type: String = "",
+            val weight: String = "",
+            val color: String = "",
+            val title: String = ""
+    )
+
+    fun getLabelProductStatus(): LabelGroup? {
+        return findLabelGroup(LABEL_PRODUCT_STATUS)
     }
 
-    fun getLabelGimmick(): Label? {
-        return findLabel(LABEL_GIMMICK)
+    fun getLabelPrice(): LabelGroup? {
+        return findLabelGroup(LABEL_PRICE)
     }
 
-    fun getLabelPrice(): Label? {
-        return findLabel(LABEL_PRICE)
+    private fun findLabelGroup(position: String): LabelGroup? {
+        return labelGroupList.find { it.position == position }
     }
 
-    // TODO:: Replace old label credibility
-    fun getLabelCredibility2(): Label? {
-        return findLabel(LABEL_CREDIBILITY)
+    fun getTextGimmick(): TextGroup? {
+        return findTextGroup(TEXT_GIMMICK)
     }
 
-    fun getLabelShipping(): Label? {
-        return findLabel(LABEL_SHIPPING)
+    fun getTextCredibility(): TextGroup? {
+        return findTextGroup(TEXT_CREDIBILITY)
     }
 
-    private fun findLabel(position: String): Label? {
-        return labelGroupList.findLast { it.position == position }
+    fun getTextShipping(): TextGroup? {
+        return findTextGroup(TEXT_SHIPPING)
+    }
+
+    private fun findTextGroup(position: String): TextGroup? {
+        return textGroupList.find { it.position == position }
     }
 }
