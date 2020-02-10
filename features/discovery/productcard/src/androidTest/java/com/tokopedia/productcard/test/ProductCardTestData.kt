@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.test
 
+import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardModel.*
 
@@ -8,7 +9,7 @@ private const val officialStoreBadgeImageUrl = "https://ecs7.tokopedia.net/img/o
 private const val freeOngkirImageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
 private const val veryLongProductName = "2 Lines Product Name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla"
 
-internal val productCardModelSmallGridList = mutableListOf<ProductCardModel>().also {
+internal val productCardModelGridTestData = mutableListOf<ProductCardModel>().also {
     it.add(0, ProductCardModel(
             productName = "Product Name",
             productImageUrl = productImageUrl,
@@ -67,11 +68,84 @@ internal val productCardModelSmallGridList = mutableListOf<ProductCardModel>().a
             isTopAds = true,
             hasOptions = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
-                labelGroups.add(LabelGroup(position = "status", title = "Preorder", type = "darkGrey"))
-                labelGroups.add(LabelGroup(position = "price", title = "Grosir", type = "lightGreen"))
+                labelGroups.add(LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = DARK_GREY))
+                labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN))
             },
             textGroupList = mutableListOf<TextGroup>().also { textGroups ->
-                textGroups.add(TextGroup(position = "gimmick", title = "Best Seller", type = "small", weight = "bold", color = "#FF8B00"))
+                textGroups.add(TextGroup(position = TEXT_GIMMICK, title = "Best Seller", type = SMALL, weight = BOLD, color = "#FF8B00"))
+            }
+    ))
+
+    it.add(4, ProductCardModel(
+            productName = veryLongProductName,
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingString = "4.5",
+            reviewCount = 60,
+            hasOptions = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
+            },
+            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
+                textGroups.add(TextGroup(position = TEXT_GIMMICK, title = "Sisa 5", type = SMALL, weight = BOLD, color = "#ef144a"))
+            }
+    ))
+
+    it.add(5, ProductCardModel(
+            productName = veryLongProductName,
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingString = "4.5",
+            reviewCount = 60,
+            hasOptions = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Stok habis", type = DARK_GREY))
+                labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
+            }
+    ))
+
+    it.add(6, ProductCardModel(
+            productName = veryLongProductName,
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            hasOptions = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
+            },
+            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
+                textGroups.add(TextGroup(position = TEXT_GIMMICK, title = "Terbaru", type = SMALL, weight = BOLD, color = "#ff8b00"))
+            }
+    ))
+
+    it.add(7, ProductCardModel(
+            productName = veryLongProductName,
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            hasOptions = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
+            },
+            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
+                textGroups.add(TextGroup(position = TEXT_CREDIBILITY, title = "Terjual 122", type = BODY_3, weight = BOLD, color = "#ae31353b"))
             }
     ))
 }

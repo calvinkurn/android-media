@@ -46,6 +46,8 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
         it.text = "(${productCardModel.reviewCount})"
     }
 
+    textViewCredibility?.init(productCardModel.getTextCredibility())
+
     imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.freeOngkir.isActive) {
         it.loadIcon(productCardModel.freeOngkir.imageUrl)
     }
