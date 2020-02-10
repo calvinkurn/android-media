@@ -105,7 +105,7 @@
         app:bav_label_2="@string/filter"
         app:layout_anchor="@id/recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal"
-        app:layout_behavior="com.tokopedia.seller.common.widget.QuickReturnFooterBehavior" />
+        app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior" />
 
 
     <LinearLayout
