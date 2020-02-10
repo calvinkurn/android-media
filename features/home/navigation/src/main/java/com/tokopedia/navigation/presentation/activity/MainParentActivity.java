@@ -239,17 +239,11 @@ public class MainParentActivity extends BaseActivity implements
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
 
-        initCategoryConfig();
-
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
             new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
         }
-    }
-
-    private void initCategoryConfig() {
-        ((GlobalNavRouter) getApplicationContext()).setCategoryAbTestingConfig();
     }
 
     @Override
@@ -576,6 +570,8 @@ public class MainParentActivity extends BaseActivity implements
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
+
+        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
     }
 
     @Override

@@ -10,6 +10,8 @@ public class SaldoDetailsConstants {
 
     public static final String SALDO_HELP_URL = "https://www.tokopedia.com/help/article/a-1709?refid=st-1005";
     public static final String SALDOLOCK_PAYNOW_URL = WEB_DOMAIN_URL + "fm/modal-toko/dashboard/pembayaran";
+    public static final String SALDO_HOLD_HELP_URL = WEB_DOMAIN_URL + "help/article/mengapa-saldo-saya-tidak-dapat-digunakan?refid=st-1235";
+    public static final String SALDO_HOLD_HELP_URL_TWO = WEB_DOMAIN_URL + "help/article/mengapa-saldo-saya-direview?refid=st-1235";
 
     public static long cacheDuration = TimeUnit.HOURS.toSeconds(1);
 

@@ -1,7 +1,7 @@
 package com.tokopedia.talk.common.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 
@@ -48,8 +48,8 @@ class TalkModule {
 
     @TalkScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @TalkScope
@@ -76,7 +76,7 @@ class TalkModule {
 
     @TalkScope
     @Provides
-    fun provideOkHttpClient(chuckInterceptor: ChuckInterceptor,
+    fun provideOkHttpClient(chuckInterceptor: ChuckerInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             debugInterceptor: DebugInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,

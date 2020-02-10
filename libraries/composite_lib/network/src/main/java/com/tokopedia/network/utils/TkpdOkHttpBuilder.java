@@ -42,7 +42,7 @@ public class TkpdOkHttpBuilder {
 
     private TkpdOkHttpBuilder addDebugInterceptor() {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            this.addInterceptor(new ChuckInterceptor(context));
+            this.addInterceptor(new ChuckerInterceptor(context));
             this.addInterceptor(getHttpLoggingInterceptor());
         }
 
