@@ -10,6 +10,7 @@ import com.google.android.gms.analytics.CampaignTrackingReceiver;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.router.CustomerRouter;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -39,6 +40,9 @@ public class InstallReceiver extends BroadcastReceiver {
                         new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
 
                         trackIfFromCampaignUrl(data.contextData, receiverData.intentData.getStringExtra(REFERRER));
+
+                        if (receiverData.contextData != null && receiverData.contextData.getApplicationContext() instanceof CustomerRouter.IrisInstallRouter)
+                            ((CustomerRouter.IrisInstallRouter) receiverData.contextData.getApplicationContext()).sendIrisInstallEvent();
                         return true;
                     }
                 })

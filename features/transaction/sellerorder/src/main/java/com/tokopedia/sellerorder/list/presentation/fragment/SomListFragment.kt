@@ -23,6 +23,9 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
@@ -84,6 +87,22 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkSearch: CoachMarkItem by lazy {
+        CoachMarkItem(rl_search_filter, getString(R.string.coachmark_search), getString(R.string.coachmark_search_info))
+    }
+
+    private val coachMarkProduct: CoachMarkItem by lazy {
+        CoachMarkItem(order_list_rv, getString(R.string.coachmark_product), getString(R.string.coachmark_product_info))
+    }
+
+    private val coachMarkFilter: CoachMarkItem by lazy {
+        CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
+    }
+
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private val ANIMATION_DURATION_IN_MILIS = 250L
@@ -106,12 +125,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var nextOrderId = 0
     private var onLoadMore = false
     private var isFilterButtonAnimating = false
+    private var _animator: Animator? = null
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
     }
 
     companion object {
+        private val TAG_COACHMARK = "coachMark"
         private const val REQUEST_FILTER = 2888
 
         @JvmStatic
@@ -182,16 +203,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             addOnScrollListener(scrollListener)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    Handler().postDelayed({
-                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                            filter_action_button.show()
-                        }
-                    }, 2000)
-                }
-
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    if (dy > 0) {
-                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        _animator?.end()
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
                             duration = ANIMATION_DURATION_IN_MILIS
                             addListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(p0: Animator?) {
@@ -207,6 +221,37 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                                 override fun onAnimationEnd(animation: Animator) {
                                     isFilterButtonAnimating = false
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
+                            }
+                        }
+                    }
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) {
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                    _animator = null
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                    _animator = animation
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                    _animator = null
+
                                 }
                             })
                             if (!isFilterButtonAnimating) {
@@ -248,7 +293,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         search_input_view?.setResetListener(this)
         search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
 
-        filter_action_button.setOnClickListener {
+        filter_action_button?.setOnClickListener {
             SomAnalytics.eventClickFilterButtonOnOrderList()
             val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
             startActivityForResult(intentFilter, REQUEST_FILTER)
@@ -443,7 +488,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Success -> {
                     orderList = it.data
                     nextOrderId = orderList.cursorOrderId
-                    if (orderList.orders.isNotEmpty()) renderOrderList()
+                    if (orderList.orders.isNotEmpty()) {
+                        renderOrderList()
+                        showCoachMarkProducts()
+                    }
+
                     else {
                         if (isFilterApplied) {
                             if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
@@ -459,6 +508,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             }
                         } else {
                             renderCekPeluang()
+                            showCoachMarkProductsEmpty()
                         }
                     }
                 }
@@ -471,8 +521,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderOrderList() {
         refreshHandler?.finishRefresh()
-        empty_state_order_list.visibility = View.GONE
-        order_list_rv.visibility = View.VISIBLE
+        empty_state_order_list?.visibility = View.GONE
+        order_list_rv?.visibility = View.VISIBLE
 
         if (!onLoadMore) {
             somListItemAdapter.somItemList = orderList.orders.toMutableList()
@@ -481,6 +531,19 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             scrollListener.updateStateAfterGetData()
         }
         somListItemAdapter.notifyDataSetChanged()
+
+    }
+
+    private fun showCoachMarkProducts(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+        }
+    }
+
+    private fun showCoachMarkProductsEmpty(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
+        }
     }
 
     private fun renderFilterEmpty(title: String, desc: String) {

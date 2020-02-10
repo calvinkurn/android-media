@@ -109,17 +109,6 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                 } else {
                     getView().onSuccessFilter(catalogFilterOuter.getFilter());
                 }
-
-                //handling for lucky egg data
-                TokenDetailOuter tokenDetail = graphqlResponse.getData(TokenDetailOuter.class);
-                TokoPointDetailEntity data = graphqlResponse.getData(TokoPointDetailEntity.class);
-                if (tokenDetail != null
-                        && tokenDetail.getTokenDetail() != null
-                        && tokenDetail.getTokenDetail().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS
-                        && data != null
-                        && data.getTokoPoints() != null) {
-                    getView().onSuccessTokenDetail(tokenDetail.getTokenDetail(), data.getTokoPoints().getLobs());
-                }
             }
         });
     }

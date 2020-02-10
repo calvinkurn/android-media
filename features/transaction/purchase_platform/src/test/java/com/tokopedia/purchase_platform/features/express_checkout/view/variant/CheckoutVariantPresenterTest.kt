@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant
 
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.purchase_platform.features.express_checkout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.purchase_platform.features.express_checkout.domain.mapper.checkout.CheckoutDomainModelMapper

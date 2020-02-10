@@ -284,4 +284,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
 
     override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
+
+    override fun onClickAddToWishList(productId: String, success: () -> Unit) { }
+
+    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) { }
 }

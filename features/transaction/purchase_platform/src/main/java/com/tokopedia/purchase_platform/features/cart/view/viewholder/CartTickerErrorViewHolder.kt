@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemTickerErrorHolderData
 import kotlinx.android.synthetic.main.holder_item_cart_ticker_error.view.*
 
 /**

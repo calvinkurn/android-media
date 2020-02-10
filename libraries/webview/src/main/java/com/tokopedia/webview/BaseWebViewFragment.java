@@ -30,6 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -481,8 +482,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
             if (intent!= null) {
-                hasMoveToNativePage = true;
-                startActivity(intent);
+                try {
+                    hasMoveToNativePage = true;
+                    startActivity(intent);
+                } catch (Exception ignored) { }
                 return true;
             } else {
                 // logging here, url might return blank page
