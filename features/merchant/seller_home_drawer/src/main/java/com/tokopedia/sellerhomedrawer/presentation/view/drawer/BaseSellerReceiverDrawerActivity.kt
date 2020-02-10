@@ -47,7 +47,7 @@ abstract class BaseSellerReceiverDrawerActivity: SellerDrawerPresenterActivity()
         return super.onOptionsItemSelected(item)
     }
 
-    protected fun startDrawerGetNotificationServiceOnResume() {
+    protected open fun startDrawerGetNotificationServiceOnResume() {
         SellerDrawerGetNotificationService.startService(this, true)
     }
 

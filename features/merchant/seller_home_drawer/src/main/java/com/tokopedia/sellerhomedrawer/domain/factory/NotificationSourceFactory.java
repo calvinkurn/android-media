@@ -10,10 +10,6 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-/**
- * Created by nisie on 5/5/17.
- */
-
 public class NotificationSourceFactory {
 
     private final Context context;

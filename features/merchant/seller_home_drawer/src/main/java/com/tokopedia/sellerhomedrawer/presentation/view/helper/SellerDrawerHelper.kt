@@ -29,7 +29,6 @@ import com.tokopedia.sellerhomedrawer.presentation.view.adapter.SellerDrawerAdap
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
-import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerHomeWebViewActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -631,7 +630,10 @@ class SellerDrawerHelper(val context: Activity,
     private fun startSaldoDepositIntent() {
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
             moveActivityApplink(ApplinkConstInternalGlobal.SALDO_DEPOSIT)
-        else context.startActivity(SellerHomeWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL))
+        else {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
+            context.startActivity(intent)
+        }
     }
 
 }

@@ -16,7 +16,7 @@ import rx.Observable;
 public class NotificationUseCase extends UseCase<NotificationModel> {
 
     private final NotificationRepository notificationRepository;
-    private static final String PARAM_TYPE = "type";
+    public static final String PARAM_TYPE = "type";
 
     @Inject
     public NotificationUseCase(NotificationRepository notificationRepository) {
