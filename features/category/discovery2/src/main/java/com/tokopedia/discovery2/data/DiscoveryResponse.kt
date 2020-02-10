@@ -7,6 +7,9 @@ data class DiscoveryResponse(
         @SerializedName("components")
         val components: List<ComponentsItem>? = null,
 
+        @SerializedName("component")
+        val component: ComponentsItem? = null,
+
         @SerializedName("layout_info")
         val layoutInfo: LayoutInfo? = null,
 

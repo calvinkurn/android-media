@@ -1,7 +1,7 @@
 package com.tokopedia.discovery2.usecase
 
 import com.tokopedia.discovery2.data.push.PushStatusResponse
-import com.tokopedia.discovery2.repository.pushstatus.PushStatusRepository
+import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import javax.inject.Inject
 
 

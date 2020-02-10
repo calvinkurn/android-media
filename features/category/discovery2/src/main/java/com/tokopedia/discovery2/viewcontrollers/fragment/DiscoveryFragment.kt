@@ -70,28 +70,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
                     
 //        RouteManager.route(this, "tokopedia://discovery/test-disco")
-                    it.data.get(2).let { it1 -> list.add(it1) }
-                    it.data.get(3).let { it1 -> list.add(it1) }
-                    it.data.get(4).let { it1 -> list.add(it1) }
-                    it.data.get(10)?.let { it1 -> list.add(it1) }
-                    it.data.get(5)?.let { it1 -> list.add(it1) }
-                    it.data.get(2)?.let { it1 -> list.add(it1) }
-                    it.data.get(3)?.let { it1 -> list.add(it1) }
-                    it.data.get(4)?.let { it1 -> list.add(it1) }
-                    it.data.get(5)?.let { it1 -> list.add(it1) }
-                    it.data.get(10)?.let { it1 -> list.add(it1) }
-                    it.data.get(2)?.let { it1 -> list.add(it1) }
-                    it.data.get(3)?.let { it1 -> list.add(it1) }
-                    it.data.get(4)?.let { it1 -> list.add(it1) }
-                    it.data.get(5)?.let { it1 -> list.add(it1) }
-                    it.data.get(2)?.let { it1 -> list.add(it1) }
-                    it.data.get(3)?.let { it1 -> list.add(it1) }
-                    it.data.get(4)?.let { it1 -> list.add(it1) }
-                    it.data.get(10)?.let { it1 -> list.add(it1) }
-                    it.data.get(2)?.let { it1 -> list.add(it1) }
-                    it.data.get(4)?.let { it1 -> list.add(it1) }
-                    it.data.get(10)?.let { it1 -> list.add(it1) }
-
+                    it.data[3].let { it1 -> list.add(it1) }
                     mDiscoveryRecycleAdapter.setDataList(list)
                 }
             }
