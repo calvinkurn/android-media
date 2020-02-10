@@ -2425,4 +2425,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
+    override fun resetAdditionalData() {
+        recentViewList = null
+        wishLists = null
+        recommendationList = null
+        recommendationSectionHeader = null
+        endlessRecyclerViewScrollListener.resetState()
+    }
 }
