@@ -67,37 +67,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
             when (it) {
                 is Success -> {
                     val list = ArrayList<ComponentsItem>()
-
-
-                    //it.data.components?.get(0)?.let { it1 -> list.add(it1) }
-                    it.data.get(2)?.let { it1 -> list.add(it1) }
-
-                    //it.data.components?.get(26)?.let { it1 -> list.add(it1) }
-                    it.data.get(28)?.let { it1 -> list.add(it1) }
-
-//        RouteManager.route(this, "tokopedia://discovery/test-disco")
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
-
+                    it.data.get(11).let { it1 -> list.add(it1) }
                     mDiscoveryRecycleAdapter.setDataList(list)
                 }
             }

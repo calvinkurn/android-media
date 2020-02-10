@@ -14,5 +14,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     BannerTimer(R.layout.banner_timer_layout, "timer_with_banner"),
     CpmTopAds(R.layout.cpm_topads_layout, "topads"),
     CpmTopAdsItem(R.layout.item_cpm_topads_shop_layout, ComponentNames.CpmTopAdsShopItem.componentName),
-    CpmTopAdsProductItem(R.layout.item_cpm_topads_product_layout, ComponentNames.CpmTopAdsProductItem.componentName)
+    CpmTopAdsProductItem(R.layout.item_cpm_topads_product_layout, ComponentNames.CpmTopAdsProductItem.componentName),
+    Spacing(R.layout.spacing_layout, "margin")
 }
