@@ -38,17 +38,16 @@ public class ReviewShopInfoActivity extends BaseSimpleActivity {
     }
 
     private void setupOpenReviewShopInfo(Uri intentData, Bundle intentExtras) {
-        if(intentData != null && intentExtras != null) {
+        if(intentData != null) {
             List<String> pathSegments = intentData.getPathSegments();
             int pathSegmentSize = pathSegments.size();
-            boolean isFromApplink = (pathSegmentSize > 1);
-            if(isFromApplink) {
-                shopId = pathSegments.get(pathSegmentSize - 2);
-            } else {
-                shopId = intentExtras.getString(ReviewShopFragment.SHOP_ID);
-                shopDomain = intentExtras.getString(ReviewShopFragment.SHOP_DOMAIN);
-            }
-        } else {
+            shopId = pathSegments.get(pathSegmentSize - 2);
+        }
+        else if(intentExtras != null) {
+            shopId = intentExtras.getString(ReviewShopFragment.SHOP_ID);
+            shopDomain = intentExtras.getString(ReviewShopFragment.SHOP_DOMAIN);
+        }
+        else {
             shopId = DEFAULT_SHOP_ID;
         }
     }

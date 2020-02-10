@@ -50,16 +50,17 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
         Uri intentData = getIntent().getData();
         Bundle intentExtras = getIntent().getExtras();
 
-        if(intentData != null && intentExtras != null) {
-            isFromApplink = (intentData.getPathSegments().size() > 0);
-            if(isFromApplink) {
-                reputationId = intentData.getLastPathSegment();
-            } else {
-                if(intentExtras.getInt(ARGS_TAB, -1) != -1) {
-                    tab = intentExtras.getInt(ARGS_TAB);
-                }
-                reputationId = intentExtras.getString(REPUTATION_ID, "");
+        // if from applink
+        if(intentData != null) {
+            isFromApplink = true;
+            reputationId = intentData.getLastPathSegment();
+        }
+
+        if(intentExtras != null) {
+            if(intentExtras.getInt(ARGS_TAB, -1) != -1) {
+                tab = intentExtras.getInt(ARGS_TAB);
             }
+            reputationId = intentExtras.getString(REPUTATION_ID, "");
         }
 
         return InboxReputationDetailFragment.createInstance(tab, isFromApplink, reputationId);
