@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.v3
 
+import android.graphics.Paint
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.utils.initLabelGroup
@@ -24,6 +25,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
 
     textViewSlashedPrice?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
         it.text = productCardModel.slashedPrice
+        it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
     textViewPrice?.shouldShowWithAction(productCardModel.formattedPrice.isNotEmpty()) {
