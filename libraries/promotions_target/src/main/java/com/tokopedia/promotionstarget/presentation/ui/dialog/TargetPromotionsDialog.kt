@@ -360,6 +360,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         viewModel.autoApplyLiveData.observe((activityContext as AppCompatActivity), autoApplyObserver!!)
 
         btnAction.setOnClickListener {
+            val btnActionText = btnAction.text.toString()
             shouldCallAutoApply = false
             if (!skipBtnAction) {
 
@@ -369,7 +370,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     toggleProgressBar(true)
                     toggleBtnText(false)
                     if (data is GetPopGratificationResponse) {
-                        performActionToClaimCoupon(data as GetPopGratificationResponse, activityContext)
+                        performActionToClaimCoupon(data as GetPopGratificationResponse, activityContext, btnActionText)
                     } else if (data is ClaimPopGratificationResponse) {
                         performActionAfterCouponIsClaimed(activityContext, data as ClaimPopGratificationResponse)
                     } else {
@@ -380,7 +381,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     RouteManager.route(btnAction.context, ApplinkConst.HOME)
                     bottomSheetDialog.dismiss()
 
-                    TargetedPromotionAnalytics.performButtonAction(btnAction.text.toString())
+                    TargetedPromotionAnalytics.performButtonAction(btnActionText)
                 }
                 skipBtnAction = true
             }
@@ -440,7 +441,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         TargetedPromotionAnalytics.userClickCheckMyCoupon()
     }
 
-    private fun performActionToClaimCoupon(data: GetPopGratificationResponse, activityContext: Activity) {
+    private fun performActionToClaimCoupon(data: GetPopGratificationResponse, activityContext: Activity, btnActionText:String) {
 
         val userSession = UserSession(activityContext)
         if (userSession.isLoggedIn) {
@@ -478,7 +479,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         } else if (TextUtils.isEmpty(applink)) {
             TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn)
         } else {
-            TargetedPromotionAnalytics.performButtonAction(btnAction.text.toString())
+            TargetedPromotionAnalytics.performButtonAction(btnActionText)
         }
     }
 
