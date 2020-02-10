@@ -1,17 +1,18 @@
 package com.tokopedia.productcard.utils
 
-import androidx.annotation.DimenRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DimenRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.R
+import com.tokopedia.unifycomponents.Label
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -110,5 +111,21 @@ internal fun ImageView.loadIcon(url: String?) {
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(this)
+    }
+}
+
+internal fun String?.toLabelType(): Int {
+    return when (this) {
+        LIGHT_GREY -> Label.GENERAL_LIGHT_GREY
+        LIGHT_BLUE -> Label.GENERAL_LIGHT_BLUE
+        LIGHT_GREEN -> Label.GENERAL_LIGHT_GREEN
+        LIGHT_RED -> Label.GENERAL_LIGHT_RED
+        LIGHT_ORANGE -> Label.GENERAL_LIGHT_ORANGE
+        DARK_GREY -> Label.GENERAL_DARK_GREY
+        DARK_BLUE -> Label.GENERAL_DARK_BLUE
+        DARK_GREEN -> Label.GENERAL_DARK_GREEN
+        DARK_RED -> Label.GENERAL_DARK_RED
+        DARK_ORANGE -> Label.GENERAL_DARK_ORANGE
+        else -> Label.GENERAL_LIGHT_GREY
     }
 }

@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelProductStatus"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -48,13 +48,11 @@
             android:gravity="center"
             android:paddingStart="@dimen/dp_4"
             android:paddingEnd="@dimen/dp_4"
-            android:textColor="@color/white"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/imageProduct"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            tools:text="Preorder" />
+            tools:text="Preorder"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textTopAds"

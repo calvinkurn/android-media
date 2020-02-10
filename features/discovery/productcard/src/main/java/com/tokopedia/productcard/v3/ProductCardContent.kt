@@ -4,12 +4,18 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.utils.loadIcon
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.productcard.utils.toLabelType
 import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     textViewProductName.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
         it.text = productCardModel.productName
+    }
+
+    labelPrice.shouldShowWithAction(!productCardModel.getLabelPrice()?.title.isNullOrEmpty()) {
+        it.text = productCardModel.getLabelPrice()?.title ?: ""
+        it.setLabelType(productCardModel.getLabelPrice()?.type.toLabelType())
     }
 
     labelDiscount.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {

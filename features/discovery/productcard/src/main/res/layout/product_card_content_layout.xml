@@ -70,7 +70,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelPromo"
+        android:id="@+id/labelPrice"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_4"
@@ -86,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="textViewSlashedPrice,labelDiscount,labelPromo" />
+        app:constraint_referenced_ids="textViewSlashedPrice,labelDiscount,labelPrice" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewPrice"
