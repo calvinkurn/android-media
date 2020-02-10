@@ -60,6 +60,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -181,6 +182,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_BASE, R.string.title_groupchat))
             add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_BASE, R.string.applink_profile_completion_title))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_BASE, R.string.applink_change_phone_number))
+            add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DFM_BASE, R.string.applink_change_password))
             add(DFP({ it.startsWith(SETTING_BANK) }, DFM_BASE, R.string.applink_setting_bank_title))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_BASE, R.string.notif_settings_title))
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_BASE, R.string.user_identification_common_title))
