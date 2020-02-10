@@ -34,8 +34,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -80,7 +80,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: ShopProductListViewModel
 
-    internal var shopPageTracking: ShopPageTrackingBuyer? = null
+    internal var shopPageTracking: OldShopPageTrackingBuyer? = null
 
     private var shopModuleRouter: ShopModuleRouter? = null
 
@@ -186,7 +186,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
         super.onCreate(savedInstanceState)
         context?.let {
-            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTracking = OldShopPageTrackingBuyer(TrackingQueue(it))
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductListViewModel::class.java)
     }
@@ -470,10 +470,8 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                     shopProductViewModel, productPosition, shopId, it.shopCore.name,it.freeOngkir.isActive)
         }
 
-        //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
-
         startActivity(getProductIntent(shopProductViewModel.id, attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName) ?: ""))
+                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, selectedEtalaseName) ?: ""))
     }
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
@@ -701,7 +699,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
                 val sortId = data!!.getStringExtra(ShopProductSortActivity.SORT_ID)
-                sortValue = data.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                sortValue = data.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 this.isLoadingInitialData = true
                 loadInitialData()
                 shopInfo?.let {

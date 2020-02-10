@@ -31,8 +31,8 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -106,7 +106,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: ShopPageProductListResultViewModel
 
-    internal var shopPageTracking: NewShopPageTrackingBuyer? = null
+    internal var shopPageTracking: ShopPageTrackingBuyer? = null
 
     private var shopId: String? = null
     private var keyword: String = ""
@@ -136,6 +136,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
 
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+    }
+    private val isMyShop: Boolean
+        get() = if (::viewModel.isInitialized) {
+            shopId?.let { viewModel.isMyShop(it) } ?: false
+        } else false
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.shopInfoResp.observe(this, Observer {
@@ -153,7 +161,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         })
         viewModel.productResponse.observe(this, Observer {
             when (it) {
-                is Success -> renderProductList(it.data.second, it.data.first)
+                is Success -> {
+                    val productList = it.data.second
+                    shopPageTracking?.searchProduct(keyword, productList.isEmpty(), isMyShop, customDimensionShopPage)
+                    renderProductList(productList, it.data.first)
+                }
                 is Fail -> showGetListError(it.throwable)
             }
         })
@@ -221,7 +233,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         super.onCreate(savedInstanceState)
         context?.let {
-            shopPageTracking = NewShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListResultViewModel::class.java)
     }
@@ -417,7 +429,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onEtalaseMoreListClicked() {
         shopInfo?.let {
-            shopPageTracking?.clickMoreMenuChip(viewModel.isMyShop(it.shopCore.shopID),
+            shopPageTracking?.clickMoreMenuChip(
+                    viewModel.isMyShop(it.shopCore.shopID),
+                    selectedEtalaseName,
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
 
@@ -443,7 +457,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                                   productPosition: Int) {
         shopInfo?.let {
             // shopTrackType is always from product
-            shopPageTracking?.clickProductPicture(
+            shopPageTracking?.clickProduct(
                     viewModel.isMyShop(it.shopCore.shopID),
                     if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                     selectedEtalaseName,
@@ -453,7 +467,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
 
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
+                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, selectedEtalaseName)
                         ?: ""))
     }
 
@@ -516,14 +530,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     fun clickSortButton() {
         shopInfo?.let {
-            shopPageTracking?.clickSort(
-                    viewModel.isMyShop(it.shopCore.shopID),
-                    CustomDimensionShopPage.create(
-                            it.shopCore.shopID,
-                            it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1
-                    )
-            )
             openShopProductSortPage()
         }
     }
@@ -540,6 +546,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         this.shopId = shopInfo.shopCore.shopID
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
+        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         onShopProductListFragmentListener?.updateUIByShopName(shopInfo.shopCore.name)
         shopPageProductListResultFragmentListener?.updateShopInfo(shopInfo)
         loadInitialData()
@@ -713,7 +720,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
-                    sortValue = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                    sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
+                    val sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
                     this.isLoadingInitialData = true
                     loadInitialData()
