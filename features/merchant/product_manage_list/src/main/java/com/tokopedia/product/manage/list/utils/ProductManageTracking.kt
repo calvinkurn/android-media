@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
 import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant
+import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -53,11 +53,11 @@ object ProductManageTracking {
 
     fun trackingFilter(productManageFilterModel: ProductManageFilterModel) {
         val filters = ArrayList<String>()
-        if (productManageFilterModel.categoryId != ProductManageConstant.FILTER_ALL_CATEGORY.toString()) {
+        if (productManageFilterModel.categoryId != ProductManageListConstant.FILTER_ALL_CATEGORY.toString()) {
             filters.add(CATEGORY)
         }
 
-        if (productManageFilterModel.etalaseProductOption != ProductManageConstant.FILTER_ALL_PRODUK) {
+        if (productManageFilterModel.etalaseProductOption != ProductManageListConstant.FILTER_ALL_PRODUK) {
             filters.add(ETALASE)
         }
 
