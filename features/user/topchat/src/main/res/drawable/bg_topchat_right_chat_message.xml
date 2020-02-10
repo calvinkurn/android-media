@@ -4,8 +4,8 @@
 
     <solid android:color="@color/bg_topchat_right_message" />
     <corners
-        android:bottomLeftRadius="@dimen/dimen_topchat_20dp"
-        android:bottomRightRadius="@dimen/dimen_topchat_20dp"
-        android:topLeftRadius="@dimen/dimen_topchat_20dp" />
+        android:bottomLeftRadius="@dimen/dp_topchat_20"
+        android:bottomRightRadius="@dimen/dp_topchat_20"
+        android:topLeftRadius="@dimen/dp_topchat_20" />
 
 </shape>
