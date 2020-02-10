@@ -8,20 +8,17 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.product.manage.list.constant.AppScreen;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
-import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by zulfikarrahman on 9/25/17.
  */
-public class ProductManageActivity extends BaseSimpleActivity implements HasComponent<ProductComponent> {
+public class ProductManageActivity extends BaseSimpleActivity {
 
     public UserSessionInterface userSession;
 
@@ -63,10 +60,5 @@ public class ProductManageActivity extends BaseSimpleActivity implements HasComp
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_MANAGE_PROD;
-    }
-
-    @Override
-    public ProductComponent getComponent() {
-        return ProductEditItemComponentInstance.getComponent(getApplication());
     }
 }
