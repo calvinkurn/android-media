@@ -406,7 +406,7 @@ class ShopPageFragment :
 
     private fun initAdapter() {
         activity?.run {
-            viewPagerAdapter = ShopPageFragmentPagerAdapter(this, supportFragmentManager)
+            viewPagerAdapter = ShopPageFragmentPagerAdapter(this, childFragmentManager)
         }
     }
 

@@ -55,15 +55,6 @@ class VideoComponentTest {
     }
 
     @Test
-    fun `test when keyboard state is changed`() = runBlockingTest(testDispatcher) {
-        val isKeyboardShown = true
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(isKeyboardShown))
-
-        verify { component.uiView.showCornerRadius(isKeyboardShown) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
     fun `test when channel is freeze`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = PlayRoomEvent.Freeze("", "", "", "")
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))

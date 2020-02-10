@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -209,7 +210,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             insets
         }
 
-        view.requestApplyInsets()
+        invalidateInsets(view)
     }
 
     //region observe
@@ -227,6 +228,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            if (it.state == TokopediaPlayVideoState.Playing) PlayAnalytics.clickPlayVideo(channelId, playViewModel.isLive)
             if (it.state == TokopediaPlayVideoState.Ended) showInteractionIfWatchMode()
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -498,10 +500,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             playButtonComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            PlayButtonInteractionEvent.PlayClicked -> {
-                                PlayAnalytics.clickPlayVideo(channelId)
-                                playViewModel.startCurrentVideo()
-                            }
+                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
                         }
                     }
         }
@@ -1075,5 +1074,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun showInteractionIfWatchMode() {
         view?.performClick()
+    }
+
+    private fun invalidateInsets(view: View) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) view.requestApplyInsets()
+            else view.requestFitSystemWindows()
+        } catch (e: Exception) {}
     }
 }
