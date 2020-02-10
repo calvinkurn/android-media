@@ -14,11 +14,9 @@ import android.telephony.TelephonyManager
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
-import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -28,9 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -51,14 +47,16 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -523,7 +521,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterFacebook(throwable: Throwable) {
-        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
 
@@ -536,7 +534,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterFacebookPhone(throwable: Throwable) {
-        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
 
@@ -546,7 +544,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onFailedRegisterGoogle(throwable: Throwable) {
         logoutGoogleAccountIfExist()
-        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
 
@@ -561,7 +559,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedGetUserInfo(throwable: Throwable) {
-        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
 
@@ -641,7 +639,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
-        val messageError = ErrorHandlerSession.getErrorMessage(context, throwable)
+        val messageError = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
         registerAnalytics.trackFailedClickSignUpButton(messageError)
         partialRegisterInputView.onErrorValidate(messageError)
         phoneNumber = ""
@@ -654,18 +652,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedActivateUser(throwable: Throwable) {
-        throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
+        throwable.message?.let { onErrorRegister(com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)) }
     }
 
     //Flow should not be possible
     private fun onGoToActivationPageAfterRelogin() {
-        val errorMessage = ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)
+        val errorMessage = ErrorHandler.getErrorMessage(context, Throwable())
         onErrorRegister(errorMessage)
     }
 
     //Flow should not be possible
     private fun onGoToSecurityQuestionAfterRelogin() {
-        val errorMessage = ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)
+        val errorMessage = ErrorHandler.getErrorMessage(context, Throwable())
         onErrorRegister(errorMessage)
     }
 
@@ -674,7 +672,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedReloginAfterSQ(validateToken: String, throwable: Throwable) {
-        val errorMessage = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
             registerInitialViewModel.reloginAfterSQ(validateToken)
         }.showRetrySnackbar()
@@ -682,7 +680,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     //Wrong flow implementation
     private fun onGoToActivationPage(errorMessage: MessageErrorException) {
-        NetworkErrorHelper.showSnackbar(activity, ErrorHandlerSession.getErrorMessage(context, errorMessage))
+        NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(context, errorMessage))
     }
 
     private fun onGoToSecurityQuestion(email: String) {
@@ -866,9 +864,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 val email = account?.email ?: ""
                 registerInitialViewModel.registerGoogle(accessToken, email)
             } catch (e: NullPointerException) {
-                onErrorRegister(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                        ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
-                        context))
+                onErrorRegister(ErrorHandler.getErrorMessage(context, e))
             } catch (e: ApiException) {
                 onErrorRegister(String.format(getString(R.string.loginregister_failed_login_google),
                         e.statusCode.toString()))

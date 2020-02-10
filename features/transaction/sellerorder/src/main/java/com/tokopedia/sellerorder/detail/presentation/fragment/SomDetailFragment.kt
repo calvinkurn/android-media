@@ -411,21 +411,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun renderShipment() {
         // shipping
-        val receiverStreet = detailResponse.receiver.street
-        var notesValue = ""
-        if (receiverStreet.contains(RECEIVER_NOTES_START)) {
-            val indexStart = receiverStreet.indexOf(RECEIVER_NOTES_START)
-            val indexEnd = receiverStreet.indexOf(RECEIVER_NOTES_END)
-            if (receiverStreet.length > indexStart && receiverStreet.length >= indexEnd + 1) {
-                val getAllNotes = receiverStreet.substring(indexStart, indexEnd+1)
-                val indexValueStart = getAllNotes.indexOf(RECEIVER_NOTES_COLON)
-                val indexValueEnd = getAllNotes.indexOf(RECEIVER_NOTES_END)
-                if (getAllNotes.length > indexValueStart+1 && getAllNotes.length >= indexValueEnd-1) {
-                    notesValue = getAllNotes.substring(indexValueStart+1, indexValueEnd-1)
-                }
-            }
-        }
-
         val dataShipping = SomDetailShipping(
                 detailResponse.shipment.name + " - " + detailResponse.shipment.productName,
                 detailResponse.paymentSummary.shippingPriceText,
@@ -603,7 +588,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             val btSheet = BottomSheetUnify()
             val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
             infoLayout.tv_confirm_info?.text = detailResponse.onlineBooking.infoText
-            infoLayout.button_understand.setOnClickListener { btSheet.dismiss() }
+            infoLayout.button_understand?.setOnClickListener { btSheet.dismiss() }
 
             fragmentManager?.let {
                 btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
@@ -1052,7 +1037,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             orderRejectRequest.orderId = detailResponse.orderId.toString()
             orderRejectRequest.rCode = rCode
 
-            if (viewBottomSheet.tf_extra_notes.visibility == View.VISIBLE) {
+            if (viewBottomSheet.tf_extra_notes?.visibility == View.VISIBLE) {
                 orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
                 if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString())) {
                     doRejectOrder(orderRejectRequest)

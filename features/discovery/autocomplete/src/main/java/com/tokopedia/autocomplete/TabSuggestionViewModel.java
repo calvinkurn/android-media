@@ -9,12 +9,8 @@ import java.util.List;
 
 public class TabSuggestionViewModel implements Visitable<HostAutoCompleteTypeFactory> {
 
-    private List<SearchData> list;
-    private String searchTerm;
-
-    public TabSuggestionViewModel() {
-        this.list = new ArrayList<>();
-    }
+    private List<SearchData> list = new ArrayList<>();
+    private String searchTerm = "";
 
     public void addList(SearchData visitable) {
         this.list.add(visitable);

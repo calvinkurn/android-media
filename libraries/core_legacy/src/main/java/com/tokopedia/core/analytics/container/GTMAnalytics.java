@@ -14,7 +14,6 @@ import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.analytics.debugger.AnalyticsLogger;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -855,7 +854,7 @@ public class GTMAnalytics extends ContextAnalytics {
             }
         }
 
-        logEvent("openScreen", bundle, context);
+        pushEventV5("openScreen", bundle, context);
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
@@ -890,12 +889,17 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneral(map);
     }
 
-    private void log(Context context, String eventName, Bundle bundle) {
-        log(context, eventName, bundleToMap(bundle));
+    private void logV5(Context context, String eventName, Bundle bundle) {
+        log(context, eventName, bundleToMap(bundle), true);
     }
 
     private void log(Context context, String eventName, Map<String, Object> values) {
+        log(context, eventName, values, false);
+    }
+
+    private void log(Context context, String eventName, Map<String, Object> values, boolean isGtmV5) {
         String name = eventName == null ? (String) values.get("event") : eventName;
+        if (isGtmV5) name += " (v5)";
         GtmLogger.getInstance(context).save(name, values);
         if (tetraDebugger != null) {
             tetraDebugger.send(values);
@@ -1031,7 +1035,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 keyEvent = FirebaseAnalytics.Event.ECOMMERCE_PURCHASE;
                 break;
         }
-        logEvent(keyEvent, bundle, context);
+        pushEventV5(keyEvent, bundle, context);
     }
 
     public void sendCampaign(Map<String, Object> param) {
@@ -1056,7 +1060,7 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("utmContent", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
         bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
 
-        logEvent("campaignTrack", bundle, context);
+        pushEventV5("campaignTrack", bundle, context);
     }
 
     public static String GENERAL_EVENT_KEYS[] = new String[]{
@@ -1079,12 +1083,13 @@ public class GTMAnalytics extends ContextAnalytics {
                 bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
         }
 
-        logEvent(params.get(KEY_EVENT) + "", bundle, context);
+        pushEventV5(params.get(KEY_EVENT) + "", bundle, context);
     }
 
-    public void logEvent(String eventName, Bundle bundle, Context context) {
+    public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
+            logV5(context, eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -44,12 +44,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -269,7 +267,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AccountHomeRouter,
         OmsModuleRouter,
         TopAdsWebViewRouter,
-        ChangePasswordRouter,
         EventModuleRouter,
         MitraToppersRouter,
         DigitalBrowseRouter,
@@ -1234,10 +1231,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FragmentFavorite.newInstance();
     }
 
-    public void doLogoutAccount(Activity activity) {
+    public void doLogoutAccount(Context activity) {
         new GlobalCacheManager().deleteAll();
         PersistentCacheManager.instance.delete();
-        Router.clearEtalase(activity);
+        clearEtalaseCache();
         TrackApp.getInstance().getMoEngage().logoutEvent();
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
@@ -1262,30 +1259,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
-    }
-
-    @Override
-    public void logoutToHome(Activity activity) {
-        //From DialogLogoutFragment
-        if (activity != null) {
-            new GlobalCacheManager().deleteAll();
-            PersistentCacheManager.instance.delete();
-            Router.clearEtalase(activity);
-            TrackApp.getInstance().getMoEngage().logoutEvent();
-            SessionHandler.clearUserData(activity);
-            NotificationModHandler notif = new NotificationModHandler(activity);
-            notif.dismissAllActivedNotifications();
-            NotificationModHandler.clearCacheAllNotification(activity);
-
-            onLogout(getApplicationComponent());
-            mIris.setUserId("");
-            setTetraUserId("");
-
-            Intent intent = getHomeIntent(activity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        }
     }
 
     @Override
@@ -1372,8 +1345,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void refreshFCMTokenFromForegroundToCM() {
-        CMPushNotificationManager.getInstance()
-                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
+        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
     }
 
     @Override

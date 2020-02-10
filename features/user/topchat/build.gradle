@@ -44,7 +44,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.seamlesslogin)
     implementation project(rootProject.ext.features.purchase_platform_common)
