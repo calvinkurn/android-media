@@ -113,6 +113,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
     implementation (rootProject.ext.testDependencies.espressoIdlingResource){
         exclude group: 'androidx.lifecycle', module: 'lifecycle-common'
     }
