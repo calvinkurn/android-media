@@ -148,6 +148,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         } else {
                             listener.onRequestPendingCashBack()
                         }
+                        tvTitleTokocash.visibility = View.VISIBLE
                     }
                 } else {
                     tokocashProgressBar.visibility = View.GONE
