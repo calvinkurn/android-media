@@ -69,7 +69,7 @@ class LogManager(val application: Application) : CoroutineScope {
         private lateinit var pi: PendingIntent
         private lateinit var jobScheduler: JobScheduler
         private lateinit var jobInfo: JobInfo
-        private lateinit var secretKey: SecretKey
+        private var secretKey = generateKey(Constants.ENCRYPTION_KEY)
 
         @JvmStatic
         fun init(application: Application) {
@@ -77,7 +77,6 @@ class LogManager(val application: Application) : CoroutineScope {
             val logsDao = LoggerRoomDatabase.getDatabase(application).logDao()
             val server = LoggerCloudDatasource()
             loggerRepository = LoggerRepository(logsDao, server)
-            secretKey = generateKey(Constants.ENCRYPTION_KEY)
             // Because JobService requires a minimum SDK version of 21, this if else block will allow devices with
             // SDK version lower than 21 to run a Service instead
             if (android.os.Build.VERSION.SDK_INT > 21) {
@@ -143,6 +142,9 @@ class LogManager(val application: Application) : CoroutineScope {
         }
 
         suspend fun getCount(): Int {
+            if(::loggerRepository.isInitialized) {
+                return 0
+            }
             return loggerRepository.getCount()
         }
 
