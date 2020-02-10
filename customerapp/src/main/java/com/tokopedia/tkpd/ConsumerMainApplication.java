@@ -57,6 +57,7 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.tkpd.timber.UserIdChangeCallback;
 import com.tokopedia.tkpd.timber.UserIdSubscriber;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
@@ -140,7 +141,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 openShakeDetectCampaignPage(isLongShake);
             }
         });
-        UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), () -> TimberWrapper.init(ConsumerMainApplication.this));
+        UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
+            @Override
+            public void onUserIdChanged() {
+                TimberWrapper.init(ConsumerMainApplication.this);
+            }
+        });
         registerActivityLifecycleCallbacks(shakeSubscriber);
         registerActivityLifecycleCallbacks(userIdSubscriber);
     }
