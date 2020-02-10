@@ -88,9 +88,7 @@ class LogManager(val application: Application) : CoroutineScope {
                         .build()
             } else {
                 intent = Intent(application, ServerService::class.java)
-                if(::loggerRepository.isInitialized) {
-                    pi = PendingIntent.getService(application, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-                }
+                pi = PendingIntent.getService(application, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
             }
         }
 
@@ -107,7 +105,9 @@ class LogManager(val application: Application) : CoroutineScope {
                     if (android.os.Build.VERSION.SDK_INT > 21) {
                         jobScheduler.schedule(jobInfo)
                     } else {
-                        pi.send()
+                        if(::loggerRepository.isInitialized) {
+                            pi.send()
+                        }
                     }
                 }, {
                     it.printStackTrace()
