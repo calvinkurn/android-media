@@ -7,7 +7,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import kotlin.reflect.KFunction
 
 class ComponentHelpersHolder<E : AbstractViewHolder, T : DiscoveryBaseViewModel>(val viewHolder: KFunction<E>,
-                                                                                                 val componentModel: KFunction<T>) {
+                                                                                 val componentModel: KFunction<T>) {
 
     fun getViewHolder(v: View, fragment: Fragment): E {
         return viewHolder.call(v, fragment)

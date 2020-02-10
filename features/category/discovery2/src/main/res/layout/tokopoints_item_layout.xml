@@ -29,7 +29,6 @@
             android:layout_height="0dp"
             android:indeterminate="false"
             android:max="100"
-            android:progressDrawable="@drawable/bg_tp_timer_bg"
             app:layout_constraintBottom_toBottomOf="@+id/text_quota_count"
             app:layout_constraintLeft_toLeftOf="@+id/text_quota_count"
             app:layout_constraintRight_toRightOf="@+id/text_quota_count"
@@ -73,11 +72,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/tp_margin_medium"
             android:layout_marginLeft="@dimen/tp_margin_medium"
-            android:layout_marginTop="@dimen/tp_padding_regular"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_description"
-            app:srcCompat="@drawable/ic_tp_point_stack" />
+            app:layout_constraintTop_toBottomOf="@+id/text_description" />
 
         <TextView
             android:id="@+id/text_point_label"
@@ -112,7 +109,6 @@
             android:layout_marginStart="@dimen/tp_margin_small"
             android:layout_marginLeft="@dimen/tp_margin_small"
             android:layout_marginTop="2dp"
-            android:background="@drawable/bg_tp_slash_discount"
             android:fontFamily="sans-serif-medium"
             android:paddingLeft="@dimen/tp_padding_xsmall"
             android:paddingTop="@dimen/tp_padding_xxsmall"
@@ -131,8 +127,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/tp_margin_small"
             android:layout_marginLeft="@dimen/tp_margin_small"
-            android:layout_marginTop="@dimen/tp_padding_regular"
-            android:text="@string/tp_label_valid_for"
             android:textColor="@color/black_38"
             android:textSize="@dimen/tp_text_size_xsmall"
             android:visibility="gone"
@@ -148,8 +142,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_time_label"
-            app:srcCompat="@drawable/ic_tp_time" />
+            app:layout_constraintTop_toTopOf="@+id/text_time_label" />
 
         <ProgressBar
             android:id="@+id/progress_timer"
@@ -157,7 +150,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/bg_tp_timer_bg"
             app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
             app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
             app:layout_constraintRight_toRightOf="@+id/text_time_value"
@@ -182,7 +174,6 @@
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/tp_margin_xsmall"
-            android:textColor="@color/red_error"
             android:textSize="@dimen/tp_text_size_small"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/img_time"

@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.lifecycle.LifecycleOwner
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
@@ -18,7 +18,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
 
-class BannerTimerViewHolder(private val customItemView: View) : AbstractViewHolder(customItemView) {
+class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
 
     private lateinit var bannerTimerViewModel: BannerTimerViewModel
     private var constraintLayout: ConstraintLayout
@@ -44,7 +44,7 @@ class BannerTimerViewHolder(private val customItemView: View) : AbstractViewHold
         context = constraintLayout.context
     }
 
-    override fun bindView(lifecycleOwner: LifecycleOwner, discoveryBaseViewModel: DiscoveryBaseViewModel) {
+    override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         bannerTimerViewModel = discoveryBaseViewModel as BannerTimerViewModel
         val viewHeight = bannerTimerViewModel.getBannerUrlHeight()
         val viewWidth = bannerTimerViewModel.getBannerUrlWidth()
@@ -54,9 +54,9 @@ class BannerTimerViewHolder(private val customItemView: View) : AbstractViewHold
         constraintSet.applyTo(constraintLayout)
 
         // Observe Model Data
-        bannerTimerViewModel.getComponentData().observe(lifecycleOwner, Observer { componentItem ->
-            if (componentItem.data != null && componentItem.data.isNotEmpty()) {
-                ImageHandler.LoadImage(bannerImageView, componentItem.data[0].backgroundUrlMobile)
+        bannerTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
+            if (!componentItem.data.isNullOrEmpty()) {
+                ImageHandler.LoadImage(bannerImageView, componentItem.data?.get(0)?.backgroundUrlMobile)
                 setTimerUI(componentItem, DAYS)
                 setTimerUI(componentItem, HOURS)
                 setTimerUI(componentItem, MINUTES)
@@ -67,7 +67,7 @@ class BannerTimerViewHolder(private val customItemView: View) : AbstractViewHold
         })
 
         // Observe Timer Data
-        bannerTimerViewModel.getTimerData().observe(lifecycleOwner, Observer {
+        bannerTimerViewModel.getTimerData().observe(fragment.viewLifecycleOwner, Observer {
             daysTextView.text = String.format(TIME_DISPLAY_FORMAT, it.days)
             hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, it.hours)
             minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
@@ -133,8 +133,8 @@ class BannerTimerViewHolder(private val customItemView: View) : AbstractViewHold
 
     @SuppressLint("ResourceType")
     private fun getTimerFontColour(componentItem: ComponentsItem?): String? {
-        return if (componentItem?.data?.get(0)?.fontColor != null && componentItem.data[0].fontColor!!.isNotEmpty()) {
-            componentItem.data[0].fontColor
+        return if (componentItem?.data?.get(0)?.fontColor != null && componentItem.data?.get(0)?.fontColor!!.isNotEmpty()) {
+            componentItem.data?.get(0)?.fontColor
         } else {
             context.resources.getString(R.color.clr_ff8000)
         }
@@ -142,8 +142,8 @@ class BannerTimerViewHolder(private val customItemView: View) : AbstractViewHold
 
     @SuppressLint("ResourceType")
     private fun getTimerBoxColour(componentItem: ComponentsItem?): String? {
-        return if (componentItem?.data?.get(0)?.boxColor != null && componentItem.data[0].boxColor!!.isNotEmpty()) {
-            componentItem.data[0].boxColor
+        return if (componentItem?.data?.get(0)?.boxColor != null && componentItem.data?.get(0)?.boxColor!!.isNotEmpty()) {
+            componentItem.data?.get(0)?.boxColor
         } else {
             context.resources.getString(R.color.white)
         }

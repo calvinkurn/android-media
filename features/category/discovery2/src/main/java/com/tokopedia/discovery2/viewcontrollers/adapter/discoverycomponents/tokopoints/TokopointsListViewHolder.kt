@@ -15,7 +15,7 @@ class TokopointsListViewHolder(itemView: View, private val fragment: Fragment) :
     private lateinit var mTokopointsRecyclerView: RecyclerView
     private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
 
-    override fun bindView(lifecycleOwner: LifecycleOwner, discoveryBaseViewModel: DiscoveryBaseViewModel) {
+    override fun bindView( discoveryBaseViewModel: DiscoveryBaseViewModel) {
         initView(itemView)
     }
 
