@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
@@ -76,8 +77,8 @@ class CardViewHolder(
     private fun showOnError(isError: Boolean) {
         if (!isError) return
         with(itemView) {
-            tvCardTitle.visibility = View.VISIBLE
-            tvCardValue.visibility = View.VISIBLE
+            tvCardTitle.visible()
+            tvCardValue.visible()
             tvCardValue.text = context.getString(R.string.sah_card_on_error)
             tvCardSubValue.text = ""
         }

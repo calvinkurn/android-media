@@ -14,15 +14,16 @@ import com.db.williamchart.util.TooltipConfiguration
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.common.TooltipClickListener
 import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.util.getResDrawable
 import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.sah_line_graph_widget.view.*
-import kotlinx.android.synthetic.main.sah_partial_line_graph_widget_error.view.*
+import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_line_graph_widget_loading.view.*
 
 /**
@@ -95,12 +96,12 @@ class LineGraphViewHolder(
                 tvLineGraphTitle.setOnClickListener {
                     listener.onTooltipClicked(element.tooltip)
                 }
-                btnLineGraphInformation.visibility = View.VISIBLE
+                btnLineGraphInformation.visible()
                 btnLineGraphInformation.setOnClickListener {
                     listener.onTooltipClicked(element.tooltip)
                 }
             } else {
-                btnLineGraphInformation.visibility = View.GONE
+                btnLineGraphInformation.gone()
             }
         }
     }
@@ -110,8 +111,8 @@ class LineGraphViewHolder(
     }
 
     private fun onStateError(isShown: Boolean) = with(itemView) {
-        ImageHandler.loadImageWithId(imgLineGraphError, R.drawable.unify_globalerrors_connection)
-        layoutLineGraphErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
+        ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+        commonWidgetErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
         tvLineGraphTitle.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
         btnLineGraphInformation.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
     }
@@ -187,7 +188,7 @@ class LineGraphViewHolder(
         override fun height(): Int = Tools.fromDpToPx(DEFAULT_HEIGHT).toInt()
     }
 
-    interface Listener : TooltipClickListener {
+    interface Listener : BaseViewHolderListener {
         fun getLineGraphData()
     }
 }

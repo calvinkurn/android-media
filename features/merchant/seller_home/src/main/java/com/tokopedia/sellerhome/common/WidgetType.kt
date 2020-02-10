@@ -20,7 +20,7 @@ object WidgetType {
     fun getWidgetList(): List<String> {
         return listOf(
                 CARD,
-                //CAROUSEL,
+                CAROUSEL,
                 DESCRIPTION,
                 LINE_GRAPH,
                 POST,

@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerhome.DummyLayout
 import com.tokopedia.sellerhome.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhome.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhome.util.getData
@@ -25,12 +26,10 @@ class GetLayoutUseCase(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
+        //return DummyLayout.getDummyData(mapper)
+
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
         val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
-
-       /* val response: GetLayoutResponse = Gson().fromJson(DummyLayout.JSON, GetLayoutResponse::class.java)
-
-        return mapper.mapRemoteModelToUiModel(response.layout?.widget.orEmpty())*/
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {

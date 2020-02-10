@@ -13,6 +13,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -52,6 +53,7 @@ class SellerHomeViewModel @Inject constructor(
     val lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
     val progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
     val postWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
+    val carouselWidgetData = MutableLiveData<Result<List<CarouselDataUiModel>>>()
 
     fun getTicker() {
         launchCatchError(block = {
@@ -118,6 +120,17 @@ class SellerHomeViewModel @Inject constructor(
             })
         }, onError = {
             postWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getCarouselWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            carouselWidgetData.value = Success(withContext(Dispatchers.IO) {
+                delay(5000)
+                return@withContext listOf(CarouselDataUiModel(data = emptyList(), error = ""))
+            })
+        }, onError = {
+            carouselWidgetData.value = Fail(it)
         })
     }
 }

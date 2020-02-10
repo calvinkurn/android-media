@@ -47,10 +47,10 @@
         android:id="@+id/sahLineGraphShimmer3"
         android:layout_width="150dp"
         android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
         app:corners="10"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

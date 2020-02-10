@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_lvl2"
     app:cardCornerRadius="@dimen/layout_lvl1">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/llContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/sah_medium_widget_height"
         android:orientation="vertical"
-        android:paddingTop="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4">
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvBannerTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:maxLines="1"
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
             app:typographyType="heading_5"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="Title of banner" />
 
         <com.tokopedia.sellerhome.view.viewholder.BannerCarousel
             android:id="@+id/bannerImages"
@@ -31,21 +36,15 @@
             android:layout_height="wrap_content" />
 
         <include
-            android:id="@+id/bannerImagesShimmering"
             layout="@layout/sah_partial_carousel_widget_shimmering"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:visibility="gone" />
+            android:layout_height="wrap_content" />
 
         <include
-            android:id="@+id/bannerImagesError"
-            layout="@layout/sah_partial_carousel_widget_error"
+            layout="@layout/sah_partial_common_widget_state_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl3"
-            android:visibility="gone" />
+            android:layout_marginTop="@dimen/layout_lvl1" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

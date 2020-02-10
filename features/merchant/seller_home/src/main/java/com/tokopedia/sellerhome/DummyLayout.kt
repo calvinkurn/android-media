@@ -1,12 +1,22 @@
 package com.tokopedia.sellerhome
 
+import com.google.gson.Gson
+import com.tokopedia.sellerhome.domain.mapper.LayoutMapper
+import com.tokopedia.sellerhome.domain.model.GetLayoutResponse
+import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
+
 /**
  * Created By @ilhamsuaib on 2020-02-05
  */
 object DummyLayout {
 
-    const val JSON = "{\n" +
-            "    \"getSellerDashboardLayout\": {\n" +
+    fun getDummyData(mapper: LayoutMapper): List<BaseWidgetUiModel<*>> {
+        val response: GetLayoutResponse = Gson().fromJson(JSON, GetLayoutResponse::class.java)
+        return mapper.mapRemoteModelToUiModel(response.layout?.widget.orEmpty())
+    }
+
+    private const val JSON = "{\n" +
+            "    \"GetSellerDashboardLayout\": {\n" +
             "      \"widget\": [\n" +
             "        {\n" +
             "          \"widgetType\": \"description\",\n" +
@@ -23,7 +33,7 @@ object DummyLayout {
             "          \"dataKey\": \"\",\n" +
             "          \"ctaText\": \"Tambah produk sekarang\"\n" +
             "        },\n" +
-            /*"        {\n" +
+            "        {\n" +
             "          \"widgetType\": \"section\",\n" +
             "          \"title\": \"Penting Hari ini\",\n" +
             "          \"subtitle\": \"\",\n" +
@@ -112,7 +122,7 @@ object DummyLayout {
             "          \"applink\": \"https://seller-staging.tokopedia.com/home-beta\",\n" +
             "          \"dataKey\": \"discussion\",\n" +
             "          \"ctaText\": \"\"\n" +
-            "        },\n" +*/
+            "        },\n" +
             "        {\n" +
             "          \"widgetType\": \"section\",\n" +
             "          \"title\": \"Ringkasan Penjualan\",\n" +
@@ -233,7 +243,7 @@ object DummyLayout {
             "        },\n" +
             "        {\n" +
             "          \"widgetType\": \"carouselImage\",\n" +
-            "          \"title\": \"\",\n" +
+            "          \"title\": \"Carousel Title And What Happen If The Title Is Longer\",\n" +
             "          \"subtitle\": \"\",\n" +
             "          \"tooltip\": {\n" +
             "            \"title\": \"\",\n" +

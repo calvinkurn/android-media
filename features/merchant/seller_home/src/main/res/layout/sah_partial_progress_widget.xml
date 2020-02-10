@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sah_progress_layout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sahProgressOnSuccessLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/sah_medium_widget_height"
     android:padding="16dp"
-    android:visibility="gone">
+    android:visibility="gone"
+    tools:visibility="visible">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_card_title"
+        android:id="@+id/tvProgressTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:maxLines="1"
         android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="Progress Title" />
 
     <com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
-        android:id="@+id/shop_score_widget"
+        android:id="@+id/shopScoreProgress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_title" />
+        app:layout_constraintTop_toBottomOf="@id/tvProgressTitle" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_description"
+        android:id="@+id/tvProgressDescription"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -37,15 +41,15 @@
         android:lineSpacingExtra="6sp"
         android:maxLines="2"
         android:textColor="@color/sah_description"
-        app:layout_constraintBottom_toTopOf="@+id/tv_see_details"
+        app:layout_constraintBottom_toTopOf="@+id/tvProgressSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_score_widget"
+        app:layout_constraintTop_toBottomOf="@id/shopScoreProgress"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_see_details"
+        android:id="@+id/tvProgressSeeDetails"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
@@ -56,19 +60,20 @@
         android:paddingRight="@dimen/spacing_lvl2"
         android:textColor="@color/Green_G500"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_arrow_url"
+        app:layout_constraintEnd_toStartOf="@+id/icProgressArrow"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Selengkapnya" />
 
     <ImageView
-        android:id="@+id/iv_arrow_url"
+        android:id="@+id/icProgressArrow"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        app:layout_constraintBottom_toBottomOf="@id/tv_see_details"
+        app:layout_constraintBottom_toBottomOf="@id/tvProgressSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_see_details"
+        app:layout_constraintTop_toTopOf="@id/tvProgressSeeDetails"
         app:srcCompat="@drawable/ic_arrow_right_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

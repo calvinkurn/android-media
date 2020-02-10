@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,9 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.common.ShopStatus
+import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
@@ -38,13 +40,13 @@ import javax.inject.Inject
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(),
         CardViewHolder.Listener, LineGraphViewHolder.Listener, ProgressViewHolder.Listener,
-        SectionViewHolder.Listener, PostListViewHolder.Listener {
+        SectionViewHolder.Listener, PostListViewHolder.Listener, CarouselViewHolder.Listener {
 
     companion object {
         @JvmStatic
         fun newInstance() = SellerHomeFragment()
 
-        const val TAG_TOOLTIP = "seller_home_tooltip"
+        private const val TAG_TOOLTIP = "seller_home_tooltip"
     }
 
     @Inject
@@ -54,13 +56,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
+    private val tooltipBottomSheet by lazy { BottomSheetUnify() }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
+
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
     private var hasLoadProgressData = false
     private var hasLoadPostData = false
-
-    private val tooltipBottomSheet by lazy { BottomSheetUnify() }
+    private var hasLoadCarouselData = false
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -80,12 +83,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         hideTooltipIfExist()
         setupView()
-        getWidgetsLayout()
-        getTickerView()
+
+        observeTickerLiveData()
+        observeWidgetLayoutLiveData()
         observeCardLiveData()
         observeLineGraphLiveData()
         observeProgressLiveData()
         observePostLiveData()
+        observeCarouselLiveData()
     }
 
     private fun hideTooltipIfExist() {
@@ -122,6 +127,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hasLoadLineGraphData = false
         hasLoadProgressData = false
         hasLoadPostData = false
+        hasLoadCarouselData = false
         widgetHasMap.clear()
         adapter.data.clear()
         adapter.notifyDataSetChanged()
@@ -183,11 +189,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
 
-    override fun removeWidget(position: Int, data: PostListWidgetUiModel) {
+    override fun getCarouselData() {
+        if (hasLoadCarouselData) return
+        hasLoadCarouselData = true
+        val dataKeys = getWidgetDataKeys<CarouselWidgetUiModel>()
+        sellerHomeViewModel.getCarouselWidgetData(dataKeys)
+    }
+
+    override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
         recyclerView.post {
-            adapter.data.remove(data)
+            adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
-            widgetHasMap[data.widgetType]?.remove(data)
+            widgetHasMap[widget.widgetType]?.remove(widget)
         }
     }
 
@@ -195,10 +208,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         view?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
-    private fun getWidgetsLayout() {
+    private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
+                    recyclerView.visible()
                     renderList(result.data)
                     result.data.forEach {
                         if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
@@ -210,6 +224,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                     showGetWidgetShimmer(false)
                 }
                 is Fail -> {
+                    Toast.makeText(context, "Oops : ${result.throwable.message}", Toast.LENGTH_LONG).show()
                     showGetWidgetShimmer(false)
                 }
             }
@@ -220,22 +235,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
+        val bottomSheetContentView = SellerHomeBottomSheetContent(context ?: return)
+
         with(tooltipBottomSheet) tooltip@{
             setTitle(tooltip.title)
             clearClose(false)
             clearHeader(false)
-            setCloseClickListener { this.dismiss() }
+            setCloseClickListener {
+                this.dismiss()
+            }
 
-            val bottomSheetContentView = SellerHomeBottomSheetContent(this@SellerHomeFragment.context
-                    ?: return)
             bottomSheetContentView.setTooltipData(tooltip)
 
             setChild(bottomSheetContentView)
-            show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
+            this@tooltip.show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
         }
     }
 
-    private fun getTickerView() {
+    private fun observeTickerLiveData() {
         sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTickers(it.data)
@@ -285,8 +302,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         })
     }
 
-    private inline fun <DATA : BaseDataUiModel, reified WIDGET : BaseWidgetUiModel<DATA>> List<DATA>.setOnSuccessWidgetState(type: String) {
-        widgetHasMap[type]?.forEachIndexed { i, widget ->
+    private fun observeCarouselLiveData() {
+        sellerHomeViewModel.carouselWidgetData.observe(viewLifecycleOwner, Observer { result ->
+            val type = WidgetType.CAROUSEL
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState(type, CarouselDataUiModel::class.java)
+            }
+        })
+    }
+
+    private inline fun <reified WIDGET : BaseWidgetUiModel<DATA>, DATA : BaseDataUiModel> List<DATA>.setOnSuccessWidgetState(widgetType: String) {
+        widgetHasMap[widgetType]?.forEachIndexed { i, widget ->
             if (widget is WIDGET) {
                 widget.data = this[i]
                 notifyWidgetChanged(widget)
@@ -294,9 +321,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
     }
 
-    private inline fun <DATA : BaseDataUiModel, reified WIDGET : BaseWidgetUiModel<DATA>> Throwable.setOnErrorWidgetState(type: String, data: Class<DATA>) {
+    private inline fun <reified WIDGET : BaseWidgetUiModel<DATA>, DATA : BaseDataUiModel> Throwable.setOnErrorWidgetState(widgetType: String, data: Class<DATA>) {
         val message = this.message.orEmpty()
-        widgetHasMap[type]?.forEach { widget ->
+        widgetHasMap[widgetType]?.forEach { widget ->
             if (widget is WIDGET) {
                 widget.data = data.newInstance().apply {
                     error = message
@@ -334,7 +361,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
             })
 
-            tickerView.addPagerView(adapter, tickersData)
+            addPagerView(adapter, tickersData)
         }
     }
 
