@@ -126,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_120"
                     android:layout_gravity="center"
-                    android:background="@drawable/umrah_bg_rounded_image"
+                    android:background="@drawable/umrah_rounded_gallery_foreground"
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:visibility="invisible"

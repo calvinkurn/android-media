@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
@@ -81,7 +82,7 @@ abstract class UmrahBaseActivity : BaseSimpleActivity() {
                 RouteManager.route(this@UmrahBaseActivity, getString(R.string.umrah_help_link))
                 menuBottomSheet.dismiss()
             }
-            tg_umrah_share.visibility = GONE
+            tg_umrah_share.visibility = VISIBLE
             tg_umrah_share.setOnClickListener {
                 try {
                     val intent = Intent(Intent.ACTION_SEND)

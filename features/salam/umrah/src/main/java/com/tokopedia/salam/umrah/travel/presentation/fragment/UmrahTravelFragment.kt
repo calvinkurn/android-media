@@ -20,6 +20,7 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
+import com.tokopedia.salam.umrah.common.util.UmrahShare
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity
@@ -49,6 +50,8 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    var travelAgent : TravelAgent = TravelAgent()
 
     private lateinit var umrahTravelAgentViewPagerAdapter: UmrahTravelAgentViewPagerAdapter
 
@@ -86,6 +89,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
         umrahTravelViewModel.travelAgentData.observe(this, Observer{
             when (it) {
                 is Success ->{
+                    travelAgent = it.data.umrahTravelAgentBySlug
                     setupAll(it.data)
                 }
                 is Fail ->{
@@ -229,5 +233,12 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
             umrahTrackingUtil.umrahTravelAgentClickBack()
         }
     }
+
+    override fun getBranchLink(): String {
+        val branchLink = UmrahShare(activity as Activity)
+        return branchLink.generateBranchLink(travelAgent)
+    }
+
+
 
 }
