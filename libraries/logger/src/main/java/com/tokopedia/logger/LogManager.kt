@@ -65,7 +65,6 @@ class LogManager(val application: Application) : CoroutineScope {
         @JvmField
         var instance: LogManager? = null
         lateinit var loggerRepository: LoggerRepository
-        private lateinit var intent: Intent
         private lateinit var pi: PendingIntent
         private lateinit var jobScheduler: JobScheduler
         private lateinit var jobInfo: JobInfo
@@ -86,7 +85,7 @@ class LogManager(val application: Application) : CoroutineScope {
                         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                         .build()
             } else {
-                intent = Intent(application, ServerService::class.java)
+                val intent = Intent(application, ServerService::class.java)
                 pi = PendingIntent.getService(application, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
             }
         }
