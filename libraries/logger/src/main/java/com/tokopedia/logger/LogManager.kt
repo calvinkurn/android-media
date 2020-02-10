@@ -88,7 +88,9 @@ class LogManager(val application: Application) : CoroutineScope {
                         .build()
             } else {
                 intent = Intent(application, ServerService::class.java)
-                pi = PendingIntent.getService(application, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+                if(::loggerRepository.isInitialized) {
+                    pi = PendingIntent.getService(application, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+                }
             }
         }
 
