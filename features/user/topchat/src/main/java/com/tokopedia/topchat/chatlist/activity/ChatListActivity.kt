@@ -1,7 +1,5 @@
 package com.tokopedia.topchat.chatlist.activity
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -73,23 +71,17 @@ class ChatListActivity : BaseTabActivity()
         component.inject(this)
     }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_chat_list
-    }
-
-    override fun getScreenName(): String {
-        return "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
-    }
+    override fun getLayoutRes() = R.layout.activity_chat_list
+    override fun getScreenName() = "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
+    override fun getPageLimit() = tabList.size
+    override fun getViewPagerResourceId(): Int = R.id.pager
+    override fun getTabLayoutResourceId(): Int = R.id.indicator
+    override fun getToolbarResourceID(): Int = R.id.toolbar
 
     override fun getViewPagerAdapter(): PagerAdapter? {
-        fragmentAdapter = ChatListPagerAdapter(supportFragmentManager)
-        fragmentAdapter.setItemList(tabList)
-
-        return fragmentAdapter
-    }
-
-    override fun getPageLimit(): Int {
-        return tabList.size
+        return ChatListPagerAdapter(supportFragmentManager).apply {
+            setItemList(tabList)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -457,9 +449,6 @@ class ChatListActivity : BaseTabActivity()
         return DaggerChatListComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }
-
-    override fun getViewPagerResourceId(): Int = R.id.pager
-    override fun getTabLayoutResourceId(): Int = R.id.indicator
 
     companion object {
         const val BUYER_ANALYTICS_LABEL = "buyer"
