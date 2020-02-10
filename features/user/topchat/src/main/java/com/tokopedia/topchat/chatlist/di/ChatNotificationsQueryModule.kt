@@ -26,7 +26,7 @@ class ChatNotificationsQueryModule {
     @IntoMap
     @StringKey(ChatListQueriesConstant.QUERY_CHAT_NOTIFICATION)
     fun provideRawQueryGetChatNotif(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_notification)
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_notification)
 
 
     @Provides
