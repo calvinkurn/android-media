@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
@@ -43,11 +43,12 @@ import javax.inject.Inject
 
 class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
-    lateinit var toolbarShopCreation: Toolbar
-    lateinit var buttonOpenShop: UnifyButton
-    lateinit var landingImage: ImageView
-    lateinit var loading: LoaderUnify
-    lateinit var mainView: View
+    private lateinit var toolbarShopCreation: Toolbar
+    private lateinit var buttonOpenShop: UnifyButton
+    private lateinit var landingImage: ImageView
+    private lateinit var loading: LoaderUnify
+    private lateinit var mainView: View
+    private lateinit var baseView: View
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -55,8 +56,13 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     lateinit var shopCreationAnalytics: ShopCreationAnalytics
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val shopCreationViewModel by lazy { viewModelProvider.get(ShopCreationViewModel::class.java) }
+
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val shopCreationViewModel by lazy {
+        viewModelProvider.get(ShopCreationViewModel::class.java)
+    }
 
     override fun getScreenName(): String = SCREEN_LANDING_SHOP_CREATION
 
@@ -69,6 +75,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         landingImage = view.findViewById(R.id.landing_shop_creation_image)
         loading = view.findViewById(R.id.loading)
         mainView = view.findViewById(R.id.main_view)
+        activity?.let {
+            baseView = it.findViewById(R.id.base_view)
+        }
         return view
     }
 
@@ -85,8 +94,48 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         shopCreationAnalytics.trackScreen(screenName)
     }
 
+    override fun onResume() {
+        super.onResume()
+        initButtonListener()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                when (requestCode) {
+                    REQUEST_CODE_PHONE_SHOP_CREATION -> {
+                        shopCreationViewModel.getUserInfo()
+                    }
+                    REQUEST_CODE_NAME_SHOP_CREATION -> {
+                        shopCreationViewModel.getUserInfo()
+                    }
+                }
+            }
+            else -> {
+                hideLoading()
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        shopCreationAnalytics.eventClickBackLanding()
+        return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        shopCreationViewModel.getUserProfileResponse.removeObservers(this)
+        shopCreationViewModel.getUserInfoResponse.removeObservers(this)
+        shopCreationViewModel.getShopInfoResponse.removeObservers(this)
+        shopCreationViewModel.flush()
+    }
+
     private fun initView() {
         ImageHandler.LoadImage(landingImage, LANDING_PICT_URL)
+    }
+
+    private fun initButtonListener() {
         if (userSession.isLoggedIn) {
             buttonOpenShop.setOnClickListener {
                 showLoading()
@@ -241,45 +290,20 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                when (requestCode) {
-                    REQUEST_CODE_PHONE_SHOP_CREATION -> {
-                        shopCreationViewModel.getUserInfo()
-                    }
-                    REQUEST_CODE_NAME_SHOP_CREATION -> {
-                        shopCreationViewModel.getUserInfo()
-                    }
-                }
-            }
-            else -> {
-                super.onActivityResult(requestCode, resultCode, data)
-            }
-        }
-    }
-
     private fun showLoading() {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
+        context?.let {
+            baseView.setBackgroundColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+        }
     }
 
     private fun hideLoading() {
         loading.visibility = View.GONE
         mainView.visibility = View.VISIBLE
-    }
-
-    override fun onBackPressed(): Boolean {
-        shopCreationAnalytics.eventClickBackLanding()
-        return true
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        shopCreationViewModel.getUserProfileResponse.removeObservers(this)
-        shopCreationViewModel.getUserInfoResponse.removeObservers(this)
-        shopCreationViewModel.getShopInfoResponse.removeObservers(this)
-        shopCreationViewModel.flush()
+        context?.let {
+            baseView.background = ContextCompat.getDrawable(it, R.drawable.bg_landing_shop_creation)
+        }
     }
 
     companion object {
@@ -297,5 +321,4 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             return fragment
         }
     }
-
 }

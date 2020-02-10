@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginregister.shopcreation.di.ShopCreationQueryConstant
 import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
 import com.tokopedia.loginregister.shopcreation.domain.param.ShopInfoParam
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
@@ -33,6 +34,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-12-10.
@@ -48,6 +50,7 @@ open class ShopCreationViewModel @Inject constructor(
         private val getProfileUseCase: GetProfileUseCase,
         private val shopInfoUseCase: ShopInfoUseCase,
         private val userSession: UserSessionInterface,
+        @Named(ShopCreationQueryConstant.DISPATCHERS_MAIN)
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 

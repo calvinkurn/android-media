@@ -7,17 +7,14 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationQueryConstant
-import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
 import com.tokopedia.loginregister.shopcreation.domain.param.ShopInfoParam
-import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoPojo
 import com.tokopedia.profilecommon.domain.usecase.BaseUseCaseWithParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -30,10 +27,12 @@ import javax.inject.Named
 class ShopInfoUseCase @Inject constructor(
         @Named(ShopCreationQueryConstant.QUERY_SHOP_INFO)
         private val query: String,
-        private val graphqlRepository: GraphqlRepository
+        private val graphqlRepository: GraphqlRepository,
+        @Named(ShopCreationQueryConstant.DISPATCHERS_IO)
+        private val dispatcher: CoroutineDispatcher
 ) : BaseUseCaseWithParam<ShopInfoParam, Result<ShopInfoByID>>() {
     override suspend fun getData(parameter: ShopInfoParam): Result<ShopInfoByID> {
-        val response = withContext(Dispatchers.IO) {
+        val response = withContext(dispatcher) {
             val cacheStrategy =
                     GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 

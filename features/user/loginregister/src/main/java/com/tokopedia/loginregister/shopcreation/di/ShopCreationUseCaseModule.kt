@@ -5,6 +5,7 @@ import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseC
 import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Named
 
 /**
@@ -20,13 +21,15 @@ class ShopCreationUseCaseModule {
     @Provides
     fun provideRegisterCheckUseCase(
             @Named(ShopCreationQueryConstant.MUTATION_REGISTER_CHECK) query: String,
-            graphqlRepository: GraphqlRepository
-    ): RegisterCheckUseCase = RegisterCheckUseCase(query, graphqlRepository)
+            graphqlRepository: GraphqlRepository,
+            @Named(ShopCreationQueryConstant.DISPATCHERS_IO) dispatcher: CoroutineDispatcher
+    ): RegisterCheckUseCase = RegisterCheckUseCase(query, graphqlRepository, dispatcher)
 
     @ShopCreationScope
     @Provides
     fun provideShopInfoUseCase(
             @Named(ShopCreationQueryConstant.QUERY_SHOP_INFO) query: String,
-            graphqlRepository: GraphqlRepository
-    ): ShopInfoUseCase = ShopInfoUseCase(query, graphqlRepository)
+            graphqlRepository: GraphqlRepository,
+            @Named(ShopCreationQueryConstant.DISPATCHERS_IO) dispatcher: CoroutineDispatcher
+    ): ShopInfoUseCase = ShopInfoUseCase(query, graphqlRepository, dispatcher)
 }

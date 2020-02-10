@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.shopcreation.view.fragment
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -23,7 +21,6 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Compan
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
-import com.tokopedia.profilecommon.domain.pojo.UserProfileUpdate
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -46,17 +43,19 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private lateinit var buttonContinue: UnifyButton
     private lateinit var textFieldName: TextFieldUnify
 
-    private var currentState = 0
-    private var state = 0
-
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var shopCreationAnalytics: ShopCreationAnalytics
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val shopCreationViewModel by lazy { viewModelProvider.get(ShopCreationViewModel::class.java) }
+
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val shopCreationViewModel by lazy {
+        viewModelProvider.get(ShopCreationViewModel::class.java)
+    }
 
     override fun getScreenName(): String = SCREEN_OPEN_SHOP_CREATION
 
@@ -83,6 +82,18 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         initVar()
         initView()
         initObserver()
+    }
+
+    override fun onBackPressed(): Boolean {
+        shopCreationAnalytics.eventClickBackNameShopCreation()
+        return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        shopCreationViewModel.addNameResponse.removeObservers(this)
+        shopCreationViewModel.registerPhoneAndName.removeObservers(this)
+        shopCreationViewModel.flush()
     }
 
     private fun initVar() {
@@ -171,7 +182,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         shopCreationViewModel.addNameResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessAddName(it.data)
+                    onSuccessAddName()
                 }
                 is Fail -> {
                     onFailedAddName(it.throwable)
@@ -200,7 +211,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED)
     }
 
-    private fun onSuccessAddName(userProfileUpdate: UserProfileUpdate) {
+    private fun onSuccessAddName() {
         shopCreationAnalytics.eventSuccessClickContinueNameShopCreation()
         buttonContinue.isLoading = false
         activity?.let {
@@ -241,10 +252,6 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         textFieldName.setMessage(message)
     }
 
-    private fun clearMessageFieldPhone() {
-        textFieldName.setMessage("")
-    }
-
     private fun toastError(throwable: Throwable) {
         throwable.message?.let { toastError(it) }
     }
@@ -253,18 +260,6 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         view?.run {
             Toaster.make(this, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
         }
-    }
-
-    override fun onBackPressed(): Boolean {
-        shopCreationAnalytics.eventClickBackNameShopCreation()
-        return true
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        shopCreationViewModel.addNameResponse.removeObservers(this)
-        shopCreationViewModel.registerPhoneAndName.removeObservers(this)
-        shopCreationViewModel.flush()
     }
 
     companion object {

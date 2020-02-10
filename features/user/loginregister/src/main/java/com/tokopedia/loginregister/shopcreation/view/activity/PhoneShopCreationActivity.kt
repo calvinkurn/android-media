@@ -7,6 +7,8 @@ import com.tokopedia.loginregister.shopcreation.view.fragment.PhoneShopCreationF
 /**
  * Created by Ade Fulki on 2019-12-18.
  * ade.hadian@tokopedia.com
+ * For navigating to this class
+ * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
  */
 
 class PhoneShopCreationActivity : BaseShopCreationActivity() {

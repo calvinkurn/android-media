@@ -1,5 +1,7 @@
 package com.tokopedia.loginphone.chooseaccount.view.activity
 
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -15,39 +17,10 @@ import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
  * Created by Ade Fulki on 2020-01-23.
  * ade.hadian@tokopedia.com
  * For navigating to this class
- * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal#CHOOSE_ACCOUNT
+ * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHOOSE_ACCOUNT
  */
 
 class ChooseAccountActivity : BaseSimpleActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            window.statusBarColor = Color.WHITE
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-    }
-
-    private fun setWindowFlag(bits: Int, on: Boolean) {
-        val win = window
-        val winParams = win.attributes
-        if (on) {
-            winParams.flags = winParams.flags or bits
-        } else {
-            winParams.flags = winParams.flags and bits.inv()
-        }
-        win.attributes = winParams
-    }
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -62,5 +35,37 @@ class ChooseAccountActivity : BaseSimpleActivity() {
 
     override fun getScreenName(): String? {
         return LoginPhoneNumberAnalytics.Screen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT
+    }
+
+    @SuppressLint("InlinedApi")
+    override fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.LOLLIPOP) {
+            setWindowFlag(true)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setWindowFlag(false)
+            window.statusBarColor = Color.TRANSPARENT
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val decor = window.decorView
+            decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private fun setWindowFlag(on: Boolean) {
+        val winParams = window.attributes
+        if (on) {
+            winParams.flags = winParams.flags or WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+        } else {
+            winParams.flags = winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
+        }
+        window.attributes = winParams
     }
 }

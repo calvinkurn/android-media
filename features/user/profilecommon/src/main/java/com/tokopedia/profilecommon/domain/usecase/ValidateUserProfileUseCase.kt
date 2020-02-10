@@ -14,7 +14,7 @@ import com.tokopedia.profilecommon.domain.pojo.UserProfileValidatePojo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -27,11 +27,12 @@ import javax.inject.Named
 class ValidateUserProfileUseCase @Inject constructor(
         @Named(ProfileCommonQueryConstant.MUTATION_USER_PROFILE_VALIDATE)
         private val query: String,
-        private val graphqlRepository: GraphqlRepository
+        private val graphqlRepository: GraphqlRepository,
+        private val dispatcher: CoroutineDispatcher
 ) : BaseUseCaseWithParam<ValidateUserProfileParam, Result<UserProfileValidate>>() {
 
     override suspend fun getData(parameter: ValidateUserProfileParam): Result<UserProfileValidate> {
-        val response = withContext(Dispatchers.IO) {
+        val response = withContext(dispatcher) {
             val cacheStrategy =
                     GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 

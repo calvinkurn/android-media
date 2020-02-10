@@ -83,8 +83,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
 
-    public Boolean isOpenShop = false;
-
     private AccountAnalytics accountAnalytics;
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
@@ -397,9 +395,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         moveToCreateShop();
     }
 
-
     protected void moveToCreateShop() {
-        isOpenShop = true;
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
             startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.OPEN_SHOP), OPEN_SHOP_SUCCESS);
         }

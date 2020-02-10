@@ -9,6 +9,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-12-09.
@@ -21,7 +22,13 @@ class ShopCreationModule {
 
     @ShopCreationScope
     @Provides
+    @Named(ShopCreationQueryConstant.DISPATCHERS_MAIN)
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @ShopCreationScope
+    @Provides
+    @Named(ShopCreationQueryConstant.DISPATCHERS_IO)
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)

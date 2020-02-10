@@ -2,6 +2,7 @@ package com.tokopedia.home.account.domain;
 
 import android.text.TextUtils;
 
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -82,10 +83,7 @@ public class GetSellerAccountUseCase extends UseCase<SellerViewModel> {
         String SHOP_ID = "shopID";
 
         RequestParams param = RequestParams.create();
-        int shopIdInt = 0;
-        if (shopId == "0") {
-            shopIdInt = Integer.parseInt(shopId);
-        }
+        int shopIdInt = StringUtils.isNotBlank(shopId) ? Integer.parseInt(shopId) : 0;
         param.putInt(SHOP_ID, shopIdInt);
         return param;
     }

@@ -12,7 +12,7 @@ import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -25,11 +25,12 @@ import javax.inject.Named
 class GetUserProfileCompletionUseCase @Inject constructor(
         @Named(ProfileCommonQueryConstant.QUERY_USER_PROFILE_COMPLETION)
         private val query: String,
-        private val graphqlRepository: GraphqlRepository
+        private val graphqlRepository: GraphqlRepository,
+        private val dispatcher: CoroutineDispatcher
 ) : BaseUseCase<Result<UserProfileCompletionData>>() {
 
     override suspend fun getData(): Result<UserProfileCompletionData> {
-        val response = withContext(Dispatchers.IO) {
+        val response = withContext(dispatcher) {
             val cacheStrategy =
                     GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
