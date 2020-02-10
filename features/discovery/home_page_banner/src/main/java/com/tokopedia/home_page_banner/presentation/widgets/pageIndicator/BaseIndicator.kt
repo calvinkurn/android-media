@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import com.tokopedia.home_page_banner.R
 import kotlin.math.abs
 
-
 open class BaseIndicator : LinearLayout {
     open var mIndicatorMargin = -1
     open var mIndicatorWidth = -1
@@ -100,13 +99,13 @@ open class BaseIndicator : LinearLayout {
         mIndicatorCreatedListener = indicatorCreatedListener
     }
 
-    protected fun createAnimatorOut(config: Config): Animator {
+    open fun createAnimatorOut(config: Config): Animator {
         return AnimatorInflater.loadAnimator(context, config.animatorResId)
     }
 
-    protected fun createAnimatorIn(config: Config): Animator {
+    open fun createAnimatorIn(config: Config): Animator {
         val animatorIn: Animator
-        if (config.animatorReverseResId === 0) {
+        if (config.animatorReverseResId == 0) {
             animatorIn = AnimatorInflater.loadAnimator(context, config.animatorResId)
             animatorIn.interpolator = ReverseInterpolator()
         } else {
