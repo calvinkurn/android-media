@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.test.grid
+package com.tokopedia.productcard.test
 
 import android.graphics.Rect
 import android.os.Bundle
@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.productcard.test.R
-import com.tokopedia.productcard.test.productCardModelTestData
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v3.ProductCardGridView
 import kotlin.math.cos

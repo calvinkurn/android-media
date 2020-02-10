@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.test.grid
+package com.tokopedia.productcard.test
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView
@@ -8,11 +8,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.productcard.test.R
-import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest.ViewHolder
-import com.tokopedia.productcard.test.isDisplayedWithText
-import com.tokopedia.productcard.test.productCardInPosition
-import com.tokopedia.productcard.test.productCardModelTestData
+import com.tokopedia.productcard.test.ProductCardGridActivityTest.ViewHolder
+import com.tokopedia.productcard.test.utils.isDisplayedWithText
+import com.tokopedia.productcard.test.utils.productCardInPosition
 import org.hamcrest.Matcher
 import org.junit.Rule
 import org.junit.Test
