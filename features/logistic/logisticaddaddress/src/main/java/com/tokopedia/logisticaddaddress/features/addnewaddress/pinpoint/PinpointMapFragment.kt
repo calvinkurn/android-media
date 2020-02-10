@@ -83,7 +83,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var continueWithLocation: Boolean? = false
-    private var isFullFlow: Boolean? = true
+    private var isFullFlow: Boolean = true
 
     private var composite = CompositeSubscription()
 
@@ -374,18 +374,16 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
-        isFullFlow?.let { fullFlow ->
-            if (!fullFlow) {
-                if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0) {
-                    currentLat = getDistrictDataUiModel.latitude.toDouble()
-                    currentLong = getDistrictDataUiModel.longitude.toDouble()
-                    moveMap(getLatLng(currentLat, currentLong))
-                    showNotFoundLocation("")
-                } else {
-                    doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
-                }
-            } else doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
-        }
+        if (!isFullFlow) {
+            if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0) {
+                currentLat = getDistrictDataUiModel.latitude.toDouble()
+                currentLong = getDistrictDataUiModel.longitude.toDouble()
+                moveMap(getLatLng(currentLat, currentLong))
+                showNotFoundLocation("")
+            } else {
+                doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
+            }
+        } else doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
     }
 
     private fun doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
@@ -403,15 +401,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel, errMsg: String) {
-        isFullFlow?.let { fullFlow ->
-            if (!fullFlow) {
-                if (errMsg.isNotEmpty() || autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0) {
-                    showNotFoundLocation(errMsg)
-                } else {
-                    doAfterSuccessAutofill(autofillDataUiModel)
-                }
-            } else doAfterSuccessAutofill(autofillDataUiModel)
-        }
+        if (!isFullFlow) {
+            if (errMsg.isNotEmpty() || autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0) {
+                showNotFoundLocation(errMsg)
+            } else {
+                doAfterSuccessAutofill(autofillDataUiModel)
+            }
+        } else doAfterSuccessAutofill(autofillDataUiModel)
     }
 
     private fun showNotFoundLocation(errMsg: String) {
@@ -494,35 +490,33 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
         this.saveAddressDataModel = saveAddressDataModel
-        isFullFlow?.let { fullFlow ->
-            if (fullFlow) {
-                if (saveAddressDataModel.title.equals(UNNAMED_ROAD, true)) {
-                    whole_loading_container?.visibility = View.GONE
-                    getdistrict_container?.visibility = View.GONE
-                    invalid_container?.visibility = View.VISIBLE
+        if (isFullFlow) {
+            if (saveAddressDataModel.title.equals(UNNAMED_ROAD, true)) {
+                whole_loading_container?.visibility = View.GONE
+                getdistrict_container?.visibility = View.GONE
+                invalid_container?.visibility = View.VISIBLE
 
-                    invalid_title?.text = getString(R.string.invalid_title)
-                    invalid_desc?.text = getString(R.string.invalid_desc)
-                    invalid_img?.setImageResource(R.drawable.ic_invalid_location)
-                    invalid_button?.apply {
-                        visibility = View.VISIBLE
-                        setOnClickListener {
-                            AddNewAddressAnalytics.eventClickButtonUnnamedRoad()
-                            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false)
-                        }
+                invalid_title?.text = getString(R.string.invalid_title)
+                invalid_desc?.text = getString(R.string.invalid_desc)
+                invalid_img?.setImageResource(R.drawable.ic_invalid_location)
+                invalid_button?.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener {
+                        AddNewAddressAnalytics.eventClickButtonUnnamedRoad()
+                        goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false)
                     }
-
-                    invalid_ic_search_btn?.setOnClickListener {
-                        showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
-                    }
-                    AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
-
-                } else {
-                    setDefaultResultGetDistrict(saveAddressDataModel)
                 }
+
+                invalid_ic_search_btn?.setOnClickListener {
+                    showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+                }
+                AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
+
             } else {
                 setDefaultResultGetDistrict(saveAddressDataModel)
             }
+        } else {
+            setDefaultResultGetDistrict(saveAddressDataModel)
         }
     }
 
@@ -561,10 +555,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         btn_choose_location?.setOnClickListener {
             continueWithLocation?.let {
                 if (it) {
-                    isFullFlow?.let { fullFlow ->
-                        if (fullFlow) doLoadAddEdit()
-                        else setResultPinpoint()
-                    }
+                    if (isFullFlow) doLoadAddEdit()
+                    else setResultPinpoint()
                     AddNewAddressAnalytics.eventClickButtonPilihLokasi()
                 } else {
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
@@ -574,7 +566,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun setResultPinpoint() {
-        println("++ address =  ${saveAddressDataModel?.formattedAddress}, latitude =  ${saveAddressDataModel?.latitude}, longitude =  ${saveAddressDataModel?.longitude}, postalCode =  ${saveAddressDataModel?.postalCode}, districtId =  ${saveAddressDataModel?.districtId}")
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)
