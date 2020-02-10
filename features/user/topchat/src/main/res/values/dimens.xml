@@ -54,6 +54,7 @@
     <dimen name="dp_topchat_56">56dp</dimen>
     <dimen name="dp_topchat_60">60dp</dimen>
     <dimen name="dp_topchat_72">72dp</dimen>
+    <dimen name="dp_topchat_76">76dp</dimen>
     <dimen name="dp_topchat_85">85dp</dimen>
     <dimen name="dp_topchat_90">90dp</dimen>
     <dimen name="dp_topchat_160">160dp</dimen>
