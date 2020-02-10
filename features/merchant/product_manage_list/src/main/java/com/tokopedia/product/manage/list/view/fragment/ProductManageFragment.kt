@@ -99,7 +99,7 @@ import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
-import com.tokopedia.seller.common.utils.KMNumbers
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
