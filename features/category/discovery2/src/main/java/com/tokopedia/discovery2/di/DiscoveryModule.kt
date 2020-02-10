@@ -3,9 +3,13 @@ package com.tokopedia.discovery2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
+import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.PushStatusRepository
 import com.tokopedia.tradein_common.repository.BaseRepository
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -14,7 +18,7 @@ class DiscoveryModule {
 
     @DiscoveryScope
     @Provides
-    fun provideBaseRepository() : BaseRepository{
+    fun provideBaseRepository(): BaseRepository {
         return BaseRepository.repositoryInstance
     }
 
@@ -24,10 +28,21 @@ class DiscoveryModule {
         return PushStatusGQLRepository(provideGetStringMethod(context))
     }
 
+    @DiscoveryScope
+    @Provides
+    fun provideCpmTopAdsGQLRepository(@ApplicationContext context: Context): CpmTopAdsRepository {
+        return CpmTopAdsGQLRepository(provideGetStringMethod(context))
+    }
+
+    @DiscoveryScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 
     @DiscoveryScope
     @Provides
     fun provideGetStringMethod(@ApplicationContext context: Context): (Int) -> String {
-        return {id -> GraphqlHelper.loadRawString(context.resources,id)};
+        return { id -> GraphqlHelper.loadRawString(context.resources, id) }
     }
 }

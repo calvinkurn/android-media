@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.factory
 
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.ComponentNames
 
 
 enum class ComponentsList(val id: Int, val componentName: String) {
@@ -12,4 +13,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Share(R.layout.multi_banner_layout, "share"),
     BannerTimer(R.layout.banner_timer_layout, "timer_with_banner"),
     LihatSemua(R.layout.lihat_semua, "lihat_semua"),
+    CpmTopAds(R.layout.cpm_topads_layout, "topads"),
+    CpmTopAdsItem(R.layout.item_cpm_topads_shop_layout, ComponentNames.CpmTopAdsShopItem.componentName),
+    CpmTopAdsProductItem(R.layout.item_cpm_topads_product_layout, ComponentNames.CpmTopAdsProductItem.componentName)
 }

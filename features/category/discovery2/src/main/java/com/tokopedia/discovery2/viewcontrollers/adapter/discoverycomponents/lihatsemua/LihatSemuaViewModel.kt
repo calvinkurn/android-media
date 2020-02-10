@@ -10,7 +10,6 @@ class LihatSemuaViewModel(val application: Application, private val componentDat
     private val itemData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
     override fun initDaggerInject() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     init {
@@ -22,7 +21,7 @@ class LihatSemuaViewModel(val application: Application, private val componentDat
 
     fun onButtonClicked() {
         if (!componentData.data?.get(0)?.btnApplink?.isEmpty()!!) {
-            RouteManager.route(application, componentData.data.get(0).btnApplink)
+            RouteManager.route(application, componentData.data!!.get(0).btnApplink)
         }
     }
 }
