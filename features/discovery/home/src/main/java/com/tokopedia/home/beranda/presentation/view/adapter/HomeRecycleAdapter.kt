@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import java.util.*
@@ -87,6 +88,10 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
             currentSelected = positions.first()
             (getViewHolder(currentSelected) as PlayCardViewHolder).resume()
         }
+
+        if(itemCount > 0 && getViewHolder(0) is BannerViewHolder){
+            (getViewHolder(0) as BannerViewHolder).onResume()
+        }
     }
 
     fun onPause() {
@@ -94,6 +99,9 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         if(positions.isNotEmpty() && getViewHolder(positions.first()) is PlayCardViewHolder){
             currentSelected = positions.first()
             (getViewHolder(currentSelected) as PlayCardViewHolder).pause()
+        }
+        if(itemCount > 0 && getViewHolder(0) is BannerViewHolder){
+            (getViewHolder(0) as BannerViewHolder).onPause()
         }
     }
 

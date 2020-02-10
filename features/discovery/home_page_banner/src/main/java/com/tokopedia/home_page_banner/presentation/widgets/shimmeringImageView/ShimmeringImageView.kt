@@ -1,15 +1,10 @@
-package com.tokopedia.home_page_banner.presenter.widgets
+package com.tokopedia.home_page_banner.presentation.widgets.shimmeringImageView
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.annotation.RequiresApi
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -39,9 +34,8 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
         imageView?.let {
             Glide.with(context)
                     .load(url)
-                    .skipMemoryCache(true)
                     .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
                     .listener(object : RequestListener<Drawable>{
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
