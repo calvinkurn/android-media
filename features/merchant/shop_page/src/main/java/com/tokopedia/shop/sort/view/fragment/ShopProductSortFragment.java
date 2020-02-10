@@ -38,7 +38,7 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
     public static ShopProductSortFragment createInstance(String sortName) {
         ShopProductSortFragment fragment = new ShopProductSortFragment();
         Bundle arguments = new Bundle();
-        arguments.putString(ShopProductSortActivity.SORT_NAME, sortName);
+        arguments.putString(ShopProductSortActivity.SORT_VALUE, sortName);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -86,7 +86,7 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (getArguments() != null && savedInstanceState == null) {
-            sortName = getArguments().getString(ShopProductSortActivity.SORT_NAME);
+            sortName = getArguments().getString(ShopProductSortActivity.SORT_VALUE);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }

@@ -23,8 +23,8 @@ object PlayAnalytics {
         return if(isLive) KEY_TRACK_LIVE else KEY_TRACK_VOD
     }
 
-    fun sendScreen(channelId: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated("/group-chat-room/$channelId")
+    fun sendScreen(channelId: String, isLive: Boolean) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated("/group-chat-room/$channelId/${getLiveOrVod(isLive)}")
     }
 
     fun clickLeaveRoom(channelId: String, duration: Long, isLive: Boolean) {
@@ -118,12 +118,12 @@ object PlayAnalytics {
         )
     }
 
-    fun clickPlayVideo(channelId: String) {
+    fun clickPlayVideo(channelId: String, isLive: Boolean) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on play button video",
-                channelId
+                "$channelId - ${getLiveOrVod(isLive)}"
         )
     }
 }

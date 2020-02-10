@@ -357,4 +357,6 @@ class ShopPageProductListViewModel @Inject constructor(
     fun clearGetShopProductUseCase() {
         getShopProductUseCase.clearCache()
     }
+
+    fun isLoggedIn() = userSession.isLoggedIn
 }

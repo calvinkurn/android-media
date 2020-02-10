@@ -77,19 +77,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/container_fab_egg_token"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="@dimen/tp_margin_large"
-                android:background="@color/transparent"
-                android:visibility="gone"
-                app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
-
-                <include layout="@layout/tp_layout_floating_token" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/bottom_view_membership"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

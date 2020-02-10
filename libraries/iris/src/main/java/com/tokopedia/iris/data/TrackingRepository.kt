@@ -29,6 +29,7 @@ class TrackingRepository(
     private val cache: Cache = Cache(context)
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
     private var firebaseRemoteConfig: RemoteConfig? = null
+
     private val apiService by lazy {
         ApiService(context).makeRetrofitService()
     }
@@ -40,8 +41,9 @@ class TrackingRepository(
         return firebaseRemoteConfig!!
     }
 
-    private fun getLineDBFlush() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_FLUSH)
-    private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND)
+    private fun getLineDBFlush()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_FLUSH, 5000)
+    private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND, 400)
+    private fun getBatchPerPeriod()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_BATCH_SEND, 5)
 
     suspend fun saveEvent(data: String, session: Session,
                           eventName: String?, eventCategory: String?, eventAction: String?) =
@@ -124,7 +126,7 @@ class TrackingRepository(
             return -1
 
         var counterLoop = 0
-        val maxLoop = 5
+        val maxLoop = getBatchPerPeriod()
         var totalSentData = 0
 
         var lastSuccessSent = true

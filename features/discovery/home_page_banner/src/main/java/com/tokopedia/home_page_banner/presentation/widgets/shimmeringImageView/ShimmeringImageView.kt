@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_page_banner.R
 import com.tokopedia.home_page_banner.ext.CrossFadeFactory
 import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
@@ -19,6 +20,10 @@ import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
 
 class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         FrameLayout(context, attrs, defStyleAttr){
+
+    val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
+    val FPM_HOMEPAGE_BANNER = "homepage_banner"
+    val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
     init {
         init()
@@ -32,6 +37,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
     fun loadImage(url: String){
         shimmeringView?.visibility = View.VISIBLE
         imageView?.let {
+            val performanceMonitoring = getPerformanceMonitoring(url)
             Glide.with(context)
                     .load(url)
                     .centerCrop()
@@ -44,10 +50,30 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             shimmeringView?.visibility = View.GONE
+                            stopTraceOnResourceReady(dataSource, resource, performanceMonitoring)
                             return false
                         }
                     })
                     .into(it)
+        }
+    }
+
+    fun getPerformanceMonitoring(url: String) : PerformanceMonitoring? {
+        var performanceMonitoring : PerformanceMonitoring? = null
+
+        //FPM only allow max 100 chars, so the url needs to be truncated
+        val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
+
+
+        performanceMonitoring = PerformanceMonitoring.start(FPM_HOMEPAGE_BANNER)
+        performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
+
+        return performanceMonitoring
+    }
+
+    fun stopTraceOnResourceReady(dataSource: DataSource?, resource: Drawable?, performanceMonitoring: PerformanceMonitoring?) {
+        if (dataSource == DataSource.REMOTE) {
+            performanceMonitoring?.stopTrace()
         }
     }
 }
