@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomedrawer.domain.retrofit.api;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.sellerhomedrawer.data.constant.SellerDrawerUrl;
 
 import java.util.Map;
@@ -13,10 +14,6 @@ import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
-/**
- * @author Angga.Prasetiyo on 07/12/2015.
- */
-
 @Deprecated
 public interface NotificationApi {
 
@@ -28,5 +25,5 @@ public interface NotificationApi {
     Observable<Response<TokopediaWsV4Response>> resetNotification(@FieldMap Map<String, String> params);
 
     @GET(SellerDrawerUrl.User.PATH_GET_NOTIFICATION)
-    Observable<Response<TokopediaWsV4Response>> getNotification2(@QueryMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> getNotification2(@QueryMap TKPDMapParam<String, Object> params);
 }
