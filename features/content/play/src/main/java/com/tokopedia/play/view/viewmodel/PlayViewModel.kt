@@ -200,8 +200,8 @@ class PlayViewModel @Inject constructor(
         getChannelInfoResponse(channelId)
     }
 
-    fun resume() {
-        checkIsFollowedShop()
+    fun resumeWithChannelId(channelId: String) {
+        getChannelInfo(channelId)
     }
 
     fun destroy() {

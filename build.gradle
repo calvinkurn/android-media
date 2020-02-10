@@ -11,7 +11,7 @@ apply plugin: 'idea'
 buildscript { 
     ext.kotlin_version = '1.3.61'
 
-    ext.jacocoVersion = '0.8.2'
+    ext.jacocoVersion = '0.8.3'
     repositories {
         gradlePluginPortal()
         google()
@@ -47,7 +47,8 @@ buildscript {
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
         classpath "com.gradle:gradle-enterprise-gradle-plugin:3.1.1"
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
 apply from: 'buildproj.gradle'

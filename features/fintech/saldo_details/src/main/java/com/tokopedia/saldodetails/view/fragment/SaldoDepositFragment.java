@@ -48,6 +48,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
+import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -330,12 +331,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         });
 
         checkBalanceStatus.setOnClickListener(v -> {
-            try {
-                Intent intent = RouteManager.getIntent(context, ApplinkConst.INBOX_TICKET);
-                startActivity(intent);
-            } catch (Exception e) {
-
-            }
+            Intent intent=new Intent(context, SaldoHoldInfoActivity.class);
+            startActivity(intent);
         });
 
         tickerMessageCloseButton.setOnClickListener(v -> tickerMessageRL.setVisibility(View.GONE));
