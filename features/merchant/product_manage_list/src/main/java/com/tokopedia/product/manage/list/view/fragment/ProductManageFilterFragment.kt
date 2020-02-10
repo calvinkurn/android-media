@@ -23,8 +23,8 @@ import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
 import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
-import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel
-import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel
+import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel
+import com.tokopedia.product.manage.item.category.view.model.ProductManageCategoryViewModel
 import kotlinx.android.synthetic.main.fragment_product_manage_filter.*
 import java.util.*
 

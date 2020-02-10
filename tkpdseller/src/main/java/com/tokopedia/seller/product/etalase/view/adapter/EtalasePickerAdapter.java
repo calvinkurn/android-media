@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.product.etalase.view.model.EtalaseViewModel;
-import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.product.manage.item.etalase.view.model.EtalaseViewModel;
+import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 
 import java.util.ArrayList;
