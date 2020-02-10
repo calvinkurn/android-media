@@ -210,13 +210,13 @@ class ChatItemListViewHolder(
     private fun bindTypingState() {
         message.setText(R.string.is_typing)
         message.setTypeface(null, ITALIC)
-        message.setTextColor(MethodChecker.getColor(message.context, R.color.Green_G500))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Green_G500))
     }
 
     private fun bindMessageState(lastReplyMessage: String) {
         message.text = MethodChecker.fromHtml(lastReplyMessage)
         message.setTypeface(null, NORMAL)
-        message.setTextColor(MethodChecker.getColor(message.context, R.color.Neutral_N700_68))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
 
     private fun bindReadState(readStatus: Int?, unreads: Int?) {

@@ -23,8 +23,8 @@ class EmptyChatViewHolder(itemView: View, var listener: ChatListItemListener) : 
         val LAYOUT = R.layout.empty_chat
     }
 
-    val title: Typography = itemView.findViewById(com.tokopedia.design.R.id.title)
-    val subtitle: Typography = itemView.findViewById(com.tokopedia.chat_common.R.id.subtitle)
+    val title: Typography = itemView.findViewById(R.id.title)
+    val subtitle: Typography = itemView.findViewById(R.id.subtitle)
     val image: SquareImageView = itemView.findViewById(R.id.thumbnail)
 
     override fun bind(element: EmptyChatModel) {
