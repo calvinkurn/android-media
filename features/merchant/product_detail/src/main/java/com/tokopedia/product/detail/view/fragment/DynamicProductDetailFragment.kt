@@ -302,6 +302,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         productDetailTracking.sendAllQueue()
     }
 
+    override fun onResume() {
+        super.onResume()
+        initToolBarMethod()
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         // handling menu toolbar / cart counter / settings / etc
