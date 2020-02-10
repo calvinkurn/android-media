@@ -171,7 +171,16 @@ open class DynamicPostViewHolder(v: View,
 
             itemView.authorSubtitile.shouldShowWithAction(template.avatarDate) {
                 header.avatarDate = TimeConverter.generateTime(itemView.context, header.avatarDate)
-                itemView.authorSubtitile.text = header.avatarDate
+                val spannableString: SpannableString =
+                        if (header.cardSummary.isNotEmpty()) {
+                            SpannableString(String.format(
+                                    getString(R.string.feed_header_time_format),
+                                    header.avatarDate,
+                                    header.cardSummary))
+                        } else {
+                            SpannableString(header.avatarDate)
+                        }
+                itemView.authorSubtitile.text = spannableString
                 itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
             }
 

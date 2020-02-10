@@ -22,6 +22,12 @@ import rx.schedulers.Schedulers
 
 class PmSubscribePresenterTest : Spek( {
 
+    RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
+        override fun getMainThreadScheduler(): Scheduler {
+            return Schedulers.immediate()
+        }
+    })
+
     Feature("PmSubscribePresenter") {
 
         val getShopStatusUseCase: GetShopStatusUseCase = mockk()
@@ -39,12 +45,6 @@ class PmSubscribePresenterTest : Spek( {
 
         val pmSubscribePresenter = PmSubscribePresenter(getPowerMerchantStatusUseCase)
         pmSubscribePresenter.attachView(pmSubscribeView)
-
-        RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
-            override fun getMainThreadScheduler(): Scheduler {
-                return Schedulers.immediate()
-            }
-        })
 
         Scenario("GetPowerMerchantStatusUseCase is successful") {
             Given("Mock GetPowerMerchantStatusUseCase return as success") {

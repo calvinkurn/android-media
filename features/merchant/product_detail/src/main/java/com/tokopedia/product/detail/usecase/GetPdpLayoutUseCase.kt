@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -40,14 +41,12 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
-        val data = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java)
-        val blacklistMessage = data.data.basicInfo.blacklistMessage
+        val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data ?: PdpGetLayout()
+        val blacklistMessage = data.basicInfo.blacklistMessage
 
         if (error != null && error.isNotEmpty()) {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
-        } else if (data == null) {
-            throw RuntimeException()
-        } else if (data.data.basicInfo.isBlacklisted) {
+        } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
             throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
         }
@@ -56,9 +55,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
         return mapIntoModel(data)
     }
 
-    private fun mapIntoModel(data: ProductDetailLayout): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.data.components)
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data.data)
+    private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components)
+        val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData)
     }
 

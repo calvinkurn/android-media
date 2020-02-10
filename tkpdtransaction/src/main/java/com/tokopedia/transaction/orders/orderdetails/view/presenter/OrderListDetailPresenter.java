@@ -459,7 +459,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs(),details.contactUs().helpUrl());
+        getView().setContactUs(details.contactUs(),details.getHelpLink());
 
         if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
@@ -710,6 +710,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
         }
         return null;
+    }
+
+    public String getFirstProductId() {
+        if (details != null && details.getItems() != null && !details.getItems().isEmpty()) {
+            return String.valueOf(details.getItems().get(0).getId());
+        }
+        return "";
     }
 
     public void showRetryButtonToaster(String message) {

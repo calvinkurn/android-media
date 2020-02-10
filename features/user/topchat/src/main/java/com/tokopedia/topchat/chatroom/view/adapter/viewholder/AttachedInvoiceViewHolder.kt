@@ -14,7 +14,8 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.unifycomponents.Label
 
-class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailListener: InvoiceThumbnailListener) : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
+class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailListener: InvoiceThumbnailListener)
+    : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
 
     private val container: RelativeLayout? = itemView.findViewById(R.id.rl_container)
     private val chatBubble: ConstraintLayout? = itemView.findViewById(R.id.cl_chat_bubble)
@@ -36,19 +37,28 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
         assignInteraction(viewModel)
     }
 
+    override fun alwaysShowTime(): Boolean {
+        return true
+    }
+
+    override fun getDateId(): Int {
+        return R.id.tvDate
+    }
+
     private fun alignLayout(viewModel: AttachInvoiceSentViewModel) {
         if (viewModel.isSender) {
-            alignBubbleRight()
+            alignBubbleRight(viewModel)
+            bindChatReadStatus(viewModel)
         } else {
-            alignBubbleLeft()
+            alignBubbleLeft(viewModel)
         }
     }
 
-    private fun alignBubbleRight() {
+    private fun alignBubbleRight(viewModel: AttachInvoiceSentViewModel) {
         alignBubble(Gravity.END)
     }
 
-    private fun alignBubbleLeft() {
+    private fun alignBubbleLeft(viewModel: AttachInvoiceSentViewModel) {
         alignBubble(Gravity.START)
     }
 

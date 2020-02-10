@@ -31,6 +31,7 @@ object IrisAnalyticsEvents {
     const val PUSH_RECEIVED = "pushReceived"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
+    const val PUSH_CANCELLED = "pushCancelled"
     const val PUSH_DELETED = "pushDeleted"
     const val INAPP_RECEIVED = "inappReceived"
     const val INAPP_CLICKED = "inappClicked"
@@ -70,7 +71,7 @@ object IrisAnalyticsEvents {
 
     }
 
-    fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
+    private fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
         val values = HashMap<String, Any>()
 
         values[EVENT_NAME] = eventName
@@ -119,7 +120,7 @@ object IrisAnalyticsEvents {
         else irisAnalytics.saveEvent(values)
     }
 
-    fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
+    private fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
         val values = HashMap<String, Any>()
 
         values[EVENT_NAME] = eventName

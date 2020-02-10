@@ -119,12 +119,6 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
-    //   switch for New category belanja page
-    public static final String APP_CATEGORY_BROWSE_V1 = "app_category_browse_v1";
-
-     //   switch for New category belanja page A/B testing
-    public static final String APP_CATEGORY_BROWSE_ENABLE_AB = "app_category_browse_enable_ab";
-
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 
@@ -191,9 +185,21 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
+    public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+
+
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
+
+    public static final String ENABLE_NETWORK_CLIENT_INIT_ASYNC = "android_init_nwclient_async";
+    public static final String ENABLE_SEQ1_ASYNC = "android_exec_seq1_async";
+    public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
+    public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
+    public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
+    public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
+    public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
+
 }

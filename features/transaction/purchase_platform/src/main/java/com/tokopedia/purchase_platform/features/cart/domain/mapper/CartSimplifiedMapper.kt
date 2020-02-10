@@ -18,7 +18,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.Simil
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 import com.tokopedia.purchase_platform.features.cart.data.model.response.*
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -364,7 +364,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             val wholesalePriceData = mapWholeSalePriceData(it)
             wholesalePriceDataList.add(wholesalePriceData)
         }
-        return wholesalePriceDataList
+        return wholesalePriceDataList.asReversed()
     }
 
     private fun mapWholeSalePriceData(wholesalePrice: WholesalePrice): WholesalePriceData {

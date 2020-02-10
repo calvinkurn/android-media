@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecentViewItemViewHolder
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentViewItemHolderData
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.

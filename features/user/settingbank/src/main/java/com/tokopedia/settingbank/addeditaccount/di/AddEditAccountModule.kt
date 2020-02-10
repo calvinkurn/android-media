@@ -1,7 +1,7 @@
 package com.tokopedia.settingbank.addeditaccount.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
@@ -71,8 +71,8 @@ class AddEditAccountModule{
 
     @AddEditAccountScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor
-            = ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor
+            = ChuckerInterceptor(context)
 
     @AddEditAccountScope
     @Provides
@@ -83,7 +83,7 @@ class AddEditAccountModule{
     fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
                             headerErrorResponseInterceptor: HeaderErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor,
+                            chuckInterceptor: ChuckerInterceptor,
                             debugInterceptor: DebugInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient{
         val builder = OkHttpClient.Builder()

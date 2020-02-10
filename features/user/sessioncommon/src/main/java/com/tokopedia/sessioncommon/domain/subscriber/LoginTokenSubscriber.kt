@@ -1,9 +1,8 @@
 package com.tokopedia.sessioncommon.domain.subscriber
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -14,8 +13,8 @@ import rx.Subscriber
 class LoginTokenSubscriber(val userSession: UserSessionInterface,
                            val onSuccessLoginToken: (pojo: LoginTokenPojo) -> Unit,
                            val onErrorLoginToken: (e: Throwable) -> Unit,
-                           val onGoToActivationPage : (errorMessage : MessageErrorException) -> Unit,
-                           val onGoToSecurityQuestion : () -> Unit) :
+                           val onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
+                           val onGoToSecurityQuestion: () -> Unit) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -25,19 +24,17 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
         if (pojo.loginToken.errors.isEmpty()
                 && pojo.loginToken.accessToken.isNotBlank()) {
             saveAccessToken(pojo)
-            if(pojo.loginToken.sqCheck){
+            if (pojo.loginToken.sqCheck) {
                 onGoToSecurityQuestion()
-            }else {
+            } else {
                 onSuccessLoginToken(pojo)
             }
         } else if (shouldGoToActivationPage(pojo)) {
             onGoToActivationPage(MessageErrorException(pojo.loginToken.errors[0].message))
-        }else if (pojo.loginToken.errors.isNotEmpty()) {
-            onErrorLoginToken(MessageErrorException(pojo.loginToken.errors[0].message,
-                    ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+        } else if (pojo.loginToken.errors.isNotEmpty()) {
+            onErrorLoginToken(MessageErrorException(pojo.loginToken.errors[0].message))
         } else if (errors.isNotEmpty()) {
-            onErrorLoginToken(MessageErrorException(errors[0].message,
-                    ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+            onErrorLoginToken(MessageErrorException(errors[0].message))
         } else {
             onErrorLoginToken(Throwable())
         }

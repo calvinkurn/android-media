@@ -159,6 +159,7 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_product_trade_in.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import tradein_common.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -466,6 +467,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productInfoViewModel.deviceId = TradeInUtils.getDeviceId(context) ?: productInfoViewModel.userSessionInterface.deviceId
 
         performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
@@ -1645,7 +1647,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
-        performanceMonitoringP1.stopTrace()
         val data = productInfoP1.productInfo
         // Assign productId with selected variant Id
         productId = data.basic.id.toString()

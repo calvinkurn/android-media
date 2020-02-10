@@ -8,6 +8,7 @@ import com.tokopedia.productcard.v2.BlankSpaceConfig
 class ProductBannerMixDataModel(
         val grid: DynamicHomeChannel.Grid,
         val channel: DynamicHomeChannel.Channels,
+        val layoutType: Int,
         val blankSpaceConfig: BlankSpaceConfig
 ) : Visitable<BannerMixTypeFactory> {
     override fun type(typeFactory: BannerMixTypeFactory): Int {
