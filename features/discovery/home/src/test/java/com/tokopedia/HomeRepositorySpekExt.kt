@@ -41,5 +41,7 @@ fun FeatureBody.createHomeRepositoryTestInstance() {
     val getPlayRemoteDataSource by memoized {
         mockk<PlayRemoteDataSource>(relaxed = true)
     }
-    val getHomeDefaultDataSource = HomeDefaultDataSource()
+    val getHomeDefaultDataSource by memoized {
+        mockk<HomeDefaultDataSource>(relaxed = true)
+    }
 }
