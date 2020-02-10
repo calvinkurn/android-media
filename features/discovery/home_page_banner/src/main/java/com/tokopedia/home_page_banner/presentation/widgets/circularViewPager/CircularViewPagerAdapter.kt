@@ -3,7 +3,6 @@ package com.tokopedia.home_page_banner.presentation.widgets.circularViewPager
 import android.annotation.SuppressLint
 import android.util.SparseArray
 import android.view.View
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 
