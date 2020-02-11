@@ -188,7 +188,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         buttonActivatePowerMerchant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Integer.parseInt("");
+                RobustModify.modify();
+                powerMerchantTracking.eventUpgradeShopHome();
+                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
+//                Integer.parseInt("");
             }
         });
 
