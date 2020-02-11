@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomedrawer.presentation.view.helper
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -654,13 +655,24 @@ class SellerDrawerHelper(val context: Activity,
             setIcon(logoutIconDrawable)
             setTitle(context.getString(R.string.seller_home_logout_title))
             setMessage(context.getString(R.string.seller_home_logout_confirm))
-            setPositiveButton(context.getString(R.string.seller_home_logout_button)) {
-                dialogInterface, _ -> dialogInterface.dismiss()
+            setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
+                showProgressDialog()
+                dialogInterface.dismiss()
                 moveActivityApplink(ApplinkConstInternalGlobal.LOGOUT)
             }
             setNegativeButton(context.getString(R.string.seller_home_cancel)) {
                 dialogInterface, _ -> dialogInterface.dismiss()
             }
+            show()
+        }
+    }
+
+    private fun showProgressDialog() {
+        val progressDialog = ProgressDialog(context)
+        progressDialog.apply {
+            setMessage(context.resources.getString(R.string.seller_home_loading))
+            setTitle("")
+            setCancelable(false)
             show()
         }
     }

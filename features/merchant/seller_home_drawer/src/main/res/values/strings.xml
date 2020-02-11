@@ -70,5 +70,7 @@
     <string name="seller_home_logout_confirm">Apakah Anda ingin keluar?</string>
     <string name="seller_home_logout_button">Keluar</string>
     <string name="seller_home_cancel">Batal</string>
+    <string name="seller_home_loading">Loading...</string>
+
 
 </resources>
