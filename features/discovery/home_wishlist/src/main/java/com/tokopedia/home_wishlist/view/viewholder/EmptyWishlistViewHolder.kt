@@ -14,8 +14,6 @@ class EmptyWishlistViewHolder(
         view: View
 ) : SmartAbstractViewHolder<EmptyWishlistDataModel>(view) {
 
-    private val title: Typography by lazy { view.findViewById<Typography>(R.id.title) }
-    private val description: Typography by lazy { view.findViewById<Typography>(R.id.description) }
     private val retry: UnifyButton by lazy { view.findViewById<UnifyButton>(R.id.retry_button) }
 
     override fun bind(element: EmptyWishlistDataModel, listener: SmartListener) {

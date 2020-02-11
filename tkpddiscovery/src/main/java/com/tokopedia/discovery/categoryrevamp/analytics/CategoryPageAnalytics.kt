@@ -281,7 +281,7 @@ class CategoryPageAnalytics {
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, "IDR",
-                KEY_IMPRESSIONS, DataLayer.listOf(list)
+                KEY_IMPRESSIONS, list
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }

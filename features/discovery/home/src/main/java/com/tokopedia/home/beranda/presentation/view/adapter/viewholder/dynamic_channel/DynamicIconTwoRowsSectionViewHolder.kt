@@ -46,6 +46,10 @@ class DynamicIconTwoRowsSectionViewHolder(val view: View,
         adapter?.run { setSectionData(element) }
     }
 
+    override fun bind(element: DynamicIconSectionViewModel, payloads: MutableList<Any>) {
+        adapter?.run { setSectionData(element) }
+    }
+
     private class DynamicIconAdapter(
             private val context: Context,
             private val listener: HomeCategoryListener) : RecyclerView.Adapter<DynamicIconViewHolder>() {

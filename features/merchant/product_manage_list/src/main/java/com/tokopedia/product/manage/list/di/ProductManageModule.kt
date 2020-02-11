@@ -17,7 +17,6 @@ import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraft
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase
-import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.GQL_POPUP_NAME
@@ -147,21 +146,34 @@ class ProductManageModule {
     @ProductManageScope
     @Provides
     @Named(GQL_POPUP_NAME)
-    fun requestQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            R.raw.gql_popup_manager
-        )
+    fun requestQuery(): String {
+        return """
+            query GetShopManagerPopups(${'$'}shopID:Int!){
+              getShopManagerPopups(shopID: ${'$'}shopID) {
+                 data {
+                   showPopUp
+                 }
+              }
+            }
+        """.trimIndent()
     }
 
     @ProductManageScope
     @Provides
     @Named(GQL_UPDATE_PRODUCT)
-    fun provideUpdateProduct(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            R.raw.gql_mutation_edit_product
-        )
+    fun provideUpdateProduct(): String {
+        return """
+            mutation productUpdateV3(${'$'}input: ProductInputV3!){
+              ProductUpdateV3(input:${'$'}input) {
+                header {
+                  messages
+                  reason
+                  errorCode
+                }
+                isSuccess
+              }
+            }
+        """.trimIndent()
     }
 
     @ProductManageScope

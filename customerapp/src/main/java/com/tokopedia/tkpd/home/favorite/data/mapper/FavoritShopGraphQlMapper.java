@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.home.favorite.data.mapper;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.core.network.entity.home.FavShopItemData;
 import com.tokopedia.core.network.entity.home.FavoritShopResponseData;
 import com.tokopedia.core.var.Badge;

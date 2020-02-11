@@ -30,4 +30,14 @@
     <dimen name="max_width_template">132dp</dimen>
     <dimen name="min_width_template">52dp</dimen>
     <dimen name="min_height_template">32dp</dimen>
+
+    <dimen name="dp_topchat_270">270dp</dimen>
+    <dimen name="dimen_topchat_1dp">1dp</dimen>
+    <dimen name="dimen_topchat_2dp">2dp</dimen>
+    <dimen name="dimen_topchat_20dp">20dp</dimen>
+    <dimen name="dimen_topchat_10dp">10dp</dimen>
+    <dimen name="topchat_12dp">12dp</dimen>
+    <dimen name="topchat_14dp">14dp</dimen>
+    <dimen name="topchat_18dp">18dp</dimen>
+    <dimen name="topchat_240dp">240dp</dimen>
 </resources>

@@ -5,6 +5,8 @@ public class HomeResult {
     String deviceDisplayName;
     boolean isSuccess;
     PriceState priceStatus;
+    public Integer minPrice;
+    public Integer maxPrice;
 
     public String getDisplayMessage() {
         return displayMessage;

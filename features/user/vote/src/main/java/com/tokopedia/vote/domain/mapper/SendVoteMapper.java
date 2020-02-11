@@ -1,7 +1,7 @@
 package com.tokopedia.vote.domain.mapper;
 
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.vote.domain.model.VoteItemDomainModel;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 import com.tokopedia.vote.domain.pojo.SendVotePojo;

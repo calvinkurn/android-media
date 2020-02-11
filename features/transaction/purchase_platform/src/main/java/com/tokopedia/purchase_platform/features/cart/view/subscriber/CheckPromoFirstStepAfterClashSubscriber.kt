@@ -1,12 +1,9 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
-import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
 
 /**
@@ -14,12 +11,8 @@ import rx.Subscriber
  */
 
 class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
-                                              val presenter: ICartListPresenter,
-                                              val checkPromoCodeStackingCodeMapper: CheckPromoStackingCodeMapper,
-                                              val type: String)
-    : Subscriber<GraphqlResponse>() {
-
-    private val statusOK = "OK"
+                                              val type: String) : Subscriber<ResponseGetPromoStackUiModel>() {
+    private val STATUS_OK = "OK"
 
     override fun onCompleted() {
 
@@ -28,14 +21,13 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideProgressLoading()
-        view?.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivityObject(), e))
+        view?.showToastMessageRed(e)
     }
 
-    override fun onNext(response: GraphqlResponse) {
+    override fun onNext(responseGetPromoStack: ResponseGetPromoStackUiModel) {
         view?.hideProgressLoading()
-        val responseGetPromoStack = checkPromoCodeStackingCodeMapper.call(response)
 
-        if (responseGetPromoStack.status.equals(statusOK, true)) {
+        if (responseGetPromoStack.status.equals(STATUS_OK, true)) {
             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                 view?.onClashCheckPromo(responseGetPromoStack.data.clashings, type)
             } else {

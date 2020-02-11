@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -20,6 +23,8 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.helper.HomeFeedEndlessScrollListener;
+import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
@@ -28,15 +33,20 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedViewHolder;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -70,6 +80,8 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     private boolean hasLoadData;
     private HomeEggListener homeEggListener;
     private HomeTabFeedListener homeTabFeedListener;
+    private RecyclerView.RecycledViewPool parentPool;
+    private HomeCategoryListener homeCategoryListener;
 
     public static HomeFeedFragment newInstance(int tabIndex,
                                                int recomId,
@@ -83,10 +95,16 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         return homeFeedFragment;
     }
 
-    public void setListener(HomeEggListener homeEggListener,
+    public void setListener(HomeCategoryListener homeCategoryListener,
+                            HomeEggListener homeEggListener,
                             HomeTabFeedListener homeTabFeedListener) {
+        this.homeCategoryListener = homeCategoryListener;
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
+    }
+
+    public void setParentPool(RecyclerView.RecycledViewPool parentPool) {
+        this.parentPool = parentPool;
     }
 
     public void setHomeTrackingQueue(TrackingQueue homeTrackingQueue) {
@@ -111,17 +129,41 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     }
 
     private void setupRecyclerView() {
-        ((StaggeredGridLayoutManager) getRecyclerView(getView()).getLayoutManager())
-                .setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         getRecyclerView(getView()).addItemDecoration(
                 new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_4))
         );
+        if (parentPool != null) {
+            parentPool.setMaxRecycledViews(
+                    HomeFeedViewHolder.Companion.getLAYOUT(),
+                    20
+            );
+            getRecyclerView(getView()).setRecycledViewPool(parentPool);
+        }
     }
-
     @Override
     public void loadData(int page) {
         presenter.attachView(this);
         presenter.loadData(recomId, DEFAULT_TOTAL_ITEM_PER_PAGE, page);
+    }
+
+    @Override
+    protected void showLoading() {
+        if (!getAdapter().isContainData()) getAdapter().removeErrorNetwork();
+
+        getAdapter().setLoadingModel(getLoadingModel());
+        getAdapter().showLoading();
+        hideSnackBarRetry();
+    }
+
+    @Override
+    protected EndlessRecyclerViewScrollListener createEndlessRecyclerViewListener() {
+        return new HomeFeedEndlessScrollListener(getRecyclerView(getView()).getLayoutManager()) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                showLoading();
+                loadData(page);
+            }
+        };
     }
 
     private void hitHomeFeedImpressionTracker(HomeFeedViewModel homeFeedViewModel) {
@@ -151,6 +193,20 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
         return new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        hideLoading();
+
+        updateStateScrollListener();
+
+        // Note: add element should be the last in line.
+        if (getAdapter().getItemCount() > 0) {
+            Toaster.INSTANCE.make(getView(), getString(R.string.home_error_connection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", (v)->{});
+        } else {
+            onGetListErrorWithEmptyData(throwable);
+        }
     }
 
     @NonNull
@@ -202,9 +258,11 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     }
 
     private void goToProductDetail(String productId, int position) {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position);
-        startActivityForResult(intent, REQUEST_FROM_PDP);
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position);
+            startActivityForResult(intent, REQUEST_FROM_PDP);
+        }
     }
 
     private void updateWishlist(String id, boolean isWishlist, int position) {
@@ -371,5 +429,37 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     public String getTabName() {
         return tabName;
+    }
+
+    @Override
+    public void renderList(@NonNull List<Visitable<HomeFeedTypeFactory>> list, boolean hasNextPage) {
+        hideLoading();
+        // remove all unneeded element (empty/retry/loading/etc)
+        if (isLoadingInitialData) {
+            clearAllData();
+        }
+        getAdapter().addMoreData(list);
+        // update the load more state (paging/can loadmore)
+        updateScrollListenerState(hasNextPage);
+
+        if (isListEmpty()) {
+            showEmpty();
+        } else {
+            //set flag to false, indicate that the initial data has been set.
+            isLoadingInitialData = false;
+        }
+
+        // load next page data if adapter data less than minimum scrollable data
+        // when the list has next page and auto load next page is enabled
+        if (getAdapter().getDataSize() < getMinimumScrollableNumOfItems() && isAutoLoadEnabled()
+                && hasNextPage && endlessRecyclerViewScrollListener !=  null) {
+            endlessRecyclerViewScrollListener.loadMoreNextPage();
+        }
+    }
+
+    public void smoothScrollRecyclerViewByVelocity(int distance) {
+        if (getView() != null && getRecyclerView(getView()) != null) {
+            getRecyclerView(getView()).smoothScrollBy(0, distance);
+        }
     }
 }
