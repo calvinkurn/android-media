@@ -84,24 +84,24 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
 
     fun onResume() {
         val positions = getPositionPlay()
-        if(positions.isNotEmpty() && getViewHolder(positions.first()) is PlayCardViewHolder){
+        if(positions.isNotEmpty()){
             currentSelected = positions.first()
-            (getViewHolder(currentSelected) as PlayCardViewHolder).resume()
+            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.resume()
         }
 
-        if(itemCount > 0 && getViewHolder(0) is BannerViewHolder){
-            (getViewHolder(0) as BannerViewHolder).onResume()
+        if(itemCount > 0){
+            (getViewHolder(0) as? BannerViewHolder)?.onResume()
         }
     }
 
     fun onPause() {
         val positions = getPositionPlay()
-        if(positions.isNotEmpty() && getViewHolder(positions.first()) is PlayCardViewHolder){
+        if(positions.isNotEmpty()){
             currentSelected = positions.first()
-            (getViewHolder(currentSelected) as PlayCardViewHolder).pause()
+            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause()
         }
-        if(itemCount > 0 && getViewHolder(0) is BannerViewHolder){
-            (getViewHolder(0) as BannerViewHolder).onPause()
+        if(itemCount > 0){
+            (getViewHolder(0) as? BannerViewHolder)?.onPause()
         }
     }
 
