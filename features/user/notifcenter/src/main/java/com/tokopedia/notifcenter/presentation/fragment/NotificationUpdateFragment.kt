@@ -247,7 +247,7 @@ open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             }
         }
     }
-
+          
     open fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
             filterAdapter?.updateData(it)
