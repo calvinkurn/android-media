@@ -112,8 +112,10 @@ class ContentExplorePresenter @Inject constructor(
 
     override fun onPullToRefreshTriggered() {
         launch {
-            if (impressionTrackList.isNotEmpty())
+            if (impressionTrackList.isNotEmpty()) {
                 trackBulkAffiliate(impressionTrackList)
+                impressionTrackList.clear()
+            }
         }
     }
 
