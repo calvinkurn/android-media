@@ -59,6 +59,8 @@ class UmrahShare(val activity: Activity) {
         val linkerData = LinkerData()
         linkerData.id = data.id
         linkerData.name = data.name
+        linkerData.description = data.name
+        linkerData.ogUrl = null
         linkerData.imgUri = data.imageUrl
         linkerData.type = LinkerData.PRODUCT_TYPE
         linkerData.uri = activity.resources.getString(R.string.umrah_agen_link_share, data.slugName)
