@@ -8,21 +8,41 @@ import com.tokopedia.track.TrackApp
 
 object SellerHomeTracking {
 
-    fun sendImpressionCardEvent(datKey: String, state: String, cardValue: String) {
+    fun sendImpressionCardEvent(dataKey: String, state: String, cardValue: String) {
         val map = createMap(
                 TrackingConstant.VIEW_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                arrayOf(TrackingConstant.IMPRESSION_WIDGET_CARD, "$datKey $state").joinToString(" - "),
+                arrayOf(TrackingConstant.IMPRESSION_WIDGET_CARD, "$dataKey $state").joinToString(" - "),
                 cardValue
         )
         sendGeneralEvent(map)
     }
 
-    fun sendClickCardEvent(datKey: String, state: String, cardValue: String) {
+    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String) {
         val map = createMap(
                 TrackingConstant.CLICK_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                arrayOf(TrackingConstant.CLICK_WIDGET_CARD, "$datKey $state").joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_CARD, "$dataKey $state").joinToString(" - "),
+                cardValue
+        )
+        sendGeneralEvent(map)
+    }
+
+    fun sendImpressionLineGraphEvent(dataKey: String, cardValue: String) {
+        val map = createMap(
+                TrackingConstant.VIEW_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
+                cardValue
+        )
+        sendGeneralEvent(map)
+    }
+
+    fun sendClickLineGraphEvent(dataKey: String, cardValue: String) {
+        val map = createMap(
+                TrackingConstant.CLICK_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_LINE_GRAPH, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 cardValue
         )
         sendGeneralEvent(map)

@@ -14,9 +14,11 @@ import com.db.williamchart.util.TooltipConfiguration
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.util.getResDrawable
 import com.tokopedia.sellerhome.util.parseAsHtml
@@ -40,6 +42,10 @@ class LineGraphViewHolder(
     }
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
+
+        itemView.addOnImpressionListener(element.impressHolder) {
+            SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header ?: "")
+        }
 
         observeState(element)
         listener.getLineGraphData()
@@ -133,6 +139,7 @@ class LineGraphViewHolder(
 
         if (isCtaVisible) {
             btnLineGraphMore.setOnClickListener {
+                SellerHomeTracking.sendClickLineGraphEvent(element.dataKey, element.data?.header ?: "")
                 openAppLink(element.appLink)
             }
             btnLineGraphNext.setOnClickListener {

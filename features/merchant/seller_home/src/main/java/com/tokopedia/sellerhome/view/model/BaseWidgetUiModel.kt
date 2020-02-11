@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 
 /**
@@ -17,4 +18,5 @@ interface BaseWidgetUiModel<T: BaseDataUiModel> : Visitable<SellerHomeAdapterTyp
     val dataKey: String
     val ctaText: String
     var data: T?
+    val impressHolder: ImpressHolder
 }
