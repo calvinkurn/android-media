@@ -7,7 +7,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;

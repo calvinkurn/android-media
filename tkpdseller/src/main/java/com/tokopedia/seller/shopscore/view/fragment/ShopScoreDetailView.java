@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shopscore.view.fragment;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailStateEnum;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;

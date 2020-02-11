@@ -1,4 +1,4 @@
-package com.tkpd.library.utils;
+package com.tokopedia.developer_options.utils;
 
 import android.os.SystemClock;
 import android.view.View;

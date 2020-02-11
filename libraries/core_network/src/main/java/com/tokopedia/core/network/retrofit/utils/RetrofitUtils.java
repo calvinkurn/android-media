@@ -3,7 +3,7 @@ package com.tokopedia.core.network.retrofit.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.util.GeneralUtils;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;

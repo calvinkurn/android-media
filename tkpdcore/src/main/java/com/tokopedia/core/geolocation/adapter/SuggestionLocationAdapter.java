@@ -26,7 +26,7 @@ import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.material.snackbar.Snackbar;
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
