@@ -364,7 +364,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             val wholesalePriceData = mapWholeSalePriceData(it)
             wholesalePriceDataList.add(wholesalePriceData)
         }
-        return wholesalePriceDataList
+        return wholesalePriceDataList.asReversed()
     }
 
     private fun mapWholeSalePriceData(wholesalePrice: WholesalePrice): WholesalePriceData {

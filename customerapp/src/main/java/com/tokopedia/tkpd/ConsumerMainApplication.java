@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.chuckerteam.chucker.api.Chucker;
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
@@ -46,7 +48,7 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogManager;
@@ -80,6 +82,7 @@ import java.util.concurrent.TimeUnit;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
+import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
@@ -117,6 +120,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
+        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this));
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -128,14 +132,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         initReact();
-
-        Weaver.Companion.executeWeaveCoRoutine(this::executePreCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+        createAndCallPreSeq();
 
         super.onCreate();
 
         initGqlNWClient();
-        Weaver.Companion.executeWeaveCoRoutine(this::executePostCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
-        Weaver.Companion.executeWeaveCoRoutine(this::loadFontsInBg, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
+        createAndCallPostSeq();
+        createAndCallFontLoad();
         ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
@@ -143,6 +146,42 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         });
         registerActivityLifecycleCallbacks(shakeSubscriber);
+    }
+
+    private void createAndCallPreSeq(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface preWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePreCreateSequence();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(preWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+    }
+
+    private void createAndCallPostSeq(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface postWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePostCreateSequence();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(postWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+    }
+
+    private void createAndCallFontLoad(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface fontWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return loadFontsInBg();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(fontWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
     }
 
     @NotNull

@@ -49,7 +49,7 @@ class BankViewHolder(val v: View, val listener: BankListener) :
         var indexOfKeyword = spannableString.toString().toLowerCase().indexOf(highlight)
 
         while (indexOfKeyword < bankNameText.length && indexOfKeyword >= 0) {
-            spannableString.setSpan(ForegroundColorSpan(MethodChecker.getColor(bankNameTV.context, com.tokopedia.design.R.color.medium_green)), indexOfKeyword,
+            spannableString.setSpan(ForegroundColorSpan(MethodChecker.getColor(bankNameTV.context, R.color.settingbank_medium_green)), indexOfKeyword,
                     indexOfKeyword +
                             highlight.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 

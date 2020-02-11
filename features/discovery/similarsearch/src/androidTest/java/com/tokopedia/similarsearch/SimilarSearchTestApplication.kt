@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.TkpdCoreRouter
 import com.tokopedia.core.analytics.container.GTMAnalytics
 import com.tokopedia.core.deprecated.SessionHandler
