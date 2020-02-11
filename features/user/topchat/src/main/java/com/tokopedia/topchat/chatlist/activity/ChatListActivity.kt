@@ -381,7 +381,7 @@ class ChatListActivity : BaseTabActivity()
         val tabTitle = setTitleTab(title, counter)
         val tab = tabLayout.getTabAt(tabPosition)
 
-        tab?.customView?.findViewById<TextView>(com.tokopedia.design.R.id.title)?.apply {
+        tab?.customView?.findViewById<TextView>(R.id.title)?.apply {
             text = tabTitle
         }
     }
@@ -416,7 +416,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun setTabSelectedView(customView: View?) {
-        val titleView = customView?.findViewById<TextView>(com.tokopedia.design.R.id.title)
+        val titleView = customView?.findViewById<TextView>(R.id.title)
         titleView?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500))
 
         val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
@@ -427,7 +427,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun setTabUnSelectedView(customView: View?) {
-        val titleView = customView?.findViewById<TextView>(com.tokopedia.design.R.id.title)
+        val titleView = customView?.findViewById<TextView>(R.id.title)
         titleView?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N200))
 
         val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
