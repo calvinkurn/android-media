@@ -68,6 +68,7 @@
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:textSize="@dimen/fontSize_lvl2"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphValue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
