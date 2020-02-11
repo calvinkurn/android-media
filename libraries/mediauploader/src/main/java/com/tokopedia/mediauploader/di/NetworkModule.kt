@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit
 @Module class NetworkModule {
 
     @Provides
-    @MediaUploaderQualifier
     fun provideOkHttpClientBuilder(): OkHttpClient.Builder {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = if (BuildConfig.DEBUG) {
@@ -30,10 +29,10 @@ import java.util.concurrent.TimeUnit
     }
 
     @Provides
-    @MediaUploaderQualifier
     fun provideMediaUploaderRetrofitBuilder(): Retrofit.Builder {
-        return Retrofit.Builder().addConverterFactory(
-                GsonConverterFactory.create(Gson())
+        return Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(Gson())
         )
     }
 
@@ -41,6 +40,8 @@ import java.util.concurrent.TimeUnit
         private const val NET_READ_TIMEOUT = 60L
         private const val NET_WRITE_TIMEOUT = 60L
         private const val NET_CONNECT_TIMEOUT = 60L
+
+        private const val BASE_URL = "https://upedia.tokopedia.net/"
     }
 
 }
