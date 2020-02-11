@@ -74,8 +74,8 @@ class CardViewHolder(
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
 
             setOnClickListener {
-                SellerHomeTracking.sendClickCardEvent(element.dataKey, element.data?.state ?: "", element.data?.value ?: "")
                 if (element.appLink.isNotBlank()) {
+                    SellerHomeTracking.sendClickCardEvent(element.dataKey, element.data?.state ?: "", element.data?.value ?: "")
                     RouteManager.route(context, element.appLink)
                 }
             }

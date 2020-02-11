@@ -63,8 +63,9 @@ class LineGraphViewHolder(
             setupTooltip(element)
     }
 
-    private fun openAppLink(appLink: String) {
+    private fun openAppLink(appLink: String, dataKey: String, value: String) {
         if (appLink.isBlank()) return
+        SellerHomeTracking.sendClickLineGraphEvent(dataKey, value)
         RouteManager.route(itemView.context, appLink)
     }
 
@@ -139,11 +140,10 @@ class LineGraphViewHolder(
 
         if (isCtaVisible) {
             btnLineGraphMore.setOnClickListener {
-                SellerHomeTracking.sendClickLineGraphEvent(element.dataKey, element.data?.header ?: "")
-                openAppLink(element.appLink)
+                openAppLink(element.appLink, element.dataKey, element.data?.header ?: "")
             }
             btnLineGraphNext.setOnClickListener {
-                openAppLink(element.appLink)
+                openAppLink(element.appLink, element.dataKey, element.data?.header ?: "")
             }
         }
 
