@@ -163,6 +163,7 @@
     <string name="point_center">Point Center</string>
     <string name="no_pinpoint">Belum Pinpoint</string>
     <string name="havent_pinpoint">Sudah Pinpoint</string>
+    <string name="not_found_location">Lokasi gagal ditemukan. Mohon coba kembali.</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

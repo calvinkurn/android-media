@@ -11,7 +11,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 interface PinpointMapListener: CustomerView {
     fun showLoading()
     fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel)
-    fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel)
+    fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel, errMsg: String)
     fun showFailedDialog()
     fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean)
     fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel)
