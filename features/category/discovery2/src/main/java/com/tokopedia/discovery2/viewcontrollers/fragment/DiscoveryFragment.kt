@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -66,12 +65,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mDiscoveryViewModel.getDiscoveryResponseList().observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val list = ArrayList<ComponentsItem>()
-
-                    
-//        RouteManager.route(this, "tokopedia://discovery/test-disco")
-                    it.data[3].let { it1 -> list.add(it1) }
-                    mDiscoveryRecycleAdapter.setDataList(list)
+                    mDiscoveryRecycleAdapter.setDataList(it.data)
                 }
             }
         })
