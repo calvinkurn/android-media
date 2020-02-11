@@ -2,7 +2,7 @@ package com.tokopedia.analytics.debugger;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.analytics.database.IrisSaveLogDB;
 import com.tokopedia.analytics.database.IrisSendLogDB;
 import com.tokopedia.analytics.debugger.data.source.IrisSaveLogDBSource;
