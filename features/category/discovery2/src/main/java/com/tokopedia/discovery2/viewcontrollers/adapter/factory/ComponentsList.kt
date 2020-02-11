@@ -12,6 +12,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     QuadrupleBanner(R.layout.multi_banner_layout, "banner_image_quadruple"),
     Share(R.layout.multi_banner_layout, "share"),
     BannerTimer(R.layout.banner_timer_layout, "timer_with_banner"),
+    Tokopoints(R.layout.tokopoints_layout, "tokopoints"),
+    TokopointsItem(R.layout.tokopoints_item_layout, "tokopoints_item"),
     CpmTopAds(R.layout.cpm_topads_layout, "topads"),
     CpmTopAdsItem(R.layout.item_cpm_topads_shop_layout, ComponentNames.CpmTopAdsShopItem.componentName),
     CpmTopAdsProductItem(R.layout.item_cpm_topads_product_layout, ComponentNames.CpmTopAdsProductItem.componentName),
@@ -34,5 +36,4 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Tabs(R.layout.coming_soon_view, ComponentNames.Tabs.componentName),
     ProductCardRevamp(R.layout.coming_soon_view, ComponentNames.PrductCardRevamp.componentName),
     BreadCrumbs(R.layout.coming_soon_view, ComponentNames.Breadcrumbs.componentName),
-
 }
