@@ -119,10 +119,9 @@ class ContentExplorePresenter @Inject constructor(
                     .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_RECOM_ID) }
                     .joinToString(",")
 
-            var finalUrl =
+            val finalUrl =
                     Uri.parse(urlList.first()).setParameter(QUERY_ACTIVITY_ID, activityIdListString).toString().decodeToUtf8()
-            finalUrl =
-                    Uri.parse(finalUrl).setParameter(QUERY_RECOM_ID, recomIdListString).toString().decodeToUtf8()
+            Uri.parse(finalUrl).setParameter(QUERY_RECOM_ID, recomIdListString).toString().decodeToUtf8()
             trackAffiliate(finalUrl)
         }
     }
