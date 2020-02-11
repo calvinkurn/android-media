@@ -69,8 +69,7 @@ class CouponCatalogRepository @Inject constructor(private val map: Map<String, S
                 variables, false)
         mValidateCouponUseCase.clearRequest()
         mValidateCouponUseCase.addRequest(request)
-        val t = mValidateCouponUseCase.executeOnBackground()
-        t.getSuccessData<ValidateCouponBaseEntity>()
+        mValidateCouponUseCase.executeOnBackground().getSuccessData<ValidateCouponBaseEntity>()
     }
 
     suspend fun fetchLatestStatus(catalogsIds: List<Int>) = withContext(Dispatchers.IO) {
