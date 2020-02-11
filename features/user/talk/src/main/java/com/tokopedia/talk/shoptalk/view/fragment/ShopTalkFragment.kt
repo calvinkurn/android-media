@@ -232,7 +232,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     private fun goToLogin() {
-        context?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
@@ -399,7 +399,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     private fun onGoToPdp(productId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             analytics.trackClickProduct()
             val intent: Intent? = getProductIntent(productId)
             this@ShopTalkFragment.startActivity(intent)
@@ -416,7 +416,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileFromShop()
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
         }
     }
@@ -471,7 +471,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }

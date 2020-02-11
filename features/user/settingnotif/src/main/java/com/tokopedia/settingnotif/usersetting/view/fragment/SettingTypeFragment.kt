@@ -79,11 +79,11 @@ class SettingTypeFragment : BaseDaggerFragment() {
 
     private fun generateShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
                 .shadowColorRes(R.color.shadow)
-                .textColorRes(com.tokopedia.design.R.color.grey_400)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
-                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2)
+                .titleTextSizeRes(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
                 .clickable(true)
                 .useArrow(true)
                 .build()

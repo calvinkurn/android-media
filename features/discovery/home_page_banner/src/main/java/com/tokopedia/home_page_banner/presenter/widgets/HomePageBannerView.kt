@@ -76,14 +76,20 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
             viewPager?.adapter = adapter
         }
         if(!banners.isSame(adapter?.getList() ?: listOf())){
+            adapter?.setItem(arrayListOf())
             buildIndicator(banners.size)
             adapter?.setItem(banners)
+            resetImpressions()
             viewPager?.setCurrentItem(1, false)
+            if (!impressionStatusList[0]) {
+                impressionStatusList[0] = true
+                listener?.onPromoScrolled(0)
+            }
         }else {
+            resetImpressions()
             adapter?.setItem(banners)
         }
         viewPager?.offscreenPageLimit = banners.size
-        resetImpressions()
         setPageListener()
         runSlider()
     }

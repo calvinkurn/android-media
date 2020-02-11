@@ -119,6 +119,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
             avatarApplink
             avatarBadgeImage
             avatarDescription
+            cardSummary
             reportable
             editable
             deletable

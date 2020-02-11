@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.ticker.Ticker xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tkBanner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:layout_marginBottom="@dimen/spacing_lvl2"
+    custom:closeButtonVisibility="gone"
+    custom:tickerShapeType="loose"
+    custom:tickerType="announcement"
+    tools:descriptionText="Toko ini menawarkan Bebas Ongkir untuk transaksi melalui aplikasi">
+
+</com.tokopedia.unifycomponents.ticker.Ticker>

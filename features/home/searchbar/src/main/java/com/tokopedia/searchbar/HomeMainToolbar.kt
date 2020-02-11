@@ -19,11 +19,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
+import kotlinx.coroutines.*
 import java.net.URLEncoder
+import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
 
 
-class HomeMainToolbar : MainToolbar {
+class HomeMainToolbar : MainToolbar, CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
     private var toolbarType: Int = 0
 
     private var shadowApplied: Boolean = false
@@ -55,25 +59,22 @@ class HomeMainToolbar : MainToolbar {
     override fun init(context: Context, attrs: AttributeSet?) {
         super.init(context, attrs)
 
-        initImageSearch()
-
         showShadow()
 
         setBackgroundAlpha(0f)
 
         toolbarType = TOOLBAR_LIGHT_TYPE
-
-        initToolbarIcon()
-
-        switchToLightToolbar()
+        launch {
+            //main
+            val result = initializeinBackground()
+            result.await()
+            setImageDrawables()
+            //..........
+        }
     }
 
-    private fun initImageSearch() {
-        val imageViewImageSearch = findViewById<ImageView>(R.id.imageview_image_search)
-
-        imageViewImageSearch.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT)
-        }
+    fun initializeinBackground() : Deferred<Unit> = async(Dispatchers.IO){
+            initToolbarIcon()
     }
 
     private fun initToolbarIcon() {
@@ -88,14 +89,16 @@ class HomeMainToolbar : MainToolbar {
         wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
         notifCrossfader = TransitionDrawable(arrayOf<Drawable>(notifBitmapGrey, notifBitmapWhite))
         inboxCrossfader = TransitionDrawable(arrayOf<Drawable>(inboxBitmapGrey, inboxBitmapWhite))
+    }
 
-        btnWishlist.setImageDrawable(wishlistCrossfader)
-        btnNotification.setImageDrawable(notifCrossfader)
-        btnInbox.setImageDrawable(inboxCrossfader)
-
+    fun setImageDrawables(){
         wishlistCrossfader.startTransition(0)
         notifCrossfader.startTransition(0)
         inboxCrossfader.startTransition(0)
+        btnWishlist.setImageDrawable(wishlistCrossfader)
+        btnNotification.setImageDrawable(notifCrossfader)
+        btnInbox.setImageDrawable(inboxCrossfader)
+        switchToLightToolbar()
     }
 
     fun hideShadow() {
