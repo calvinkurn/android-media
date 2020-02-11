@@ -59,8 +59,6 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
     private fun initBanner(list: List<CircularModel>){
         circularViewPager.setIndicatorPageChangeListener(object: CircularViewPager.IndicatorPageChangeListener{
-            override fun onIndicatorProgress(selectingPosition: Int, progress: Float) {}
-
             override fun onIndicatorPageChange(newIndicatorPosition: Int) {
                 indicatorView.animatePageSelected(newIndicatorPosition)
             }
