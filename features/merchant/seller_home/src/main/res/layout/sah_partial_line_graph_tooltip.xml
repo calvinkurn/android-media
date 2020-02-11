@@ -35,6 +35,6 @@
             android:textSize="@dimen/fontSize_lvl2"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="150rb" />
+            tools:text="15.000.000.000 rb" />
     </LinearLayout>
 </LinearLayout>

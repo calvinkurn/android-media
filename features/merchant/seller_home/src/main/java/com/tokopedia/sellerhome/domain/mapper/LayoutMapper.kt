@@ -21,7 +21,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 WidgetType.CAROUSEL -> mapToCarouselWidget(it)
                 WidgetType.DESCRIPTION -> mapToDescriptionWidget(it)
                 WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it)
-                WidgetType.POST -> mapToPostWidget(it)
+                WidgetType.POST_LIST -> mapToPostWidget(it)
                 WidgetType.PROGRESS -> mapToProgressWidget(it)
                 else -> mapToSectionWidget(it)
             }

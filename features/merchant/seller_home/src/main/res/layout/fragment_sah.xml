@@ -35,6 +35,14 @@
                 app:tickerType="information" />
         </RelativeLayout>
 
+        <View
+            android:id="@+id/viewBgShopStatus"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relTicker" />
+
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -47,15 +55,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <View
-                    android:id="@+id/viewBgShopStatus"
-                    android:layout_width="0dp"
-                    android:layout_height="180dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"

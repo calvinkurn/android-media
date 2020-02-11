@@ -91,18 +91,17 @@ class LineGraphViewHolder(
     }
 
     private fun setupTooltip(element: LineGraphWidgetUiModel) = with(itemView) {
-        element.tooltip?.let { tooltip ->
-            if (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty()) {
-                tvLineGraphTitle.setOnClickListener {
-                    listener.onTooltipClicked(element.tooltip)
-                }
-                btnLineGraphInformation.visible()
-                btnLineGraphInformation.setOnClickListener {
-                    listener.onTooltipClicked(element.tooltip)
-                }
-            } else {
-                btnLineGraphInformation.gone()
+        val tooltip = element.tooltip
+        if (!tooltip?.content.isNullOrBlank() || !tooltip?.list.isNullOrEmpty()) {
+            btnLineGraphInformation.visible()
+            tvLineGraphTitle.setOnClickListener {
+                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
             }
+            btnLineGraphInformation.setOnClickListener {
+                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
+            }
+        } else {
+            btnLineGraphInformation.gone()
         }
     }
 
@@ -125,7 +124,6 @@ class LineGraphViewHolder(
         btnLineGraphMore.visibility = componentVisibility
         btnLineGraphNext.visibility = componentVisibility
         linearLineGraphView.visibility = componentVisibility
-        btnLineGraphInformation.visibility = componentVisibility
 
         val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
@@ -179,7 +177,7 @@ class LineGraphViewHolder(
     class CustomTooltipConfiguration : TooltipConfiguration {
 
         companion object {
-            private const val DEFAULT_WIDTH = 56F
+            private const val DEFAULT_WIDTH = 72F
             private const val DEFAULT_HEIGHT = 32F
         }
 

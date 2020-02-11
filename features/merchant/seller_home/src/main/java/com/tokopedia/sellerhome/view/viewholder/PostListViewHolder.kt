@@ -161,8 +161,7 @@ class PostListViewHolder(
     }
 
     override fun onItemClicked(post: PostUiModel) {
-        val intent = RouteManager.getIntent(itemView.context, post.appLink)
-        itemView.context.startActivity(intent)
+        RouteManager.route(itemView.context, post.appLink)
     }
 
     interface Listener : BaseViewHolderListener {
