@@ -91,7 +91,10 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     @Override
     public void renderData(@NonNull ShopShipping data) {
         addressArea.setText(data.addrStreet);
-        setGoogleMapAddress(data.getShopLongitude(), data.getShopLatitude());
+    }
+
+    public void renderGeoAddress(String address) {
+        chooseLocation.setText(address);
     }
 
     @Override
