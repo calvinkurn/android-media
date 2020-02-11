@@ -40,12 +40,12 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
 
         override fun onNext(searchDatas: List<SearchData>) {
             val initialStateViewModel = InitialStateViewModel()
+            initialStateViewModel.searchTerm = querySearch
 
             for (searchData in searchDatas) {
                 if (searchData.items.size > 0) {
                     when (searchData.id) {
                         RECENT_SEARCH, RECENT_VIEW, POPULAR_SEARCH -> {
-                            initialStateViewModel.searchTerm = querySearch
                             initialStateViewModel.addList(searchData)
                         }
                     }
