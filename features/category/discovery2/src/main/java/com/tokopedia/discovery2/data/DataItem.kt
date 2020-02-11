@@ -65,6 +65,12 @@ data class DataItem(
         @SerializedName("right_margin_mobile")
         val rightMarginMobile: String? = "0",
 
+        @SerializedName("category_detail_url")
+        val categoryDetailUrl: String? = "",
+
+        @SerializedName("background_image_apps")
+        val backgroundImageApps: String? = "",
+
         @SerializedName("background_url_mobile")
         val backgroundUrlMobile: String? = "",
 

@@ -1,0 +1,23 @@
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation
+
+import android.app.Application
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+
+class CategoryNavigationItemViewModel(val application: Application, private  val components: ComponentsItem) : DiscoveryBaseViewModel() {
+    override fun initDaggerInject() {
+
+    }
+
+    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
+
+
+    fun getComponentData(): LiveData<ComponentsItem> {
+        componentData.value =components
+        return componentData
+    }
+
+
+}

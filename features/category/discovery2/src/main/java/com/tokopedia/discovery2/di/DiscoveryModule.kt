@@ -9,6 +9,8 @@ import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRe
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
+import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
+import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.tradein_common.repository.BaseRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,6 +36,12 @@ class DiscoveryModule {
     @Provides
     fun provideCpmTopAdsGQLRepository(@ApplicationContext context: Context): CpmTopAdsRepository {
         return CpmTopAdsGQLRepository(provideGetStringMethod(context))
+    }
+
+    @DiscoveryScope
+    @Provides
+    fun provideCategoryNavigationRestRepository(@ApplicationContext context: Context): CategoryNavigationRepository {
+        return CategoryNavigationRestRepository()
     }
 
     @DiscoveryScope

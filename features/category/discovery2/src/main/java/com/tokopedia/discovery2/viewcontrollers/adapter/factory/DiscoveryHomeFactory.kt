@@ -7,6 +7,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.MultiBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.BannerTimerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.BannerTimerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewHolder
@@ -40,6 +45,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.DoubleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
             initializeComponent(ComponentsList.TripleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
             initializeComponent(ComponentsList.QuadrupleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
+            initializeComponent(ComponentsList.CategoryNavigation, ::CategoryNavigationViewHolder, ::CategoryNavigationViewModel)
+            initializeComponent(ComponentsList.CategoryNavigationIem, ::CategoryNavigationItemViewHolder, ::CategoryNavigationItemViewModel)
             initializeComponent(ComponentsList.YouTubeView, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.BannerTimer, ::BannerTimerViewHolder, ::BannerTimerViewModel)
             initializeComponent(ComponentsList.CpmTopAds, ::CpmTopAdsViewHolder, ::CpmTopAdsViewModel)
@@ -60,7 +67,6 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.BrandRecommendation, ::BrandRecommendationViewHolder, ::BrandRecommendationViewModel)
             initializeComponent(ComponentsList.BrandRecommendationItem, ::BrandRecommendationItemViewHolder, ::BrandRecommendationItemViewModel)
             initializeComponent(ComponentsList.Margin, ::ComingSoonViewHolder, ::ComingSoonViewModel)
-            initializeComponent(ComponentsList.HorizontalCaregoryNavigation, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.CustomTopChat, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.Tabs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.ProductCardRevamp, ::ComingSoonViewHolder, ::ComingSoonViewModel)

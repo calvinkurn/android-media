@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="@dimen/dp_90"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/dp_60"
         android:layout_margin="@dimen/dp_5"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="@dimen/dp_5"
@@ -21,8 +21,9 @@
             android:id="@+id/brand_recom_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="@dimen/dp_8"
             tools:src="@color/black_39"
-            android:padding="@dimen/dp_8"/>
+            />
     </androidx.cardview.widget.CardView>
 
 
