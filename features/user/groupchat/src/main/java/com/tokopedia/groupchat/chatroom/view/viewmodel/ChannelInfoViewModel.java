@@ -56,6 +56,7 @@ public class ChannelInfoViewModel implements Parcelable {
     public OverlayViewModel overlayViewModel;
     private BackgroundViewModel backgroundViewModel;
     private FreezeViewModel freezeViewModel;
+    private boolean isChatDisabled;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -129,7 +130,8 @@ public class ChannelInfoViewModel implements Parcelable {
                                 String videoId, Boolean videoLive, String infoUrl,
                                 SettingGroupChat settingGroupChat, OverlayViewModel overlayViewModel,
                                 BackgroundViewModel backgroundViewModel,
-                                FreezeViewModel freezeViewModel) {
+                                FreezeViewModel freezeViewModel,
+                                boolean isChatDisabled) {
         this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
@@ -162,6 +164,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.overlayViewModel = overlayViewModel;
         this.backgroundViewModel = backgroundViewModel;
         this.freezeViewModel = freezeViewModel;
+        this.isChatDisabled = isChatDisabled;
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -199,6 +202,7 @@ public class ChannelInfoViewModel implements Parcelable {
         pinnedMessageViewModel = in.readParcelable(PinnedMessageViewModel.class.getClassLoader());
         exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
         quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
+        isChatDisabled = in.readByte() != 0;
     }
 
     @Override
@@ -236,6 +240,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(pinnedMessageViewModel, flags);
         dest.writeParcelable(exitMessage, flags);
         dest.writeTypedList(quickRepliesViewModel);
+        dest.writeByte((byte) (isChatDisabled ? 1 : 0));
     }
 
     @Override
@@ -512,5 +517,13 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public void setInfoUrl(String infoUrl) {
         this.infoUrl = infoUrl;
+    }
+
+    public boolean isChatDisabled() {
+        return isChatDisabled;
+    }
+
+    public void setChatDisabled(boolean chatDisabled) {
+        isChatDisabled = chatDisabled;
     }
 }

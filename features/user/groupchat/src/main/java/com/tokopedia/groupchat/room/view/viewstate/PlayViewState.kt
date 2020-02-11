@@ -37,7 +37,7 @@ interface PlayViewState {
     fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel)
     fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?)
     fun afterSendMessage()
-    fun onQuickReplyClicked(text: String?)
+    fun onQuickReplyClicked(message: String?)
     fun onKeyboardHidden()
     fun getChannelInfo(): ChannelInfoViewModel?
     fun onDynamicButtonUpdated(it: DynamicButtonsViewModel)
@@ -67,4 +67,5 @@ interface PlayViewState {
     fun verticalVideoShown(): Boolean
     fun dismissAllBottomSheet()
     fun isChannelActive(): Boolean
+    fun onChatDisabledError(message: String)
 }

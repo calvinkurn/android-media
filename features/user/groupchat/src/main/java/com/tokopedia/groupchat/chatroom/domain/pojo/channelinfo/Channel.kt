@@ -144,7 +144,10 @@ data class Channel(
         val freezeState: FreezeViewModel = FreezeViewModel(),
         @SerializedName("link_info_url")
         @Expose
-        val linkInfoUrl: String = ""
-
-
-) {}
+        val linkInfoUrl: String = "",
+        @SerializedName("is_chat_disabled")
+        @Expose
+        val isChatDisabled: Boolean = false
+) {
+        //TODO("3. Need to adjust response serialized name `is_chat_disabled` to match backend response")
+}

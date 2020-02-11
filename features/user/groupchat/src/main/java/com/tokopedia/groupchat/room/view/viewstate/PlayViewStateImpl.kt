@@ -14,6 +14,7 @@ import android.webkit.URLUtil
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -64,6 +66,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewMo
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
@@ -87,7 +90,7 @@ open class PlayViewStateImpl(
         voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
         sprintSaleViewHolderListener: ChatroomContract.ChatItem.SprintSaleViewHolderListener,
         groupChatPointsViewHolderListener: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
-        sendMessage: (viewModel: PendingChatViewModel) -> Unit,
+        private val sendMessage: (viewModel: PendingChatViewModel) -> Unit,
         dynamicButtonClickListener: ChatroomContract.DynamicButtonItem.DynamicButtonListener,
         interactiveButtonClickListener: ChatroomContract.DynamicButtonItem.InteractiveButtonListener
 
@@ -239,15 +242,7 @@ open class PlayViewStateImpl(
         }
 
         sendButton.setOnClickListener {
-            val emp = !TextUtils.isEmpty(replyEditText.text.toString().trim { it <= ' ' })
-            if (emp) {
-                val pendingChatViewModel = PendingChatViewModel(checkText(replyEditText.text.toString()),
-                        userSession.userId,
-                        userSession.name,
-                        userSession.profilePicture,
-                        false)
-                sendMessage(pendingChatViewModel)
-            }
+            shouldSendMessage(replyEditText.text.toString(), isQuickReply = false)
         }
         errorView.setOnClickListener {  }
 
@@ -586,15 +581,24 @@ open class PlayViewStateImpl(
     }
 
     override fun onQuickReplyClicked(message: String?) {
-        val text = replyEditText.text.toString()
-        val index = replyEditText.selectionStart
-        replyEditText.setText(MethodChecker.fromHtml(String.format(
-                "%s %s %s",
-                text.substring(0, index),
-                message,
-                text.substring(index)
-        )))
-        sendButton.performClick()
+//        val text = replyEditText.text.toString()
+//        val index = replyEditText.selectionStart
+//        shouldSendMessage(
+//                MethodChecker.fromHtml(String.format(
+//                        "%s %s %s",
+//                        text.substring(0, index),
+//                        message,
+//                        text.substring(index)
+//                )),
+//                isQuickReply = true
+//        )
+
+        //TODO("4. Remove this commented code, need to confirm with PO")
+
+        shouldSendMessage(
+                MethodChecker.fromHtml(message),
+                isQuickReply = true
+        )
 
         analytics.eventClickQuickReply(
                 String.format("%s - %s", viewModel?.channelId, message))
@@ -1261,6 +1265,11 @@ open class PlayViewStateImpl(
         return false
     }
 
+    override fun onChatDisabledError(message: String) {
+        //TODO("2. Change this to Unify Toaster, but need to make it appear above keyboard")
+        Toast.makeText(view.context, message, Toast.LENGTH_LONG).show()
+    }
+
     private fun toggleHorizontalVideo(): (Boolean) -> Unit {
         return {
             if(it) {
@@ -1408,5 +1417,19 @@ open class PlayViewStateImpl(
 
     private fun getCurrentTime(): Long {
         return Date().time / 1000L
+    }
+
+    private fun shouldSendMessage(rawMessage: CharSequence, isQuickReply: Boolean) {
+        val emp = !TextUtils.isEmpty(rawMessage.trim { it <= ' ' })
+        if (emp) {
+            val pendingChatViewModel = PendingChatViewModel(checkText(rawMessage.toString()),
+                    userSession.userId,
+                    userSession.name,
+                    userSession.profilePicture,
+                    isInfluencer = false,
+                    isChatDisabled = viewModel?.isChatDisabled ?: false,
+                    isQuickReply = isQuickReply)
+            sendMessage(pendingChatViewModel)
+        }
     }
 }

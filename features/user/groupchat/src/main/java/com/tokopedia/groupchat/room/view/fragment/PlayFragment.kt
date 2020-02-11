@@ -843,6 +843,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return viewState?.verticalVideoShown()
     }
 
+    override fun showChatDisabledError(message: String) {
+        viewState.onChatDisabledError(message)
+    }
+
     fun isChannelActive(): Boolean {
         return viewState?.isChannelActive()
     }
