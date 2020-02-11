@@ -11,7 +11,7 @@ object WidgetType {
     const val DESCRIPTION = "description"
     const val SECTION = "section"
     const val PROGRESS = "progressBar"
-    const val POST = "post"
+    const val POST_LIST = "post"
 
     fun isValidWidget(widgetType: String): Boolean {
         return getWidgetList().contains(widgetType)
@@ -23,7 +23,7 @@ object WidgetType {
                 CAROUSEL,
                 DESCRIPTION,
                 LINE_GRAPH,
-                POST,
+                POST_LIST,
                 PROGRESS,
                 SECTION
         )
