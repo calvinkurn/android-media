@@ -36,6 +36,7 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOr
  */
 object DeeplinkMapper {
 
+    val TOKOPOINTS="tokopoints"
     /**
      * Get registered deeplink navigation in manifest
      * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
@@ -44,7 +45,13 @@ object DeeplinkMapper {
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
         val mappedDeepLink: String = when {
-            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
+            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> {
+                val path = Uri.parse(deeplink).pathSegments.joinToString("/")
+                when (path) {
+                    TOKOPOINTS -> ApplinkConstInternalPromo.TOKOPOINTS_HOME
+                    else -> getRegisteredNavigationFromHttp(context, deeplink)
+                }
+            }
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
@@ -60,7 +67,7 @@ object DeeplinkMapper {
                         getRegisteredNavigationMarketplace(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.DEALS_HOME) ->
                         getRegisteredNavigationDeals(deeplink)
-                    deeplink.startsWithPattern(ApplinkConst.FIND)|| deeplink.startsWith(ApplinkConst.AMP_FIND) ->
+                    deeplink.startsWithPattern(ApplinkConst.FIND) || deeplink.startsWith(ApplinkConst.AMP_FIND) ->
                         getRegisteredFind(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
                         getRegisteredNavigationContent(deeplink)
@@ -140,7 +147,6 @@ object DeeplinkMapper {
         }
         return ""
     }
-
     /**
      * Mapping tokopedia link to registered deplink in manifest if necessary
      * eg: tokopedia://product/add to tokopedia-android-internal://marketplace/product-add-item
@@ -174,6 +180,7 @@ object DeeplinkMapper {
             ApplinkConst.CHAT_TEMPLATE -> ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
+            ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
             ApplinkConst.TALK -> return ApplinkConstInternalGlobal.INBOX_TALK
             ApplinkConst.PRODUCT_TALK -> return ApplinkConstInternalGlobal.PRODUCT_TALK
             ApplinkConst.TALK_DETAIL -> return ApplinkConstInternalGlobal.DETAIL_TALK
@@ -206,8 +213,8 @@ object DeeplinkMapper {
     private fun specialNavigationMapper(deeplink: String, host: String): Boolean {
         val uri = Uri.parse(deeplink)
         return uri.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME
-            && uri.host == host
-            && uri.pathSegments.size > 0
+                && uri.host == host
+                && uri.pathSegments.size > 0
     }
 
     private fun getCreateReviewInternal(deeplink: String): String {
