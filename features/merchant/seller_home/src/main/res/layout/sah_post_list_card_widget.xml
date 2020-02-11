@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="320dp"
-    android:layout_margin="4dp"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
-    app:cardCornerRadius="@dimen/layout_lvl1"
-    app:contentPadding="@dimen/layout_lvl2">
+    app:cardCornerRadius="@dimen/layout_lvl1">
 
     <include layout="@layout/sah_partial_post_list_widget" />
 
@@ -14,4 +12,4 @@
 
     <include layout="@layout/sah_partial_post_list_widget_error" />
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

@@ -32,7 +32,7 @@ class SellerHomeAdapterTypeFactory(
         return DescriptionViewHolder.RES_LAYOUT
     }
 
-    override fun type(sectionWdget: SectionWidgetUiModel): Int {
+    override fun type(sectionWidget: SectionWidgetUiModel): Int {
         return SectionViewHolder.RES_LAYOUT
     }
 
@@ -49,7 +49,7 @@ class SellerHomeAdapterTypeFactory(
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, sellerHomeFragment)
             CardViewHolder.RES_LAYOUT -> CardViewHolder(parent, sellerHomeFragment)
             LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, sellerHomeFragment)
-            CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent)
+            CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent, sellerHomeFragment)
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
             ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, sellerHomeFragment)
             PostListViewHolder.RES_LAYOUT -> PostListViewHolder(parent, sellerHomeFragment)

@@ -16,7 +16,7 @@ interface SellerHomeTypeFactory {
 
     fun type(descriptionWidget: DescriptionWidgetUiModel): Int
 
-    fun type(sectionWdget: SectionWidgetUiModel): Int
+    fun type(sectionWidget: SectionWidgetUiModel): Int
 
     fun type(progressWidgetWidget: ProgressWidgetUiModel): Int
 

@@ -1,20 +1,22 @@
 package com.tokopedia.sellerhome.view.viewholder
 
 import android.view.View
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.TooltipClickListener
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
 import com.tokopedia.sellerhome.view.model.TooltipUiModel
+import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_post_list_widget.view.*
-import kotlinx.android.synthetic.main.sah_partial_progress_widget_error.view.*
+import kotlinx.android.synthetic.main.sah_partial_post_list_widget_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_shimmering_post_list_widget.view.*
 
 class PostListViewHolder(
@@ -35,9 +37,7 @@ class PostListViewHolder(
                 showLoadingState()
                 listener.getPostData()
             }
-            data.error.isNotEmpty() -> {
-                showErrorState(element)
-            }
+            data.error.isNotEmpty() -> showErrorState(element)
             else -> {
                 if (data.items.isEmpty()) {
                     listener.removeWidget(adapterPosition, element)
@@ -57,8 +57,11 @@ class PostListViewHolder(
     private fun showErrorState(element: PostListWidgetUiModel) {
         hideListLayout()
         hideShimmeringLayout()
-        itemView.tv_error_card_title.text = element.title
-        showErrorLayout()
+        with(itemView) {
+            tvPostListTitleOnError.text = element.title
+            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            sahPostListOnErrorLayout.visible()
+        }
     }
 
     private fun showSuccessState(element: PostListWidgetUiModel) {
@@ -66,7 +69,7 @@ class PostListViewHolder(
             hideErrorLayout()
             hideShimmeringLayout()
             setupTooltip(element.tooltip)
-            itemView.tv_card_title.text = element.title
+            itemView.tvPostListTitle.text = element.title
             showCtaButtonIfNeeded(element.ctaText, element.appLink)
             setupPostList(items)
             showListLayout()
@@ -74,37 +77,33 @@ class PostListViewHolder(
     }
 
     private fun showShimmeringLayout() {
-        itemView.sah_list_layout_shimmering.visible()
+        itemView.sahPostListOnLoadingLayout.visible()
     }
 
     private fun hideShimmeringLayout() {
-        itemView.sah_list_layout_shimmering.gone()
+        itemView.sahPostListOnLoadingLayout.gone()
     }
 
     private fun showListLayout() {
-        itemView.sah_list_layout.visible()
+        itemView.sahPostListOnSuccessLayout.visible()
     }
 
     private fun hideListLayout() {
-        itemView.sah_list_layout.gone()
-    }
-
-    private fun showErrorLayout() {
-        itemView.sah_error_layout.visible()
+        itemView.sahPostListOnSuccessLayout.gone()
     }
 
     private fun hideErrorLayout() {
-        itemView.sah_error_layout.gone()
+        itemView.sahPostListOnErrorLayout.gone()
     }
 
     private fun setupTooltip(tooltip: TooltipUiModel?) = with(itemView) {
         tooltip?.run {
             if (content.isNotBlank() || list.isNotEmpty()) {
-                iv_info.visible()
-                iv_info.setOnClickListener { showBottomSheet(tooltip) }
-                tv_card_title.setOnClickListener { showBottomSheet(tooltip) }
+                imgInfo.visible()
+                imgInfo.setOnClickListener { showBottomSheet(tooltip) }
+                tvPostListTitle.setOnClickListener { showBottomSheet(tooltip) }
             } else {
-                iv_info.gone()
+                imgInfo.gone()
             }
         }
     }
@@ -118,19 +117,19 @@ class PostListViewHolder(
     }
 
     private fun setupCtaButton(ctaText: String, appLink: String) {
-        itemView.tv_see_details.text = ctaText
-        itemView.tv_see_details.setOnClickListener { goToDetails(appLink) }
+        itemView.tvPostListSeeDetails.text = ctaText
+        itemView.tvPostListSeeDetails.setOnClickListener { goToDetails(appLink) }
     }
 
-    private fun toggleCtaButtonVisibility(isShow: Boolean) {
-        when (isShow) {
-            true -> {
-                itemView.tv_see_details.visible()
-                itemView.iv_see_details.visible()
+    private fun toggleCtaButtonVisibility(isShow: Boolean) = with(itemView) {
+        when {
+            isShow -> {
+                tvPostListSeeDetails.visible()
+                icPostListSeeDetails.visible()
             }
-            false -> {
-                itemView.tv_see_details.gone()
-                itemView.iv_see_details.gone()
+            else -> {
+                tvPostListSeeDetails.gone()
+                icPostListSeeDetails.gone()
             }
         }
     }
@@ -146,8 +145,12 @@ class PostListViewHolder(
 
     private fun setupPostList(posts: List<PostUiModel>) {
         adapter = BaseListAdapter<PostUiModel, ListAdapterTypeFactory>(ListAdapterTypeFactory(), this@PostListViewHolder)
-        itemView.rv_post.apply {
-            layoutManager = LinearLayoutManager(itemView.context)
+        itemView.rvPostList.apply {
+            layoutManager = object : LinearLayoutManager(itemView.context) {
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }
             adapter = this@PostListViewHolder.adapter
             isNestedScrollingEnabled = true
         }
@@ -158,12 +161,10 @@ class PostListViewHolder(
     }
 
     override fun onItemClicked(post: PostUiModel) {
-        val intent = RouteManager.getIntent(itemView.context, post.appLink)
-        itemView.context.startActivity(intent)
+        RouteManager.route(itemView.context, post.appLink)
     }
 
-    interface Listener : TooltipClickListener {
+    interface Listener : BaseViewHolderListener {
         fun getPostData()
-        fun removeWidget(position: Int, data: PostListWidgetUiModel)
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.domain.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -7,12 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class TooltipModel(
+        @Expose
         @SerializedName("title")
         val title: String?,
+        @Expose
         @SerializedName("content")
         val content: String?,
+        @Expose
         @SerializedName("list")
-        val list: List<TooltipListItemModel>,
-        @SerializedName("show")
-        val isShow: Boolean = false
+        val list: List<TooltipListItemModel>?
 )

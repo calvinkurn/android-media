@@ -25,6 +25,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.sellerHomeDrawer)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     //internal libs
     implementation rootProject.ext.unifyDependencies.icon

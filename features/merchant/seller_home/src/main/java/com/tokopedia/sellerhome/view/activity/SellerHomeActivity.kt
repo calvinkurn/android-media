@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.view.home
+package com.tokopedia.sellerhome.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -16,9 +16,11 @@ import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
+import com.tokopedia.sellerhomedrawer.data.ShopStatusModel
 import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.domain.firebase.SellerFirebaseRemoteAppUpdate
 import com.tokopedia.sellerhomedrawer.domain.usecase.FlashSaleGetSellerStatusUseCase
@@ -40,7 +42,9 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         fun createInstance(context: Context) = Intent(context, SellerHomeActivity::class.java)
     }
 
-//    @Inject
+    private val sellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
+
+    //    @Inject
     lateinit var sellerHomeDashboardDrawerPresenter: SellerHomeDashboardDrawerPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +55,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
         if (savedInstanceState != null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, SellerHomeFragment.newInstance(), TAG)
+                    .replace(R.id.container, sellerHomeFragment, TAG)
                     .commit()
         }
 
@@ -60,7 +64,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
     }
 
     override fun getNewFragment(): Fragment? {
-        return SellerHomeFragment.newInstance()
+        return sellerHomeFragment
     }
 
     override fun onResume() {
@@ -127,6 +131,17 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         sellerDrawerAdapter?.isGoldMerchant = isGoldMerchant
         sellerDrawerAdapter?.isOfficialStore = isOfficialStore
         userSession.setIsGoldMerchant(isGoldMerchant)
+        setShopStatus(shopStatusModel)
+    }
+
+    private fun setShopStatus(shopStatus: ShopStatusModel) {
+        val mShopStatus: ShopStatus = when {
+            shopStatus.isOfficialStore() -> ShopStatus.OFFICIAL_STORE
+            shopStatus.isPowerMerchantActive() || shopStatus.isPowerMerchantIdle() -> ShopStatus.POWER_MERCHANT
+            else -> ShopStatus.REGULAR_MERCHANT
+        }
+
+        sellerHomeFragment.setShopStatus(mShopStatus)
     }
 
     override val context: Context

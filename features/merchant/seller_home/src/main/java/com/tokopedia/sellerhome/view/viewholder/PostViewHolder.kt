@@ -16,17 +16,17 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
 
     override fun bind(element: PostUiModel) {
         with(element) {
-            itemView.tv_post_title.text = title.parseAsHtml()
-            itemView.tv_post_description.text = subtitle.parseAsHtml()
+            itemView.tvPostTitle.text = title.parseAsHtml()
+            itemView.tvPostDescription.text = subtitle.parseAsHtml()
             loadImage(featuredMediaURL)
         }
     }
 
     private fun loadImage(featuredMediaURL: String) = with(itemView) {
         if (featuredMediaURL.isNotEmpty()) {
-            ImageHandler.loadImageRounded(context, iv_post, featuredMediaURL, 20f)
+            ImageHandler.loadImageRounded(context, imgPost, featuredMediaURL, 20f)
         } else {
-            ImageHandler.loadImageRounded2(context, iv_post, R.drawable.error_drawable, 20f)
+            ImageHandler.loadImageRounded2(context, imgPost, R.drawable.error_drawable, 20f)
         }
     }
 }

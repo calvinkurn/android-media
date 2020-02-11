@@ -3,8 +3,8 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.TooltipClickListener
-import com.tokopedia.sellerhome.util.parseRegex
+import com.tokopedia.sellerhome.util.parseAsHtml
+import com.tokopedia.sellerhome.util.parseDateTemplate
 import com.tokopedia.sellerhome.view.model.SectionWidgetUiModel
 import kotlinx.android.synthetic.main.sah_section_widget.view.*
 
@@ -25,7 +25,7 @@ class SectionViewHolder(
         with(itemView) {
             tvSectionTitle.text = element.title
             tvSectionSubTitle.visibility = if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
-            tvSectionSubTitle.text = element.subtitle.parseRegex()
+            tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
 
             element.tooltip?.let { tooltip ->
                 if (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty()) {
@@ -42,5 +42,5 @@ class SectionViewHolder(
         }
     }
 
-    interface Listener : TooltipClickListener
+    interface Listener : BaseViewHolderListener
 }

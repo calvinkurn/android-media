@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,9 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.WidgetType
+import com.tokopedia.sellerhome.common.ShopStatus
+import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
@@ -25,6 +31,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import javax.inject.Inject
@@ -35,13 +42,13 @@ import javax.inject.Inject
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(),
         CardViewHolder.Listener, LineGraphViewHolder.Listener, ProgressViewHolder.Listener,
-        SectionViewHolder.Listener, PostListViewHolder.Listener {
+        SectionViewHolder.Listener, PostListViewHolder.Listener, CarouselViewHolder.Listener {
 
     companion object {
         @JvmStatic
         fun newInstance() = SellerHomeFragment()
 
-        const val TAG_TOOLTIP = "seller_home_tooltip"
+        private const val TAG_TOOLTIP = "seller_home_tooltip"
     }
 
     @Inject
@@ -51,13 +58,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
+    private val tooltipBottomSheet by lazy { BottomSheetUnify() }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
+
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
     private var hasLoadProgressData = false
     private var hasLoadPostData = false
-
-    private val tooltipBottomSheet by lazy { BottomSheetUnify() }
+    private var hasLoadCarouselData = false
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -77,12 +85,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         hideTooltipIfExist()
         setupView()
-        getWidgetsLayout()
-        getTickerView()
-        observeCardLiveData()
-        observeLineGraphLiveData()
-        observeProgressLiveData()
-        observePostLiveData()
+
+        observeTickerLiveData()
+        observeWidgetLayoutLiveData()
+
+        observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
+        observeWidgetData(sellerHomeViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
+        observeWidgetData(sellerHomeViewModel.progressWidgetData, WidgetType.PROGRESS)
+        observeWidgetData(sellerHomeViewModel.postListWidgetData, WidgetType.POST_LIST)
+        observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
     }
 
     private fun hideTooltipIfExist() {
@@ -105,9 +116,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
             }
         }
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
         recyclerView.layoutManager = gridLayoutManager
 
         swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = false
             refreshWidget()
         }
     }
@@ -117,11 +130,26 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hasLoadLineGraphData = false
         hasLoadProgressData = false
         hasLoadPostData = false
+        hasLoadCarouselData = false
         widgetHasMap.clear()
         adapter.data.clear()
         adapter.notifyDataSetChanged()
-        showGetWidgetShimmer(false)
+        showGetWidgetProgress(true)
         sellerHomeViewModel.getWidgetLayout()
+    }
+
+    fun setShopStatus(shopStatus: ShopStatus) = view?.run {
+        when (shopStatus) {
+            ShopStatus.OFFICIAL_STORE -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            }
+            ShopStatus.POWER_MERCHANT -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            }
+            else -> {
+                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+            }
+        }
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
@@ -164,27 +192,52 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
 
-    override fun removeWidget(position: Int, data: PostListWidgetUiModel) {
-        recyclerView.post {
-            adapter.data.remove(data)
-            adapter.notifyItemRemoved(position)
-            widgetHasMap[data.widgetType]?.remove(data)
+    override fun getCarouselData() {
+        if (hasLoadCarouselData) return
+        hasLoadCarouselData = true
+        val dataKeys = getWidgetDataKeys<CarouselWidgetUiModel>()
+        sellerHomeViewModel.getCarouselWidgetData(dataKeys)
+    }
+
+    override fun onTooltipClicked(tooltip: TooltipUiModel) {
+        val bottomSheetContentView = SellerHomeBottomSheetContent(context ?: return)
+
+        with(tooltipBottomSheet) tooltip@{
+            setTitle(tooltip.title)
+            clearClose(false)
+            clearHeader(false)
+            setCloseClickListener {
+                this.dismiss()
+            }
+
+            bottomSheetContentView.setTooltipData(tooltip)
+
+            setChild(bottomSheetContentView)
+            this@tooltip.show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
         }
     }
 
-    private fun showGetWidgetShimmer(isShown: Boolean) {
-        view?.swipeRefreshLayout?.isRefreshing = isShown
+    override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
+        recyclerView.post {
+            adapter.data.remove(widget)
+            adapter.notifyItemRemoved(position)
+            widgetHasMap[widget.widgetType]?.remove(widget)
+        }
     }
 
-    private fun showSwipeProgress(isShown: Boolean) {
-        view?.swipeRefreshLayout?.isRefreshing = isShown
+    private inline fun <reified T : BaseWidgetUiModel<*>> getWidgetDataKeys(): List<String> {
+        return adapter.data.orEmpty().filterIsInstance<T>().map { it.dataKey }
     }
 
-    private fun getWidgetsLayout() {
+    private fun showGetWidgetProgress(isShown: Boolean) {
+        view?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
+    }
+
+    private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    showGetWidgetShimmer(false)
+                    recyclerView.visible()
                     renderList(result.data)
                     result.data.forEach {
                         if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
@@ -193,112 +246,63 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                         }
                         widgetHasMap[it.widgetType]?.add(it)
                     }
+                    showGetWidgetProgress(false)
                 }
                 is Fail -> {
-                    showGetWidgetShimmer(false)
+                    //it should be not like this
+                    Toast.makeText(context, "Oops : ${result.throwable.message}", Toast.LENGTH_LONG).show()
+                    showGetWidgetProgress(false)
                 }
             }
         })
-        showGetWidgetShimmer(true)
+
+        showGetWidgetProgress(true)
         sellerHomeViewModel.getWidgetLayout()
     }
 
-    override fun onTooltipClicked(tooltip: TooltipUiModel) {
-        with(tooltipBottomSheet) tooltip@{
-            setTitle(tooltip.title)
-            clearClose(false)
-            clearHeader(false)
-            setCloseClickListener { this.dismiss() }
-
-            val bottomSheetContentView = SellerHomeBottomSheetContent(this@SellerHomeFragment.context
-                    ?: return)
-            bottomSheetContentView.setTooltipData(tooltip)
-
-            setChild(bottomSheetContentView)
-            show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
-        }
-    }
-
-    private fun getTickerView() {
+    private fun observeTickerLiveData() {
         sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-                    showSwipeProgress(false)
-                    onSuccessGetTickers(it.data)
-                }
-                is Fail -> {
-                    showSwipeProgress(false)
-                    view?.relTicker?.visibility = View.GONE
-                }
+                is Success -> onSuccessGetTickers(it.data)
+                is Fail -> view?.relTicker?.visibility = View.GONE
             }
         })
-        showSwipeProgress(true)
         sellerHomeViewModel.getTicker()
     }
 
-    private fun observeCardLiveData() {
-        sellerHomeViewModel.cardWidgetData.observe(viewLifecycleOwner, Observer { result ->
-            val type = WidgetType.CARD
+    private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
+        liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState(type)
+                is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
             }
         })
     }
 
-    private fun observeLineGraphLiveData() {
-        sellerHomeViewModel.lineGraphWidgetData.observe(viewLifecycleOwner, Observer { result ->
-            val type = WidgetType.LINE_GRAPH
-            when (result) {
-                is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState(type)
-            }
-        })
-    }
-
-    private fun observePostLiveData() {
-        sellerHomeViewModel.postWidgetData.observe(viewLifecycleOwner, Observer { result ->
-            val type = WidgetType.POST
-            when (result) {
-                is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState(type)
-            }
-        })
-    }
-
-    private fun observeProgressLiveData() {
-        sellerHomeViewModel.progressWidgetData.observe(viewLifecycleOwner, Observer { result ->
-            val type = WidgetType.PROGRESS
-            when (result) {
-                is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState(type)
-            }
-        })
-    }
-
-    private fun List<BaseDataUiModel>.setOnSuccessWidgetState(type: String) {
-        widgetHasMap[type]?.forEachIndexed { i, widget ->
-            when (widget) {
-                is CardWidgetUiModel -> widget.data = this[i] as CardDataUiModel
-                is LineGraphWidgetUiModel -> widget.data = this[i] as LineGraphDataUiModel
-                is ProgressWidgetUiModel -> widget.data = this[i] as ProgressDataUiModel
-                is PostListWidgetUiModel -> widget.data = this[i] as PostListDataUiModel
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
+        widgetHasMap[widgetType]?.forEachIndexed { i, widget ->
+            if (widget is W) {
+                widget.data = this[i]
+                notifyWidgetChanged(widget)
             }
         }
-        adapter.notifyDataSetChanged()
     }
 
-    private fun Throwable.setOnErrorWidgetState(type: String) {
+    private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
-        widgetHasMap[type]?.forEach { widget ->
-            when (widget) {
-                is CardWidgetUiModel -> widget.data = CardDataUiModel(error = message)
-                is LineGraphWidgetUiModel -> widget.data = LineGraphDataUiModel(error = message)
-                is ProgressWidgetUiModel -> widget.data = ProgressDataUiModel(error = message)
-                is PostListWidgetUiModel -> widget.data = PostListDataUiModel(error = message)
+        widgetHasMap[widgetType]?.forEach { widget ->
+            if (widget is W) {
+                widget.data = D::class.java.newInstance().apply {
+                    error = message
+                }
+                notifyWidgetChanged(widget)
             }
         }
-        adapter.notifyDataSetChanged()
+    }
+
+    private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
+        val widgetPosition = adapter.data.indexOf(widget)
+        adapter.notifyItemChanged(widgetPosition)
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
@@ -324,11 +328,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
             })
 
-            tickerView.addPagerView(adapter, tickersData)
+            addPagerView(adapter, tickersData)
         }
-    }
-
-    private inline fun <reified T : BaseWidgetUiModel<*>> getWidgetDataKeys(): List<String> {
-        return adapter.data.orEmpty().filterIsInstance<T>().map { it.dataKey }
     }
 }

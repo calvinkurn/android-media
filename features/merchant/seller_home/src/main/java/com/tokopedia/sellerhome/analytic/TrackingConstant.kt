@@ -1,0 +1,27 @@
+package com.tokopedia.sellerhome.analytic
+
+/**
+ * Created By @ilhamsuaib on 2020-02-11
+ */
+
+object TrackingConstant {
+
+    //key
+    const val EVENT = "event"
+    const val EVENT_CATEGORY = "eventCategory"
+    const val EVENT_ACTION = "eventAction"
+    const val EVENT_LABEL = "eventLabel"
+
+    //event
+    const val VIEW_SELLER_WIDGET = "viewSellerWidget"
+    const val CLICK_SELLER_WIDGET = "clickSellerWidget"
+
+    //category
+    const val HOME = "home"
+    const val SELLER_APP = "seller app"
+
+    //action
+    const val IMPRESSION_WIDGET_CARD = "impression widget card"
+    const val CLICK_WIDGET_CARD = "click widget card"
+
+}
