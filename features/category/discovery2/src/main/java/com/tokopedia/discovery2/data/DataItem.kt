@@ -8,6 +8,9 @@ data class DataItem(
         @SerializedName("end_date")
         val endDate: String? = "",
 
+        @SerializedName("button_applink")
+        val buttonApplink: String? = "",
+
         @SerializedName("code")
         val code: String? = "",
 
@@ -50,6 +53,9 @@ data class DataItem(
         @SerializedName("notification_description")
         val notificationDescription: String? = "",
 
+        @SerializedName("description")
+        val description: String? = "",
+
         @SerializedName("start_date")
         val startDate: String? = "",
 
@@ -58,6 +64,12 @@ data class DataItem(
 
         @SerializedName("right_margin_mobile")
         val rightMarginMobile: String? = "0",
+
+        @SerializedName("category_detail_url")
+        val categoryDetailUrl: String? = "",
+
+        @SerializedName("background_image_apps")
+        val backgroundImageApps: String? = "",
 
         @SerializedName("background_url_mobile")
         val backgroundUrlMobile: String? = "",
@@ -74,11 +86,29 @@ data class DataItem(
         @field:SerializedName("button_text")
         var buttonText: String? = "",
 
-        @SerializedName("btn_applink")
-        val btnApplink: String? = "",
-
         @SerializedName("title")
         val title: String? = "",
+
+        @SerializedName("thumbnail_url_mobile")
+        val thumbnailUrlMobile: String? = "",
+
+        @SerializedName("points_str")
+        val pointsStr: String? = "",
+
+        @SerializedName("points_slash_str")
+        val pointsSlashStr: String? = "",
+
+        @SerializedName("discount_percentage_str")
+        val discountPercentageStr: String? = "",
+
+        @SerializedName("points_slash")
+        val pointsSlash: Int? = 0,
+
+        @SerializedName("slug")
+        val slug: String? = "",
+
+        @SerializedName("btn_applink")
+        val btnApplink: String? = "",
 
         @field:SerializedName("price_format")
         var priceFormat: String? = "",
