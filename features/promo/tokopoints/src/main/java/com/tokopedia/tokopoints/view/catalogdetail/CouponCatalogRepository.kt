@@ -48,7 +48,7 @@ class CouponCatalogRepository @Inject constructor(private val map: Map<String, S
         mGetCouponDetail.executeOnBackground()
     }
 
-    suspend fun startSendGift(id: Int, title: String, pointStr: String, banner: String) = withContext(Dispatchers.IO) {
+    suspend fun startSendGift(id: Int) = withContext(Dispatchers.IO) {
         val variables: MutableMap<String, Any> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.CATALOG_ID] = id
         variables[CommonConstant.GraphqlVariableKeys.IS_GIFT] = 1

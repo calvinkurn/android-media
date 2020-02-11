@@ -145,7 +145,7 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
 
     override fun startSendGift(id: Int, title: String, pointStr: String, banner: String) {
         launchCatchError(block = {
-            val data = repository.startSendGift(id, title, pointStr, banner)
+            val data = repository.startSendGift(id)
             if (data.preValidateRedeem != null && data.preValidateRedeem.isValid == 1) {
                 sendGiftPageLiveData.value = Success(SendGiftPage(id, title, pointStr, banner))
             } else throw NullPointerException()
