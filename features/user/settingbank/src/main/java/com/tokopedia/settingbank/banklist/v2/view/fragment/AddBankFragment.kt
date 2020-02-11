@@ -335,9 +335,18 @@ class AddBankFragment : BaseDaggerFragment() {
     fun onBankSelected(selectedBank: Bank) {
         bank = selectedBank
         textWatcherViewModel.onBankSelected(bank)
+        notifyAccountNumberWatcher()
         btnPeriksa.isEnabled =  true
         hideAccountHolderName()
         setBankName()
+    }
+
+    private fun notifyAccountNumberWatcher(){
+        val text = etBankAccountNumber.text.toString()
+        if(text.isNotEmpty()){
+            etBankAccountNumber.setText("")
+            etBankAccountNumber.setText(text)
+        }
     }
 
     private fun hideAccountHolderName() {

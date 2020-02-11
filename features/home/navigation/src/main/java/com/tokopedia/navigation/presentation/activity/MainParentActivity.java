@@ -568,7 +568,7 @@ public class MainParentActivity extends BaseActivity implements
         registerNewFeedClickedReceiver();
 
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
-            finish();
+           // finish();
         }
 
         if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
