@@ -15,5 +15,4 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     CarouselBanner(R.layout.carousel_banner_layout, "carousel_banner"),
     CarouselBannerItemView(R.layout.carousel_banner_item_layout, "carousel_banner_item"),
     SliderBanner(R.layout.slider_banner_layout, "slider_banner"),
-    SliderBannerItemView(R.layout.slider_banner_item_layout, "slider_banner_item")
 }

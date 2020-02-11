@@ -12,7 +12,7 @@
         android:textColor="@color/black_70"
         android:visibility="gone" />
 
-    <com.tokopedia.discovery2.viewcontrollers.customview.CarouselBannerView
+    <com.tokopedia.discovery2.viewcontrollers.customview.DiscoveryBannerView
         android:id="@+id/carousel_banner_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
