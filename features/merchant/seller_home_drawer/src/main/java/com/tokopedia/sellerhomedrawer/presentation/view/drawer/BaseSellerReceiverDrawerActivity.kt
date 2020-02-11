@@ -4,41 +4,39 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Bundle
 import android.view.MenuItem
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService
 
 abstract class BaseSellerReceiverDrawerActivity: SellerDrawerPresenterActivity() {
 
-    val drawerGetNotificationReceiver = object : BroadcastReceiver() {
-
+    private val drawerGetNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == SellerDrawerGetNotificationService.BROADCAST_GET_NOTIFICATION
-                    && intent.getBooleanExtra(SellerDrawerGetNotificationService.GET_NOTIFICATION_SUCCESS, false))
-                updateDrawerData()
+            val intentSuccessGetNotification =
+                    intent?.action == SellerDrawerGetNotificationService.BROADCAST_GET_NOTIFICATION && intent.getBooleanExtra(SellerDrawerGetNotificationService.GET_NOTIFICATION_SUCCESS, false)
+            val intentUpdateNotificationData = intent?.action == SellerDrawerGetNotificationService.UPDATE_NOTIFICATON_DATA
+            when {
+                context == null || intent?.action == null ->
+                    return
+                intentSuccessGetNotification ->
+                    updateDrawerData()
+                intentUpdateNotificationData ->
+                    startDrawerGetNotificationService()
+            }
         }
     }
 
     override fun setDrawerPosition(): Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onResume() {
         super.onResume()
         registerBroadcastReceiver()
-        startDrawerGetNotificationServiceOnResume()
+        startDrawerGetNotificationService()
     }
 
     override fun onPause() {
         super.onPause()
         unregisterBroadcastReceiver()
-    }
-
-    override fun updateDrawerData() {
-        super.updateDrawerData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -47,7 +45,7 @@ abstract class BaseSellerReceiverDrawerActivity: SellerDrawerPresenterActivity()
         return super.onOptionsItemSelected(item)
     }
 
-    protected open fun startDrawerGetNotificationServiceOnResume() {
+    protected open fun startDrawerGetNotificationService() {
         SellerDrawerGetNotificationService.startService(this, true)
     }
 

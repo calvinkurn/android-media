@@ -22,6 +22,8 @@ class SellerDrawerGetNotificationService : JobIntentService() {
         @JvmStatic
         val GET_NOTIFICATION_SUCCESS = "get_notification_success"
         @JvmStatic
+        val UPDATE_NOTIFICATON_DATA = "update_notification_data"
+        @JvmStatic
         private val KEY_IS_SELLER = "is_seller"
         @JvmStatic
         private val KEY_IS_REFRESH = "is_refresh"
