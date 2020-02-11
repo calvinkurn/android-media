@@ -403,7 +403,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun navigateToOtp() {
-        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.COTP)
+        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
     companion object {
