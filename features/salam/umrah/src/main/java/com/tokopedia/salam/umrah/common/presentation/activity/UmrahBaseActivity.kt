@@ -39,7 +39,7 @@ abstract class UmrahBaseActivity : BaseSimpleActivity() {
     }
 
     abstract fun getMenuButton(): Int
-    abstract fun getShareLink(): String
+    abstract fun shareLink()
 
     private fun initInjector() {
         getUmrahComponent().inject(this)
@@ -84,14 +84,7 @@ abstract class UmrahBaseActivity : BaseSimpleActivity() {
             }
             tg_umrah_share.visibility = VISIBLE
             tg_umrah_share.setOnClickListener {
-                try {
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.putExtra(Intent.EXTRA_TEXT, getShareLink())
-                    intent.type = "text/plain"
-                    startActivity(intent)
-                } catch (e: Exception) {
-
-                }
+                shareLink()
                 menuBottomSheet.dismiss()
             }
             tg_umrah_salam.setOnClickListener {

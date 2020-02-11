@@ -20,7 +20,11 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
     private var slugName: String = ""
 
     override fun getMenuButton() = R.menu.umrah_base_menu_white
-    override fun getShareLink(): String = (fragment as OnBackListener).getBranchLink()
+    override fun shareLink() {
+        if (fragment is OnBackListener) {
+            (fragment as OnBackListener).shareTravelLink()
+        }
+    }
 
     override fun shouldShowMenuWhite(): Boolean = false
 
@@ -62,6 +66,6 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
 
     interface OnBackListener {
         fun onBackPressed()
-        fun getBranchLink():String
+        fun shareTravelLink()
     }
 }

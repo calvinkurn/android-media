@@ -21,22 +21,19 @@ class UmrahShare (val activity: Activity) {
 
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
 
-     fun generateBranchLink(data: TravelAgent): String{
-        var link = ""
-        if(true){
+     fun generateBranchLink(data: TravelAgent){
+        if(isBranchUrlActive()){
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     umrahProductDatatoLinkerDataMapper(data),object: ShareCallback{
                 override fun onError(linkerError: LinkerError) {
-                    link = ""
                 }
 
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    link = linkerShareData.url
+                    openIntentShare(data.name,linkerShareData.shareUri,linkerShareData.url)
                 }
             }))
         }
-        return link
-    }
+     }
 
     private fun openIntentShare(title: String?, shareContent: String, shareUri: String){
         val shareIntent = Intent().apply {
