@@ -225,6 +225,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     public void onSuccess(OpenShopData model) {
                         initiateDatasOpenShop(model);
                         bindDataToViewOpenShop(model);
+                        getReverseGeocode();
                     }
 
                     @Override
