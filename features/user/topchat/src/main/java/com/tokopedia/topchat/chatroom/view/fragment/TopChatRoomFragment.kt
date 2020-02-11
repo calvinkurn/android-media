@@ -118,8 +118,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
 
-    override fun getContext(): Context? {
-        return activity
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -372,10 +374,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun loadData(page: Int) {
         presenter.loadPreviousChat(messageId, page, onError(), onSuccessGetPreviousChat())
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {

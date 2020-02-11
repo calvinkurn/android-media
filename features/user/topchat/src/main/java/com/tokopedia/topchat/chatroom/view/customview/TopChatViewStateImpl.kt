@@ -57,9 +57,9 @@ class TopChatViewStateImpl(
         TopChatViewState,
         AttachmentPreviewAdapter.AttachmentPreviewListener {
 
-    private var templateRecyclerView: RecyclerView = view.findViewById(com.tokopedia.chat_common.R.id.list_template)
+    private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(com.tokopedia.chat_common.R.id.header_menu)
-    private var chatBlockLayout: View = view.findViewById(com.tokopedia.chat_common.R.id.chat_blocked_layout)
+    private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
 
@@ -73,37 +73,17 @@ class TopChatViewStateImpl(
 
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
     override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
-
-//    override fun getRecyclerViewId() = R.id.recycler_view
-//    override fun getProgressId() = R.id.progress
-
-    override fun getNewCommentId(): Int {
-        return R.id.new_comment
-    }
-
-    override fun getReplyBoxId(): Int {
-        return R.id.reply_box
-    }
-
-    override fun getActionBoxId(): Int {
-        return R.id.add_comment_area
-    }
-
-    override fun getSendButtonId(): Int {
-        return R.id.send_but
-    }
-
-    override fun getNotifierId(): Int {
-        return R.id.notifier
-    }
-
-    override fun getChatMenuId(): Int {
-        return R.id.iv_chat_menu
-    }
-
+    override fun getRecyclerViewId() = R.id.recycler_view
+    override fun getProgressId() = R.id.progress
+    override fun getNewCommentId() = R.id.new_comment
+    override fun getReplyBoxId() = R.id.reply_box
+    override fun getActionBoxId() = R.id.add_comment_area
+    override fun getSendButtonId() = R.id.send_but
+    override fun getNotifierId() = R.id.notifier
+    override fun getChatMenuId() = R.id.iv_chat_menu
     override fun getAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRootViewId() = R.id.main
-    override fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
+    override fun getAttachmentMenuContainer() = R.id.rv_attachment_menu_container
 
     init {
         initView()
@@ -391,7 +371,7 @@ class TopChatViewStateImpl(
 
         setChatBlockedText(chatBlockLayout, it, opponentRole, opponentName)
 
-        val unblockText = chatBlockLayout.findViewById<TextView>(com.tokopedia.chat_common.R.id.enable_chat_textView)
+        val unblockText = chatBlockLayout.findViewById<TextView>(R.id.enable_chat_textView)
         unblockText.setOnClickListener { onUnblockChatClicked() }
 
     }
@@ -406,7 +386,7 @@ class TopChatViewStateImpl(
         val CHAT_PERSONAL = "chat personal"
         val CHAT_BOTH = "semua chat"
 
-        val blockText = chatBlockLayout.findViewById<TextView>(com.tokopedia.chat_common.R.id.blocked_text)
+        val blockText = chatBlockLayout.findViewById<TextView>(R.id.blocked_text)
         val category = when {
             opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
             opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP) ->
@@ -452,10 +432,10 @@ class TopChatViewStateImpl(
 
     override fun showErrorWebSocket(b: Boolean) {
         notifier.visibility = View.VISIBLE
-        val title = notifier.findViewById<TextView>(com.tokopedia.design.R.id.title)
-        val action = notifier.findViewById<View>(com.tokopedia.chat_common.R.id.action)
+        val title = notifier.findViewById<TextView>(R.id.title)
+        val action = notifier.findViewById<View>(R.id.action)
         if (b) {
-            title.setText(com.tokopedia.chat_common.R.string.error_no_connection_retrying);
+            title.setText(R.string.error_no_connection_retrying);
             action.visibility = View.VISIBLE
 
         } else {
