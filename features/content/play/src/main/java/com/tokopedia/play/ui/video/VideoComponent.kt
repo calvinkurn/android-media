@@ -7,7 +7,6 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -33,7 +32,6 @@ open class VideoComponent(
                         when (it) {
                             ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
-                            is ScreenStateEvent.KeyboardStateChanged -> uiView.showCornerRadius(it.isShown)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
                                 uiView.hide()
                                 uiView.setPlayer(null)
