@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.home.fragment
 
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +11,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
-import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_FAVORITE
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventAdapter
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
@@ -36,6 +36,8 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         val TAG = EventHomeFragment::class.java.simpleName
         const val PROMOURL = "https://www.tokopedia.com/promo/tiket/events/"
         const val FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/"
+        const val REQUEST_LOGIN_FAVORITE = 213234
+        const val REQUEST_LOGIN_TRANSACTION = 213235
     }
 
     @Inject
@@ -105,6 +107,13 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode){
+            REQUEST_LOGIN_FAVORITE -> actionMenuFavorite()
+            REQUEST_LOGIN_TRANSACTION -> onMenuTransactionListClick()
+        }
+    }
+
     private fun actionMenuMore() {
         context?.let { MenuSheet.newInstance(it, this).show() }
     }
@@ -113,7 +122,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         if(userSession.isLoggedIn) {
             RouteManager.route(context, ApplinkConstInternalEntertainment.EVENT_FAVORITE)
         } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_FAVORITE)
         }
     }
 
@@ -129,7 +138,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         if(userSession.isLoggedIn){
             RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
         } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_TRANSACTION)
         }
     }
 
