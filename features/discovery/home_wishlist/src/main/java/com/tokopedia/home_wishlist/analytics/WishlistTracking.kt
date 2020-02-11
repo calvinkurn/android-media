@@ -299,7 +299,7 @@ object WishlistTracking {
                         ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                                 convertRecommendationItemToDataImpressionObject(
                                         item = item,
-                                        list = IMPRESSION_LIST,
+                                        list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) "- product topads" else ""),
                                         position = position
                                 )
                         )
