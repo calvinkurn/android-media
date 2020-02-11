@@ -285,11 +285,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
         buyWidget.setVisibilityLayout(true)
-        buyWidget.setListener(object : TopupBillsCheckoutWidget.ActionListener {
+        buyWidget.listener = object : TopupBillsCheckoutWidget.ActionListener {
             override fun onClickNextBuyButton() {
                 processToCart()
             }
-        })
+        }
     }
 
     fun onErrorEnquiry(throwable: Throwable) {

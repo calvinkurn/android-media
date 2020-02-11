@@ -398,11 +398,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun renderBuyProduct() {
-        buyWidget.setListener(object : TopupBillsCheckoutWidget.ActionListener {
+        buyWidget.listener = object : TopupBillsCheckoutWidget.ActionListener {
             override fun onClickNextBuyButton() {
                 processToCart()
             }
-        })
+        }
     }
 
     private fun showOnBoarding() {

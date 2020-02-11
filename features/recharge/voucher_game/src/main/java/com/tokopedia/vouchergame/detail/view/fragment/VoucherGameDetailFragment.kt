@@ -79,7 +79,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     lateinit var adapter: VoucherGameDetailAdapter
 
-    lateinit var selectedProduct: VoucherGameProduct
+    private var selectedProduct: VoucherGameProduct? = null
+        set(value) {
+            field = value
+            productId = value?.id?.toIntOrNull()
+            price = value?.attributes?.pricePlain?.toLongOrNull()
+        }
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
     lateinit var voucherGameOperatorData: CatalogOperatorAttributes
@@ -164,7 +169,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.onSaveInstanceState(outState)
         if (input_field_1.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_1, input_field_1.getInputText())
         if (input_field_2.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_2, input_field_2.getInputText())
-        if (::selectedProduct.isInitialized) voucherGameExtraParam.productId = selectedProduct.id
+        selectedProduct?.run { voucherGameExtraParam.productId = id }
         outState.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
         outState.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorData)
     }
@@ -203,7 +208,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         })
 
         checkout_view.setVisibilityLayout(false)
-        checkout_view.setListener(this)
+        checkout_view.listener = this
+//        promoTicker = checkout_view.getPromoTicker()
+//        promoTicker?.actionListener = getPromoListener()
     }
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
@@ -532,7 +539,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun selectProduct(product: VoucherGameProduct, position: Int) {
         // Show selected item in list
-        if (::selectedProduct.isInitialized && product == selectedProduct) return
+        if (selectedProduct != null && product == selectedProduct) return
 
         adapter.setSelectedProduct(position)
         // Update selected product
@@ -543,43 +550,54 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun showCheckoutView() {
         checkout_view.setVisibilityLayout(true)
-        checkout_view.setTotalPrice(selectedProduct.attributes.promo?.newPrice ?: selectedProduct.attributes.price)
+        selectedProduct?.attributes?.run {
+            checkout_view.setTotalPrice(promo?.newPrice ?: price)
+        }
         // Try to enquire if currently not enquired
         enquireFields()
     }
 
+    override fun getCheckoutView(): TopupBillsCheckoutWidget? {
+        return checkout_view
+//        return null
+    }
+
     override fun onClickNextBuyButton() {
         if (::voucherGameOperatorData.isInitialized) {
-            voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                    voucherGameOperatorData.name, product = selectedProduct)
+            selectedProduct?.run {
+                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+                        voucherGameOperatorData.name, product = this)
+            }
         }
         processCheckout()
     }
 
     private fun processCheckout() {
         // Setup checkout pass data
-        if (::voucherGameExtraParam.isInitialized && ::selectedProduct.isInitialized) {
-            var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
-                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                    .categoryId(voucherGameExtraParam.categoryId)
-                    .instantCheckout("0")
-                    .isPromo(if (selectedProduct.attributes.promo != null) "1" else "0")
-                    .operatorId(voucherGameExtraParam.operatorId)
-                    .productId(selectedProduct.id)
-                    .utmCampaign(voucherGameExtraParam.categoryId)
-                    .utmContent(GlobalConfig.VERSION_NAME)
-                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                    .voucherCodeCopied("")
-            if (inputFieldCount in 1..2) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
-            }
-            if (inputFieldCount == 2) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
-            }
-            checkoutPassData = checkoutPassDataBuilder.build()
+        if (::voucherGameExtraParam.isInitialized) {
+            selectedProduct?.run {
+                var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
+                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                        .categoryId(voucherGameExtraParam.categoryId)
+                        .instantCheckout("0")
+                        .isPromo(if (attributes.promo != null) "1" else "0")
+                        .operatorId(voucherGameExtraParam.operatorId)
+                        .productId(id)
+                        .utmCampaign(voucherGameExtraParam.categoryId)
+                        .utmContent(GlobalConfig.VERSION_NAME)
+                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                        .voucherCodeCopied("")
+                if (inputFieldCount in 1..2) {
+                    checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
+                }
+                if (inputFieldCount == 2) {
+                    checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
+                }
+                checkoutPassData = checkoutPassDataBuilder.build()
 
-            processToCart()
+                processToCart()
+            }
         }
     }
 

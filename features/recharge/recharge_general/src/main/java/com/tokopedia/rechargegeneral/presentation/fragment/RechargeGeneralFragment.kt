@@ -30,6 +30,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
+import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
@@ -92,6 +93,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
     private var selectedProduct: RechargeGeneralProductSelectData? = null
+        set(value) {
+            field = value
+            productId = value?.id?.toIntOrNull()
+            price = value?.price?.toLongOrNull()
+        }
     private var operatorCluster: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
     private var hasInputData = false
@@ -752,20 +758,27 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             checkoutBottomSheet.setTitle(getString(R.string.checkout_view_title))
             checkoutBottomSheet.setCloseClickListener {
                 rechargeGeneralAnalytics.eventCloseInquiry(categoryName, operatorName)
+                promoTicker = null
                 checkoutBottomSheet.dismiss()
             }
             checkoutBottomSheet.setFullPage(true)
             checkoutBottomSheet.clearAction()
 
-            val checkoutView = RechargeGeneralCheckoutBottomSheet(context)
-            checkoutView.listener = this
+            val checkoutView = RechargeGeneralCheckoutBottomSheet(context, listener = this)
             checkoutView.setPayload(data)
             checkoutBottomSheet.setChild(checkoutView)
+            promoTicker = checkoutView.getPromoTicker()
+            promoTicker?.actionListener = getPromoListener()
 
             fragmentManager?.let { fm ->
                 checkoutBottomSheet.show(fm, "checkout view bottom sheet")
             }
         }
+    }
+
+    // Exception because checkout view is located in bottom sheet
+    override fun getCheckoutView(): TopupBillsCheckoutWidget? {
+        return null
     }
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
@@ -785,7 +798,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         .categoryId(categoryId.toString())
                         .instantCheckout("0")
                         .isPromo(if (isPromo) "1" else "0")
-                        .isPromo("1")
                         .operatorId(operatorId.toString())
                         .productId(id)
                         .utmCampaign(categoryId.toString())

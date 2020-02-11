@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -10,19 +11,29 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
+import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
+import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.view_topup_bills_checkout.*
 import javax.inject.Inject
 
 /**
@@ -37,6 +48,14 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     @Inject
     lateinit var topupBillsViewModel: TopupBillsViewModel
+
+    var promoTicker: TickerPromoStackingCheckoutView? = null
+
+    // Promo Checkout
+    var promoCode: String = ""
+    var isCoupon: Boolean = false
+    var productId: Int? = null
+    var price: Long? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -73,15 +92,118 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         })
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val checkoutView = getCheckoutView()
+        checkoutView?.run {
+            promoTicker = getPromoTicker()
+            promoTicker?.actionListener = getPromoListener()
+            setupPromoTicker(TickerCheckoutView.State.EMPTY)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_LOGIN) {
-                processToCart()
-            } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
-                data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let {
-                    NetworkErrorHelper.showSnackbar(activity, it)
+            when (requestCode) {
+                REQUEST_CODE_LOGIN -> {
+                    processToCart()
                 }
+                REQUEST_CODE_CART_DIGITAL -> {
+                    data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let {
+                        NetworkErrorHelper.showSnackbar(activity, it)
+                    }
+                }
+                REQUEST_CODE_PROMO_CHECKOUT_LIST, REQUEST_CODE_PROMO_CHECKOUT_DETAIL -> {
+                    data?.let {
+                        if (it.hasExtra(EXTRA_PROMO_DATA)) {
+                            val itemPromoData = it.getParcelableExtra<PromoData>(EXTRA_PROMO_DATA)
+                            promoCode = itemPromoData.promoCode
+                            isCoupon = itemPromoData.typePromo == PromoData.TYPE_COUPON
+
+                            when (itemPromoData.state) {
+                                TickerCheckoutView.State.EMPTY -> {
+                                    promoCode = ""
+                                    setupPromoTicker(TickerCheckoutView.State.EMPTY)
+                                }
+                                TickerCheckoutView.State.FAILED -> {
+                                    promoCode = ""
+                                    setupPromoTicker(TickerCheckoutView.State.FAILED,
+                                            itemPromoData?.title.toEmptyStringIfNull(),
+                                            itemPromoData?.description.toEmptyStringIfNull())
+
+                                }
+                                TickerCheckoutView.State.ACTIVE -> {
+                                    setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+                                            itemPromoData?.title.toEmptyStringIfNull(),
+                                            itemPromoData?.description.toEmptyStringIfNull())
+                                }
+                                else -> {
+                                    promoCode = ""
+                                    setupPromoTicker(TickerCheckoutView.State.EMPTY)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    abstract fun getCheckoutView(): TopupBillsCheckoutWidget?
+
+    fun getPromoListener(): TickerPromoStackingCheckoutView.ActionListener {
+        return object: TickerPromoStackingCheckoutView.ActionListener {
+            override fun onClickUsePromo() {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
+                intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel())
+                startActivityForResult(intent, REQUEST_CODE_LIST_PROMO)
+            }
+
+            override fun onResetPromoDiscount() {
+                promoCode = ""
+                setupPromoTicker(TickerCheckoutView.State.EMPTY)
+            }
+
+            override fun onDisablePromoDiscount() {
+                promoCode = ""
+                setupPromoTicker(TickerCheckoutView.State.EMPTY)
+            }
+
+            override fun onClickDetailPromo() {
+                val intent: Intent
+                if (promoCode.isNotEmpty()) {
+                    val requestCode: Int
+                    if (isCoupon) {
+                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
+                        intent.putExtra(EXTRA_IS_USE, true)
+                        intent.putExtra(EXTRA_COUPON_CODE, promoCode)
+                        intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
+                        requestCode = REQUEST_CODE_PROMO_DETAIL
+                    } else {
+                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                        intent.putExtra(EXTRA_PROMO_CODE, promoCode)
+                        intent.putExtra(EXTRA_COUPON_ACTIVE, true)
+                        intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
+                        requestCode = REQUST_CODE_PROMO_LIST
+                    }
+                    startActivityForResult(intent, requestCode)
+                }
+            }
+        }
+    }
+
+    private fun setupPromoTicker(state: TickerCheckoutView.State,
+                                 title: String = "",
+                                 description: String = "") {
+        promoTicker?.let { ticker ->
+            ticker.title = title
+            ticker.desc = description
+            ticker.state = when(state) {
+                TickerCheckoutView.State.ACTIVE -> TickerPromoStackingCheckoutView.State.ACTIVE
+                TickerCheckoutView.State.FAILED -> TickerPromoStackingCheckoutView.State.FAILED
+                else -> TickerPromoStackingCheckoutView.State.EMPTY
             }
         }
     }
@@ -135,26 +257,24 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
-//    fun navigateToPromoPage() {
-//        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
-//        intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.attributes!!.isCouponActive)
-//        intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel())
-//        startActivityForResult(intent, REQUEST_CODE_LIST_PROMO)
-//    }
-//
-//    private fun getPromoDigitalModel(): PromoDigitalModel {
-//        return PromoDigitalModel(
-//                Integer.parseInt(cartPassData.categoryId!!),
-//                getProductId(),
-//                cartPassData.clientNumber!!,
-//                cartDigitalInfoData.attributes!!.pricePlain
-//        )
-//    }
+    private fun getPromoDigitalModel(): PromoDigitalModel {
+        val promoModel = PromoDigitalModel()
+        productId?.run { promoModel.productId = this }
+        price?.run { promoModel.price = this }
+        return promoModel
+    }
 
     companion object {
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
         const val REQUEST_CODE_LIST_PROMO = 232
+        const val REQUEST_CODE_PROMO_CHECKOUT_LIST = 3121
+        const val REQUEST_CODE_PROMO_CHECKOUT_DETAIL = 3122
+        const val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
+        const val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
+        const val EXTRA_COUPON_CODE = "EXTRA_KUPON_CODE"
+        const val EXTRA_IS_USE = "EXTRA_IS_USE"
+        const val EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
     }
 
 }
