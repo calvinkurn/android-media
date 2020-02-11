@@ -1,12 +1,10 @@
 package com.tokopedia.sellerhome.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sellerhome.GraphqlQuery
 import com.tokopedia.sellerhome.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhome.domain.model.GetLineGraphDataResponse
 import com.tokopedia.sellerhome.util.getData
@@ -26,7 +24,7 @@ class GetLineGraphDataUseCase(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): List<LineGraphDataUiModel> {
-        val gqlRequest = GraphqlRequest(GraphqlQuery.GET_LINE_GRAPH_DATA, GetLineGraphDataResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(GET_LINE_GRAPH_DATA, GetLineGraphDataResponse::class.java, params.parameters)
         val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLineGraphDataResponse::class.java)
@@ -56,5 +54,25 @@ class GetLineGraphDataUseCase(
             putString(START_DATE, startDate)
             putString(END_DATE, endDate)
         }
+
+        const val GET_LINE_GRAPH_DATA = "query getLineGraphData(\$shopID: String!, \$dataKey: [String!]!, \$startDate: String!, \$endDate: String!) {\n" +
+                "  getLineGraphData(shopID: \$shopID, dataKey: \$dataKey, startDate: \$startDate, endDate: \$endDate) {\n" +
+                "    data {\n" +
+                "      dataKey\n" +
+                "      header\n" +
+                "      description\n" +
+                "      yLabels {\n" +
+                "        yVal\n" +
+                "        yLabel\n" +
+                "      }\n" +
+                "      list {\n" +
+                "        yVal\n" +
+                "        yLabel\n" +
+                "        xLabel\n" +
+                "      }\n" +
+                "      error\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n"
     }
 }

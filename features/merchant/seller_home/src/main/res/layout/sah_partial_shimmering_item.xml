@@ -20,25 +20,25 @@
         android:layout_marginLeft="12dp"
         android:layout_marginTop="4dp"
         app:corners="10"
-        app:layout_constraintStart_toEndOf="@id/shimmering_info_seller_image"
-        app:layout_constraintTop_toTopOf="@id/shimmering_info_seller_image" />
+        app:layout_constraintStart_toEndOf="@+id/shimmering_info_seller_image"
+        app:layout_constraintTop_toTopOf="@+id/shimmering_info_seller_image" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_info_seller_title_second_line"
         android:layout_width="190dp"
         android:layout_height="16dp"
         app:corners="10"
-        app:layout_constraintBottom_toTopOf="@id/shimmering_info_seller_description"
-        app:layout_constraintStart_toStartOf="@id/shimmering_info_seller_title_first_line"
-        app:layout_constraintTop_toBottomOf="@id/shimmering_info_seller_title_first_line" />
+        app:layout_constraintBottom_toTopOf="@+id/shimmering_info_seller_description"
+        app:layout_constraintStart_toStartOf="@+id/shimmering_info_seller_title_first_line"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_info_seller_title_first_line" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_info_seller_description"
         android:layout_width="119dp"
         android:layout_height="16dp"
         app:corners="10"
-        app:layout_constraintBottom_toBottomOf="@id/shimmering_info_seller_image"
-        app:layout_constraintStart_toStartOf="@id/shimmering_info_seller_title_first_line"
-        app:layout_constraintTop_toBottomOf="@id/shimmering_info_seller_title_second_line" />
+        app:layout_constraintBottom_toBottomOf="@+id/shimmering_info_seller_image"
+        app:layout_constraintStart_toStartOf="@+id/shimmering_info_seller_title_first_line"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_info_seller_title_second_line" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

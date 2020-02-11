@@ -7,7 +7,7 @@ package com.tokopedia.sellerhome.view.model
 data class LineGraphDataUiModel(
         val dataKey: String = "",
         val description: String = "",
-        val error: String = "",
+        override var error: String = "",
         val header: String = "",
         val list: List<XYAxisUiModel> = emptyList(),
         val yLabels: List<XYAxisUiModel> = emptyList()
