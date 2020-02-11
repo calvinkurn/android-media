@@ -110,6 +110,13 @@ class ContentExplorePresenter @Inject constructor(
         }
     }
 
+    override fun onPullToRefreshTriggered() {
+        launch {
+            if (impressionTrackList.isNotEmpty())
+                trackBulkAffiliate(impressionTrackList)
+        }
+    }
+
     private fun trackBulkAffiliate(urlList: MutableList<String>) {
         if (urlList.isNotEmpty()) {
            val activityIdListString = urlList
