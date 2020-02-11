@@ -76,6 +76,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
             viewPager?.adapter = adapter
         }
         if(!banners.isSame(adapter?.getList() ?: listOf())){
+            adapter?.setItem(arrayListOf())
             buildIndicator(banners.size)
             adapter?.setItem(banners)
             adapter?.notifyDataSetChanged()
