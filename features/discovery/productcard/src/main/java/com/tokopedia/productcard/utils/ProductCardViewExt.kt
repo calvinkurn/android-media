@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -101,7 +102,7 @@ internal fun ImageView.loadImageRounded(url: String?) {
         Glide.with(context)
                 .load(url)
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .transform(RoundedCorners(5))
+                .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_loading_toped_new)
                 .error(R.drawable.error_drawable)

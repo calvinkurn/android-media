@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -30,6 +31,10 @@ class ProductCardListView: BaseCustomView {
 
     fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
+
+        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+
+        textTopAds?.showWithCondition(productCardModel.isTopAds)
 
         renderProductCardContent(productCardModel)
 

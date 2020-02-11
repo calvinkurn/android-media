@@ -7,14 +7,14 @@ import org.junit.Rule
 import org.junit.Test
 
 
-internal class ProductCardGridTest {
+internal class ProductCardListTest {
 
     @Rule
     @JvmField
-    val activityTestRule = ActivityTestRule<ProductCardGridActivityTest>(ProductCardGridActivityTest::class.java)
+    val activityTestRule = ActivityTestRule<ProductCardListActivityTest>(ProductCardListActivityTest::class.java)
 
     @Test
-    fun testProductCardGrid() {
-        onView(withId(R.id.productCardGridTestRecyclerView)).checkProductCardPerPosition()
+    fun testProductCardList() {
+        onView(withId(R.id.productCardListTestRecyclerView)).checkProductCardPerPosition()
     }
 }

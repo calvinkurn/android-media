@@ -11,21 +11,22 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.productcard.test.utils.ProductCardItemDecoration
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v3.ProductCardGridView
+import com.tokopedia.productcard.v3.ProductCardListView
 
-internal class ProductCardGridActivityTest: AppCompatActivity() {
+internal class ProductCardListActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.product_card_grid_activity_test_layout)
+        setContentView(R.layout.product_card_list_activity_test_layout)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.productCardGridTestRecyclerView)
+        val recyclerView = findViewById<RecyclerView>(R.id.productCardListTestRecyclerView)
         recyclerView.adapter = Adapter()
         recyclerView.layoutManager = createLayoutManager()
         recyclerView.addItemDecoration(createItemDecoration())
     }
 
     private fun createLayoutManager(): RecyclerView.LayoutManager {
-        return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).also {
+        return StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL).also {
             it.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         }
     }
@@ -37,7 +38,7 @@ internal class ProductCardGridActivityTest: AppCompatActivity() {
     class Adapter: RecyclerView.Adapter<ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.product_card_grid_item_test_layout, null)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.product_card_list_item_test_layout, null)
 
             return ViewHolder(view)
         }
@@ -54,7 +55,7 @@ internal class ProductCardGridActivityTest: AppCompatActivity() {
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bind(productCardModel: ProductCardModel) {
-            val productCardView = itemView.findViewById<ProductCardGridView>(R.id.productCardGrid)
+            val productCardView = itemView.findViewById<ProductCardListView>(R.id.productCardList)
 
             productCardView?.setProductModel(productCardModel)
             productCardView?.setOnClickListener { Toast.makeText(itemView.context, adapterPosition.toString(), Toast.LENGTH_SHORT).show() }
