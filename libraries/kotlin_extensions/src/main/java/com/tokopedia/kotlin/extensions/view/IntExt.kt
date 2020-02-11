@@ -35,7 +35,8 @@ fun Int.pow(exponent: Int) = toDouble().pow(exponent).toInt()
 fun Int.toAmountString(
         ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
         decimalPlaces: Int = 1,
-        divider: String = ""
-): String = toLong().toAmountString(ascendingSuffix, decimalPlaces, divider)
+        separator: String = ",",
+        withSpacing: Boolean = false
+): String = toLong().toAmountString(ascendingSuffix, decimalPlaces, separator, withSpacing)
 
 fun Int?.orZero(): Int = this ?: 0
