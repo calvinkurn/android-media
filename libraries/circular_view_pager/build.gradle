@@ -35,10 +35,10 @@ dependencies {
 
 
 project.ext {
-    artifactId = 'home-page-banner'
-    groupId = 'com.tokopedia.discovery'
+    artifactId = 'circular-view-pager'
+    groupId = 'com.tokopedia.library'
     versionName = "0.0.1"
-    artifactName ="home-page-banner-release"
+    artifactName ="circular-view-pager-release"
 }
 
-apply from: '../../../publish_local.gradle'
+apply from: '../../publish_local.gradle'
