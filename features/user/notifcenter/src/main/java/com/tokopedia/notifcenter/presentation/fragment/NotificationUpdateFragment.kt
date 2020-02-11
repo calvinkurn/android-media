@@ -61,13 +61,13 @@ open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         NotificationUpdateLongerTextFragment.LongerContentListener {
 
     var cursor = ""
-    var isFirstLoaded = true
+    private var isFirstLoaded = true
     private var lastItem = 0
     private var markAllReadCounter = 0L
 
     private lateinit var bottomActionView: BottomActionView
 
-    lateinit var filterRecyclerView: RecyclerView
+    private lateinit var filterRecyclerView: RecyclerView
     private lateinit var longerTextDialog: BottomSheetDialogFragment
     var filterAdapter: NotificationUpdateFilterAdapter? = null
 
@@ -78,8 +78,8 @@ open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     @Inject lateinit var presenter: NotificationUpdatePresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
 
-    var notificationUpdateListener: NotificationUpdateListener? = null
-    val notificationUpdateAdapter by lazy { adapter as NotificationUpdateAdapter }
+    private var notificationUpdateListener: NotificationUpdateListener? = null
+    private val notificationUpdateAdapter by lazy { adapter as NotificationUpdateAdapter }
 
     interface NotificationUpdateListener {
         fun onSuccessLoadNotifUpdate()
@@ -213,7 +213,7 @@ open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    open fun onSuccessInitiateData(): (NotificationViewData) -> Unit {
+    private fun onSuccessInitiateData(): (NotificationViewData) -> Unit {
         return {
             hideLoading()
             notificationUpdateAdapter.removeEmptyState()
