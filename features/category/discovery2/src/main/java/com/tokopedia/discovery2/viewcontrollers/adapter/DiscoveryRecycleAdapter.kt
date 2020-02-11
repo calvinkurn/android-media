@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -40,11 +41,12 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
 
     override fun getItemViewType(position: Int): Int {
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
-        return id ?: -1
+        return id ?: 0
     }
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
         if (dataList != null) {
+            componentList.clear()
             componentList.addAll(dataList)
         }
         notifyDataSetChanged()

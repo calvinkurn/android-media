@@ -1,8 +1,8 @@
 package com.tokopedia.discovery2.discoverymapper
 
-import com.tokopedia.design.component.badge.Badge
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
 import com.tokopedia.discovery2.data.cpmtopads.*
 
 class DiscoveryDataMapper {
@@ -47,10 +47,40 @@ class DiscoveryDataMapper {
         return list
     }
 
+    fun mapListToComponentList(itemList: List<com.tokopedia.discovery2.data.DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        itemList.forEach {
+            val componentsItem = ComponentsItem()
+            componentsItem.name = subComponentName
+            val dataItem = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
+            dataItem.add(it)
+            componentsItem.data = dataItem
+            list.add(componentsItem)
+        }
+        return list
+    }
+
     private fun getComponentName(index: Int): String {
-       return if (index == 0)
+        return if (index == 0)
             ComponentNames.CpmTopAdsShopItem.componentName
         else ComponentNames.CpmTopAdsProductItem.componentName
+    }
+
+    fun mapListToComponentList(child: List<ChildItem?>?): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        child?.forEach() {
+            val componentsItem = ComponentsItem()
+            componentsItem.name = "horizontal_category_navigation_item"
+            val dataItemlist = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
+            val dataItem = com.tokopedia.discovery2.data.DataItem()
+            dataItem.imageUrlMobile = it?.thumbnailImage
+            dataItem.name = it?.name
+            dataItem.applinks = it?.applinks
+            dataItemlist.add(dataItem)
+            componentsItem.data = dataItemlist
+            list.add(componentsItem)
+        }
+        return list
     }
 
 
@@ -58,6 +88,4 @@ class DiscoveryDataMapper {
                              var imageUrl: String = "",
                              var brandName: String = "",
                              var componentList: ArrayList<ComponentsItem> = ArrayList())
-
-
 }
