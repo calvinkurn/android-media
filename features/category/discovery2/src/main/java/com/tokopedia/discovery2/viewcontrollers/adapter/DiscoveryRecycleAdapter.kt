@@ -45,6 +45,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
         if (dataList != null) {
+            componentList.clear()
             componentList.addAll(dataList)
         }
         notifyDataSetChanged()
