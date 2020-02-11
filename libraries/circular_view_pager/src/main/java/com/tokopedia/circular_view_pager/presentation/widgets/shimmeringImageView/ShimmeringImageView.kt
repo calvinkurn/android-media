@@ -41,7 +41,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
             Glide.with(context)
                     .load(url)
                     .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
                     .listener(object : RequestListener<Drawable>{
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {

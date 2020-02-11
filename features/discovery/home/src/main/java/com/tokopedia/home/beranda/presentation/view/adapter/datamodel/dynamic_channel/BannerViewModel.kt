@@ -12,14 +12,14 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 class BannerViewModel : ImpressHolder(), HomeVisitable {
 
-    var slides: List<BannerSlidesModel> = listOf()
+    var slides: List<BannerSlidesModel>? = null
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var trackingDataForCombination: List<Any>? = null
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is BannerViewModel && b.slides == slides && b.slides.size == b.slides.size
+        return b is BannerViewModel && b.slides == slides && b.slides?.size == b.slides?.size
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

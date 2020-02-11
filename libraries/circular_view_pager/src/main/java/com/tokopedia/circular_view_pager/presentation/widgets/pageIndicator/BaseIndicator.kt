@@ -74,10 +74,10 @@ open class BaseIndicator : LinearLayout {
         mIndicatorMargin = if (config.margin < 0) miniSize else config.margin
         mAnimatorOut = createAnimatorOut(config)
         mImmediateAnimatorOut = createAnimatorOut(config)
-        mImmediateAnimatorOut!!.duration = 0
+        mImmediateAnimatorOut?.duration = 0
         mAnimatorIn = createAnimatorIn(config)
         mImmediateAnimatorIn = createAnimatorIn(config)
-        mImmediateAnimatorIn!!.duration = 0
+        mImmediateAnimatorIn?.duration = 0
         mIndicatorBackgroundResId = if (config.backgroundResId == 0) R.drawable.white_radius else config.backgroundResId
         mIndicatorUnselectedBackgroundResId = if (config.unselectedBackgroundId == 0) config.backgroundResId else config.unselectedBackgroundId
         orientation = if (config.orientation == VERTICAL) VERTICAL else HORIZONTAL
@@ -115,13 +115,13 @@ open class BaseIndicator : LinearLayout {
     }
 
     fun createIndicators(count: Int, currentPosition: Int) {
-        if (mImmediateAnimatorOut!!.isRunning) {
-            mImmediateAnimatorOut!!.end()
-            mImmediateAnimatorOut!!.cancel()
+        if (mImmediateAnimatorOut?.isRunning == true) {
+            mImmediateAnimatorOut?.end()
+            mImmediateAnimatorOut?.cancel()
         }
-        if (mImmediateAnimatorIn!!.isRunning) {
-            mImmediateAnimatorIn!!.end()
-            mImmediateAnimatorIn!!.cancel()
+        if (mImmediateAnimatorIn?.isRunning == true) {
+            mImmediateAnimatorIn?.end()
+            mImmediateAnimatorIn?.cancel()
         }
         // Diff View
         val childViewCount = childCount
@@ -140,17 +140,17 @@ open class BaseIndicator : LinearLayout {
             indicator = getChildAt(i)
             if (currentPosition == i) {
                 indicator.setBackgroundResource(mIndicatorBackgroundResId)
-                mImmediateAnimatorOut!!.setTarget(indicator)
-                mImmediateAnimatorOut!!.start()
-                mImmediateAnimatorOut!!.end()
+                mImmediateAnimatorOut?.setTarget(indicator)
+                mImmediateAnimatorOut?.start()
+                mImmediateAnimatorOut?.end()
             } else {
                 indicator.setBackgroundResource(mIndicatorUnselectedBackgroundResId)
-                mImmediateAnimatorIn!!.setTarget(indicator)
-                mImmediateAnimatorIn!!.start()
-                mImmediateAnimatorIn!!.end()
+                mImmediateAnimatorIn?.setTarget(indicator)
+                mImmediateAnimatorIn?.start()
+                mImmediateAnimatorIn?.end()
             }
             if (mIndicatorCreatedListener != null) {
-                mIndicatorCreatedListener!!.onIndicatorCreated(indicator, i)
+                mIndicatorCreatedListener?.onIndicatorCreated(indicator, i)
             }
         }
         mLastPosition = currentPosition
@@ -175,13 +175,13 @@ open class BaseIndicator : LinearLayout {
         if (mLastPosition == position) {
             return
         }
-        if (mAnimatorIn!!.isRunning) {
-            mAnimatorIn!!.end()
-            mAnimatorIn!!.cancel()
+        if (mAnimatorIn?.isRunning == true) {
+            mAnimatorIn?.end()
+            mAnimatorIn?.cancel()
         }
-        if (mAnimatorOut!!.isRunning) {
-            mAnimatorOut!!.end()
-            mAnimatorOut!!.cancel()
+        if (mAnimatorOut?.isRunning == true) {
+            mAnimatorOut?.end()
+            mAnimatorOut?.cancel()
         }
 
         if(childCount < mLastPosition) return
@@ -190,14 +190,14 @@ open class BaseIndicator : LinearLayout {
 
         if (mLastPosition >= 0 && currentIndicator != null) {
             currentIndicator.setBackgroundResource(mIndicatorUnselectedBackgroundResId)
-            mAnimatorIn!!.setTarget(currentIndicator)
-            mAnimatorIn!!.start()
+            mAnimatorIn?.setTarget(currentIndicator)
+            mAnimatorIn?.start()
         }
         val selectedIndicator = getChildAt(position)
         if (selectedIndicator != null) {
             selectedIndicator.setBackgroundResource(mIndicatorBackgroundResId)
-            mAnimatorOut!!.setTarget(selectedIndicator)
-            mAnimatorOut!!.start()
+            mAnimatorOut?.setTarget(selectedIndicator)
+            mAnimatorOut?.start()
         }
         mLastPosition = position
     }

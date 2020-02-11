@@ -17,7 +17,6 @@ import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.Cir
 import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularPageChangeListener
 import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home_page_banner.presentation.widgets.pageIndicator.CircularPageIndicator
-import java.util.*
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -50,8 +49,10 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     override fun bind(element: BannerViewModel, payloads: MutableList<Any>) {
         slidesList = element.slides
         this.isCache = element.isCache
-        circularViewPager.setItemList(element.slides.map { CircularModel(it.id, it.imageUrl) })
-        indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+        element.slides?.let {
+            circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
+            indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+        }
     }
 
     private fun initSeeAllPromo(){
