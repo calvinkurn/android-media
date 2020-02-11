@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.home_page_banner" />
+<manifest package="com.tokopedia.home_page_banner" />
