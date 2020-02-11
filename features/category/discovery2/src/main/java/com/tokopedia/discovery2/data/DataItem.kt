@@ -107,6 +107,9 @@ data class DataItem(
         @SerializedName("slug")
         val slug: String? = "",
 
+        @SerializedName("btn_applink")
+        val btnApplink: String? = "",
+
         @field:SerializedName("price_format")
         var priceFormat: String? = "",
 
