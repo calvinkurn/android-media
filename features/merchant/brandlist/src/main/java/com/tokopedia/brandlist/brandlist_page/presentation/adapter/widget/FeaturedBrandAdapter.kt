@@ -1,0 +1,56 @@
+package com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.brandlist.R
+import com.tokopedia.brandlist.brandlist_page.data.model.Shop
+
+class FeaturedBrandAdapter(private val context: Context) :
+        RecyclerView.Adapter<FeaturedBrandAdapter.FeaturedBrandViewHolder>() {
+
+    private var featuredBrands: List<Shop> = listOf()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeaturedBrandViewHolder {
+        return FeaturedBrandViewHolder(LayoutInflater.from(context).inflate(R.layout.brandlist_featured_brand_item, parent, false))
+    }
+
+    override fun getItemCount(): Int {
+        return featuredBrands.size
+    }
+
+    override fun onBindViewHolder(holder: FeaturedBrandViewHolder, position: Int) {
+        val featuredBrand = featuredBrands[position]
+        holder.brandView?.let {
+            loadImageToImageView(featuredBrand.imageUrl, it)
+        }
+    }
+
+    private fun loadImageToImageView(imageUrl: String, brandView: ImageView) {
+        Glide.with(context)
+                .load(imageUrl)
+                .dontAnimate()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .into(brandView)
+    }
+
+    fun setFeaturedBrands(featuredBrandList: List<Shop>) {
+        featuredBrands = featuredBrandList
+        notifyDataSetChanged()
+    }
+
+    class FeaturedBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        var brandView: ImageView? = null
+
+        init {
+            brandView = itemView.findViewById(R.id.iv_featured_brand)
+        }
+    }
+}

@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
-import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistFragment
-import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistFragment.Companion.KEY_CATEGORY
+import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment
+import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.KEY_CATEGORY
 
 class BrandlistContainerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
 
@@ -23,7 +23,7 @@ class BrandlistContainerAdapter(fm: FragmentManager, behavior: Int) : FragmentSt
     }
 
     override fun getItem(position: Int): Fragment {
-        return BrandlistFragment.newInstance(getBundle(position))
+        return BrandlistPageFragment.newInstance(getBundle(position))
     }
 
     override fun getPageTitle(position: Int): CharSequence? {

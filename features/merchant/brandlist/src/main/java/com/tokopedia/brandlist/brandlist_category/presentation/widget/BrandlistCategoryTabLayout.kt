@@ -23,7 +23,7 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
 
     private val categoryTabModels = ArrayList<CategoryTabModel>()
 
-    fun setup(viewPager: ViewPager, tabModels: List<CategoryTabModel>, appBarLayout: AppBarLayout) {
+    fun setup(viewPager: ViewPager?, tabModels: List<CategoryTabModel>, appBarLayout: AppBarLayout?) {
 
         setTabMaxHeight(getTabMaxHeightFromRes(resources))
         setTabMinHeight(getTabMinHeightFromRes(resources))
@@ -31,20 +31,22 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
         // populate tab models
         populateBrandListTabModels(tabModels)
 
+        // the tab layout needs to be setup first
+        // before populated with contents
+        setupWithViewPager(viewPager)
+
         // populate tabLayout.tab contents
         for (tabIndex in 0 until tabCount) {
             populateTabContent(getTabAt(tabIndex), tabModels[tabIndex])
         }
-
-        setupWithViewPager(viewPager)
 
         // add on tab selected listener
         clearOnTabSelectedListeners()
         addOnTabSelectedListener(createOnTabSelectedListener(categoryTabModels))
 
         // add on page change listener
-        viewPager.clearOnPageChangeListeners()
-        viewPager.addOnPageChangeListener(createOnPageChangeListeners(appBarLayout))
+        viewPager?.clearOnPageChangeListeners()
+        viewPager?.addOnPageChangeListener(createOnPageChangeListener(appBarLayout))
     }
 
     private fun getTabMaxHeightFromRes(resources: Resources): Int {
@@ -130,14 +132,14 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
         }
     }
 
-    private fun createOnPageChangeListeners(appBarLayout: AppBarLayout): ViewPager.OnPageChangeListener {
+    private fun createOnPageChangeListener(appBarLayout: AppBarLayout?): ViewPager.OnPageChangeListener {
         return object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                collapseAllTabsIcon()
-                startTabHeightExpandAnimation(appBarLayout)
+                expandAllTabsIcon()
+                appBarLayout?.let { startTabHeightExpandAnimation(it) }
             }
 
             override fun onPageSelected(position: Int) {
