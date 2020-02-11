@@ -61,7 +61,6 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         instanceType = getArguments().getString(ARGS_INSTANCE_NAME, DEFAULT_INSTANCE_TPE);
         instanceIndex = getArguments().getInt(ARGS_INSTANCE_TYPE);
     }

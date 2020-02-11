@@ -20,25 +20,29 @@ public class SearchPageAdapter extends FragmentStatePagerAdapter {
 
     private String[] TITLE;
     private SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+    private ItemClickListener clickListener;
 
     public SearchPageAdapter(FragmentManager fm,
                              Context context,
                              ItemClickListener clickListener) {
         super(fm);
+
         TITLE = new String[]{
                 context.getString(R.string.title_all),
                 context.getString(R.string.title_product),
                 context.getString(R.string.title_shop)
         };
-        for (int i = 0; i < 3; i++) {
-            registeredFragments.put(i, SearchResultFragment.newInstance(TITLE[i], i, clickListener));
-        }
+
+        this.clickListener = clickListener;
+        this.registeredFragments.clear();
+
+        notifyDataSetChanged();
     }
 
     @NotNull
     @Override
     public Fragment getItem(int position) {
-        return registeredFragments.get(position);
+        return SearchResultFragment.newInstance(TITLE[position], position, clickListener);
     }
 
     @NotNull
@@ -67,5 +71,10 @@ public class SearchPageAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return TITLE[position];
+    }
+
+    @Override
+    public int getItemPosition(@NotNull Object object) {
+        return POSITION_NONE;
     }
 }

@@ -48,7 +48,6 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initResources()
-        retainInstance = true
     }
 
     private fun initResources() {
