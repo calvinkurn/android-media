@@ -29,14 +29,15 @@ class UmrahShare(val activity: Activity) {
                     umrahProductDatatoLinkerDataMapper(data), object : ShareCallback {
                 override fun onError(linkerError: LinkerError) {
                     Log.d("LINKER_ERROR", linkerError.errorMessage)
+                    postBuildImage()
                 }
 
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
                     openIntentShare(data.name, linkerShareData.shareUri, linkerShareData.url)
+                    postBuildImage()
                 }
             }))
         }
-        postBuildImage()
     }
 
     private fun openIntentShare(title: String?, shareContent: String, shareUri: String) {

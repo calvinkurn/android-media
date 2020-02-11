@@ -137,11 +137,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.OnBackList
 
     private fun setupChat() {
         btn_umrah_travel_contact.setOnClickListener {
-            //checkChatSession()
-            activity?.let {
-                val branchLink = UmrahShare(it)
-                branchLink.generateBranchLink(travelAgent,{showLoading()},{hideLoading()})
-            }
+            checkChatSession()
         }
     }
 
