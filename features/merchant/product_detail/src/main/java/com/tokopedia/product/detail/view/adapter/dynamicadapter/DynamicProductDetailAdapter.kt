@@ -60,6 +60,12 @@ class DynamicProductDetailAdapter(
         clearElement(data)
     }
 
+    fun removeMerchantVoucherSection(data : ProductMerchantVoucherDataModel?) {
+        data?.let {
+            clearElement(it)
+        }
+    }
+
     fun getTradeinPosition(data: ProductGeneralInfoDataModel?): Int {
         return if(data != null) {
             list.indexOf(data)

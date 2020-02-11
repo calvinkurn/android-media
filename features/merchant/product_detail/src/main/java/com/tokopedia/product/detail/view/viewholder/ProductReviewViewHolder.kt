@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Rating
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.view.adapter.ImageReviewAdapter
@@ -43,23 +44,24 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         element?.let {
-            renderMostHelpfulReview(it.listOfReviews)
+            renderMostHelpfulReview(it.listOfReviews, getComponentTrackData(element))
         }
 
-
         element?.imageReviews?.let {
-            renderImageReview(it, element.rating ?: Rating())
+            renderImageReview(it, element.rating ?: Rating(), getComponentTrackData(element))
         }
     }
 
-    private fun renderImageReview(imageReviews: List<ImageReviewItem>, rating: Rating) {
+    private fun renderImageReview(imageReviews: List<ImageReviewItem>, rating: Rating, componentTrackDataModel: ComponentTrackDataModel) {
         val showSeeAll = if (imageReviews.isNotEmpty()) {
             imageReviews.first().hasNext
         } else {
             false
         }
 
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllReviewClick)
+        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllReviewClick,
+                componentTrackDataModel)
+
         with(view) {
             txt_see_all_partial.setOnClickListener {
                 listener.onReviewClick()
@@ -77,7 +79,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
-    private fun renderMostHelpfulReview(reviews: List<Review>) {
+    private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
+            ComponentTrackDataModel(data.type, data.name, adapterPosition)
+
+    private fun renderMostHelpfulReview(reviews: List<Review>, componentTrackDataModel: ComponentTrackDataModel) {
         with(view) {
             if (reviews.isEmpty()) {
                 container_most_helpful_review.gone()
@@ -120,7 +125,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                     if (itemDecorationCount == 0)
                         addItemDecoration(PaddingItemDecoration())
 
-                    adapter = MostHelpfulReviewAdapter(imageData, reviewData.reviewId.toString(), moreItemCount, listener::onImageHelpfulReviewClick)
+                    adapter = MostHelpfulReviewAdapter(imageData, reviewData.reviewId.toString(), moreItemCount, listener::onImageHelpfulReviewClick, componentTrackDataModel)
                     if (reviewData.imageAttachments.isNotEmpty()) {
                         show()
                     } else {

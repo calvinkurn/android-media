@@ -88,14 +88,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventShippingRateEstimationClicked() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK_SHIPPING_RATE_ESTIMATION,
-                "")
-    }
-
     fun eventClickBuy(productId: String, isVariant: Boolean) {
         if (productId.isEmpty()) return
         eventClickBuyOrAddToCart(productId, isVariant,
@@ -383,14 +375,14 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     // e commerce, custom dimension, general
     fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
         val listValue = LIST_DEFAULT + pageName +
-                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                         KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                         KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK +
-                        (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
+                        (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else ""),
                         KEY_LABEL, pageTitle,
                         KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
                         ProductTrackingConstant.Action.CLICK,
@@ -412,12 +404,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
     fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
         val valueLoginOrNotLogin = if (!isSessionActive)
-            " ${ProductTrackingConstant.USER_NON_LOGIN} - "
+            " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
         else ""
         val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
                 product.recommendationType + (if (product.isTopAds) " - product topads" else "")
         val actionValuePostfix = if (!isSessionActive)
-            " - ${ProductTrackingConstant.USER_NON_LOGIN}"
+            " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
         else
             ""
 
@@ -446,13 +438,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
     fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
         val listValue = LIST_DEFAULT + pageName +
-                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
         val enhanceEcommerceData = DataLayer.mapOf(KEY_EVENT, PRODUCT_VIEW,
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
-                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
+                (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else ""),
                 KEY_LABEL, pageTitle,
 
                 KEY_ECOMMERCE, DataLayer.mapOf(
@@ -478,12 +470,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
     fun eventAddToCartRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, trackingQueue: TrackingQueue) {
         val valueLoginOrNotLogin = if (!isSessionActive)
-            " ${ProductTrackingConstant.USER_NON_LOGIN} - "
+            " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
         else ""
         val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
                 product.recommendationType + (if (product.isTopAds) " - product topads" else "")
         val valueActionPostfix = if (!isSessionActive)
-            " - ${ProductTrackingConstant.USER_NON_LOGIN}"
+            " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
         else ""
 
         val enhanceEcommerceData = DataLayer.mapOf(
@@ -511,7 +503,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     }
 
     fun eventAddToCartRecommendationWishlist(product: RecommendationItem, isSessionActive: Boolean, isAddWishlist: Boolean) {
-        val valueActionPostfix = if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}"
+        val valueActionPostfix = if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
         else ""
         val valueActionPrefix = if (isAddWishlist) "add"
         else "remove"

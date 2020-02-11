@@ -78,6 +78,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
@@ -853,7 +854,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position: Int) {
+    private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position: Int, noOp: ComponentTrackDataModel?) {
         context?.let {
             val productId = productInfo?.basic?.id ?: return
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview[position].reviewId)
@@ -865,7 +866,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onSeeAllReviewClick() {
+    private fun onSeeAllReviewClick(noOp : ComponentTrackDataModel?) {
         context?.let {
             val productId = productInfo?.basic?.id ?: return
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
@@ -873,7 +874,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?) {
+    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?, noOp: ComponentTrackDataModel?) {
         productDetailTracking.eventClickReviewOnMostHelpfulReview(productInfo?.basic?.id, reviewId)
         context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(images), pos) }
     }
@@ -1940,7 +1941,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onSwipePicture(swipeDirection: String, position: Int) {
+    private fun onSwipePicture(swipeDirection: String, position: Int, noOp: ComponentTrackDataModel?) {
         productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection, position)
     }
 

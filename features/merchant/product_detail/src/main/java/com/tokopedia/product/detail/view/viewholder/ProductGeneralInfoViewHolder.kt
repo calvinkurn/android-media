@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.view.adapter.ProductGeneralItemAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -26,7 +27,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         }
 
         element.data.run {
-            view.rv_general_info.adapter = ProductGeneralItemAdapter(this, element.name, listener)
+            view.rv_general_info.adapter = ProductGeneralItemAdapter(this, element.name, listener, element.type, element.name, adapterPosition)
 
             if (element.isApplink) {
                 view.pdp_arrow_right.show()
@@ -38,7 +39,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
         view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
         view.setOnClickListener {
-            listener.onInfoClicked(element.name)
+            listener.onInfoClicked(element.name, ComponentTrackDataModel(element.type, element.name, adapterPosition))
         }
 
         if (element.parentIcon.isNotEmpty()) {

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductInfoDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
@@ -32,7 +33,7 @@ class ProductInfoViewHolder(private val view: View,
             view.rv_info.apply {
                 val topData = data.find { it.row == "top" } ?: return@apply
 
-                adapter = ProductInfoAdapter(listener, topData.listOfContent)
+                adapter = ProductInfoAdapter(listener, topData.listOfContent, getComponentTrackData(element))
 
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
@@ -40,11 +41,12 @@ class ProductInfoViewHolder(private val view: View,
             val bottomData = data.find { it.row == "bottom" } ?: return
             renderDescriptionData(bottomData.listOfContent, element.shopName, element.dynamicProductInfoP1
                     ?: DynamicProductInfoP1(),
-                    element.productSpecification ?: ProductSpecificationResponse())
+                    element.productSpecification ?: ProductSpecificationResponse(),
+                    getComponentTrackData(element))
         }
     }
 
-    private fun renderDescriptionData(listOfData: List<Content>, shopName: String, infoData: DynamicProductInfoP1, productSpecificationResponse: ProductSpecificationResponse) {
+    private fun renderDescriptionData(listOfData: List<Content>, shopName: String, infoData: DynamicProductInfoP1, productSpecificationResponse: ProductSpecificationResponse, componentTrackData: ComponentTrackDataModel) {
         with(itemView.base_info_and_description) {
             val productInfo = infoData
             if (productInfo.data.videos.isNotEmpty()) {
@@ -87,12 +89,17 @@ class ProductInfoViewHolder(private val view: View,
                                 videoUrlList = productInfo.data.videos.map { it.url },
                                 isOfficial = productInfo.data.isOS),
 
-                        productSpecificationResponse.productCatalogQuery.data.catalog.specification
+                        productSpecificationResponse.productCatalogQuery.data.catalog.specification,
+                        componentTrackData
                 )
 
             }
             visible()
         }
     }
+
+    private fun getComponentTrackData(element: ProductInfoDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "",
+            element?.name ?: "", adapterPosition)
 
 }

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Stats
 import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
 import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
 import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
@@ -43,8 +44,10 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
 
 
         productStatsView.renderClickShipping {
-            listener.onShipmentClicked()
+            listener.onShipmentClicked(getComponentTrackData(element))
         }
     }
+
+    private fun getComponentTrackData(element: ProductSocialProofDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition)
 
 }

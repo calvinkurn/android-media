@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.fragment.partialview.PartialSnapshotView
@@ -36,7 +37,7 @@ class ProductSnapshotViewHolder(private val view: View,
                 if (nearestWarehouse.warehouseInfo.id.isNotBlank())
                     header.updateStockAndPriceWarehouse(nearestWarehouse, it.data.campaign)
             }
-            view.view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus,element.statusTitle,element.statusMessage,
+            view.view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                     it.basic.status)
         }
 
@@ -46,14 +47,15 @@ class ProductSnapshotViewHolder(private val view: View,
         renderTradein(element.shouldShowTradein)
 
         view.tv_trade_in_promo.setOnClickListener {
-            listener.txtTradeinClicked()
+            listener.txtTradeinClicked(getComponentTrackData(element))
         }
 
         view.fab_detail.setOnClickListener {
-            listener.onFabWishlistClicked(it.isActivated)
+            listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
         }
         element.media?.let {
-            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
+            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(),
+                    element.shouldReinitVideoPicture, getComponentTrackData(element), listener::onImageClickedTrack)
             element.shouldReinitVideoPicture = false
         }
 
@@ -120,5 +122,8 @@ class ProductSnapshotViewHolder(private val view: View,
             }
         }
     }
+
+    private fun getComponentTrackData(element: ProductSnapshotDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "", element?.name ?: "", adapterPosition)
 
 }

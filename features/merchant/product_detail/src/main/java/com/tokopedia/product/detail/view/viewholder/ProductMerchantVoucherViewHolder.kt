@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_voucher.view.*
@@ -18,7 +19,7 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
     }
 
     override fun bind(element: ProductMerchantVoucherDataModel?) {
-        if(element?.shouldRenderInitialData != false) {
+        if (element?.shouldRenderInitialData != false) {
             element?.shouldRenderInitialData = false
             view.loading_voucher.show()
             element?.let {
@@ -28,15 +29,15 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
                         get() = listener.isOwner()
 
                     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-                        listener.onMerchantUseVoucherClicked(merchantVoucherViewModel, position)
+                        listener.onMerchantUseVoucherClicked(merchantVoucherViewModel, position, getComponentTrackData(element))
                     }
 
                     override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-                        listener.onItemMerchantVoucherClicked(merchantVoucherViewModel)
+                        listener.onItemMerchantVoucherClicked(merchantVoucherViewModel, getComponentTrackData(element))
                     }
 
                     override fun onSeeAllClicked() {
-                        listener.onSeeAllMerchantVoucherClick()
+                        listener.onSeeAllMerchantVoucherClick(getComponentTrackData(element))
                     }
 
                 })
@@ -45,4 +46,8 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
             }
         }
     }
+
+    private fun getComponentTrackData(element: ProductMerchantVoucherDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "",
+            element?.name ?: "", adapterPosition)
 }
