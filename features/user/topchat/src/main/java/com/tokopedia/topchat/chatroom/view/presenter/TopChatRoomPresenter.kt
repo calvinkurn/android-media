@@ -589,7 +589,6 @@ class TopChatRoomPresenter @Inject constructor(
             clearAttachmentPreview()
             attachmentsPreview.add(invoiceViewModel)
         }
-
     }
 
     override fun initAttachmentPreview() {

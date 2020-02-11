@@ -4,9 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -57,27 +55,21 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toUserId = "0"
     protected var source = ""
 
-    override fun onItemClicked(t: Visitable<*>?) {
-        return
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_chatroom, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewState = BaseChatViewStateImpl(
-                view,
-                (activity as BaseChatToolbarActivity).getToolbar(),
-                this,
-                this
-        )
-
+        setupViewState(view)
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
         prepareListener()
     }
+
+    private fun setupViewState(view: View?) {
+        view?.let {
+            viewState = onCreateViewState(it)
+        }
+    }
+
+    abstract fun onCreateViewState(view: View): BaseChatViewState
 
     override fun callInitialLoadAutomatically(): Boolean {
         return false
@@ -273,19 +265,21 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return emptyList()
     }
 
-    override fun onClickAttachProduct(menu: AttachmentMenu) { }
+    override fun onClickAttachProduct(menu: AttachmentMenu) {}
 
-    override fun onClickAttachImage(menu: AttachmentMenu) { }
+    override fun onClickAttachImage(menu: AttachmentMenu) {}
 
-    override fun onClickAttachInvoice(menu: AttachmentMenu) { }
+    override fun onClickAttachInvoice(menu: AttachmentMenu) {}
 
-    override fun onClickAttachVoucher(voucherMenu: VoucherMenu) { }
+    override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
-    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
+    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
 
-    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
+    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
 
-    override fun onClickAddToWishList(productId: String, success: () -> Unit) { }
+    override fun onClickAddToWishList(productId: String, success: () -> Unit) {}
 
-    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) { }
+    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {}
+
+    override fun onItemClicked(t: Visitable<*>?) {}
 }

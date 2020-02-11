@@ -33,6 +33,7 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
@@ -89,53 +90,68 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
-
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
-
     @Inject
     lateinit var analytics: TopChatAnalytics
-
     @Inject
     lateinit var settingAnalytics: ChatSettingsAnalytics
-
     @Inject
     lateinit var session: UserSessionInterface
 
     private lateinit var fpm: PerformanceMonitoring
-
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
-    var indexFromInbox = -1
-    var isMoveItemInboxToTop = false
+    private var indexFromInbox = -1
+    private var isMoveItemInboxToTop = false
+    private var remoteConfig: RemoteConfig? = null
 
-    val REQUEST_GO_TO_SHOP = 111
-    val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
-    val REQUEST_GO_TO_SETTING_TEMPLATE = 113
-    val REQUEST_GO_TO_SETTING_CHAT = 114
-    val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
-    val REQUEST_ATTACH_INVOICE = 116
-    val REQUEST_ATTACH_VOUCHER = 117
+    private val REQUEST_GO_TO_SHOP = 111
+    private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
+    private val REQUEST_GO_TO_SETTING_TEMPLATE = 113
+    private val REQUEST_GO_TO_SETTING_CHAT = 114
+    private val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
+    private val REQUEST_ATTACH_INVOICE = 116
+    private val REQUEST_ATTACH_VOUCHER = 117
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
 
-    protected var remoteConfig: RemoteConfig? = null
-
-    companion object {
-
-        private const val POST_ID = "{post_id}"
-        fun createInstance(bundle: Bundle): BaseChatFragment {
-            val fragment = TopChatRoomFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-
-    }
-
     override fun getContext(): Context? {
         return activity
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initFireBase()
+    }
+
+    private fun initFireBase() {
+        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupPresenter(savedInstanceState)
+        setupArguments(savedInstanceState)
+        setupAttachmentsPreview(savedInstanceState)
+        setupAlertDialog()
+        loadInitialData()
+    }
+
+    override fun onCreateViewState(view: View): BaseChatViewState {
+        return TopChatViewStateImpl(
+                view,
+                this,
+                this,
+                this,
+                this,
+                this,
+                (activity as BaseChatToolbarActivity).getToolbar(),
+                analytics
+        )
     }
 
     override fun initInjector() {
@@ -146,24 +162,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             chatComponent.inject(this)
             presenter.attachView(this)
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.attachView(this)
-        customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
-        indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
-        initView(view)
-        loadInitialData()
-        presenter.initProductPreview(savedInstanceState)
-        presenter.initInvoicePreview(savedInstanceState)
-        presenter.initAttachmentPreview()
     }
 
     override fun loadInitialData() {
@@ -179,6 +177,28 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onError(),
                     onSuccessGetMessageId())
         }
+    }
+
+    private fun setupPresenter(savedInstanceState: Bundle?) {
+        presenter.attachView(this)
+    }
+
+    private fun setupArguments(savedInstanceState: Bundle?) {
+        customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
+        indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
+    }
+
+    private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
+        presenter.initProductPreview(savedInstanceState)
+        presenter.initInvoicePreview(savedInstanceState)
+        presenter.initAttachmentPreview()
+    }
+
+    private fun setupAlertDialog() {
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+        hideLoading()
     }
 
     private fun onUnblockChatClicked(): () -> Unit {
@@ -355,7 +375,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.chat_common.R.layout.fragment_chatroom, container, false)
+        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -364,27 +384,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 showLoading()
                 loadData(page)
             }
-        }
-    }
-
-    fun initView(view: View?) {
-        view?.let {
-            super.viewState = TopChatViewStateImpl(
-                    it,
-                    this,
-                    this,
-                    this,
-                    this,
-                    this,
-                    (activity as BaseChatToolbarActivity).getToolbar(),
-                    analytics
-            )
-
-            if (!::alertDialog.isInitialized) {
-                alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
-            }
-
-            hideLoading()
         }
     }
 
@@ -952,8 +951,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
         analytics.eventClickRemoveFromWishList(productId)
         presenter.removeFromWishList(productId, session.userId, object : WishListActionListener {
-            override fun onSuccessAddWishlist(productId: String?) { }
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) { }
+            override fun onSuccessAddWishlist(productId: String?) {}
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
             override fun onSuccessRemoveWishlist(productId: String?) {
                 success()
                 view?.let {
@@ -966,6 +965,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     )
                 }
             }
+
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
                 if (errorMessage == null) return
                 view?.let {
@@ -978,5 +978,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 }
             }
         })
+    }
+
+    companion object {
+        fun createInstance(bundle: Bundle): BaseChatFragment {
+            return TopChatRoomFragment().apply {
+                arguments = bundle
+            }
+        }
     }
 }

@@ -74,6 +74,37 @@ class TopChatViewStateImpl(
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
     override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
 
+//    override fun getRecyclerViewId() = R.id.recycler_view
+//    override fun getProgressId() = R.id.progress
+
+    override fun getNewCommentId(): Int {
+        return R.id.new_comment
+    }
+
+    override fun getReplyBoxId(): Int {
+        return R.id.reply_box
+    }
+
+    override fun getActionBoxId(): Int {
+        return R.id.add_comment_area
+    }
+
+    override fun getSendButtonId(): Int {
+        return R.id.send_but
+    }
+
+    override fun getNotifierId(): Int {
+        return R.id.notifier
+    }
+
+    override fun getChatMenuId(): Int {
+        return R.id.iv_chat_menu
+    }
+
+    override fun getAttachmentMenuId() = R.id.rv_attachment_menu
+    override fun getRootViewId() = R.id.main
+    override fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
+
     init {
         initView()
     }
@@ -187,7 +218,7 @@ class TopChatViewStateImpl(
     }
 
     private fun bindBadge(chatRoom: ChatroomViewModel) {
-        val badgeView = toolbar.findViewById<ImageView>(R.id.ivBadge)
+        val badgeView = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.ivBadge)
         badgeView?.shouldShowWithAction(chatRoom.hasBadge()) {
             ImageHandler.loadImageWithoutPlaceholder(badgeView, chatRoom.badgeUrl)
         }
