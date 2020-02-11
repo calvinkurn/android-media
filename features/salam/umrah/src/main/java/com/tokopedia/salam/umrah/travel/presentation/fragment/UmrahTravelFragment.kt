@@ -40,7 +40,7 @@ import javax.inject.Inject
  * @author by Firman on 22/1/20
  */
 
-class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListener{
+class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.OnBackListener {
 
     @Inject
     lateinit var umrahTravelViewModel: UmrahTravelViewModel
@@ -51,12 +51,12 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    var travelAgent : TravelAgent = TravelAgent()
+    var travelAgent: TravelAgent = TravelAgent()
 
     private lateinit var umrahTravelAgentViewPagerAdapter: UmrahTravelAgentViewPagerAdapter
 
 
-    private var slugName : String ? = ""
+    private var slugName: String? = ""
     private val OFF_SCREEN_LIMIT = 3
 
     override fun getScreenName(): String = getString(R.string.umrah_travel_agent_title)
@@ -68,7 +68,8 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
         slugName = savedInstanceState?.getString(EXTRA_SLUG_NAME)
                 ?: arguments?.getString(EXTRA_SLUG_NAME) ?: ""
     }
-    private fun requestData(){
+
+    private fun requestData() {
         slugName?.let {
             umrahTravelViewModel.requestTravelData(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_travel_by_slugname), it)
@@ -86,14 +87,14 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        umrahTravelViewModel.travelAgentData.observe(this, Observer{
+        umrahTravelViewModel.travelAgentData.observe(this, Observer {
             when (it) {
-                is Success ->{
+                is Success -> {
                     travelAgent = it.data.umrahTravelAgentBySlug
                     setupAll(it.data)
                 }
-                is Fail ->{
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView,it.throwable.message,null,null,R.drawable.umrah_img_empty_search_png){
+                is Fail -> {
+                    NetworkErrorHelper.showEmptyState(context, view?.rootView, it.throwable.message, null, null, R.drawable.umrah_img_empty_search_png) {
                         requestData()
                     }
                 }
@@ -103,7 +104,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
         })
     }
 
-    companion object{
+    companion object {
         fun getInstance(slugName: String) =
                 UmrahTravelFragment().also {
                     it.arguments = Bundle().apply {
@@ -116,32 +117,32 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
     }
 
 
-    private fun showLayout(){
+    private fun showLayout() {
         container_umrah_travel_shimmering.gone()
         container_umrah_travel.show()
     }
 
-    private fun hideLayout(){
+    private fun hideLayout() {
         container_umrah_travel_shimmering.show()
         container_umrah_travel.gone()
     }
 
-    private fun setupAll(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
+    private fun setupAll(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity) {
         showLayout()
         setupTravelAgent(travelAgentBySlugName.umrahTravelAgentBySlug)
         setupViewPager(travelAgentBySlugName)
         setupChat()
     }
 
-    private fun setupChat(){
+    private fun setupChat() {
         btn_umrah_travel_contact.setOnClickListener {
             checkChatSession()
         }
     }
 
-    private fun setupViewPager(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
+    private fun setupViewPager(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity) {
         slugName?.let {
-            umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager, it ,travelAgentBySlugName)
+            umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager, it, travelAgentBySlugName)
             vp_umrah_travel_agent.adapter = umrahTravelAgentViewPagerAdapter
             vp_umrah_travel_agent.offscreenPageLimit = OFF_SCREEN_LIMIT
             tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
@@ -160,7 +161,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
         }
     }
 
-    private fun setupTravelAgent(travelAgent: TravelAgent){
+    private fun setupTravelAgent(travelAgent: TravelAgent) {
         val umrahItemWidgetModelData: UmrahItemWidgetModel = UmrahItemWidgetModel().apply {
             title = travelAgent.name
             imageUri = travelAgent.imageUrl
@@ -179,17 +180,17 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
         }
     }
 
-    private fun checkChatSession(){
-        if (userSessionInterface.isLoggedIn){
+    private fun checkChatSession() {
+        if (userSessionInterface.isLoggedIn) {
             context?.let {
                 startChatUmrah(it)
             }
-        }else{
+        } else {
             goToLoginPage()
         }
     }
 
-    private fun startChatUmrah(context: Context){
+    private fun startChatUmrah(context: Context) {
         val intent = RouteManager.getIntent(context,
                 ApplinkConst.TOPCHAT_ASKSELLER,
                 resources.getString(R.string.umrah_shop_id), "",
@@ -197,7 +198,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
         startActivity(intent)
     }
 
-    private fun showPermissionUmrah(permissionUmrah : String){
+    private fun showPermissionUmrah(permissionUmrah: String) {
         val permissionBottomSheet = BottomSheetUnify()
         permissionBottomSheet.clearClose(true)
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_umrah_travel_agent_permission, null)
@@ -208,7 +209,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
             }
         }
         permissionBottomSheet.setChild(view)
-        permissionBottomSheet.show(fragmentManager!!,"")
+        permissionBottomSheet.show(fragmentManager!!, "")
 
     }
 
@@ -216,7 +217,7 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-               REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
+                REQUEST_CODE_LOGIN -> context?.let { checkChatSession() }
             }
         }
     }
@@ -235,10 +236,11 @@ class UmrahTravelFragment: BaseDaggerFragment(), UmrahTravelActivity.OnBackListe
     }
 
     override fun shareTravelLink() {
-        val branchLink = UmrahShare(activity as Activity)
-        branchLink.generateBranchLink(travelAgent)
+        activity?.let {
+            val branchLink = UmrahShare(it)
+            branchLink.generateBranchLink(travelAgent)
+        }
     }
-
 
 
 }
