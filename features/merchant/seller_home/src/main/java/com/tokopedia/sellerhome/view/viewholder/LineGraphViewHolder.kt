@@ -52,6 +52,9 @@ class LineGraphViewHolder(
 
         val colors = intArrayOf(context.getResColor(R.color.sah_green_light), Color.TRANSPARENT)
         lineGraphView.setGradientFillColors(colors)
+
+        if (null != data)
+            setupTooltip(element)
     }
 
     private fun openAppLink(appLink: String) {
@@ -77,15 +80,12 @@ class LineGraphViewHolder(
             data.error.isNotBlank() -> {
                 onStateLoading(false)
                 showViewComponent(false, element)
-                setupTooltip(element)
                 onStateError(true)
             }
             else -> {
                 onStateLoading(false)
                 onStateError(false)
-                setupTooltip(element)
                 showViewComponent(true, element)
-                showLineGraph(element)
             }
         }
     }
@@ -139,6 +139,9 @@ class LineGraphViewHolder(
                 openAppLink(element.appLink)
             }
         }
+
+        if (isShown)
+            showLineGraph(element)
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
