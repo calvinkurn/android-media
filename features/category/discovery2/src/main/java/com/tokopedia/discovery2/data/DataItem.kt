@@ -8,6 +8,9 @@ data class DataItem(
         @SerializedName("end_date")
         val endDate: String? = "",
 
+        @SerializedName("button_applink")
+        val buttonApplink: String? = "",
+
         @SerializedName("code")
         val code: String? = "",
 
@@ -50,6 +53,9 @@ data class DataItem(
         @SerializedName("notification_description")
         val notificationDescription: String? = "",
 
+        @SerializedName("description")
+        val description: String? = "",
+
         @SerializedName("start_date")
         val startDate: String? = "",
 
@@ -79,6 +85,27 @@ data class DataItem(
 
         @field:SerializedName("button_text")
         var buttonText: String? = "",
+
+        @SerializedName("title")
+        val title: String? = "",
+
+        @SerializedName("thumbnail_url_mobile")
+        val thumbnailUrlMobile: String? = "",
+
+        @SerializedName("points_str")
+        val pointsStr: String? = "",
+
+        @SerializedName("points_slash_str")
+        val pointsSlashStr: String? = "",
+
+        @SerializedName("discount_percentage_str")
+        val discountPercentageStr: String? = "",
+
+        @SerializedName("points_slash")
+        val pointsSlash: Int? = 0,
+
+        @SerializedName("slug")
+        val slug: String? = "",
 
         @field:SerializedName("price_format")
         var priceFormat: String? = "",

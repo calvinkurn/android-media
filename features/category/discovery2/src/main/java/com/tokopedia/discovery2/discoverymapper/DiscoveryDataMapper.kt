@@ -47,8 +47,21 @@ class DiscoveryDataMapper {
         return list
     }
 
+    fun mapListToComponentList(itemList: List<com.tokopedia.discovery2.data.DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        itemList.forEach {
+            val componentsItem = ComponentsItem()
+            componentsItem.name = subComponentName
+            val dataItem = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
+            dataItem.add(it)
+            componentsItem.data = dataItem
+            list.add(componentsItem)
+        }
+        return list
+    }
+
     private fun getComponentName(index: Int): String {
-       return if (index == 0)
+        return if (index == 0)
             ComponentNames.CpmTopAdsShopItem.componentName
         else ComponentNames.CpmTopAdsProductItem.componentName
     }

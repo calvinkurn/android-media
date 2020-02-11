@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.repository.pushstatus
+package com.tokopedia.discovery2.repository.pushstatus.pushstatus
 
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.cpmtopads.CpmTopAdsResponse

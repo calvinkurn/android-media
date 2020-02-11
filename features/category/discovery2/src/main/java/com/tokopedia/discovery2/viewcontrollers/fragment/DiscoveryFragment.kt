@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -20,7 +19,7 @@ import com.tokopedia.usecase.coroutines.Success
 class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener {
     private lateinit var mDiscoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mPageComponentRecyclerView: RecyclerView
 
 
     companion object {
@@ -44,15 +43,15 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     }
 
     private fun initView(view: View) {
-        mRecyclerView = view.findViewById(R.id.discovery_recyclerView)
-        mRecyclerView.layoutManager = LinearLayoutManager(activity)
+        mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
+        mPageComponentRecyclerView.layoutManager = LinearLayoutManager(activity)
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
-        mRecyclerView.adapter = mDiscoveryRecycleAdapter
-        mRecyclerView.addOnChildAttachStateChangeListener(this)
+        mPageComponentRecyclerView.adapter = mDiscoveryRecycleAdapter
+        mPageComponentRecyclerView.addOnChildAttachStateChangeListener(this)
     }
 
     override fun onDetach() {
-        mRecyclerView.removeOnChildAttachStateChangeListener(this)
+        mPageComponentRecyclerView.removeOnChildAttachStateChangeListener(this)
         super.onDetach()
     }
 
@@ -66,54 +65,17 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mDiscoveryViewModel.getDiscoveryResponseList().observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val list = ArrayList<ComponentsItem>()
-
-
-                    //it.data.components?.get(0)?.let { it1 -> list.add(it1) }
-                    //it.data.get(2)?.let { it1 -> list.add(it1) }
-
-                    //it.data.components?.get(26)?.let { it1 -> list.add(it1) }
-                    //it.data.get(28)?.let { it1 -> list.add(it1) }
-
-                   // it.data.get(26)?.let { it1 -> list.add(it1) }
-                    //it.data.get(1)?.let { it1 -> list.add(it1) }
-
-//        RouteManager.route(this, "tokopedia://discovery/test-disco")
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
-//                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
-
-                    mDiscoveryRecycleAdapter.setDataList(list)
-                    //RouteManager.route(this, "tokopedia://discovery/160")
-
+                    mDiscoveryRecycleAdapter.setDataList(it.data)
                 }
             }
         })
     }
 
     override fun onChildViewDetachedFromWindow(view: View) {
-        (mRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewDetachedToWindow()
+        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewDetachedToWindow()
     }
 
     override fun onChildViewAttachedToWindow(view: View) {
-        (mRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewAttachedToWindow()
+        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewAttachedToWindow()
     }
 }
