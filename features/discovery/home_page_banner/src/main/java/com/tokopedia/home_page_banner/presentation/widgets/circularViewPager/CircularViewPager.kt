@@ -40,6 +40,9 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
         autoScrollCoroutine()
     }
 
+    // tracker
+    private val impressionStatusList = mutableListOf<Boolean>()
+
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
         if ((adapter != null) || isAutoScroll || (adapter?.itemCount ?: 0 >= 2)) {
             if (!isInfinite && (adapter?.itemCount ?: 0) - 1 == currentPagePosition) {
@@ -87,7 +90,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
                     masterJob.cancelChildren()
                     autoScrollLauncher()
                 }
-                listener?.onPageScrolled(position)
+                setImpression(indicatorPosition)
             }
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 if (indicatorPageChangeListener == null) return
@@ -235,12 +238,28 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
      * in order to reset current selected item and currentPagePosition and autoPageSelectionLock.
      */
     private fun reset() {
+        resetImpressions()
         currentPagePosition = if (isInfinite) {
             viewPager.setCurrentItem(1, false)
             1
         } else {
             viewPager.setCurrentItem(0, false)
             0
+        }
+    }
+
+    private fun resetImpressions(){
+        impressionStatusList.clear()
+        for (i in 0..(adapter?.listCount ?: 0)) {
+            impressionStatusList.add(false)
+        }
+    }
+
+    private fun setImpression(position: Int){
+        val realCount = adapter?.itemCount ?: 0
+        if (position != -1 && realCount != 0 && position < realCount && !impressionStatusList[position]) {
+            impressionStatusList[position] = true
+            listener?.onPageScrolled(position)
         }
     }
 
