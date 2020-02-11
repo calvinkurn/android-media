@@ -168,11 +168,6 @@ public class DestinationViewModel {
         return MethodChecker.fromHtml(this.receiverName) + "<br>" + MethodChecker.fromHtml(this.addressStreet) + "<br>" + this.districtName + ", " + this.cityName + ", " + this.postalCode + "<br>" + this.provinceName + "<br>" + this.receiverPhone;
     }
 
-    public String getGeoLocation(Context context) {
-        this.geoLocation = GeoLocationUtils.reverseGeoCode(context, this.latitude, this.longitude);
-        return this.geoLocation;
-    }
-
     public boolean isCompleted() {
         return this.addressId != null && !this.addressId.equals("0") && !this.cityId.equals("0") && !this.districtId.equals("0") && !this.provinceId.equals("0");
     }
