@@ -9,16 +9,15 @@ import retrofit2.Retrofit
 @Module class MediaUploaderNetworkModule {
 
     @Provides
-    @MediaUploaderQualifier
-    fun provideLiveRetrofit(
-            @MediaUploaderQualifier retrofit: Retrofit.Builder,
-            @MediaUploaderQualifier okHttpClient: OkHttpClient.Builder): Retrofit {
+    fun provideMediaUploaderRetrofit(
+            retrofit: Retrofit.Builder,
+            okHttpClient: OkHttpClient.Builder
+    ): Retrofit {
         return retrofit.client(okHttpClient.build()).build()
     }
 
     @Provides
-    @MediaUploaderQualifier
-    fun provideLiveServices(retrofit: Retrofit): UploaderServices {
+    fun provideMediaUploaderServices(retrofit: Retrofit): UploaderServices {
         return retrofit.create(UploaderServices::class.java)
     }
 
