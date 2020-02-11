@@ -1,10 +1,11 @@
-package com.tokopedia.tkpd;
+package com.tokopedia.tkpd.utils;
 
 import android.content.Context;
 
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tkpd.remoteresourcerequest.utils.DeferredCallback;
 import com.tokopedia.home.account.AccountHomeUrl;
+import com.tokopedia.tkpd.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -13,9 +14,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-class DeferredResourceInitializer implements DeferredCallback{
+public class DeferredResourceInitializer implements DeferredCallback{
     private static String RELATIVE_URL = "/android/res/";
-    void initializeResourceDownloadManager(Context context){
+    public void initializeResourceDownloadManager(Context context){
         Observable.fromCallable(() -> {
 
             ResourceDownloadManager
