@@ -39,4 +39,5 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Tabs(R.layout.coming_soon_view, ComponentNames.Tabs.componentName),
     ProductCardRevamp(R.layout.coming_soon_view, ComponentNames.PrductCardRevamp.componentName),
     BreadCrumbs(R.layout.coming_soon_view, ComponentNames.Breadcrumbs.componentName),
+    Spacing(R.layout.spacing_layout, "margin")
 }
