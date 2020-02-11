@@ -86,13 +86,16 @@ class HomeDefaultDataSource {
                                                 applink = DEFAULT_DYNAMIC_CHANNEL_2_GRID_3_APPLINK),
                                         DynamicHomeChannel.Grid(
                                                 imageUrl = DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_IMAGE_URL,
-                                                applink = DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_APPLINK),
+                                                applink = DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_APPLINK,
+                                                url = DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_URL),
                                         DynamicHomeChannel.Grid(
                                                 imageUrl = DEFAULT_DYNAMIC_CHANNEL_2_GRID_5_IMAGE_URL,
-                                                applink = DEFAULT_DYNAMIC_CHANNEL_2_GRID_5_APPLINK),
+                                                applink = DEFAULT_DYNAMIC_CHANNEL_2_GRID_5_APPLINK,
+                                                url = DEFAULT_DYNAMIC_CHANNEL_2_GRID_5_URL),
                                         DynamicHomeChannel.Grid(
                                                 imageUrl = DEFAULT_DYNAMIC_CHANNEL_2_GRID_6_IMAGE_URL,
-                                                applink = DEFAULT_DYNAMIC_CHANNEL_2_GRID_6_APPLINK)
+                                                applink = DEFAULT_DYNAMIC_CHANNEL_2_GRID_6_APPLINK,
+                                                url = DEFAULT_DYNAMIC_CHANNEL_2_GRID_6_URL)
                                 )
                         )
                 )

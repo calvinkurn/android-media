@@ -47,10 +47,13 @@ const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_3_IMAGE_URL = "https://ecs7.tokopedia.n
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_3_APPLINK = "tokopedia://category-explore?type=1"
 
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_IMAGE_URL = "https://ecs7.tokopedia.net/defaultpage/channel/channel4.jpg"
-const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_APPLINK = "tokopedia://discovery/fashion-wanita"
+const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_APPLINK = "tokopedia://discovery/fashion-pria"
+const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_URL = "https://www.tokopedia.com/p/fashion-pria"
 
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_5_IMAGE_URL = "https://ecs7.tokopedia.net/defaultpage/channel/channel5.jpg"
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_5_APPLINK = "tokopedia://discovery/handphone-tablet"
+const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_5_URL = "https://www.tokopedia.com/p/handphone-tablet"
 
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_6_IMAGE_URL = "https://ecs7.tokopedia.net/defaultpage/channel/channel6.jpg"
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_6_APPLINK = "tokopedia://discovery/fashion-wanita"
+const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_6_URL = "https://www.tokopedia.com/p/fashion-wanita"
