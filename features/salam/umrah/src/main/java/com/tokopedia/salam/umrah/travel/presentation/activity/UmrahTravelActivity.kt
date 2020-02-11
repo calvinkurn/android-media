@@ -19,7 +19,7 @@ import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragmen
 class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelComponent>{
     private var slugName: String = ""
 
-    override fun getMenuButton() = R.menu.umrah_base_menu_white
+    override fun getMenuButton(): Int = R.menu.umrah_base_menu
     override fun shareLink() {
         if (fragment is OnBackListener) {
             (fragment as OnBackListener).shareTravelLink()

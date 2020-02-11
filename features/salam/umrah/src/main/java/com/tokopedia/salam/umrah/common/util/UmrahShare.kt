@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.common.util
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -26,6 +27,7 @@ class UmrahShare (val activity: Activity) {
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     umrahProductDatatoLinkerDataMapper(data),object: ShareCallback{
                 override fun onError(linkerError: LinkerError) {
+                    Log.d("LINKER_ERROR", linkerError.errorMessage)
                 }
 
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
@@ -36,8 +38,9 @@ class UmrahShare (val activity: Activity) {
      }
 
     private fun openIntentShare(title: String?, shareContent: String, shareUri: String){
-        val shareIntent = Intent().apply {
+        val shareIntent = Intent( ).apply {
             action = Intent.ACTION_SEND
+            type = "text/plain"
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_REFERRER, shareUri)
             putExtra(Intent.EXTRA_HTML_TEXT, shareContent)
@@ -55,7 +58,8 @@ class UmrahShare (val activity: Activity) {
         linkerData.name = data.name
         linkerData.imgUri = data.imageUrl
         linkerData.type = LinkerData.PRODUCT_TYPE
-        linkerData.uri = activity.resources.getString(R.string.umrah_pdp_link_share,data.slugName)
+        linkerData.uri = activity.resources.getString(R.string.umrah_agen_link_share,data.slugName)
+        linkerData.deepLink = activity.resources.getString(R.string.umrah_agen_deeplink_share,data.slugName)
 
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
