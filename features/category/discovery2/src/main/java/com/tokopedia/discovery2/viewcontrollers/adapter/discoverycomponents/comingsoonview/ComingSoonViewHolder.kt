@@ -12,13 +12,8 @@ class ComingSoonViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
 
     private lateinit var comingSoonViewModel: ComingSoonViewModel
-    val text:TextView = itemView.findViewById(R.id.component_name)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         comingSoonViewModel = discoveryBaseViewModel as ComingSoonViewModel
-        comingSoonViewModel.getComponent().observe(fragment.viewLifecycleOwner, Observer { item ->
-                text.text = item.name
-        })
-
     }
 }

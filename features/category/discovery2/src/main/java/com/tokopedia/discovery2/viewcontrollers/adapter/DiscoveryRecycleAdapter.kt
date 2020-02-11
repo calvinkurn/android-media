@@ -40,7 +40,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
 
     override fun getItemViewType(position: Int): Int {
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
-        return id ?: -1
+        return id ?: 0
     }
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {

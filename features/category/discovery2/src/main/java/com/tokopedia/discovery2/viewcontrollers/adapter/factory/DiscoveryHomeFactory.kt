@@ -50,9 +50,10 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.Tabs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.ProductCardRevamp, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.BreadCrumbs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
+            initializeComponent(ComponentsList.Default, ::ComingSoonViewHolder, ::ComingSoonViewModel)
         }
 
-        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>,componentViewModel: KFunction<T>) {
+        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>, componentViewModel: KFunction<T>) {
             componentIdMap[component.componentName] = component.ordinal
             componentMapper[component.ordinal] = ComponentHelpersHolder(viewModel, componentViewModel);
         }
@@ -69,10 +70,10 @@ class DiscoveryHomeFactory {
         }
 
         fun createViewModel(viewType: Int): KFunction<DiscoveryBaseViewModel> {
-            if(componentMapper[viewType] != null){
+            if (componentMapper[viewType] != null) {
                 return componentMapper[viewType]!!.getComponentModels()
             }
-            return ::MultiBannerViewModel
+            return ::ComingSoonViewModel
         }
     }
 }

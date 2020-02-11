@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.ComponentNames
 
 
 enum class ComponentsList(val id: Int, val componentName: String) {
+    Default(R.layout.coming_soon_view, "default"),
     SingleBanner(R.layout.multi_banner_layout, "banner_image"),
     DoubleBanner(R.layout.multi_banner_layout, "banner_image_double"),
     TripleBanner(R.layout.multi_banner_layout, "banner_image_triple"),
