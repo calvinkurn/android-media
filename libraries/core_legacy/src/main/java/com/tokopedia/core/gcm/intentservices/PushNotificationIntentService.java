@@ -18,6 +18,9 @@ import rx.Subscriber;
 public class PushNotificationIntentService extends IntentService {
     public static final String ARG_EXTRA_GCM_UPDATE = "ARG_EXTRA_GCM_UPDATE";
     public static final String ARG_EXTRA_GCM_UPDATE_DATA = "ARG_EXTRA_GCM_UPDATE_DATA";
+    public static final String UPDATE_NOTIFICATION_DATA = "update_notification_data";
+    public static final String BROADCAST_GET_NOTIFICATION = "broadcast_get_notification";
+    public static final String GET_NOTIFICATION_SUCCESS = "get_notification_success";
     public static final int CODE_EXTRA_GCM_UPDATE = 1001;
     private PushNotificationDataInteractor mInteractor;
 

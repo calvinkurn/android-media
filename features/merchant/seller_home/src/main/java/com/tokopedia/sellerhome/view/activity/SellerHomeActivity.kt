@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -30,7 +31,6 @@ import com.tokopedia.sellerhomedrawer.presentation.view.drawer.BaseSellerReceive
 import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
 
 class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
 
@@ -204,7 +204,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
     }
 
     override fun setToolbarTitle(title: String) {
-        toolbar.actionbar_title.text = title
+        toolbar.findViewById<TextView>(R.id.actionbar_title).text = title
     }
 
     override fun Toolbar.initNotificationMenu() {
@@ -221,7 +221,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
     override fun Toolbar.initTitle() {
         toolbarTitle = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
-        toolbarTitle.actionbar_title.text = title
+        toolbarTitle.findViewById<TextView>(R.id.actionbar_title).text = title
         this.addView(toolbarTitle)
     }
 

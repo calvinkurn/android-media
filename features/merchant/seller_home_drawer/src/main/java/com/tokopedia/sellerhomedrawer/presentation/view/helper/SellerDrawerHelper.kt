@@ -1,13 +1,16 @@
 package com.tokopedia.sellerhomedrawer.presentation.view.helper
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.TaskStackBuilder
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
@@ -67,6 +70,11 @@ class SellerDrawerHelper(val context: Activity,
     var powerMerchantInstance: SellerDrawerItem? = null
 
     var selectedPosition = -1
+
+    private val logoutIconDrawable by lazy {
+        if (GlobalConfig.isSellerApp()) R.drawable.sah_qc_launcher2
+        else R.drawable.sah_qc_launcher
+    }
 
     override fun onItemClicked(drawerItem: SellerDrawerItem) {
         if (drawerItem.id == selectedPosition) closeDrawer()
@@ -137,7 +145,6 @@ class SellerDrawerHelper(val context: Activity,
                     RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 }
                 SellerHomeState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP -> {
-                    //TODO : Check if you can use intent to move between activities in library (not features)
                     eventClickPaymentAndTopupOnDrawer()
                     RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,  DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA)
                 }
@@ -194,7 +201,7 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(contactUsIntent)
                 }
                 SellerHomeState.DrawerPosition.LOGOUT -> {
-                    moveActivityApplink(ApplinkConstInternalGlobal.LOGOUT)
+                    logout()
                     eventDrawerClick(EventLabel.SIGN_OUT)
                     SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, "Home", "Logout")
                 }
@@ -635,5 +642,41 @@ class SellerDrawerHelper(val context: Activity,
             context.startActivity(intent)
         }
     }
+
+    private fun logout() {
+        if (GlobalConfig.isSellerApp() && context.isTaskRoot) {
+            showLogoutDialog()
+        }
+    }
+
+    private fun showLogoutDialog() {
+        val dialogBuilder = AlertDialog.Builder(context)
+        dialogBuilder.apply {
+            setIcon(logoutIconDrawable)
+            setTitle(context.getString(R.string.seller_home_logout_title))
+            setMessage(context.getString(R.string.seller_home_logout_confirm))
+            setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
+                showProgressDialog()
+                dialogInterface.dismiss()
+                moveActivityApplink(ApplinkConstInternalGlobal.LOGOUT)
+            }
+            setNegativeButton(context.getString(R.string.seller_home_cancel)) {
+                dialogInterface, _ -> dialogInterface.dismiss()
+            }
+            show()
+        }
+    }
+
+    private fun showProgressDialog() {
+        val progressDialog = ProgressDialog(context)
+        progressDialog.apply {
+            setMessage(context.resources.getString(R.string.seller_home_loading))
+            setTitle("")
+            setCancelable(false)
+            show()
+        }
+    }
+
+
 
 }

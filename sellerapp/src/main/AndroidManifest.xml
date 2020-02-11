@@ -220,7 +220,6 @@
             </intent-filter>
         </activity>
 
-
         <service
             android:name="com.tokopedia.seller.transaction.neworder.view.presenter.GetOrderService"
             android:exported="false" />

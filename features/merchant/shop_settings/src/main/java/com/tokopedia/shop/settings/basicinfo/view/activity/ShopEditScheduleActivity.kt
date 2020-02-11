@@ -33,7 +33,7 @@ import javax.inject.Inject
 class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresenter.View {
 
     @Inject
-    lateinit var  updateShopShedulePresenter: UpdateShopShedulePresenter
+    lateinit var updateShopSchedulePresenter: UpdateShopShedulePresenter
 
     private var progressDialog: ProgressDialog? = null
 
@@ -47,9 +47,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         GraphqlClient.init(this)
 
         shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
-        val title = intent.getStringExtra(EXTRA_TITLE)
         isClosedNow = intent.getBooleanExtra(EXTRA_IS_CLOSED_NOW, false)
-        setTitle(title)
 
         if (savedInstanceState != null) {
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
@@ -86,7 +84,9 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-        updateShopShedulePresenter.attachView(this)
+        updateShopSchedulePresenter.attachView(this)
+
+        supportActionBar?.title = getString(R.string.shop_settings_set_shop_status)
 
         etShopCloseNote.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
@@ -108,6 +108,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         }
         tvSave.visibility = View.VISIBLE
         tvSave.setOnClickListener { onSaveButtonClicked() }
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
@@ -160,7 +164,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             ShopScheduleActionDef.OPEN
         val closeStart = selectedStartCloseUnixTimeMs
         val closeEnd = selectedEndCloseUnixTimeMs
-        updateShopShedulePresenter.updateShopSchedule(
+        updateShopSchedulePresenter.updateShopSchedule(
                 shopAction,
                 isClosedNow,
                 if (closeStart == 0L) null else closeStart.toString(),
@@ -193,7 +197,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
 
     public override fun onDestroy() {
         super.onDestroy()
-        updateShopShedulePresenter.detachView()
+        updateShopSchedulePresenter.detachView()
     }
 
     override fun onSuccessUpdateShopSchedule(successMessage: String) {
