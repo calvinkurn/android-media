@@ -24,9 +24,9 @@ public interface TokoPointComponent {
 
 
 
-    void inject(CouponCatalogFragment fragment);
 
-    void inject(SendGiftFragment fragment);
+
+
 
     void inject(ValidateMerchantPinFragment fragment);
 

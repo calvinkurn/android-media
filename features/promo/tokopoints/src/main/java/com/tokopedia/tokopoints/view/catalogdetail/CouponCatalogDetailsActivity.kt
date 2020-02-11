@@ -11,12 +11,14 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
+import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 
- class CouponCatalogDetailsActivity : BaseSimpleActivity(), HasComponent<TokoPointComponent?> {
-    private var tokoPointComponent: TokoPointComponent? = null
+ class CouponCatalogDetailsActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent> {
+    private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     private var bundle: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,16 +39,13 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
         return CouponCatalogFragment.newInstance(bundle)
     }
 
-    override fun getComponent(): TokoPointComponent {
-        if (tokoPointComponent == null) initInjector()
-        return tokoPointComponent!!
+    override fun getComponent(): TokopointBundleComponent {
+        return tokoPointComponent
     }
 
-    private fun initInjector() {
-        tokoPointComponent = DaggerTokoPointComponent.builder()
+    private fun initInjector() =  DaggerTokopointBundleComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
-    }
 
     override fun onBackPressed() {
         super.onBackPressed()

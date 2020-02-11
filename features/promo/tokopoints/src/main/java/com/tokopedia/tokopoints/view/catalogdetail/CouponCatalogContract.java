@@ -55,8 +55,7 @@ public interface CouponCatalogContract {
         void onFinishRendering();
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
+    interface Presenter {
 
         void getCatalogDetail(String uniqueCatalogCode);
 

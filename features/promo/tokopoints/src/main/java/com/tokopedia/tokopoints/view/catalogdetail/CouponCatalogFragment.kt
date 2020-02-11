@@ -16,7 +16,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -26,16 +28,13 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment
-import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.ImageUtil
-import com.tokopedia.tokopoints.view.util.getLessDisplayData
+import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
@@ -65,9 +64,10 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     var code: String? = null
     var userPoints: String? = null
 
-    @JvmField
     @Inject
-    var mPresenter: CouponCatalogPresenter? = null
+    lateinit var factory: ViewModelFactory
+
+     private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this,factory)[CouponCatalogViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(appContext)
@@ -77,6 +77,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initInjector()
         val view = inflater.inflate(R.layout.tp_fragment_coupon_catalog, container, false)
         initViews(view)
         return view
@@ -102,7 +103,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mPresenter!!.attachView(this)
         initListener()
         if (arguments == null) {
             if (activity != null) {
@@ -111,11 +111,79 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             return
         }
         code = arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE)
-        mPresenter!!.getCatalogDetail(code)
+        mViewModel.getCatalogDetail(code ?: "")
+        initObserver()
     }
 
+    private fun initObserver() {
+        addCatalogDetailObserver()
+        addSendGiftDialog()
+        addValidationDialogObserver()
+        addLatestStatusObserver()
+        addStartSaveCouponObserver()
+        addRedeemCouponObserver()
+        addPointQueryObserver()
+    }
+
+    private fun addPointQueryObserver() = mViewModel.pointQueryLiveData.observe(this, androidx.lifecycle.Observer {
+        when(it){
+            is Success -> onSuccessPoints(it.data)
+            is ErrorMessage -> onErrorPoint(null)
+        }
+    })
+
+    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let { RouteManager.route(context,it) }
+    })
+
+    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
+        when(it) {
+            is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
+            is ValidationError<*,*> -> {
+                if (it.data is ValidateMessageDialog){
+                    showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
+                }
+            }
+        }
+    })
+
+    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let { refreshCatalog(it)}
+    })
+
+    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+            showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
+        }
+    })
+
+    private fun addSendGiftDialog() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
+        when(it) {
+            is Success -> gotoSendGiftPage(it.data.id,it.data.title,it.data.pointStr,it.data.banner)
+            is ValidationError<*, *> -> {
+                if (it.data is PreValidateError)
+                onPreValidateError(it.data.title, it.data.message)
+            }
+        }
+    })
+
+    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(this, androidx.lifecycle.Observer {
+        when(it) {
+            is Loading -> showLoader()
+            is ErrorMessage -> {
+                hideLoader()
+                showError(NetworkDetector.isConnectedToInternet(context))
+                onFinishRendering()
+            }
+            is Success -> {
+                hideLoader()
+                populateDetail(it.data)
+                onFinishRendering()
+            }
+        }
+    })
+
     override fun onDestroy() {
-        mPresenter!!.destroyView()
         if (mTimer != null) {
             mTimer!!.cancel()
             mTimer = null
@@ -160,16 +228,12 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         return activity!!
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun getScreenName(): String {
         return AnalyticsTrackerUtil.ScreenKeys.COUPON_CATALOG_SCREEN_NAME
     }
 
     override fun initInjector() {
-        getComponent(TokoPointComponent::class.java).inject(this)
+        getComponent(TokopointBundleComponent::class.java).inject(this)
     }
 
     override fun onClick(source: View) {
@@ -187,7 +251,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null) {
             return
         }
-        serverErrorView!!.setErrorButtonClickListener { view: View? -> mPresenter!!.getCatalogDetail(code) }
+        serverErrorView!!.setErrorButtonClickListener { view: View? -> mViewModel.getCatalogDetail(code ?: "") }
     }
 
     override fun openWebView(url: String) {
@@ -208,7 +272,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
         adb.setPositiveButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
             //Call api to validate the coupon
-            mPresenter!!.redeemCoupon(code, cta)
+            mViewModel.redeemCoupon(code, cta)
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
@@ -325,7 +389,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    mPresenter!!.startSaveCoupon(item)
+                    mViewModel.startSaveCoupon(item)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
@@ -349,7 +413,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         textUserPoint?.setText(point)
     }
 
-    override fun onErrorPoint(errorMessage: String) { //TODO @lavekush need to handle it
+    override fun onErrorPoint(errorMessage: String?) { //TODO @lavekush need to handle it
     }
 
     override fun onRealCodeReFresh(realCode: String) {
@@ -540,7 +604,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 giftSectionMainLayout.visibility = View.VISIBLE
                 bottomSeparator.visibility = View.VISIBLE
                 giftButton.setText(R.string.tp_label_send_now)
-                giftButton.setOnClickListener { view: View? -> mPresenter!!.startSendGift(data.id, data.title, data.pointsStr, data.imageUrlMobile) }
+                giftButton.setOnClickListener { view: View? -> mViewModel.startSendGift(data.id, data.title, data.pointsStr, data.imageUrlMobile) }
             }
         } else {
             giftSectionMainLayout.visibility = View.GONE
@@ -554,7 +618,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         btnAction2.setOnClickListener { v: View? ->
             //call validate api the show dialog
             if (mUserSession!!.isLoggedIn) {
-                mPresenter!!.startValidateCoupon(data)
+                mViewModel.startValidateCoupon(data)
             } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
             }
@@ -576,7 +640,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                     override fun onCompleted() {}
                     override fun onError(e: Throwable) {}
                     override fun onNext(aLong: Long?) {
-                        mPresenter!!.fetchLatestStatus(Arrays.asList(data.id))
+                        mViewModel.fetchLatestStatus(Arrays.asList(data.id))
                     }
                 })
         //Coupon impression ga
@@ -615,29 +679,14 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (fpmDetailTokopoint != null) fpmDetailTokopoint!!.stopTrace()
     }
 
-    fun showPinPage(code: String?, pinInfo: String?) {
-        if (activity == null || activity!!.isFinishing) {
-            return
-        }
-        val fragment: Fragment = ValidateMerchantPinFragment()
-        val bundle = Bundle()
-        bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo)
-        bundle.putString(CommonConstant.EXTRA_COUPON_ID, code)
-        fragment.arguments = bundle
-        activity!!.supportFragmentManager.beginTransaction()
-                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, ValidateMerchantPinFragment::class.java.canonicalName)
-                .addToBackStack(ValidateMerchantPinFragment::class.java.canonicalName)
-                .commit()
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             pointValueText!!.text = resources.getString(R.string.points_saya)
-            mPresenter!!.getCatalogDetail(code)
-            if (catalogsValueEntity!!.isDisabled) {
-                mPresenter!!.startValidateCoupon(catalogsValueEntity)
-            }
+            mViewModel.getCatalogDetail(code ?: "")
+            val item = catalogsValueEntity
+            item?.let { if (it.isDisabled) mViewModel.startValidateCoupon(it) }
         }
     }
 
