@@ -38,10 +38,9 @@ public class ReviewShopInfoActivity extends BaseSimpleActivity {
     }
 
     private void setupOpenReviewShopInfo(Uri intentData, Bundle intentExtras) {
-        if(intentData != null) {
+        if(intentData != null && intentData.getPathSegments().size() >= 3) {
             List<String> pathSegments = intentData.getPathSegments();
-            int pathSegmentSize = pathSegments.size();
-            shopId = pathSegments.get(pathSegmentSize - 2);
+            shopId = pathSegments.get(1);
         }
         else if(intentExtras != null) {
             shopId = intentExtras.getString(ReviewShopFragment.SHOP_ID);

@@ -51,12 +51,12 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
         Bundle intentExtras = getIntent().getExtras();
 
         // if from applink
-        if(intentData != null) {
+        if(intentData != null && intentData.getPathSegments().size() >= 2) {
             isFromApplink = true;
-            reputationId = intentData.getLastPathSegment();
+            reputationId = intentData.getPathSegments().get(1);
         }
 
-        if(intentExtras != null) {
+        if(intentExtras != null && !isFromApplink) {
             if(intentExtras.getInt(ARGS_TAB, -1) != -1) {
                 tab = intentExtras.getInt(ARGS_TAB);
             }
