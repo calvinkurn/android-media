@@ -23,5 +23,9 @@ object TrackingConstant {
     //action
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val CLICK_WIDGET_CARD = "click widget card"
+    const val IMPRESSION_WIDGET_PROGRESS_BAR = "impression widget progress bar"
+    const val CLICK_WIDGET_PROGRESS_BAR = "click widget progress bar"
+    const val IMPRESSION_WIDGET_POST = "impression widget post"
+    const val CLICK_WIDGET_POST = "click widget post"
 
 }

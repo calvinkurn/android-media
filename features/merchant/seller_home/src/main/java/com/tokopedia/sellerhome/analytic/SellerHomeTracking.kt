@@ -28,6 +28,56 @@ object SellerHomeTracking {
         sendGeneralEvent(map)
     }
 
+    fun sendImpressionProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
+        val map = createMap(
+                TrackingConstant.VIEW_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.IMPRESSION_WIDGET_PROGRESS_BAR, "$dataKey $stateColor").joinToString(" - "),
+                "$valueScore"
+        )
+        sendGeneralEvent(map)
+    }
+
+    fun sendClickProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
+        val map = createMap(
+                TrackingConstant.CLICK_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_PROGRESS_BAR, "$dataKey $stateColor", "see more").joinToString(" - "),
+                "$valueScore"
+        )
+        sendGeneralEvent(map)
+    }
+
+    fun sendImpressionPostEvent(dataKey: String) {
+        val map = createMap(
+                TrackingConstant.VIEW_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.IMPRESSION_WIDGET_POST, dataKey).joinToString(" - "),
+                ""
+        )
+        sendGeneralEvent(map)
+    }
+
+    fun sendClickPostSeeMoreEvent(dataKey: String) {
+        val map = createMap(
+                TrackingConstant.CLICK_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_POST, dataKey, "see more").joinToString(" - "),
+                ""
+        )
+        sendGeneralEvent(map)
+    }
+
+    fun sendClickPostItemEvent(dataKey: String, title: String) {
+        val map = createMap(
+                TrackingConstant.CLICK_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_POST, dataKey, title).joinToString(" - "),
+                ""
+        )
+        sendGeneralEvent(map)
+    }
+
     private fun createMap(event: String, category: String, action: String, label: String): MutableMap<String, Any> {
         return mutableMapOf(
                 TrackingConstant.EVENT to event,
