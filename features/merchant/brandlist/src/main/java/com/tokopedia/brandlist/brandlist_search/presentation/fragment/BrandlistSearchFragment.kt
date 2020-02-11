@@ -8,7 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
@@ -16,6 +19,7 @@ import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,6 +30,8 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         HasComponent<BrandlistSearchComponent> {
 
     companion object {
+        const val BRANDLIST_SEARCH_GRID_SPAN_COUNT = 3
+
         @JvmStatic
         fun createInstance(): Fragment {
             return BrandlistSearchFragment().apply {
@@ -42,6 +48,8 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private var searchView: SearchInputView? = null
     private var statusBar: View? = null
     private var recyclerView: RecyclerView? = null
+    private var layoutManager: GridLayoutManager? = null
+    private var adapterBrandSearch: BrandlistSearchResultAdapter? = null
     private var toolbar: Toolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +57,15 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_brandlist_search, container, false)
+        val view = inflater.inflate(R.layout.fragment_brandlist_search, container, false)
+        recyclerView = view.findViewById(R.id.rv_brandlist_search)
+        layoutManager = GridLayoutManager(context, BRANDLIST_SEARCH_GRID_SPAN_COUNT)
+        adapterBrandSearch = BrandlistSearchResultAdapter()
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = adapterBrandSearch
+
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -134,6 +150,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     println(it.data.officialStoreAllBrands)
                     val response = it.data.officialStoreAllBrands
                     println(response)
+                    adapterBrandSearch?.updateSearchResultData(response.brands)
                 }
                 is Fail -> {
                     println("Fail")
