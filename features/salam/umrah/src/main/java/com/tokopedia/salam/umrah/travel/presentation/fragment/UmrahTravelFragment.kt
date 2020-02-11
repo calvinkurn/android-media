@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
@@ -136,7 +137,11 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.OnBackList
 
     private fun setupChat() {
         btn_umrah_travel_contact.setOnClickListener {
-            checkChatSession()
+            //checkChatSession()
+            activity?.let {
+                val branchLink = UmrahShare(it)
+                branchLink.generateBranchLink(travelAgent,{showLoading()},{hideLoading()})
+            }
         }
     }
 
@@ -238,9 +243,15 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.OnBackList
     override fun shareTravelLink() {
         activity?.let {
             val branchLink = UmrahShare(it)
-            branchLink.generateBranchLink(travelAgent)
+            branchLink.generateBranchLink(travelAgent,{showLoading()},{hideLoading()})
         }
     }
 
+    fun hideLoading(){
+        umrah_pb_travel_share.hide()
+    }
 
+    fun showLoading(){
+        umrah_pb_travel_share.show()
+    }
 }
