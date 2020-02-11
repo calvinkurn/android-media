@@ -16,5 +16,5 @@ interface HomeVisitableFactory {
     fun addGeolocationVisitable(): HomeVisitableFactory
     fun addDynamicIconVisitable(): HomeVisitableFactory
     fun addDynamicChannelVisitable(): HomeVisitableFactory
-    fun build(): MutableList<Visitable<*>>
+    fun build(): List<Visitable<*>>
 }

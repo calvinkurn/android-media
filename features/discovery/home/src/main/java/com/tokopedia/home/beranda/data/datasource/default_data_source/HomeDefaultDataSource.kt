@@ -5,7 +5,7 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 
 class HomeDefaultDataSource {
-    fun getDefaultHomeData(): HomeData? = HomeData(
+    fun getDefaultHomeData(): HomeData = HomeData(
             dynamicHomeChannel = createDefaultHomeDynamicChannel(),
             banner = createDefaultHomePageBanner(),
             dynamicHomeIcon = createDefaultHomeDynamicIcon(),

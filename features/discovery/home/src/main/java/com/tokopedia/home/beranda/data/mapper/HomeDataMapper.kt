@@ -32,7 +32,7 @@ class HomeDataMapper(
 ) {
     fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel{
         if (homeData == null) return HomeViewModel(isCache = isCache)
-        val list: MutableList<Visitable<*>> = homeVisitableFactory.buildVisitableList(
+        val list: List<Visitable<*>> = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context)
                 .addBannerVisitable()
                 .addUserWalletVisitable()

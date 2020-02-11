@@ -374,5 +374,5 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         return playCardViewModel
     }
 
-    override fun build(): MutableList<Visitable<*>> = visitableList
+    override fun build(): List<Visitable<*>> = visitableList
 }
