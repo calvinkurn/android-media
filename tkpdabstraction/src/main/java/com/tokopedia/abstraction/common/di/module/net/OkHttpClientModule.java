@@ -14,7 +14,6 @@ import okhttp3.OkHttpClient;
 @Module(includes = {InterceptorModule.class})
 public class OkHttpClientModule {
 
-
     @ApplicationScope
     @Provides
     public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {

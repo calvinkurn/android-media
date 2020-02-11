@@ -33,13 +33,13 @@ data class DataItem(
         val registeredImageApp: String? = "",
 
         @SerializedName("image_url_mobile")
-        val imageUrlMobile: String? = "",
+        var imageUrlMobile: String? = "",
 
         @SerializedName("image_url_dynamic_mobile")
         val imageUrlDynamicMobile: String? = "",
 
         @SerializedName("applinks", alternate = ["applink"])
-        val applinks: String? = "",
+        var applinks: String? = "",
 
         @SerializedName("name")
         var name: String? = "",
@@ -63,7 +63,28 @@ data class DataItem(
         val leftMarginMobile: String? = "0",
 
         @SerializedName("right_margin_mobile")
-        val rightMarginMobile: String? = "0"
+        val rightMarginMobile: String? = "0",
+
+        @SerializedName("background_url_mobile")
+        val backgroundUrlMobile: String? = "",
+
+        @SerializedName("alternate_background_url_mobile")
+        val alternateBackgroundUrlMobile: String? = "",
+
+        @SerializedName("box_color")
+        val boxColor: String? = "",
+
+        @SerializedName("font_color")
+        val fontColor: String? = "",
+
+        @field:SerializedName("button_text")
+        var buttonText: String? = "",
+
+        @field:SerializedName("price_format")
+        var priceFormat: String? = "",
+
+        @field:SerializedName("image_click_url")
+        var imageClickUrl: String? = ""
 ) {
     val leftMargin: Int
         get() {

@@ -1,4 +1,10 @@
 <resources>
     <string name="promo_code">Promo Code</string>
+    <string name="hari">Hari</string>
+    <string name="jam">Jam</string>
+    <string name="menit">Menit</string>
+    <string name="detik">Detik</string>
+    <string name="time_separator">:</string>
+    <string name="default_timer_value">00</string>
     <string name="lihat_semua">Lihat Semua</string>
 </resources>

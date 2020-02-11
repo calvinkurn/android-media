@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners
 
 import android.app.Application
 import android.content.ClipData
@@ -7,12 +7,10 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery.categoryrevamp.di.DaggerDiscoveryComponent
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.utils.Utils
@@ -48,7 +46,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
                 .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-    }
+   }
     fun getComponentData() = bannerData
     fun getPushBannerStatusData() = pushBannerStatus
     fun getshowLoginData() = showLogin

@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp.di
+package com.tokopedia.discovery2.di
 
 import javax.inject.Scope
 

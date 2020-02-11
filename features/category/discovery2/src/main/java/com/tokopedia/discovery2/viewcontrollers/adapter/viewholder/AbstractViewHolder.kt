@@ -7,4 +7,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     abstract fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel)
+
+    open fun onViewAttachedToWindow() {}
+
+    open fun onViewDetachedToWindow() {}
 }
