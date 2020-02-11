@@ -35,11 +35,13 @@ abstract class CircularViewPagerAdapter(itemList: List<CircularModel>, isInfinit
 
     override fun onBindViewHolder(holder: CircularViewHolder, position: Int) {
         val listPosition = if (isInfinite && canInfinite) getListPosition(position) else position
-        holder.bind(itemList[listPosition], object : CircularListener{
-            override fun onClick(position: Int) {
-                circularListener.onClick(listPosition)
-            }
-        })
+        if(listPosition != -1) {
+            holder.bind(itemList[listPosition], object : CircularListener {
+                override fun onClick(position: Int) {
+                    circularListener.onClick(listPosition)
+                }
+            })
+        }
     }
 
     override fun getItemCount(): Int {

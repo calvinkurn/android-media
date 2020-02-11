@@ -152,7 +152,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     fun setAdapter(adapter: CircularViewPagerAdapter) {
         this.adapter = adapter
         viewPager.adapter = this.adapter
-        if (isInfinite) viewPager.setCurrentItem(1, false)
+        if (isInfinite && adapter.listCount > 0) viewPager.setCurrentItem(1, false)
     }
 
     fun setItemList(list: List<CircularModel>){
