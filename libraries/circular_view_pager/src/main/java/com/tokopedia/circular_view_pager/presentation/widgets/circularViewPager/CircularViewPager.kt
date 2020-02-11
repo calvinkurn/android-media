@@ -256,7 +256,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     }
 
     private fun setImpression(position: Int){
-        val realCount = adapter?.itemCount ?: 0
+        val realCount = adapter?.listCount ?: 0
         if (position != -1 && realCount != 0 && position < realCount && !impressionStatusList[position]) {
             impressionStatusList[position] = true
             listener?.onPageScrolled(position)

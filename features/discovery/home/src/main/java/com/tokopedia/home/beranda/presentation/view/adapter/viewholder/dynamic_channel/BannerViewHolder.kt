@@ -48,6 +48,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     override fun bind(element: BannerViewModel, payloads: MutableList<Any>) {
+        slidesList = element.slides
         this.isCache = element.isCache
         circularViewPager.setItemList(element.slides.map { CircularModel(it.id, it.imageUrl) })
         indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
