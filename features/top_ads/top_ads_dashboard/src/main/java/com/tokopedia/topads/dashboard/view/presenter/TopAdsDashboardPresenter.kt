@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -73,7 +74,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         }
 
     fun getPopulateDashboardData(rawQuery: String) {
-        val shopId: Int = userSession.shopId.toIntOrNull() ?: 0
+        val shopId: Int = userSession.shopId.toIntOrZero()
         topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase
                 .createRequestParams(rawQuery, shopId),
                 object : Subscriber<DashboardPopulateResponse>() {
@@ -198,7 +199,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     fun getTickerTopAds(resources: Resources) {
         val graphqlUseCase = GraphqlUseCase()
-        val shopId: Int = userSession.shopId.toIntOrNull() ?: 0
+        val shopId: Int = userSession.shopId.toIntOrZero()
         val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.query_ticker), Data::class.java, variables, false)

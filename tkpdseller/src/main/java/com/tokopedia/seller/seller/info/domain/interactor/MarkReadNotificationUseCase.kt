@@ -20,10 +20,13 @@ class MarkReadNotificationUseCase @Inject constructor(private val graphqlUseCase
 
     companion object {
         const val PARAM_NOTIF_ID = "notifId"
+        const val PARAM_TYPE_ID = "typeId"
+        const val SELLER_TYPE_ID = 2
         @JvmStatic
-        fun createRequestParams(notificationId: String): RequestParams {
+        fun createRequestParams(notificationId: String, typeId: Int): RequestParams {
             return RequestParams.create().apply {
                 putString(PARAM_NOTIF_ID, notificationId)
+                putInt(PARAM_TYPE_ID, typeId)
             }
         }
     }
