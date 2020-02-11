@@ -22,6 +22,7 @@ import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
+import com.tkpd.remoteresourcerequest.utils.DeferredCallback;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -95,6 +96,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
@@ -198,6 +200,7 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
+import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -228,7 +231,10 @@ import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import tradein_common.TradeInUtils;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -318,7 +324,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
-        ResourceDownloadManager.Companion.getManager().initialize(this, R.raw.url_list);
+        initResourceDownloadManager();
+    }
+
+    private void initResourceDownloadManager() {
+        (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
     }
 
     private void initDaggerInjector() {
