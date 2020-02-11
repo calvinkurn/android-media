@@ -103,7 +103,7 @@ object WishlistTracking {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
                 FIELD_PRODUCT_ID, item.productId.toString(),
-                FIELD_PRODUCT_PRICE, item.price,
+                FIELD_PRODUCT_PRICE, item.rawPrice.toString(),
                 FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
@@ -124,7 +124,7 @@ object WishlistTracking {
                         DataLayer.mapOf(
                                 FIELD_PRODUCT_NAME, item.name,
                                 FIELD_PRODUCT_ID, item.id,
-                                FIELD_PRODUCT_PRICE, item.price,
+                                FIELD_PRODUCT_PRICE, item.rawPrice.toString(),
                                 FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
@@ -146,7 +146,7 @@ object WishlistTracking {
                 DataLayer.mapOf(
                         FIELD_PRODUCT_NAME, item.name,
                         FIELD_PRODUCT_ID, item.productId.toString(),
-                        FIELD_PRODUCT_PRICE, item.price,
+                        FIELD_PRODUCT_PRICE, item.rawPrice.toString(),
                         FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                         FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                         FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
@@ -168,7 +168,7 @@ object WishlistTracking {
                 DataLayer.mapOf(
                         FIELD_PRODUCT_NAME, item.name,
                         FIELD_PRODUCT_ID, item.id,
-                        FIELD_PRODUCT_PRICE, item.price,
+                        FIELD_PRODUCT_PRICE, item.rawPrice.toString(),
                         FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                         FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
                         FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
