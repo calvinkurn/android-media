@@ -76,31 +76,25 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var remoteConfig: RemoteConfig
+    @Inject
+    lateinit var chatListAnalytics: ChatListAnalytic
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
-
     private lateinit var performanceMonitoring: PerformanceMonitoring
-
     private var activityContract: ChatListContract.Activity? = null
-
     private var mUserSeen = false
     private var mViewCreated = false
     private var sightTag = ""
-
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
-
     private var filterMenu = FilterMenu()
-
     private lateinit var broadCastButton: FloatingActionButton
 
-    @Inject
-    lateinit var chatListAnalytics: ChatListAnalytic
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
 
     override fun onAttachActivity(context: Context?) {
         if (context is ChatListContract.Activity) {
@@ -583,8 +577,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     override fun getSupportChildFragmentManager(): FragmentManager {
         return childFragmentManager
     }
-
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
