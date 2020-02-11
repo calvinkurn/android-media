@@ -33,7 +33,7 @@ class OfficialStoreTracking(context: Context) {
     private val ATTRIBUTION = "attribution"
     private val AFFINITY_LABEL = "affinityLabel"
     private val CATEGORY_ID = "categoryId"
-    private val SHOP_ID = "categoryId"
+    private val SHOP_ID = "shopId"
     private val ECOMMERCE = "ecommerce"
     private val CLICK = "click"
     private val IMPRESSION = "impression"
