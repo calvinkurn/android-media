@@ -5,7 +5,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
@@ -18,7 +17,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bann
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class MultiBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class MultiBannerViewHolder(customItemView: View,val fragment: Fragment) : AbstractViewHolder(customItemView) {
     private var constraintLayout: ConstraintLayout
     private var context: Context
 
@@ -26,7 +25,7 @@ class MultiBannerViewHolder(itemView: View, private val fragment: Fragment) : Ab
     lateinit var bannersItemList: ArrayList<BannerItem>
 
     init {
-        constraintLayout = itemView.findViewById(R.id.banner_container_layout)
+        constraintLayout = customItemView.findViewById(R.id.banner_container_layout)
         context = constraintLayout.context
     }
 

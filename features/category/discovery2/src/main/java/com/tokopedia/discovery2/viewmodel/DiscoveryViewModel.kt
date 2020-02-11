@@ -67,4 +67,5 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryPageTitle(): LiveData<Result<String>> = discoveryPageTitle
     fun getDiscoveryResponseList(): LiveData<Result<ArrayList<ComponentsItem>>> = discoveryResponseList
 
+
 }
