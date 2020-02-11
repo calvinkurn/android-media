@@ -46,7 +46,7 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
 
         // add on page change listener
         viewPager?.clearOnPageChangeListeners()
-        viewPager?.addOnPageChangeListener(createOnPageChangeListeners(appBarLayout))
+        viewPager?.addOnPageChangeListener(createOnPageChangeListener(appBarLayout))
     }
 
     private fun getTabMaxHeightFromRes(resources: Resources): Int {
@@ -132,13 +132,13 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
         }
     }
 
-    private fun createOnPageChangeListeners(appBarLayout: AppBarLayout?): ViewPager.OnPageChangeListener {
+    private fun createOnPageChangeListener(appBarLayout: AppBarLayout?): ViewPager.OnPageChangeListener {
         return object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                collapseAllTabsIcon()
+                expandAllTabsIcon()
                 appBarLayout?.let { startTabHeightExpandAnimation(it) }
             }
 

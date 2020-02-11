@@ -1,6 +1,7 @@
 package com.tokopedia.brandlist.brandlist_page.presentation.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,12 @@ import com.tokopedia.brandlist.brandlist_page.di.BrandlistPageModule
 import com.tokopedia.brandlist.brandlist_page.di.DaggerBrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
+import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -57,7 +63,10 @@ class BrandlistPageFragment :
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-
+                    viewModel.loadMoreAllBrands(category)
+                    if (adapter?.getVisitables()?.lastOrNull() is AllBrandViewModel) {
+                        adapter?.showLoading()
+                    }
                 }
             }
         }
@@ -79,15 +88,44 @@ class BrandlistPageFragment :
         val adapterTypeFactory = BrandlistPageAdapterTypeFactory()
         adapter = BrandlistPageAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
+        recyclerView?.addOnScrollListener(endlessScrollListener)
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         adapter?.initAdapter()
+
         observeFeaturedBrands()
         observePopularBrands()
         observeNewBrands()
+        observeAllBrands()
+
+        swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
+
+        if (parentFragment is RecyclerViewScrollListener) {
+            val scrollListener = parentFragment as RecyclerViewScrollListener
+            layoutManager?.let {
+                recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+
+                        if (!isScrolling) {
+                            isScrolling = true
+                            scrollListener.onContentScrolled(dy)
+
+                            Handler().postDelayed({
+                                isScrolling = false
+                            }, 200)
+                        }
+
+                    }
+
+                })
+            }
+        }
+
     }
 
     override fun onResume() {
@@ -111,6 +149,19 @@ class BrandlistPageFragment :
 
     override fun initInjector() {
         component?.inject(this)
+    }
+
+    private fun createOnRefreshListener(): SwipeRefreshLayout.OnRefreshListener {
+        return SwipeRefreshLayout.OnRefreshListener {
+            adapter?.getVisitables()?.removeAll {
+                it is FeaturedBrandViewModel
+                        || it is PopularBrandViewModel
+                        || it is NewBrandViewModel
+                        || it is AllBrandViewModel
+            }
+            adapter?.notifyDataSetChanged()
+            category?.let { loadData(it, userSession.userId, true) }
+        }
     }
 
     private fun showErrorMessage(t: Throwable) {
@@ -167,7 +218,18 @@ class BrandlistPageFragment :
     }
 
     private fun observeAllBrands() {
-
+        viewModel.getAllBrandResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    BrandlistPageMapper.mappingAllBrand(it.data, adapter)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorMessage(it.throwable)
+                }
+            }
+        })
     }
 
     private fun loadData(category: Category, userId: String, isRefresh: Boolean = false) {

@@ -32,8 +32,7 @@ class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageT
     }
 
     override fun type(allBrandViewModel: AllBrandViewModel): Int {
-        return if (allBrandViewModel.allBrands.isEmpty()) HideViewHolder.LAYOUT
-        else AllBrandViewHolder.LAYOUT
+        return AllBrandViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -41,6 +40,7 @@ class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageT
             FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(parent)
             PopularBrandViewHolder.LAYOUT -> PopularBrandViewHolder(parent)
             NewBrandViewHolder.LAYOUT -> NewBrandViewHolder(parent)
+            AllBrandViewHolder.LAYOUT -> AllBrandViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

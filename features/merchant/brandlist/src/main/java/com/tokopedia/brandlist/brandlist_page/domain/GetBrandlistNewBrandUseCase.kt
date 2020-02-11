@@ -5,7 +5,6 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsReco
 import com.tokopedia.brandlist.common.GQLQueryConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
@@ -23,7 +22,10 @@ class GetBrandlistNewBrandUseCase @Inject constructor(
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
         return graphqlResponse.run {
-            getData<BrandlistNewBrandResponse>(BrandlistNewBrandResponse::class.java).officialStoreBrandsRecommendation
+            var newbrands = OfficialStoreBrandsRecommendation()
+            val response = getData<BrandlistNewBrandResponse>(BrandlistNewBrandResponse::class.java)
+            if (response != null) newbrands = response.officialStoreBrandsRecommendation
+            newbrands
         }
     }
 

@@ -148,15 +148,15 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun populateCategoriesData(brandlistCategories: BrandlistCategories) {
+    private fun populateCategoriesData(brandListCategories: BrandlistCategories) {
 
-        brandlistCategories.categories.forEachIndexed { _, category ->
+        brandListCategories.categories.forEachIndexed { _, category ->
             tabAdapter.categories.add(category)
         }
 
         tabAdapter.notifyDataSetChanged()
 
-        tabLayout?.setup(viewPager, convertToCategoryTabModels(brandlistCategories.categories), appbarCategory)
+        tabLayout?.setup(viewPager, convertToCategoryTabModels(brandListCategories.categories), appbarCategory)
 
         tabLayout?.getTabAt(0)?.select()
 

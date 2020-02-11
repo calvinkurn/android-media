@@ -10,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_page.data.model.Shop
+import com.tokopedia.brandlist.brandlist_search.data.model.Brand
 
-class AllBrandAdapter(private val context: Context) : RecyclerView.Adapter<AllBrandAdapter.AllBrandViewHolder>() {
+class AllBrandAdapter(private val context: Context) :
+        RecyclerView.Adapter<AllBrandAdapter.AllBrandViewHolder>() {
 
-    private var allBrands: MutableList<Shop> = mutableListOf()
+    private var allBrands: MutableList<Brand> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllBrandViewHolder {
         return AllBrandViewHolder(LayoutInflater.from(context).inflate(R.layout.brandlist_all_brand_item, parent, false))
@@ -30,7 +31,7 @@ class AllBrandAdapter(private val context: Context) : RecyclerView.Adapter<AllBr
             loadImageToImageView(brand.logoUrl, it)
         }
         holder.brandImageView?.let {
-            loadImageToImageView(brand.imageUrl, it)
+            loadImageToImageView(brand.exclusiveLogoURL, it)
         }
         holder.brandNameView?.let {
             it.text = brand.name
@@ -46,8 +47,8 @@ class AllBrandAdapter(private val context: Context) : RecyclerView.Adapter<AllBr
                 .into(brandView)
     }
 
-    fun setAllBrands(allBrandList: List<Shop>) {
-        allBrands.addAll(allBrandList)
+    fun updateAllBrands(additionalBrands: List<Brand>) {
+        allBrands.addAll(additionalBrands)
         notifyDataSetChanged()
     }
 

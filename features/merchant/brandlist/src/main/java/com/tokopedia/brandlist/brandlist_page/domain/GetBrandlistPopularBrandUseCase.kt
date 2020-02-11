@@ -12,7 +12,7 @@ import javax.inject.Named
 class GetBrandlistPopularBrandUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
         @Named(GQLQueryConstant.QUERY_BRANDLIST_POPULAR_BRAND) val query: String
-): UseCase<OfficialStoreBrandsRecommendation>() {
+) : UseCase<OfficialStoreBrandsRecommendation>() {
 
     var params: Map<String, Any> = mapOf()
 
@@ -22,7 +22,10 @@ class GetBrandlistPopularBrandUseCase @Inject constructor(
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
         return graphqlResponse.run {
-            getData<BrandlistPopularBrandResponse>(BrandlistPopularBrandResponse::class.java).officialStoreBrandsRecommendation
+            var popularBrands = OfficialStoreBrandsRecommendation()
+            val response = getData<BrandlistPopularBrandResponse>(BrandlistPopularBrandResponse::class.java)
+            if (response != null) popularBrands = response.officialStoreBrandsRecommendation
+            popularBrands
         }
     }
 

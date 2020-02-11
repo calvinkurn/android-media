@@ -23,7 +23,7 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
     init {
         headerView = itemView?.findViewById(R.id.tv_header)
         totalBrandView = itemView?.findViewById(R.id.tv_total_brand)
-        recyclerView = itemView?.findViewById(R.id.rv_new_brand)
+        recyclerView = itemView?.findViewById(R.id.rv_all_brand)
 
         itemView?.context?.let {
             context = it
@@ -35,10 +35,15 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
 
     override fun bind(element: AllBrandViewModel?) {
 
-        headerView?.text = element?.header?.title
+        headerView?.text = "Semua Brand"
+
+        val totalBrandAmount = element?.totalBrands?.toString()
+        totalBrandAmount?.let {
+            totalBrandView?.text = totalBrandAmount + " " + "Brand"
+        }
 
         element?.allBrands?.let {
-            adapter?.setAllBrands(it)
+            adapter?.updateAllBrands(it)
         }
     }
 
