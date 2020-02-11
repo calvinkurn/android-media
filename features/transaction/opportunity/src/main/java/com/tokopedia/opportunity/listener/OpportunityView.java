@@ -1,6 +1,6 @@
 package com.tokopedia.opportunity.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.opportunity.presentation.ActionViewData;
 

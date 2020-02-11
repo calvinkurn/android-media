@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
 import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;

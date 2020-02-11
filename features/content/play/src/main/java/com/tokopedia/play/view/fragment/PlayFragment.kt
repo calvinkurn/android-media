@@ -30,6 +30,7 @@ import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -92,7 +93,6 @@ class PlayFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
-        PlayAnalytics.sendScreen(channelId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -126,8 +126,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.getChannelInfo(channelId)
 
+        observeGetChannelInfo()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoProperty()
@@ -135,6 +135,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -187,27 +188,26 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun observeGetChannelInfo() {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success ->
+                    PlayAnalytics.sendScreen(channelId, playViewModel.isLive)
+            }
+        })
+    }
+
     private fun observeSocketInfo() {
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
             view?.let { view ->
                 if (it == PlaySocketInfo.ERROR) {
                     PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_error), playViewModel.isLive)
-                    Toaster.make(
-                            view,
-                            getString(R.string.play_message_socket_error),
-                            type = Toaster.TYPE_ERROR,
-                            duration = Snackbar.LENGTH_INDEFINITE,
-                            actionText = getString(R.string.play_try_again),
-                            clickListener = View.OnClickListener {
-                                playViewModel.getChannelInfo(channelId)
-                            }
-                    )
                 } else if (it == PlaySocketInfo.RECONNECT) {
                     Toaster.make(
                             view,
                             getString(R.string.play_message_socket_reconnect),
                             type = Toaster.TYPE_ERROR,
-                            duration = Toaster.LENGTH_LONG
+                            duration = Snackbar.LENGTH_LONG
                     )
                 }
             }

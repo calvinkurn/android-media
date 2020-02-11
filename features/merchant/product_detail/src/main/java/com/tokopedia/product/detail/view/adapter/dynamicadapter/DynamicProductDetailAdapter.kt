@@ -13,19 +13,25 @@ class DynamicProductDetailAdapter(
         val listener: DynamicProductDetailListener
 ) : BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
-    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel, payload: Int) {
-        val indexOfSnapshot = list.indexOf(snapshotData)
-        notifyItemChanged(indexOfSnapshot, payload)
+    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int) {
+        snapshotData?.let{
+            val indexOfSnapshot = list.indexOf(it)
+            notifyItemChanged(indexOfSnapshot, payload)
+        }
     }
 
-    fun notifyShopInfo(shopInfoData: ProductShopInfoDataModel, payload: Int) {
-        val indexOfShopInfo = list.indexOf(shopInfoData)
-        notifyItemChanged(indexOfShopInfo, payload)
+    fun notifyShopInfo(shopInfoData: ProductShopInfoDataModel?, payload: Int) {
+        shopInfoData?.let{
+            val indexOfShopInfo = list.indexOf(shopInfoData)
+            notifyItemChanged(indexOfShopInfo, payload)
+        }
     }
 
-    fun notifyShipingInfo(shipingInfo: ProductGeneralInfoDataModel) {
-        val indexOfShipingInfo = list.indexOf(shipingInfo)
-        notifyItemChanged(indexOfShipingInfo)
+    fun notifyShipingInfo(shipingInfo: ProductGeneralInfoDataModel?) {
+        shipingInfo?.let{
+            val indexOfShipingInfo = list.indexOf(it)
+            notifyItemChanged(indexOfShipingInfo)
+        }
     }
 
     fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
@@ -49,15 +55,21 @@ class DynamicProductDetailAdapter(
     }
 
     fun removeDiscussionSection(data: ProductDiscussionDataModel?) {
-        clearElement(data)
+        data?.let {
+            clearElement(it)
+        }
     }
 
     fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
-        clearElement(data)
+        data?.let {
+            clearElement(it)
+        }
     }
 
     fun removeMostHelpfulReviewSection(data: ProductMostHelpfulReviewDataModel?) {
-        clearElement(data)
+        data?.let {
+            clearElement(it)
+        }
     }
 
     fun removeMerchantVoucherSection(data : ProductMerchantVoucherDataModel?) {
@@ -67,7 +79,7 @@ class DynamicProductDetailAdapter(
     }
 
     fun getTradeinPosition(data: ProductGeneralInfoDataModel?): Int {
-        return if(data != null) {
+        return if (data != null) {
             list.indexOf(data)
         } else {
             0

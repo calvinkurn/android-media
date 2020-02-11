@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,12 +44,17 @@ class ProductInfoAdapter(private val listener: DynamicProductDetailListener,
                             listener.onCategoryClicked(data.applink, componentTrackDataModel)
                         }
                         else -> {
-                            listener.onEtalaseClicked(data.applink, componentTrackDataModel)
+                            val uriLink = Uri.parse(data.applink).pathSegments
+
+                            if (uriLink.size >= 2 && uriLink[1] == "etalase") {
+                                listener.onEtalaseClicked(data.applink, componentTrackDataModel)
+                            } else {
+                                listener.goToApplink(data.applink)
+                            }
                         }
                     }
                 }
             }
         }
-
     }
 }

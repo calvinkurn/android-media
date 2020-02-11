@@ -44,7 +44,7 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
 
 
         productStatsView.renderClickShipping {
-            listener.onShipmentClicked(getComponentTrackData(element))
+            listener.onShipmentSocialProofClicked(getComponentTrackData(element))
         }
     }
 

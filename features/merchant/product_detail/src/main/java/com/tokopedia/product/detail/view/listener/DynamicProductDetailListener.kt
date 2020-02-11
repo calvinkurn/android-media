@@ -33,6 +33,7 @@ interface DynamicProductDetailListener {
     fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>, componentTrackDataModel: ComponentTrackDataModel)
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun goToApplink(url: String)
 
     /**
      * ProductDiscussionViewHolder
@@ -58,7 +59,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductSocialProofViewHolder
      */
-    fun onShipmentClicked(componentTrackDataModel: ComponentTrackDataModel)
+    fun onShipmentSocialProofClicked(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductOpenShopViewHolder
