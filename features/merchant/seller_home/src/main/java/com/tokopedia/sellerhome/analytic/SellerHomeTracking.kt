@@ -42,7 +42,7 @@ object SellerHomeTracking {
         val map = createMap(
                 TrackingConstant.CLICK_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                arrayOf(TrackingConstant.CLICK_WIDGET_PROGRESS_BAR, "$dataKey $stateColor", "see more").joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_PROGRESS_BAR, "$dataKey $stateColor", TrackingConstant.SEE_MORE).joinToString(" - "),
                 "$valueScore"
         )
         sendGeneralEvent(map)
@@ -62,7 +62,7 @@ object SellerHomeTracking {
         val map = createMap(
                 TrackingConstant.CLICK_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                arrayOf(TrackingConstant.CLICK_WIDGET_POST, dataKey, "see more").joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_POST, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 ""
         )
         sendGeneralEvent(map)
