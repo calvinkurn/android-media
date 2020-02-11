@@ -14,14 +14,14 @@ import com.tokopedia.tokofix.patch.PatchLogger
 /**
  * Author errysuprayogi on 03,February,2020
  */
-class TokoFix private constructor(private val app: Application) : LifecycleObserver {
+class TokoFix private constructor(private val app: Application, val version: String) : LifecycleObserver {
 
     private val repository: PatchRepository = PatchRepository()
 
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onForegroud() {
-        repository.getPatch("1", this::onSuccessGetPatch)
+        repository.getPatch(version, this::onSuccessGetPatch)
     }
 
     private fun onSuccessGetPatch(data: DataResponse){
@@ -33,8 +33,8 @@ class TokoFix private constructor(private val app: Application) : LifecycleObser
     companion object {
         private val TAG = TokoFix::class.java.simpleName
         @JvmStatic
-        fun init(application: Application) {
-            TokoFix(application)
+        fun init(application: Application, version: String) {
+            TokoFix(application, version)
         }
     }
 

@@ -147,7 +147,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         TimberWrapper.init(this);
         super.onCreate();
-        TokoFix.init(this);
+        TokoFix.init(this, BuildConfig.VERSION_NAME);
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();

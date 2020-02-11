@@ -188,10 +188,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         buttonActivatePowerMerchant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RobustModify.modify();
-//                Toast.makeText(getActivity(), "Coba Toast", Toast.LENGTH_SHORT).show();
-                powerMerchantTracking.eventUpgradeShopHome();
-                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
+                Integer.parseInt("");
             }
         });
 

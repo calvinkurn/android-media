@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
     val webservice by lazy {
         Retrofit.Builder()
-                .baseUrl(Config.BASE_URL)
+                .baseUrl(Config.PATCH_URL)
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
                 .build().create(PatchApiService::class.java)
     }
