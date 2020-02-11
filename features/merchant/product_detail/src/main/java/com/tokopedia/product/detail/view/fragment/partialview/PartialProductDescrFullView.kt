@@ -9,7 +9,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -148,7 +148,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
     }
 
     private fun openCategory(category: Category.Detail) {
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             RouteManager.route(view.context,
                     ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
                     category.id)

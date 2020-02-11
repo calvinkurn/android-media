@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 
 /**

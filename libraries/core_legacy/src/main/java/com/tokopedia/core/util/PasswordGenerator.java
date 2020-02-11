@@ -17,8 +17,7 @@ public class PasswordGenerator {
 	private static final String PG_STORAGE = "PG_STORAGE";
 	private static final String VERSION_STORAGE = "VERSION_STORAGE";
 	private String uniqueID = null;
-	byte[] raw = new byte[] {'r','r','r','r','g','g','g','g','t','t','t','t','t','u','j','k'};   
-	byte[] rawPassword = new byte[] {'t','t','t','t','t','r','r','r','r','g','g','g','g','u','j','k'};   
+	byte[] raw = new byte[] {'r','r','r','r','g','g','g','g','t','t','t','t','t','u','j','k'};
 	
 	public PasswordGenerator(Context context) {
 		this.context = context;

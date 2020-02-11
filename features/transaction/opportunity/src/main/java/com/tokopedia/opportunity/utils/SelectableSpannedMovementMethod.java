@@ -1,4 +1,4 @@
-package com.tokopedia.core.util;
+package com.tokopedia.opportunity.utils;
 
 import android.content.ActivityNotFoundException;
 import android.text.Layout;

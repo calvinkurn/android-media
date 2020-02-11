@@ -7,7 +7,7 @@ import com.chuckerteam.chucker.api.RetentionManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.groupchat.chatroom.data.ChatroomApi
 import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.groupchat.common.di.qualifier.GcpQualifier
