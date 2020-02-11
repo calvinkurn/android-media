@@ -237,6 +237,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.OnBackList
     }
 
     override fun shareTravelLink() {
+            onResume()
             val branchLink = UmrahShare(activity!!)
             branchLink.generateBranchLink(travelAgent,{showLoading()},{hideLoading()})
     }
