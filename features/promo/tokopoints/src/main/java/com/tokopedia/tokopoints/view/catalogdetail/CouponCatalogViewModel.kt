@@ -47,7 +47,7 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
             }
         }) {
             if (it is MessageErrorException) {
-                val errorsMessage = it.message?.split(",")?.get(0)?.split("\\|")?.toTypedArray()
+                val errorsMessage = it.message?.split(",")?.get(0)?.split("|")?.toTypedArray()
                 if (errorsMessage != null && errorsMessage.size >= 3) {
                     val title = errorsMessage[0]
                     val message = errorsMessage[1]
@@ -77,27 +77,30 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
             }
         }) {
             if (it is MessageErrorException) {
-                val errorsMessage = it.message?.split(",")?.get(0)?.split("\\|")?.toTypedArray()
+                val errorsMessage = it.message?.split(",")?.get(0)?.split("|")?.toTypedArray()
                 if (errorsMessage != null && errorsMessage.size > 0) {
                     var desc: String? = null
-                    var title: String? = errorsMessage[0]
+                    var title: String = errorsMessage[0]
                     var validateResponseCode = 0
                     if (errorsMessage.size == 1) {
-                        val rawString = errorsMessage[0]
-                        val rawTitle = rawString.split(".").toTypedArray()[0]
-                        val rawDesc = rawString.split(".").toTypedArray()[1]
-                        if (rawTitle != null && rawTitle.length > 0) {
-                            title = rawTitle
-                        }
-                        if (rawDesc != null && rawDesc.length > 0) {
-                            desc = rawDesc
+                        val rawString = errorsMessage[0].split(".").toTypedArray()
+                        if (rawString.size >= 2) {
+                            val rawTitle = rawString[0]
+                            val rawDesc = rawString[1]
+
+                            if (rawTitle.length > 0) {
+                                title = rawTitle
+                            }
+                            if (rawDesc.length > 0) {
+                                desc = rawDesc
+                            }
                         }
                     }
                     if (errorsMessage.size >= 2) {
                         desc = errorsMessage[1]
                     }
                     if (errorsMessage.size >= 3) validateResponseCode = errorsMessage[2].toInt()
-                    startSaveCouponLiveData.value = ValidationError(ValidateMessageDialog(item, title ?: "", desc ?: "",validateResponseCode))
+                    startSaveCouponLiveData.value = ValidationError(ValidateMessageDialog(item, title , desc ?: "",validateResponseCode))
                 }
             }
         }
@@ -113,7 +116,7 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
             catalogDetailLiveData.value = Loading()
             val response = repository.getcatalogDetail(uniqueCatalogCode)
             val data = response.getData<CatalogDetailOuter>(CatalogDetailOuter::class.java)
-            data?.let { catalogDetailLiveData.value = Success(data.detail) }
+            data?.let { catalogDetailLiveData.value = Success(data.detail!!) }
             handlePointQuery(response.getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java))
         }) {
             catalogDetailLiveData.value = ErrorMessage(it.toString())
@@ -157,10 +160,10 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
                 val errors = it.message?.split(",")
                 if (errors != null && errors.size > 0) {
                     val mesList = errors[0].split("|").toTypedArray()
-                    if (mesList.size == 3) {
+                    if (mesList.size >= 2) {
                         errorTitle = mesList[0]
                         errorMessage = mesList[1]
-                    } else if (mesList.size == 2) {
+                    } else if (mesList.size >= 1) {
                         errorMessage = mesList[0]
                     }
                 }
