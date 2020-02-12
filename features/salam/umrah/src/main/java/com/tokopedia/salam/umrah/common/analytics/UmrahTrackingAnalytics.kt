@@ -581,9 +581,9 @@ class UmrahTrackingAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahTravelAgentClickBack(event: String, categoryEvent: String){
+    fun umrahTravelAgentClickBack(categoryEvent: String){
         val map = mutableMapOf<String, Any?>()
-        map[TrackAppUtils.EVENT] = event
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_CLICK_UMROH
         map[TrackAppUtils.EVENT_CATEGORY] = categoryEvent
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_BACK
         map[TrackAppUtils.EVENT_LABEL] = ""
@@ -592,9 +592,9 @@ class UmrahTrackingAnalytics {
     }
 
 
-    fun umrahTravelAgentClickInfo(event:String, categoryEvent: String){
+    fun umrahTravelAgentClickInfo(categoryEvent: String){
         val map = mutableMapOf<String, Any?>()
-        map[TrackAppUtils.EVENT] = event
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_CLICK_UMROH
         map[TrackAppUtils.EVENT_CATEGORY] = categoryEvent
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_INFO
         map[TrackAppUtils.EVENT_LABEL] = ""
@@ -604,7 +604,7 @@ class UmrahTrackingAnalytics {
 
     fun umrahTravelAgentClickSelengkapnya(){
         val map = mutableMapOf<String, Any?>()
-        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_CLICK_UMROH
         map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_TRAVEL_PAGE_INFO_CATEGORY
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_MORE
         map[TrackAppUtils.EVENT_LABEL] = ""
@@ -612,9 +612,9 @@ class UmrahTrackingAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahTravelAgentClickPacketUmroh(event: String, categoryEvent: String){
+    fun umrahTravelAgentClickPacketUmroh(categoryEvent: String){
         val map = mutableMapOf<String, Any?>()
-        map[TrackAppUtils.EVENT] = event
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_CLICK_UMROH
         map[TrackAppUtils.EVENT_CATEGORY] = categoryEvent
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_PACKET
         map[TrackAppUtils.EVENT_LABEL] = ""

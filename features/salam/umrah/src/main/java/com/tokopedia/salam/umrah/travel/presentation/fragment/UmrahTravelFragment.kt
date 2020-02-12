@@ -166,8 +166,8 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
                     when (position) {
                         POSITION_PRODUCT -> {
                             if (getPositionBeforeChange() == POSITION_GALLERY)
-                                umrahTrackingUtil.umrahTravelAgentClickPacketUmroh(UMRAH_CLICK_EVENT, getEventCategoryTracking(POSITION_GALLERY))
-                            else umrahTrackingUtil.umrahTravelAgentClickPacketUmroh("", getEventCategoryTracking(POSITION_PRODUCT))
+                                umrahTrackingUtil.umrahTravelAgentClickPacketUmroh(getEventCategoryTracking(POSITION_GALLERY))
+                            else umrahTrackingUtil.umrahTravelAgentClickPacketUmroh(getEventCategoryTracking(POSITION_PRODUCT))
 
                             setPositionBeforeChange(position)
                         }
@@ -181,8 +181,8 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
                         }
                         POSITION_INFO -> {
                             if (getPositionBeforeChange() == POSITION_GALLERY)
-                                umrahTrackingUtil.umrahTravelAgentClickInfo(UMRAH_CLICK_EVENT, getEventCategoryTracking(POSITION_GALLERY))
-                            else umrahTrackingUtil.umrahTravelAgentClickInfo("", getEventCategoryTracking(POSITION_PRODUCT))
+                                umrahTrackingUtil.umrahTravelAgentClickInfo(getEventCategoryTracking(POSITION_GALLERY))
+                            else umrahTrackingUtil.umrahTravelAgentClickInfo(getEventCategoryTracking(POSITION_PRODUCT))
 
                             setPositionBeforeChange(position)
                         }
@@ -265,8 +265,8 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     override fun onBackPressed() {
         if (!isDetached) {
             if (getCurrentPositionViewPager() == POSITION_GALLERY)
-                umrahTrackingUtil.umrahTravelAgentClickBack(UMRAH_CLICK_EVENT, UMRAH_TRAVEL_PAGE_GALERY_CATEGORY)
-            else umrahTrackingUtil.umrahTravelAgentClickBack("", UMRAH_TRAVEL_PAGE_CATEGORY)
+                umrahTrackingUtil.umrahTravelAgentClickBack(UMRAH_TRAVEL_PAGE_GALERY_CATEGORY)
+            else umrahTrackingUtil.umrahTravelAgentClickBack(UMRAH_TRAVEL_PAGE_CATEGORY)
         }
     }
 
