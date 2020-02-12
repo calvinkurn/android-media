@@ -14,11 +14,14 @@ class AddAddressSubscriber(val view: AddEditAddressListener,
                            val mapper: AddAddressMapper,
                            val saveAddressDataModel: SaveAddressDataModel,
                            val typeForm: String): Subscriber<GraphqlResponse>() {
+
+    private val LOGISTIC_LABEL = "logistic"
+
     override fun onNext(t: GraphqlResponse?) {
         if (typeForm.equals(ANA_POSITIVE, true)) {
-            AddNewAddressAnalytics.eventClickButtonSimpanSuccess()
+            AddNewAddressAnalytics.eventClickButtonSimpanSuccess(eventLabel = LOGISTIC_LABEL)
         } else {
-            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(eventLabel = LOGISTIC_LABEL)
         }
 
         val response = mapper.map(t)
@@ -35,9 +38,9 @@ class AddAddressSubscriber(val view: AddEditAddressListener,
 
     override fun onError(e: Throwable?) {
         if (typeForm.equals(ANA_POSITIVE, true)) {
-            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e?.printStackTrace().toString())
+            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e?.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
         } else {
-            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e?.printStackTrace().toString())
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e?.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
         }
         e?.printStackTrace()
     }

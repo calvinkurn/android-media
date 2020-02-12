@@ -162,12 +162,12 @@ object AddNewAddressAnalytics {
         sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BACK_ARROW_ON_POSITIVE_PAGE, eventLabel)
     }
 
-    fun eventClickButtonSimpanSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, POSITIVE_SUCCESS)
+    fun eventClickButtonSimpanSuccess(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_SUCCESS - $eventLabel")
     }
 
-    fun eventClickButtonSimpanNotSuccess(errorField: String) {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_NOT_SUCCESS - $errorField")
+    fun eventClickButtonSimpanNotSuccess(errorField: String, eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_NOT_SUCCESS - $errorField - $eventLabel")
     }
 
     fun eventViewFailedPinPointNotification(eventLabel: String) {
@@ -234,11 +234,11 @@ object AddNewAddressAnalytics {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BACK_ARROW_ON_NEGATIVE_PAGE)
     }
 
-    fun eventClickButtonSimpanNegativeSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, NEGATIVE_SUCCESS)
+    fun eventClickButtonSimpanNegativeSuccess(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$NEGATIVE_SUCCESS - $eventLabel")
     }
 
-    fun eventClickButtonSimpanNegativeNotSuccess(errorField: String) {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_SIMPAN, "$NEGATIVE_NOT_SUCCESS - $errorField")
+    fun eventClickButtonSimpanNegativeNotSuccess(errorField: String, eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_SIMPAN, "$NEGATIVE_NOT_SUCCESS - $errorField - $eventLabel")
     }
 }
