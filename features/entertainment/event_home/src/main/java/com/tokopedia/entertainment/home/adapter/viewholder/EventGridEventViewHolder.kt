@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,10 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_i
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridEventViewHolder(itemView: View, action:((EventItemModel) -> Unit)): HomeEventViewHolder<EventGridViewModel>(itemView) {
+class EventGridEventViewHolder(itemView: View, action:((data: EventItemModel,
+                                                        onSuccess: (EventItemModel)->Unit,
+                                                        onError: (Throwable)->Unit) -> Unit))
+    : HomeEventViewHolder<EventGridViewModel>(itemView) {
 
     var itemAdapter = ItemAdapter(action)
 
@@ -38,9 +42,13 @@ class EventGridEventViewHolder(itemView: View, action:((EventItemModel) -> Unit)
         @LayoutRes
         @kotlin.jvm.JvmField
         var LAYOUT: Int = R.layout.ent_layout_viewholder_event_grid
+        val TAG = EventGridEventViewHolder::class.java.simpleName
     }
 
-    class ItemAdapter(val action:((EventItemModel) -> Unit)) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    class ItemAdapter(val action:(data: EventItemModel,
+                                  onSuccess: (EventItemModel)->Unit,
+                                  onError: (Throwable)->Unit) -> Unit)
+        : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -48,7 +56,8 @@ class EventGridEventViewHolder(itemView: View, action:((EventItemModel) -> Unit)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_layout_viewholder_event_grid_adapter_item, parent, false)
+                    .inflate(R.layout.ent_layout_viewholder_event_grid_adapter_item, parent,
+                            false)
             return ItemViewHolder(view)
         }
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
@@ -66,9 +75,20 @@ class EventGridEventViewHolder(itemView: View, action:((EventItemModel) -> Unit)
                 RouteManager.route(holder.view.context, item.appUrl)
             }
             holder.view.iv_favorite.setOnClickListener {
-                action.invoke(item)
+                action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
             }
         }
+
+        fun onSuccessPostLiked(data: EventItemModel){
+
+            notifyDataSetChanged()
+        }
+
+        fun onErrorPostLiked(throwable: Throwable){
+            notifyDataSetChanged()
+            Log.e(TAG, throwable.localizedMessage)
+        }
+
         override fun getItemCount() = items.size
     }
 

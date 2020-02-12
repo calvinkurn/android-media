@@ -83,9 +83,10 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         }
     }
 
-    private fun actionItemAdapter(item: EventItemModel) {
+    private fun actionItemAdapter(item: EventItemModel, onSuccessPostLike: ((EventItemModel) -> Unit),
+                                  onErrorPostLike: ((Throwable) -> Unit)) {
         if(userSession.isLoggedIn) {
-            viewModel.postLiked(item, ::onSuccessPostLiked, ::onErrorGetData)
+            viewModel.postLiked(item, onSuccessPostLike, onErrorPostLike)
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_POST_LIKES)
         }
@@ -99,10 +100,6 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     private fun onErrorGetData(throwable: Throwable){
         Log.e(TAG, throwable.localizedMessage)
-    }
-
-    private fun onSuccessPostLiked(data: ActionLikedResponse.Data){
-
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {

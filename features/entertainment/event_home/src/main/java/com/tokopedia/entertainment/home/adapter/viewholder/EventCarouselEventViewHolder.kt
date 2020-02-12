@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselViewModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
+import com.tokopedia.entertainment.home.fragment.EventHomeFragment
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
 import java.text.SimpleDateFormat
@@ -20,13 +22,17 @@ import java.util.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventCarouselEventViewHolder(itemView: View, action:((EventItemModel) -> Unit)): HomeEventViewHolder<EventCarouselViewModel>(itemView) {
+class EventCarouselEventViewHolder(itemView: View, action:((data: EventItemModel,
+                                                            onSuccess: (EventItemModel)->Unit,
+                                                            onError: (Throwable)->Unit) -> Unit))
+    : HomeEventViewHolder<EventCarouselViewModel>(itemView) {
 
     var itemAdapter = ItemAdapter(action)
 
     init {
         itemView.ent_recycle_view.apply {
-            layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL,
+                    false)
             adapter = itemAdapter
         }
     }
@@ -39,9 +45,13 @@ class EventCarouselEventViewHolder(itemView: View, action:((EventItemModel) -> U
         @LayoutRes
         @kotlin.jvm.JvmField
         var LAYOUT: Int = R.layout.ent_layout_viewholder_event_carouse
+        val TAG = EventCarouselEventViewHolder::class.java.simpleName
     }
 
-    class ItemAdapter(val action:((EventItemModel) -> Unit)) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    class ItemAdapter(val action:(data: EventItemModel,
+                                  onSuccess: (EventItemModel)->Unit,
+                                  onError: (Throwable)->Unit) -> Unit)
+        : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -51,7 +61,8 @@ class EventCarouselEventViewHolder(itemView: View, action:((EventItemModel) -> U
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_layout_viewholder_event_carousel_adapter_item, parent, false)
+                    .inflate(R.layout.ent_layout_viewholder_event_carousel_adapter_item, parent,
+                            false)
             return ItemViewHolder(view)
         }
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
@@ -70,8 +81,17 @@ class EventCarouselEventViewHolder(itemView: View, action:((EventItemModel) -> U
                 RouteManager.route(holder.view.context, item.appUrl)
             }
             holder.view.iv_favorite.setOnClickListener {
-                action.invoke(item)
+                action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
             }
+        }
+
+        fun onSuccessPostLiked(data: EventItemModel){
+            notifyDataSetChanged()
+        }
+
+        fun onErrorPostLiked(throwable: Throwable){
+            notifyDataSetChanged()
+            Log.e(TAG, throwable.localizedMessage)
         }
 
         private fun formatedSchedule(schedule: String): String? {

@@ -65,9 +65,9 @@ data class EventHomeDataResponse(
                         @SerializedName("display_name")
                         val displayName: String = "",
                         @SerializedName("id")
-                        val id: String = "",
+                        val id: Int = 0,
                         @SerializedName("rating")
-                        val rating: String = "",
+                        val rating: Int = 0,
                         @SerializedName("image_app")
                         val imageApp: String = "",
                         @SerializedName("location")

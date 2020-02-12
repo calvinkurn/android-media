@@ -41,13 +41,13 @@ class HomeEventViewModel @Inject constructor(
         private val restRepository: RestRepository,
         private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
-    companion object{
+    companion object {
         val TAG = HomeEventViewModel::class.java.simpleName
         val CATEGORY = "category"
     }
 
     fun getHomeData(v: FragmentView, onSuccess: ((MutableList<HomeEventItem<*>>) -> Unit),
-                    onError: ((Throwable) -> Unit), cacheType: CacheType){
+                    onError: ((Throwable) -> Unit), cacheType: CacheType) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(
@@ -65,26 +65,31 @@ class HomeEventViewModel @Inject constructor(
         }
     }
 
-    fun postLiked(item: EventItemModel, onSuccessPostLike: ((ActionLikedResponse.Data) -> Unit),
+    fun postLiked(item: EventItemModel, onSuccessPostLike: ((EventItemModel) -> Unit),
                   onErrorPostLike: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val result = withContext(Dispatchers.IO){
+                    val result = withContext(Dispatchers.IO) {
+                        val copy = item.copy(isLiked = item.isLiked != true)
                         val actionLikedRequest = ActionLikedRequest(ActionLikedRequest.Rating(
-                            "", item.isLiked.toString(), item.produkId, item.rating,
+                                "", copy.isLiked.toString(), item.produkId, item.rating,
                                 userSession.userId.toIntOrZero()
                         ))
                         val headers = HashMap<String, String>()
                         headers.put("Content-Type", "application/json")
                         val restRequest = RestRequest.Builder(BASE_REST_URL + PATH_EVENTS_LIKES,
-                                object : TypeToken<ActionLikedRequest>() {}.type)
+                                object : TypeToken<ActionLikedResponse>() {}.type)
                                 .setBody(Gson().toJson(actionLikedRequest))
                                 .setHeaders(headers)
                                 .setRequestType(RequestType.POST)
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    (result.getData() as ActionLikedResponse).data?.apply(onSuccessPostLike)
+                    var data = (result.getData() as ActionLikedResponse).data
+                    data?.let {
+                        item.isLiked = it.isLiked
+                        onSuccessPostLike(item)
+                    }
                 },
                 onError = {
                     onErrorPostLike(it)
@@ -95,7 +100,7 @@ class HomeEventViewModel @Inject constructor(
     private fun mappingItem(data: EventHomeDataResponse.Data): MutableList<HomeEventItem<*>> {
         val items: MutableList<HomeEventItem<*>> = mutableListOf()
         val layouts = data.eventHome.layout
-        val bannerItem: EventHomeDataResponse.Data.EventHome.Layout? = layouts.find { it.id.toInt() == 0}
+        val bannerItem: EventHomeDataResponse.Data.EventHome.Layout? = layouts.find { it.id.toInt() == 0 }
         bannerItem?.let {
             items.add(BannerViewModel(it))
             layouts.remove(it)
@@ -103,12 +108,12 @@ class HomeEventViewModel @Inject constructor(
         items.add(CategoryViewModel(data.eventChildCategory))
         layouts.let {
             it.forEachIndexed { index, it ->
-                if(index == 2){
+                if (index == 2) {
                     items.add(EventLocationViewModel(data.eventLocationSearch))
                 }
-                if(it.isCard==1){
+                if (it.isCard == 1) {
                     items.add(EventCarouselViewModel(it))
-                } else{
+                } else {
                     items.add(EventGridViewModel(it))
                 }
             }

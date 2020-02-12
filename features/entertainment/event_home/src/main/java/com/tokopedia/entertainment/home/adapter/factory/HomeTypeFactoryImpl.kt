@@ -9,7 +9,9 @@ import com.tokopedia.entertainment.home.adapter.viewmodel.*
 /**
  * Author errysuprayogi on 29,January,2020
  */
-class HomeTypeFactoryImpl(val action:((EventItemModel) -> Unit)) : HomeTypeFactory {
+class HomeTypeFactoryImpl(val action:((data: EventItemModel,
+                                       onSuccess: (EventItemModel)->Unit,
+                                       onError: (Throwable)->Unit) -> Unit)) : HomeTypeFactory {
 
     override fun type(viewModel: BannerViewModel): Int {
         return BannerEventViewHolder.LAYOUT
