@@ -8,7 +8,6 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.util.MethodChecker;
 
 public class DestinationViewModel {
