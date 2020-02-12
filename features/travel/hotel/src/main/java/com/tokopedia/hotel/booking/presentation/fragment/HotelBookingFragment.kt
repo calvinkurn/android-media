@@ -380,7 +380,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun setupContactDetail(cart: HotelCartData) {
         // Check if contact data is empty
-        if (hotelBookingPageModel.contactData.isEmpty()) {
+        if (hotelBookingPageModel.contactData.isEmpty() || hotelBookingPageModel.contactData.email.isEmpty()) {
             val initContactData = cart.contact
             hotelBookingPageModel.contactData = TravelContactData(
                     name = initContactData.name,
