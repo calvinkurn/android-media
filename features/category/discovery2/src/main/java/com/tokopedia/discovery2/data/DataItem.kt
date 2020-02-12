@@ -120,7 +120,10 @@ data class DataItem(
         var sizeMobile: String? = "",
 
         @SerializedName("background")
-        var background: String? = ""
+        var background: String? = "",
+
+        @SerializedName("video_id")
+        val videoId: String? = ""
 
 ) {
     val leftMargin: Int

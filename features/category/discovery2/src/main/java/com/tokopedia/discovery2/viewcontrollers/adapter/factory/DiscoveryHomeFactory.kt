@@ -11,6 +11,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.BannerTimerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.BannerTimerViewModel
@@ -49,6 +51,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.DoubleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
             initializeComponent(ComponentsList.TripleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
             initializeComponent(ComponentsList.QuadrupleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
+            initializeComponent(ComponentsList.YouTubeView, ::YoutubeViewViewHolder, ::YouTubeViewViewModel)
             initializeComponent(ComponentsList.CategoryNavigation, ::CategoryNavigationViewHolder, ::CategoryNavigationViewModel)
             initializeComponent(ComponentsList.CategoryNavigationIem, ::CategoryNavigationItemViewHolder, ::CategoryNavigationItemViewModel)
             initializeComponent(ComponentsList.YouTubeView, ::ComingSoonViewHolder, ::ComingSoonViewModel)
