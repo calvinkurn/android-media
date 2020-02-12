@@ -661,4 +661,14 @@ class UmrahTrackingAnalytics {
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
+
+    fun umrahTravelAgentThreeDots(eventCategory: String, eventLabel: String){
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT_CATEGORY] = eventCategory
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_ACTION_THREE_DOTS
+        map[TrackAppUtils.EVENT_LABEL] = eventLabel
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
 }

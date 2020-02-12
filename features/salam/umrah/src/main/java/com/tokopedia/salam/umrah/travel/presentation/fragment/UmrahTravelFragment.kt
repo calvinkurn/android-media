@@ -237,6 +237,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
         view.apply {
             tg_umrah_permission_desc.text = getString(R.string.umrah_travel_permission_desc, permissionUmrah)
             btn_travel_permission_close.setOnClickListener {
+                umrahTrackingUtil.umrahTravelAgentCloseVerification()
                 permissionBottomSheet.dismiss()
             }
         }
@@ -270,9 +271,18 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     }
 
     override fun shareTravelLink() {
+        umrahTrackingUtil.umrahTravelAgentThreeDots(getEventCategoryTracking(getCurrentPositionViewPager()),UMRAH_TRAVEL_THREE_DOT_SHARE)
         activity?.run {
             UmrahShare(this).share(travelAgent, { showLoading() }, { hideLoading() })
         }
+    }
+
+    override fun clickHelp() {
+        umrahTrackingUtil.umrahTravelAgentThreeDots(getEventCategoryTracking(getCurrentPositionViewPager()),UMRAH_TRAVEL_THREE_DOT_HELP)
+    }
+
+    override fun clickSalam() {
+        umrahTrackingUtil.umrahTravelAgentThreeDots(getEventCategoryTracking(getCurrentPositionViewPager()), UMRAH_TRAVEL_THREE_DOT_SALAM)
     }
 
     fun getCurrentPositionViewPager(): Int {

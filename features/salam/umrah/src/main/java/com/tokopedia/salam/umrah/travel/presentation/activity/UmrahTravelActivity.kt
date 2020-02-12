@@ -20,9 +20,21 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
     private var slugName: String = ""
 
     override fun getMenuButton(): Int = R.menu.umrah_base_menu
-    override fun shareLink() {
+    override fun onClickShare() {
         if (fragment is TravelListener) {
             (fragment as TravelListener).shareTravelLink()
+        }
+    }
+
+    override fun onClickSalam() {
+        if (fragment is TravelListener) {
+            (fragment as TravelListener).clickSalam()
+        }
+    }
+
+    override fun onClickHelp() {
+        if (fragment is TravelListener) {
+            (fragment as TravelListener).clickHelp()
         }
     }
 
@@ -67,5 +79,7 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
     interface TravelListener {
         fun onBackPressed()
         fun shareTravelLink()
+        fun clickHelp()
+        fun clickSalam()
     }
 }

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
+import com.tokopedia.salam.umrah.common.presentation.widget.TruncateDescriptionWidget
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragment.Companion.EXTRA_SLUGNAME
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelInfoViewModel
@@ -20,7 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_umrah_travel_agent_info.*
 import javax.inject.Inject
 
-class UmrahTravelAgentInfoFragment : BaseDaggerFragment() {
+class UmrahTravelAgentInfoFragment : BaseDaggerFragment(), TruncateDescriptionWidget.TruncateDescriptionTrackingListener {
 
     var travelAgent: TravelAgent = TravelAgent()
 
@@ -58,7 +59,7 @@ class UmrahTravelAgentInfoFragment : BaseDaggerFragment() {
     fun buildDesc(desc: String) {
         tv_umrah_travel_info_desc.truncateDescription = true
         tv_umrah_travel_info_desc.setDescription(desc)
-        tv_umrah_travel_info_desc.buildView()
+        tv_umrah_travel_info_desc.buildView(this)
     }
 
 
@@ -92,6 +93,9 @@ class UmrahTravelAgentInfoFragment : BaseDaggerFragment() {
         })
     }
 
+    override fun onClicked() {
+        umrahTrackingUtil.umrahTravelAgentClickSelengkapnya()
+    }
 
     companion object {
         fun createInstance(slugName: String) =

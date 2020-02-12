@@ -32,7 +32,15 @@ class UmrahPdpActivity : UmrahBaseActivity(), HasComponent<UmrahPdpComponent> {
     }
 
     override fun getMenuButton() = R.menu.umrah_base_menu_white
-    override fun shareLink(){
+    override fun onClickSalam() {
+
+    }
+
+    override fun onClickHelp() {
+
+    }
+
+    override fun onClickShare() {
 
     }
 

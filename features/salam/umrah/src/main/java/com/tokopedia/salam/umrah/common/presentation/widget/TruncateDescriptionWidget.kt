@@ -10,15 +10,16 @@ import kotlinx.android.synthetic.main.widget_truncate_desc.view.*
 
 class TruncateDescriptionWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         BaseCustomView(context, attrs, defStyleAttr) {
-
     var descriptionLineCount = INFO_DESC_DEFAULT_LINE_COUNT
     var truncateDescription = SHOW_DESC
+    lateinit var trackingListener: TruncateDescriptionTrackingListener
 
     var truncateDescriptionListener: TruncateDescriptionListener? = null
         set(value) {
             field = value
             truncateDescriptionListener?.let { truncateDescriptionListener ->
                 tg_load_more.setOnClickListener {
+                    trackingListener.onClicked()
                     truncateDescriptionListener.onMoreClicked(truncateDescription)
                 }
             }
@@ -59,7 +60,8 @@ class TruncateDescriptionWidget @JvmOverloads constructor(context: Context, attr
         tg_desc.text = desc
     }
 
-    fun buildView(){
+    fun buildView(listener: TruncateDescriptionTrackingListener){
+        trackingListener = listener
         visibility = View.VISIBLE
         if(truncateDescription){
             buildTruncate()
@@ -89,6 +91,10 @@ class TruncateDescriptionWidget @JvmOverloads constructor(context: Context, attr
 
     interface TruncateDescriptionListener {
         fun onMoreClicked(toogle: Boolean)
+    }
+
+    interface TruncateDescriptionTrackingListener{
+        fun onClicked()
     }
 
     companion object {
