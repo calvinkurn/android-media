@@ -28,8 +28,10 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
-    @Inject lateinit var checkPushStatusUseCase:CheckPushStatusUseCase
-    @Inject lateinit var subScribeToUseCase: SubScribeToUseCase
+    @Inject
+    lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
+    @Inject
+    lateinit var subScribeToUseCase: SubScribeToUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -46,7 +48,8 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
                 .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-   }
+    }
+
     fun getComponentData() = bannerData
     fun getPushBannerStatusData() = pushBannerStatus
     fun getshowLoginData() = showLogin
@@ -59,6 +62,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
             BannerAction.APPLINK.name -> navigation(position)
             BannerAction.CODE.name -> copyCodeToClipboard(position)
             BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
+            else -> navigation(position)
         }
     }
 
@@ -70,7 +74,9 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
     }
 
     private fun navigation(position: Int) {
-        RouteManager.route(application, bannerData.value?.data?.get(position)?.applinks)
+        if (!bannerData.value?.data?.get(position)?.applinks.isNullOrEmpty()) {
+            RouteManager.route(application, bannerData.value?.data?.get(position)?.applinks)
+        }
     }
 
     private fun subscribeUserForPushNotification(position: Int) {
@@ -78,8 +84,8 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
             launchCatchError(block = {
                 val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(getCampaignId(position))
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
-                pushBannerStatus.value = position
-            }
+                    pushBannerStatus.value = position
+                }
             }, onError = {
                 it.printStackTrace()
             })
@@ -88,7 +94,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
         }
     }
 
-     fun isUserLoggedIn():Boolean{
+    fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
 
     }
