@@ -142,8 +142,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     }
                 }
                 is Fail -> {
-                    if (it.throwable.message == ERROR_VERIFIED_PHONE) {
-                        navigateToOtp()
+                    if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
+                        navigateToAddPhonePage()
                     } else {
                         NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
@@ -379,7 +379,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     hotelAddCartParam)
         } else {
-            goToLoginPage()
+            navigateToLoginPage()
         }
     }
 
@@ -387,7 +387,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
     }
 
-    fun goToLoginPage() {
+    private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -402,7 +402,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         adapter.showErrorNetwork()
     }
 
-    private fun navigateToOtp() {
+    private fun navigateToAddPhonePage() {
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
@@ -421,8 +421,6 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         const val ARG_DESTINATION_NAME = "arg_destination_name"
         const val TAG_GUEST_INFO = "guestHotelInfo"
         const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
-
-        const val ERROR_VERIFIED_PHONE = "PhoneNotVerified"
 
         fun createInstance(propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
                            totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0,
