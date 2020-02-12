@@ -118,6 +118,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
 
+    override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
