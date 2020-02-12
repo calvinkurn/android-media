@@ -90,8 +90,8 @@ object AddNewAddressAnalytics {
         sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS, VIEW_ERROR_ALAMAT_TIDAK_VALID, eventLabel)
     }
 
-    fun eventClickBackArrowOnInputAddress() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_INPUT_ADDRESS)
+    fun eventClickBackArrowOnInputAddress(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_INPUT_ADDRESS, eventLabel)
     }
 
     fun eventClickFieldCariLokasi(eventLabel: String) {
@@ -102,8 +102,8 @@ object AddNewAddressAnalytics {
         sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_MAGNIFIER, eventLabel)
     }
 
-    fun eventClickAddressSuggestionFromSuggestionList() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_ADDRESS_SUGGESTION_FROM_SUGGESTION_LIST)
+    fun eventClickAddressSuggestionFromSuggestionList(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_ADDRESS_SUGGESTION_FROM_SUGGESTION_LIST, eventLabel)
     }
 
     fun eventClickButtonPilihLokasi(eventLabel: String) {

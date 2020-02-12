@@ -181,7 +181,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress()
+            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(eventLabel = LOGISTIC_LABEL)
             onCloseButtonClick()
         }
     }
@@ -254,7 +254,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             actionListener.onGetPlaceId(placeId)
             dismiss()
         }
-        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList()
+        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(eventLabel = LOGISTIC_LABEL)
     }
 
     private fun showLocationInfoBottomSheet() {
