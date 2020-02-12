@@ -31,7 +31,6 @@ import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.di.ActivityContext;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
 import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillResponseUiModel;
 import com.tokopedia.logisticaddaddress.utils.LocationCache;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -104,8 +103,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     public void setUpVariables(LocationPass locationPass, boolean hasLocation) {
         this.locationPass = locationPass;
         this.hasLocation = hasLocation;
-        if(hasLocation)
-        {
+        if (hasLocation) {
             Location location = new Location(LocationManager.NETWORK_PROVIDER);
             location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
             location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
@@ -125,6 +123,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private void getExistingLocation() {
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
+
     private void checkLocationSettings() {
         LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);

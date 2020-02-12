@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillResponseUiModel
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill
 import javax.inject.Inject

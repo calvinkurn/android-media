@@ -1,12 +1,8 @@
 package com.tokopedia.logisticaddaddress.di;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
-import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressContract;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
@@ -31,7 +27,7 @@ public class AddressModule {
     @AddressScope
     AddressRepository provideAddressRepository(
             @LogisticPeopleActApiQualifier PeopleActApi peopleActApi
-    ){
+    ) {
         return new AddAddressRetrofitInteractorImpl(peopleActApi);
     }
 
@@ -45,7 +41,7 @@ public class AddressModule {
 
     @Provides
     @AddressScope
-    PerformanceMonitoring providePerformanceMonitoring(){
+    PerformanceMonitoring providePerformanceMonitoring() {
         return new PerformanceMonitoring();
     }
 

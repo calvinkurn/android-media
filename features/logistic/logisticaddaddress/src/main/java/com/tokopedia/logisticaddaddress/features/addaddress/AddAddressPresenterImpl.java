@@ -5,8 +5,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
-import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillResponseUiModel;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
