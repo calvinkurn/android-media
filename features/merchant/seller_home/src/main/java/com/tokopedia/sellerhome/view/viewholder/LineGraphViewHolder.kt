@@ -54,12 +54,8 @@ class LineGraphViewHolder(
         val colors = intArrayOf(context.getResColor(R.color.sah_green_light), Color.TRANSPARENT)
         lineGraphView.setGradientFillColors(colors)
 
-        if (null != data) {
+        if (null != data)
             setupTooltip(element)
-            itemView.addOnImpressionListener(element.impressHolder) {
-                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header ?: "")
-            }
-        }
     }
 
     private fun openAppLink(appLink: String, dataKey: String, value: String) {
@@ -144,6 +140,10 @@ class LineGraphViewHolder(
             btnLineGraphNext.setOnClickListener {
                 openAppLink(element.appLink, element.dataKey, element.data?.header ?: "")
             }
+        }
+
+        itemView.addOnImpressionListener(element.impressHolder) {
+            SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header ?: "")
         }
 
         if (isShown)
