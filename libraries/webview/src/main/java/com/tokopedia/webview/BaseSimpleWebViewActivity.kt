@@ -53,24 +53,25 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
             title = getString(KEY_TITLE, DEFAULT_TITLE)
         }
+
         intent.data?.run {
             url = getEncodedParameterUrl(this)
 
             val needTitleBar = getQueryParameter(KEY_TITLEBAR)
             needTitleBar?.let {
-                showTitleBar = getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
+                showTitleBar = it.toBoolean();
             }
 
             val needOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)
             needOverride?.let {
-                allowOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
+                allowOverride = it.toBoolean();
             }
 
             val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
             isLoginRequire?.let { needLogin = isLoginRequire.toBoolean() }
 
             val needTitle = getQueryParameter(KEY_TITLE)
-            needTitle?.let { title = getQueryParameter(KEY_TITLE) ?: DEFAULT_TITLE }
+            needTitle?.let { title = it }
         }
     }
 
