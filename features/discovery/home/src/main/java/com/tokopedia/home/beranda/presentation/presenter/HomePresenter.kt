@@ -366,6 +366,7 @@ open class HomePresenter (
                     .subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .timeout(3, TimeUnit.SECONDS)
                     .subscribe(TokocashHomeSubscriber(this)))
         }
 
@@ -374,15 +375,16 @@ open class HomePresenter (
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .timeout(3, TimeUnit.SECONDS)
                 .subscribe(PendingCashbackHomeSubscriber(this)))
     }
 
     fun getTokopoint(){
-        val graphqlResponseObservable = tokopointsObservable
-        if (graphqlResponseObservable != null) {
-            compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
+        tokopointsObservable?.let {
+            compositeSubscription.add(it.subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .timeout(3, TimeUnit.SECONDS)
                     .subscribe(TokopointHomeSubscriber(this)))
         }
     }
