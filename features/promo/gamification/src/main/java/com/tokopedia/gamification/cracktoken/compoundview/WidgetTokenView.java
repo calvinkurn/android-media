@@ -156,7 +156,7 @@ public class WidgetTokenView extends FrameLayout {
             int screenHeight = getContext().getResources().getDisplayMetrics().heightPixels - getStatusBarHeight();
             imageMarginTop = (int) (screenHeight - (screenHeight * TokenMarginUtil.RATIO_IMAGE_MARGIN_TOP));
         } else {
-            float baseDrawableHeight = 2701f;
+            float baseDrawableHeight = TokenMarginUtil.BASE_DRAWABLE_HEIGHT;
             float baseStageHeight = TokenMarginUtil.STAGE_PIXEL;
             float point = drawableHeight / (baseDrawableHeight / baseStageHeight);
             imageMarginTop = (int) ((point * scaleFactor) - imageHeight + translation);
