@@ -62,7 +62,6 @@ class UmrahShare(val activity: Activity) {
         linkerData.description = data.name
         linkerData.ogUrl = null
         linkerData.imgUri = data.imageUrl
-        linkerData.type = LinkerData.PRODUCT_TYPE
         linkerData.uri = activity.resources.getString(R.string.umrah_agen_link_share, data.slugName)
         linkerData.deepLink = activity.resources.getString(R.string.umrah_agen_deeplink_share, data.slugName)
 
