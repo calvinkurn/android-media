@@ -146,6 +146,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         });
         registerActivityLifecycleCallbacks(shakeSubscriber);
+
+        NFCSubscriber nfcSubscriber = NFCSubscriber.Companion.newInstance();
+        registerActivityLifecycleCallbacks(nfcSubscriber);
     }
 
     private void createAndCallPreSeq(){
@@ -543,5 +546,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
+    }
+
+    @Override
+    public void onNewIntent(Context context, Intent intent) {
+        NFCSubscriber.onNewIntent(context, intent);
     }
 }

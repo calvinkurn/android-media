@@ -10,7 +10,7 @@ import android.os.Bundle
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 
-class NFCSubscriber: Application.ActivityLifecycleCallbacks, OnNewIntentListener {
+class NFCSubscriber: Application.ActivityLifecycleCallbacks {
 
     private lateinit var nfcAdapter: NfcAdapter
     private lateinit var pendingIntent: PendingIntent
@@ -19,6 +19,17 @@ class NFCSubscriber: Application.ActivityLifecycleCallbacks, OnNewIntentListener
 
         fun newInstance(): NFCSubscriber {
             return NFCSubscriber()
+        }
+
+        @JvmStatic
+        fun onNewIntent(context: Context, intent: Intent) {
+            if (intent != null &&
+                    (intent.action == NfcAdapter.ACTION_TAG_DISCOVERED || intent.action == NfcAdapter.ACTION_TECH_DISCOVERED)) {
+                val newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMARTCARD, "calling_from_nfc")
+                newIntent.putExtras(intent.extras)
+                newIntent.action = intent.action
+                context.startActivity(newIntent)
+            }
         }
 
     }
@@ -48,15 +59,6 @@ class NFCSubscriber: Application.ActivityLifecycleCallbacks, OnNewIntentListener
             pendingIntent = PendingIntent.getActivity(activity, 0,
                     it.intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
             nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
-        }
-    }
-
-    override fun onNewIntent(context: Context, intent: Intent) {
-        if (intent != null) {
-            val newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMARTCARD, "calling_from_nfc")
-            newIntent.putExtras(intent.extras)
-            newIntent.action = intent.action
-            context.startActivity(newIntent)
         }
     }
 }

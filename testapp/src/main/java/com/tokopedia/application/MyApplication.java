@@ -51,8 +51,6 @@ public class MyApplication extends BaseMainApplication
         NetworkRouter,
         ApplinkRouter {
 
-    private NFCSubscriber nfcSubscriber;
-
     // Used to loadWishlist the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -95,9 +93,6 @@ public class MyApplication extends BaseMainApplication
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
-
-        nfcSubscriber = NFCSubscriber.Companion.newInstance();
-        registerActivityLifecycleCallbacks(nfcSubscriber);
     }
 
     private void upgradeSecurityProvider() {
@@ -317,7 +312,7 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void onNewIntent(Context context, Intent intent) {
-        nfcSubscriber.onNewIntent(context, intent);
+
     }
 
     @Override
