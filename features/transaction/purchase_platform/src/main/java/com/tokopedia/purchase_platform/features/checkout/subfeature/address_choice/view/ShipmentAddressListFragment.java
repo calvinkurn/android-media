@@ -186,8 +186,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         if (getArguments() != null) {
             mCurrentAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
-            isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false) ||
-                    isDisableSampaiView();
+            isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false);
             requestType = getArguments().getInt(CheckoutConstant.EXTRA_TYPE_REQUEST, 0);
             originDirectionType = getArguments().getInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         }
@@ -549,10 +548,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     private boolean isAddNewAddressEnabled() {
         return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
-    }
-
-    private boolean isDisableSampaiView() {
-        return remoteConfig.getBoolean(RemoteConfigKey.APP_HIDE_SAMPAI_VIEW, false);
     }
 
     public interface ICartAddressChoiceActivityListener {
