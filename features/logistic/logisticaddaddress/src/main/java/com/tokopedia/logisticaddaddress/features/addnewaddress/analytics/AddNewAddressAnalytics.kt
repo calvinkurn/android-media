@@ -186,12 +186,12 @@ object AddNewAddressAnalytics {
         sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KOTA_KECAMATAN, eventLabel)
     }
 
-    fun eventClickChipsKotaKecamatanChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KOTA_KECAMATAN)
+    fun eventClickChipsKotaKecamatanChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KOTA_KECAMATAN, eventLabel)
     }
 
-    fun eventClickSuggestionKotaKecamatanChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_SUGGESTION_KOTA_KECAMATAN)
+    fun eventClickSuggestionKotaKecamatanChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_SUGGESTION_KOTA_KECAMATAN, eventLabel)
     }
 
     fun eventClickFieldKodePosChangeAddressNegative(eventLabel: String) {
@@ -230,8 +230,8 @@ object AddNewAddressAnalytics {
         sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA, eventLabel)
     }
 
-    fun eventClickBackArrowOnNegativePage() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BACK_ARROW_ON_NEGATIVE_PAGE)
+    fun eventClickBackArrowOnNegativePage(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BACK_ARROW_ON_NEGATIVE_PAGE, eventLabel)
     }
 
     fun eventClickButtonSimpanNegativeSuccess(eventLabel: String) {
