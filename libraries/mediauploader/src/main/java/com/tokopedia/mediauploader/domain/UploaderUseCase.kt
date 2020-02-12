@@ -24,7 +24,7 @@ class UploaderUseCase @Inject constructor(
         val filePath = requestParams.getString(PARAM_FILE_PATH, "")
         val fileUpload = File(filePath)
 
-        if (!fileUpload.exists()) return UploadResult.Error(UploadState.FILE_NOT_FOUND)
+        if (!fileUpload.exists()) return UploadResult.Error(UploadState.NOT_FOUND)
 
         //get media upload policy
         dataPolicyUseCase.requestParams = DataPolicyUseCase.createParams(sourceId)
@@ -43,7 +43,7 @@ class UploaderUseCase @Inject constructor(
 
         //check file extension
         if (!acceptExtension.contains(getFileExtension(filePath))) {
-            return UploadResult.Error(UploadState.EXTENSION_DISALLOWED)
+            return UploadResult.Error(UploadState.EXT_NOT_ALLOWED)
         }
 
         //max file size
@@ -62,10 +62,15 @@ class UploaderUseCase @Inject constructor(
         }
 
         //upload
-        val uploadUrl = UrlBuilder.generate(sourcePolicyData.host, sourceId)
-        mediaUploaderUseCase.requestParams = MediaUploaderUseCase.createParam(uploadUrl, filePath)
+        val url = UrlBuilder.generate(sourcePolicyData.host, sourceId)
+        mediaUploaderUseCase.requestParams = MediaUploaderUseCase.createParam(url, filePath)
         val upload = mediaUploaderUseCase.executeOnBackground()
-        return UploadResult.Success(upload.data.uploadId)
+
+        return if (upload.header.isSuccess) {
+            UploadResult.Success(upload.data.uploadId)
+        } else {
+            UploadResult.Error(UploadState.UPLOAD_ERROR)
+        }
     }
 
     private fun getFileExtension(filePath: String): String {
