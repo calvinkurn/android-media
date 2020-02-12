@@ -2,8 +2,9 @@ package com.tokopedia.mediauploader.domain
 
 import android.graphics.BitmapFactory
 import com.tokopedia.mediauploader.data.consts.UrlBuilder
-import com.tokopedia.mediauploader.data.entity.Uploader
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
+import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.data.state.UploadState
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.io.File
@@ -12,18 +13,18 @@ import javax.inject.Inject
 class UploaderUseCase @Inject constructor(
         private val dataPolicyUseCase: DataPolicyUseCase,
         private val mediaUploaderUseCase: MediaUploaderUseCase
-) : UseCase<Uploader>() {
+) : UseCase<UploadResult>() {
 
     var requestParams = RequestParams()
 
-    override suspend fun executeOnBackground(): Uploader {
+    override suspend fun executeOnBackground(): UploadResult {
         if (requestParams.parameters.isEmpty()) throw Exception("Not param found")
 
         val sourceId = requestParams.getString(PARAM_SOURCE_ID, "")
         val filePath = requestParams.getString(PARAM_FILE_PATH, "")
         val fileUpload = File(filePath)
 
-        if (!fileUpload.exists()) return Uploader(false, "File not found")
+        if (!fileUpload.exists()) return UploadResult.Error(UploadState.FILE_NOT_FOUND)
 
         //get media upload policy
         dataPolicyUseCase.requestParams = DataPolicyUseCase.createParams(sourceId)
@@ -42,29 +43,29 @@ class UploaderUseCase @Inject constructor(
 
         //check file extension
         if (!acceptExtension.contains(getFileExtension(filePath))) {
-            return Uploader(false, "File extension is not allowed")
+            return UploadResult.Error(UploadState.EXTENSION_DISALLOWED)
         }
 
         //max file size
         if (isMaxFileSize(fileUpload, maxFileSize)) {
-            return Uploader(false, "File size is over than $maxFileSize")
+            return UploadResult.Error(UploadState.FILE_MAX_SIZE)
         }
 
         //minimum resolution
         if (isMinBitmapResolution(filePath, minWidth, minHeight)) {
-            return Uploader(false, "Resolution of bitmap is too tiny")
+            return UploadResult.Error(UploadState.TINY_RESOLUTION)
         }
 
         //maximum resolution
         if (isMaxBitmapResolution(filePath, maxWidth, maxHeight)) {
-            return Uploader(false, "Resolution of bitmap is too big")
+            return UploadResult.Error(UploadState.BIG_RESOLUTION)
         }
 
         //upload
         val uploadUrl = UrlBuilder.generate(sourcePolicyData.host, sourceId)
         mediaUploaderUseCase.requestParams = MediaUploaderUseCase.createParam(uploadUrl, filePath)
         val upload = mediaUploaderUseCase.executeOnBackground()
-        return Uploader(true, "", upload.data.uploadId)
+        return UploadResult.Success(upload.data.uploadId)
     }
 
     private fun getFileExtension(filePath: String): String {
@@ -108,5 +109,4 @@ class UploaderUseCase @Inject constructor(
             return params
         }
     }
-
 }
