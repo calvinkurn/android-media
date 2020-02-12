@@ -64,6 +64,7 @@ class ShopOpenRevampViewModel @Inject constructor(
 
 
     var currentShopName = ""
+    var currentShopDomain = ""
 
     fun checkShopName(shopName: String) {
         if (currentShopName == shopName) {
@@ -215,9 +216,20 @@ class ShopOpenRevampViewModel @Inject constructor(
     }
 
     fun checkDomainName(domain: String) {
-        validateDomainShopNameUseCase.cancelJobs()
+        if (currentShopDomain == domain) {
+            return
+        }
+
+        currentShopDomain = domain
+
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
+                delay(700)
+
+                if (currentShopDomain != domain) {
+                    return@withContext
+                }
+
                 validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domain)
                 val validateShopDomainNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopDomainNameResult.let {

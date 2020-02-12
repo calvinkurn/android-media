@@ -51,8 +51,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -141,10 +139,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
                     reselectChipSuggestionDomainName()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        delay(700)
-                        viewModel.checkDomainName(domainNameValue)
-                    }
+                    viewModel.checkDomainName(domainNameValue)
                 }
             }
         })
