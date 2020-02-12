@@ -130,6 +130,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageShopBadge"
         app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+        app:layout_goneMarginStart="@dimen/dp_0"
+        app:layout_goneMarginLeft="@dimen/dp_0"
         app:typographyType="body_3"
         tools:text="Town Location"
         tools:visibility="visible" />
@@ -161,6 +163,7 @@
         app:layout_constraintStart_toEndOf="@id/imageRatingString"
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
         app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="4.5"
         tools:visibility="visible" />
 
@@ -237,6 +240,8 @@
         app:layout_constraintStart_toEndOf="@id/textViewRatingString"
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
         app:typographyType="body_3"
+        app:layout_goneMarginStart="@dimen/dp_0"
+        app:layout_goneMarginLeft="@dimen/dp_0"
         tools:text="(60)"
         tools:visibility="visible" />
 

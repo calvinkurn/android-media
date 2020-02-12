@@ -32,8 +32,9 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
         it.text = productCardModel.formattedPrice
     }
 
-    imageShopBadge?.shouldShowWithAction(productCardModel.shopBadgeList.getOrNull(0)?.imageUrl?.isNotEmpty() == true) {
-        it.loadIcon(productCardModel.shopBadgeList.getOrNull(0)?.imageUrl ?: "")
+    val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
+    imageShopBadge?.shouldShowWithAction(shopBadge != null) {
+        it.loadIcon(shopBadge?.imageUrl ?: "")
     }
 
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {

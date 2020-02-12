@@ -20,6 +20,7 @@ internal fun ViewInteraction.checkProductCardPerPosition() {
             .checkProductCardAtPosition(6, getProductCardMatchersPosition6())
             .checkProductCardAtPosition(7, getProductCardMatchersPosition7())
             .checkProductCardAtPosition(8, getProductCardMatchersPosition8())
+            .checkProductCardAtPosition(9, getProductCardMatchersPosition9())
 }
 
 private fun ViewInteraction.checkProductCardAtPosition(position: Int, elementMatchers: Map<Int, Matcher<View?>>): ViewInteraction {
@@ -215,5 +216,16 @@ private fun getProductCardMatchersPosition8(): Map<Int, Matcher<View?>> {
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.textViewShipping] = isDisplayedWithText(textShipping.title)
         it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+    }
+}
+
+private fun getProductCardMatchersPosition9(): Map<Int, Matcher<View?>> {
+    val productCardModel = productCardModelTestData[9]
+
+    return mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
     }
 }

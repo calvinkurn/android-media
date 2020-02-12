@@ -167,4 +167,25 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
                 textGroups.add(TextGroup(position = TEXT_SHIPPING, title = "Ongkir Rp11 rb", type = BODY_3, color = "#7031353b"))
             }
     ))
+
+    it.add(9, ProductCardModel(
+            productName = veryLongProductName,
+            productImageUrl = productImageUrl,
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = false, imageUrl = "https://ecs7.tokopedia.net/img/blank.gif"))
+            },
+            formattedPrice = "Rp7.999.000",
+            shopLocation = "DKI Jakarta"
+    ))
+
+    it.add(10, ProductCardModel(
+            productName = veryLongProductName,
+            productImageUrl = productImageUrl,
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            formattedPrice = "Rp7.999.000",
+            shopLocation = "DKI Jakarta",
+            reviewCount = 60
+    ))
 }
