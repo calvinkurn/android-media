@@ -5,15 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-<!--    <include-->
-<!--        android:id="@+id/view_brand_search_not_found"-->
-<!--        layout="@layout/view_brand_not_found"-->
-<!--        android:layout_marginLeft="@dimen/dp_16"-->
-<!--        android:layout_marginRight="@dimen/dp_16"-->
-<!--        android:visibility="gone"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"  />-->
-    
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_margin="@dimen/dp_4"
         android:layout_width="match_parent"

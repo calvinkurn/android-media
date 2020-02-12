@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
@@ -22,6 +23,8 @@ import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponen
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -147,16 +150,20 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         viewModel.brandlistSearchResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    println(it.data.officialStoreAllBrands)
                     val response = it.data.officialStoreAllBrands
-                    println(response)
                     adapterBrandSearch?.updateSearchResultData(response.brands)
                 }
                 is Fail -> {
-                    println("Fail")
+                    showErrorNetwork(it.throwable)
                 }
             }
         })
+    }
+
+    private fun showErrorNetwork(t: Throwable) {
+        view?.let {
+            Toaster.showError(it, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG)
+        }
     }
 
 }

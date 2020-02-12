@@ -7,6 +7,8 @@ import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.common.GQLQueryConstant.QUERY_BRANDLIST_CATEGORIES
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module(includes = [BrandlistCategoryViewModelModule::class])

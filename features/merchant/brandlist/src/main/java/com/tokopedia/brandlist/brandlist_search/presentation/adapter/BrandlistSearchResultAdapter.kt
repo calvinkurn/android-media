@@ -36,27 +36,27 @@ class BrandlistSearchResultAdapter(): RecyclerView.Adapter<BrandlistSearchResult
 
     inner class BrandlistSearchResultViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val context: Context
-        val imgBrand: ImageView
-        val imgNotFound: ImageView
+        val imgLogoBrand: ImageView
+//        val imgNotFound: ImageView
         val txtBrandName: TextView
-        val sectionSearchNotFound: LinearLayout
+        // val sectionSearchNotFound: LinearLayout
 
         init {
             context = itemView.context
-            imgBrand = itemView.findViewById(R.id.img_brand)
+            imgLogoBrand = itemView.findViewById(R.id.img_logo_brand)
             txtBrandName = itemView.findViewById(R.id.txt_title)
-            sectionSearchNotFound = itemView.findViewById(R.id.view_brand_search_not_found)
-            imgNotFound = itemView.findViewById(R.id.img_brand_not_found)
+            // sectionSearchNotFound = itemView.findViewById(R.id.view_brand_search_not_found)
+//            imgNotFound = itemView.findViewById(R.id.img_brand_not_found)
         }
 
         fun bindData(brand: Brand, position: Int) {
             txtBrandName.setText(brand.name)
-            ImageHandler.loadImage(context, imgBrand, brand.logoUrl, null)
+            ImageHandler.loadImage(context, imgLogoBrand, brand.logoUrl, null)
 
-            if (searchResult.size < 1) {
-                sectionSearchNotFound.visibility = View.VISIBLE
-                ImageHandler.loadImage(context, imgNotFound, ImageAssets.BRAND_NOT_FOUND, null)
-            }
+//            if (searchResult.size < 1) {
+//                sectionSearchNotFound.visibility = View.VISIBLE
+//                ImageHandler.loadImage(context, imgNotFound, ImageAssets.BRAND_NOT_FOUND, null)
+//            }
         }
 
     }
