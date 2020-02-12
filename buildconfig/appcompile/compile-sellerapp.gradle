@@ -145,6 +145,7 @@ include "features:user:profilecompletion"
 include "features:user:stickylogin"
 include "features:user:seamless_login"
 
+include "features:category:age_restriction"
 include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:tradein_common"
