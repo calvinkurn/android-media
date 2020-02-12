@@ -3,8 +3,10 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
 import kotlinx.android.synthetic.main.sah_card_widget.view.*
@@ -65,10 +67,15 @@ class CardViewHolder(
             tvCardTitle.text = element.title
             tvCardValue.text = element.data?.value ?: "0"
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
+            addOnImpressionListener(element.impressHolder) {
+                SellerHomeTracking.sendImpressionCardEvent(element.dataKey, element.data?.state ?: "", element.data?.value ?: "")
+            }
 
             setOnClickListener {
                 if (element.appLink.isNotBlank()) {
-                    RouteManager.route(context, element.appLink)
+                    if(RouteManager.route(context, element.appLink)) {
+                        SellerHomeTracking.sendClickCardEvent(element.dataKey, element.data?.state ?: "", element.data?.value ?: "")
+                    }
                 }
             }
         }

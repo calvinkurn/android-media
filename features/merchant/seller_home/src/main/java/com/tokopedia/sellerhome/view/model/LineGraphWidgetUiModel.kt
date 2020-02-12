@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 
 /**
@@ -15,7 +16,8 @@ data class LineGraphWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
-        override var data: LineGraphDataUiModel?
+        override var data: LineGraphDataUiModel?,
+        override val impressHolder: ImpressHolder = ImpressHolder()
 ) : BaseWidgetUiModel<LineGraphDataUiModel> {
 
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {

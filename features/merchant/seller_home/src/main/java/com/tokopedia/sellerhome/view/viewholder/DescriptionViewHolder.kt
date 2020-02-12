@@ -6,6 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.view.model.DescriptionWidgetUiModel
 import kotlinx.android.synthetic.main.sah_description_widget.view.*
 
@@ -30,10 +31,10 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
                 tvDescriptionCta.visible()
                 icDescriptionCtaArrow.visible()
                 tvDescriptionCta.setOnClickListener {
-                    goToDetails(element)
+                    goToDetails(element.appLink, element.dataKey, element.title)
                 }
                 icDescriptionCtaArrow.setOnClickListener {
-                    goToDetails(element)
+                    goToDetails(element.appLink, element.dataKey, element.title)
                 }
             } else {
                 tvDescriptionCta.gone()
@@ -42,7 +43,9 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
         }
     }
 
-    private fun goToDetails(element: DescriptionWidgetUiModel) {
-        RouteManager.route(itemView.context, element.appLink)
+    private fun goToDetails(applink: String, dataKey: String, descriptionTitle: String) {
+        if(RouteManager.route(itemView.context, applink)) {
+            SellerHomeTracking.sendClickDescriptionEvent(dataKey, descriptionTitle)
+        }
     }
 }
