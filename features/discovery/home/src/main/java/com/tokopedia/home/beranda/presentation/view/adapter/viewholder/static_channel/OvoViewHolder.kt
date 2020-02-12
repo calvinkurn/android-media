@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
@@ -262,6 +263,13 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
+
+                        if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
+                                tokopointsDrawerHomeData.sectionContent[0].tagAttributes.text.isNotEmpty()) {
+                            HomePageTracking.sendClickOnTokopointsNewCouponTracker()
+                        } else {
+                            HomePageTracking.sendTokopointTrackerClick()
+                        }
                     }
                 }
             }

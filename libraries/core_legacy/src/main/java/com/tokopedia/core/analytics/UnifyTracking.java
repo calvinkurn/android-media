@@ -3,21 +3,12 @@ package com.tokopedia.core.analytics;
 import android.content.Context;
 import android.util.Log;
 
-import com.appsflyer.AFInAppEventType;
-import com.tkpd.library.utils.legacy.MethodChecker;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.track.TrackApp;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
-import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 
 /**
  * @author by Herdi_WORK on 25.10.16.
@@ -317,13 +308,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShopSendChat(){
-        TrackApp.getInstance().getGTM().sendGeneralEvent(AppEventTracking.Event.SHOP_PAGE,
-                AppEventTracking.Category.SHOP_PAGE,
-                AppEventTracking.Action.SHOP_PAGE,
-                "");
-    }
-
     public static void eventWishlistBuy(Context context) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.WISHLIST,
@@ -339,15 +323,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.REGISTER,
                 AppEventTracking.Action.REGISTER_ERROR,
                 label
-        ).getEvent());
-    }
-
-    public static void eventPDPOrientationChanged(Context context, String productId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.VIEW_PDP,
-                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
-                AppEventTracking.Action.LANDSCAPE_VIEW,
-                String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
         ).getEvent());
     }
 
@@ -444,27 +419,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCheckoutGoldMerchant(Context context, String eventCategory, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_GOLD_MERCHANT,
-                eventCategory,
-                AppEventTracking.Action.CLICK,
-                eventLabel
-        ).getEvent());
-    }
-
-    public static void eventClickSubscribeGoldMerchant(Context context, String packageType) {
-        eventCheckoutGoldMerchant(context, AppEventTracking.Category.GOLD_MERCHANT_ATC, packageType);
-    }
-
-    public static void eventClickChangePackageGoldMerchant(Context context) {
-        eventCheckoutGoldMerchant(context, AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.CHANGE_PACKAGE_GOLD_MERCHANT);
-    }
-
-    public static void eventClickSubscribeCheckoutGoldMerchant(Context context) {
-        eventCheckoutGoldMerchant(context, AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.GM_CHECKOUT);
-    }
-
     public static void eventCreateShopSellerApp(Context context, String eventLabel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_CREATE_SHOP,
@@ -526,65 +480,12 @@ public class UnifyTracking extends TrackingUtils {
         eventFeaturedProduct(context, AppEventTracking.EventLabel.SAVE_FEATURED_PRODUCT_PICKER + counterProduct);
     }
 
-    public static void eventProductManage(Context context, String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                action,
-                label
-        ).getEvent());
-    }
-
-    public static void eventProductManageTopNav(Context context, String label) {
-        eventProductManage(context, AppEventTracking.Action.CLICK_TOP_NAV, label);
-    }
-
-    public static void eventProductManageSearch(Context context) {
-        eventProductManage(context, AppEventTracking.Action.CLICK_TOP_NAV, AppEventTracking.EventLabel.SEARCH_PRODUCT);
-    }
-
-    public static void eventProductManageClickDetail(Context context) {
-        eventProductManage(context, AppEventTracking.Action.CLICK_PRODUCT_LIST, AppEventTracking.EventLabel.CLICK_PRODUCT_LIST);
-    }
-
-    public static void eventProductManageSortProduct(Context context, String label) {
-        eventProductManage(context, AppEventTracking.Action.CLICK_SORT_PRODUCT, label);
-    }
-
-    public static void eventProductManageFilterProduct(Context context, String label) {
-        eventProductManage(context, AppEventTracking.Action.CLICK_FILTER_PRODUCT, label);
-    }
-
-    // digital user profile
-
-    // digital native
-
-    // digital homepage
-
-    public static void eventProductManageOverflowMenu(Context context, String label) {
-        eventProductManage(context, AppEventTracking.Action.CLICK_OVERFLOW_MENU, label);
-    }
-
     /**
      * use trackApp instead
      */
     @Deprecated
     public static void eventTracking(Context context, EventTracking eventTracking) {
         sendGTMEvent(context, eventTracking.getEvent());
-    }
-
-    public static void eventSearchResultProductWishlistClick(Context context, boolean isWishlisted, String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.PRODUCT_VIEW,
-                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                AppEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(isWishlisted, keyword)
-        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
-    }
-
-    private static String generateWishlistClickEventLabel(boolean isWishlisted, String keyword) {
-        String action = isWishlisted ? "add" : "remove";
-        return action + " - " + keyword + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 
     public static void eventSearchResultSort(Context context, String screenName, String sortByValue) {

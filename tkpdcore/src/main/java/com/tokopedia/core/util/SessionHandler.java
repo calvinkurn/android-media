@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -52,16 +53,12 @@ public class SessionHandler {
     protected static final String LOGIN_SESSION = "LOGIN_SESSION";
     private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
-    private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
-    private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
     private static final String MSISDN_SESSION = "MSISDN_SESSION";
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
-    private static final String WALLET_REFRESH_TOKEN = "WALLET_REFRESH_TOKEN";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
     private static final String USER_SCOPE = "USER_SCOPE";
-    private static final String IS_FIRST_TIME_STORAGE = "IS_FIRST_TIME_STORAGE";
     private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
     private static final String UUID_KEY = "uuid";
     private static final String DEFAULT_UUID_VALUE = "";
@@ -568,11 +565,6 @@ public class SessionHandler {
         Editor editor = sharedPrefs.edit();
         saveToSharedPref(editor, USER_SCOPE, scopeName);
         editor.apply();
-    }
-
-    public static String getUserScope() {
-        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(USER_SCOPE, "");
     }
 
     public void setToken(String accessToken, String tokenType) {

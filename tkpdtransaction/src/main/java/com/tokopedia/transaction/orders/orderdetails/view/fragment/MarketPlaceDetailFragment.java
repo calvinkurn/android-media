@@ -45,7 +45,6 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -82,7 +81,6 @@ import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
-import com.tokopedia.webview.ConstantKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -93,6 +91,8 @@ import javax.inject.Inject;
 import static android.content.Context.CLIPBOARD_SERVICE;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
+
+    private static final int CREATE_RESCENTER_REQUEST_CODE = 789;
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String ACTION_BUTTON_URL = "action_button_url";
@@ -705,7 +705,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
                                     Intent newIntent = InboxRouter.getCreateResCenterActivityIntent(getContext(),
                                             getArguments().getString(KEY_ORDER_ID));
-                                    startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
+                                    startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
                                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya penjual")) {
                                     orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
