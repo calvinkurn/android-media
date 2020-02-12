@@ -132,9 +132,6 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
         }) {}
     }
 
-//    override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
-//        view!!.showRedeemCouponDialog(cta, code, title)
-//    }
 
     private fun handlePointQuery(pointDetailEntity: TokoPointDetailEntity?) { //Handling the point
         if (pointDetailEntity == null || pointDetailEntity.tokoPoints == null || pointDetailEntity.tokoPoints.resultStatus == null || pointDetailEntity.tokoPoints.status == null || pointDetailEntity.tokoPoints.status.points == null) {
