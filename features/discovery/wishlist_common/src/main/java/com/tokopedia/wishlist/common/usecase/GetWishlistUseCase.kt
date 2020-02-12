@@ -18,8 +18,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 20/09/18.
  */
 
-class GetWishlistUseCase @Inject constructor(private val context: Context,
-                                             private val graphqlUseCase: GraphqlUseCase) : UseCase<GetWishlistResponse>() {
+class GetWishlistUseCase @Inject constructor(private val context: Context) : UseCase<GetWishlistResponse>() {
 
     companion object {
         private val PAGE = "page"
@@ -40,6 +39,7 @@ class GetWishlistUseCase @Inject constructor(private val context: Context,
                 variables
         )
 
+        val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)

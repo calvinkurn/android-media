@@ -15,14 +15,14 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 21/09/18.
  */
 
-class GetRecentViewUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<GqlRecentViewResponse>() {
+class GetRecentViewUseCase @Inject constructor() : UseCase<GqlRecentViewResponse>() {
 
     override fun createObservable(params: RequestParams): Observable<GqlRecentViewResponse> {
         val variables = HashMap<String, Any>()
         variables[USER_ID] = params.getInt(PARAM_USER_ID, 0)
 
         val graphqlRequest = GraphqlRequest(QUERY, GqlRecentViewResponse::class.java, variables)
-
+        val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
