@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatroom.view.fragment
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -36,6 +35,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -117,7 +117,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
-
+//    private var
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -471,7 +471,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun showSnackbarError(stringResource: String) {
         if (view != null) {
-            ToasterError.make(view, stringResource, Snackbar.LENGTH_LONG).show()
+            ToasterError.make(view, stringResource, BaseToaster.LENGTH_LONG).show()
         }
     }
 

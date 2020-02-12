@@ -26,9 +26,9 @@ import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_chatroom.view.*
 import java.net.URLEncoder
 import java.util.*
 
@@ -54,13 +54,22 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toUserId = "0"
     protected var source = ""
 
+    private var rvAttachmentMenu: AttachmentMenuRecyclerView? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViewId(view)
         setupViewState(view)
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
         prepareListener()
     }
+
+    private fun bindViewId(view: View) {
+        rvAttachmentMenu = view.findViewById(rvAttachmentMenuId())
+    }
+
+    protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
 
     private fun setupViewState(view: View?) {
         view?.let {
@@ -257,7 +266,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     fun addVoucherAttachmentMenu() {
-        view?.rv_attachment_menu?.addVoucherAttachmentMenu()
+        rvAttachmentMenu?.addVoucherAttachmentMenu()
     }
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
