@@ -70,6 +70,7 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
     }
 
     fun myOnResume() {
+        this.onStop()
         this.onResume()
     }
 }
