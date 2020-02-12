@@ -1,10 +1,9 @@
-package com.tokopedia.productcard.v3
+package com.tokopedia.productcard
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.productcard.v2.ProductCardModel

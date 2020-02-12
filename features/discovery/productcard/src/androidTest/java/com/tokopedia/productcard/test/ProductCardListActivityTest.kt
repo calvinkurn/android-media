@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.productcard.test.utils.ProductCardItemDecoration
 import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v3.ProductCardGridView
-import com.tokopedia.productcard.v3.ProductCardListView
+import com.tokopedia.productcard.ProductCardListView
 
 internal class ProductCardListActivityTest: AppCompatActivity() {
 

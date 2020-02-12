@@ -27,7 +27,7 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
     it.add(1, ProductCardModel(
             productName = "Product Name",
             productImageUrl = productImageUrl,
-            discountPercentage = "20",
+            discountPercentage = "20%",
             slashedPrice = "Rp8.499.000",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ShopBadge>().also { badges ->

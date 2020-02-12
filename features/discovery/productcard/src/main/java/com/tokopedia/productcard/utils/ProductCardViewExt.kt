@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DimenRes
+import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.bumptech.glide.Glide
@@ -32,6 +33,10 @@ internal fun View.doIfVisible(action: (View) -> Unit) {
     if(this.isVisible) {
         action(this)
     }
+}
+
+internal fun View?.getString(@StringRes id: Int, vararg formatArgs: Any): String {
+    return this?.context?.resources?.getString(id, formatArgs) ?: ""
 }
 
 internal fun View.getDimensionPixelSize(@DimenRes id: Int): Int {

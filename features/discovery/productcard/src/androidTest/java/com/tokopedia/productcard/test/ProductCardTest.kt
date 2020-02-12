@@ -50,7 +50,7 @@ private fun getProductCardMatchersPosition1(): Map<Int, Matcher<View?>> {
     return mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = ViewMatchers.isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelDiscount] = isDisplayedWithText("${productCardModel.discountPercentage}%")
+        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
         it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.productcard.v3.ProductCardListView
+<com.tokopedia.productcard.ProductCardListView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/productCardList"
     android:layout_height="wrap_content"
