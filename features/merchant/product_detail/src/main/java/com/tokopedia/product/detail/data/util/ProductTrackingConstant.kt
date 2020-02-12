@@ -105,6 +105,8 @@ object ProductTrackingConstant {
         const val CLICK_DETAIL_MERCHANT_VOUCHER = "click - merchant voucher - mvc detail"
         const val CLICK_USE_MERCHANT_VOUCHER = "click - merchant voucher - use voucher"
         const val IMPRESSION_USE_MERCHANT_VOUCHER = "impression - merchant voucher - use voucher"
+        const val LANDSCAPE_VIEW = "landscape view"
+        const val CLICK_LAST_DISCUSSION = "click - lihat semua diskusi on diskusi terakhir"
     }
 
     object Label {

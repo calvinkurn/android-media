@@ -23,8 +23,7 @@ class ProductSnapshotViewHolder(private val view: View,
     }
 
     override fun bind(element: ProductSnapshotDataModel) {
-        val screenWidth = view.resources.displayMetrics.widthPixels
-        view.view_picture_search_bar.layoutParams.height = screenWidth
+        view.view_picture_search_bar.layoutParams.height = element.screenHeight
 
         if (!::header.isInitialized) {
             header = PartialSnapshotView(view, listener)
@@ -80,12 +79,19 @@ class ProductSnapshotViewHolder(private val view: View,
                 renderCod(element.shouldShowCod)
             }
             ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
+            ProductDetailConstant.PAYLOAD_CONFIGURATION_CHANGED -> changeImageHeight(element.screenHeight)
         }
     }
 
     private fun renderCod(shouldShowCod: Boolean) {
         if (::header.isInitialized) {
             header.renderCod(shouldShowCod)
+        }
+    }
+
+    private fun changeImageHeight(imageHeight: Int) {
+        if (imageHeight != 0) {
+            view.view_picture_search_bar.layoutParams.height = imageHeight
         }
     }
 

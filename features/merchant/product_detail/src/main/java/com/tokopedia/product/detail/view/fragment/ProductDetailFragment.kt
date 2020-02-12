@@ -38,7 +38,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -51,6 +50,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -1583,7 +1583,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         imageReviewViewView.renderData(productInfoP2)
         mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews)
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
-                productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
+                productInfo?.basic?.shopID ?: 0, this::onLastDiscussionClicked)
 
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
@@ -1875,20 +1875,31 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
-    private fun onDiscussionClicked() {
-        activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productInfo?.basic?.id.toString())
-            }
-            startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
-        }
+    private fun onDiscussionClicked(noOp: ComponentTrackDataModel?) {
+
         productInfo?.run {
             productDetailTracking.eventDiscussionClickedIris(this, deeplinkUrl, (shopInfo?.goldOS?.isOfficial
                     ?: 0) > 0, shopInfo?.shopCore?.name ?: "")
             productDetailTracking.sendMoEngageClickDiskusi(this,
                     (shopInfo?.goldOS?.isOfficial ?: 0) > 0,
                     shopInfo?.shopCore?.name ?: "")
+        }
+
+        discussionClicked()
+    }
+
+    private fun onLastDiscussionClicked(talkId:String){
+        productDetailTracking.eventLastDiscussionClicked(talkId,productInfo?.basic?.id.toString())
+        discussionClicked()
+    }
+
+    private fun discussionClicked(){
+        activity?.let {
+            val intent = RouteManager.getIntent(it,
+                    ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productInfo?.basic?.id.toString())
+            }
+            startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
     }
 

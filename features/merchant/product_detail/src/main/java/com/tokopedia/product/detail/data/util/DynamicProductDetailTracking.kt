@@ -22,7 +22,28 @@ object DynamicProductDetailTracking {
                 shopType, "/product", productId)
     }
 
+    fun eventProductLandScape(productInfo: DynamicProductInfoP1?) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.LANDSCAPE_VIEW,
+                "")
+
+        TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.LANDSCAPE_VIEW)
+    }
+
+
     object Click {
+        fun eventLastDicussionClicked(talkId: String, componentTrackDataModel: ComponentTrackDataModel, productInfo: DynamicProductInfoP1?) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_LAST_DISCUSSION,
+                    talkId
+            )
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, "Click")
+        }
 
         fun eventCategoryClicked(categoryId: String, categoryName: String, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val mapEvent = TrackAppUtils.gtmData(
@@ -414,8 +435,9 @@ object DynamicProductDetailTracking {
     }
 
     object Iris {
+
         fun eventDiscussionClickedIris(productInfo: DynamicProductInfoP1?, deeplinkUrl: String,
-                                       shopName: String) {
+                                       shopName: String, componentTrackDataModel: ComponentTrackDataModel) {
 
             var categoryNameLvl2 = ""
             var categoryIdLvl2 = ""
@@ -430,28 +452,28 @@ object DynamicProductDetailTracking {
                 it.type == "image"
             }?.firstOrNull()?.uRLOriginal ?: ""
 
-            val mapOfData: Map<String, Any?> =
-                    mapOf(ProductTrackingConstant.Tracking.KEY_EVENT to "clickPDP",
-                            ProductTrackingConstant.Tracking.KEY_CATEGORY to "product detail page",
-                            ProductTrackingConstant.Tracking.KEY_ACTION to "Click",
-                            ProductTrackingConstant.Tracking.KEY_LABEL to "Talk",
-                            "subcategory" to categoryNameLvl2,
-                            "subcategoryId" to categoryIdLvl2,
-                            "category" to productInfo?.basic?.category?.name,
-                            "categoryId" to productInfo?.basic?.category?.id,
-                            "productName" to productInfo?.data?.name,
-                            "productId" to productInfo?.basic?.getProductId(),
-                            "productUrl" to productInfo?.basic?.url,
-                            "productDepplinkUrl" to deeplinkUrl,
-                            "productImageUrl" to imageUrl,
-                            "productPrice" to productInfo?.data?.price?.value,
-                            "isOfficialStore" to productInfo?.data?.isOS,
-                            "shopId" to productInfo?.basic?.shopID,
-                            "shopName" to shopName,
-                            "productPriceFormatted" to TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
-                                    ?: 0))
+            val mapOfData = mutableMapOf(ProductTrackingConstant.Tracking.KEY_EVENT to "clickPDP",
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY to "product detail page",
+                    ProductTrackingConstant.Tracking.KEY_ACTION to "Click",
+                    ProductTrackingConstant.Tracking.KEY_LABEL to "Talk",
+                    "subcategory" to categoryNameLvl2,
+                    "subcategoryId" to categoryIdLvl2,
+                    "category" to (productInfo?.basic?.category?.name ?: ""),
+                    "categoryId" to (productInfo?.basic?.category?.id ?: ""),
+                    "productName" to (productInfo?.data?.name ?: ""),
+                    "productId" to (productInfo?.basic?.getProductId() ?: ""),
+                    "productUrl" to (productInfo?.basic?.url ?: ""),
+                    "productDepplinkUrl" to deeplinkUrl,
+                    "productImageUrl" to imageUrl,
+                    "productPrice" to (productInfo?.data?.price?.value ?: ""),
+                    "isOfficialStore" to (productInfo?.data?.isOS ?: ""),
+                    "shopId" to (productInfo?.basic?.shopID ?: ""),
+                    "shopName" to shopName,
+                    "productPriceFormatted" to TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
+                            ?: 0))
 
-            TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
+            TrackingUtil.addComponentTracker(mapOfData, productInfo, componentTrackDataModel, "Click")
+
         }
 
         fun eventReviewClickedIris(productInfo: DynamicProductInfoP1?, deeplinkUrl: String,

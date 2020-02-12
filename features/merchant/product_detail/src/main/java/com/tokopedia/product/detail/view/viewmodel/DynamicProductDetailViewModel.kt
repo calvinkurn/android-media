@@ -5,13 +5,13 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -111,6 +111,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _toggleFavoriteResult = MutableLiveData<Result<Boolean>>()
     val toggleFavoriteResult: LiveData<Result<Boolean>>
         get() = _toggleFavoriteResult
+
+    var imageHeight : Int = 0
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null

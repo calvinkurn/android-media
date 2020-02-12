@@ -615,7 +615,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             }
             if (!viewModel.isUserSessionActive()) {
                 //do tracking
-                normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo , layoutName ?: "")
+                normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo , layoutName)
                 //do login
                 startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_ATC)
             } else {
@@ -1172,9 +1172,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 }
                 if (viewModel.getSelectedOption() == selectedOptionViewModel.optionId) {
                     if (viewModel.isColorIdentifier) {
-                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName, productId)
+                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName, productId, selectedProductInfo, layoutName)
                     } else if (viewModel.isSizeIdentifier) {
-                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName, productId)
+                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName, productId, selectedProductInfo, layoutName)
                     }
                 }
                 variantSize++

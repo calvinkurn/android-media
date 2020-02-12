@@ -256,18 +256,18 @@ class NormalCheckoutTracking {
     }
 
 
-    fun eventClickAtcInVariantNotLogin(productInfo: ProductInfo?, layoutName: String) {
+    fun eventClickAtcInVariantNotLogin(productInfo: ProductInfo?, layoutName: String?) {
         val mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - tambah ke keranjang on variants page - before login",
                 productInfo?.basic?.id.toString()
         )
-        addComponentTracker(mapEvent, productInfo, layoutName)
+        addComponentTracker(mapEvent, productInfo, layoutName ?: "")
 
     }
 
-    fun eventSelectSizeVariant(size: String?, productId: String) {
+    fun eventSelectSizeVariant(size: String?, productId: String, productInfo: ProductInfo?, layoutName: String?) {
         if (size.isNullOrEmpty()) return
         val mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
@@ -276,10 +276,11 @@ class NormalCheckoutTracking {
                 size
         )
         mapEvent[KEY_PRODUCT_ID] = productId
+        addComponentTracker(mapEvent, productInfo, layoutName ?: "")
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventSelectColorVariant(color: String?, productId: String) {
+    fun eventSelectColorVariant(color: String?, productId: String, productInfo: ProductInfo?, layoutName: String?) {
         if (color.isNullOrEmpty()) return
         val mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
@@ -288,6 +289,7 @@ class NormalCheckoutTracking {
                 color
         )
         mapEvent[KEY_PRODUCT_ID] = productId
+        addComponentTracker(mapEvent, productInfo, layoutName ?: "")
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 

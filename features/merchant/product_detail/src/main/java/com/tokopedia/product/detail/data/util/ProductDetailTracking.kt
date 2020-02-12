@@ -156,6 +156,20 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
     }
 
+    fun eventLastDiscussionClicked(talkId: String, productId: String) {
+        if (productId.isEmpty()) return
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_LAST_DISCUSSION,
+                talkId
+        )
+
+        mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId ?: ""
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+
+    }
+
     fun eventDiscussionClickedIris(productInfo: ProductInfo?, deeplinkUrl: String,
                                isOfficial: Boolean, shopName: String) {
 

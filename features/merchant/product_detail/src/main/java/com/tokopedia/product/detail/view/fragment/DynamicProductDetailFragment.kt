@@ -6,6 +6,7 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -233,6 +234,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        setupByConfiguration(newConfig)
+        pdpHashMapUtil?.snapShotMap?.run {
+            screenHeight = viewModel.imageHeight
+        }
+        updateSnapshotImageHeight()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
@@ -242,6 +252,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         initBtnAction()
         initToolbar()
         initStickyLogin(view)
+        setupByConfiguration(resources.configuration)
 
         if (isAffiliate) {
             actionButtonView.gone()
@@ -449,7 +460,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 }
                             }
                             updateProductId()
-                            pdpHashMapUtil?.updateDataP1(dynamicP1Copy)
+                            pdpHashMapUtil?.updateDataP1(dynamicP1Copy, viewModel.imageHeight)
                             dynamicAdapter.notifyDataSetChanged()
                         }
                     }
@@ -500,7 +511,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }
             ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
-                if (resultCode == Activity.RESULT_OK  && doActivityResult) {
+                if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
             }
@@ -576,6 +587,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun getApplicationContext(): Application? {
         return activity?.application
+    }
+
+    private fun setupByConfiguration(configuration: Configuration?) {
+        //Save Image Height at ViewModel
+        configuration?.let {
+            val screenWidth = resources.displayMetrics.widthPixels
+            if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                DynamicProductDetailTracking.eventProductLandScape(viewModel.getDynamicProductInfoP1)
+                viewModel.imageHeight = screenWidth / 3
+            } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                viewModel.imageHeight = screenWidth
+            }
+        }
+    }
+
+    private fun updateSnapshotImageHeight() {
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_CONFIGURATION_CHANGED)
     }
 
     private val onViewClickListener = View.OnClickListener {
@@ -940,19 +968,30 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onDiscussionClicked() {
+    override fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?) {
+
+        viewModel.getDynamicProductInfoP1?.run {
+            DynamicProductDetailTracking.Iris.eventDiscussionClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
+                    ?: "", componentTrackDataModel ?: ComponentTrackDataModel())
+            DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(this, viewModel.shopInfo?.shopCore?.name
+                    ?: "")
+        }
+
+        disscussionClicked()
+    }
+
+    override fun onLastDiscussionClicked(talkId: String, componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.eventLastDicussionClicked(talkId, componentTrackDataModel ?: ComponentTrackDataModel(), viewModel.getDynamicProductInfoP1)
+        disscussionClicked()
+    }
+
+    private fun disscussionClicked() {
         activity?.let {
             val intent = RouteManager.getIntent(it,
                     ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, viewModel.getDynamicProductInfoP1?.basic?.productID)
             }
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
-        }
-        viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Iris.eventDiscussionClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
-                    ?: "")
-            DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(this, viewModel.shopInfo?.shopCore?.name
-                    ?: "")
         }
     }
 
@@ -1109,7 +1148,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            pdpHashMapUtil?.updateDataP1(productInfo)
+            pdpHashMapUtil?.updateDataP1(productInfo, viewModel.imageHeight)
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.isLeasing = productInfo.basic.isLeasing
             actionButtonView.renderData(!productInfo.basic.isActive(),

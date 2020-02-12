@@ -39,9 +39,8 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
         }
         attributeInfoView.renderWishlistCount(element.wishListCount)
 
-        productStatsView.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked)
+        productStatsView.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
         attributeInfoView.renderDataDynamicPdp(stats.countView, txStats)
-
 
         productStatsView.renderClickShipping {
             listener.onShipmentSocialProofClicked(getComponentTrackData(element))
