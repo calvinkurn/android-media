@@ -339,11 +339,6 @@ public class Destination implements Parcelable {
                 + "<br>" + receiverPhone;
     }
 
-    public String getGeoLocation(Context context) {
-        this.geoLocation = GeoLocationUtils.reverseGeoCode(context, latitude, longitude);
-        return this.geoLocation;
-    }
-
     public boolean isCompleted() {
         return (addressId != null && !addressId.equals("0") && !cityId.equals("0") && !districtId.equals("0")
                 && !provinceId.equals("0"));
