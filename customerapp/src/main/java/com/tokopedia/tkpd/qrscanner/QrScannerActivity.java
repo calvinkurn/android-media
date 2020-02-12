@@ -57,7 +57,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
     private static final String QR_RESPONSE = "QR_RESPONSE";
-    private static String QR_NEED_RESULT = "qr_need_result";
     @Inject
     QrScannerPresenter presenter;
     private QRComponent qrComponent;
@@ -65,19 +64,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private ProgressBar progressBar;
     private PermissionCheckerHelper permissionCheckerHelper;
     private boolean mNeedResult = false;
-
-    public static Intent newInstance(Context context, boolean needResult) {
-        Intent intent = new Intent(context, QrScannerActivity.class);
-        intent.putExtra(QR_NEED_RESULT, needResult);
-        return intent;
-    }
-
-    @DeepLink({ApplinkConst.QRSCAN})
-    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        Intent intent = newInstance(context, false);
-        return intent.setData(uri.build());
-    }
 
     @Override
     protected Fragment getNewFragment() {
@@ -98,12 +84,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
             if (!paths.isEmpty()) {
                 String param = paths.get(0);
                 mNeedResult = param.equals(PARAM_NEED_RESULT);
-            }
-        }
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            if (!mNeedResult) {
-                mNeedResult = extras.getBoolean(QR_NEED_RESULT, false);
             }
         }
 
