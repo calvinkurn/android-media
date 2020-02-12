@@ -11,14 +11,35 @@ import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
-    textViewGimmick?.initTextGroup(productCardModel.getTextGimmick())
+    renderTextGimmick(productCardModel)
+    renderTextProductName(productCardModel)
+    renderLabelPrice(productCardModel)
+    renderDiscount(productCardModel)
+    renderTextPrice(productCardModel)
+    renderShopBadge(productCardModel)
+    renderTextShopLocation(productCardModel)
+    renderRating(productCardModel)
+    renderTextReview(productCardModel)
+    renderTextCredibility(productCardModel)
+    renderFreeOngkir(productCardModel)
+    renderTextShipping(productCardModel)
+}
 
+private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
+    textViewGimmick?.initTextGroup(productCardModel.getTextGimmick())
+}
+
+private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
         it.text = productCardModel.productName
     }
+}
 
+private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
     labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+}
 
+private fun View.renderDiscount(productCardModel: ProductCardModel) {
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         it.text = productCardModel.discountPercentage
     }
@@ -27,34 +48,50 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
         it.text = productCardModel.slashedPrice
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
+}
 
+private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     textViewPrice?.shouldShowWithAction(productCardModel.formattedPrice.isNotEmpty()) {
         it.text = productCardModel.formattedPrice
     }
+}
 
+private fun View.renderShopBadge(productCardModel: ProductCardModel) {
     val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
     imageShopBadge?.shouldShowWithAction(shopBadge != null) {
         it.loadIcon(shopBadge?.imageUrl ?: "")
     }
+}
 
+private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
         it.text = productCardModel.shopLocation
     }
+}
 
+private fun View.renderRating(productCardModel: ProductCardModel) {
     imageRatingString?.showWithCondition(productCardModel.ratingString.isNotEmpty())
     textViewRatingString?.shouldShowWithAction(productCardModel.ratingString.isNotEmpty()) {
         it.text = productCardModel.ratingString
     }
+}
 
+private fun View.renderTextReview(productCardModel: ProductCardModel) {
     textViewReviewCount?.shouldShowWithAction(productCardModel.reviewCount > 0) {
         it.text = String.format(context.getString(R.string.product_card_review_count_format), productCardModel.reviewCount)
     }
+}
 
+private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
     textViewCredibility?.initTextGroup(productCardModel.getTextCredibility())
+}
 
+private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
     imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.freeOngkir.isActive) {
         it.loadIcon(productCardModel.freeOngkir.imageUrl)
     }
+}
 
+private fun View.renderTextShipping(productCardModel: ProductCardModel) {
     textViewShipping?.initTextGroup(productCardModel.getTextShipping())
 }
