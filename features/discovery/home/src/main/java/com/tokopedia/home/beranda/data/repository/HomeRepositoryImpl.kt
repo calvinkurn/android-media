@@ -22,7 +22,7 @@ class HomeRepositoryImpl @Inject constructor(
         private val playRemoteDataSource: PlayRemoteDataSource
 ): HomeRepository {
 
-    override suspend fun getHomeData(): Flow<HomeData?> {
+    override fun getHomeData(): Flow<HomeData?> {
         return homeCachedDataSource.getCachedHomeData()
     }
 
