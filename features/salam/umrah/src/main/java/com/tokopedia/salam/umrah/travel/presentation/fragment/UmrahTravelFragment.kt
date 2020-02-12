@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
+import com.tokopedia.salam.umrah.common.analytics.*
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.common.util.UmrahShare
@@ -53,6 +53,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     lateinit var userSessionInterface: UserSessionInterface
 
     var travelAgent: TravelAgent = TravelAgent()
+    var positionBefore: Int = 0
 
     private lateinit var umrahTravelAgentViewPagerAdapter: UmrahTravelAgentViewPagerAdapter
 
@@ -115,6 +116,10 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
 
         const val REQUEST_CODE_LOGIN = 400
         const val EXTRA_SLUGNAME = "EXTRA_SLUGNAME"
+
+        const val POSITION_PRODUCT = 0
+        const val POSITION_GALLERY = 1
+        const val POSITION_INFO = 2
     }
 
 
@@ -137,6 +142,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
 
     private fun setupChat() {
         btn_umrah_travel_contact.setOnClickListener {
+            umrahTrackingUtil.umrahTravelAgentClickHubungiTravel(getEventCategoryTracking(getCurrentPositionViewPager()))
             checkChatSession()
         }
     }
@@ -148,14 +154,38 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
             vp_umrah_travel_agent.offscreenPageLimit = OFF_SCREEN_LIMIT
             tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
             vp_umrah_travel_agent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrollStateChanged(state: Int) {}
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+                override fun onPageScrollStateChanged(state: Int) {
+
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+                }
 
                 override fun onPageSelected(position: Int) {
                     when (position) {
-                        0 -> umrahTrackingUtil.umrahTravelAgentClickPacketUmroh()
-                        1 -> umrahTrackingUtil.umrahTravelAgentClickGaleri()
-                        2 -> umrahTrackingUtil.umrahTravelAgentClickInfo()
+                        POSITION_PRODUCT -> {
+                            if (getPositionBeforeChange() == POSITION_GALLERY)
+                                umrahTrackingUtil.umrahTravelAgentClickPacketUmroh(UMRAH_CLICK_EVENT, getEventCategoryTracking(POSITION_GALLERY))
+                            else umrahTrackingUtil.umrahTravelAgentClickPacketUmroh("", getEventCategoryTracking(POSITION_PRODUCT))
+
+                            setPositionBeforeChange(position)
+                        }
+                        POSITION_GALLERY -> {
+                            if (getPositionBeforeChange() == POSITION_PRODUCT)
+                                umrahTrackingUtil.umrahTravelAgentClickGaleri(getEventCategoryTracking(POSITION_PRODUCT))
+                            else if (positionBefore == POSITION_INFO)
+                                umrahTrackingUtil.umrahTravelAgentClickGaleri(getEventCategoryTracking(POSITION_GALLERY))
+
+                            setPositionBeforeChange(position)
+                        }
+                        POSITION_INFO -> {
+                            if (getPositionBeforeChange() == POSITION_GALLERY)
+                                umrahTrackingUtil.umrahTravelAgentClickInfo(UMRAH_CLICK_EVENT, getEventCategoryTracking(POSITION_GALLERY))
+                            else umrahTrackingUtil.umrahTravelAgentClickInfo("", getEventCategoryTracking(POSITION_PRODUCT))
+
+                            setPositionBeforeChange(position)
+                        }
                     }
                 }
             })
@@ -177,6 +207,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
         }
 
         tg_widget_umrah_pdp_item_desc.setOnClickListener {
+            umrahTrackingUtil.umrahTravelAgentClickNumberRegistration(getEventCategoryTracking(getCurrentPositionViewPager()))
             showPermissionUmrah(travelAgent.permissionOfUmrah)
         }
     }
@@ -232,13 +263,36 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
 
     override fun onBackPressed() {
         if (!isDetached) {
-            umrahTrackingUtil.umrahTravelAgentClickBack()
+            if (getCurrentPositionViewPager() == POSITION_GALLERY)
+                umrahTrackingUtil.umrahTravelAgentClickBack(UMRAH_CLICK_EVENT, UMRAH_TRAVEL_PAGE_GALERY_CATEGORY)
+            else umrahTrackingUtil.umrahTravelAgentClickBack("", UMRAH_TRAVEL_PAGE_CATEGORY)
         }
     }
 
     override fun shareTravelLink() {
         activity?.run {
-            UmrahShare(this).share(travelAgent, { showLoading() }, { hideLoading()})
+            UmrahShare(this).share(travelAgent, { showLoading() }, { hideLoading() })
+        }
+    }
+
+    fun getCurrentPositionViewPager(): Int {
+        return vp_umrah_travel_agent.currentItem
+    }
+
+    fun setPositionBeforeChange(positionBefore: Int) {
+        this.positionBefore = positionBefore
+    }
+
+    fun getPositionBeforeChange(): Int {
+        return positionBefore
+    }
+
+    fun getEventCategoryTracking(position: Int): String {
+       return when(position){
+           POSITION_PRODUCT -> UMRAH_TRAVEL_PAGE_CATEGORY
+           POSITION_GALLERY -> UMRAH_TRAVEL_PAGE_GALERY_CATEGORY
+           POSITION_INFO -> UMRAH_TRAVEL_PAGE_INFO_CATEGORY
+           else -> ""
         }
     }
 
