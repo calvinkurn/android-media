@@ -3,7 +3,6 @@ package com.tokopedia.productcard
 import android.graphics.Paint
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.initTextGroup
 import com.tokopedia.productcard.utils.loadIcon
@@ -47,7 +46,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     }
 
     textViewReviewCount?.shouldShowWithAction(productCardModel.reviewCount > 0) {
-        it.text = "(${productCardModel.reviewCount})"
+        it.text = String.format(context.getString(R.string.product_card_review_count_format), productCardModel.reviewCount)
     }
 
     textViewCredibility?.initTextGroup(productCardModel.getTextCredibility())

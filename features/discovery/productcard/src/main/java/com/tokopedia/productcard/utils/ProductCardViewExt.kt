@@ -35,10 +35,6 @@ internal fun View.doIfVisible(action: (View) -> Unit) {
     }
 }
 
-internal fun View?.getString(@StringRes id: Int, vararg formatArgs: Any): String {
-    return this?.context?.resources?.getString(id, formatArgs) ?: ""
-}
-
 internal fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
     return this.context.resources.getDimensionPixelSize(id)
 }
