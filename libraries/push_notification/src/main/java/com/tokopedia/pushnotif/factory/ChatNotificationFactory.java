@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
@@ -20,7 +21,7 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 
 public class ChatNotificationFactory extends BaseNotificationFactory {
 
-    private static String INTENT_ACTION_REPLY = "NotificationChatService.REPLY_CHAT";
+    private static String INTENT_ACTION_REPLY = "NotificationChatServiceReceiver.REPLY_CHAT";
 
     private static String REPLY_KEY = "reply_chat_key";
     private static String REPLY_LABEL = "Reply";
@@ -54,6 +55,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
 
         if(GlobalConfig.isSellerApp()) {
             builder.setShowWhen(true);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                builder.setRemoteInputHistory(new String[]{""});
+            }
             builder.addAction(replyAction(applinkNotificationModel.getApplinks(), notificationId));
         }
 
@@ -71,7 +75,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     }
 
     private RemoteInput remoteInput() {
-        return new RemoteInput.Builder(REPLY_KEY).setLabel(REPLY_LABEL).build();
+        return new RemoteInput.Builder(REPLY_KEY).setLabel(REPLY_LABEL)
+                .build();
     }
 
     private PendingIntent getReplyChatPendingIntent(String mMessageId, int notificationId) {
@@ -81,7 +86,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         intent.putExtra(MESSAGE_ID, mMessageId);
         intent.putExtra(NOTIFICATION_ID, notificationId);
 
-        return PendingIntent.getService(context, 100, intent,
+        return PendingIntent.getBroadcast(context, 100, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

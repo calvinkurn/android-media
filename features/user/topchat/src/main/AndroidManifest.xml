@@ -82,6 +82,19 @@
                 <action android:name="NotificationChatService.REPLY_CHAT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".chatroom.service.NotificationChatJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver
+            android:name=".chatroom.service.NotificationChatServiceReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="NotificationChatServiceReceiver.REPLY_CHAT" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
