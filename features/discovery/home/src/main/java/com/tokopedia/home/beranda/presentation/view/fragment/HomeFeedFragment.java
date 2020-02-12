@@ -258,9 +258,11 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     }
 
     private void goToProductDetail(String productId, int position) {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position);
-        startActivityForResult(intent, REQUEST_FROM_PDP);
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position);
+            startActivityForResult(intent, REQUEST_FROM_PDP);
+        }
     }
 
     private void updateWishlist(String id, boolean isWishlist, int position) {

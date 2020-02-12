@@ -14,7 +14,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_initial_state_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <fragment
             android:id="@+id/search_initial_state"
@@ -27,7 +28,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_suggestion_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <fragment
             android:id="@+id/search_suggestion"

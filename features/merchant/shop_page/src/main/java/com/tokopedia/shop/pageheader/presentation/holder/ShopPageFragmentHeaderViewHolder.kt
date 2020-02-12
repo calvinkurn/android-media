@@ -22,21 +22,17 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
-                                       private val shopPageTracking: ShopPageTrackingBuyer,
+                                       private val shopPageTracking: ShopPageTrackingBuyer?,
                                        private val context: Context) {
     private var isShopFavourited = false
-    private var isShopRequestedModerate = false
 
     companion object {
-        private const val IS_MODERATED = 1
-        private const val MODERATE_OPTION_ONE = 0
-        private const val MODERATE_OPTION_TWO = 1
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
     }
 
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
-        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked() }
+        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavourited) }
         view.shop_page_main_profile_location.text = shopInfo.location
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
         if (isMyShop) {
@@ -89,12 +85,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         updateFavoriteButton()
     }
 
-    fun updateViewModerateStatus(moderateStatus: Int, shopInfo: ShopInfo, isMyShop: Boolean) {
-        isShopRequestedModerate = moderateStatus == IS_MODERATED
-        updateViewShopStatus(shopInfo, isMyShop)
-    }
-
-    private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
+    fun updateShopTicker(shopInfo: ShopInfo, isMyShop: Boolean) {
         if(shouldShowShopStatusTicker(shopInfo.statusInfo.statusTitle, shopInfo.statusInfo.statusMessage)){
             showShopStatusTicker(shopInfo, isMyShop)
         }else{
@@ -114,14 +105,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 when (shopInfo.statusInfo.shopStatus) {
                     ShopStatusDef.CLOSED -> {
-                        shopPageTracking.sendOpenShop()
-                        shopPageTracking.clickOpenOperationalShop(CustomDimensionShopPage
+                        shopPageTracking?.sendOpenShop()
+                        shopPageTracking?.clickOpenOperationalShop(CustomDimensionShopPage
                                 .create(shopInfo.shopCore.shopID,
                                         shopInfo.goldOS.isOfficial == 1,
                                         shopInfo.goldOS.isGold == 1))
                     }
                     ShopStatusDef.NOT_ACTIVE -> {
-                        shopPageTracking.clickHowToActivateShop(CustomDimensionShopPage
+                        shopPageTracking?.clickHowToActivateShop(CustomDimensionShopPage
                                 .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
                                         shopInfo.goldOS.isGold == 1))
                     }
@@ -195,7 +186,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     interface ShopPageFragmentViewHolderListener {
-        fun onFollowerTextClicked()
+        fun onFollowerTextClicked(shopFavourited: Boolean)
         fun toggleFavorite(isFavourite: Boolean)
         fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)

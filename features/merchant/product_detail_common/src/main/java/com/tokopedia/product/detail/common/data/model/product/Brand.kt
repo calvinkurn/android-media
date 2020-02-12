@@ -35,6 +35,20 @@ data class Menu(
         val url: String = ""
 )
 
+data class Etalase(
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
+
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
+        @SerializedName("url")
+        @Expose
+        val url: String = ""
+)
+
 data class Variant(
         @SerializedName("parentID")
         @Expose
