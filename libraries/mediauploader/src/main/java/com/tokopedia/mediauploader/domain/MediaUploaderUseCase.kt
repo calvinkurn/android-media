@@ -1,7 +1,7 @@
 package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.mediauploader.data.UploaderServices
-import com.tokopedia.mediauploader.data.entity.Uploader
+import com.tokopedia.mediauploader.data.entity.MediaUploader
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import okhttp3.MediaType
@@ -12,20 +12,21 @@ import javax.inject.Inject
 
 open class MediaUploaderUseCase @Inject constructor(
         private val services: UploaderServices
-) : UseCase<Uploader>() {
+) : UseCase<MediaUploader>() {
 
-    var requestParams = mapOf<String, Any>()
+    var requestParams = RequestParams()
 
-    override suspend fun executeOnBackground(): Uploader {
-        if (requestParams.isEmpty()) throw Exception("Not param found")
-        val uploadUrl = requestParams[PARAM_URL_UPLOAD] as String
-        val filePath = requestParams[BODY_FILE_UPLOAD] as String
-        return services.uploadFile(uploadUrl, fileUploadParam(createParam(filePath)))
+    override suspend fun executeOnBackground(): MediaUploader {
+        if (requestParams.parameters.isEmpty()) throw Exception("Not param found")
+        val uploadUrl = requestParams.getString(PARAM_URL_UPLOAD, "")
+        val filePath = requestParams.getString(BODY_FILE_UPLOAD, "")
+        val params = createParam(uploadUrl, filePath)
+        return services.uploadFile(uploadUrl, fileUploadParam(params))
     }
 
     companion object {
-        private const val PARAM_URL_UPLOAD = "url"
         private const val BODY_FILE_UPLOAD = "file_upload"
+        private const val PARAM_URL_UPLOAD = "url"
 
         private const val DEFAULT_FILE_TYPE = "image"
 
@@ -37,16 +38,14 @@ open class MediaUploaderUseCase @Inject constructor(
 
         private fun fileUploadParam(requestParams: RequestParams): MultipartBody.Part {
             val file = File(requestParams.getString(BODY_FILE_UPLOAD, ""))
-            val requestBody: RequestBody = RequestBody.create(MediaType.parse("$DEFAULT_FILE_TYPE/*"), file)
-            return MultipartBody.Part.createFormData(
-                    BODY_FILE_UPLOAD,
-                    file.name,
-                    requestBody
-            )
+            val contentType = MediaType.parse("$DEFAULT_FILE_TYPE/*")
+            val requestBody: RequestBody = RequestBody.create(contentType, file)
+            return MultipartBody.Part.createFormData(BODY_FILE_UPLOAD, file.name, requestBody)
         }
 
-        fun createParam(filePath: String): RequestParams {
+        fun createParam(uploadUrl: String, filePath: String): RequestParams {
             val requestParams = RequestParams.create()
+            requestParams.putString(PARAM_URL_UPLOAD, uploadUrl)
             requestParams.putAll(createBodyParam(filePath))
             return requestParams
         }
