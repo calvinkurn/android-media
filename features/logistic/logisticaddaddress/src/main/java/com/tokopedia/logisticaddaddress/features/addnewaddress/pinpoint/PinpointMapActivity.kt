@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -17,6 +17,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 class PinpointMapActivity : BaseSimpleActivity() {
     private val FINISH_FLAG = 1212
     var SCREEN_NAME = "PinpointMapActivity"
+    private val LOGISTIC_LABEL = "logistic"
 
     companion object {
         @JvmStatic
@@ -71,9 +72,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
         }
 
         if (isAllowed) {
-            AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation()
+            AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(eventLabel = LOGISTIC_LABEL)
         } else {
-            AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation()
+            AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(eventLabel = LOGISTIC_LABEL)
         }
 
     }

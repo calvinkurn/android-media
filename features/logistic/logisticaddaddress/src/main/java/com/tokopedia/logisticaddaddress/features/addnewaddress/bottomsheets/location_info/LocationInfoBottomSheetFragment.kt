@@ -17,8 +17,8 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
 /**
@@ -27,6 +27,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 class LocationInfoBottomSheetFragment : BottomSheets() {
     private var bottomSheetView: View? = null
     private lateinit var btnActivateLocation: ButtonCompat
+    private val LOGISTIC_LABEL = "logistic"
 
     companion object {
         @JvmStatic
@@ -47,7 +48,7 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         bottomSheetView = view
         btnActivateLocation = view.findViewById(R.id.btn_activate_location)
         btnActivateLocation.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps()
+            AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = LOGISTIC_LABEL)
             if (!context?.let { it1 -> turnGPSOn(it1) }!!) {
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
@@ -63,7 +64,7 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonXOnBlockGps()
+            AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = LOGISTIC_LABEL)
             onCloseButtonClick()
         }
     }

@@ -70,20 +70,20 @@ object AddNewAddressAnalytics {
                 event, eventCategory, eventAction, eventLabel))
     }
 
-    fun eventClickButtonOkOnAllowLocation() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_OK_ON_ALLOW_LOCATION)
+    fun eventClickButtonOkOnAllowLocation(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_OK_ON_ALLOW_LOCATION, eventLabel)
     }
 
-    fun eventClickButtonDoNotAllowOnAllowLocation() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_DO_NOT_ALLOW_ON_ALLOW_LOCATION)
+    fun eventClickButtonDoNotAllowOnAllowLocation(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_DO_NOT_ALLOW_ON_ALLOW_LOCATION, eventLabel)
     }
 
-    fun eventClickButtonAktifkanLayananLokasiOnBlockGps() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS)
+    fun eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS, eventLabel)
     }
 
-    fun eventClickButtonXOnBlockGps() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_X_ON_BLOCK_GPS)
+    fun eventClickButtonXOnBlockGps(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_X_ON_BLOCK_GPS, eventLabel)
     }
 
     fun eventViewErrorAlamatTidakValid(eventLabel: String) {
