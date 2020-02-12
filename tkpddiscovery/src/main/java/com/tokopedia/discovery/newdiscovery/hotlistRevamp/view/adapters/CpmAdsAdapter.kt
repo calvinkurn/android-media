@@ -77,19 +77,19 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
                 holder.shopBadge,
                 item.badge_url,
                 R.drawable.loading_page)
-        holder.shop_cpm_parent.setOnClickListener {
+        holder.shopCpmParent.setOnClickListener {
             cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item)
         }
     }
 
     private fun setProductData(holder: ProductViewHolder, position: Int) {
         val item = cpmItemList[position]
-        holder.product_name.text = item.name
+        holder.productName.text = item.name
         holder.productPrice.text = item.price_format
         ImageHandler.loadImage(holder.itemView.context,
                 holder.productImage,
                 item.image, R.drawable.loading_page)
-        holder.product_cpm_parent.setOnClickListener {
+        holder.productCpmParent.setOnClickListener {
             cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item)
         }
     }
@@ -112,11 +112,11 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
             val LAYOUT = R.layout.item_nav_hotlist_cpm_shop
         }
 
-        val shopBadge = itemView.findViewById<ImageView>(R.id.badge)
-        val shopName = itemView.findViewById<TextView>(R.id.shop_name)
-        val description = itemView.findViewById<TextView>(R.id.description)
-        val shopImage = itemView.findViewById<ImageView>(R.id.shop_image)
-        val shop_cpm_parent = itemView.findViewById<ConstraintLayout>(R.id.shop_cpm_parent)
+        val shopBadge: ImageView = itemView.findViewById(R.id.badge)
+        val shopName: TextView = itemView.findViewById(R.id.shop_name)
+        val description: TextView = itemView.findViewById(R.id.description)
+        val shopImage: ImageView = itemView.findViewById(R.id.shop_image)
+        val shopCpmParent: ConstraintLayout = itemView.findViewById(R.id.shop_cpm_parent)
     }
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -124,10 +124,10 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
             val LAYOUT = R.layout.item_nav_hotlist_cpm_product
         }
 
-        val productImage = itemView.findViewById<ImageView>(R.id.product_image)
-        val product_name = itemView.findViewById<TextView>(R.id.product_name)
-        val productPrice = itemView.findViewById<TextView>(R.id.product_price)
-        val product_cpm_parent = itemView.findViewById<ConstraintLayout>(R.id.product_cpm_parent)
+        val productImage: ImageView = itemView.findViewById(R.id.product_image)
+        val productName: TextView = itemView.findViewById(R.id.product_name)
+        val productPrice: TextView = itemView.findViewById(R.id.product_price)
+        val productCpmParent: ConstraintLayout = itemView.findViewById(R.id.product_cpm_parent)
     }
 
     class ShimmerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

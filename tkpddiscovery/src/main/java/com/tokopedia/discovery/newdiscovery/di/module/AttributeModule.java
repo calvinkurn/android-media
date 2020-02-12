@@ -13,10 +13,8 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicAutoSelecte
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetHotListFilterValueUseCase;
-import com.tokopedia.discovery.newdiscovery.hotlist.data.mapper.HotlistAttributeMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.AttributeRepository;
 import com.tokopedia.discovery.newdiscovery.data.source.AttributeDataSource;
-import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistAttributeUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import dagger.Module;
@@ -34,13 +32,6 @@ public class AttributeModule {
         return new AttributeRepositoryImpl(attributeDataSource);
     }
 
-    @Provides
-    GetHotlistAttributeUseCase getHotlistAttributeUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            AttributeRepository attributeRepository) {
-        return new GetHotlistAttributeUseCase(threadExecutor, postExecutionThread, attributeRepository);
-    }
 
     @Provides
     GetDynamicFilterUseCase getDynamicFilterUseCase(
@@ -73,14 +64,8 @@ public class AttributeModule {
 
     @Provides
     AttributeDataSource attributeDataSource(BrowseApi attributeApi,
-                                            HotlistAttributeMapper hotlistAttributeMapper,
                                             DynamicAttributeMapper dynamicAttributeMapper) {
-        return new AttributeDataSource(attributeApi, hotlistAttributeMapper, dynamicAttributeMapper);
-    }
-
-    @Provides
-    HotlistAttributeMapper hotlistAttributeMapper(Gson gson) {
-        return new HotlistAttributeMapper(gson);
+        return new AttributeDataSource(attributeApi, dynamicAttributeMapper);
     }
 
     @Provides

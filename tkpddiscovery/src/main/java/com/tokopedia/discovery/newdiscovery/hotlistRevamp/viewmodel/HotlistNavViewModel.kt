@@ -20,12 +20,12 @@ import com.tokopedia.usecase.coroutines.Success
 import rx.Subscriber
 import javax.inject.Inject
 
-class HotlistNavViewModel @Inject constructor(var hotlistDetailUseCase: HotlistDetailUseCase,
-                                              var getProductListUseCase: GetProductListUseCase,
-                                              var categoryProductUseCase: CategoryProductUseCase,
-                                              var quickFilterUseCase: QuickFilterUseCase,
-                                              var dynamicFilterUseCase: DynamicFilterUseCase,
-                                              var cpmAdsUseCase: CpmAdsUseCase) : ViewModel(), LifecycleObserver {
+class HotlistNavViewModel @Inject constructor(private var hotlistDetailUseCase: HotlistDetailUseCase,
+                                              private var getProductListUseCase: GetProductListUseCase,
+                                              private var categoryProductUseCase: CategoryProductUseCase,
+                                              private var quickFilterUseCase: QuickFilterUseCase,
+                                              private var dynamicFilterUseCase: DynamicFilterUseCase,
+                                              private var cpmAdsUseCase: CpmAdsUseCase) : ViewModel(), LifecycleObserver {
 
     val mHotListDetailResponse = MutableLiveData<Result<HotListDetailResponse>>()
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -59,7 +59,7 @@ class HotlistNavViewModel @Inject constructor(var hotlistDetailUseCase: HotlistD
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->
                     (productResponse.searchProduct)?.let { searchProduct ->
-                        searchProduct.products?.let { productList ->
+                        searchProduct.products.let { productList ->
                             mProductList.value = Success((productList) as List<ProductsItem>)
                         }
 

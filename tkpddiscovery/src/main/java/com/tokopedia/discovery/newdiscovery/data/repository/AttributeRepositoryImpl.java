@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.newdiscovery.data.source.AttributeDataSource;
-import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistAttributeModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 
 import rx.Observable;
@@ -17,11 +16,6 @@ public class AttributeRepositoryImpl implements AttributeRepository {
 
     public AttributeRepositoryImpl(AttributeDataSource attributeDataSource) {
         this.attributeDataSource = attributeDataSource;
-    }
-
-    @Override
-    public Observable<HotlistAttributeModel> getHotlistAttribute(TKPDMapParam<String, Object> param) {
-        return attributeDataSource.getHotlistAttribute(param);
     }
 
     @Override
