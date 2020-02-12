@@ -1,7 +1,7 @@
 package com.tokopedia.entertainment.home.adapter.viewmodel
 
-data class EventItemModel(var produkId: String,
-                          var rating: String,
+data class EventItemModel(var produkId: Int,
+                          var rating: Int,
                           var imageUrl: String,
                           var title : String,
                           var location: String,

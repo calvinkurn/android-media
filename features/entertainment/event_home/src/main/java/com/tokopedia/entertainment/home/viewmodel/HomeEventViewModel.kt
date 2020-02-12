@@ -21,6 +21,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -70,7 +71,8 @@ class HomeEventViewModel @Inject constructor(
                 block = {
                     val result = withContext(Dispatchers.IO){
                         val actionLikedRequest = ActionLikedRequest(ActionLikedRequest.Rating(
-                            "", item.isLiked.toString(), item.produkId, item.rating, userSession.userId
+                            "", item.isLiked.toString(), item.produkId, item.rating,
+                                userSession.userId.toIntOrZero()
                         ))
                         val headers = HashMap<String, String>()
                         headers.put("Content-Type", "application/json")
