@@ -535,7 +535,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun redirectToEtalasePicker() {
         activity?.let {
             val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo!!.shopCore.shopID,
-                    selectedEtalaseId, isShowDefault = true, isShowZeroProduct = !isOwner)
+                    selectedEtalaseId, isShowDefault = true, isShowZeroProduct = true)
             startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
         }
     }
