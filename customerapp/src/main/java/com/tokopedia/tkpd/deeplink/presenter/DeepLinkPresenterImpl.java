@@ -640,6 +640,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
+                || lastSegment.equals("discount")
                 || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
     }
 
