@@ -81,7 +81,6 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.Default, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.Tokopoints, ::TokopointsViewHolder, ::TokopointsViewModel)
             initializeComponent(ComponentsList.TokopointsItem, ::TokopointsItemViewHolder, ::TokopointsItemViewModel)
-
             initializeComponent(ComponentsList.CpmTopAdsProductItem, ::CpmTopadsProductItemViewHolder, ::CpmTopadsProductItemViewModel)
             initializeComponent(ComponentsList.Spacing, ::SpacingViewHolder, ::SpacingViewModel)
         }
