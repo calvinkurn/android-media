@@ -20,16 +20,14 @@ import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.util.getResColor
+import com.tokopedia.sellerhome.util.toJson
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -322,9 +320,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
 
             val adapter = TickerPagerAdapter(activity, tickersData)
+            adapter.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    println("onDescriptionViewClick : $linkUrl")
+                }
+
+                override fun onDismiss() {
+                    println("onDismiss ")
+                }
+
+            })
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    //implement tooltipClickListener on click
+                    println("onPageDescriptionViewClick: $linkUrl, ${itemData?.toJson}")
                 }
             })
 

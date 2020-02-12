@@ -25,6 +25,8 @@ class CarouselViewHolder(
         val RES_LAYOUT = R.layout.sah_carousel_widget
     }
 
+
+
     override fun bind(element: CarouselWidgetUiModel) {
         listener.getCarouselData()
         observeState(element)
