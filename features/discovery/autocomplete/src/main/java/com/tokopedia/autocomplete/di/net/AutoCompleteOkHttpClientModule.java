@@ -2,7 +2,7 @@ package com.tokopedia.autocomplete.di.net;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.autocomplete.di.AutoCompleteScope;
 import com.tokopedia.autocomplete.di.qualifier.NoAuth;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;

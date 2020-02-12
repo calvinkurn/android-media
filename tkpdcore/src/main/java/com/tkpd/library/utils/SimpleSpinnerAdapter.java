@@ -12,28 +12,8 @@ import java.util.List;
  */
 public class SimpleSpinnerAdapter extends ArrayAdapter<String>{
 
-    public SimpleSpinnerAdapter(Context context, int resource) {
-        super(context, resource);
-    }
-
-    public SimpleSpinnerAdapter(Context context, int resource, int textViewResourceId) {
-        super(context, resource, textViewResourceId);
-    }
-
-    public SimpleSpinnerAdapter(Context context, int resource, String[] objects) {
-        super(context, resource, objects);
-    }
-
-    public SimpleSpinnerAdapter(Context context, int resource, int textViewResourceId, String[] objects) {
-        super(context, resource, textViewResourceId, objects);
-    }
-
     public SimpleSpinnerAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
-    }
-
-    public SimpleSpinnerAdapter(Context context, int resource, int textViewResourceId, List<String> objects) {
-        super(context, resource, textViewResourceId, objects);
     }
 
     public static SimpleSpinnerAdapter createAdapter(Context context, List<String> itemList){
@@ -41,17 +21,4 @@ public class SimpleSpinnerAdapter extends ArrayAdapter<String>{
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
     }
-
-    public static SimpleSpinnerAdapter createAdapter(Context context, List<String> itemList, int textViewResourceId){
-        SimpleSpinnerAdapter adapter = new SimpleSpinnerAdapter(context, textViewResourceId, itemList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
-    }
-	
-	public static SimpleSpinnerAdapter createAdapter(Context context, int arrayResId){
-        SimpleSpinnerAdapter adapter = new SimpleSpinnerAdapter(context, android.R.layout.simple_spinner_item, context.getResources().getStringArray(arrayResId));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
-    }
-
 }

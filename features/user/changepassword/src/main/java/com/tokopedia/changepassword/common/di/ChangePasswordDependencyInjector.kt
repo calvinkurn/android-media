@@ -4,7 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.changepassword.data.ChangePasswordApi
 import com.tokopedia.changepassword.data.ChangePasswordUrl
 import com.tokopedia.changepassword.domain.ChangePasswordUseCase
@@ -16,7 +16,6 @@ import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -33,7 +32,7 @@ class ChangePasswordDependencyInjector {
 
         fun inject(context: Context): ChangePasswordPresenter {
 
-            val userSession : UserSessionInterface = UserSession(context)
+            val userSession = UserSession(context)
 
             val gson: Gson = GsonBuilder()
                     .setDateFormat(DATE_FORMAT)
@@ -83,8 +82,7 @@ class ChangePasswordDependencyInjector {
             val changePasswordUseCase = ChangePasswordUseCase(changePasswordApi,
                     changePasswordMapper)
 
-
-            return ChangePasswordPresenter(changePasswordUseCase, userSession)
+            return ChangePasswordPresenter(changePasswordUseCase)
         }
     }
 }

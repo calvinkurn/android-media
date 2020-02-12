@@ -24,15 +24,13 @@ import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
-import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
@@ -93,8 +91,6 @@ import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
-import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
 import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
@@ -130,7 +126,6 @@ import rx.schedulers.Schedulers;
         FeedDeeplinkModule.class,
         InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
-        ReputationApplinkModule.class,
         EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
@@ -144,7 +139,6 @@ import rx.schedulers.Schedulers;
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         RecentViewApplinkModule.class,
-        ChangePasswordDeeplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
@@ -164,7 +158,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
-                    new ConsumerDeeplinkModuleLoader(),
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
@@ -177,7 +170,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new FeedDeeplinkModuleLoader(),
                     new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
-                    new ReputationApplinkModuleLoader(),
                     new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ShopAppLinkModuleLoader(),
@@ -190,7 +182,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),
-                    new ChangePasswordDeeplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
@@ -212,7 +203,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         super.onCreate(savedInstanceState);
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
 
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             AppsFlyerLib.getInstance().sendDeepLinkData(this);
         }
 

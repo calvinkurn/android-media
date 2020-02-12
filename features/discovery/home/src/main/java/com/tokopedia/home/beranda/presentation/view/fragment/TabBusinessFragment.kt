@@ -92,11 +92,13 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
     }
 
     fun refresh() {
-        errorView.visibility = View.GONE
-        container.visibility = View.INVISIBLE
-        temporayPlaceHolders.visibility = View.VISIBLE
+        if (view != null) {
+            errorView.visibility = View.GONE
+            container.visibility = View.INVISIBLE
+            temporayPlaceHolders.visibility = View.VISIBLE
 
-        getTabBusinessUnit()
+            getTabBusinessUnit()
+        }
     }
 
     private fun getTabBusinessUnit() {
