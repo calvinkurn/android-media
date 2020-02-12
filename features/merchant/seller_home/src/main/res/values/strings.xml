@@ -7,4 +7,6 @@
     <string name="sah_widget_error_message">Oops, informasi gagal ditampilkan</string>
     <string name="sah_score">Skor</string>
     <string name="sah_max_progress">/100</string>
+    <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
+    <string name="sah_reload">Muat ulang</string>
 </resources>

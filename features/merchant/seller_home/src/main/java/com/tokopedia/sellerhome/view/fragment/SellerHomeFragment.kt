@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -27,6 +26,7 @@ import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -84,14 +84,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hideTooltipIfExist()
         setupView()
 
-        observeTickerLiveData()
         observeWidgetLayoutLiveData()
-
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(sellerHomeViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.progressWidgetData, WidgetType.PROGRESS)
         observeWidgetData(sellerHomeViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
+        observeTickerLiveData()
     }
 
     private fun hideTooltipIfExist() {
@@ -234,28 +233,40 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> {
-                    recyclerView.visible()
-                    renderList(result.data)
-                    result.data.forEach {
-                        if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
-                            widgetHasMap[it.widgetType] = mutableListOf(it)
-                            return@forEach
-                        }
-                        widgetHasMap[it.widgetType]?.add(it)
-                    }
-                    showGetWidgetProgress(false)
-                }
-                is Fail -> {
-                    //it should be not like this
-                    Toast.makeText(context, "Oops : ${result.throwable.message}", Toast.LENGTH_LONG).show()
-                    showGetWidgetProgress(false)
-                }
+                is Success -> setOnSuccessGetLayout(result.data)
+                is Fail -> setOnErrorGetLayout()
             }
         })
 
         showGetWidgetProgress(true)
         sellerHomeViewModel.getWidgetLayout()
+    }
+
+    private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
+        recyclerView.visible()
+        renderList(widgets)
+        widgets.forEach {
+            if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
+                widgetHasMap[it.widgetType] = mutableListOf(it)
+                return@forEach
+            }
+            widgetHasMap[it.widgetType]?.add(it)
+        }
+        showGetWidgetProgress(false)
+    }
+
+    private fun setOnErrorGetLayout() = view?.run {
+        Toaster.make(
+                this,
+                context.getString(R.string.sah_failed_to_get_information),
+                Toaster.toasterLength,
+                Toaster.TYPE_ERROR,
+                context.getString(R.string.sah_reload),
+                View.OnClickListener {
+                    refreshWidget()
+                }
+        )
+        showGetWidgetProgress(false)
     }
 
     private fun observeTickerLiveData() {
