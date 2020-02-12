@@ -440,7 +440,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
 
         if (!validated) {
-            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field)
+            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field, eventLabel = LOGISTIC_LABEL)
         }
 
         if (!validateFormDefault(field)) validated = false
@@ -483,7 +483,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
 
         if (!validated) {
-            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field, eventLabel = LOGISTIC_LABEL)
         }
 
         if (!validateFormDefault(field)) validated = false
@@ -525,9 +525,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
         if (!validated) {
             if (isMismatch) {
-                AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
+                AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field, eventLabel = LOGISTIC_LABEL)
             } else {
-                AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field)
+                AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field, eventLabel = LOGISTIC_LABEL)
             }
         }
         return validated
