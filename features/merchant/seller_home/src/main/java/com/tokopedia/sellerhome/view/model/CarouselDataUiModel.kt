@@ -1,11 +1,12 @@
 package com.tokopedia.sellerhome.view.model
 
 data class CarouselDataUiModel (
-        val data: List<CarouselDataModel>,
-        override var error: String
+        val dataKey: String = "",
+        val data: List<CarouselItemUiModel> = emptyList(),
+        override var error: String = ""
 ): BaseDataUiModel
 
-class CarouselDataModel (
+class CarouselItemUiModel (
         val id: String,
         val url: String,
         val appLink: String,

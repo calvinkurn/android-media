@@ -13,7 +13,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -31,6 +30,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getLineGraphDataUseCase: GetLineGraphDataUseCase,
         private val getProgressDataUseCase: GetProgressDataUseCase,
         private val getPostDataUseCase: GetPostDataUseCase,
+        private val getCarouselDataUseCase: GetCarouselDataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -126,8 +126,8 @@ class SellerHomeViewModel @Inject constructor(
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             carouselWidgetData.value = Success(withContext(Dispatchers.IO) {
-                delay(5000)
-                return@withContext listOf(CarouselDataUiModel(data = emptyList(), error = ""))
+                getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys, 5)
+                return@withContext getCarouselDataUseCase.executeOnBackground()
             })
         }, onError = {
             carouselWidgetData.value = Fail(it)
