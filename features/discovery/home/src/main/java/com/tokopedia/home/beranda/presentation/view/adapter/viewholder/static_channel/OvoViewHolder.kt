@@ -267,6 +267,8 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
                                 tokopointsDrawerHomeData.sectionContent[0].tagAttributes.text.isNotEmpty()) {
                             HomePageTracking.sendClickOnTokopointsNewCouponTracker()
+                        } else {
+                            HomePageTracking.sendTokopointTrackerClick()
                         }
                     }
                 }
