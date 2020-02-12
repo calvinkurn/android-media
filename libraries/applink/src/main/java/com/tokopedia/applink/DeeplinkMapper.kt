@@ -178,6 +178,7 @@ object DeeplinkMapper {
             ApplinkConst.PRODUCT_TALK -> return ApplinkConstInternalGlobal.PRODUCT_TALK
             ApplinkConst.TALK_DETAIL -> return ApplinkConstInternalGlobal.DETAIL_TALK
             ApplinkConst.SHOP_TALK -> return ApplinkConstInternalGlobal.SHOP_TALK
+            ApplinkConst.EVENTS -> return ApplinkConstInternalEntertainment.EVENT_HOME
             else -> ""
         }
         if (mappedDeeplink.isNotEmpty()) {

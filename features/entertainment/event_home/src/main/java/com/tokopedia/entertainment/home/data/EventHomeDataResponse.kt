@@ -26,6 +26,8 @@ data class EventHomeDataResponse(
                     val id: String = "",
                     @SerializedName("media_url")
                     val mediaUrl: String = "",
+                    @SerializedName("url")
+                    val url: String = "",
                     @SerializedName("name")
                     val name: String = "",
                     @SerializedName("priority")
@@ -56,12 +58,16 @@ data class EventHomeDataResponse(
                 data class Item(
                         @SerializedName("app_url")
                         val appUrl: String = "",
+                        @SerializedName("url")
+                        val url: String = "",
                         @SerializedName("city_name")
                         val cityName: String = "",
                         @SerializedName("display_name")
                         val displayName: String = "",
                         @SerializedName("id")
                         val id: String = "",
+                        @SerializedName("rating")
+                        val rating: String = "",
                         @SerializedName("image_app")
                         val imageApp: String = "",
                         @SerializedName("location")
@@ -73,7 +79,9 @@ data class EventHomeDataResponse(
                         @SerializedName("schedule")
                         val schedule: String = "",
                         @SerializedName("title")
-                        val title: String = ""
+                        val title: String = "",
+                        @SerializedName("is_liked")
+                        val isLiked: Boolean
                 )
             }
         }

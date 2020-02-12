@@ -12,18 +12,22 @@ class EventGridViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
     : HomeEventItem<HomeTypeFactory> {
 
     var title : String = ""
-    var items : MutableList<EventGridEventViewHolder.EventItemModel> = mutableListOf()
+    var items : MutableList<EventItemModel> = mutableListOf()
 
     init {
         title = layout.title
         layout.items.forEachIndexed { index, it ->
             if(index < 4) {
-                items.add(EventGridEventViewHolder.EventItemModel(
+                items.add(EventItemModel(
+                        it.id,
+                        it.rating,
                         it.imageApp,
                         it.title,
                         it.location,
                         it.salesPrice,
-                        it.price
+                        it.price,
+                        it.isLiked,
+                        it.appUrl
                 ))
             }
         }

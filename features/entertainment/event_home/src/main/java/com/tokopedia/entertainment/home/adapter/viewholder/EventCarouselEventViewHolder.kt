@@ -7,9 +7,11 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselViewModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
 import java.text.SimpleDateFormat
@@ -18,9 +20,9 @@ import java.util.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventCarouselEventViewHolder(itemView: View): HomeEventViewHolder<EventCarouselViewModel>(itemView) {
+class EventCarouselEventViewHolder(itemView: View, action:((EventItemModel) -> Unit)): HomeEventViewHolder<EventCarouselViewModel>(itemView) {
 
-    var itemAdapter = ItemAdapter()
+    var itemAdapter = ItemAdapter(action)
 
     init {
         itemView.ent_recycle_view.apply {
@@ -39,13 +41,7 @@ class EventCarouselEventViewHolder(itemView: View): HomeEventViewHolder<EventCar
         var LAYOUT: Int = R.layout.ent_layout_viewholder_event_carouse
     }
 
-    data class EventItemModel(var imageUrl: String,
-                              var title : String,
-                              var location: String,
-                              var price: String,
-                              var date: String)
-
-    class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    class ItemAdapter(val action:((EventItemModel) -> Unit)) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -59,11 +55,23 @@ class EventCarouselEventViewHolder(itemView: View): HomeEventViewHolder<EventCar
             return ItemViewHolder(view)
         }
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-            Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.event_image)
-            holder.view.event_location.text = items.get(position).location
-            holder.view.event_title.text = items.get(position).title
-            holder.view.event_date.text = formatedSchedule(items.get(position).date)
-            holder.view.event_price.text = items.get(position).price
+            var item = items.get(position)
+            Glide.with(holder.view).load(item.imageUrl).into(holder.view.event_image)
+            holder.view.event_location.text = item.location
+            holder.view.event_title.text = item.title
+            holder.view.event_date.text = formatedSchedule(item.date)
+            holder.view.event_price.text = item.price
+            if(item.isLiked){
+                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
+            } else {
+                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
+            }
+            holder.view.setOnClickListener {
+                RouteManager.route(holder.view.context, item.appUrl)
+            }
+            holder.view.iv_favorite.setOnClickListener {
+                action.invoke(item)
+            }
         }
 
         private fun formatedSchedule(schedule: String): String? {

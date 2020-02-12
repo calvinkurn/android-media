@@ -7,18 +7,20 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridViewModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.*
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridEventViewHolder(itemView: View): HomeEventViewHolder<EventGridViewModel>(itemView) {
+class EventGridEventViewHolder(itemView: View, action:((EventItemModel) -> Unit)): HomeEventViewHolder<EventGridViewModel>(itemView) {
 
-    var itemAdapter = ItemAdapter()
+    var itemAdapter = ItemAdapter(action)
 
     init {
         itemView.ent_recycle_view.apply {
@@ -38,13 +40,7 @@ class EventGridEventViewHolder(itemView: View): HomeEventViewHolder<EventGridVie
         var LAYOUT: Int = R.layout.ent_layout_viewholder_event_grid
     }
 
-    data class EventItemModel(var imageUrl: String,
-                              var title : String,
-                              var location: String,
-                              var slashedPrice: String,
-                              var price: String)
-
-    class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    class ItemAdapter(val action:((EventItemModel) -> Unit)) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -56,10 +52,22 @@ class EventGridEventViewHolder(itemView: View): HomeEventViewHolder<EventGridVie
             return ItemViewHolder(view)
         }
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-            Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.image)
-            holder.view.txt_location.text = items.get(position).location
-            holder.view.txt_title.text = items.get(position).title
-            holder.view.txt_price.text = items.get(position).price
+            var item = items.get(position)
+            Glide.with(holder.view).load(item.imageUrl).into(holder.view.image)
+            holder.view.txt_location.text = item.location
+            holder.view.txt_title.text = item.title
+            holder.view.txt_price.text = item.price
+            if(item.isLiked){
+                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
+            } else {
+                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
+            }
+            holder.view.setOnClickListener {
+                RouteManager.route(holder.view.context, item.appUrl)
+            }
+            holder.view.iv_favorite.setOnClickListener {
+                action.invoke(item)
+            }
         }
         override fun getItemCount() = items.size
     }

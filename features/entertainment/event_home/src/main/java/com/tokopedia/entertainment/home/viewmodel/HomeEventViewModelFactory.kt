@@ -3,6 +3,7 @@ package com.tokopedia.entertainment.home.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,11 +16,12 @@ import javax.inject.Inject
 class HomeEventViewModelFactory @Inject constructor(
         private val context: Context,
         private val dispatcher: CoroutineDispatcher,
-        private val repository: GraphqlRepository,
+        private val gqlRepository: GraphqlRepository,
+        private val restRepository: RestRepository,
         private val userSession: UserSessionInterface) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return HomeEventViewModel(context, dispatcher, repository, userSession) as T
+        return HomeEventViewModel(context, dispatcher, gqlRepository, restRepository, userSession) as T
     }
 
 }

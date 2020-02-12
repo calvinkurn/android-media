@@ -33,6 +33,7 @@ query EventCategories($category:String!){
       app_url
       items {
         id
+        rating
         display_name
         title
         image_app
@@ -42,6 +43,7 @@ query EventCategories($category:String!){
         location
         schedule
         app_url
+        url
       }
     }
   }

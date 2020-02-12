@@ -9,7 +9,7 @@ import com.tokopedia.entertainment.home.adapter.viewmodel.*
 /**
  * Author errysuprayogi on 29,January,2020
  */
-class HomeTypeFactoryImpl : HomeTypeFactory {
+class HomeTypeFactoryImpl(val action:((EventItemModel) -> Unit)) : HomeTypeFactory {
 
     override fun type(viewModel: BannerViewModel): Int {
         return BannerEventViewHolder.LAYOUT
@@ -38,9 +38,9 @@ class HomeTypeFactoryImpl : HomeTypeFactory {
         } else if (type == CategoryEventViewHolder.LAYOUT) {
             CategoryEventViewHolder(view)
         } else if (type == EventGridEventViewHolder.LAYOUT) {
-            EventGridEventViewHolder(view)
+            EventGridEventViewHolder(view, action)
         } else if (type == EventCarouselEventViewHolder.LAYOUT) {
-            EventCarouselEventViewHolder(view)
+            EventCarouselEventViewHolder(view, action)
         } else if (type == EventLocationEventViewHolder.LAYOUT) {
             EventLocationEventViewHolder(view)
         } else {

@@ -15,6 +15,8 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventAdapter
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
+import com.tokopedia.entertainment.home.data.ActionLikedResponse
 import com.tokopedia.entertainment.home.di.EventHomeComponent
 import com.tokopedia.entertainment.home.viewmodel.FragmentView
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
@@ -36,8 +38,9 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         val TAG = EventHomeFragment::class.java.simpleName
         const val PROMOURL = "https://www.tokopedia.com/promo/tiket/events/"
         const val FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/"
-        const val REQUEST_LOGIN_FAVORITE = 213234
-        const val REQUEST_LOGIN_TRANSACTION = 213235
+        const val REQUEST_LOGIN_FAVORITE = 213
+        const val REQUEST_LOGIN_TRANSACTION = 214
+        const val REQUEST_LOGIN_POST_LIKES = 215
     }
 
     @Inject
@@ -71,12 +74,20 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl())
+            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter))
             adapter = homeAdapter
         }
 
         swipe_refresh_layout.setOnRefreshListener {
-            viewModel.getHomeData(this, this::onSuccessGetData, this::onErrorGetData, CacheType.CLOUD_THEN_CACHE)
+            viewModel.getHomeData(this, ::onSuccessGetData, ::onErrorGetData, CacheType.CLOUD_THEN_CACHE)
+        }
+    }
+
+    private fun actionItemAdapter(item: EventItemModel) {
+        if(userSession.isLoggedIn) {
+            viewModel.postLiked(item, ::onSuccessPostLiked, ::onErrorGetData)
+        } else {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_POST_LIKES)
         }
     }
 
@@ -85,8 +96,13 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         return view
     }
 
+
     private fun onErrorGetData(throwable: Throwable){
         Log.e(TAG, throwable.localizedMessage)
+    }
+
+    private fun onSuccessPostLiked(data: ActionLikedResponse.Data){
+
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {

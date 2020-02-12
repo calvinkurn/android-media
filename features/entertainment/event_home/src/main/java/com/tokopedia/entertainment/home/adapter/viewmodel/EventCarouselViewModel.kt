@@ -2,7 +2,6 @@ package com.tokopedia.entertainment.home.adapter.viewmodel
 
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory
-import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 
 /**
@@ -10,16 +9,20 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
  */
 class EventCarouselViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout) : HomeEventItem<HomeTypeFactory> {
 
-    var items : MutableList<EventCarouselEventViewHolder.EventItemModel> = mutableListOf()
+    var items : MutableList<EventItemModel> = mutableListOf()
 
     init {
         layout.items.forEach {
-            items.add(EventCarouselEventViewHolder.EventItemModel(
+            items.add(EventItemModel(
+                    it.id,
+                    it.rating,
                     it.imageApp,
                     it.title,
                     it.location,
                     it.price,
-                    it.schedule
+                    it.schedule,
+                    it.isLiked,
+                    it.appUrl
             ))
         }
     }
