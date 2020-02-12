@@ -2,53 +2,66 @@ package com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder
 
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.AllBrandAdapter
-import com.tokopedia.unifyprinciples.Typography
 
 class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel>(itemView) {
 
     private var context: Context? = null
-    private var adapter: AllBrandAdapter? = null
-    private var headerView: Typography? = null
-    private var totalBrandView: AppCompatTextView? = null
-    private var recyclerView: RecyclerView? = null
+    private var brandLogoView: ImageView? = null
+    private var brandImageView: ImageView? = null
+    private var brandNameView: TextView? = null
 
     init {
-        headerView = itemView?.findViewById(R.id.tv_header)
-        totalBrandView = itemView?.findViewById(R.id.tv_total_brand)
-        recyclerView = itemView?.findViewById(R.id.rv_all_brand)
+        brandLogoView = itemView?.findViewById(R.id.iv_brand_logo)
+        brandImageView = itemView?.findViewById(R.id.iv_brand_image)
+        brandNameView = itemView?.findViewById(R.id.tv_brand_name)
 
         itemView?.context?.let {
             context = it
-            adapter = AllBrandAdapter(it)
-            recyclerView?.adapter = adapter
-            recyclerView?.layoutManager = GridLayoutManager(it, 3)
         }
     }
 
     override fun bind(element: AllBrandViewModel?) {
 
-        headerView?.text = "Semua Brand"
+        val brand = element?.brand
 
-        val totalBrandAmount = element?.totalBrands?.toString()
-        totalBrandAmount?.let {
-            totalBrandView?.text = totalBrandAmount + " " + "Brand"
+        brandLogoView?.let {
+            if (brand != null) {
+                loadImageToImageView(context, brand.logoUrl, it)
+            }
         }
+        brandImageView?.let {
+            if (brand != null) {
+                loadImageToImageView(context, brand.exclusiveLogoURL, it)
+            }
+        }
+        brandNameView?.let {
+            if (brand != null) {
+                it.text = brand.name
+            }
+        }
+    }
 
-        element?.allBrands?.let {
-            adapter?.updateAllBrands(it)
+    private fun loadImageToImageView(context: Context?, imageUrl: String, brandView: ImageView) {
+        context?.let {
+            Glide.with(it)
+                    .load(imageUrl)
+                    .dontAnimate()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(brandView)
         }
     }
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.brandlist_all_brand_layout
+        val LAYOUT = R.layout.brandlist_all_brand_item
     }
 }

@@ -1,9 +1,6 @@
 package com.tokopedia.brandlist.brandlist_page.presentation.adapter
 
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 
 interface BrandlistPageTypeFactory {
 
@@ -12,6 +9,8 @@ interface BrandlistPageTypeFactory {
     fun type(popularBrandViewModel: PopularBrandViewModel): Int
 
     fun type(newBrandViewModel: NewBrandViewModel): Int
+
+    fun type(allBrandHeaderViewModel: AllBrandHeaderViewModel): Int
 
     fun type(allBrandViewModel: AllBrandViewModel): Int
 }

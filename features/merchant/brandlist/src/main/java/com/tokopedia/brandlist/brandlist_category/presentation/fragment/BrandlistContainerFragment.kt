@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.lifecycle.Observer
@@ -122,14 +123,42 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     private fun init(view: View) {
+
         configStatusBar(view)
-        configMainToolbar(view)
+
+        mainToolbar = view.findViewById(R.id.maintoolbar)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
         appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
+
+        mainToolbar?.let {
+            configMainToolbar(it)
+        }
+
+        viewPager?.addOnPageChangeListener(createOnPageChangeListener())
+    }
+
+    private fun createOnPageChangeListener(): ViewPager.OnPageChangeListener {
+
+        return object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                val selectedCategory = tabAdapter.categories.getOrNull(position.toZeroIfNull())
+                selectedCategory.let {
+                    tabLayout?.getTabAt(position)?.select()
+                }
+            }
+
+        }
     }
 
     private fun observeBrandListCategoriesData() {
@@ -166,7 +195,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                 categoryReselected.let {
                     val tabPosition = tab?.position
                     if (tabPosition != null) viewPager?.currentItem = tabPosition
-
                 }
             }
 
@@ -237,12 +265,21 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         tabLayout?.visibility = View.VISIBLE
     }
 
-    private fun configMainToolbar(view: View) {
-        mainToolbar = view.findViewById(R.id.maintoolbar)
-        mainToolbar?.searchApplink = ApplinkConstInternalMechant.BRANDLIST_SEARCH
-        mainToolbar?.setQuerySearch(getString(R.string.bl_query_search))
-        mainToolbar?.getBtnWishlist()?.hide()
-        mainToolbar?.getBtnInbox()?.hide()
-        mainToolbar?.getBtnNotification()?.hide()
+    private fun configMainToolbar(mainToolbar: MainToolbar) {
+
+        activity?.let {
+            (it as AppCompatActivity).let {
+                it.setSupportActionBar(mainToolbar)
+                it.supportActionBar?.setDisplayShowTitleEnabled(false)
+                it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            }
+
+            mainToolbar.setNavigationIcon(R.drawable.brandlist_icon_arrow_black)
+            mainToolbar.searchApplink = ApplinkConstInternalMechant.BRANDLIST_SEARCH
+            mainToolbar.setQuerySearch(getString(R.string.bl_query_search))
+            mainToolbar.btnWishlist?.hide()
+            mainToolbar.btnInbox?.hide()
+            mainToolbar.btnNotification?.hide()
+        }
     }
 }

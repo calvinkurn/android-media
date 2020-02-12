@@ -5,14 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandViewHolder
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.FeaturedBrandViewHolder
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.NewBrandViewHolder
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.PopularBrandViewHolder
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 
 class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageTypeFactory {
 
@@ -31,6 +25,10 @@ class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageT
         else NewBrandViewHolder.LAYOUT
     }
 
+    override fun type(allBrandHeaderViewModel: AllBrandHeaderViewModel): Int {
+        return AllBrandHeaderViewHolder.LAYOUT
+    }
+
     override fun type(allBrandViewModel: AllBrandViewModel): Int {
         return AllBrandViewHolder.LAYOUT
     }
@@ -40,6 +38,7 @@ class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageT
             FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(parent)
             PopularBrandViewHolder.LAYOUT -> PopularBrandViewHolder(parent)
             NewBrandViewHolder.LAYOUT -> NewBrandViewHolder(parent)
+            AllBrandHeaderViewHolder.LAYOUT -> AllBrandHeaderViewHolder(parent)
             AllBrandViewHolder.LAYOUT -> AllBrandViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)

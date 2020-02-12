@@ -25,7 +25,7 @@
 
             <ImageView
                 android:id="@+id/iv_brand_logo"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_33"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_10"
@@ -38,7 +38,7 @@
 
             <ImageView
                 android:id="@+id/iv_brand_image"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_66"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_11"

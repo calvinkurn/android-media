@@ -2,4 +2,6 @@
     <string name="app_name">brandlist</string>
     <string name="bl_query_search">Cari di Official Store</string>
     <string name="brandlist_search_view_hint">Cari di Official Store</string>
+    <string name="action_expand_featured_brands">Lihat Selebihnya</string>
+    <string name="brandlist_all_brand">Semua Brand</string>
 </resources>
