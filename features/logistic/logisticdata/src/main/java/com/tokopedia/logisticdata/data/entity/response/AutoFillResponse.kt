@@ -11,7 +11,7 @@ data class KeroMapsAutofill(
     @SerializedName("data")
     var `data`: Data = Data(),
     @SerializedName("message_error")
-    var messageError: List<Any> = listOf(),
+    var messageError: List<String> = listOf(),
     @SerializedName("status")
     var status: String = ""
 )

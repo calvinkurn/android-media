@@ -14,6 +14,7 @@ import com.tokopedia.logisticdata.data.module.LogisticNetworkModule;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
+import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -38,8 +39,8 @@ public class AddressModule {
     @AddressScope
     AddAddressContract.Presenter provideAddAddressPresenter(
             @LogisticUserSessionQualifier UserSessionInterface userSessionInterface,
-            AddressRepository addressRepository, AutofillUseCase autofillUseCase) {
-        return new AddAddressPresenterImpl(userSessionInterface, addressRepository, autofillUseCase);
+            AddressRepository addressRepository, RevGeocodeUseCase revGeocodeUseCase) {
+        return new AddAddressPresenterImpl(userSessionInterface, addressRepository, revGeocodeUseCase);
     }
 
     @Provides
