@@ -27,22 +27,29 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     }
 
     override fun bind(element: ProgressWidgetUiModel) {
-        with (element) {
-            itemView.addOnImpressionListener(element.impressHolder) {
-                SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, data?.colorState.toString(), data?.value ?: 0)
-            }
-            observeState(this)
-        }
-        listener.getProgressData()
+        observeState(element)
     }
 
     private fun observeState(element: ProgressWidgetUiModel) {
         val data = element.data
         when {
-            null == data -> showLoadingState()
-            data.error.isNotBlank() -> showErrorState(element)
-            else -> showSuccessState(element)
+            null == data -> onLoading()
+            data.error.isNotBlank() -> onError(element)
+            else -> onSuccessLoadData(element)
         }
+    }
+
+    private fun onLoading() {
+        showLoadingState()
+        listener.getProgressData()
+    }
+
+    private fun onError(element: ProgressWidgetUiModel) {
+        showErrorState(element)
+    }
+
+    private fun onSuccessLoadData(element: ProgressWidgetUiModel) {
+        showSuccessState(element)
     }
 
     private fun showLoadingState() {
@@ -61,16 +68,26 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
                 itemView.tvProgressDescription.text = data?.subtitle
                 setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
                 setupDetails(this)
+                addImpressionTracker(this)
             }
         }
 
         showProgressLayout()
     }
 
+    private fun addImpressionTracker(progressWidgetUiModel: ProgressWidgetUiModel) {
+        with(progressWidgetUiModel) {
+            itemView.addOnImpressionListener(impressHolder) {
+                SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, data?.colorState.toString(), data?.value ?: 0)
+            }
+        }
+    }
+
     private fun goToDetails(element: ProgressWidgetUiModel) {
         with(element) {
-            RouteManager.route(itemView.context, appLink)
-            SellerHomeTracking.sendClickProgressBarEvent(dataKey, data?.colorState.toString(), data?.value ?: 0)
+            if (RouteManager.route(itemView.context, appLink)) {
+                SellerHomeTracking.sendClickProgressBarEvent(dataKey, data?.colorState.toString(), data?.value ?: 0)
+            }
         }
     }
 
