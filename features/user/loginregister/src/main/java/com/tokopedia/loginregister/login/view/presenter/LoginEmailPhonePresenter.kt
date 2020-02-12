@@ -128,7 +128,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         }
     }
 
-    override fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String){
+    override fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
         view.showLoadingLogin()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
@@ -265,7 +265,11 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
             execute({
-                onSuccess(it.data)
+                if (it.data.errors.isEmpty())
+                    onSuccess(it.data)
+                else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty())
+                    onError(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
+                else onError(RuntimeException())
             }, onError)
         }
     }

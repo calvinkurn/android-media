@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductConditionT
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
-import com.tokopedia.product.detail.common.data.model.product.Menu
+import com.tokopedia.product.detail.common.data.model.product.Etalase
 import com.tokopedia.product.detail.common.data.model.product.Stats
 import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 
@@ -34,7 +34,7 @@ data class BasicInfo(
         @SerializedName("maxOrder")
         val maxOrder: Int = 0,
         @SerializedName("menu")
-        val menu: Menu = Menu(),
+        val menu: Etalase = Etalase(),
         @SerializedName("minOrder")
         val minOrder: Int = 0,
         @SerializedName("needPrescription")

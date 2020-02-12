@@ -32,7 +32,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.adapter.SuggestionLocationAdapter;

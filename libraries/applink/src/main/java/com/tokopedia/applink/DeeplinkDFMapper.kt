@@ -10,12 +10,17 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
@@ -26,39 +31,36 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
+import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
-import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -87,7 +89,7 @@ object DeeplinkDFMapper {
     @JvmField
     val DFM_BASE = "df_base"
     @JvmField
-    val DFM_ONBOARDING = "df_base_onboarding"
+    val DFM_ONBOARDING = DFM_BASE // "df_base_onboarding"
     private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
@@ -103,11 +105,11 @@ object DeeplinkDFMapper {
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
             // Base
-
+            add(DFP({ it.startsWith(ONBOARDING) }, DFM_BASE, R.string.applink_title_affiliate))
             // Category
-            add(DFP({ it.startsWith(TRADEIN) }, DFM_CATEGORY_TRADEIN, R.string.applink_title_tradein))
-            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_CATEGORY_TRADEIN, R.string.applink_harga_final))
-            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_CATEGORY_TRADEIN, R.string.money_in))
+            add(DFP({ it.startsWith(TRADEIN) }, DFM_BASE, R.string.applink_title_tradein))
+            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_BASE, R.string.applink_harga_final))
+            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_BASE, R.string.money_in))
 
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_BASE, R.string.applink_title_age_restriction))
 
@@ -180,6 +182,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_BASE, R.string.title_groupchat))
             add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_BASE, R.string.applink_profile_completion_title))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_BASE, R.string.applink_change_phone_number))
+            add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DFM_BASE, R.string.applink_change_password))
             add(DFP({ it.startsWith(SETTING_BANK) }, DFM_BASE, R.string.applink_setting_bank_title))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_BASE, R.string.notif_settings_title))
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_BASE, R.string.user_identification_common_title))

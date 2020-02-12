@@ -33,7 +33,7 @@ interface DynamicProductDetailListener {
     fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>)
     fun onCategoryClicked(url: String)
     fun onEtalaseClicked(url: String)
-
+    fun goToApplink(url: String)
     /**
      * ProductDiscussionViewHolder
      */

@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logisticdata.data.apiservice.TrackingOrderApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
