@@ -152,8 +152,8 @@ class PostListViewHolder(
     }
 
     private fun goToDetails(appLink: String) {
-        RouteManager.route(itemView.context, appLink)
         SellerHomeTracking.sendClickPostSeeMoreEvent(dataKey)
+        RouteManager.route(itemView.context, appLink)
     }
 
     private fun setupPostList(posts: List<PostUiModel>) {
