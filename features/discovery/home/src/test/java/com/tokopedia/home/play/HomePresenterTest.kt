@@ -1,7 +1,7 @@
-package com.example.home.play
+package com.tokopedia.home.play
 
 
-import com.example.home.rules.InstantTaskExecutorRuleSpek
+import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.usecase.PlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter
