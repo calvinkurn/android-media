@@ -76,6 +76,9 @@ public class AccountModel {
     @SerializedName("isAffiliate")
     private boolean isAffiliate = false;
 
+    @SerializedName("CheckEligible")
+    private PremiumAccountResponse premiumAccountResponse;
+
     private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();
 
     public Integer getIsAuthenticated() {
@@ -217,5 +220,13 @@ public class AccountModel {
 
     public void setMembershipSumUserCard(MembershipSumUserCard membershipSumUserCard) {
         this.membershipSumUserCard = membershipSumUserCard;
+    }
+
+    public PremiumAccountResponse getPremiumAccountResponse() {
+        return premiumAccountResponse;
+    }
+
+    public void setPremiumAccountResponse(PremiumAccountResponse premiumAccountResponse) {
+        this.premiumAccountResponse = premiumAccountResponse;
     }
 }

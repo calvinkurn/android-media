@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
