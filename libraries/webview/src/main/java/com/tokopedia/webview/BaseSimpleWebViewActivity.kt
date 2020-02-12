@@ -68,7 +68,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
 
             val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
-            isLoginRequire?.let { needLogin = isLoginRequire.toBoolean() }
+            isLoginRequire?.let { needLogin = it.toBoolean() }
 
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { title = it }
