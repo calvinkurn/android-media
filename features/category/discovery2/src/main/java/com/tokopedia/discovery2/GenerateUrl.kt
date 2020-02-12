@@ -7,10 +7,11 @@ class GenerateUrl {
 //        const val url = "https://ace-staging.tokopedia.com/hoth/discovery/api/page/"
 
         const val componentURL = "https://ace.tokopedia.com/hoth/discovery/api/component/"
+//        const val componentURL = "https://ace-staging.tokopedia.com/hoth/discovery/api/component/"
 
         fun getUrl(endPoint: String) = String.format("$url%s", endPoint)
 
-        fun getComponentUrl(componentId: Int) = String.format("$componentURL%s%s", "sample-intermediary/", componentId)
+        fun getComponentUrl(pageEndPoint: String, componentId: Int) = String.format("$componentURL%s%s","${pageEndPoint}/" , componentId)
     }
 
 

@@ -43,9 +43,9 @@ class TokopointsViewModel(val application: Application, components: ComponentsIt
     fun getTokopointsComponentData() = tokopointsComponentData
     fun getTokopointsItemsListData() = tokopointsList
 
-    fun fetchTokopointsListData() {
+    fun fetchTokopointsListData(pageEndPoint: String) {
         launchCatchError(block = {
-            tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id!!, getQueryParameterMap())
+            tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id!!, getQueryParameterMap(), pageEndPoint)
         }, onError = {
             it.printStackTrace()
         })

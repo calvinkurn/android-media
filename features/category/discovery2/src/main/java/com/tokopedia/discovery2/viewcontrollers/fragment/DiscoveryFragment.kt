@@ -20,6 +20,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     private lateinit var mDiscoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mPageComponentRecyclerView: RecyclerView
+    var pageEndPoint = ""
 
 
     companion object {
@@ -39,6 +40,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         initView(view)
         mDiscoveryViewModel = (activity as DiscoveryActivity).getViewModel()
         mDiscoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
+        pageEndPoint = mDiscoveryViewModel.pageIdentifier
         return view
     }
 

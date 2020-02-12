@@ -8,14 +8,13 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.tradein_common.repository.BaseRepository
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class TokopointsRestRepository @Inject constructor() : BaseRepository(), TokopointsRepository {
 
-    override suspend fun getTokopointsData(componentId: Int, queryParamterMap : MutableMap<String, Any>): ArrayList<ComponentsItem> {
+    override suspend fun getTokopointsData(componentId: Int, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String): ArrayList<ComponentsItem> {
 
-        val response = getRestData(GenerateUrl.getComponentUrl(componentId),
+        val response = getRestData(GenerateUrl.getComponentUrl(pageEndPoint, componentId),
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
                 RequestType.GET,
                 queryParamterMap)

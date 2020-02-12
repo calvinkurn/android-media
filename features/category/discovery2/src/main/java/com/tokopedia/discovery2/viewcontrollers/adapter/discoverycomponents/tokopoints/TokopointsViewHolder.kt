@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class TokopointsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
@@ -23,7 +24,7 @@ class TokopointsViewHolder(itemView: View, private val fragment: Fragment) : Abs
         mTokopointsComponentViewModel = discoveryBaseViewModel as TokopointsViewModel
         initView()
         setUpDataObserver(fragment.viewLifecycleOwner)
-        mTokopointsComponentViewModel.fetchTokopointsListData()
+        mTokopointsComponentViewModel.fetchTokopointsListData((fragment as DiscoveryFragment).pageEndPoint)
     }
 
     private fun initView() {
