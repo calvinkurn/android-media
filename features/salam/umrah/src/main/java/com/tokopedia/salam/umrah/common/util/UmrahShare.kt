@@ -22,6 +22,8 @@ class UmrahShare(private val activity: Activity) {
 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
 
+    private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
+
     companion object {
         private const val TYPE = "text/plain"
     }
@@ -44,6 +46,7 @@ class UmrahShare(private val activity: Activity) {
 
     private fun generateBranchLink(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
         loadShare()
+        if(isBranchUrlActive())
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0,
                         travelDataToLinkerDataMapper(data), object : ShareCallback {

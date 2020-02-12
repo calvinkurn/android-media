@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -39,7 +41,7 @@ import javax.inject.Inject
  * @author by Firman on 22/1/20
  */
 
-class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.OnBackListener {
+class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelListener {
 
     @Inject
     lateinit var umrahTravelViewModel: UmrahTravelViewModel
@@ -135,10 +137,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.OnBackList
 
     private fun setupChat() {
         btn_umrah_travel_contact.setOnClickListener {
-            //checkChatSession()
-            activity?.run {
-                UmrahShare(this).share(travelAgent, { showLoading() }, { hideLoading() })
-            }
+            checkChatSession()
         }
     }
 
@@ -237,13 +236,10 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.OnBackList
         }
     }
 
-    override fun onOptionsMenuClosed(menu: Menu) {
-        super.onOptionsMenuClosed(menu)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.umrah_base_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
+    override fun shareTravelLink() {
+        activity?.run {
+            UmrahShare(this).share(travelAgent, { showLoading() }, { hideLoading()})
+        }
     }
 
     fun hideLoading() {
