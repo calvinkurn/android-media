@@ -180,7 +180,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.rootView?.windowToken, 0)
 
             map_view?.onPause()
-            AddNewAddressAnalytics.eventClickBackArrowOnPinPoint()
+            if(isFullFlow) AddNewAddressAnalytics.eventClickBackArrowOnPinPoint(eventLabel = LOGISTIC_LABEL)
+            else AddNewAddressAnalytics.eventClickBackArrowOnPinPoint(eventLabel = NON_LOGISTIC_LABEL)
             activity?.finish()
         }
 
@@ -204,7 +205,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
 
         ic_current_location?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonPilihLokasi(eventLabel = LOGISTIC_LABEL)
+            if(isFullFlow) AddNewAddressAnalytics.eventClickButtonPilihLokasi(eventLabel = LOGISTIC_LABEL)
+            else AddNewAddressAnalytics.eventClickButtonPilihLokasi(eventLabel = NON_LOGISTIC_LABEL)
             doUseCurrentLocation()
         }
     }
@@ -448,7 +450,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             if (autofillDataUiModel.districtId != districtId) {
                 continueWithLocation = false
                 view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
-                AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta()
+                if (isFullFlow) AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta(eventLabel = LOGISTIC_LABEL)
+                else AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta(eventLabel = NON_LOGISTIC_LABEL)
             } else {
                 continueWithLocation = true
                 updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
@@ -504,7 +507,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 invalid_button?.apply {
                     visibility = View.VISIBLE
                     setOnClickListener {
-                        AddNewAddressAnalytics.eventClickButtonUnnamedRoad()
+                        if(isFullFlow) AddNewAddressAnalytics.eventClickButtonUnnamedRoad(eventLabel = LOGISTIC_LABEL)
+                        else AddNewAddressAnalytics.eventClickButtonUnnamedRoad(eventLabel =  NON_LOGISTIC_LABEL)
                         goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false)
                     }
                 }
@@ -512,7 +516,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 invalid_ic_search_btn?.setOnClickListener {
                     showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
                 }
-                AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
+                if(isFullFlow) AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(eventLabel = LOGISTIC_LABEL)
+                else AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(eventLabel = NON_LOGISTIC_LABEL)
 
             } else {
                 setDefaultResultGetDistrict(saveAddressDataModel)
@@ -611,7 +616,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false)
         }
         tkpdDialog.show()
-        AddNewAddressAnalytics.eventViewFailedPinPointNotification()
+        if(isFullFlow) AddNewAddressAnalytics.eventViewFailedPinPointNotification(eventLabel = LOGISTIC_LABEL)
+        else  AddNewAddressAnalytics.eventViewFailedPinPointNotification(eventLabel = NON_LOGISTIC_LABEL)
     }
 
     override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean) {

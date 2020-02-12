@@ -86,8 +86,8 @@ object AddNewAddressAnalytics {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_X_ON_BLOCK_GPS)
     }
 
-    fun eventViewErrorAlamatTidakValid() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS, VIEW_ERROR_ALAMAT_TIDAK_VALID)
+    fun eventViewErrorAlamatTidakValid(eventLabel: String) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS, VIEW_ERROR_ALAMAT_TIDAK_VALID, eventLabel)
     }
 
     fun eventClickBackArrowOnInputAddress() {
@@ -114,8 +114,8 @@ object AddNewAddressAnalytics {
         sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_DETAIL_ALAMAT, eventLabel)
     }
 
-    fun eventClickBackArrowOnPinPoint() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_PIN_POINT)
+    fun eventClickBackArrowOnPinPoint(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_PIN_POINT, eventLabel)
     }
 
     fun eventClickButtonPilihLokasiIniSuccess() {
@@ -154,8 +154,8 @@ object AddNewAddressAnalytics {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BUTTON_UBAH_PIN_POINT)
     }
 
-    fun eventClickButtonUnnamedRoad() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS, CLICK_PILIH_LOKASI_UNNAMED_ROAD)
+    fun eventClickButtonUnnamedRoad(eventLabel: String) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS, CLICK_PILIH_LOKASI_UNNAMED_ROAD, eventLabel)
     }
 
     fun eventClickBackArrowOnPositivePageChangeAddressPositive() {
@@ -170,8 +170,8 @@ object AddNewAddressAnalytics {
         sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_NOT_SUCCESS - $errorField")
     }
 
-    fun eventViewFailedPinPointNotification() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_FAILED_PINPOINT_NOTIFICATION)
+    fun eventViewFailedPinPointNotification(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_FAILED_PINPOINT_NOTIFICATION, eventLabel)
     }
 
     fun eventClickButtonTandaiLokasiChangeAddressNegativeSuccess() {
@@ -226,8 +226,8 @@ object AddNewAddressAnalytics {
         sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU)
     }
 
-    fun eventViewToasterAlamatTidakSesuaiDenganPeta() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA)
+    fun eventViewToasterAlamatTidakSesuaiDenganPeta(eventLabel: String) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA, eventLabel)
     }
 
     fun eventClickBackArrowOnNegativePage() {
