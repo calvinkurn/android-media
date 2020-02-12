@@ -14,9 +14,11 @@ import com.db.williamchart.util.TooltipConfiguration
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.util.getResDrawable
 import com.tokopedia.sellerhome.util.parseAsHtml
@@ -40,7 +42,6 @@ class LineGraphViewHolder(
     }
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
-
         observeState(element)
         listener.getLineGraphData()
 
@@ -57,9 +58,10 @@ class LineGraphViewHolder(
             setupTooltip(element)
     }
 
-    private fun openAppLink(appLink: String) {
-        if (appLink.isBlank()) return
-        RouteManager.route(itemView.context, appLink)
+    private fun openAppLink(appLink: String, dataKey: String, value: String) {
+        if(RouteManager.route(itemView.context, appLink)) {
+            SellerHomeTracking.sendClickLineGraphEvent(dataKey, value)
+        }
     }
 
     /**
@@ -133,15 +135,19 @@ class LineGraphViewHolder(
 
         if (isCtaVisible) {
             btnLineGraphMore.setOnClickListener {
-                openAppLink(element.appLink)
+                openAppLink(element.appLink, element.dataKey, element.data?.header ?: "")
             }
             btnLineGraphNext.setOnClickListener {
-                openAppLink(element.appLink)
+                openAppLink(element.appLink, element.dataKey, element.data?.header ?: "")
             }
         }
 
-        if (isShown)
+        if (isShown) {
             showLineGraph(element)
+            itemView.addOnImpressionListener(element.impressHolder) {
+                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header ?: "")
+            }
+        }
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
