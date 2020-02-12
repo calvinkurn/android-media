@@ -17,56 +17,59 @@ import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 
-class UmrahShare(val activity: Activity) {
+
+class UmrahShare(private val activity: Activity) {
+
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
 
-    private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
-
-    fun generateBranchLink(data: TravelAgent, preBuildImage: () -> Unit, postBuildImage: () -> Unit) {
-        preBuildImage()
-        if (isBranchUrlActive()) {
-            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                    umrahProductDatatoLinkerDataMapper(data), object : ShareCallback {
-                override fun onError(linkerError: LinkerError) {
-                    Log.d("LINKER_ERROR", linkerError.errorMessage)
-                    postBuildImage()
-                }
-
-                override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    openIntentShare(data.name, linkerShareData.shareUri, linkerShareData.url)
-                    postBuildImage()
-                }
-            }))
-        }
+    companion object {
+        private const val TYPE = "text/plain"
     }
 
-    private fun openIntentShare(title: String?, shareContent: String, shareUri: String) {
+    fun share(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
+        generateBranchLink(data,loadShare,doneLoadShare)
+    }
+
+    private fun openIntentShare(title: String, shareContent: String) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            type = "text/plain"
+            type = TYPE
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_REFERRER, shareUri)
-            putExtra(Intent.EXTRA_HTML_TEXT, shareContent)
             putExtra(Intent.EXTRA_TITLE, title)
             putExtra(Intent.EXTRA_TEXT, shareContent)
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
-
-        activity.startActivity(Intent.createChooser(shareIntent, "Bagikan Product Ini"))
+        activity.startActivity(Intent.createChooser(shareIntent, "Bagikan Produk Ini"))
     }
 
-    private fun umrahProductDatatoLinkerDataMapper(data: TravelAgent): LinkerShareData {
-        val linkerData = LinkerData()
-        linkerData.id = data.id
-        linkerData.name = data.name
-        linkerData.description = data.name
-        linkerData.ogUrl = null
-        linkerData.imgUri = data.imageUrl
-        linkerData.uri = activity.resources.getString(R.string.umrah_agen_link_share, data.slugName)
-        linkerData.deepLink = activity.resources.getString(R.string.umrah_agen_deeplink_share, data.slugName)
+    private fun generateBranchLink(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
+        loadShare()
+        LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0,
+                        travelDataToLinkerDataMapper(data), object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult) {
+                        openIntentShare(data.name, linkerShareData.shareContents)
+                        doneLoadShare()
+                    }
 
-        val linkerShareData = LinkerShareData()
-        linkerShareData.linkerData = linkerData
-        return linkerShareData
+                    override fun onError(linkerError: LinkerError) {
+                        Log.d("ERRORLINKER",linkerError.errorMessage)
+                        doneLoadShare()
+                    }
+                }))
+    }
+
+    private fun travelDataToLinkerDataMapper(data: TravelAgent): LinkerShareData {
+        return LinkerShareData().apply {
+            linkerData = LinkerData().apply {
+                id = data.id
+                name = data.name
+                description = data.name
+                ogUrl = null
+                imgUri = data.imageUrl
+                uri = activity.resources.getString(R.string.umrah_agen_link_share, data.slugName)
+                deepLink = activity.resources.getString(R.string.umrah_agen_deeplink_share, data.slugName)
+            }
+        }
     }
 }

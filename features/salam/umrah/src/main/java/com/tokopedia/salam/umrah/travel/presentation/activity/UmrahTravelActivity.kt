@@ -68,9 +68,4 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
         fun onBackPressed()
         fun shareTravelLink()
     }
-
-    fun myOnResume() {
-        this.onStop()
-        this.onResume()
-    }
 }
