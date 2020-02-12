@@ -63,8 +63,8 @@ class ShopOpenRevampViewModel @Inject constructor(
         get() = _checkShopNameResponse
 
 
-    var currentShopName = ""
-    var currentShopDomain = ""
+    private var currentShopName = ""
+    private var currentShopDomain = ""
 
     fun checkShopName(shopName: String) {
         if (currentShopName == shopName) {
