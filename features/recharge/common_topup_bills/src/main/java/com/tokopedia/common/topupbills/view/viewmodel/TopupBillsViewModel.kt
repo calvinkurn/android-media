@@ -3,7 +3,6 @@ package com.tokopedia.common.topupbills.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -38,13 +37,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     val favNumberData : LiveData<Result<TopupBillsFavNumber>>
         get() = _favNumberData
 
+    private val _expressCheckoutData = MutableLiveData<Result<RechargeExpressCheckoutData>>()
+    val expressCheckoutData : LiveData<Result<RechargeExpressCheckoutData>>
+        get() = _expressCheckoutData
+
     fun getEnquiry(rawQuery: String, mapParam: List<TopupBillsEnquiryQuery>) {
         val params = mapOf(PARAM_FIELDS to mapParam)
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsEnquiryData::class.java, params)
             var data: TopupBillsEnquiryData
             do {
-                data = withContext(Dispatchers.Default) {
+                data = withContext(Dispatchers.IO) {
                     graphqlRepository.getReseponse(listOf(graphqlRequest))
                 }.getSuccessData()
 
@@ -65,7 +68,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun getMenuDetail(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(Dispatchers.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogMenuDetailData>()
@@ -78,7 +81,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun getFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(Dispatchers.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsFavNumberData>()
@@ -86,6 +89,30 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
             _favNumberData.value = Success(data.favNumber)
         }) {
             _favNumberData.value = Fail(it)
+        }
+    }
+
+    fun processExpressCheckout(rawQuery: String, mapParam: Map<String, Any>) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) {
+                val graphqlRequest = GraphqlRequest(rawQuery, RechargeExpressCheckout.Response::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<RechargeExpressCheckout.Response>().response
+
+            _expressCheckoutData.value = when {
+                data?.errors?.isNotEmpty() == true -> {
+                    // TODO: Finalize error
+                    Fail(MessageErrorException(data.errors[0].title))
+                }
+                data != null -> {
+                    Success(data.data)
+                }
+                else -> {
+                    Fail(MessageErrorException("error"))
+                }
+            }
+        }) {
+            _expressCheckoutData.value = Fail(it)
         }
     }
 
@@ -108,11 +135,46 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         return mapOf(PARAM_CATEGORY_ID to categoryId)
     }
 
+    fun createExpressCheckoutParams(productId: Int,
+                                    inputs: Map<String, String>,
+                                    transactionAmount: Long,
+                                    voucherCode: String = "",
+                                    isInstantCheckout: Boolean = false,
+                                    addToMyBills: Boolean = false): Map<String, Any> {
+        val fields = mutableListOf<Map<String, String>>()
+        for ((key, value) in inputs) {
+            fields.add(createExpressCheckoutFieldParam(key, value))
+        }
+        return mapOf(PARAM_CART to mapOf(
+            PARAM_FIELDS to fields,
+            EXPRESS_PARAM_INSTANT_CHECKOUT to isInstantCheckout,
+            EXPRESS_PARAM_TRANSACTION_AMOUNT to transactionAmount,
+            EXPRESS_PARAM_VOUCHER_CODE to voucherCode,
+            EXPRESS_PARAM_PRODUCT_ID to productId,
+            EXPRESS_PARAM_DEVICE_ID to EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE,
+            EXPRESS_PARAM_ADD_TO_BILLS to addToMyBills
+        ))
+    }
+
+    private fun createExpressCheckoutFieldParam(key: String, value: String): Map<String, String> {
+        return mapOf(EXPRESS_PARAM_NAME to key, EXPRESS_PARAM_VALUE to value)
+    }
+
     companion object {
         const val PARAM_FIELDS = "fields"
-
+        const val PARAM_CART = "cart"
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_CATEGORY_ID = "categoryID"
+
+        const val EXPRESS_PARAM_NAME = "name"
+        const val EXPRESS_PARAM_VALUE = "value"
+        const val EXPRESS_PARAM_INSTANT_CHECKOUT = "instant_checkout"
+        const val EXPRESS_PARAM_TRANSACTION_AMOUNT = "transaction_amount"
+        const val EXPRESS_PARAM_VOUCHER_CODE = "voucher_code"
+        const val EXPRESS_PARAM_PRODUCT_ID = "product_id"
+        const val EXPRESS_PARAM_DEVICE_ID = "device_id"
+        const val EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
+        const val EXPRESS_PARAM_ADD_TO_BILLS = "add_to_my_bills"
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"

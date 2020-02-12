@@ -37,6 +37,7 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
 
     init {
         View.inflate(context, R.layout.view_topup_bills_checkout, this)
+        recharge_checkout_promo_ticker.enableView()
     }
 
     fun getPromoTicker(): TickerPromoStackingCheckoutView {

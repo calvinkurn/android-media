@@ -34,6 +34,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
@@ -243,6 +244,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun showFavoriteNumbersError(t: Throwable) {
 
+    }
+
+    override fun showExpressCheckoutError(t: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, t.message)
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {
@@ -569,7 +574,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                         voucherGameOperatorData.name, product = this)
             }
         }
-        processCheckout()
+//        processCheckout()
+        val inputs = inputData
+        inputs[TopupBillsViewModel.ENQUIRY_PARAM_OPERATOR_ID] = voucherGameExtraParam.operatorId
+        processExpressCheckout(inputs)
     }
 
     private fun processCheckout() {

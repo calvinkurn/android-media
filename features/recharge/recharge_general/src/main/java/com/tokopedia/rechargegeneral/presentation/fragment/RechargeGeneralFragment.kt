@@ -30,6 +30,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ENQUIRY_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
@@ -220,22 +221,30 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
-                val favNumber = data?.getParcelableExtra<TopupBillsFavNumberItem>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
-                favNumber?.let {
-                    hasInputData = true
-                    rechargeGeneralAnalytics.eventInputFavoriteNumber(categoryName, operatorName)
-                    renderClientNumber(favNumber.clientNumber)
+            when (requestCode) {
+                REQUEST_CODE_DIGITAL_SEARCH_NUMBER -> {
+                    val favNumber = data?.getParcelableExtra<TopupBillsFavNumberItem>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
+                    favNumber?.let {
+                        hasInputData = true
+                        rechargeGeneralAnalytics.eventInputFavoriteNumber(categoryName, operatorName)
+                        renderClientNumber(favNumber.clientNumber)
+                    }
                 }
-            } else if (requestCode == REQUEST_CODE_LOGIN) {
-                enquire()
+                REQUEST_CODE_LOGIN -> {
+                    enquire()
+                }
+                REQUEST_CODE_LIST_PROMO -> {
+                    // Render enquiry data
+                    enquiryData?.let{
+                        renderCheckoutView(it)
+                    }
+                }
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_CART_DIGITAL) {
             // Render enquiry data
-            // Skip enquiry bottomsheet & navigate to checkout page; temporary until express checkout is implemented
-//            enquiryData?.let{
-//                renderCheckoutView(it)
-//            }
+            enquiryData?.let{
+                renderCheckoutView(it)
+            }
         }
     }
 
@@ -720,9 +729,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
         enquiryData = data.enquiry
-        // Skip enquiry bottomsheet & navigate to checkout page; temporary until express checkout is implemented
-//        renderCheckoutView(data.enquiry)
-        onClickCheckout(data.enquiry)
+        price = data.enquiry.attributes.pricePlain.toLong()
+        renderCheckoutView(data.enquiry)
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
@@ -750,6 +758,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun showFavoriteNumbersError(t: Throwable) {
 
+    }
+
+    override fun showExpressCheckoutError(t: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, t.message)
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {
@@ -782,7 +794,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
-        processCheckout(data)
+//        processCheckout(data)
+        // Put operatorId in input list
+        val inputs = inputData.toMutableMap()
+        inputs[ENQUIRY_PARAM_OPERATOR_ID] = operatorId.toString()
+        processExpressCheckout(inputs)
     }
 
     private fun processCheckout(data: TopupBillsEnquiry) {

@@ -26,6 +26,7 @@ class RechargeGeneralCheckoutBottomSheet @JvmOverloads constructor(@NotNull cont
         enquiry_data_view.title = "Data"
 
         checkout_view.setVisibilityLayout(true)
+        checkout_view.listener = this
     }
 
     fun getPromoTicker(): TickerPromoStackingCheckoutView {
