@@ -26,5 +26,7 @@ object TrackingConstant {
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trend line"
     const val CLICK_WIDGET_LINE_GRAPH = "click widget trend line"
     const val SEE_MORE = "see more"
+    const val IMPRESSION_WIDGET_DESCRIPTION = "impression widget description"
+    const val CLICK_WIDGET_DESCRIPTION = "click widget description"
 
 }

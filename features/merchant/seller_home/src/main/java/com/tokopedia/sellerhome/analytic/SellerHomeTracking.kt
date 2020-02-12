@@ -48,6 +48,16 @@ object SellerHomeTracking {
         sendGeneralEvent(map)
     }
 
+    fun sendClickDescriptionEvent(dataKey: String, descriptionTitle: String) {
+        val map = createMap(
+                TrackingConstant.CLICK_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_DESCRIPTION, dataKey, descriptionTitle).joinToString(" - "),
+                ""
+        )
+        sendGeneralEvent(map)
+    }
+
     private fun createMap(event: String, category: String, action: String, label: String): MutableMap<String, Any> {
         return mutableMapOf(
                 TrackingConstant.EVENT to event,
