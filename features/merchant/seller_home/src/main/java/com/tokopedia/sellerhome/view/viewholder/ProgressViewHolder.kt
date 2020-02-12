@@ -4,9 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.view.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
@@ -26,16 +28,28 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
 
     override fun bind(element: ProgressWidgetUiModel) {
         observeState(element)
-        listener.getProgressData()
     }
 
     private fun observeState(element: ProgressWidgetUiModel) {
         val data = element.data
         when {
-            null == data -> showLoadingState()
-            data.error.isNotBlank() -> showErrorState(element)
-            else -> showSuccessState(element)
+            null == data -> onLoading()
+            data.error.isNotBlank() -> onError(element)
+            else -> onSuccessLoadData(element)
         }
+    }
+
+    private fun onLoading() {
+        showLoadingState()
+        listener.getProgressData()
+    }
+
+    private fun onError(element: ProgressWidgetUiModel) {
+        showErrorState(element)
+    }
+
+    private fun onSuccessLoadData(element: ProgressWidgetUiModel) {
+        showSuccessState(element)
     }
 
     private fun showLoadingState() {
@@ -54,14 +68,27 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
                 itemView.tvProgressDescription.text = data?.subtitle
                 setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
                 setupDetails(this)
+                addImpressionTracker(this)
             }
         }
 
         showProgressLayout()
     }
 
+    private fun addImpressionTracker(progressWidgetUiModel: ProgressWidgetUiModel) {
+        with(progressWidgetUiModel) {
+            itemView.addOnImpressionListener(impressHolder) {
+                SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, data?.colorState.toString(), data?.value ?: 0)
+            }
+        }
+    }
+
     private fun goToDetails(element: ProgressWidgetUiModel) {
-        RouteManager.route(itemView.context, element.appLink)
+        with(element) {
+            if (RouteManager.route(itemView.context, appLink)) {
+                SellerHomeTracking.sendClickProgressBarEvent(dataKey, data?.colorState.toString(), data?.value ?: 0)
+            }
+        }
     }
 
     private fun showErrorState(element: ProgressWidgetUiModel) {

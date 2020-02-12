@@ -30,10 +30,10 @@ class ProgressMapper @Inject constructor() {
 
     private fun mapState(state: String?) : ShopScorePMWidget.State {
         return when(state) {
-            GOOD -> ShopScorePMWidget.State.GREEN
-            WARNING -> ShopScorePMWidget.State.YELLOW
-            DANGER -> ShopScorePMWidget.State.RED
-            else -> ShopScorePMWidget.State.GREEN
+            GOOD -> ShopScorePMWidget.State.GOOD
+            WARNING -> ShopScorePMWidget.State.WARNING
+            DANGER -> ShopScorePMWidget.State.DANGER
+            else -> ShopScorePMWidget.State.GOOD
         }
     }
 

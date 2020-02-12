@@ -1,15 +1,17 @@
 package com.tokopedia.sellerhome.view.viewholder
 
 import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
@@ -30,20 +32,36 @@ class PostListViewHolder(
 
     private lateinit var adapter: BaseListAdapter<PostUiModel, ListAdapterTypeFactory>
 
+    private var dataKey: String = ""
+
     override fun bind(element: PostListWidgetUiModel) {
-        val data = element.data
+        observeState(element)
+    }
+
+    private fun observeState(postListWidgetUiModel: PostListWidgetUiModel) {
+        val data = postListWidgetUiModel.data
         when {
-            data == null -> {
-                showLoadingState()
-                listener.getPostData()
-            }
-            data.error.isNotEmpty() -> showErrorState(element)
-            else -> {
-                if (data.items.isEmpty()) {
-                    listener.removeWidget(adapterPosition, element)
-                } else {
-                    showSuccessState(element)
-                }
+            data == null -> onLoading()
+            data.error.isNotEmpty() -> onError(postListWidgetUiModel.title)
+            else -> onSuccessLoadData(postListWidgetUiModel)
+        }
+    }
+
+    private fun onLoading() {
+        showLoadingState()
+        listener.getPostData()
+    }
+
+    private fun onError(cardTitle: String) {
+        showErrorState(cardTitle)
+    }
+
+    private fun onSuccessLoadData(postListWidgetUiModel: PostListWidgetUiModel) {
+        with(postListWidgetUiModel) {
+            if (data?.items.isNullOrEmpty()) {
+                listener.removeWidget(adapterPosition, postListWidgetUiModel)
+            } else {
+                showSuccessState(postListWidgetUiModel)
             }
         }
     }
@@ -54,11 +72,11 @@ class PostListViewHolder(
         showShimmeringLayout()
     }
 
-    private fun showErrorState(element: PostListWidgetUiModel) {
+    private fun showErrorState(cardTitle: String) {
         hideListLayout()
         hideShimmeringLayout()
         with(itemView) {
-            tvPostListTitleOnError.text = element.title
+            tvPostListTitleOnError.text = cardTitle
             ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
             sahPostListOnErrorLayout.visible()
         }
@@ -73,6 +91,14 @@ class PostListViewHolder(
             showCtaButtonIfNeeded(element.ctaText, element.appLink)
             setupPostList(items)
             showListLayout()
+            addImpressionTracker(element.dataKey, element.impressHolder)
+        }
+    }
+
+    private fun addImpressionTracker(dataKey: String, impressHolder: ImpressHolder) {
+        this@PostListViewHolder.dataKey = dataKey
+        itemView.addOnImpressionListener(impressHolder) {
+            SellerHomeTracking.sendImpressionPostEvent(dataKey)
         }
     }
 
@@ -139,8 +165,9 @@ class PostListViewHolder(
     }
 
     private fun goToDetails(appLink: String) {
-        val intent = RouteManager.getIntent(itemView.context, appLink)
-        itemView.context.startActivity(intent)
+        if (RouteManager.route(itemView.context, appLink)) {
+            SellerHomeTracking.sendClickPostSeeMoreEvent(dataKey)
+        }
     }
 
     private fun setupPostList(posts: List<PostUiModel>) {
@@ -161,7 +188,9 @@ class PostListViewHolder(
     }
 
     override fun onItemClicked(post: PostUiModel) {
-        RouteManager.route(itemView.context, post.appLink)
+        if (RouteManager.route(itemView.context, post.appLink)) {
+            SellerHomeTracking.sendClickPostItemEvent(dataKey, post.title)
+        }
     }
 
     interface Listener : BaseViewHolderListener {
