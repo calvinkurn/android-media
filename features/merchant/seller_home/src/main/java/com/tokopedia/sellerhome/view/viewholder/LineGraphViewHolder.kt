@@ -64,7 +64,6 @@ class LineGraphViewHolder(
     }
 
     private fun openAppLink(appLink: String, dataKey: String, value: String) {
-        if (appLink.isBlank()) return
         SellerHomeTracking.sendClickLineGraphEvent(dataKey, value)
         RouteManager.route(itemView.context, appLink)
     }

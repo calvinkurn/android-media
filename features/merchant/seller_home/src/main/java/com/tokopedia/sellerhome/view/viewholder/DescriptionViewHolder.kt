@@ -44,7 +44,6 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
     }
 
     private fun goToDetails(applink: String, dataKey: String, descriptionTitle: String) {
-        if(applink.isBlank()) return
         SellerHomeTracking.sendClickDescriptionEvent(dataKey, descriptionTitle)
         RouteManager.route(itemView.context, applink)
     }
