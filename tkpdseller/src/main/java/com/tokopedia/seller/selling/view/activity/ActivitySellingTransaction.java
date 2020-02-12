@@ -679,4 +679,5 @@ public class ActivitySellingTransaction extends TkpdActivity
             return fragmentList.size();
         }
     }
+
 }

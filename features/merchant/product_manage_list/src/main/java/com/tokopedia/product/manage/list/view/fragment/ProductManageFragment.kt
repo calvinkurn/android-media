@@ -43,6 +43,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -602,6 +603,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         itemsChecked.clear()
         renderCheckedView()
         loadInitialData()
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        if (GlobalConfig.isSellerApp()) {
+            DrawerGetNotificationService.startService(context, true, true)
+        }
+        bulkCheckBox.isChecked = false
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
     }
 
     override fun onErrorBulkUpdateProduct(e: Throwable) {

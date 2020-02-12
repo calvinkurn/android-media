@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
@@ -46,6 +47,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
     private Context context;
     private GqlMerchantCreditResponse merchantCreditDetails;
+    private int saveInstanceCachemanagerId;
 
     private ImageView mclLogoIV;
     private TextView mclTitleTV;
@@ -59,7 +61,6 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
     private TextView mclBlockedStatusTV;
     private SaveInstanceCacheManager saveInstanceCacheManager;
-    private int saveInstanceCachemanagerId;
 
     @Inject
     SaldoDetailsAnalytics saldoDetailsAnalytics;

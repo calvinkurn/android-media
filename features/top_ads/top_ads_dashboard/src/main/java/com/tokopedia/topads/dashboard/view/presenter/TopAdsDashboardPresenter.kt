@@ -70,7 +70,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         }
 
     fun getPopulateDashboardData(rawQuery: String) {
-        val shopId: Int = userSession.shopId.toIntOrNull() ?: 0
+        val shopId: Int = userSession.shopId.toIntOrZero()
         topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase
                 .createRequestParams(rawQuery, shopId),
                 object : Subscriber<DashboardPopulateResponse>() {
@@ -197,7 +197,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     fun getTickerTopAds(resources: Resources) {
         val graphqlUseCase = GraphqlUseCase()
-        val shopId: Int = userSession.shopId.toIntOrNull() ?: 0
+        val shopId: Int = userSession.shopId.toIntOrZero()
         val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.query_ticker), Data::class.java, variables, false)

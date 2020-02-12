@@ -68,6 +68,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
     public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details";
+
     private final long animation_duration = 300;
 
     public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";

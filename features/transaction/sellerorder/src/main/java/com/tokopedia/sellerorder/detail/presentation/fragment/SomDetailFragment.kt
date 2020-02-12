@@ -940,7 +940,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
             fragmentManager?.let{
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         }
             bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
         }
@@ -986,7 +988,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
             fragmentManager?.let{
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         }
             bottomSheetUnify.setTitle(TITLE_ATUR_TOKO_TUTUP)
         }
@@ -1055,7 +1059,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
             fragmentManager?.let{
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         }
             bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
         }
