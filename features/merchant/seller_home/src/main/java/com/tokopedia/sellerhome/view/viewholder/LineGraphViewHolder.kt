@@ -142,12 +142,12 @@ class LineGraphViewHolder(
             }
         }
 
-        itemView.addOnImpressionListener(element.impressHolder) {
-            SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header ?: "")
-        }
-
-        if (isShown)
+        if (isShown) {
             showLineGraph(element)
+            itemView.addOnImpressionListener(element.impressHolder) {
+                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header ?: "")
+            }
+        }
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
