@@ -25,11 +25,6 @@ class CardViewHolder(
     }
 
     override fun bind(element: CardWidgetUiModel) {
-
-        itemView.addOnImpressionListener(element.impressHolder) {
-            SellerHomeTracking.sendImpressionCardEvent(element.dataKey, element.data?.state ?: "", element.data?.value ?: "")
-        }
-
         observeState(element)
         listener.getCardData()
 
@@ -72,11 +67,15 @@ class CardViewHolder(
             tvCardTitle.text = element.title
             tvCardValue.text = element.data?.value ?: "0"
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
+            addOnImpressionListener(element.impressHolder) {
+                SellerHomeTracking.sendImpressionCardEvent(element.dataKey, element.data?.state ?: "", element.data?.value ?: "")
+            }
 
             setOnClickListener {
                 if (element.appLink.isNotBlank()) {
-                    SellerHomeTracking.sendClickCardEvent(element.dataKey, element.data?.state ?: "", element.data?.value ?: "")
-                    RouteManager.route(context, element.appLink)
+                    if(RouteManager.route(context, element.appLink)) {
+                        SellerHomeTracking.sendClickCardEvent(element.dataKey, element.data?.state ?: "", element.data?.value ?: "")
+                    }
                 }
             }
         }
