@@ -31,6 +31,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var currentSearch: String = ""
+    private val LOGISTIC_LABEL = "logistic"
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private lateinit var rlCurrentLocation: RelativeLayout
@@ -124,7 +125,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         etSearch.run {
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi()
+                AddNewAddressAnalytics.eventClickFieldCariLokasi(eventLabel = LOGISTIC_LABEL)
             }
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,

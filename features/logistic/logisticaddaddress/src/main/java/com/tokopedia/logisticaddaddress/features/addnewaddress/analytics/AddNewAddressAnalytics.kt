@@ -94,24 +94,24 @@ object AddNewAddressAnalytics {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_INPUT_ADDRESS)
     }
 
-    fun eventClickFieldCariLokasi() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_CARI_LOKASI)
+    fun eventClickFieldCariLokasi(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_CARI_LOKASI, eventLabel)
     }
 
-    fun eventClickMagnifier() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_MAGNIFIER)
+    fun eventClickMagnifier(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_MAGNIFIER, eventLabel)
     }
 
     fun eventClickAddressSuggestionFromSuggestionList() {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_ADDRESS_SUGGESTION_FROM_SUGGESTION_LIST)
     }
 
-    fun eventClickButtonPilihLokasi() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI)
+    fun eventClickButtonPilihLokasi(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI, eventLabel)
     }
 
-    fun eventClickFieldDetailAlamat() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_DETAIL_ALAMAT)
+    fun eventClickFieldDetailAlamat(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_DETAIL_ALAMAT, eventLabel)
     }
 
     fun eventClickBackArrowOnPinPoint() {
