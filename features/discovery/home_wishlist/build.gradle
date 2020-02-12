@@ -22,6 +22,7 @@ repositories {
     maven { url 'https://hansel.io/maven' }
 }
 
+
 buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -99,3 +100,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

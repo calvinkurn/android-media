@@ -130,13 +130,13 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
-            ext.enableHansel=false
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
         }
         release {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            ext.enableHansel=true
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
 //            shrinkResources true
@@ -304,7 +304,6 @@ dependencies {
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingbank)
-    implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productDetail)

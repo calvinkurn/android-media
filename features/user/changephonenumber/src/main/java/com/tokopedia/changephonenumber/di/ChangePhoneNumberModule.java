@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.data.api.ChangePhoneNumberApi;

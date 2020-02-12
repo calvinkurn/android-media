@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -26,7 +25,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -64,13 +63,20 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var shopPageConfig: ShopPageConfig
     private lateinit var shopViewModel: ShopInfoViewModel
-    private lateinit var shopPageTracking: ShopPageTrackingBuyer
+    private lateinit var shopPageTracking: ShopPageTrackingShopPageInfo
     private lateinit var noteAdapter: BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>
 
     private var shopInfo: ShopInfoData? = null
 
     // Will be deleted once old shop page removed
     private var shouldInitView = true
+    private val isOfficial: Boolean
+        get() = shopInfo?.isOfficial == 1
+    private val isGold: Boolean
+        get() = shopInfo?.isGold == 1
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(getShopId(),isOfficial,isGold)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_info, container, false)
@@ -80,7 +86,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         super.onViewCreated(view, savedInstanceState)
 
         shopInfo = arguments?.getParcelable(EXTRA_SHOP_INFO)
-        shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(context!!))
+        shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(context!!))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
 
@@ -111,8 +117,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item?.itemId == R.id.action_share) {
-            onClickShareShop()
+        when(item.itemId){
+            R.id.action_share  ->  {
+                onClickShareShop()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -173,6 +181,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private fun observeShopInfo() {
         observe(shopViewModel.shopInfo) {
             shopInfo = it
+            customDimensionShopPage.updateCustomDimensionData(getShopId(), isOfficial, isGold)
             showShopInfo()
         }
     }
@@ -438,7 +447,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun trackClickShareButton(it: ShopInfoData) {
         val dimension = CustomDimensionShopPage.create(it.shopId, it.isOfficial == 1, it.isGold == 1)
-        shopPageTracking.clickShareButton(shopViewModel.isMyShop(it.shopId), dimension)
+        shopPageTracking.clickShareButton(dimension)
     }
 
     private fun getShopShareMessage(shopInfo: ShopInfoData): String {
@@ -474,6 +483,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             initView()
             shouldInitView = false
         }
+    }
+
+    fun onBackPressed() {
+        shopPageTracking.clickBackArrow(false, customDimensionShopPage)
     }
 
     companion object {

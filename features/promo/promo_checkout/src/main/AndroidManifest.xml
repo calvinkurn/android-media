@@ -82,7 +82,8 @@
             android:name=".detail.view.activity.PromoCheckoutDetailMarketplaceActivity"
             android:label="@string/activity_promo_detail_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:configChanges="uiMode">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
