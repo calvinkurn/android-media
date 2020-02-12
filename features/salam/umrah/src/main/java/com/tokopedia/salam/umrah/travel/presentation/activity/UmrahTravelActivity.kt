@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
@@ -16,17 +18,8 @@ import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragmen
  * @author by Firman on 22/1/20
  */
 
-class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelComponent>{
+class UmrahTravelActivity : BaseSimpleActivity(), HasComponent<UmrahTravelComponent>{
     private var slugName: String = ""
-
-    override fun getMenuButton(): Int = R.menu.umrah_base_menu
-    override fun shareLink() {
-        if (fragment is OnBackListener) {
-            (fragment as OnBackListener).shareTravelLink()
-        }
-    }
-
-    override fun shouldShowMenuWhite(): Boolean = false
 
     override fun getNewFragment(): Fragment?= UmrahTravelFragment.getInstance(slugName)
 
@@ -66,6 +59,5 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
 
     interface OnBackListener {
         fun onBackPressed()
-        fun shareTravelLink()
     }
 }
