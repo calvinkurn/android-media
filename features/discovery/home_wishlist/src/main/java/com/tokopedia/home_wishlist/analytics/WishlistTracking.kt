@@ -299,7 +299,7 @@ object WishlistTracking {
                         ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                                 convertRecommendationItemToDataImpressionObject(
                                         item = item,
-                                        list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) "- product topads" else ""),
+                                        list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) " - product topads" else ""),
                                         position = position
                                 )
                         )
@@ -339,7 +339,7 @@ object WishlistTracking {
                                 ECOMMERCE_CLICK, DataLayer.listOf(
                                         convertRecommendationItemToDataClickObject(
                                                 item = item,
-                                                list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) "- product topads" else ""),
+                                                list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) " - product topads" else ""),
                                                 position = position
                                         )
                                 )
