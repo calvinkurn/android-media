@@ -190,7 +190,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
 
             REQUEST_CODE_ADD_EMAIL -> {
-                bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
+                activity?.recreate()
             }
 
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> {
