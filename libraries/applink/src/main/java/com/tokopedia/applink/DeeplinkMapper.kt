@@ -24,6 +24,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationProductReview
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
 
@@ -36,6 +40,7 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOr
  */
 object DeeplinkMapper {
 
+    val TOKOPOINTS="tokopoints"
     /**
      * Get registered deeplink navigation in manifest
      * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
@@ -44,7 +49,13 @@ object DeeplinkMapper {
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
         val mappedDeepLink: String = when {
-            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
+            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> {
+                val path = Uri.parse(deeplink).pathSegments.joinToString("/")
+                when (path) {
+                    TOKOPOINTS -> ApplinkConstInternalPromo.TOKOPOINTS_HOME
+                    else -> getRegisteredNavigationFromHttp(context, deeplink)
+                }
+            }
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
@@ -60,7 +71,7 @@ object DeeplinkMapper {
                         getRegisteredNavigationMarketplace(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.DEALS_HOME) ->
                         getRegisteredNavigationDeals(deeplink)
-                    deeplink.startsWithPattern(ApplinkConst.FIND)|| deeplink.startsWith(ApplinkConst.AMP_FIND) ->
+                    deeplink.startsWithPattern(ApplinkConst.FIND) || deeplink.startsWith(ApplinkConst.AMP_FIND) ->
                         getRegisteredFind(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
                         getRegisteredNavigationContent(deeplink)
@@ -70,8 +81,8 @@ object DeeplinkMapper {
                         getRegisteredHotlist(context, deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
-                    deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) ->
-                        getCreateReviewInternal(deeplink)
+                    deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)
+                    deeplink.startsWith(ApplinkConst.REPUTATION, true) -> getRegisteredNavigationReputation(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
                     deeplink.startsWith(ApplinkConst.CHAT_BOT, true) ->
@@ -87,6 +98,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
+                    isShopReview(deeplink) -> getRegisteredNavigationShopReview(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -140,7 +152,6 @@ object DeeplinkMapper {
         }
         return ""
     }
-
     /**
      * Mapping tokopedia link to registered deplink in manifest if necessary
      * eg: tokopedia://product/add to tokopedia-android-internal://marketplace/product-add-item
@@ -207,28 +218,8 @@ object DeeplinkMapper {
     private fun specialNavigationMapper(deeplink: String, host: String): Boolean {
         val uri = Uri.parse(deeplink)
         return uri.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME
-            && uri.host == host
-            && uri.pathSegments.size > 0
-    }
-
-    private fun getCreateReviewInternal(deeplink: String): String {
-        val parsedUri = Uri.parse(deeplink)
-        val segments = parsedUri.pathSegments
-        val paramRating = "rating"
-        val paramUtmSource = "utm_source"
-        val rating = parsedUri.getQueryParameter(paramRating) ?: "5"
-        val utmSource = parsedUri.getQueryParameter(paramUtmSource) ?: ""
-
-        val reputationId = segments[segments.size - 2]
-        val productId = segments.last()
-        val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId)
-        val uri = Uri.parse(newUri)
-                .buildUpon()
-                .appendQueryParameter(paramRating, rating)
-                .appendQueryParameter(paramUtmSource, utmSource)
-                .build()
-                .toString()
-        return uri
+                && uri.host == host
+                && uri.pathSegments.size > 0
     }
 
     /**

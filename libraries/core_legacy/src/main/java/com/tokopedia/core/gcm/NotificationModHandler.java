@@ -11,7 +11,7 @@ import android.service.notification.StatusBarNotification;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;

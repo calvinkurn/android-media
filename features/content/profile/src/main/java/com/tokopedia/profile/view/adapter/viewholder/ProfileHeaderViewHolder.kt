@@ -9,7 +9,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
@@ -45,7 +45,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
             itemView.followers.text = getFollowersText(element)
             itemView.followers.movementMethod = LinkMovementMethod.getInstance()
 
-            if (!element.isOwner && GlobalConfig.isCustomerApp()) {
+            if (!element.isOwner && !GlobalConfig.isSellerApp()) {
                 updateButtonState(element.isFollowed)
             } else {
                 itemView.followBtn.visibility = View.GONE

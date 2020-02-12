@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.product.Etalase
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.datamodel.*
 
@@ -73,7 +74,7 @@ object DynamicProductDetailMapper {
                 isMustInsurance = newData.basic.isMustInsurance,
                 maxOrder = newData.basic.maxOrder,
                 minOrder = newData.basic.minOrder,
-                menu = newData.menu,
+                menu = Etalase(newData.menu.id, newData.menu.name, newData.menu.url),
                 needPrescription = newData.basic.needPrescription,
                 productID = newData.basic.id.toString(),
                 shopID = newData.basic.shopID.toString(),
