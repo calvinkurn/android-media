@@ -16,7 +16,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatRatingBar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
@@ -49,7 +48,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
     private lateinit var textBtnBuy: TextView
     private lateinit var productNameSection: LinearLayout
     private lateinit var container: CardUnify
-    private lateinit var widgetRating: AppCompatRatingBar
+    private lateinit var widgetRating: RatingBarReview
 
     private val RAD_10f = 10f
     private val RAD_20f = 20f
@@ -99,7 +98,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
             widgetRating.gone()
         } else {
             widgetRating.visible()
-            widgetRating.rating = ((item.rating / RAD_20f).roundToInt()).toFloat()
+            widgetRating.updateRating((item.rating / RAD_20f).roundToInt())
         }
         if (item.feedType != DynamicPostViewHolder.SOURCE_DETAIL && item.needToResize) {
             container = itemView.findViewById(R.id.container)

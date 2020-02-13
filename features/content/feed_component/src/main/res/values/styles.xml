@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="FeedRatingBar" parent="Base.Widget.AppCompat.RatingBar">
+    <style name="FeedRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/rating_resource</item>
         <item name="android:numStars">5</item>
         <item name="android:isIndicator">true</item>
