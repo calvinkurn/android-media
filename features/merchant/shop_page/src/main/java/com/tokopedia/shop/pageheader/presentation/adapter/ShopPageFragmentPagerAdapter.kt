@@ -3,6 +3,7 @@ package com.tokopedia.shop.pageheader.presentation.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,5 +87,9 @@ internal class ShopPageFragmentPagerAdapter(
     fun setTabData(tabData: Pair<List<Int>, List<Fragment>>) {
         listTitleIcon = tabData.first
         listFragment = tabData.second
+    }
+
+    override fun saveState(): Parcelable? {
+        return null
     }
 }
