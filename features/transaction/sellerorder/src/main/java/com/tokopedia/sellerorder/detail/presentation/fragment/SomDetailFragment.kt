@@ -623,16 +623,17 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         detailResponse.button.forEach {
             if (key.equals(it.key, true)) {
                 eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse.statusText)
+                when {
+                    key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
+                    key.equals(KEY_BATALKAN_PESANAN, true) -> setActionCancelOrder()
+                    key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+                    key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
+                    key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
+                }
             }
         }
         bottomSheetUnify.dismiss()
-        when {
-            key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
-            key.equals(KEY_BATALKAN_PESANAN, true) -> setActionCancelOrder()
-            key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
-            key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
-            key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-        }
     }
 
     private fun setActionChangeCourier() {
