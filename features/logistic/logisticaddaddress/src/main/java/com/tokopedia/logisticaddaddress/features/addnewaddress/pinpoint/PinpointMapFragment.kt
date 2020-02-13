@@ -70,8 +70,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private val FINISH_FLAG = 1212
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
-    private val LOGISTIC_LABEL = "logistic"
-    private val NON_LOGISTIC_LABEL = "non-logistic"
     private var token: Token? = null
     private var isPolygon: Boolean = false
     private var districtId: Int? = null

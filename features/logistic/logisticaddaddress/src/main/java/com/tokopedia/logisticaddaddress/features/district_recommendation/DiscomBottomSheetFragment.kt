@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -58,7 +59,6 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
     private var mIsInitialLoading: Boolean = false
     private val mCompositeSubs: CompositeSubscription = CompositeSubscription()
-    private val LOGISTIC_LABEL = "logistic"
     val handler = Handler()
     private lateinit var actionListener: ActionListener
 

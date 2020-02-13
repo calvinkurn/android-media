@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
@@ -14,8 +15,6 @@ class AddAddressSubscriber(val view: AddEditAddressListener,
                            val mapper: AddAddressMapper,
                            val saveAddressDataModel: SaveAddressDataModel,
                            val typeForm: String): Subscriber<GraphqlResponse>() {
-
-    private val LOGISTIC_LABEL = "logistic"
 
     override fun onNext(t: GraphqlResponse?) {
         if (typeForm.equals(ANA_POSITIVE, true)) {

@@ -19,6 +19,7 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
 /**
@@ -27,7 +28,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 class LocationInfoBottomSheetFragment : BottomSheets() {
     private var bottomSheetView: View? = null
     private lateinit var btnActivateLocation: ButtonCompat
-    private val LOGISTIC_LABEL = "logistic"
 
     companion object {
         @JvmStatic
