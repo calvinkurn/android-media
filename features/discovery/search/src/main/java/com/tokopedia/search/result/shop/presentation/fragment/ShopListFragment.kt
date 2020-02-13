@@ -1,22 +1,24 @@
 package com.tokopedia.search.result.shop.presentation.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.State
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.manager.FilterSortManager
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
@@ -25,16 +27,14 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
-import com.tokopedia.search.result.common.EventObserver
-import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
-import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
+import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
+import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
@@ -151,40 +151,35 @@ internal class ShopListFragment:
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(R.dimen.dp_16)
+                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         )
     }
 
     private fun observeViewModelData() {
+        observeSearchShopLiveData()
+        observeGetDynamicFilterEvent()
+        observeOpenFilterPageEvent()
+        observeTrackingShopItemImpressionEvent()
+        observeTrackingProductPreviewImpressionEvent()
+        observeTrackingEmptySearchEvent()
+        observePerformanceMonitoringEvent()
+        observeRoutePageEvent()
+        observeTrackingImpressionShopRecommendation()
+        observeTrackingImpressionShopRecommendationProduct()
+        observeTrackingClickShopItem()
+        observeTrackingClickNotActiveShop()
+        observeTrackingClickShopRecommendation()
+        observeTrackingClickProductItem()
+        observeTrackingClickProductRecommendation()
+        observeBottomNavigationVisibilityEvent()
+    }
+
+    private fun observeSearchShopLiveData() {
         searchShopViewModel?.getSearchShopLiveData()?.observe(viewLifecycleOwner, Observer {
             updateAdapter(it)
-        })
-
-        searchShopViewModel?.getDynamicFilterEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessGetDynamicFilter ->
-            handleEventGetDynamicFilter(isSuccessGetDynamicFilter)
-        })
-
-        searchShopViewModel?.getOpenFilterPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessOpenFilterPage ->
-            handleEventOpenFilterPage(isSuccessOpenFilterPage)
-        })
-
-        searchShopViewModel?.getShopItemImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
-            trackEventShopItemImpression(trackingObjectList)
-        })
-
-        searchShopViewModel?.getProductPreviewImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
-            trackEventProductPreviewImpression(trackingObjectList)
-        })
-
-        searchShopViewModel?.getEmptySearchTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isTrackEmptySearch ->
-            trackEventEmptySearch(isTrackEmptySearch)
-        })
-
-        searchShopViewModel?.getSearchShopFirstPagePerformanceMonitoringEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isStartPerformanceMonitoring ->
-            triggerPerformanceMonitoring(isStartPerformanceMonitoring)
         })
     }
 
@@ -248,12 +243,24 @@ internal class ShopListFragment:
         return searchShopLiveData.data?.size == 0
     }
 
+    private fun observeGetDynamicFilterEvent() {
+        searchShopViewModel?.getDynamicFilterEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessGetDynamicFilter ->
+            handleEventGetDynamicFilter(isSuccessGetDynamicFilter)
+        })
+    }
+
     private fun handleEventGetDynamicFilter(isSuccessGetDynamicFilter: Boolean) {
         activity?.let { activity ->
             if (!isSuccessGetDynamicFilter) {
                 NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_get_dynamic_filter))
             }
         }
+    }
+
+    private fun observeOpenFilterPageEvent() {
+        searchShopViewModel?.getOpenFilterPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessOpenFilterPage ->
+            handleEventOpenFilterPage(isSuccessOpenFilterPage)
+        })
     }
 
     private fun handleEventOpenFilterPage(isSuccessOpenFilterPage: Boolean) {
@@ -271,14 +278,32 @@ internal class ShopListFragment:
         }
     }
 
+    private fun observeTrackingShopItemImpressionEvent() {
+        searchShopViewModel?.getShopItemImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
+            trackEventShopItemImpression(trackingObjectList)
+        })
+    }
+
     private fun trackEventShopItemImpression(trackingObjectList: List<Any>) {
         val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.trackImpressionSearchResultShop(trackingObjectList, keyword)
     }
 
+    private fun observeTrackingProductPreviewImpressionEvent() {
+        searchShopViewModel?.getProductPreviewImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
+            trackEventProductPreviewImpression(trackingObjectList)
+        })
+    }
+
     private fun trackEventProductPreviewImpression(trackingObjectList: List<Any>) {
         val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.eventImpressionSearchResultShopProductPreview(trackingObjectList, keyword)
+    }
+
+    private fun observeTrackingEmptySearchEvent() {
+        searchShopViewModel?.getEmptySearchTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isTrackEmptySearch ->
+            trackEventEmptySearch(isTrackEmptySearch)
+        })
     }
 
     private fun trackEventEmptySearch(isTrackEmptySearch: Boolean) {
@@ -289,6 +314,12 @@ internal class ShopListFragment:
                 SearchTracking.eventSearchNoResult(activity, keyword, screenName, selectedFilterMap)
             }
         }
+    }
+
+    private fun observePerformanceMonitoringEvent() {
+        searchShopViewModel?.getSearchShopFirstPagePerformanceMonitoringEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isStartPerformanceMonitoring ->
+            triggerPerformanceMonitoring(isStartPerformanceMonitoring)
+        })
     }
 
     private fun triggerPerformanceMonitoring(isStartPerformanceMonitoring: Boolean) {
@@ -308,6 +339,103 @@ internal class ShopListFragment:
         performanceMonitoring?.stopTrace()
 
         performanceMonitoring = null
+    }
+
+    private fun observeRoutePageEvent() {
+        searchShopViewModel?.getRoutePageEventLiveData()?.observe(viewLifecycleOwner, EventObserver { applink ->
+            route(applink)
+        })
+    }
+
+    private fun route(applink: String) {
+        activity?.let { activity ->
+            if (applink.isNotEmpty()) {
+                RouteManager.route(activity, applink)
+            }
+        }
+    }
+
+    private fun observeTrackingImpressionShopRecommendation() {
+        searchShopViewModel?.getShopRecommendationItemImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
+            trackEventImpressionShopRecommendation(trackingObjectList)
+        })
+    }
+
+    private fun trackEventImpressionShopRecommendation(trackingObjectList: List<Any>) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery()
+        SearchTracking.trackEventImpressionShopRecommendation(trackingObjectList, keyword)
+    }
+
+    private fun observeTrackingImpressionShopRecommendationProduct() {
+        searchShopViewModel?.getShopRecommendationProductPreviewImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
+            trackEventImpressionShopRecommendationProductPreview(trackingObjectList)
+        })
+    }
+
+    private fun trackEventImpressionShopRecommendationProductPreview(trackingObjectList: List<Any>) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery()
+        SearchTracking.trackEventImpressionShopRecommendationProductPreview(trackingObjectList, keyword)
+    }
+
+    private fun observeTrackingClickShopItem() {
+        searchShopViewModel?.getClickShopItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItem ->
+            trackEventClickShopItem(shopItem)
+        })
+    }
+
+    private fun trackEventClickShopItem(shopItem: ShopViewModel.ShopItem) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        SearchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), shopItem.id, keyword)
+    }
+
+    private fun observeTrackingClickNotActiveShop() {
+        searchShopViewModel?.getClickNotActiveShopItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItem ->
+            trackEventClickNotActiveShop(shopItem)
+        })
+    }
+
+    private fun trackEventClickNotActiveShop(shopItem: ShopViewModel.ShopItem) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        SearchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), shopItem.id, keyword)
+    }
+
+    private fun observeTrackingClickShopRecommendation() {
+        searchShopViewModel?.getClickShopRecommendationItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItem ->
+            trackEventClickShopRecommendation(shopItem)
+        })
+    }
+
+    private fun trackEventClickShopRecommendation(shopItem: ShopViewModel.ShopItem) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        SearchTracking.trackEventClickShopRecommendation(shopItem.getShopRecommendationAsObjectDataLayer(), shopItem.id, keyword)
+    }
+
+    private fun observeTrackingClickProductItem() {
+        searchShopViewModel?.getClickProductItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItemProduct ->
+            trackEventClickProductItem(shopItemProduct)
+        })
+    }
+
+    private fun trackEventClickProductItem(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        SearchTracking.eventSearchResultShopProductPreviewClick(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), keyword)
+    }
+
+    private fun observeTrackingClickProductRecommendation() {
+        searchShopViewModel?.getClickProductRecommendationItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItemProduct ->
+            trackEventClickProductRecommendation(shopItemProduct)
+        })
+    }
+
+    private fun trackEventClickProductRecommendation(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        SearchTracking.trackEventClickShopRecommendationProductPreview(shopItemProduct.getShopRecommendationProductPreviewAsObjectDataLayer(), keyword)
+    }
+
+    private fun observeBottomNavigationVisibilityEvent() {
+        searchShopViewModel?.getBottomNavigationVisibilityEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isVisible ->
+            searchViewModel?.changeBottomNavigationVisibility(isVisible)
+        })
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -360,7 +488,7 @@ internal class ShopListFragment:
                 searchShopViewModel?.onViewApplyFilter(queryParams)
             }
 
-            override fun onSortResult(selectedSort: Map<String, String>, selectedSortName: String, autoApplyFilter: String) { }
+            override fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?) { }
         })
     }
 
@@ -369,42 +497,11 @@ internal class ShopListFragment:
     }
 
     override fun onItemClicked(shopItem: ShopViewModel.ShopItem) {
-        trackShopItemClick(shopItem)
-        route(shopItem.applink)
-    }
-
-    private fun trackShopItemClick(shopItem: ShopViewModel.ShopItem) {
-        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-
-        SearchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), keyword)
-
-        if (isShopNotActive(shopItem)) {
-            SearchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), keyword)
-        }
-    }
-
-    private fun isShopNotActive(shopItem: ShopViewModel.ShopItem): Boolean {
-        return (shopItem.isClosed
-                || shopItem.isModerated
-                || shopItem.isInactive)
-    }
-
-    private fun route(applink: String) {
-        activity?.let { activity ->
-            if (applink.isNotEmpty()) {
-                RouteManager.route(activity, applink)
-            }
-        }
+        searchShopViewModel?.onViewClickShop(shopItem)
     }
 
     override fun onProductItemClicked(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
-        trackProductItemClick(shopItemProduct)
-        route(shopItemProduct.applink)
-    }
-
-    private fun trackProductItemClick(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
-        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.eventSearchResultShopProductPreviewClick(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), keyword)
+        searchShopViewModel?.onViewClickProductPreview(shopItemProduct)
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
@@ -443,7 +540,7 @@ internal class ShopListFragment:
         return searchShopViewModel?.getUserId() ?: ""
     }
 
-    override fun getSelectedFilterAsOptionList(): MutableList<Option> {
+    override fun getSelectedFilterAsOptionList(): List<Option> {
         val activeFilterOptionList = searchShopViewModel?.getActiveFilterOptionListForEmptySearch() ?: return mutableListOf()
 
         return OptionHelper.combinePriceFilterIfExists(

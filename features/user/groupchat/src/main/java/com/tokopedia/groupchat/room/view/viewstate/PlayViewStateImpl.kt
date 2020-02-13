@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
+import android.webkit.URLUtil
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -784,7 +785,15 @@ open class PlayViewStateImpl(
 
     override fun autoPlayVideo() {
         try {
-            youtubeRunnable?.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+            youtubeRunnable?.postDelayed({ playVideo() }, PlayFragment.YOUTUBE_DELAY.toLong())
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun playVideo() {
+        try {
+            youTubePlayer?.play()
         } catch(e: Exception) {
             e.printStackTrace()
         }
@@ -986,14 +995,18 @@ open class PlayViewStateImpl(
         if (url.isBlank())
             return
 
-        if (!::webviewDialog.isInitialized) {
-            webviewDialog = PlayWebviewDialogFragment.createInstance(url)
-        } else {
-            webviewDialog.setUrl(url)
-        }
+        if (URLUtil.isNetworkUrl(url)) {
+            if (!::webviewDialog.isInitialized) {
+                webviewDialog = PlayWebviewDialogFragment.createInstance(url)
+            } else {
+                webviewDialog.setUrl(url)
+            }
 
-        if (!webviewDialog.isAdded)
-            webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
+            if (!webviewDialog.isAdded)
+                webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
+        } else {
+            RouteManager.route(activity, url)
+        }
     }
 
     override fun onBackPressed(): Boolean {

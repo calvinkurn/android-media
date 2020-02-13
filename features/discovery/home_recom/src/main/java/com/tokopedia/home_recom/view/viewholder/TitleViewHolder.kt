@@ -19,7 +19,10 @@ class TitleViewHolder(private val view: View) : AbstractViewHolder<TitleDataMode
 
     override fun bind(element: TitleDataModel) {
         title.text = element.title
-        seeMore.setOnClickListener { element.listener.onClickSeeMore(pageName = element.pageName, seeMoreAppLink = element.seeMoreAppLink) }
+        seeMore.visibility = if(element.seeMoreAppLink.isEmpty()) View.GONE else View.VISIBLE
+        seeMore.setOnClickListener {
+            element.listener.onClickSeeMore(pageName = element.pageName, seeMoreAppLink = element.seeMoreAppLink)
+        }
     }
 
 }

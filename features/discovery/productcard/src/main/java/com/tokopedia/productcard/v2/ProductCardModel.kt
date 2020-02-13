@@ -20,6 +20,9 @@ data class ProductCardModel (
         val freeOngkir: FreeOngkir = FreeOngkir(),
         val isTopAds: Boolean = false
 ) {
+    var isProductSoldOut: Boolean = false
+    var isProductPreOrder: Boolean = false
+    var isProductWholesale: Boolean = false
 
     data class Label(
             val title: String = "",

@@ -17,6 +17,8 @@ data class Header(
         var avatarTitle: String = "",
         @SerializedName("avatarWeblink")
         val avatarWeblink: String = "",
+        @SerializedName("cardSummary")
+        val cardSummary: String = "",
         @SerializedName("deletable")
         val deletable: Boolean = false,
         @SerializedName("editable")

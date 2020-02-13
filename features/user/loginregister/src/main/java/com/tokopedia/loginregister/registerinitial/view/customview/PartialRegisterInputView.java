@@ -25,6 +25,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
+import com.tokopedia.loginregister.common.utils.KeyboardHandler;
 import com.tokopedia.loginregister.common.view.EmailExtension;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +53,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     RegisterAnalytics registerAnalytics = new RegisterAnalytics();
 
     private static Boolean isButtonValidatorActived = false;
+    private Boolean isExtensionSelected = false;
 
     private PartialRegisterInputViewListener listener;
     private List<String> emailExtensionList;
@@ -125,6 +127,8 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onClick(View v) {
                 showDefaultView();
+
+                hideEmailExtension();
             }
         });
     }
@@ -165,8 +169,9 @@ public class PartialRegisterInputView extends BaseCustomView {
                         validateValue(s.toString());
                     }
 
-                    if (etInputEmailPhone.getText().toString().contains("@")) {
-                        emailExtension.setVisibility(View.VISIBLE);
+                    if (etInputEmailPhone.isFocused() && etInputEmailPhone.getText().toString().contains("@") && emailExtension != null) {
+                        showEmailExtension();
+                        isExtensionSelected = false;
 
                         String[] charEmail = etInputEmailPhone.getText().toString().split("@");
                         if (charEmail.length > 1) {
@@ -175,7 +180,7 @@ public class PartialRegisterInputView extends BaseCustomView {
                             emailExtension.updateExtensions(emailExtensionList);
                         }
                     } else {
-                        emailExtension.setVisibility(View.GONE);
+                        hideEmailExtension();
                     }
                 }
             }
@@ -240,7 +245,6 @@ public class PartialRegisterInputView extends BaseCustomView {
                 ((AutoCompleteTextView) v).showDropDown();
             } else {
                 ((AutoCompleteTextView) v).dismissDropDown();
-                emailExtension.setVisibility(View.GONE);
             }
         });
     }
@@ -250,9 +254,32 @@ public class PartialRegisterInputView extends BaseCustomView {
         this.emailExtension = emailExtension;
         this.emailExtension.setExtensions(emailExtensionList, (extension, position) -> {
             String[] charEmail = etInputEmailPhone.getText().toString().split("@");
-
-            etInputEmailPhone.setText(String.format("%s@%s", charEmail[0], extension));
+            if (charEmail.length > 0) {
+                etInputEmailPhone.setText(String.format("%s@%s", charEmail[0], extension));
+            } else {
+                etInputEmailPhone.setText(String.format("%s@%s", etInputEmailPhone.getText().toString().replace("@", ""), extension));
+            }
             etInputEmailPhone.setSelection(etInputEmailPhone.getText().toString().trim().length());
+            isExtensionSelected = true;
+            hideEmailExtension();
+        });
+    }
+
+    public void initKeyboardListener(View view) {
+        new KeyboardHandler(view, new KeyboardHandler.OnKeyBoardVisibilityChangeListener() {
+            @Override
+            public void onKeyboardShow() {
+                if (etInputEmailPhone != null) {
+                    if (etInputEmailPhone.getText().toString().contains("@") && !isExtensionSelected && etInputEmailPhone.isFocused()) {
+                        showEmailExtension();
+                    }
+                }
+            }
+
+            @Override
+            public void onKeyboardHide() {
+                hideEmailExtension();
+            }
         });
     }
 
@@ -308,5 +335,17 @@ public class PartialRegisterInputView extends BaseCustomView {
     public void resetErrorWrapper() {
         setWrapperError(wrapperEmailPhone, null);
         setWrapperError(wrapperPassword, null);
+    }
+
+    private void showEmailExtension() {
+        if (emailExtension != null) {
+            emailExtension.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideEmailExtension() {
+        if (emailExtension != null) {
+            emailExtension.setVisibility(View.GONE);
+        }
     }
 }

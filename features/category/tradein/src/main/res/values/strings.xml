@@ -20,7 +20,7 @@
     <string name="money_in_alert_payment_canceled_or_failed">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="money_in_alert_payment_canceled">Pembayaran dibatalkan</string>
     <string name="money_in_alert_payment_successful">Pembayaran Berhasil</string>
-    <string name="header_section_price">Kisaran harga jual HP Anda</string>
+    <string name="header_section_price">Anda dapat menjual HP Anda hingga harga</string>
     <string name="not_elligible_price_high">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
     <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku,
         kami membutuhkan ijin ada untuk mengakses beberapa fungsi di telepon anda</string>
@@ -31,12 +31,10 @@
     <string name="go_to_product_details">Kembali Ke Detail Produk</string>
     <string name="tradein_return">Kembali</string>
     <string name="text_price_holder">Harga Hp kamu %1$s</string>
-    <string name="trade_in_exchange">Beli HP baru dengan tukar HP kamu.</string>
     <string name="text_check_functionality">Mulai Cek Fungsi</string>
     <string name="noclick">Action-No-Click</string>
     <string name="tradein_permission_setting">Izinkan akses di Pengaturan Aplikasi-> Izin ->Camera, Telephone,Storage</string>
     <string name="tradein_setting">Pengaturan</string>
-    <string name="tukar_tambah_sekarang_juga">Tukar tambah sekarang juga!</string>
     <string name="tradein_text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
         \n• Menyalakan WiFi
         \n• Akses accelero meter</string>
@@ -115,4 +113,5 @@
     <string name="moneyin_text_not_upto_15min">Kurang dari 15 menit!
 \nCek fungsi plus kondisi fisik</string>
     <string name="tradein_requires_permission_for_diagnostic">Perkenankan izin yang hilang untuk memulai memeriksa fungsi</string>
+    <string name="trade_in_event_label_phone_type_min_price_max_price">phone type : %1$s - min price : %2$s - max price : %3$s</string>
 </resources>

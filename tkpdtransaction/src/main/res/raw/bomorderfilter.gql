@@ -1,0 +1,16 @@
+query{
+get_bom_order_filter {
+default_date {
+title
+max_day
+start_range_date
+end_range_date
+}
+custom_date {
+title
+max_day
+start_range_date
+end_range_date
+}
+}
+}

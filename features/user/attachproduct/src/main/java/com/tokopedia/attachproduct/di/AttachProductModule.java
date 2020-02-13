@@ -2,13 +2,12 @@ package com.tokopedia.attachproduct.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.attachproduct.data.model.mapper.TkpdResponseToAttachProductDomainModelMapper;
 import com.tokopedia.attachproduct.data.repository.AttachProductRepository;
 import com.tokopedia.attachproduct.data.repository.AttachProductRepositoryImpl;
@@ -21,6 +20,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -80,8 +80,8 @@ public class AttachProductModule {
 
     @Provides
     @ChuckInterceptorAttachProductQualifier
-    public static ChuckInterceptor provideChuck(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+    public static ChuckerInterceptor provideChuck(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
     @AttachProductScope
@@ -115,7 +115,7 @@ public class AttachProductModule {
     @AttachProductQualifier
     OkHttpClient provideOkHttpClient(OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
-                                     @ChuckInterceptorAttachProductQualifier ChuckInterceptor
+                                     @ChuckInterceptorAttachProductQualifier ChuckerInterceptor
                                              chuckInterceptor,
                                      @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                      TkpdAuthInterceptor tkpdAuthInterceptor,

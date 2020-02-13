@@ -91,6 +91,8 @@ public class RemoteConfigKey {
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
+    public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
+
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
     public static final String NONB2_TTL = "app_nonb_2_ttl";
@@ -117,18 +119,15 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
-    //   switch for New category belanja page
-    public static final String APP_CATEGORY_BROWSE_V1 = "app_category_browse_v1";
-
-     //   switch for New category belanja page A/B testing
-    public static final String APP_CATEGORY_BROWSE_ENABLE_AB = "app_category_browse_enable_ab";
-
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 
     public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
 
     public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
+
+    public static final String RC_ENABLE_REVAMP_SOM = "android_enable_revamp_som";
+
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
     public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
@@ -154,6 +153,7 @@ public class RemoteConfigKey {
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
     public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
+    public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
     public static final String APP_HOTLIST_NAV_ENABLE = "app_hotlist_nav_enable";
 
@@ -176,4 +176,30 @@ public class RemoteConfigKey {
     public static final String ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW = "enable_customer_user_agent_in_webview";
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
+
+    public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
+
+    public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
+
+    public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
+
+    public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
+
+    public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+
+
+
+    public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
+    public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
+
+    public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
+
+    public static final String ENABLE_NETWORK_CLIENT_INIT_ASYNC = "android_init_nwclient_async";
+    public static final String ENABLE_SEQ1_ASYNC = "android_exec_seq1_async";
+    public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
+    public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
+    public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
+    public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
+    public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
+
 }

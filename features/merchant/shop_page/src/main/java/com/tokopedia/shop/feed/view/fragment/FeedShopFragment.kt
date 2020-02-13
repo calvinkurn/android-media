@@ -61,6 +61,7 @@ import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
@@ -330,9 +331,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
+        adapter.list.removeAt(rowNumber)
+        adapter.notifyItemRemoved(rowNumber)
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+        view?.let {
+            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                presenter.deletePost(id, rowNumber)
+            })
+        }
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
@@ -425,8 +433,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String, activityType: String) {
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
-
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
@@ -485,14 +492,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
         activity?.let {
-            ShareBottomSheets().show(activity!!.supportFragmentManager,
-                    ShareBottomSheets.constructShareData("", iamgeUrl, url, description, title),
-                    object : ShareBottomSheets.OnShareItemClickListener {
-                        override fun onShareItemClicked(packageName: String) {
+            ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
+                override fun onShareItemClicked(packageName: String) {
 
-                        }
-                    })
+                }
+            },"", iamgeUrl, url, description, title)
+        }.also {
+            fragmentManager?.run {
+                it?.show(this)
+            }
         }
+    }
+
+    override fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        //Not Used
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
@@ -530,6 +543,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
+        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventShopPageClickPost(
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    positionInFeed)
+        }
     }
 
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
@@ -547,6 +569,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     model.id.toString()
             )
         }
+        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventShopPageClickPost(
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    positionInFeed)
+        }
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
@@ -559,7 +590,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
     }
 
-    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
+    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String, postType: String, authorId: String) {
         onGoToLink(redirectLink)
     }
 
@@ -597,6 +628,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 ApplinkConstInternalContent.VIDEO_DETAIL,
                 postId
         )
+        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventShopPageClickPost(
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    positionInFeed)
+        }
     }
 
     override fun onAddToCartSuccess() {
@@ -741,8 +781,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun setRefresh() {
-        isForceRefresh = true
+    fun clearCache() {
+        presenter.clearCache()
     }
 
 }

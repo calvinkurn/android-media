@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -78,10 +79,10 @@ constructor(
 
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(CATEGORY_IDS, categoryIds)
-        params.putString(X_SOURCE, RECENTVIEW)
+        params.putString(X_SOURCE, OFFICIAL_STORE)
         params.putString(PAGE_NAME, pageName)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
-        params.putBoolean(OFFICIAL_STORE, true)
+        params.putBoolean(OS, true)
         return params
     }
 
@@ -96,8 +97,8 @@ constructor(
         val DEFAULT_VALUE_X_DEVICE = "android"
         val DEFAULT_PAGE_NAME = ""
         val PRODUCT_IDS = "productIDs"
-        val OFFICIAL_STORE = "os"
-        val RECENTVIEW = "recentview"
+        val OFFICIAL_STORE = "official-store"
+        val OS = "os"
         val CATEGORY_IDS = "categoryIDs"
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
@@ -20,13 +21,12 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
@@ -45,6 +45,7 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -97,11 +98,19 @@ class ChatListActivity : BaseTabActivity()
         initInjector()
         initTabList()
         super.onCreate(savedInstanceState)
+        useLightNotificationBar()
         setupViewModel()
         initTabLayout()
         setObserver()
         initData()
         initOnBoarding()
+    }
+
+    private fun useLightNotificationBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = Color.WHITE
+        }
     }
 
     private fun initTabList() {
@@ -258,7 +267,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
-        debug(TAG, incomingChatWebSocketModel.toString())
+        Timber.d(incomingChatWebSocketModel.toString())
         val contactId = incomingChatWebSocketModel.getContactId()
         val tag = incomingChatWebSocketModel.getTag()
         val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
@@ -267,7 +276,7 @@ class ChatListActivity : BaseTabActivity()
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
-        debug(TAG, incomingTypingWebSocketModel.toString())
+        Timber.d(incomingTypingWebSocketModel.toString())
         val contactId = incomingTypingWebSocketModel.getContactId()
         val tag = incomingTypingWebSocketModel.getTag()
         val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
@@ -441,9 +450,9 @@ class ChatListActivity : BaseTabActivity()
     override fun onDestroy() {
         super.onDestroy()
         webSocketViewModel.itemChat.removeObservers(this)
-        webSocketViewModel.clear()
+        webSocketViewModel.flush()
         chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
-        chatNotifCounterViewModel.clear()
+        chatNotifCounterViewModel.flush()
     }
 
     object DeeplinkIntent {

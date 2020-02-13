@@ -10,18 +10,17 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -85,6 +84,7 @@ public class WidgetTokenView extends FrameLayout {
     private Animation rotateLeftAnimation;
 
     private int timesFullEggClicked = 0;
+    private final float DEFAULT_SCALE_FACTOR = -1;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -136,20 +136,6 @@ public class WidgetTokenView extends FrameLayout {
 
         setTimesFullEggClicked(0);
         hide();
-
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                initImageBound();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    //noinspection deprecation
-                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
-
     }
 
     private boolean isBounceAnimationFirstTimeAndBeforeBound() {
@@ -160,19 +146,28 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
-    private void initImageBound() {
+    public void initImageBound(float drawableHeight, float scaleFactor, float translation) {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
         int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
         int imageHeight = imageWidth;
-        int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
-        int imageMarginTop = imageMarginBottom - imageHeight;
+        int imageMarginTop = 0;
+        if (scaleFactor == DEFAULT_SCALE_FACTOR) {
+            int screenHeight = getContext().getResources().getDisplayMetrics().heightPixels - getStatusBarHeight();
+            imageMarginTop = (int) (screenHeight - (screenHeight * TokenMarginUtil.RATIO_IMAGE_MARGIN_TOP));
+        } else {
+            float baseDrawableHeight = TokenMarginUtil.BASE_DRAWABLE_HEIGHT;
+            float baseStageHeight = TokenMarginUtil.STAGE_PIXEL;
+            float point = drawableHeight / (baseDrawableHeight / baseStageHeight);
+            imageMarginTop = (int) ((point * scaleFactor) - imageHeight + translation);
+        }
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) imageViewFull.getLayoutParams();
         ivFullLp.width = imageWidth;
         ivFullLp.height = imageHeight;
         ivFullLp.gravity = CENTER_HORIZONTAL;
         ivFullLp.topMargin = imageMarginTop;
+
         imageViewFull.requestLayout();
 
         FrameLayout.LayoutParams ivCrackedLp = (FrameLayout.LayoutParams) imageViewCracked.getLayoutParams();
@@ -197,6 +192,15 @@ public class WidgetTokenView extends FrameLayout {
         imageViewRight.requestLayout();
 
         setVisibility(View.VISIBLE);
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getContext().getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     public void setToken(TokenAssetEntity tokenAsset) {

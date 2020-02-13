@@ -1,10 +1,8 @@
 package com.tokopedia.seller.transaction.neworder.common;
 
-import com.tokopedia.core2.R;
-
 import android.content.Context;
-import androidx.annotation.ColorInt;
-import androidx.annotation.IntegerRes;
+
+import com.tokopedia.seller.R;
 
 /**
  * Created by zulfikarrahman on 7/12/17.

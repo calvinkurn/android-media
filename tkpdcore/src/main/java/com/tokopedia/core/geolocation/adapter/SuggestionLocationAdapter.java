@@ -3,8 +3,6 @@ package com.tokopedia.core.geolocation.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.Html;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
@@ -16,6 +14,8 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
@@ -25,28 +25,21 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.KeyboardHandler;
+import com.google.android.material.snackbar.Snackbar;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tkpd.library.utils.ToastNetworkHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.geolocation.domain.IMapsRepository;
-import com.tokopedia.core.geolocation.domain.MapsRepository;
-import com.tokopedia.core.geolocation.model.autocomplete.Data;
-import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
 import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core2.R;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +48,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 /**
  * Created by hangnadi on 2/2/16.
@@ -191,7 +185,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                     if (constraint.length() >= 3) {
                         // Query the autocomplete API for the (constraint) search string.
                         //TODO This is where listener is initiated
-                        CommonUtils.dumper("PORING Masuk get Filter cuy");
+                        Timber.d("PORING Masuk get Filter cuy");
                         if(queryListener != null) {
                             queryListener.onQuerySubmit(constraint.toString());
                         }
@@ -202,7 +196,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                CommonUtils.dumper("PORING Publish Result");
+                Timber.d("PORING Publish Result");
                 if (results != null && results.count > 0) {
                     // The API returned at least one result, update the data.
                     notifyDataSetChanged();
@@ -242,7 +236,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
      */
     private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint) {
         if (mGoogleApiClient.isConnected()) {
-            CommonUtils.dumper("Starting autocomplete query for: " + constraint);
+            Timber.d("Starting autocomplete query for: " + constraint);
 
             // Submit the query to the autocomplete API and retrieve a PendingResult that will
             // contain the results when the query completes.
@@ -266,18 +260,18 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                     KeyboardHandler.DropKeyboard(getContext(), ((Activity) getContext()).findViewById(android.R.id.content));
                     snackbar.show();
                 }
-                CommonUtils.dumper("Error contacting API: " + status.toString());
+                Timber.d("Error contacting API: " + status.toString());
                 autocompletePredictions.release();
                 return new ArrayList<>();
             }
 
-            CommonUtils.dumper("Query completed. Received " + autocompletePredictions.getCount()
+            Timber.d("Query completed. Received " + autocompletePredictions.getCount()
                     + " predictions.");
 
             // Freeze the results immutable representation that can be stored safely.
             return DataBufferUtils.freezeAndClose(autocompletePredictions);
         }
-        CommonUtils.dumper("Google API client is not connected for autocomplete query.");
+        Timber.d("Google API client is not connected for autocomplete query.");
         return new ArrayList<>();
     }
 
@@ -295,7 +289,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
 
             @Override
             public void onNext(String query) {
-                CommonUtils.dumper("PORING Kirim Data " + query);
+                Timber.d("PORING Kirim Data " + query);
                 TKPDMapParam<String, String> temp = new TKPDMapParam<>();
                 temp = AuthUtil.generateParamsNetwork(getContext(), temp);
                 TKPDMapParam<String, Object> params = new TKPDMapParam<>();
@@ -326,7 +320,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
 
                            @Override
                            public void onNext(AutoCompleteViewModel response) {
-                               CommonUtils.dumper("PORING Terima Result");
+                               Timber.d("PORING Terima Result");
                                mResultList = response.getListOfPredictionResults();
                                notifyDataSetChanged();
                            }

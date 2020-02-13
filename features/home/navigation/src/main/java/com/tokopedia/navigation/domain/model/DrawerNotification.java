@@ -14,23 +14,38 @@ public class DrawerNotification {
     public static class ChildDrawerNotification {
 
         private Integer id;
+        private Integer icon;
         private String title;
         private String applink;
         private Integer badge;
 
-        public ChildDrawerNotification(Integer id, String title) {
+        public ChildDrawerNotification(Integer id, Integer icon, String title) {
             this.id = id;
+            this.icon = icon;
             this.title = title;
         }
 
+        @Deprecated
         public ChildDrawerNotification(Integer id, String title, String applink) {
             this.id = id;
+            this.icon = 0;
+            this.title = title;
+            this.applink = applink;
+        }
+
+        public ChildDrawerNotification(Integer id, Integer icon, String title, String applink) {
+            this.id = id;
+            this.icon = icon;
             this.title = title;
             this.applink = applink;
         }
 
         public String getTitle() {
             return title;
+        }
+
+        public String getNewLineTitle() {
+            return title.replace(" ", "\n");
         }
 
         public void setTitle(String title) {
@@ -59,6 +74,14 @@ public class DrawerNotification {
 
         public void setId(Integer id) {
             this.id = id;
+        }
+
+        public Integer getIcon() {
+            return icon;
+        }
+
+        public void setIcon(Integer icon) {
+            this.icon = icon;
         }
     }
 

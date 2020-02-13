@@ -1,0 +1,5 @@
+mutation RequestPickup($input: MPLogisticRequestPickupInputs!) {
+  mpLogisticRequestPickup (input: $input){
+    message
+  }
+}

@@ -6,14 +6,18 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledCartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
 
-class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
+class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListener?) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         val LAYOUT = R.layout.holder_item_cart_error
+
+        const val REPLACE_TAG_OPEN = "<replace>"
+        const val REPLACE_TAG_CLOSE = "</replace>"
+        const val LINK_TAG_CLOSE = "</a>"
     }
 
     var showDivider: Boolean = false
@@ -47,16 +51,28 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     private fun renderTickerMessage(data: DisabledCartItemHolderData) {
         itemView.ticker_message.apply {
-            if (data.tickerMessage != null) {
-                setHtmlDescription(data.tickerMessage!!)
+            if (data.nicotineLiteMessageData != null) {
+                val descriptionText = data.nicotineLiteMessageData!!.text
+                        .replace(REPLACE_TAG_OPEN,
+                                "<a href=\"${data.nicotineLiteMessageData!!.text}\">")
+                        .replace(REPLACE_TAG_CLOSE, LINK_TAG_CLOSE)
+                setHtmlDescription(descriptionText)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        actionListener.onTickerDescriptionUrlClicked(linkUrl.toString())
+                        actionListener?.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url)
                     }
 
-                    override fun onDismiss() {
-                    }
+                    override fun onDismiss() {}
                 })
+                visibility = View.VISIBLE
+                post {
+                    measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                    requestLayout()
+                }
+                actionListener?.onShowTickerTobacco()
+            } else if (data.tickerMessage != null) {
+                setTextDescription(data.tickerMessage!!)
                 visibility = View.VISIBLE
                 post {
                     measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -71,7 +87,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     private fun renderDeleteButton(data: DisabledCartItemHolderData) {
         itemView.btn_delete_cart.setOnClickListener {
-            actionListener.onDeleteDisabledItem(data.data)
+            data.data?.let {
+                actionListener?.onDeleteDisabledItem(it)
+            }
         }
     }
 
@@ -84,9 +102,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             }
             setOnClickListener {
                 if (data.isWishlisted) {
-                    actionListener.onRemoveDisabledItemFromWishlist(data.productId)
+                    actionListener?.onRemoveDisabledItemFromWishlist(data.productId)
                 } else {
-                    actionListener.onAddDisabledItemToWishlist(data.productId)
+                    actionListener?.onAddDisabledItemToWishlist(data.productId)
                 }
             }
         }
@@ -97,9 +115,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             itemView.group_similar_product_on_cart_error.visibility = View.VISIBLE
             itemView.tv_similar_product_on_cart_error.text = data.similarProduct!!.text
             itemView.tv_similar_product_on_cart_error.setOnClickListener {
-                actionListener.onSimilarProductUrlClicked(data.similarProduct!!.url)
+                actionListener?.onSimilarProductUrlClicked(data.similarProduct!!.url)
             }
-            actionListener.onShowTickerOutOfStock(data.productId)
+            actionListener?.onShowTickerOutOfStock(data.productId)
         } else {
             itemView.group_similar_product_on_cart_error.visibility = View.GONE
         }

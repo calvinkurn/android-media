@@ -1,6 +1,8 @@
 package com.tokopedia.tradein.view.viewcontrollers;
 
 import androidx.lifecycle.ViewModelProvider;
+
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +20,7 @@ import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity;
 import tradein_common.TradeInUtils;
 
 
-public abstract class BaseTradeInActivity extends BaseViewModelActivity {
+public abstract class BaseTradeInActivity extends BaseViewModelActivity implements ContextInterface {
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
     public static final int LOGIN_REQUEST = 514;
     public static final int TRADEIN_HOME_REQUEST = 22345;
@@ -62,11 +64,14 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         Uri uri = intent.getData();
         if (uri != null && uri.toString().contains("money_in/device_validation")) {
             TRADEIN_TYPE = TRADEIN_MONEYIN;
+        } else if (uri != null && uri.toString().contains("trade_in/device_validation")) {
+            TRADEIN_TYPE = TRADEIN_MONEYIN;
         } else {
             if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE))
                 TRADEIN_TYPE = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_OFFLINE);
         }
         super.onCreate(savedInstanceState);
+        ((BaseTradeInViewModel) bVM).setContextInterface(this);
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
             TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
@@ -74,6 +79,11 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
             viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
         }
         setSupportActionBar(toolbar);
+    }
+
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
     }
 
     @Override
@@ -104,4 +114,18 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
     }
 
+    @Override
+    public View getRootView() {
+        return findViewById(R.id.root_view);
+    }
+
+    @Override
+    public int getRootViewId() {
+        return R.id.root_view;
+    }
+
+    @Override
+    public Context getContextFromActivity() {
+        return this;
+    }
 }

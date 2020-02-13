@@ -1,10 +1,10 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupWithErrorData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledCartItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledItemHeaderHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledCartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledShopHolderData
 import javax.inject.Inject
 
 /**
@@ -28,21 +28,20 @@ class ViewHolderDataMapper @Inject constructor() {
     }
 
     fun mapDisabledItemHolderData(cartItemHolderData: CartItemHolderData, showDivider: Boolean): DisabledCartItemHolderData {
-        return cartItemHolderData.cartItemData.let {
-            val originData = it.originData
-            DisabledCartItemHolderData(
-                    originData.cartId,
-                    originData.productId,
-                    originData.productImage,
-                    originData.productName,
-                    originData.pricePlan,
-                    it.errorMessageTitle,
-                    originData.isWishlisted,
-                    it.warningMessageTitle,
-                    it.similarProductData,
-                    showDivider,
-                    it
-            )
-        }
+        return DisabledCartItemHolderData(
+                cartId = cartItemHolderData.cartItemData?.originData?.cartId ?: 0,
+                productId = cartItemHolderData.cartItemData?.originData?.productId ?: "0",
+                productImage = cartItemHolderData.cartItemData?.originData?.productImage ?: "",
+                productName = cartItemHolderData.cartItemData?.originData?.productName ?: "",
+                productPrice = cartItemHolderData.cartItemData?.originData?.pricePlan
+                        ?: 0.toDouble(),
+                error = cartItemHolderData.cartItemData?.errorMessageTitle,
+                isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
+                tickerMessage = cartItemHolderData.cartItemData?.warningMessageTitle,
+                similarProduct = cartItemHolderData.cartItemData?.similarProductData,
+                nicotineLiteMessageData = cartItemHolderData.cartItemData?.nicotineLiteMessageData,
+                showDivider = showDivider,
+                data = cartItemHolderData.cartItemData
+        )
     }
 }

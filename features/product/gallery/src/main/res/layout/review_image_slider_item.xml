@@ -26,7 +26,7 @@
             android:id="@+id/review_image_slider_rating"
             android:layout_width="@dimen/review_image_slider_rating_width"
             android:layout_height="@dimen/review_image_slider_rating_height"
-            tools:src="@drawable/ic_star_five"/>
+            tools:src="@drawable/ic_gold_star_five"/>
 
         <TextView
             android:id="@+id/review_image_slider_date"

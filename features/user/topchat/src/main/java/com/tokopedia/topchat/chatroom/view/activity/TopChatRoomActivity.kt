@@ -2,8 +2,11 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
@@ -27,6 +30,29 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             bundle.putAll(intent.extras)
         }
         return TopChatRoomFragment.createInstance(bundle)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        useLightNotificationBar()
+    }
+
+    private fun useLightNotificationBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = Color.WHITE
+        }
+    }
+
+    override fun setupToolbar() {
+        super.setupToolbar()
+        decreaseToolbarElevation()
+    }
+
+    private fun decreaseToolbarElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 0f
+        }
     }
 
     companion object {
@@ -105,13 +131,6 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             return intent
         }
 
-    }
-
-    override fun onBackPressed() {
-        supportFragmentManager.findFragmentByTag(tagFragment).let {
-            if (it is TopChatRoomFragment) it.onBackPressedEvent()
-            else super.onBackPressed()
-        }
     }
 
     object DeepLinkIntents {

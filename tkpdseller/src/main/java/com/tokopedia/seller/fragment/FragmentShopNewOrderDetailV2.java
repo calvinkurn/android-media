@@ -42,7 +42,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -451,10 +451,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         } else {
             return null;
         }
-    }
-
-    private void loadViewHolder() {
-        holder = (ViewHolder) rootView.getTag();
     }
 
     private void setListener() {
@@ -870,14 +866,4 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         }
         return list;
     }
-
-    private ProductPass getProductDataToPass(int position) {
-        return ProductPass.Builder.aProductPass()
-                .setProductPrice(order.getOrderProducts().get(position).getProductPrice())
-                .setProductId(order.getOrderProducts().get(position).getProductId())
-                .setProductName(order.getOrderProducts().get(position).getProductName())
-                .setProductImage(order.getOrderProducts().get(position).getProductPicture())
-                .build();
-    }
-
 }

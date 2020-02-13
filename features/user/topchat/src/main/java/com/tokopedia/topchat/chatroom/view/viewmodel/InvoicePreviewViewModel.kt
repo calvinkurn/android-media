@@ -26,7 +26,11 @@ class InvoicePreviewViewModel(
         invoiceUrl,
         statusId,
         status,
-        totalPriceAmount), PreviewViewModel {
+        totalPriceAmount), SendablePreview {
+
+    fun enoughRequiredData(): Boolean {
+        return !notEnoughRequiredData()
+    }
 
     override fun notEnoughRequiredData(): Boolean {
         return id == INVALID_ID ||

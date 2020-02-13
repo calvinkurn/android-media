@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
+    implementation rootProject.ext.miscDependencies.rootbeer
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -51,16 +52,16 @@ dependencies {
         exclude group: 'com.android.support.constraint'
         exclude group: 'com.github.scottyab'
     }
-    implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     testImplementation 'junit:junit:4.12'
+
+    implementation project(rootProject.ext.features.commonTradein)
     implementation rootProject.ext.miscDependencies.rootbeer
+    implementation project(rootProject.ext.libraries.iris)
 }
 
 project.ext {

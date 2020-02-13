@@ -33,7 +33,7 @@ public class GetRatesSubscriber extends Subscriber<ShipmentDetailData> {
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        view.renderCourierStateFailed(itemPosition);
+        view.renderCourierStateFailed(itemPosition, false);
     }
 
     @Override
@@ -42,13 +42,13 @@ public class GetRatesSubscriber extends Subscriber<ShipmentDetailData> {
             for (ShipmentItemData shipmentItemData : shipmentDetailData.getShipmentItemData()) {
                 for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
                     if (courierItemData.getShipperId() == shipperId && courierItemData.getShipperProductId() == spId) {
-                        view.renderCourierStateSuccess(courierItemData, itemPosition);
+                        view.renderCourierStateSuccess(courierItemData, itemPosition, false);
                         return;
                     }
                 }
             }
         }
-        view.renderCourierStateFailed(itemPosition);
+        view.renderCourierStateFailed(itemPosition, false);
     }
 
 }

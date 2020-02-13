@@ -12,14 +12,14 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbarPm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="?toolbarTheme"
             app:elevation="@dimen/dp_0" />
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-            android:id="@+id/stepper_progress"
+            android:id="@+id/stepper_progress_pm"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
             app:rcBackgroundColor="@color/black_12"
@@ -28,7 +28,7 @@
             app:rcRadius="0dp" />
 
         <FrameLayout
-            android:id="@+id/parent_view"
+            android:id="@+id/parent_view_pm"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

@@ -259,7 +259,7 @@ public class ImageSearchActivity extends BaseActivity
         thumbnailImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouteManager.route(ImageSearchActivity.this, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT);
+
             }
         });
     }

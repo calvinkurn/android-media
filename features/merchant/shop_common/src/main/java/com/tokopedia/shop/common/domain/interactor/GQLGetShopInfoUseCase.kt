@@ -37,16 +37,29 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         private const val PARAM_SHOP_IDS = "shopIds"
         private const val PARAM_SHOP_FIELDS = "fields"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
+        private const val PARAM_SOURCE = "source"
+        const val SHOP_PAGE_SOURCE = "shoppage"
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
                 "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info")
 
         @JvmStatic
-        fun createParams(shopIds: List<Int>, shopDomain: String? = null, fields: List<String> = DEFAULT_SHOP_FIELDS): RequestParams = RequestParams.create().apply {
+        fun createParams(
+                shopIds: List<Int>,
+                shopDomain: String? = null,
+                fields: List<String> = DEFAULT_SHOP_FIELDS,
+                source: String =  ""
+        ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_IDS, shopIds)
             putObject(PARAM_SHOP_FIELDS, fields)
             putString(PARAM_SHOP_DOMAIN, shopDomain)
+            putString(PARAM_SOURCE, source)
+        }
+
+        @JvmStatic
+        fun getDefaultShopFields(): List<String> {
+            return DEFAULT_SHOP_FIELDS
         }
     }
 }

@@ -6,51 +6,51 @@ import com.google.gson.annotations.SerializedName
 
 data class Shop(
 
-        @field:SerializedName("goldmerchant")
-        val goldmerchant: Boolean? = null,
+        @SerializedName("goldmerchant")
+        val goldmerchant: Boolean = false,
 
-        @field:SerializedName("city")
+        @SerializedName("city")
         var city: String = "",
 
-        @field:SerializedName("name")
-        var name: String? = null,
+        @SerializedName("name")
+        var name: String = "",
 
-        @field:SerializedName("clover")
-        val clover: String? = null,
+        @SerializedName("clover")
+        val clover: String = "",
 
-        @field:SerializedName("isPowerBadge")
-        val isPowerBadge: Boolean? = null,
+        @SerializedName("isPowerBadge")
+        val isPowerBadge: Boolean = false,
 
-        @field:SerializedName("reputation")
-        val reputation: String? = null,
+        @SerializedName("reputation")
+        val reputation: String = "",
 
-        @field:SerializedName("official")
-        val official: Boolean? = null,
+        @SerializedName("official")
+        val official: Boolean = false,
 
-        @field:SerializedName("location")
-        val location: String? = null,
+        @SerializedName("location")
+        val location: String = "",
 
-        @field:SerializedName("id")
-        val id: Int? = null,
+        @SerializedName("id")
+        val id: Int = -1,
 
-        @field:SerializedName("url")
-        val url: String? = null,
+        @SerializedName("url")
+        val url: String = "",
 
-        @field:SerializedName("isOfficial")
+        @SerializedName("isOfficial")
         val isOfficial: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-            parcel.readString(),
-            parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-            parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString(),
-            parcel.readValue(Boolean::class.java.classLoader) as Boolean)
+        parcel.readValue(Boolean::class.java.classLoader) as Boolean,
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readValue(Boolean::class.java.classLoader) as Boolean,
+        parcel.readString(),
+        parcel.readValue(Boolean::class.java.classLoader) as Boolean,
+        parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as Int,
+        parcel.readString(),
+        parcel.readValue(Boolean::class.java.classLoader) as Boolean)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeValue(goldmerchant)

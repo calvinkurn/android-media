@@ -1,9 +1,9 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 
-import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.exception.SessionExpiredException;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -34,7 +34,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
             return recommendationWidgetList
         }
 
-        private fun convertToRecommendationWidget(recomendationData: RecomendationEntity.RecomendationData): RecommendationWidget {
+        fun convertToRecommendationWidget(recomendationData: RecomendationEntity.RecomendationData): RecommendationWidget {
             val recommendationItemList = arrayListOf<RecommendationItem>()
             recommendationItemList.addAll(
                     recomendationData.recommendation?.mapIndexed { index, recommendation ->

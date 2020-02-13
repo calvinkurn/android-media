@@ -149,8 +149,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.recommendation_page_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.recommendation_page_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
     }
@@ -237,6 +237,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             //load initial data when press retry
             loadData()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(this::trackingQueue.isInitialized && trackingQueue != null) trackingQueue.sendAll()
     }
 
     override fun disableLoadMore() {

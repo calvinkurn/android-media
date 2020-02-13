@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedOnboardingFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
+import com.tokopedia.interest_pick_common.di.InterestPickCommonModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
@@ -20,7 +21,7 @@ import retrofit2.Retrofit;
  */
 
 @FeedPlusScope
-@Component(modules = {FeedPlusModule.class, FeedComponentModule.class, GqlRawQueryModule.class, ViewModelModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {FeedPlusModule.class, FeedComponentModule.class, GqlRawQueryModule.class, ViewModelModule.class, InterestPickCommonModule.class}, dependencies = BaseAppComponent.class)
 public interface FeedPlusComponent {
 
     @ApplicationContext

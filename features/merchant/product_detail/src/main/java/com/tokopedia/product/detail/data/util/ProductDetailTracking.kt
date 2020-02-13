@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
-import android.os.Bundle
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -22,9 +20,7 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 class ProductDetailTracking @Inject constructor(private val trackingQueue: TrackingQueue) {
@@ -35,6 +31,20 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     fun sendScreen(shopID: String, shopType: String, productId: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, shopID,
                 shopType, "/product", productId)
+    }
+
+    fun trackTradeinBeforeDiagnotics(){
+        sendGeneralEvent(" clickPDP",
+                "product detail page",
+                "click trade in widget",
+                "before diagnostic")
+    }
+
+    fun trackTradeinAfterDiagnotics(){
+        sendGeneralEvent(" clickPDP",
+                "product detail page",
+                "click trade in widget",
+                "after diagnostic")
     }
 
     fun eventTalkClicked() {
@@ -51,6 +61,28 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK_SHIPPING,
                 ""
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun eventProductImageClicked(productId: String?) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_PRODUCT_PICTURE,
+                ""
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun eventProductImageOnSwipe(productId: String?, swipeDirection: String, imagePosition: Int) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE,
+                "$swipeDirection - " + ProductTrackingConstant.Label.PDP + " - $imagePosition"
         )
         mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -93,6 +125,85 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
+    fun eventReviewClickedIris(productInfo: ProductInfo?, deeplinkUrl: String,
+                               isOfficial: Boolean, shopName: String) {
+
+        var categoryNameLvl2 = ""
+        var categoryIdLvl2 = ""
+        if (productInfo?.category?.detail?.size ?: 0 >= 2) {
+            productInfo?.category?.detail?.get(1)?.let {
+                categoryIdLvl2 = it.id
+                categoryNameLvl2 = it.name
+            }
+        }
+
+        val imageUrl = productInfo?.media?.filter {
+            it.type == "image"
+        }?.firstOrNull()?.urlOriginal ?: ""
+
+        val mapOfData: Map<String, Any?> = mapOf(KEY_EVENT to "clickPDP",
+                KEY_CATEGORY to "product detail page",
+                KEY_ACTION to "click",
+                KEY_LABEL to "review",
+                "subcategory" to categoryNameLvl2,
+                "subcategoryId" to categoryIdLvl2,
+                "category" to productInfo?.category?.name,
+                "categoryId" to productInfo?.category?.id,
+                "productName" to productInfo?.basic?.name,
+                "productId" to productInfo?.basic?.id,
+                "productUrl" to productInfo?.basic?.url,
+                "productDepplinkUrl" to deeplinkUrl,
+                "productImageUrl" to imageUrl,
+                "productPrice" to productInfo?.basic?.price?.toInt(),
+                "isOfficialStore" to isOfficial,
+                "shopId" to productInfo?.basic?.shopID,
+                "shopName" to shopName,
+                "productPriceFormatted" to getFormattedPrice(productInfo?.basic?.price?.toInt() ?: 0)
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
+    }
+
+    fun eventDiscussionClickedIris(productInfo: ProductInfo?, deeplinkUrl: String,
+                               isOfficial: Boolean, shopName: String) {
+
+        var categoryNameLvl2 = ""
+        var categoryIdLvl2 = ""
+        if (productInfo?.category?.detail?.size ?: 0 >= 2) {
+            productInfo?.category?.detail?.get(1)?.let {
+                categoryIdLvl2 = it.id
+                categoryNameLvl2 = it.name
+            }
+        }
+
+        val imageUrl = productInfo?.media?.filter {
+            it.type == "image"
+        }?.firstOrNull()?.urlOriginal ?: ""
+
+        val mapOfData: Map<String, Any?> =
+                mapOf(KEY_EVENT to "clickPDP",
+                KEY_CATEGORY to "product detail page",
+                KEY_ACTION to "Click",
+                KEY_LABEL to "Talk",
+                "subcategory" to categoryNameLvl2,
+                "subcategoryId" to categoryIdLvl2,
+                "category" to productInfo?.category?.name,
+                "categoryId" to productInfo?.category?.id,
+                "productName" to productInfo?.basic?.name,
+                "productId" to productInfo?.basic?.id,
+                "productUrl" to productInfo?.basic?.url,
+                "productDepplinkUrl" to deeplinkUrl,
+                "productImageUrl" to imageUrl,
+                "productPrice" to productInfo?.basic?.price?.toInt(),
+                "isOfficialStore" to isOfficial,
+                "shopId" to productInfo?.basic?.shopID,
+                "shopName" to shopName,
+                "productPriceFormatted" to getFormattedPrice(productInfo?.basic?.price?.toInt() ?: 0)
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
+    }
+
     fun eventReviewClicked() {
         TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
@@ -125,42 +236,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                listOf(ProductTrackingConstant.MerchantVoucher.ACTION,
-                        ProductTrackingConstant.Action.CLICK).joinToString(" "),
-                merchantVoucherViewModel, position))
-    }
-
-    fun eventImpressionMerchantVoucherUse(merchantVoucherViewModelList: List<MerchantVoucherViewModel>) {
-        val map = createMvcImpressionMap(
-                "promoView",
-                ProductTrackingConstant.Category.PDP,
-                "promo banner impression",
-                "use voucher",
-                merchantVoucherViewModelList)
-        map?.run {
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(this)
-        }
-    }
-
-    private fun createMvcImpressionMap(event: String, category: String, action: String, label: String,
-                                       viewModelList: List<MerchantVoucherViewModel>): MutableMap<String, Any>? {
-        val mvcListMap = createMvcListMap(viewModelList, 0)
-        return if (mvcListMap.isNotEmpty()) {
-            val eventMap = createMap(event, category, action, label)
-            eventMap[KEY_ECOMMERCE] = DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                    "promotions", mvcListMap))
-            eventMap
-        } else {
-            null
-        }
-    }
-
-    private fun createMap(event: String, category: String, action: String, label: String):
-            MutableMap<String, Any> {
+    private fun createMap(event: String, category: String, action: String, label: String): MutableMap<String, Any> {
         return mutableMapOf(
                 KEY_EVENT to event,
                 KEY_CATEGORY to category,
@@ -169,16 +245,17 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
-    private fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, startIndex: Int): List<Any> {
+    private fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: Int, startIndex: Int): List<Any> {
         val list = mutableListOf<Any>()
         for (i in viewModelList.indices) {
             val viewModel = viewModelList[i]
+            val position = startIndex.plus(i).plus(1)
             if (viewModel.isAvailable()) {
                 list.add(
                         DataLayer.mapOf(
-                                ID, viewModel.voucherId,
-                                PROMO_NAME, viewModel.voucherName,
-                                PROMO_POSITION, (startIndex + i + 1).toString(),
+                                ID, shopId.toString(),
+                                PROMO_NAME, listOf(PDP, position.toString(), viewModel.voucherName).joinToString(" - "),
+                                PROMO_POSITION, position,
                                 PROMO_ID, viewModel.voucherId,
                                 PROMO_CODE, viewModel.voucherCode
                         )
@@ -188,21 +265,15 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         return list
     }
 
-    private fun createEventMVCClick(event: String, category: String, action: String,
-                                    merchantVoucherViewModel: MerchantVoucherViewModel, position: Int): Map<String, Any?> {
-        return mapOf(KEY_EVENT to event, KEY_CATEGORY to category, KEY_ACTION to action,
-                KEY_LABEL to merchantVoucherViewModel.voucherName,
-                KEY_ECOMMERCE to DataLayer.mapOf(KEY_PRODUCT_PROMO,
-                        DataLayer.mapOf(KEY_PROMOTIONS, createMVCMap(listOf(merchantVoucherViewModel), position))))
-    }
-
-    private fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, position: Int): List<Any> {
+    private fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, shopId: String, position: Int): List<Any> {
         return vouchers.withIndex().filter { it.value.isAvailable() }.map {
-            DataLayer.mapOf(ID, it.value.voucherId,
-                    PROMO_NAME, it.value.voucherName,
+            DataLayer.mapOf(
+                    ID, shopId,
+                    PROMO_NAME, listOf(PDP, (position + it.index + 1).toString(), it.value.voucherName).joinToString(" - "),
                     PROMO_POSITION, (position + it.index + 1).toString(),
                     PROMO_ID, it.value.voucherId,
-                    PROMO_CODE, it.value.voucherCode)
+                    PROMO_CODE, it.value.voucherCode
+            )
         }
     }
 
@@ -210,13 +281,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         if (productId.isNullOrEmpty()) {
             return
         }
-        val mapEvent =  TrackAppUtils.gtmData(
+        val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "click - cek keranjang",
                 productId
         )
-        mapEvent[KEY_PRODUCT_ID] =  productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -231,20 +302,82 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventClickMerchantVoucherSeeDetail(id: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                ProductTrackingConstant.Category.PDP,
-                listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
-                        ProductTrackingConstant.MerchantVoucher.DETAIL).joinToString(" - "),
-                id.toString())
+    fun eventClickMerchantVoucherSeeDetail(voucherId: Int, productId: String) {
+        val eventData = createMap(
+                event = ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                category = ProductTrackingConstant.Category.PDP,
+                action = listOf(
+                        ProductTrackingConstant.Action.CLICK,
+                        ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
+                        ProductTrackingConstant.MerchantVoucher.DETAIL
+                ).joinToString(" - "),
+                label = ""
+        )
+        eventData[KEY_PROMO_ID] = voucherId.toString()
+        eventData[KEY_PRODUCT_ID] = productId
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventData)
     }
 
-    fun eventClickMerchantVoucherSeeAll(id: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                ProductTrackingConstant.Category.PDP,
-                listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
-                        ProductTrackingConstant.MerchantVoucher.SEE_ALL).joinToString(" - "),
-                id.toString())
+    fun eventClickMerchantVoucherSeeAll(productId: String) {
+        val eventData = createMap(
+                event = ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                category = ProductTrackingConstant.Category.PDP,
+                action = listOf(
+                        ProductTrackingConstant.Action.CLICK,
+                        ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
+                        ProductTrackingConstant.MerchantVoucher.SEE_ALL
+                ).joinToString(" - "),
+                label = ""
+        )
+        eventData[KEY_PRODUCT_ID] = productId
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventData)
+    }
+
+    fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, shopId: String, productId: String, position: Int) {
+        val eventMap = createMap(
+                event = ProductTrackingConstant.MerchantVoucher.PROMO_CLICK,
+                category = ProductTrackingConstant.Category.PDP,
+                action = listOf(
+                        ProductTrackingConstant.Action.CLICK,
+                        ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
+                        ProductTrackingConstant.MerchantVoucher.USE_VOUCHER
+                ).joinToString(" - "),
+                label = ""
+        )
+        eventMap[KEY_PROMO_ID] = mapOf(KEY_PROMO_ID to merchantVoucherViewModel.voucherId.toString())
+        eventMap[KEY_PRODUCT_ID] = productId
+        eventMap[KEY_ECOMMERCE] = DataLayer.mapOf(
+                ProductTrackingConstant.MerchantVoucher.PROMO_CLICK, DataLayer.mapOf(
+                KEY_PROMOTIONS, createMVCMap(listOf(merchantVoucherViewModel),shopId, position))
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun eventImpressionMerchantVoucherUse(shopId: Int, productId: String, merchantVoucherViewModelList: List<MerchantVoucherViewModel>) {
+        if (merchantVoucherViewModelList.isNullOrEmpty()) return
+
+        val promoId = merchantVoucherViewModelList[0].voucherId
+        val eventMap = createMap(
+                event = ProductTrackingConstant.MerchantVoucher.PROMO_VIEW,
+                category = ProductTrackingConstant.Category.PDP,
+                action = listOf(
+                        ProductTrackingConstant.Action.IMPRESSION,
+                        ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
+                        ProductTrackingConstant.MerchantVoucher.USE_VOUCHER
+                ).joinToString(" - "),
+                label = ""
+        )
+        eventMap[KEY_PROMO_ID] = mapOf(KEY_PROMO_ID to promoId.toString())
+        eventMap[KEY_PRODUCT_ID] = productId
+        eventMap[KEY_ECOMMERCE] = DataLayer.mapOf(
+                ProductTrackingConstant.MerchantVoucher.PROMO_VIEW, DataLayer.mapOf(
+                KEY_PROMOTIONS, createMvcListMap(merchantVoucherViewModelList, shopId, 0))
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
     }
 
     // e commerce, custom dimension, general
@@ -269,7 +402,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                                         VARIANT, DEFAULT_VALUE,
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1,
-                                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
                                         KEY_PRODUCT_ID, product.productId.toString()
                                 )
                         ))
@@ -277,7 +410,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
-    fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean,pageName: String, pageTitle: String) {
+    fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.USER_NON_LOGIN} - "
         else ""
@@ -304,7 +437,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         VARIANT, DEFAULT_VALUE,
                         PROMO_POSITION, position,
-                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         ))
         ))
@@ -335,7 +468,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         PROMO_POSITION, position + 1,
                         LIST, listValue,
-                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
                         KEY_PRODUCT_ID, product.productId.toString()
                 )
         ))
@@ -370,7 +503,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         VARIANT, DEFAULT_VALUE,
                         LIST, listValue,
                         PROMO_POSITION, position,
-                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         ))
         )
@@ -435,13 +568,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     }
 
     fun eventSendChat(productId: String) {
-        val mapEvent =  TrackAppUtils.gtmData(
+        val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Message.LABEL.toLowerCase()
+                ProductTrackingConstant.Action.CLICK_PAGE_CHAT,
+                productId
         )
-        mapEvent[KEY_PRODUCT_ID] =  productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -554,7 +686,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?,
                                            shopInfo: ShopInfo?, trackerAttribution: String?,
                                            isTradeIn: Boolean, isDiagnosed: Boolean,
-                                           multiOrigin: Boolean) {
+                                           multiOrigin: Boolean, deeplinkUrl: String) {
         val dimension55 = if (isTradeIn && isDiagnosed)
             "true diagnostic"
         else if (isTradeIn && !isDiagnosed)
@@ -568,6 +700,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             else
                 VALUE_NONE_OTHER
         }
+
+        val subCategoryId = productInfo?.category?.detail?.firstOrNull()?.id ?: ""
+        val subCategoryName = productInfo?.category?.detail?.firstOrNull()?.name ?: ""
+
+        val productImageUrl = productInfo?.media?.filter {
+            it.type == "image"
+        }?.firstOrNull()?.urlOriginal ?: ""
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 "event", "viewProduct",
@@ -583,7 +722,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         "name", productInfo?.basic?.name,
                         "id", productInfo?.basic?.id,
                         "price", productInfo?.basic?.price?.toInt(),
-                        "brand", "none / other",
+                        "brand", productInfo?.basic?.name,
                         "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                         "variant", "none / other",
                         "dimension38", trackerAttribution ?: "none / other",
@@ -604,14 +743,17 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "shopLocation", shopInfo?.location,
                 "shopIsGold", shopInfo?.goldOS?.isGoldBadge.toString(),
                 "categoryId", productInfo?.category?.id,
-                "url", productInfo?.basic?.url,
-                "shopType", getEnhanceShopType(shopInfo?.goldOS)
-        ))
-
-
+                "shopType", getEnhanceShopType(shopInfo?.goldOS),
+                "pageType", "/productpage",
+                "subcategory", subCategoryName,
+                "subcategoryId", subCategoryId,
+                "productUrl", productInfo?.getProductUrl(),
+                "productDeeplinkUrl", deeplinkUrl,
+                "productImageUrl", productImageUrl,
+                "isOfficialStore", shopInfo?.goldOS?.isOfficial,
+                "productPriceFormatted", getFormattedPrice(productInfo?.basic?.price?.toInt() ?: 0))
+        )
     }
-
-
 
     ///////////////////////////////////////////////////////////////
     //BRANCH START
@@ -656,7 +798,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         eventAppsFyler(productInfo, "af_content_view")
     }
 
-    private fun eventAppsFyler(productInfo: ProductInfo, eventName:String) {
+    private fun eventAppsFyler(productInfo: ProductInfo, eventName: String) {
         TrackApp.getInstance().appsFlyer.run {
             val mutableMap = mutableMapOf(
                     "af_description" to "productView",
@@ -829,7 +971,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
-    fun eventClickSeeMoreRecomWidget(widgetName: String){
+    fun eventClickSeeMoreRecomWidget(widgetName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
@@ -893,6 +1035,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val KEY_USER_ID = "user_id"
 
         const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
+        const val PDP = "PDP"
 
         private const val ID = "id"
         private const val PROMO_NAME = "name"
@@ -917,6 +1060,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val DATA_DIMENSION_83 = "dimension83"
         private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         private const val VALUE_NONE_OTHER = "none / other"
+        private const val KEY_PROMO_ID = "promoId"
         private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_DIMENSION_81 = "dimension81"
     }

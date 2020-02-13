@@ -45,7 +45,6 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -67,11 +66,13 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.SeeInvoiceActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ProductItemAdapter;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.RecommendationMPAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
@@ -90,6 +91,8 @@ import javax.inject.Inject;
 import static android.content.Context.CLIPBOARD_SERVICE;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
+
+    private static final int CREATE_RESCENTER_REQUEST_CODE = 789;
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String ACTION_BUTTON_URL = "action_button_url";
@@ -112,6 +115,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String  CLICK_SUBMIT_CANCELATION = "click submit cancelation";
     private static final String CLICK_VIEW_COMPLAIN ="click view complain";
     private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
+    private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
+
+    public static final String SIMILAR_PRODUCTS_ACTION_BUTTON_KEY = "see_similar_products";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
@@ -121,6 +127,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Inject
     OrderListDetailPresenter presenter;
     private LinearLayout mainView;
+    private LinearLayout viewRecomendItems;
     private TextView statusLabel;
     private TextView statusValue;
     private TextView conditionalInfoText;
@@ -130,6 +137,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView additionalText;
     private TextView infoLabel;
     private TextView helpLabel;
+    private TextView recommendListTitle;
     private FrameLayout stickyButton;
     private LinearLayout statusDetail;
     private LinearLayout detailContent;
@@ -157,6 +165,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private ShopInfo shopInfo;
     private Status status;
     private Ticker mTickerInfos;
+    private RecyclerView recommendationList;
 
 
     @Override
@@ -211,6 +220,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         stickyButton = view.findViewById(R.id.sticky_btn);
         myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
+        recommendationList = view.findViewById(R.id.recommendation_list);
+        recommendListTitle = view.findViewById(R.id.recommend_title);
+        viewRecomendItems = view.findViewById(R.id.recommend_items);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
         setUpScrollChangeListener();
@@ -221,7 +233,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshHandler = new RefreshHandler(getActivity(), getView(), this);
+        refreshHandler = new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), this);
         refreshHandler.startRefresh();
         refreshHandler.setPullEnabled(true);
     }
@@ -294,13 +306,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         lihat.setOnClickListener(view -> {
             orderListAnalytics.sendViewInvoiceClickEvent();
             orderListAnalytics.sendLihatInvoiceClick(status.status());
-            try {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+
+            Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
+                    getString(R.string.title_invoice));
+            startActivity(intent);
         });
     }
 
@@ -696,7 +705,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
                                     Intent newIntent = InboxRouter.getCreateResCenterActivityIntent(getContext(),
                                             getArguments().getString(KEY_ORDER_ID));
-                                    startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
+                                    startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
                                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya penjual")) {
                                     orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
@@ -732,6 +741,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER, statusValue.getText().toString());
                 } else if (actionButton.getKey().contains("view_complaint")) {
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_VIEW_COMPLAIN, statusValue.getText().toString());
+                    RouteManager.route(getContext(), actionButton.getUri());
+                } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
@@ -939,7 +951,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setItems(List<Items> items, boolean isTradeIn) {
         productInformationTitle.setVisibility(View.VISIBLE);
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status));
     }
 
     @Override
@@ -964,6 +976,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void onRefresh(View view) {
         presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT), null);
+
     }
 
     private void setUpScrollChangeListener() {
@@ -982,7 +995,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
 
     @Override
-    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
-
+    public void setRecommendation(Object recommendationResponse) {
+        RecommendationResponse rechargeWidgetResponse = (RecommendationResponse) recommendationResponse;
+        if (rechargeWidgetResponse != null && rechargeWidgetResponse.getRechargeFavoriteRecommendationList() != null) {
+            if (!rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations().isEmpty() && getContext() != null) {
+                viewRecomendItems.setVisibility(View.VISIBLE);
+                recommendListTitle.setText(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getTitle());
+                recommendationList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                recommendationList.setAdapter(new RecommendationMPAdapter(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations()));
+            }
+        }
     }
 }

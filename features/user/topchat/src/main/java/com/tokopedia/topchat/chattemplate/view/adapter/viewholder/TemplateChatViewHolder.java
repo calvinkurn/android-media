@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
+import com.tokopedia.unifycomponents.ChipsUnify;
 
 /**
  * Created by stevenfredian on 11/29/17.
@@ -20,17 +21,17 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
     public static final int LAYOUT = R.layout.item_template_chat_layout;
 
     ChatTemplateListener viewListener;
-    TextView textHolder;
+    ChipsUnify textHolder;
 
     public TemplateChatViewHolder(View itemView, ChatTemplateListener viewListener) {
         super(itemView);
-        textHolder = itemView.findViewById(R.id.text);
+        textHolder = itemView.findViewById(R.id.chipsText);
         this.viewListener = viewListener;
     }
 
     @Override
     public void bind(final TemplateChatModel element) {
-        textHolder.setText(element.getMessage());
+        textHolder.setChipText(element.getMessage());
         textHolder.setOnClickListener(view ->
                 viewListener.addTemplateString(element.getMessage())
         );
