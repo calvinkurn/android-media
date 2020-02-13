@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull
  */
 class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                           defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : BaseCustomView(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
@@ -94,7 +94,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         }
     }
 
-    fun toggleTitle(value: Boolean) {
+    override fun toggleTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
       

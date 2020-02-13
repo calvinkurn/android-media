@@ -35,6 +35,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
@@ -236,9 +237,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
                     // Render enquiry data
-//                    enquiryData?.let{
-//                        renderCheckoutView(it)
-//                    }
+                    enquiryData?.let{
+                        renderCheckoutView(it)
+                    }
                 }
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_CART_DIGITAL) {
@@ -619,8 +620,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 tab_layout.show()
 
                 // Hide widget title
-                recentTransactionFragment?.run { toggleTitle(false) }
-                promoListFragment?.run { toggleTitle(false) }
+//                recentTransactionFragment?.run { toggleTitle(false) }
+//                promoListFragment?.run { toggleTitle(false) }
+                (product_view_pager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
+                (product_view_pager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
             }
             product_view_pager.show()
         } else {
