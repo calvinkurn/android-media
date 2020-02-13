@@ -6,7 +6,7 @@ import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapter
  * @author by jessica on 2019-08-14
  */
 
-data class TravelDestinationSectionViewModel(
+data class TravelDestinationSectionModel(
         var title: String = "",
         var seeAllUrl: String = "",
         var list: List<Item> = listOf(),
