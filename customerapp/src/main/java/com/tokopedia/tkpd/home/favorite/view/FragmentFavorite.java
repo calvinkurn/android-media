@@ -23,7 +23,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;

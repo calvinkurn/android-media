@@ -18,7 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
@@ -46,6 +46,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private ImageView thumbnailsImage;
     private UnifyButton tvBuy;
     private ImageView ivATC;
+    private ImageView ivWishList;
     private View footerLayout;
     private ImageView freeShipping;
 
@@ -72,6 +73,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         freeShipping = itemView.findViewById(R.id.iv_free_shipping);
         tvBuy = chatBalloon.findViewById(R.id.tv_buy);
         ivATC = chatBalloon.findViewById(R.id.ic_add_to_cart);
+        ivWishList = chatBalloon.findViewById(R.id.ic_add_to_wishlist);
         footerLayout = chatBalloon.findViewById(R.id.footer_layout);
         productVariantContainer = itemView.findViewById(R.id.ll_variant);
         productColorVariant = itemView.findViewById(R.id.ll_variant_color);
@@ -256,6 +258,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             footerLayout.setVisibility(View.VISIBLE);
             tvBuy.setVisibility(View.VISIBLE);
             ivATC.setVisibility(View.VISIBLE);
+            ivWishList.setVisibility(View.VISIBLE);
             tvBuy.setOnClickListener(v -> {
                 viewListener.onClickBuyFromProductAttachment(element);
             });
@@ -265,13 +268,67 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                     viewListener.onClickATCFromProductAttachment(element);
                 }
             });
+            bindWishListView(element);
+            bindClickAddToWishList(element);
         } else {
             footerLayout.setVisibility(View.GONE);
             tvBuy.setVisibility(View.GONE);
             ivATC.setVisibility(View.GONE);
+            ivWishList.setVisibility(View.GONE);
         }
     }
 
+    private void bindWishListView(ProductAttachmentViewModel element) {
+        Drawable loveDrawable = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_attachproduct_wishlist);
+        if (loveDrawable == null) return;
+        loveDrawable.mutate();
+        ivWishList.setImageDrawable(loveDrawable);
+        updateWishListIconState(element);
+    }
+
+    private void bindClickAddToWishList(ProductAttachmentViewModel element) {
+        ivWishList.setOnClickListener(v -> {
+            if (element.isWishListed()) {
+                removeProductFromWishList(element);
+            } else {
+                addProductToWishList(element);
+            }
+        });
+    }
+
+    private void removeProductFromWishList(ProductAttachmentViewModel element) {
+        viewListener.onClickRemoveFromWishList(element.getStringProductId(), () -> {
+            onSuccessRemoveFromWishList(element);
+            return null;
+        });
+    }
+
+    private void addProductToWishList(ProductAttachmentViewModel element) {
+        viewListener.onClickAddToWishList(element.getStringProductId(), () -> {
+                    onSuccessAddToWishList(element);
+                    return null;
+                }
+        );
+    }
+
+    private void onSuccessRemoveFromWishList(ProductAttachmentViewModel element) {
+        element.setWishList(false);
+        updateWishListIconState(element);
+    }
+
+    private void onSuccessAddToWishList(ProductAttachmentViewModel element) {
+        element.setWishList(true);
+        updateWishListIconState(element);
+    }
+
+    private void updateWishListIconState(ProductAttachmentViewModel element) {
+        if (element.isWishListed()) {
+            int color = ContextCompat.getColor(itemView.getContext(), R.color.chatcommon_wishlist_selected);
+            ivWishList.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        } else {
+            ivWishList.clearColorFilter();
+        }
+    }
 
     private void setUIValue(View productContainer, int id, String value) {
         View destination = productContainer.findViewById(id);

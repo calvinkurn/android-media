@@ -543,6 +543,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
+        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventShopPageClickPost(
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    positionInFeed)
+        }
     }
 
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
@@ -559,6 +568,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     ),
                     model.id.toString()
             )
+        }
+        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventShopPageClickPost(
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    positionInFeed)
         }
     }
 
@@ -610,6 +628,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 ApplinkConstInternalContent.VIDEO_DETAIL,
                 postId
         )
+        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventShopPageClickPost(
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    positionInFeed)
+        }
     }
 
     override fun onAddToCartSuccess() {

@@ -531,18 +531,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         private boolean isDownloadable(ActionButton actionButton) {
-
-            Header header = null;
+            Header header;
 
             if (!TextUtils.isEmpty(actionButton.getHeader())) {
                 Gson gson = new Gson();
                 header = gson.fromJson(actionButton.getHeader(), Header.class);
-
-                if (header.getContentType().equalsIgnoreCase(CONTENT_TYPE)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return header != null && header.getContentType() != null
+                        && header.getContentType().equalsIgnoreCase(CONTENT_TYPE);
             }
             return false;
         }

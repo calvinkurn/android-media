@@ -82,11 +82,11 @@ open class NotificationItemViewBean(
     private fun getProductIdImpression(): String {
         if (products.isEmpty()) return ""
         val product = products.first()
-        return if (isWishlistPriceDrop()) product.productId else ""
+        return if (isHasProductCard()) product.productId else ""
     }
 
-    private fun isWishlistPriceDrop(): Boolean {
-        return typeLink == 3
+    private fun isHasProductCard(): Boolean {
+        return typeLink == TYPE_WISHLIST || typeLink == TYPE_PRODUCT_CHECKOUT
     }
 
     fun getImpressionTrackLabel(location: String): String {

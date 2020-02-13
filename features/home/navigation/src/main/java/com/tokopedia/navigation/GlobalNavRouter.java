@@ -42,6 +42,4 @@ public interface GlobalNavRouter {
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     void sendOpenHomeEvent();
-
-    void setCategoryAbTestingConfig();
 }

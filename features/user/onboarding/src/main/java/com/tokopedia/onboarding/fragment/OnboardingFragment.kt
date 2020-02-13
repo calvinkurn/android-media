@@ -213,13 +213,13 @@ class OnboardingFragment : BaseDaggerFragment(),
     override fun onResponse(remoteConfig: RemoteConfig) {
         var msg = remoteConfig.getString(descKey)
         if (!TextUtils.isEmpty(msg)) {
-            val descTxt = msg
-            activity?.runOnUiThread { descView?.text = MethodChecker.fromHtml(descTxt) }
+            val descTxt = MethodChecker.fromHtml(msg)
+            activity?.runOnUiThread { descView?.text = descTxt }
         }
         msg = remoteConfig.getString(ttlKey)
         if (!TextUtils.isEmpty(msg)) {
-            val ttlTxt = msg
-            activity?.runOnUiThread { titleView?.text = MethodChecker.fromHtml(ttlTxt) }
+            val ttlTxt = MethodChecker.fromHtml(msg)
+            activity?.runOnUiThread { titleView?.text = ttlTxt }
         }
     }
 }

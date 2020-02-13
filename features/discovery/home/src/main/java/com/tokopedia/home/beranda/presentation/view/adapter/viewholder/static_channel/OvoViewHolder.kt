@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
@@ -148,6 +149,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         } else {
                             listener.onRequestPendingCashBack()
                         }
+                        tvTitleTokocash.visibility = View.VISIBLE
                     }
                 } else {
                     tokocashProgressBar.visibility = View.GONE
@@ -207,6 +209,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val tokopointProgressBarLayout = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokopoint_layout)
         val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
         val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_count)
+        ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)
         if (element.tokopointsDrawerHomeData == null && element.isTokoPointDataError) {
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
@@ -262,6 +265,13 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
+
+                        if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
+                                tokopointsDrawerHomeData.sectionContent[0].tagAttributes.text.isNotEmpty()) {
+                            HomePageTracking.sendClickOnTokopointsNewCouponTracker()
+                        } else {
+                            HomePageTracking.sendTokopointTrackerClick()
+                        }
                     }
                 }
             }

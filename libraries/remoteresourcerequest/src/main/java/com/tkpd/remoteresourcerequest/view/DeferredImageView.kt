@@ -53,13 +53,13 @@ class DeferredImageView : ImageView {
     }
 
     private fun downloadAndSetResource() {
-        ResourceDownloadManager.getManager().startDownload(mRemoteFileName, this)
+        ResourceDownloadManager.getManager().startDownload(mRemoteFileName, this, null)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         ResourceDownloadManager.getManager()
-                .stopPendingDownload(mRemoteFileName, this)
+                .stopDeferredImageViewRendering(mRemoteFileName, this)
 
     }
 }

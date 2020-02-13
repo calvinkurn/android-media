@@ -48,7 +48,7 @@ include "features:im:referral"
 
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
-include "features:logistic:tracking"
+include "features:logistic:logisticorder"
 include "features:logistic:logisticcart"
 
 include "features:category:tradein"
@@ -118,6 +118,7 @@ include "features:transaction:opportunity"
 include "features:top_ads:top_ads_widget"
 
 include "features:user:attachproduct"
+include "features:user:attachcommon"
 include "features:user:chat_common"
 include "features:user:chatbot"
 include "features:user:changepassword"

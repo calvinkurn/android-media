@@ -5,7 +5,7 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -128,8 +128,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         get() = userSessionInterface.userId
     val isUserHasShop: Boolean
         get() = userSessionInterface.hasShop()
-    val deviceId: String
-        get() = userSessionInterface.deviceId
+    var deviceId: String = userSessionInterface.deviceId
 
     override fun flush() {
         super.flush()
@@ -388,7 +387,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun loadRecommendation() {
         launch {
-            if (GlobalConfig.isCustomerApp()) {
+            if (!GlobalConfig.isSellerApp()) {
                 try {
                     withContext(dispatcher.io()) {
                         val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(

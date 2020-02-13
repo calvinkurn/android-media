@@ -7,9 +7,9 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
 import java.util.HashMap
-import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -40,6 +40,8 @@ interface HomeCategoryListener {
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
     fun openShop()
+
+    fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
     fun actionAppLinkWalletHeader(appLinkBalance: String)
 
@@ -85,5 +87,5 @@ interface HomeCategoryListener {
 
     fun getWindowWidth(): Int
 
-    fun addRecyclerViewScrollImpressionListener(adapterPosition: Int, onImpressionListener: ()->Unit)
+    fun refreshHomeData()
 }

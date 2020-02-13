@@ -2,7 +2,7 @@ package com.tokopedia.promocheckout.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -14,6 +14,7 @@ import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseC
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
@@ -64,6 +65,12 @@ class PromoCheckoutModule {
     @Provides
     fun provideCancelVoucherDigitalUseCase(@ApplicationContext context: Context): FlightCancelVoucherUseCase {
         return FlightCancelVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutQualifier
+    @Provides
+    fun provideUmrahCheckPromoUseCase(@ApplicationContext context: Context): UmrahCheckPromoUseCase {
+        return UmrahCheckPromoUseCase(context, GraphqlUseCase())
     }
 
     @PromoCheckoutQualifier

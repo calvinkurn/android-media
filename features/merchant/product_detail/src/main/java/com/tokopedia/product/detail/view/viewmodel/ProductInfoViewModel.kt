@@ -7,7 +7,7 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
@@ -89,7 +89,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class ProductInfoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                               private val userSessionInterface: UserSessionInterface,
+                                               val userSessionInterface: UserSessionInterface,
                                                private val rawQueries: Map<String, String>,
                                                private val addWishListUseCase: AddWishListUseCase,
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
@@ -117,8 +117,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val isUserHasShop: Boolean
         get() = userSessionInterface.hasShop()
 
-    val deviceId: String
-        get() = userSessionInterface.deviceId
+    var deviceId: String = userSessionInterface.deviceId
 
     private var lazyNeedForceUpdate = false
 
@@ -676,7 +675,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val product = (productInfoP1Resp.value ?: return) as? Success ?: return
         loadTopAdsProduct.value = Loading
         launch(Dispatchers.IO) {
-            val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
+            val topAdsProductDef = if (!GlobalConfig.isSellerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
                 try {
                     val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
