@@ -80,6 +80,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final int DEFAULT_TAB_ID = 1;
     private static final String DEVICE_ID = "device_id";
     private static final String CATEGORY_IDS = "category_ids";
+    private static final String MP_CATEGORY_IDS = "mp_category_ids";
     private static final int DEFAULT_DEVICE_ID = 5;
 
     GraphqlUseCase orderDetailsUseCase;
@@ -686,6 +687,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         Map<String, Object> variable = new HashMap<>();
         variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
         variable.put(CATEGORY_IDS, category);
+        variable.put(MP_CATEGORY_IDS, categoryList);
         graphqlRequestForMPRecommendation = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.recommendation_mp), RecommendationResponse.class, variable);
