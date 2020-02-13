@@ -19,13 +19,13 @@ class GetEmptyViewModelsUseCase {
         val categoryListModel = TravelHomepageCategoryListModel()
         categoryListModel.isLoadFromCloud = loadFromCloud
 
-        val orderListModel = TravelHomepageSectionViewModel(type = TYPE_ORDER_LIST)
+        val orderListModel = TravelHomepageSectionModel(type = TYPE_ORDER_LIST)
         orderListModel.isLoadFromCloud = loadFromCloud
 
-        val recentSearchModel = TravelHomepageSectionViewModel(type = TYPE_RECENT_SEARCH)
+        val recentSearchModel = TravelHomepageSectionModel(type = TYPE_RECENT_SEARCH)
         recentSearchModel.isLoadFromCloud = loadFromCloud
 
-        val recommendationModel = TravelHomepageSectionViewModel(type = TYPE_RECOMMENDATION)
+        val recommendationModel = TravelHomepageSectionModel(type = TYPE_RECOMMENDATION)
         recommendationModel.isLoadFromCloud = loadFromCloud
 
         val destinationModel = TravelHomepageDestinationModel()

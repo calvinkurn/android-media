@@ -6,7 +6,7 @@ import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.Travel
  * @author by jessica on 2019-08-14
  */
 
-data class TravelHomepageSectionViewModel(
+data class TravelHomepageSectionModel(
         var title: String = "",
         var seeAllUrl: String = "",
         var list: List<Item> = listOf(),
