@@ -61,8 +61,17 @@ class PlayCardViewHolder(
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.IO
 
-    override fun bind(element: PlayCardViewModel) {
-        container.hide()
+    override fun bind(element: PlayCardViewModel?) {
+        if(element?.playCardHome == null){
+            container.hide()
+        } else {
+            playCardViewModel = element
+            playCardViewModel?.let{ playCardViewModel ->
+                if (container.visibility == View.GONE) container.show()
+                initView(playCardViewModel)
+                playCardViewModel.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+            }
+        }
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
