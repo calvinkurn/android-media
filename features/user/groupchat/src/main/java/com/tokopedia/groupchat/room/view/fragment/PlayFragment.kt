@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -843,8 +844,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return viewState?.verticalVideoShown()
     }
 
-    override fun showChatDisabledError(message: String) {
-        viewState.onChatDisabledError(message)
+    override fun showChatDisabledError() {
+        if (activity != null) {
+            KeyboardHandler.hideSoftKeyboard(activity)
+            viewState.onKeyboardHidden()
+        }
+        viewState.onChatDisabledError(
+                message = getString(R.string.play_chat_blocked_message),
+                action = getString(R.string.play_chat_blocked_button))
     }
 
     fun isChannelActive(): Boolean {

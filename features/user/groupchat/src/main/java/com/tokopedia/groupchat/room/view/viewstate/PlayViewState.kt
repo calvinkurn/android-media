@@ -67,5 +67,5 @@ interface PlayViewState {
     fun verticalVideoShown(): Boolean
     fun dismissAllBottomSheet()
     fun isChannelActive(): Boolean
-    fun onChatDisabledError(message: String)
+    fun onChatDisabledError(message: String, action: String)
 }

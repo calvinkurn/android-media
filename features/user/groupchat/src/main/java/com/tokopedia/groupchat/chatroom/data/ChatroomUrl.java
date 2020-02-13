@@ -1,5 +1,6 @@
 package com.tokopedia.groupchat.chatroom.data;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.url.TokopediaUrl;
 
 /**
@@ -17,4 +18,6 @@ public class ChatroomUrl {
     public static final String GROUP_CHAT_URL = "https://tokopedia.com/groupchat/{channel_url}";
     public static final String PATH_WEB_SOCKET_GROUP_CHAT_URL = "/ws/groupchat?channel_id=";
     public static String GROUP_CHAT_WEBSOCKET_DOMAIN = TokopediaUrl.Companion.getInstance().getWS_GROUPCHAT();
+
+    public static final String FAQ_URL = ApplinkConst.WEBVIEW + "?url="+ TokopediaUrl.Companion.getInstance().getWEB() +"help/article/tokopedia-play";
 }

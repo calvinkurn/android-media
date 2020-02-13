@@ -37,6 +37,7 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonsAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
@@ -97,9 +98,7 @@ open class PlayViewStateImpl(
 ) : PlayViewState {
 
     private var viewModel: ChannelInfoViewModel? = null
-    private var stickyComponentViewModel: StickyComponentViewModel? = null
     private var dynamicButtonsViewModel: DynamicButtonsViewModel? = null
-    private var videoStreamViewModel: VideoStreamViewModel? = null
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
@@ -131,7 +130,6 @@ open class PlayViewStateImpl(
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
     private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
-    private var videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
     private var gradientBackground = view.findViewById<View>(R.id.top_guideline)
 
 
@@ -147,7 +145,6 @@ open class PlayViewStateImpl(
     private var onPauseTime: Long = 0
     private var onEndTime: Long = 0
     private var onLeaveTime: Long = 0
-    private val onTrackingTime: Long = 0
 
     private var interactionAnimationHelper: InteractionAnimationHelper
     private var overflowMenuHelper: OverflowMenuHelper
@@ -206,11 +203,11 @@ open class PlayViewStateImpl(
                 .resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
-        var dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
+        val dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
                 dynamicButtonClickListener, interactiveButtonClickListener, interactionGuideline)
 
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        var buttonSpace = SpaceItemDecoration(activity.getResources()
+        val buttonSpace = SpaceItemDecoration(activity.getResources()
                 .getDimension(com.tokopedia.design.R.dimen.dp_8).toInt(), 2)
         dynamicButtonAdapter = DynamicButtonsAdapter(dynamicButtonTypeFactory)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
@@ -1265,9 +1262,17 @@ open class PlayViewStateImpl(
         return false
     }
 
-    override fun onChatDisabledError(message: String) {
-        //TODO("2. Change this to Unify Toaster, but need to make it appear above keyboard")
-        Toast.makeText(view.context, message, Toast.LENGTH_LONG).show()
+    override fun onChatDisabledError(message: String, action: String) {
+        Toaster.make(
+                view,
+                message,
+                type = Toaster.TYPE_ERROR,
+                duration = Snackbar.LENGTH_LONG,
+                actionText = action,
+                clickListener = View.OnClickListener {
+                    RouteManager.route(view.context, ChatroomUrl.FAQ_URL)
+                }
+        )
     }
 
     private fun toggleHorizontalVideo(): (Boolean) -> Unit {

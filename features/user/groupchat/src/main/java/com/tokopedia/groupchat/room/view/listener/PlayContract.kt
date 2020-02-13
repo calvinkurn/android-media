@@ -47,7 +47,7 @@ interface PlayContract {
         fun onStickyComponentReceived(it: StickyComponentsViewModel)
         fun onVideoStreamUpdated(it: VideoStreamViewModel)
         fun hasVideoVertical(): Boolean
-        fun showChatDisabledError(message: String)
+        fun showChatDisabledError()
     }
 
     interface Presenter: CustomerPresenter<View> {

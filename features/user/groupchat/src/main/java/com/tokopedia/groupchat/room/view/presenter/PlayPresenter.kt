@@ -286,8 +286,7 @@ class PlayPresenter @Inject constructor(
             onSuccessSendMessage: (PendingChatViewModel) -> Unit,
             onErrorSendMessage: (PendingChatViewModel, Exception?) -> Unit) {
         if (viewModel.isChatDisabled && !viewModel.isQuickReply) {
-            //TODO("1. Change error message")
-            showChatDisabledError("CHAT SEDANG DI-DISABLED")
+            showChatDisabledError()
             return
         }
 
@@ -329,7 +328,7 @@ class PlayPresenter @Inject constructor(
         })
     }
 
-    private fun showChatDisabledError(message: String) {
-        view.showChatDisabledError(message)
+    private fun showChatDisabledError() {
+        view.showChatDisabledError()
     }
 }
