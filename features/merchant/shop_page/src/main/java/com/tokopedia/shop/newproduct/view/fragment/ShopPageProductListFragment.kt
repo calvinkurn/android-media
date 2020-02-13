@@ -141,7 +141,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         get() {
             return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
         }
-    private var shopInfoCacheManagerId: String = ""
 
     override fun chooseProductClicked() {
         context?.let {
@@ -659,7 +658,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             selectedEtalaseId = it.getString(SAVED_SELECTED_ETALASE_ID) ?: ""
             selectedEtalaseName = it.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
             shopId = it.getString(SAVED_SHOP_ID)
-            shopInfoCacheManagerId = it.getString(SHOP_INFO_CACHE_MANAGER_ID, "")
+            val shopInfoCacheManagerId = it.getString(SHOP_INFO_CACHE_MANAGER_ID, "")
             isGoldMerchant = it.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT)
             isOfficialStore = it.getBoolean(SAVED_SHOP_IS_OFFICIAL)
             shopInfo = context?.run {
