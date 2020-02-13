@@ -40,6 +40,9 @@ class HotlistNavActivity : BaseActivity(),
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
 
+    private val EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL"
+    private val EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS"
+    private val EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER"
 
     private val STATE_GRID = 1
     private val STATE_LIST = 2
@@ -62,13 +65,6 @@ class HotlistNavActivity : BaseActivity(),
         initBottomSheetListener()
         initButtons()
 
-    }
-
-
-    companion object {
-        private const val EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL"
-        private const val EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS"
-        private const val EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER"
     }
 
     private fun initButtons() {
