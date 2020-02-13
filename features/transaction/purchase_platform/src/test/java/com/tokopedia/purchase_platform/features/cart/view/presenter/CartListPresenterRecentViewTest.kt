@@ -112,9 +112,7 @@ object CartListPresenterRecentViewTest : Spek({
 
             val response = GqlRecentViewResponse().apply {
                 gqlRecentView = GqlRecentView().apply {
-                    recentViewList = mutableListOf<RecentView>().apply {
-                        add(RecentView())
-                    }
+                    recentViewList = mutableListOf()
                 }
             }
 
@@ -128,6 +126,12 @@ object CartListPresenterRecentViewTest : Spek({
 
             When("process get recent view") {
                 cartListPresenter.processGetRecentViewData()
+            }
+
+            Then("should not render recent view") {
+                verify(inverse = true) {
+                    view.renderRecentView(response.gqlRecentView?.recentViewList)
+                }
             }
 
             Then("should try to stop firebase performance tracker") {

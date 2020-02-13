@@ -23,10 +23,10 @@ class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<Gql
     override fun onNext(response: GqlRecentViewResponse?) {
         view?.let {
             if (response?.gqlRecentView?.recentViewList?.size ?: 0 > 0) {
-                view.renderRecentView(response?.gqlRecentView?.recentViewList)
+                it.renderRecentView(response?.gqlRecentView?.recentViewList)
             }
-            view.setHasTriedToLoadRecentView()
-            view.stopAllCartPerformanceTrace()
+            it.setHasTriedToLoadRecentView()
+            it.stopAllCartPerformanceTrace()
         }
     }
 

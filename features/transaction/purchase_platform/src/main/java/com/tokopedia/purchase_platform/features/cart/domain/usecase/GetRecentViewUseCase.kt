@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -15,7 +16,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 21/09/18.
  */
 
-class GetRecentViewUseCase @Inject constructor() : UseCase<GqlRecentViewResponse>() {
+class GetRecentViewUseCase @Inject constructor(val schedulers: ExecutorSchedulers) : UseCase<GqlRecentViewResponse>() {
 
     override fun createObservable(params: RequestParams): Observable<GqlRecentViewResponse> {
         val variables = HashMap<String, Any>()
@@ -29,8 +30,8 @@ class GetRecentViewUseCase @Inject constructor() : UseCase<GqlRecentViewResponse
                 .map {
                     it.getData<GqlRecentViewResponse>(GqlRecentViewResponse::class.java)
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
     }
 
     companion object {

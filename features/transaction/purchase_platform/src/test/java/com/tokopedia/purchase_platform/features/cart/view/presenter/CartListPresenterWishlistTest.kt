@@ -120,6 +120,12 @@ object CartListPresenterWishlistTest : Spek({
                 cartListPresenter.processGetWishlistData()
             }
 
+            Then("should not render wishlist") {
+                verify(inverse = true) {
+                    view.renderWishlist(response.gqlWishList?.wishlistDataList)
+                }
+            }
+
             Then("should try to stop firebase performance tracker") {
                 verify {
                     view.setHasTriedToLoadWishList()

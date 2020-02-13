@@ -105,7 +105,7 @@ object CartListPresenterClickRecentViewAnalyticsTest : Spek({
                 Assert.assertEquals(1, productList.size)
             }
 
-            Then("key `list` value should be `cart`") {
+            Then("key `list` value should be `empty cart`") {
                 val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
                 val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
                 Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
