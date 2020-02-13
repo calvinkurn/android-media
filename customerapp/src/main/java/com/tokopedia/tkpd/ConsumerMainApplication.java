@@ -548,9 +548,4 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
-
-    @Override
-    public void onNewIntent(Context context, Intent intent) {
-        NFCSubscriber.onNewIntent(context, intent);
-    }
 }
