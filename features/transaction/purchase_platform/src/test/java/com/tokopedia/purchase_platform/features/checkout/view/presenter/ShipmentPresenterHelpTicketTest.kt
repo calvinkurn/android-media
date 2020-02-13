@@ -1,7 +1,9 @@
 package com.tokopedia.purchase_platform.features.checkout.view.presenter
 
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase
@@ -51,9 +53,11 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val changeShippingAddressUseCase: ChangeShippingAddressUseCase = mockk()
     val saveShipmentStateUseCase: SaveShipmentStateUseCase = mockk()
     val codCheckoutUseCase: CodCheckoutUseCase = mockk()
-    val getCourierRecommendationUseCase: GetCourierRecommendationUseCase = mockk()
+    val getRatesUseCase: GetRatesUseCase = mockk()
+    val getRatesApiUseCase: GetRatesApiUseCase = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
     val submitHelpTicketUseCase: SubmitHelpTicketUseCase = mockk()
+    val ratesStatesConverter: RatesResponseStateConverter = mockk()
     val shippingCourierConverter: ShippingCourierConverter = mockk()
     val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     val analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection = mockk(relaxed = true)
@@ -79,10 +83,11 @@ object ShipmentPresenterHelpTicketTest : Spek({
                     checkoutUseCase, getShipmentAddressFormUseCase,
                     getShipmentAddressFormOneClickShipementUseCase,
                     editAddressUseCase, changeShippingAddressUseCase,
-                    saveShipmentStateUseCase, getCourierRecommendationUseCase,
-                    codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
-                    shipmentAnalyticsActionListener, userSessionInterface,
-                    analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase)
+                    saveShipmentStateUseCase, getRatesUseCase, getRatesApiUseCase,
+                    codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
+                    ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
+                    userSessionInterface, analyticsPurchaseProtection, codAnalytics,
+                    checkoutAnalytics, getInsuranceCartUseCase)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }
