@@ -128,6 +128,12 @@ object CartListPresenterRecommendationTest : Spek({
                 cartListPresenter.processGetRecommendationData(1, emptyList())
             }
 
+            Then("should not render recommendation") {
+                verify(inverse = true) {
+                    view.renderRecommendation(response[0])
+                }
+            }
+
             Then("should try to stop firebase performance tracker") {
                 verify {
                     view.setHasTriedToLoadRecommendation()

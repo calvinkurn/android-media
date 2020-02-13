@@ -162,7 +162,7 @@ object CartListPresenterLocalDataChangeTest : Spek({
                 result = cartListPresenter.dataHasChanged()
             }
 
-            Then("data should be changed") {
+            Then("data should not be changed") {
                 Assert.assertFalse(result)
             }
 
