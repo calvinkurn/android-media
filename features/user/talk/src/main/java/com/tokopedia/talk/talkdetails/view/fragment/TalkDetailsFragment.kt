@@ -155,7 +155,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         sendMessageEditText = view.findViewById(R.id.new_comment)
         sendMessageButton = view.findViewById(R.id.send_but)
         sendMessageButton.setOnClickListener {
-            analytics.trackSendCommentTalk(source)
+            analytics.trackSendCommentTalk(source, talkId, attachedProductListAdapter.data.firstOrNull()?.productId.toString())
             KeyboardHandler.DropKeyboard(context, view)
             if (userSession.isLoggedIn) {
                 presenter.sendComment(talkId,

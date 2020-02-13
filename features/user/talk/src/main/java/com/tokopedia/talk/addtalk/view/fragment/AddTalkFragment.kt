@@ -132,6 +132,7 @@ class AddTalkFragment : BaseDaggerFragment(),
     override fun onSuccessCreateTalk(productId: String) {
         send_progress.visibility = View.GONE
         activity?.run {
+            analytics.trackClickSendNewTalk(productId)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
