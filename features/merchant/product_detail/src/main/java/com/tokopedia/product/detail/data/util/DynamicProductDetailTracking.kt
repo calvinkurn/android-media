@@ -47,7 +47,7 @@ object DynamicProductDetailTracking {
 
         fun eventCategoryClicked(categoryId: String, categoryName: String, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_CATEGORY,
                     "$categoryId - $categoryName")
@@ -58,7 +58,7 @@ object DynamicProductDetailTracking {
 
         fun eventEtalaseClicked(etalaseId: String, etalaseName: String, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_ETALASE,
                     "$etalaseId - $etalaseName")
@@ -324,7 +324,7 @@ object DynamicProductDetailTracking {
                     productInfo?.basic?.productID
             )
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.ADD_WISHLIST_NON_LOGIN)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.REMOVE_WISHLIST)
         }
 
         fun eventPDPAddToWishlistNonLogin(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
@@ -340,8 +340,17 @@ object DynamicProductDetailTracking {
 
         }
 
+        fun eventButtonChatShopClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_PAGE_CHAT,
+                    productInfo?.basic?.productID ?: "")
 
-        fun eventButtonChatClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel? = null) {
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_BUTTON_CHAT)
+        }
+
+        fun eventButtonChatClicked(productInfo: DynamicProductInfoP1?) {
             if (productInfo?.basic?.productID?.isEmpty() == true) return
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
@@ -349,7 +358,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_BUTTON_CHAT,
                     productInfo?.basic?.productID ?: "")
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_BUTTON_CHAT)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_BUTTON_CHAT)
         }
 
         fun eventShippingRateEstimationClicked(postalCode: String, districtName: String, productInfo: DynamicProductInfoP1?,
@@ -660,8 +669,8 @@ object DynamicProductDetailTracking {
             ))))
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
                     ?: ""
-            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition}"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
 
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }

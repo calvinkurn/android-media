@@ -342,7 +342,7 @@ class NormalCheckoutTracking {
     private fun addComponentTracker(mapEvent: MutableMap<String, Any>,
                                     productInfo: ProductInfo?, layoutName: String) {
         mapEvent[KEY_PRODUCT_ID] = productInfo?.basic?.id.toString()
-        mapEvent["layout"] = "layout:${layoutName};catName:${productInfo?.category?.name};catId:${productInfo?.category?.id}"
+        mapEvent["layout"] = "layout:${layoutName};catName:${productInfo?.category?.name};catId:${productInfo?.category?.id};"
         mapEvent["component"] = ""
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)

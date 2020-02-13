@@ -608,7 +608,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private val onViewClickListener = View.OnClickListener {
         when (it.id) {
-            R.id.btn_topchat -> onShopChatClicked()
+            R.id.btn_topchat -> {
+                DynamicProductDetailTracking.Click.eventButtonChatClicked(viewModel.getDynamicProductInfoP1)
+                onShopChatClicked()
+            }
             R.id.btn_apply_leasing -> onApplyLeasingClicked()
             else -> {
             }
@@ -642,7 +645,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel) {
         when (itemId) {
             R.id.btn_favorite -> onShopFavoriteClick()
-            R.id.send_msg_shop -> onShopChatClicked(componentTrackDataModel)
+            R.id.send_msg_shop -> {
+                DynamicProductDetailTracking.Click.eventButtonChatShopClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                onShopChatClicked()
+            }
             R.id.shop_ava, R.id.shop_name -> gotoShopDetail(componentTrackDataModel)
             else -> {
 
@@ -1710,9 +1716,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
-
-        productDetailTracking.eventClickPDPInstallmentSeeMore(productId)
-
         val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
 
         val productInfo = viewModel.getDynamicProductInfoP1
@@ -2083,7 +2086,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         dynamicAdapter.notifyShopInfo(pdpHashMapUtil?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
     }
 
-    private fun onShopChatClicked(componentTrackDataModel: ComponentTrackDataModel? = null) {
+    private fun onShopChatClicked() {
         val shop = viewModel.shopInfo ?: return
         val product = viewModel.getDynamicProductInfoP1 ?: return
         activity?.let {
@@ -2099,7 +2102,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
-        DynamicProductDetailTracking.Click.eventButtonChatClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
     }
 
 
