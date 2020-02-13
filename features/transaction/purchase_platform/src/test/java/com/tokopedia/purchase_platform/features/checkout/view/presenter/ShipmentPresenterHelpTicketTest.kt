@@ -87,13 +87,12 @@ object ShipmentPresenterHelpTicketTest : Spek({
                     codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
                     userSessionInterface, analyticsPurchaseProtection, codAnalytics,
-                    checkoutAnalytics, getInsuranceCartUseCase)
+                    checkoutAnalytics, getInsuranceCartUseCase, shipmentDataConverter)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }
 
         beforeEachTest {
-            every { view.shipmentDataConverter } returns shipmentDataConverter
             presenter.attachView(view)
         }
 
