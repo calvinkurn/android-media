@@ -23,6 +23,8 @@ class StickyHeaderItemDecoration : RecyclerView.ItemDecoration() {
 
     private fun drawHeader(canvas: Canvas, header: View, paddingTop: Int) {
         canvas.save()
-//        canvas.translate()
+        canvas.translate(0f, paddingTop.toFloat())
+        header.draw(canvas)
+        canvas.restore()
     }
 }

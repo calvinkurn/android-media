@@ -25,7 +25,7 @@
 
             <ImageView
                 android:id="@+id/iv_brand_logo"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_33"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_10"
@@ -38,7 +38,7 @@
 
             <ImageView
                 android:id="@+id/iv_brand_image"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_66"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_11"
@@ -57,7 +57,11 @@
         android:id="@+id/tv_brand_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:gravity="center"
         android:lineSpacingExtra="6sp"
         android:textColor="#f531353b"
         android:textSize="12sp"

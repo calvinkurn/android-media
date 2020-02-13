@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16">
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_header"
@@ -30,20 +31,10 @@
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/charcoal_grey_68"
         android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_all_brand"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="12dp"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_header" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

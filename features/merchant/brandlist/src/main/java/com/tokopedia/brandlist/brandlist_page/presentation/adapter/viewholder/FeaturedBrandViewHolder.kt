@@ -52,7 +52,7 @@ class FeaturedBrandViewHolder(itemView: View?) : AbstractViewHolder<FeaturedBran
         if (featuredBrandList.size <= INITIAL_AMOUNT) {
             expandButtonView?.hide()
         } else {
-            expandButtonView?.text = element?.header?.ctaText
+            expandButtonView?.text = getString(R.string.brandlist_action_expand_all)
             expandButtonView?.setOnClickListener(createExpandButtonOnClickListener())
         }
     }

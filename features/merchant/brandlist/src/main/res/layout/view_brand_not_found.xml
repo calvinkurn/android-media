@@ -1,50 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/layout_lvl1"
+    android:id="@+id/brand_not_found_layout">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/layout_lvl1"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dp_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/img_brand_not_found"
-            android:src="@drawable/ic_icon_toped_announce"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_100" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/layout_lvl1">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
+            <ImageView
+                android:id="@+id/img_brand_not_found"
+                android:layout_width="@dimen/layout_lvl8"
+                android:layout_height="@dimen/layout_lvl8"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_header"
                 android:text="@string/title_brand_not_found"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:textColor="@color/defaultText"
                 android:lineSpacingExtra="@dimen/sp_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/layout_lvl1"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:lines="1"
+                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:layout_marginStart="@dimen/layout_lvl1"
+                app:typographyType="heading_4"
+                app:layout_constraintStart_toEndOf="@id/img_brand_not_found"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_subtitle"
                 android:text="@string/subtitle_brand_not_found"
                 android:textSize="@dimen/sp_10"
                 android:textColor="@color/charcoal_grey_68"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/layout_lvl1"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:lines="2"
+                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:layout_marginStart="@dimen/layout_lvl1"
+                app:typographyType="body_3"
+                app:layout_constraintStart_toEndOf="@+id/img_brand_not_found"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_header"/>
 
-    </LinearLayout>
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_check_balance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/button_brand_not_found"
+                android:padding="@dimen/layout_lvl1"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl2"
+                app:unifyButtonSize="small"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_subtitle"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_check_balance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:unifyButtonSize="small"
-        android:text="Ganti Kata Kunci"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

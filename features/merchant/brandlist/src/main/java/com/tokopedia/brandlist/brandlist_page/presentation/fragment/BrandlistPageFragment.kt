@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -22,10 +22,7 @@ import com.tokopedia.brandlist.brandlist_page.di.BrandlistPageModule
 import com.tokopedia.brandlist.brandlist_page.di.DaggerBrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -40,6 +37,7 @@ class BrandlistPageFragment :
         HasComponent<BrandlistPageComponent> {
 
     companion object {
+        const val ALL_BRAND_GRID_SPAN_COUNT = 3
         const val KEY_CATEGORY = "BRAND_LIST_CATEGORY"
         @JvmStatic
         fun newInstance(bundle: Bundle?) = BrandlistPageFragment().apply { arguments = bundle }
@@ -53,7 +51,7 @@ class BrandlistPageFragment :
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
-    private var layoutManager: LinearLayoutManager? = null
+    private var layoutManager: GridLayoutManager? = null
     private var category: Category? = null
     private var adapter: BrandlistPageAdapter? = null
     private var isInitialDataLoaded: Boolean = false
@@ -80,14 +78,20 @@ class BrandlistPageFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         val rootView = inflater.inflate(R.layout.fragment_brandlist_page, container, false)
+
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout)
+
         recyclerView = rootView.findViewById(R.id.recycler_view)
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = GridLayoutManager(context, ALL_BRAND_GRID_SPAN_COUNT)
         recyclerView?.layoutManager = layoutManager
+
         val adapterTypeFactory = BrandlistPageAdapterTypeFactory()
         adapter = BrandlistPageAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
+        layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
+
         recyclerView?.addOnScrollListener(endlessScrollListener)
         return rootView
     }
@@ -153,13 +157,19 @@ class BrandlistPageFragment :
 
     private fun createOnRefreshListener(): SwipeRefreshLayout.OnRefreshListener {
         return SwipeRefreshLayout.OnRefreshListener {
+
             adapter?.getVisitables()?.removeAll {
                 it is FeaturedBrandViewModel
                         || it is PopularBrandViewModel
                         || it is NewBrandViewModel
+                        || it is AllBrandHeaderViewModel
                         || it is AllBrandViewModel
             }
+
             adapter?.notifyDataSetChanged()
+
+            adapter?.initAdapter()
+
             category?.let { loadData(it, userSession.userId, true) }
         }
     }
@@ -221,7 +231,10 @@ class BrandlistPageFragment :
         viewModel.getAllBrandResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    adapter?.hideLoading()
                     swipeRefreshLayout?.isRefreshing = false
+                    endlessScrollListener.updateStateAfterGetData()
+                    BrandlistPageMapper.mappingAllBrandHeader(getString(R.string.brandlist_all_brand), it.data.totalBrands, adapter)
                     BrandlistPageMapper.mappingAllBrand(it.data, adapter)
                 }
                 is Fail -> {

@@ -1,5 +1,5 @@
-{
-  OfficialStoreBrandsRecommendation(userID:640,device:1,widgetName:"NEW",categoryIDs:"0") {
+query OfficialStoreBrandsRecommendation($userID: Int!, $device: Int!, $widgetName: String!, $categoryIds: String!) {
+  OfficialStoreBrandsRecommendation(userID: $userID, device: $device, widgetName: $widgetName, categoryIDs: $categoryIds) {
     totalShops
     shops {
       id
