@@ -47,7 +47,8 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private lateinit var buttonContinue: UnifyButton
     private lateinit var textFieldPhone: TextFieldUnify
     private lateinit var errorMessage: Typography
-    private lateinit var phone: String
+
+    private var phone: String = ""
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -80,6 +81,18 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     override fun onStart() {
         super.onStart()
         shopCreationAnalytics.trackScreen(screenName)
+        textFieldPhone.textFieldInput.let {
+            it.isFocusableInTouchMode = true
+            it.isFocusable = true
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        textFieldPhone.textFieldInput.let {
+            it.isFocusableInTouchMode = false
+            it.isFocusable = false
+        }
     }
 
     override fun getToolbar(): Toolbar = toolbarShopCreation
@@ -149,7 +162,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initView() {
-
         textFieldPhone.textFieldInput.addTextChangedListener(object : PhoneNumberTextWatcher(textFieldPhone.textFieldInput) {
             override fun onTextChanged(s: CharSequence, cursorPosition: Int, before: Int, count: Int) {
                 super.onTextChanged(s, cursorPosition, before, count)

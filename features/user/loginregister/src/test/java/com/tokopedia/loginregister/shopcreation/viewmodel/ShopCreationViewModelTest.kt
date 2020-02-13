@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.shopcreation.viewmodel
 import androidx.lifecycle.Observer
 import com.tokopedia.loginregister.InstantRunExecutorSpek
 import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
 import com.tokopedia.profilecommon.domain.pojo.UserProfileUpdate
 import com.tokopedia.profilecommon.domain.usecase.*
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -31,10 +32,11 @@ object ShopCreationViewModelTest : Spek({
         val registerCheckUseCase = mockk<RegisterCheckUseCase>(relaxed = true)
         val getUserProfileCompletionUseCase = mockk<GetUserProfileCompletionUseCase>(relaxed = true)
         val validateUserProfileUseCase = mockk<ValidateUserProfileUseCase>(relaxed = true)
-        val updateUserProfileUseCase =  mockk<UpdateUserProfileUseCase>(relaxed = true)
-        val getProfileUseCase =  mockk<GetProfileUseCase>(relaxed = true)
-        val userSession =  mockk<UserSessionInterface>(relaxed = true)
-        val dispatcher =  Dispatchers.Unconfined
+        val updateUserProfileUseCase = mockk<UpdateUserProfileUseCase>(relaxed = true)
+        val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
+        val shopInfoUseCase = mockk<ShopInfoUseCase>(relaxed = true)
+        val userSession = mockk<UserSessionInterface>(relaxed = true)
+        val dispatcher = Dispatchers.Unconfined
 
         val shopCreationViewModel = ShopCreationViewModel(
                 registerUseCase,
@@ -43,6 +45,7 @@ object ShopCreationViewModelTest : Spek({
                 validateUserProfileUseCase,
                 updateUserProfileUseCase,
                 getProfileUseCase,
+                shopInfoUseCase,
                 userSession,
                 dispatcher
         )
@@ -52,16 +55,16 @@ object ShopCreationViewModelTest : Spek({
             val userProfileUpdate = UserProfileUpdate()
             val observer = mockk<Observer<Result<UserProfileUpdate>>>(relaxed = true)
 
-            Given("") {
+            Given("usecase on success properly") {
                 coEvery { updateUserProfileUseCase.getData(any()) } returns Success(userProfileUpdate)
             }
 
-            When("") {
+            When("add name") {
                 shopCreationViewModel.addNameResponse.observeForever(observer)
                 shopCreationViewModel.addName(String())
             }
 
-            Then("") {
+            Then("it should return user profile update correctly") {
                 verify { observer.onChanged(Success(userProfileUpdate)) }
             }
         }

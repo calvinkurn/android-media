@@ -96,8 +96,8 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_input_shop, container, false)
         txtTermsAndConditions = view.findViewById(R.id.txt_shop_open_revamp_tnc)
-        txtInputShopName = view.findViewById(R.id.text_input_shop_open_revamp_shop_name)    // TextFieldUnify
-        txtInputDomainName = view.findViewById(R.id.text_input_shop_open_revamp_domain_name)    // TextFieldUnify
+        txtInputShopName = view.findViewById(R.id.text_input_shop_open_revamp_shop_name)
+        txtInputDomainName = view.findViewById(R.id.text_input_shop_open_revamp_domain_name)
         btnBack = view.findViewById(R.id.btn_back_input_shop)
         btnShopRegistration = view.findViewById(R.id.shop_registration_button)
         recyclerView = view.findViewById(R.id.recycler_view_shop_suggestions)
@@ -115,6 +115,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     isValidShopName = false
                     txtInputShopName.setError(true)
                     txtInputShopName.setMessage(getString(R.string.open_shop_revamp_error_shop_name_too_short))
+                    shopNameValue = s.toString()
                     btnShopRegistration.isEnabled = false
                 } else if (s.toString().length >= MIN_SHOP_NAME_LENGTH && s.isNotEmpty()) {
                     txtInputShopName.setError(false)
@@ -134,6 +135,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 if (domainInputStr.length < MIN_SHOP_NAME_LENGTH) {
                     isValidDomainName = false
                     txtInputDomainName.setError(true)
+                    domainNameValue = domainInputStr.toString()
                     txtInputDomainName.setMessage(getString(R.string.open_shop_revamp_error_domain_too_short))
                 } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MIN_SHOP_NAME_LENGTH) {
                     txtInputDomainName.setMessage("")
@@ -241,6 +243,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                         isValidShopName = true
                         viewModel.getDomainShopNameSuggestions(shopNameValue)
                         txtInputShopName.setError(false)
+                        btnShopRegistration.isEnabled = true
                         txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
                     }
                 }
@@ -257,9 +260,20 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     val isSuccess = true
-                    userSession.shopId = it.data.createShop.createdId
-                    fragmentNavigationInterface.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
-                    shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
+                    val _shopId = it.data.createShop.createdId
+                    val _isSuccess = it.data.createShop.success
+                    val _message = it.data.createShop.message
+                    if (_shopId.isNotEmpty() && _isSuccess) {
+                        userSession.shopId = _shopId
+                        fragmentNavigationInterface.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
+                        shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
+                    } else {
+                        if (_message.isNotEmpty()) {
+                            showErrorResponse(_message)
+                        } else {
+                            showErrorResponse(getString(R.string.open_shop_revamp_error_retry))
+                        }
+                    }
                 }
                 is Fail -> {
                     val isSuccess = false
@@ -316,6 +330,12 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     ErrorHandler.getErrorMessage(context, t),
                     Snackbar.LENGTH_LONG
             )
+        }
+    }
+
+    private fun showErrorResponse(message: String) {
+        view?.let {
+            Toaster.showError(it, message, Snackbar.LENGTH_LONG)
         }
     }
 
