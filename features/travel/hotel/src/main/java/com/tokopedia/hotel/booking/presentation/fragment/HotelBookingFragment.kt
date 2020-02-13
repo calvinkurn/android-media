@@ -384,7 +384,6 @@ class HotelBookingFragment : HotelBaseFragment() {
             navigateToAddEmailPage()
         }
 
-
         // Check if contact data is empty
         if (hotelBookingPageModel.contactData.isEmpty() || hotelBookingPageModel.contactData.email.isEmpty()) {
             val initContactData = cart.contact
