@@ -46,6 +46,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -71,6 +72,7 @@ open class HomePresenter (
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
     protected var subscription: Subscription? = Subscriptions.empty()
     private val masterJob = SupervisorJob()
+    private var homeJobService: Job? = null
 
 
     @Inject
@@ -209,7 +211,8 @@ open class HomePresenter (
     }
 
     override fun refreshHomeData() {
-        launchCatchError(coroutineContext, block = {
+        if(homeJobService?.isActive == true) return
+        homeJobService = launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
             _updateNetworkLiveData.value = resource
         }){
