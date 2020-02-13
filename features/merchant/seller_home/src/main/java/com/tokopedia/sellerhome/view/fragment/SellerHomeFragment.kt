@@ -113,7 +113,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
             }
         }
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
         recyclerView.layoutManager = gridLayoutManager
 
         swipeRefreshLayout.setOnRefreshListener {
@@ -331,23 +330,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
 
             val adapter = TickerPagerAdapter(activity, tickersData)
-            adapter.setDescriptionClickEvent(object : TickerCallback {
+            adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    println("tickerView : onPageDescriptionViewClick")
+                }
+            })
+            addPagerView(adapter, tickersData)
+
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    println("onDescriptionViewClick : $linkUrl")
+                    println("tickerView : click")
                 }
 
                 override fun onDismiss() {
-                    println("onDismiss ")
+                    println("tickerView : onDismiss")
                 }
 
             })
-            adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    println("onPageDescriptionViewClick: $linkUrl, ${itemData?.toJson}")
-                }
-            })
-
-            addPagerView(adapter, tickersData)
         }
     }
 }

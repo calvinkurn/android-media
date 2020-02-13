@@ -53,16 +53,20 @@ class PostListViewHolder(
     }
 
     private fun onError(cardTitle: String) {
-        showErrorState(cardTitle)
+        hideListLayout()
+        hideShimmeringLayout()
+        with(itemView) {
+            tvPostListTitleOnError.text = cardTitle
+            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            showErrorLayout()
+        }
     }
 
     private fun onSuccessLoadData(postListWidgetUiModel: PostListWidgetUiModel) {
-        with(postListWidgetUiModel) {
-            if (data?.items.isNullOrEmpty()) {
-                listener.removeWidget(adapterPosition, postListWidgetUiModel)
-            } else {
-                showSuccessState(postListWidgetUiModel)
-            }
+        if (postListWidgetUiModel.data?.items.isNullOrEmpty()) {
+            listener.removeWidget(adapterPosition, postListWidgetUiModel)
+        } else {
+            showSuccessState(postListWidgetUiModel)
         }
     }
 
@@ -70,16 +74,6 @@ class PostListViewHolder(
         hideErrorLayout()
         hideListLayout()
         showShimmeringLayout()
-    }
-
-    private fun showErrorState(cardTitle: String) {
-        hideListLayout()
-        hideShimmeringLayout()
-        with(itemView) {
-            tvPostListTitleOnError.text = cardTitle
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
-            sahPostListOnErrorLayout.visible()
-        }
     }
 
     private fun showSuccessState(element: PostListWidgetUiModel) {
@@ -120,6 +114,10 @@ class PostListViewHolder(
 
     private fun hideErrorLayout() {
         itemView.sahPostListOnErrorLayout.gone()
+    }
+
+    private fun showErrorLayout() {
+        itemView.sahPostListOnErrorLayout.visible()
     }
 
     private fun setupTooltip(tooltip: TooltipUiModel?) = with(itemView) {

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.domain.mapper
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.domain.model.CarouselDataModel
 import com.tokopedia.sellerhome.domain.model.CarouselItemModel
 import com.tokopedia.sellerhome.view.model.CarouselDataUiModel
@@ -16,7 +17,7 @@ class CarouselMapper @Inject constructor() {
         return list.map {
             CarouselDataUiModel(
                     dataKey = it.dataKey,
-                    data = it.items.map { item ->
+                    items = it.items.map { item ->
                         mapItemRemoteModelToItemUiModel(item)
                     },
                     error = it.errorMsg
@@ -29,7 +30,8 @@ class CarouselMapper @Inject constructor() {
                 id = item.id,
                 url = item.url,
                 appLink = item.appLink,
-                featuredMediaURL = item.mediaUrl
+                featuredMediaURL = item.mediaUrl,
+                impressHolder = ImpressHolder()
         )
     }
 }
