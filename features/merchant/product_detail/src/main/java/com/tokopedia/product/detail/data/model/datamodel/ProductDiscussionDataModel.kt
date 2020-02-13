@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
@@ -12,7 +13,8 @@ data class ProductDiscussionDataModel(
         var latestTalk: Talk? = null,
         var talkCount: Int = 0,
         var shopId: String = ""
-) : DynamicPdpDataModel {
+) : DynamicPdpDataModel , ImpressHolder(){
+
     override fun name(): String = name
 
     override fun type(): String = type

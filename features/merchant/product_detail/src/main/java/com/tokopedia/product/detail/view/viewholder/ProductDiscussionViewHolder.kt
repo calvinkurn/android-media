@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.LabelUtils
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -26,6 +27,9 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
     override fun bind(element: ProductDiscussionDataModel) {
         element.latestTalk?.let {
             renderData(it, element.shopId.toInt(), element.talkCount, getComponentTrackData(element))
+            view.addOnImpressionListener(element) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
         }
     }
 

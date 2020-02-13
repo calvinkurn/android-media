@@ -98,4 +98,9 @@ interface DynamicProductDetailListener {
     fun onRetryClicked(forceRefresh:Boolean)
     fun goToHomePageClicked()
     fun goToWebView(url: String)
+
+    /**
+     * ImpressionComponent
+     */
+    fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
 }

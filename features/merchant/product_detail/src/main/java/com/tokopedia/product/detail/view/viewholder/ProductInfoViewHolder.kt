@@ -5,6 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -34,8 +35,11 @@ class ProductInfoViewHolder(private val view: View,
                 val topData = data.find { it.row == "top" } ?: return@apply
 
                 adapter = ProductInfoAdapter(listener, topData.listOfContent, getComponentTrackData(element))
-
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+                view.addOnImpressionListener(element) {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
             }
 
             val bottomData = data.find { it.row == "bottom" } ?: return
@@ -100,6 +104,6 @@ class ProductInfoViewHolder(private val view: View,
 
     private fun getComponentTrackData(element: ProductInfoDataModel?) = ComponentTrackDataModel(element?.type
             ?: "",
-            element?.name ?: "", adapterPosition)
+            element?.name ?: "", adapterPosition + 1)
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -23,6 +24,11 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
             element?.shouldRenderInitialData = false
             view.loading_voucher.show()
             element?.let {
+
+                view.addOnImpressionListener(element) {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
+
                 view.loading_voucher.hide()
                 view.merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
                     override val isOwner: Boolean
@@ -49,5 +55,5 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
 
     private fun getComponentTrackData(element: ProductMerchantVoucherDataModel?) = ComponentTrackDataModel(element?.type
             ?: "",
-            element?.name ?: "", adapterPosition)
+            element?.name ?: "", adapterPosition + 1)
 }

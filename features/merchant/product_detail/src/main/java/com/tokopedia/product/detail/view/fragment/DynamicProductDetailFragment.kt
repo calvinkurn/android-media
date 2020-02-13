@@ -630,6 +630,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     /**
+     * ImpressionComponent
+     */
+    override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Impression.eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1)
+    }
+
+    /**
      * ProductShopInfoViewHolder
      */
     override fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel) {
@@ -981,7 +988,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onLastDiscussionClicked(talkId: String, componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventLastDicussionClicked(talkId, componentTrackDataModel ?: ComponentTrackDataModel(), viewModel.getDynamicProductInfoP1)
+        DynamicProductDetailTracking.Click.eventLastDicussionClicked(talkId, componentTrackDataModel
+                ?: ComponentTrackDataModel(), viewModel.getDynamicProductInfoP1)
         disscussionClicked()
     }
 

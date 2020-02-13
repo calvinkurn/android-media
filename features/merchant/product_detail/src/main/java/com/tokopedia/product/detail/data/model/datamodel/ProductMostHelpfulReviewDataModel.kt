@@ -4,6 +4,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ProductMostHelpfulReviewDataModel(
         val type: String = "",
@@ -11,7 +12,7 @@ data class ProductMostHelpfulReviewDataModel(
         var listOfReviews: List<Review> = listOf(),
         var imageReviews: List<ImageReviewItem>? = null,
         var rating: Rating? = null
-) : DynamicPdpDataModel {
+) : DynamicPdpDataModel, ImpressHolder() {
     override fun name(): String = name
 
     override fun type(): String = type

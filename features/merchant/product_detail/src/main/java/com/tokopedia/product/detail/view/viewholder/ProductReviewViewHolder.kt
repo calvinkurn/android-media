@@ -8,10 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -44,6 +41,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         element?.let {
+            view.addOnImpressionListener(element) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
+
             renderMostHelpfulReview(it.listOfReviews, getComponentTrackData(element))
         }
 
@@ -80,7 +81,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
-            ComponentTrackDataModel(data.type, data.name, adapterPosition)
+            ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
 
     private fun renderMostHelpfulReview(reviews: List<Review>, componentTrackDataModel: ComponentTrackDataModel) {
         with(view) {

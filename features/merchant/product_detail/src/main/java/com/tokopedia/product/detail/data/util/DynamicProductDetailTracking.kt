@@ -631,6 +631,41 @@ object DynamicProductDetailTracking {
     }
 
     object Impression {
+
+        fun eventEcommerceDynamicComponent(trackingQueue: TrackingQueue?, componentTrackDataModel: ComponentTrackDataModel, productInfo: DynamicProductInfoP1?) {
+            val productId = productInfo?.basic?.productID ?: ""
+            val listOfCategoryId = productInfo?.basic?.category?.detail
+            val categoryId = productInfo?.basic?.category?.id.orEmpty()
+            val categoryString = "${listOfCategoryId?.get(0)?.id.orEmpty()} / ${listOfCategoryId?.get(1)?.id.orEmpty()} / ${listOfCategoryId?.get(2)?.id.orEmpty()} / $categoryId "
+
+            val mapEvent = DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_ACTION, "impression - modular component",
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "",
+                    "categoryId", "productId : $productId",
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                    "promotions", DataLayer.listOf(
+                    DataLayer.mapOf(
+                            "id", "",
+                            "name", "product detail page - $productId",
+                            "creative", "layout:${productInfo?.layoutName};comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};",
+                            "creative_url", "",
+                            "position", componentTrackDataModel.adapterPosition,
+                            "category", categoryString,
+                            "promo_id", "",
+                            "promo_code", ""
+                    )
+            ))))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
+                    ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition}"
+
+            trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
+        }
+
         fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: DynamicProductInfoP1?,
                                                shopInfo: ShopInfo?, trackerAttribution: String?,
                                                isTradeIn: Boolean, isDiagnosed: Boolean,
@@ -709,7 +744,7 @@ object DynamicProductDetailTracking {
             )
         }
 
-        fun eventRecommendationImpression(trackingQueue: TrackingQueue, position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String,
+        fun eventRecommendationImpression(trackingQueue: TrackingQueue?, position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String,
                                           productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val listValue = ProductTrackingConstant.Tracking.LIST_DEFAULT + pageName +
                     (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
@@ -740,7 +775,7 @@ object DynamicProductDetailTracking {
                     )
             ))
             )
-            trackingQueue.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
+            trackingQueue?.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
         }
 
 

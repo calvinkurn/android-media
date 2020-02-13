@@ -5,10 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -34,6 +31,12 @@ class ProductRecommendationViewHolder(private val view: View,
         view.visible()
         view.loadingRecom.visible()
         element.recomWidgetData?.run {
+            view.addOnImpressionListener(element, object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
+            })
+
             view.loadingRecom.gone()
             view.titleRecom.text = title
             view.rvProductRecom.show()
@@ -45,7 +48,7 @@ class ProductRecommendationViewHolder(private val view: View,
             view.seeMoreRecom.setOnClickListener {
                 listener.onSeeAllRecomClicked(pageName, seeMoreAppLink)
             }
-            initAdapter(this, element.cardModel, ComponentTrackDataModel(element.type,element.name,adapterPosition))
+            initAdapter(this, element.cardModel, getComponentTrackData(element))
         }
     }
 
@@ -96,6 +99,9 @@ class ProductRecommendationViewHolder(private val view: View,
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf())
     }
+
+    private fun getComponentTrackData(element: ProductRecommendationDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "", element?.name ?: "", adapterPosition + 1)
 
     override fun onViewRecycled() {
         listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())

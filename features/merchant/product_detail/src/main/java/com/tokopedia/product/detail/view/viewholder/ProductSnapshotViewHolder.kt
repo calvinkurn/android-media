@@ -4,6 +4,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -30,6 +32,12 @@ class ProductSnapshotViewHolder(private val view: View,
         }
 
         element.dynamicProductInfoP1?.let {
+            itemView.addOnImpressionListener(element, object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
+            })
+
             header.renderData(it)
             header.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
             element.nearestWarehouse?.let { nearestWarehouse ->
@@ -130,6 +138,6 @@ class ProductSnapshotViewHolder(private val view: View,
     }
 
     private fun getComponentTrackData(element: ProductSnapshotDataModel?) = ComponentTrackDataModel(element?.type
-            ?: "", element?.name ?: "", adapterPosition)
+            ?: "", element?.name ?: "", adapterPosition + 1)
 
 }

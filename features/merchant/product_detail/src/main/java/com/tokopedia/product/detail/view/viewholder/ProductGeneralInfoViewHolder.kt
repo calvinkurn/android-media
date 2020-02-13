@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -27,6 +28,11 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         }
 
         element.data.run {
+
+            view.addOnImpressionListener(element) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
+
             view.rv_general_info.adapter = ProductGeneralItemAdapter(this, element.name, listener, element.type, element.name, adapterPosition)
 
             if (element.isApplink) {
@@ -39,7 +45,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
         view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
         view.setOnClickListener {
-            listener.onInfoClicked(element.name, ComponentTrackDataModel(element.type, element.name, adapterPosition))
+            listener.onInfoClicked(element.name, getComponentTrackData(element))
         }
 
         if (element.parentIcon.isNotEmpty()) {
@@ -65,4 +71,8 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         view.descShimmering.show()
     }
 
+
+    private fun getComponentTrackData(element: ProductGeneralInfoDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "",
+            element?.name ?: "", adapterPosition + 1)
 }

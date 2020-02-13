@@ -5,6 +5,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ProductSnapshotDataModel(
         var type: String = "",
@@ -25,7 +26,7 @@ data class ProductSnapshotDataModel(
         var statusMessage: String = "",
         var shopStatus: Int = SHOP_STATUS_ACTIVE,
         var screenHeight: Int = 0
-) : DynamicPdpDataModel {
+) : DynamicPdpDataModel, ImpressHolder() {
     override fun name(): String = name
     override fun type(): String = type
 

@@ -1,10 +1,11 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ProductOpenShopDataModel(
         val title: String = ""
-) : DynamicPdpDataModel {
+) : DynamicPdpDataModel, ImpressHolder() {
     override fun type(): String = ""
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

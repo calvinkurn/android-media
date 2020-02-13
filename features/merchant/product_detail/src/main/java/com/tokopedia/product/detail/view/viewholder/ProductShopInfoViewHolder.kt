@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -25,9 +26,14 @@ class ProductShopInfoViewHolder(private val view: View, private val listener: Dy
     override fun bind(element: ProductShopInfoDataModel) {
 
         if (element.shopInfo != null) {
+
+            view.addOnImpressionListener(element) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
+
             hideLoading()
             shopInfoView.renderShop(element.shopInfo
-                    ?: ShopInfo(), listener.isOwner(), ComponentTrackDataModel(element.type, element.name, adapterPosition))
+                    ?: ShopInfo(), listener.isOwner(), ComponentTrackDataModel(element.type, element.name, adapterPosition + 1))
         } else {
             showLoading()
         }
@@ -65,4 +71,8 @@ class ProductShopInfoViewHolder(private val view: View, private val listener: Dy
         view.pdp_shimmering_shop_info.hide()
         view.pdp_shop_info_container.show()
     }
+
+    private fun getComponentTrackData(element: ProductShopInfoDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "",
+            element?.name ?: "", adapterPosition + 1)
 }
