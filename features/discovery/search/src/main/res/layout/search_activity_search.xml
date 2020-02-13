@@ -188,8 +188,7 @@
         android:background="@drawable/search_background_search_navigation"
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:orientation="horizontal">
+        android:layout_marginBottom="@dimen/dp_10">
 
         <LinearLayout
             android:id="@+id/button_sort"
@@ -206,8 +205,8 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 app:srcCompat="@drawable/search_ic_sort"
                 />
 
@@ -245,8 +244,8 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 app:srcCompat="@drawable/search_ic_filter"
                 />
 
