@@ -46,24 +46,25 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getBanner(rawQuery: String, isFromCloud: Boolean) {
         launch {
-            val banners = getTravelCollectiveBannerUseCase.execute(rawQuery, TravelType.ALL, isFromCloud)
-            when (banners) {
-                is Success -> {
-                    travelItemList.value?.let {
-                        val updatedList = it.toMutableList()
-                        updatedList[BANNER_ORDER] = TravelHomepageBannerModel(banners.data)
-                        updatedList[BANNER_ORDER].isLoaded = true
-                        updatedList[BANNER_ORDER].isSuccess = true
-                        travelItemList.value = updatedList
+            withContext(dispatcherProvider.ui()) {
+                when (val banners = getTravelCollectiveBannerUseCase.execute(rawQuery, TravelType.ALL, isFromCloud)) {
+                    is Success -> {
+                        travelItemList.value?.let {
+                            val updatedList = it.toMutableList()
+                            updatedList[BANNER_ORDER] = TravelHomepageBannerModel(banners.data)
+                            updatedList[BANNER_ORDER].isLoaded = true
+                            updatedList[BANNER_ORDER].isSuccess = true
+                            travelItemList.value = updatedList
+                        }
                     }
-                }
-                is Fail -> {
-                    travelItemList.value?.let {
-                        val updatedList = it.toMutableList()
-                        updatedList[BANNER_ORDER].isLoaded = true
-                        updatedList[BANNER_ORDER].isSuccess = false
-                        travelItemList.value = updatedList
-                        checkIfAllError()
+                    is Fail -> {
+                        travelItemList.value?.let {
+                            val updatedList = it.toMutableList()
+                            updatedList[BANNER_ORDER].isLoaded = true
+                            updatedList[BANNER_ORDER].isSuccess = false
+                            travelItemList.value = updatedList
+                            checkIfAllError()
+                        }
                     }
                 }
             }
@@ -202,7 +203,7 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun checkIfAllError() {
+    private fun checkIfAllError() {
         travelItemList.value?.let {
             var isSuccess = false
             for (item in it) {
