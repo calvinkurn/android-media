@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/ic_rating_gold" android:left="0dp" android:right="72dp"/>
-    <item android:drawable="@drawable/ic_rating_gold" android:left="18dp" android:right="54dp"/>
-    <item android:drawable="@drawable/ic_rating_gold" android:left="36dp" android:right="36dp"/>
-    <item android:drawable="@drawable/ic_rating" android:left="54dp" android:right="18dp"/>
-    <item android:drawable="@drawable/ic_rating" android:left="72dp" android:right="0dp"/>
+    <item android:drawable="@drawable/ic_rating_gold" android:left="0dp" android:right="88dp"/>
+    <item android:drawable="@drawable/ic_rating_gold" android:left="22dp" android:right="66dp"/>
+    <item android:drawable="@drawable/ic_rating_gold" android:left="44dp" android:right="44dp"/>
+    <item android:drawable="@drawable/ic_rating" android:left="66dp" android:right="22dp"/>
+    <item android:drawable="@drawable/ic_rating" android:left="88dp" android:right="0dp"/>
 
 </layer-list>
