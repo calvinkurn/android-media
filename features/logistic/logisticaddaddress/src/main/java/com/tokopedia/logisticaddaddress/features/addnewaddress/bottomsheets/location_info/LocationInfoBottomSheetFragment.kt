@@ -42,6 +42,13 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW)
+        }
+    }
+
     override fun state(): BottomSheetsState {
         return BottomSheetsState.FLEXIBLE
     }
