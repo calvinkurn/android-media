@@ -260,8 +260,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
                 counterInputViewStock.setError(getContext().getString(
                         R.string.product_error_total_stock_not_valid,
                         String.valueOf(minStock),
-                        String.valueOf(MAX_STOCK)
-                ));
+                        getContext().getString(R.string.product_maximum_total_stock)));
                 return false;
             }
         }
