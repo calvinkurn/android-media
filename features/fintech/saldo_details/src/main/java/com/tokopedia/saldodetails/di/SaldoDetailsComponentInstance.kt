@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 object SaldoDetailsComponentInstance {
 
-    fun getComponent(application: Application): SaldoDetailsComponent? {
+    fun getComponent(application: Application): SaldoDetailsComponent {
 
         val saldoDetailsComponent = DaggerSaldoDetailsComponent.builder()
                     .baseAppComponent((application as BaseMainApplication).baseAppComponent)

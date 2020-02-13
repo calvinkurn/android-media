@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
+import com.tokopedia.saldodetails.usecase.GetHoldInfoUsecase
 import com.tokopedia.user.session.UserSession
 
 import dagger.Module
@@ -31,4 +34,11 @@ class SaldoDetailsModule {
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
         return MultiRequestGraphqlUseCase(graphqlRepository)
     }
+
+    @SaldoDetailsScope
+    @Provides
+    fun saldoHoldInfoPresenter(usecase: GetHoldInfoUsecase): SaldoHoldInfoPresenter {
+        return SaldoHoldInfoPresenter(usecase)
+    }
+
 }

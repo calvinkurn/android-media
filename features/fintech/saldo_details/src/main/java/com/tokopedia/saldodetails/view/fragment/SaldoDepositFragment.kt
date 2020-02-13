@@ -48,11 +48,11 @@ import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
 import com.tokopedia.saldodetails.utils.ErrorMessage
 import com.tokopedia.saldodetails.utils.Success
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
+import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 class SaldoDepositFragment : BaseDaggerFragment() {
@@ -422,12 +422,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
 
         checkBalanceStatus!!.setOnClickListener {
-            try {
-                val intent = RouteManager.getIntent(context, ApplinkConst.INBOX_TICKET)
-                startActivity(intent)
-            } catch (e: Exception) {
-
-            }
+            val intent = Intent(context, SaldoHoldInfoActivity::class.java)
+            startActivity(intent)
         }
 
         tickerMessageCloseButton!!.setOnClickListener { tickerMessageRL!!.gone() }

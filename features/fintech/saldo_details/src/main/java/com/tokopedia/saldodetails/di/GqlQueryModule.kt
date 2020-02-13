@@ -68,7 +68,13 @@ class GqlQueryModule {
                 com.tokopedia.saldodetails.R.raw.query_deposit_all_transaction)
     }
 
-
+    @SaldoDetailsScope
+    @Provides
+    @Named(QUERY_SALDO_HOLD_INFO)
+    fun provideSaldoHoldInfo(@ApplicationContext context: Context): String{
+        return  GraphqlHelper.loadRawString(context.resources,
+                com.tokopedia.saldodetails.R.raw.query_saldo_hold_info)
+    }
 
     companion object {
         const val SALDO_WITHDRAWAL_TICKER_QUERY = "saldo_withdrawal_query"
@@ -79,5 +85,6 @@ class GqlQueryModule {
         const val UPDATE_MERCHANT_SALDO_STATUS = "update merchant saldo status"
         const val DEPOSITE_DETAIL_FOR_ALL_QUERY = "query_deposit_details_for_all"
         const val DEPOSITE_ALL_TRANSACTION_QUERY = "query_deposit_all_transaction"
+        const val QUERY_SALDO_HOLD_INFO = "query_saldo_hold_info"
     }
 }
