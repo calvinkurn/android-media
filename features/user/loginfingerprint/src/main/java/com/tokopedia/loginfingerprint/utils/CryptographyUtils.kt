@@ -142,10 +142,8 @@ class CryptographyUtils {
     }
 
     fun generateFingerprintSignature(userId: String, deviceId: String): FingerprintSignature {
-        val datetime = System.currentTimeMillis().toString()
-        return FingerprintSignature(signature = getSignature(stringToSHA1(userId + datetime + deviceId)), datetime = datetime)
-//        val sgn = getSignature(userId+datetime+deviceId)
-//        return FingerprintSignature(signature = sgn, datetime = datetime)
+        val datetime = (System.currentTimeMillis()/1000).toString()
+        return FingerprintSignature(signature = getSignature(userId + datetime + deviceId), datetime = datetime)
     }
 
     fun stringToSHA1(stringToEncrypt: String): String{
