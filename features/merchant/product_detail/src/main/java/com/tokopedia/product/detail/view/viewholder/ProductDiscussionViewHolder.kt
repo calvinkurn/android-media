@@ -27,7 +27,7 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
     override fun bind(element: ProductDiscussionDataModel) {
         element.latestTalk?.let {
             renderData(it, element.shopId.toInt(), element.talkCount, getComponentTrackData(element))
-            view.addOnImpressionListener(element) {
+            view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
         }

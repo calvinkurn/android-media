@@ -1,15 +1,17 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.kotlin.model.ImpressHolder
 
 class ProductMerchantVoucherDataModel(
         val type: String = "",
         val name: String = "",
         var voucherData: ArrayList<MerchantVoucherViewModel> = arrayListOf(),
-        var shouldRenderInitialData : Boolean = true
-) : DynamicPdpDataModel, ImpressHolder() {
+        var shouldRenderInitialData: Boolean = true
+) : DynamicPdpDataModel {
+    override val impressHolder: ImpressHolder = ImpressHolder()
+
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

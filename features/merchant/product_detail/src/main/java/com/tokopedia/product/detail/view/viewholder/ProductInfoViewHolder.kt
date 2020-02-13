@@ -37,7 +37,7 @@ class ProductInfoViewHolder(private val view: View,
                 adapter = ProductInfoAdapter(listener, topData.listOfContent, getComponentTrackData(element))
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-                view.addOnImpressionListener(element) {
+                view.addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
             }

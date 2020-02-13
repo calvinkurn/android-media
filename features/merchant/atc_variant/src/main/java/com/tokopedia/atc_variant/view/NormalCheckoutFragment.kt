@@ -110,7 +110,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     var isLeasing = true
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
-    var layoutName: String? = ""
+    var layoutName: String = ""
     @ProductAction
     var action: Int = ATC_AND_BUY
 
@@ -545,7 +545,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             tradeInParams = argument.getParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS)
             isOcs = argument.getBoolean(ApplinkConst.Transaction.EXTRA_OCS)
             isLeasing = argument.getBoolean(EXTRA_IS_LEASING)
-            layoutName = argument.getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME)
+            layoutName = argument.getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, "")
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -582,7 +582,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     //do tracking
                     val intent = generateIntentLogin()
                     if (action == ATC_ONLY) {
-                        normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo, layoutName ?: "")
+                        normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo, layoutName
+                                ?: "")
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_ATC)
                     } else if (action == ATC_AND_BUY) {
                         normalCheckoutTracking.eventClickBuyInVariantNotLogin(selectedProductInfo, layoutName
@@ -615,7 +616,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             }
             if (!viewModel.isUserSessionActive()) {
                 //do tracking
-                normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo , layoutName)
+                normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo, layoutName)
                 //do login
                 startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_ATC)
             } else {
@@ -854,7 +855,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
                         getString(R.string.trade_in_event_label_phone_type_phone_price_diagnostic_id, phoneType, phonePrice, deviceid),
-                        layoutName ?: "")
+                        layoutName)
             }
             activity?.run {
                 val shipmentFormRequest = ShipmentFormRequest.BundleBuilder()
@@ -905,7 +906,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         freeOngkir.isFreeOngkirActive,
                         getCustomEventLabel(),
                         getCustomEventAction(),
-                        layoutName ?: ""
+                        layoutName
                 )
             }
             onFinishAddToCart(message)

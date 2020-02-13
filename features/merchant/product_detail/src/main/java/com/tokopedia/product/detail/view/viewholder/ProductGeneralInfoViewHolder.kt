@@ -29,7 +29,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
         element.data.run {
 
-            view.addOnImpressionListener(element) {
+            view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
 

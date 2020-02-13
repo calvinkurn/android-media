@@ -31,11 +31,10 @@ class ProductRecommendationViewHolder(private val view: View,
         view.visible()
         view.loadingRecom.visible()
         element.recomWidgetData?.run {
-            view.addOnImpressionListener(element, object : ViewHintListener {
-                override fun onViewHint() {
-                    listener.onImpressComponent(getComponentTrackData(element))
-                }
-            })
+
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
 
             view.loadingRecom.gone()
             view.titleRecom.text = title

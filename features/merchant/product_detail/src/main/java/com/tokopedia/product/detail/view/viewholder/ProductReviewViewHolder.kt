@@ -41,7 +41,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         element?.let {
-            view.addOnImpressionListener(element) {
+            view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
 

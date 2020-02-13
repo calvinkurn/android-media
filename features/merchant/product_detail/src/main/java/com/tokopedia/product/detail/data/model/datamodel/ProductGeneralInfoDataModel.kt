@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ProductGeneralInfoDataModel(
         val name: String = "",
@@ -12,7 +12,9 @@ data class ProductGeneralInfoDataModel(
         val isApplink: Boolean = false,
         val parentIcon: String = "",
         val data: List<Content> = listOf(Content())
-) : DynamicPdpDataModel, ImpressHolder() {
+) : DynamicPdpDataModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
 

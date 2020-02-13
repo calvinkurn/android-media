@@ -1,10 +1,10 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoContent
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * This For "Deskripsi" and "Informasi Produk"
@@ -16,7 +16,10 @@ data class ProductInfoDataModel(
         var shopName: String = "",
         var dynamicProductInfoP1: DynamicProductInfoP1? = null,
         var productSpecification: ProductSpecificationResponse? = null
-) : DynamicPdpDataModel, ImpressHolder() {
+) : DynamicPdpDataModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
+
     override fun name(): String = name
 
     override fun type(): String = type

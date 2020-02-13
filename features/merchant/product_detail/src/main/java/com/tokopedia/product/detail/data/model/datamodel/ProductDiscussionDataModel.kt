@@ -13,7 +13,9 @@ data class ProductDiscussionDataModel(
         var latestTalk: Talk? = null,
         var talkCount: Int = 0,
         var shopId: String = ""
-) : DynamicPdpDataModel , ImpressHolder(){
+) : DynamicPdpDataModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
 

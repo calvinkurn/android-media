@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Stats
@@ -36,11 +35,10 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
             attributeInfoView = PartialAttributeInfoView.build(view.base_attribute)
         }
 
-        itemView.addOnImpressionListener(element, object : ViewHintListener {
-            override fun onViewHint() {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
-        })
+        view.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
+
 
         element.rating?.run {
             productStatsView.renderRatingNew(this.toString())

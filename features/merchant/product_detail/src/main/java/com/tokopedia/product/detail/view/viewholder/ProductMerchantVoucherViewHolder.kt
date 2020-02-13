@@ -25,7 +25,7 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
             view.loading_voucher.show()
             element?.let {
 
-                view.addOnImpressionListener(element) {
+                view.addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
 

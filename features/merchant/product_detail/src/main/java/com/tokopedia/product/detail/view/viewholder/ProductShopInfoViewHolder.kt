@@ -27,7 +27,7 @@ class ProductShopInfoViewHolder(private val view: View, private val listener: Dy
 
         if (element.shopInfo != null) {
 
-            view.addOnImpressionListener(element) {
+            view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
 
