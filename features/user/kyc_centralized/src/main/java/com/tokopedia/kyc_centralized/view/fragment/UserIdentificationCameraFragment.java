@@ -29,6 +29,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
 
@@ -62,7 +63,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private ImageView imagePreview;
     private View buttonLayout;
     private View reCaptureButton;
-    private View nextButton;
+    private UnifyButton nextButton;
     private String imagePath;
     private Size mCaptureNativeSize;
     private UserIdentificationCommonAnalytics analytics;

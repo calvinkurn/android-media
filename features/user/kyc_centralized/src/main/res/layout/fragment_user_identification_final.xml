@@ -178,8 +178,7 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl6"
-            android:layout_marginBottom="@dimen/spacing_lvl5"
-            app:whiteMode="false" />
+            android:layout_marginBottom="@dimen/spacing_lvl5"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/upload_loading_title"

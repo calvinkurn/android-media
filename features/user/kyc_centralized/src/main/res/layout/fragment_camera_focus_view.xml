@@ -142,17 +142,16 @@
             app:typographyType="heading_4"
             tools:text="Foto Ulang" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/next_button"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="match_parent"
+            app:unifyButtonVariant="ghost"
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/spacing_lvl1"
             android:layout_weight="1"
-            android:background="@drawable/white_button_filled"
             android:gravity="center"
             android:text="@string/camera_next_button"
-            android:textColor="@color/medium_green"
             android:textSize="@dimen/fontSize_lvl3"
             app:typographyType="heading_4" />
     </LinearLayout>

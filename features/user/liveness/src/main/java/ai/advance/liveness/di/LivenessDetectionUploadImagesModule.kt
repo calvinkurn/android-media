@@ -1,18 +1,19 @@
 package ai.advance.liveness.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.data.StringResponseConverter
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
 import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -22,13 +23,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+
+
 @Module
 class LivenessDetectionUploadImagesModule {
 
     private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
-    private val NET_READ_TIMEOUT = 25
-    private val NET_WRITE_TIMEOUT = 25
-    private val NET_CONNECT_TIMEOUT = 25
+    private val NET_READ_TIMEOUT = 100
+    private val NET_WRITE_TIMEOUT = 100
+    private val NET_CONNECT_TIMEOUT = 100
     private val NET_RETRY = 3
 
     @LivenessDetectionScope
@@ -54,7 +57,7 @@ class LivenessDetectionUploadImagesModule {
     @Provides
     fun provideWsV4RetrofitWithErrorHandler(okHttpClient: OkHttpClient,
                                             retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl("https://accounts-staging.tokopedia.com/").client(okHttpClient).build()
+        return retrofitBuilder.baseUrl("https://accounts.tokopedia.com/").client(okHttpClient).build()
     }
 
     @LivenessDetectionScope
@@ -79,8 +82,8 @@ class LivenessDetectionUploadImagesModule {
 
     @LivenessDetectionScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context).showNotification(com.tokopedia.abstraction.common.utils.GlobalConfig.isAllowDebuggingTools())
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @LivenessDetectionScope
@@ -89,11 +92,12 @@ class LivenessDetectionUploadImagesModule {
                             retryPolicy: OkHttpRetryPolicy,
                             loggingInterceptor: HttpLoggingInterceptor,
                             errorHandlerInterceptor: ErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor): OkHttpClient {
+                            chuckerInterceptor: ChuckerInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(errorHandlerInterceptor)
         builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(chuckInterceptor)
+        builder.addInterceptor(chuckerInterceptor)
+        builder.addInterceptor(AkamaiBotInterceptor())
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY

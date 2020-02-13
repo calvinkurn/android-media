@@ -40,6 +40,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

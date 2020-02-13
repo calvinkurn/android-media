@@ -270,8 +270,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         uploadButton.setText(buttonText);
 
         ArrayList<String> listMessage = stepperModel.getListMessage();
-        for (int i=0; i<listMessage.size(); i++){
-            ((UserIdentificationFormActivity) Objects.requireNonNull(getActivity())).setTextViewWithBullet(listMessage.get(i), getContext(), bulletTextLayout);
+        if(listMessage != null){
+            for (int i=0; i<listMessage.size(); i++){
+                ((UserIdentificationFormActivity) Objects.requireNonNull(getActivity())).setTextViewWithBullet(listMessage.get(i), getContext(), bulletTextLayout);
+            }
         }
     }
 
@@ -339,15 +341,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             }
         } else {
             String imagePath = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
-            switch (requestCode) {
-                case REQUEST_CODE_CAMERA_KTP:
-                    stepperModel.setKtpFile(imagePath);
-                    break;
-                case REQUEST_CODE_CAMERA_FACE:
-                    stepperModel.setFaceFile(imagePath);
-                    break;
-                default:
-                    break;
+            if(requestCode == REQUEST_CODE_CAMERA_KTP){
+                stepperModel.setKtpFile(imagePath);
+                analytics.eventClickUploadPhotos();
+                checkKtp();
             }
         }
     }
@@ -439,27 +436,25 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     public void clickBackTracker(){
-        if(listRetake.size() == 1){
-            switch (listRetake.get(0)){
-                case 1 : {
-                    analytics.eventClickBackChangeKtpFinalFormPage();
+        if(!isKycSelfie){
+            if(listRetake.size() == 1){
+                switch (listRetake.get(0)){
+                    case 1 : {
+                        analytics.eventClickBackChangeKtpFinalFormPage();
+                    }
+                    case 2 : {
+                        analytics.eventClickBackChangeSelfieFinalFormPage();
+                    }
                 }
-                case 2 : {
-                    analytics.eventClickBackChangeSelfieFinalFormPage();
-                }
+            }else if(listRetake.size() == 2){
+                analytics.eventClickBackChangeKtpSelfieFinalFormPage();
             }
-        }else if(listRetake.size() == 2){
-            analytics.eventClickBackChangeKtpSelfieFinalFormPage();
         }
     }
 
     @Override
     public void trackOnBackPressed() {
-        if(!isKycSelfie){
-            clickBackTracker();
-        } else {
-            analytics.eventClickBackFinalForm();
-        }
+        analytics.eventClickBackFinalForm();
     }
 
     @Override
