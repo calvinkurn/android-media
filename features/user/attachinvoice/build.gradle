@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "de.mannodermaus.android-junit5"
 
-android{
+android {
     testOptions {
         unitTests {
             includeAndroidResources = true

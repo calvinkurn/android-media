@@ -1,6 +1,22 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
+
+android {
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+    }
+}
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -8,11 +24,15 @@ repositories {
 
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        jcenter()
         maven { url 'https://hansel.io/maven' }
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -62,11 +82,11 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    
+
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.networkDependencies.glide
-    implementation (rootProject.ext.miscDependencies.ucrop){
+    implementation(rootProject.ext.miscDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
@@ -85,10 +105,14 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.features.wishlistCommon)
 
-    //test
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
+    // spek
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 }
 
 project.ext {
