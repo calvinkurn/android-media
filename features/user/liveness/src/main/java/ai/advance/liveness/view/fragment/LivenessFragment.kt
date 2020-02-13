@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -107,12 +108,18 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     if (it.data.isSuccessRegister == false) {
                         if(it.data.listRetake?.contains(2) == false){
                             intent.putExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH, facePath)
+                            FileUtils.deleteFileInTokopediaFolder(ktpPath)
+                        }else{
+                            FileUtils.deleteFileInTokopediaFolder(facePath)
                         }
                         intent.putIntegerArrayListExtra("listRetake", it.data.listRetake)
                         intent.putStringArrayListExtra("listMessage", it.data.listMessage)
                         intent.putExtra("title", it.data.apps?.title)
                         intent.putExtra("subtitle", it.data.apps?.subtitle)
                         intent.putExtra("button", it.data.apps?.button)
+                    }else{
+                        FileUtils.deleteFileInTokopediaFolder(ktpPath)
+                        FileUtils.deleteFileInTokopediaFolder(facePath)
                     }
                     activity?.setResult(RESULT_OK, intent)
                     activity?.finish()

@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity;
@@ -435,7 +436,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                 .setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_2), getContext(), bulletTextLayout);
     }
 
-    public void clickBackTracker(){
+    public void clickBackAction(){
         if(!isKycSelfie){
             if(listRetake.size() == 1){
                 switch (listRetake.get(0)){
@@ -449,13 +450,15 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             }else if(listRetake.size() == 2){
                 analytics.eventClickBackChangeKtpSelfieFinalFormPage();
             }
+        }else{
+            analytics.eventClickBackFinalForm();
         }
+        FileUtils.deleteFileInTokopediaFolder(stepperModel.getKtpFile());
+        FileUtils.deleteFileInTokopediaFolder(stepperModel.getFaceFile());
     }
 
     @Override
-    public void trackOnBackPressed() {
-        analytics.eventClickBackFinalForm();
-    }
+    public void trackOnBackPressed() {}
 
     @Override
     public void onErrorGetKtpStatus(@NotNull Throwable error) {

@@ -131,7 +131,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
             int fragmentId = getListFragment().get(currentPosition-1).getId();
             UserIdentificationFormFinalFragment fragment = (UserIdentificationFormFinalFragment) getSupportFragmentManager().findFragmentById(fragmentId);
             if(fragment != null) {
-                fragment.clickBackTracker();
+                fragment.clickBackAction();
             }
             showDocumentAlertDialog();
         }else{
@@ -155,7 +155,8 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         dialog.setSecondaryCTAClickListener(() -> {
             analytics.eventClickDialogExit();
             dialog.dismiss();
-            backToPreviousFragment();
+            setResult(RESULT_CANCELED);
+            finish();
             return Unit.INSTANCE;
         });
         dialog.show();

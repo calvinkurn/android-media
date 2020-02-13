@@ -34,6 +34,8 @@ import com.tokopedia.useridentification.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import kotlin.Unit;
@@ -353,6 +355,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             getStatusInfo();
             NetworkErrorHelper.showGreenSnackbar(getActivity(), getString(R.string.text_notification_success_upload));
             analytics.eventViewSuccessSnackbarPendingPage();
+        }else if(requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_CANCELED) {
+            Objects.requireNonNull(getActivity()).finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
