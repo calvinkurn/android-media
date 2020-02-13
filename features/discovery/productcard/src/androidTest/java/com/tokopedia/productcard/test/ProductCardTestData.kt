@@ -70,9 +70,7 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = DARK_GREY))
                 labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN))
-            },
-            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
-                textGroups.add(TextGroup(position = TEXT_GIMMICK, title = "Best Seller", type = SMALL, weight = BOLD, color = "#FF8B00"))
+                labelGroups.add(LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00"))
             }
     ))
 
@@ -89,9 +87,7 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
             hasOptions = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
-            },
-            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
-                textGroups.add(TextGroup(position = TEXT_GIMMICK, title = "Sisa 5", type = SMALL, weight = BOLD, color = "#ef144a"))
+                labelGroups.add(LabelGroup(position = LABEL_GIMMICK, title = "Sisa 5", type = "#ef144a"))
             }
     ))
 
@@ -125,9 +121,7 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
-            },
-            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
-                textGroups.add(TextGroup(position = TEXT_GIMMICK, title = "Terbaru", type = SMALL, weight = BOLD, color = "#ff8b00"))
+                labelGroups.add(LabelGroup(position = LABEL_GIMMICK, title = "Terbaru", type = "#ff8b00"))
             }
     ))
 
@@ -143,9 +137,7 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
-            },
-            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
-                textGroups.add(TextGroup(position = TEXT_CREDIBILITY, title = "Terjual 122", type = BODY_3, weight = BOLD, color = "#ae31353b"))
+                labelGroups.add(LabelGroup(position = LABEL_CREDIBILITY, title = "Terjual 122", type = "#ae31353b"))
             }
     ))
 
@@ -162,9 +154,7 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
             hasOptions = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN))
-            },
-            textGroupList = mutableListOf<TextGroup>().also { textGroups ->
-                textGroups.add(TextGroup(position = TEXT_SHIPPING, title = "Ongkir Rp11 rb", type = BODY_3, color = "#7031353b"))
+                labelGroups.add(LabelGroup(position = LABEL_SHIPPING, title = "Ongkir Rp11 rb", type = "#7031353b"))
             }
     ))
 

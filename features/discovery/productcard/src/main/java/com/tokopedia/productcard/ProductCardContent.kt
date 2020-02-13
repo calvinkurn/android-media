@@ -4,7 +4,6 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.utils.initLabelGroup
-import com.tokopedia.productcard.utils.initTextGroup
 import com.tokopedia.productcard.utils.loadIcon
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -26,7 +25,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
-    textViewGimmick?.initTextGroup(productCardModel.getTextGimmick())
+    textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
 }
 
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
@@ -83,7 +82,7 @@ private fun View.renderTextReview(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
-    textViewCredibility?.initTextGroup(productCardModel.getTextCredibility())
+    textViewCredibility?.initLabelGroup(productCardModel.getLabelCredibility2())
 }
 
 private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
@@ -93,5 +92,5 @@ private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextShipping(productCardModel: ProductCardModel) {
-    textViewShipping?.initTextGroup(productCardModel.getTextShipping())
+    textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }

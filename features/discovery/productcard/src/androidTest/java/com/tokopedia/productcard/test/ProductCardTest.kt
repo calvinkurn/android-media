@@ -87,14 +87,13 @@ private fun getProductCardMatchersPosition3(): Map<Int, Matcher<View?>> {
 
     val labelProductStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position $position has no label status")
     val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
-
-    val textGimmick = productCardModel.getTextGimmick() ?: throw Exception("Product Card Position $position has no text gimmick")
+    val labelGimmick = productCardModel.getLabelGimmick() ?: throw Exception("Product Card Position $position has no label gimmick")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = ViewMatchers.isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
         it[R.id.textTopAds] = ViewMatchers.isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(textGimmick.title)
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
@@ -113,12 +112,11 @@ private fun getProductCardMatchersPosition4(): Map<Int, Matcher<View?>> {
     val productCardModel = productCardModelTestData[position]
 
     val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
-
-    val textGimmick = productCardModel.getTextGimmick() ?: throw Exception("Product Card Position $position has no text gimmick")
+    val labelGimmick = productCardModel.getLabelGimmick() ?: throw Exception("Product Card Position $position has no label gimmick")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = ViewMatchers.isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(textGimmick.title)
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
@@ -159,12 +157,11 @@ private fun getProductCardMatchersPosition6(): Map<Int, Matcher<View?>> {
     val productCardModel = productCardModelTestData[position]
 
     val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
-
-    val textGimmick = productCardModel.getTextGimmick() ?: throw Exception("Product Card Position $position has no text gimmick")
+    val labelGimmick = productCardModel.getLabelGimmick() ?: throw Exception("Product Card Position $position has no label gimmick")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = ViewMatchers.isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(textGimmick.title)
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
@@ -180,8 +177,7 @@ private fun getProductCardMatchersPosition7(): Map<Int, Matcher<View?>> {
     val productCardModel = productCardModelTestData[position]
 
     val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
-
-    val textCredibility = productCardModel.getTextCredibility() ?: throw Exception("Product Card Position $position has no text credibility")
+    val labelCredibility = productCardModel.getLabelCredibility2() ?: throw Exception("Product Card Position $position has no label credibility")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = ViewMatchers.isDisplayed()
@@ -190,7 +186,7 @@ private fun getProductCardMatchersPosition7(): Map<Int, Matcher<View?>> {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.textViewCredibility] = isDisplayedWithText(textCredibility.title)
+        it[R.id.textViewCredibility] = isDisplayedWithText(labelCredibility.title)
         it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
         it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
     }
@@ -201,8 +197,7 @@ private fun getProductCardMatchersPosition8(): Map<Int, Matcher<View?>> {
     val productCardModel = productCardModelTestData[position]
 
     val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
-
-    val textShipping = productCardModel.getTextShipping() ?: throw Exception("Product Card Position $position has no text shipping")
+    val labelShipping = productCardModel.getLabelShipping() ?: throw Exception("Product Card Position $position has no text shipping")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = ViewMatchers.isDisplayed()
@@ -214,7 +209,7 @@ private fun getProductCardMatchersPosition8(): Map<Int, Matcher<View?>> {
         it[R.id.imageRatingString] = ViewMatchers.isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.textViewShipping] = isDisplayedWithText(textShipping.title)
+        it[R.id.textViewShipping] = isDisplayedWithText(labelShipping.title)
         it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
     }
 }

@@ -147,41 +147,15 @@ private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
     }
 }
 
-internal fun String?.toUnifyTypographyType(): Int {
-    return when(this) {
-        HEADING_1 -> Typography.HEADING_1
-        HEADING_2 -> Typography.HEADING_2
-        HEADING_3 -> Typography.HEADING_3
-        HEADING_4 -> Typography.HEADING_4
-        HEADING_5 -> Typography.HEADING_5
-        HEADING_6 -> Typography.HEADING_6
-        BODY_1 -> Typography.BODY_1
-        BODY_2 -> Typography.BODY_2
-        BODY_3 -> Typography.BODY_3
-        SMALL -> Typography.SMALL
-        else -> Typography.SMALL
-    }
+internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showTypography(labelGroup)
 }
 
-internal fun String?.toUnifyTypographyWeight(): Int {
-    return when(this) {
-        BOLD -> Typography.BOLD
-        REGULAR -> Typography.REGULAR
-        else -> Typography.REGULAR
-    }
-}
-
-internal fun Typography.initTextGroup(textGroup: ProductCardModel.TextGroup?) {
-    if (textGroup == null) hide()
-    else showTypography(textGroup)
-}
-
-private fun Typography.showTypography(textGroup: ProductCardModel.TextGroup) {
-    shouldShowWithAction(textGroup.title.isNotEmpty()) {
-        it.text = textGroup.title
-        it.setType(textGroup.type.toUnifyTypographyType())
-        it.setWeight(textGroup.weight.toUnifyTypographyWeight())
-        it.setTextColor(safeParseColor(textGroup.color))
+private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = labelGroup.title
+        it.setTextColor(safeParseColor(labelGroup.type))
     }
 }
 

@@ -13,9 +13,9 @@ internal const val DARK_ORANGE = "darkOrange"
 
 internal const val LABEL_PRODUCT_STATUS = "status"
 internal const val LABEL_PRICE = "price"
-internal const val TEXT_GIMMICK = "gimmick"
-internal const val TEXT_CREDIBILITY = "credibility"
-internal const val TEXT_SHIPPING = "shipping"
+internal const val LABEL_GIMMICK = "gimmick"
+internal const val LABEL_CREDIBILITY = "credibility"
+internal const val LABEL_SHIPPING = "shipping"
 
 internal const val HEADING_1 = "heading_1"
 internal const val HEADING_2 = "heading_2"

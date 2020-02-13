@@ -12,10 +12,10 @@
         android:layout_height="@dimen/dp_18"
         android:gravity="center"
         android:visibility="gone"
+        app:typographyType="small"
+        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:typographyType="small"
-        tools:typographyWeight="bold"
         tools:text="Best Seller"
         tools:textColor="#ff8b00"
         tools:visibility="visible" />
@@ -254,8 +254,8 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
-        tools:typographyType="body_3"
-        tools:typographyWeight="bold"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Terjual 122"
         tools:visibility="visible" />
 
@@ -286,10 +286,10 @@
         android:layout_height="@dimen/dp_18"
         android:layout_marginTop="@dimen/dp_4"
         android:visibility="gone"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageRatingString"
         tools:visibility="visible"
-        tools:typographyType="body_3"
         tools:text="Ongkir Rp11 rb"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
