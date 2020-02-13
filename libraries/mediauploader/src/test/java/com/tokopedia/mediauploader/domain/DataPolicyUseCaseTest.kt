@@ -1,17 +1,11 @@
 package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.mediauploader.data.consts.MediaUploaderQuery
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
 import com.tokopedia.mediauploader.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.data.entity.UploaderPolicy
-import com.tokopedia.usecase.coroutines.UseCase
-import io.mockk.MockKStubScope
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.spekframework.spek2.Spek
@@ -45,8 +39,8 @@ class DataPolicyUseCaseTest: Spek({
             }
             Given("graphql repository") {
                 coEvery {
-                    repository.getReseponse(listOf())
-                } answers {
+                    repository.getReseponse(any())
+                } coAnswers {
                     GraphqlResponse(
                             mapOf(DataUploaderPolicy::class.java to DataUploaderPolicy()),
                             null,
