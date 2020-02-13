@@ -1,11 +1,9 @@
 package com.tokopedia.talk.common.analytics
 
 import android.app.Activity
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
 /**
@@ -22,6 +20,8 @@ class TalkAnalytics @Inject constructor() {
     private val ACTION_CREATE_NEW_TALK: String = "click - kirim to create new talk"
     private val ACTION_REPLY_TALK: String = "click - kirim to reply talk"
 
+    private val KEY_PRODUCT_ID = "productId"
+
     fun trackSendCommentTalk(source: String, talkId: String, productId: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -36,7 +36,7 @@ class TalkAnalytics @Inject constructor() {
                     TrackAppUtils.EVENT_CATEGORY to CATEGORY_INBOX_TALK,
                     TrackAppUtils.EVENT_ACTION to ACTION_REPLY_TALK,
                     TrackAppUtils.EVENT_LABEL to talkId,
-                    "productId" to productId
+                    KEY_PRODUCT_ID to productId
             )
 
             TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -241,7 +241,7 @@ class TalkAnalytics @Inject constructor() {
                 TrackAppUtils.EVENT_CATEGORY to CATEGORY_INBOX_TALK,
                 TrackAppUtils.EVENT_ACTION to ACTION_CREATE_NEW_TALK,
                 TrackAppUtils.EVENT_LABEL to "",
-                "productId" to productId
+                KEY_PRODUCT_ID to productId
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
