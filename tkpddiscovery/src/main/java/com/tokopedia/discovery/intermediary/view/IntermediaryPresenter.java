@@ -111,15 +111,16 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
 
         @Override
         public void onNext(Response<CategoryHadesModel> categoryHadesModelResponse) {
-            if (categoryHadesModelResponse.body().getData() != null &&
-                    categoryHadesModelResponse.body().getData().getIntermediary() &&
-                    categoryHadesModelResponse.body().getData().getTemplate().equals(IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE)) {
-                getIntermediaryCategoryUseCase.setCategoryId(categoryHadesModelResponse.body().getData().getId());
-                getIntermediaryCategoryUseCase.setCategoryHadesModel(categoryHadesModelResponse.body());
-                getIntermediaryCategoryUseCase.execute(RequestParams.EMPTY, new IntermediarySubscirber(categoryHadesModelResponse.body()));
-            } else {
                 getView().skipIntermediaryPage(categoryHadesModelResponse.body());
-            }
+//            if (categoryHadesModelResponse.body().getData() != null &&
+//                    categoryHadesModelResponse.body().getData().getIntermediary() &&
+//                    categoryHadesModelResponse.body().getData().getTemplate().equals(IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE)) {
+//                getIntermediaryCategoryUseCase.setCategoryId(categoryHadesModelResponse.body().getData().getId());
+//                getIntermediaryCategoryUseCase.setCategoryHadesModel(categoryHadesModelResponse.body());
+//                getIntermediaryCategoryUseCase.execute(RequestParams.EMPTY, new IntermediarySubscirber(categoryHadesModelResponse.body()));
+//            } else {
+//                getView().skipIntermediaryPage(categoryHadesModelResponse.body());
+//            }
         }
 
     }
