@@ -58,7 +58,7 @@ object SubmitHelpTicketUseCaseTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("") {
+            Then("result status true and contains success message") {
                 subscriber.assertValue(SubmitTicketResult(status = true, message = successMessage))
             }
         }
@@ -80,7 +80,7 @@ object SubmitHelpTicketUseCaseTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("") {
+            Then("result status false and contains error message") {
                 subscriber.assertValue(SubmitTicketResult(status = false, message = errorMessage))
             }
         }
