@@ -83,7 +83,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private var selectedProduct: VoucherGameProduct? = null
         set(value) {
             field = value
-            productId = value?.id?.toIntOrNull()
+            productId = value?.id?.toIntOrNull() ?: 0
             price = value?.attributes?.pricePlain?.toLongOrNull()
         }
 
@@ -239,6 +239,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun showMenuDetailError(t: Throwable) {
+
+    }
+
+    override fun showCatalogPluginDataError(t: Throwable) {
 
     }
 

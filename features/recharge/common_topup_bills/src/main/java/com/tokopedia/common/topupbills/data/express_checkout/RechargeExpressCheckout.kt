@@ -1,4 +1,4 @@
-package com.tokopedia.common.topupbills.data
+package com.tokopedia.common.topupbills.data.express_checkout
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
+import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
+import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -33,6 +36,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     val menuDetailData: LiveData<Result<TopupBillsMenuDetail>>
         get() = _menuDetailData
 
+    private val _catalogPluginData = MutableLiveData<Result<RechargeCatalogPlugin>>()
+    val catalogPluginData : LiveData<Result<RechargeCatalogPlugin>>
+        get() = _catalogPluginData
+
     private val _favNumberData = MutableLiveData<Result<TopupBillsFavNumber>>()
     val favNumberData : LiveData<Result<TopupBillsFavNumber>>
         get() = _favNumberData
@@ -56,13 +63,15 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                     if (status == STATUS_PENDING && retryDuration > 0) delay((retryDuration.toLong()) * 1000)
                 }
             } while (data.enquiry.status != STATUS_DONE)
-            _enquiryData.value = if (data.enquiry.attributes != null) {
+
+            val result = if (data.enquiry.attributes != null) {
                 Success(data)
             } else {
                 Fail(MessageErrorException(NULL_RESPONSE))
             }
+            _enquiryData.postValue(result)
         }) {
-            _enquiryData.value = Fail(it)
+            _enquiryData.postValue(Fail(it))
         }
     }
 
@@ -73,9 +82,26 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
-            _menuDetailData.value = Success(data.catalogMenuDetailData)
+            _menuDetailData.postValue(Success(data.catalogMenuDetailData))
         }) {
-            _menuDetailData.value = Fail(it)
+            _menuDetailData.postValue(Fail(it))
+        }
+    }
+
+    fun getCatalogPluginData(rawQuery: String, mapParam: Map<String, Any>) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) {
+                val graphqlRequest = GraphqlRequest(rawQuery, RechargeCatalogPlugin.Response::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<RechargeCatalogPlugin.Response>().response
+
+            if (data != null) {
+                _catalogPluginData.postValue(Success(data))
+            } else {
+                _catalogPluginData.postValue(Fail(MessageErrorException(NULL_RESPONSE)))
+            }
+        }) {
+            _catalogPluginData.postValue(Fail(it))
         }
     }
 
@@ -86,9 +112,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsFavNumberData>()
 
-            _favNumberData.value = Success(data.favNumber)
+            _favNumberData.postValue(Success(data.favNumber))
         }) {
-            _favNumberData.value = Fail(it)
+            _favNumberData.postValue(Fail(it))
         }
     }
 
@@ -99,7 +125,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeExpressCheckout.Response>().response
 
-            _expressCheckoutData.value = when {
+            val result = when {
                 data?.errors?.isNotEmpty() == true -> {
                     // TODO: Finalize error
                     Fail(MessageErrorException(data.errors[0].title))
@@ -111,8 +137,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                     Fail(MessageErrorException("error"))
                 }
             }
+            _expressCheckoutData.postValue(result)
         }) {
-            _expressCheckoutData.value = Fail(it)
+            _expressCheckoutData.postValue(Fail(it))
         }
     }
 
@@ -129,6 +156,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun createMenuDetailParams(menuId: Int): Map<String, Any> {
         return mapOf(PARAM_MENU_ID to menuId)
+    }
+
+    fun createCatalogPluginParams(operatorId: Int, categoryId: Int): Map<String, Any> {
+        val filters = mutableListOf<Map<String, Any>>()
+        filters.add(createCatalogPluginFieldParam(PLUGIN_PARAM_OPERATOR, operatorId))
+        filters.add(createCatalogPluginFieldParam(PLUGIN_PARAM_CATEGORY, categoryId))
+        return mapOf(PARAM_FILTERS to filters)
+    }
+
+    private fun createCatalogPluginFieldParam(key: String, value: Int): Map<String, Any> {
+        return mapOf(PLUGIN_PARAM_KEY to key, PLUGIN_PARAM_ID to value)
     }
 
     fun createFavoriteNumbersParams(categoryId: Int): Map<String, Any> {
@@ -162,9 +200,22 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     companion object {
         const val PARAM_FIELDS = "fields"
+        const val PARAM_FILTERS = "filters"
         const val PARAM_CART = "cart"
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_CATEGORY_ID = "categoryID"
+
+        const val PLUGIN_PARAM_KEY = "Key"
+        const val PLUGIN_PARAM_ID = "ID"
+        const val PLUGIN_PARAM_OPERATOR = "operator"
+        const val PLUGIN_PARAM_CATEGORY = "category"
+
+        const val ENQUIRY_PARAM_OPERATOR_ID = "operator_id"
+        const val ENQUIRY_PARAM_PRODUCT_ID = "product_id"
+        const val ENQUIRY_PARAM_DEVICE_ID = "device_id"
+        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
+        const val ENQUIRY_PARAM_SOURCE_TYPE = "source_type"
+        const val ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE = "c20ad4d76fe977"
 
         const val EXPRESS_PARAM_NAME = "name"
         const val EXPRESS_PARAM_VALUE = "value"
@@ -178,13 +229,6 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
-
-        const val ENQUIRY_PARAM_OPERATOR_ID = "operator_id"
-        const val ENQUIRY_PARAM_PRODUCT_ID = "product_id"
-        const val ENQUIRY_PARAM_DEVICE_ID = "device_id"
-        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
-        const val ENQUIRY_PARAM_SOURCE_TYPE = "source_type"
-        const val ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE = "c20ad4d76fe977"
 
         const val NULL_RESPONSE = "null response"
     }

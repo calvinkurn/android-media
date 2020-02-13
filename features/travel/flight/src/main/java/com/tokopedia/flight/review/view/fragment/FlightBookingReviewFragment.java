@@ -318,7 +318,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == ConstantKt.getREQUST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == ConstantKt.getREQUEST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 // Check between apply promo code or cancel promo from promo detail
@@ -434,7 +434,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_FLIGHT);
         intent.putExtra("EXTRA_COUPON_ACTIVE", flightBookingReviewModel.getVoucherViewModel().getIsCouponActive());
         intent.putExtra("EXTRA_CART_ID", flightBookingReviewModel.getId());
-        startActivityForResult(intent, ConstantKt.getREQUST_CODE_PROMO_LIST());
+        startActivityForResult(intent, ConstantKt.getREQUEST_CODE_PROMO_LIST());
     }
 
     @Override
@@ -447,7 +447,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_FLIGHT);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE", flightBookingReviewModel.getVoucherViewModel().getIsCouponActive());
-                requestCode = ConstantKt.getREQUST_CODE_PROMO_LIST();
+                requestCode = ConstantKt.getREQUEST_CODE_PROMO_LIST();
             } else {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT);
                 intent.putExtra("EXTRA_IS_USE", true);

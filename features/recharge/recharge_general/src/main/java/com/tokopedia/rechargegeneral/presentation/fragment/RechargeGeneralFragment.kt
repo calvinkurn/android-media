@@ -40,6 +40,8 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
@@ -83,7 +85,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private lateinit var inputDataKeys: List<String>
 
     private var menuId: Int = 0
-    private var categoryId: Int = 0
     private var operatorId: Int = 0
     set(value) {
         field = value
@@ -96,7 +97,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var selectedProduct: RechargeGeneralProductSelectData? = null
         set(value) {
             field = value
-            productId = value?.id?.toIntOrNull()
+            productId = value?.id?.toIntOrNull() ?: 0
             price = value?.price?.toLongOrNull()
         }
     private var operatorCluster: String = ""
@@ -233,11 +234,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 REQUEST_CODE_LOGIN -> {
                     enquire()
                 }
-                REQUEST_CODE_LIST_PROMO -> {
+                REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
                     // Render enquiry data
-                    enquiryData?.let{
-                        renderCheckoutView(it)
-                    }
+//                    enquiryData?.let{
+//                        renderCheckoutView(it)
+//                    }
                 }
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_CART_DIGITAL) {
@@ -663,6 +664,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         loading_view.show()
 
         getMenuDetail(menuId)
+        getCatalogPluginData(operatorId, categoryId)
         getFavoriteNumbers(categoryId)
         getOperatorCluster(menuId)
     }
@@ -754,6 +756,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun showMenuDetailError(t: Throwable) {
         showGetListError(t)
+    }
+
+    override fun showCatalogPluginDataError(t: Throwable) {
+
     }
 
     override fun showFavoriteNumbersError(t: Throwable) {
