@@ -3,16 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/image_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="fitEnd"
+        android:layout_marginBottom="@dimen/dp_85"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/onboarding_image_page_1" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_50"
-        android:layout_marginRight="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_16"
         android:gravity="center"
         android:textAlignment="center"
         android:textColor="@color/Neutral_N700"
@@ -22,16 +33,5 @@
         app:typographyType="heading_1"
         app:typographyWeight="bold"
         tools:text="@string/title_screen_item_page_1" />
-
-    <ImageView
-        android:id="@+id/image_content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="fitEnd"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/onboarding_image_page_1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

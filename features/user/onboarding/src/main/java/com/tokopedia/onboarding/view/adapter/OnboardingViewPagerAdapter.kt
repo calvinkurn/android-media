@@ -1,11 +1,16 @@
 package com.tokopedia.onboarding.view.adapter
 
 import android.content.Context
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
+import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.unifycomponents.UnifyButton
@@ -22,6 +27,12 @@ class OnboardingViewPagerAdapter(
 ) : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val displayMetrics = DisplayMetrics()
+        val windowManager =
+                context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val deviceHeight = displayMetrics.heightPixels
+
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val layoutScreen = inflater.inflate(R.layout.layout_onboard_item, null)
 
@@ -29,8 +40,15 @@ class OnboardingViewPagerAdapter(
         val titleContent = layoutScreen.findViewById<Typography>(R.id.title_content)
 
         val item = listScreen[position]
-        imgContent.setImageDrawable(item.image)
+        ImageHandler.loadImageWithoutFit(context, imgContent, item.imageUrl)
         titleContent.text = item.title
+
+        if (deviceHeight <= minimumHeight) {
+            val parameter = titleContent.layoutParams as ConstraintLayout.LayoutParams
+            parameter.setMargins(16, 16, 16, 0)
+            titleContent.layoutParams = parameter
+            titleContent.setWeight(Typography.HEADING_2)
+        }
 
         container.addView(layoutScreen)
         return layoutScreen
@@ -42,5 +60,9 @@ class OnboardingViewPagerAdapter(
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         container.removeView(`object` as View)
+    }
+
+    companion object {
+        private const val minimumHeight = 800
     }
 }
