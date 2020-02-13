@@ -135,7 +135,6 @@ open class HomePresenter (
     private var getTokopointsDrawerSubscription: Subscription? = null
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
-    private val ovoRateLimiter = RateLimiter<String>(timeout = 10, timeUnit = TimeUnit.SECONDS)
 
     override val coroutineContext: CoroutineContext
         get() = homeDispatcher.ui() + masterJob
@@ -273,7 +272,6 @@ open class HomePresenter (
     }
 
     override fun onHeaderTokopointError() {
-        ovoRateLimiter.reset(OVO_LIMITER_KEY)
         updateHeaderViewModel(
                 isTokoPointDataError = true,
                 tokopointsDrawer = null,
@@ -391,7 +389,7 @@ open class HomePresenter (
     fun getTokopoint(){
         val graphqlResponseObservable = tokopointsObservable
         if (graphqlResponseObservable != null) {
-            if (getTokopointsDrawerSubscription?.isUnsubscribed != false && ovoRateLimiter.shouldFetch(OVO_LIMITER_KEY)) {
+            if (getTokopointsDrawerSubscription?.isUnsubscribed != false) {
                 getTokopointsDrawerSubscription = graphqlResponseObservable.subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -707,7 +705,6 @@ open class HomePresenter (
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
-        private const val OVO_LIMITER_KEY = "OVO_LIMITER_KEY"
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
