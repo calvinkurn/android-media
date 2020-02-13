@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
-import com.tokopedia.purchase_platform.features.cart.view.CartHorizontalItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartWishlistAdapter
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistHolderData
 import kotlinx.android.synthetic.main.item_cart_wishlist.view.*
@@ -17,8 +16,6 @@ import kotlinx.android.synthetic.main.item_cart_wishlist.view.*
 class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : RecyclerView.ViewHolder(view) {
 
     var wishlistAdapter: CartWishlistAdapter? = null
-
-    val itemDecoration by lazy { CartHorizontalItemDecoration() }
 
     companion object {
         val LAYOUT = R.layout.item_cart_wishlist
@@ -33,9 +30,6 @@ class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : Re
         itemView.rv_wishlist.layoutManager = layoutManager
         itemView.rv_wishlist.adapter = wishlistAdapter
         itemView.rv_wishlist.scrollToPosition(element.lastFocussPosition)
-        if (itemView.rv_wishlist.itemDecorationCount == 0) {
-            itemView.rv_wishlist.addItemDecoration(itemDecoration)
-        }
     }
 
 }
