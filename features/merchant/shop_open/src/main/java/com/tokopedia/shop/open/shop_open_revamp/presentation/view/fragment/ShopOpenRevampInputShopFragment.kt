@@ -3,7 +3,10 @@ package com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.*
+import android.text.Editable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -12,7 +15,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -22,10 +24,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.seller.common.widget.PrefixEditText
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.shop_open_revamp.common.ExitDialog
@@ -49,7 +49,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -119,10 +120,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     txtInputShopName.setError(false)
                     txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
                     shopNameValue = s.toString()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        delay(900)
-                        viewModel.checkShopName(shopNameValue)
-                    }
+                    viewModel.checkShopName(shopNameValue)
                 }
             }
         })
@@ -141,10 +139,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
                     reselectChipSuggestionDomainName()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        delay(700)
-                        viewModel.checkDomainName(domainNameValue)
-                    }
+                    viewModel.checkDomainName(domainNameValue)
                 }
             }
         })
