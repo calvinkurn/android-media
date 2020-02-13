@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd
+package com.tokopedia.tkpd.nfc
 
 import android.app.Activity
 import android.app.Application
