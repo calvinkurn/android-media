@@ -100,7 +100,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        getData();
         swipeRefreshLayout.setOnRefreshListener(() -> {
             isLoaded = false;
             getData();

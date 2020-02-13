@@ -29,7 +29,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
@@ -414,11 +413,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.VISIBLE
+        tv_address_getdistrict?.visibility = View.GONE
 
         var errorMessage = errMsg
         if (errorMessage.isEmpty()) errorMessage = getString(R.string.not_found_location)
         invalid_title?.text = errorMessage
-        invalid_desc?.visibility = View.GONE
+        invalid_desc?.text = getString(R.string.not_found_location_desc)
         invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
         invalid_button?.visibility = View.GONE
 
@@ -545,6 +545,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
 
         tv_address_getdistrict?.apply {
+            visibility = View.VISIBLE
             text = saveAddressDataModel.formattedAddress
             setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldCariLokasi()
@@ -566,6 +567,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun setResultPinpoint() {
+        saveAddressDataModel?.editDetailAddress = et_detail_address?.text.toString()
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)

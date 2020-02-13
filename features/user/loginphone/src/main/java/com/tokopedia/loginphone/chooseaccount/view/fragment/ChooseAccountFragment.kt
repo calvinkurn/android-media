@@ -372,17 +372,14 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetAccountList(accountList: AccountList) {
-        if (activity != null) {
-            this.viewModel.accountList = accountList
-            activity?.setResult(Activity.RESULT_OK)
+        this.viewModel.accountList = accountList
 
-            if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
-                val userDetail = accountList.userDetails[0]
-                loginToken(userDetail, accountList.msisdn)
-            } else {
-                dismissLoadingProgress()
-                adapter.setList(accountList.userDetails, accountList.msisdn)
-            }
+        if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
+            val userDetail = accountList.userDetails[0]
+            loginToken(userDetail, accountList.msisdn)
+        } else {
+            dismissLoadingProgress()
+            adapter.setList(accountList.userDetails, accountList.msisdn)
         }
     }
 

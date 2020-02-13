@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">loginregister</string>
 
-
     <string name="title_resend_activation_email">Kirim Ulang</string>
     <string name="january">Januari</string>
     <string name="february">Februari</string>
