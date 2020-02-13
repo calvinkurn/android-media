@@ -86,7 +86,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     companion object {
         const val FIRST_FRAGMENT_TAG = "first"
         const val DEFAULT_SELECTED_POSITION = -1
-        const val ERROR_MESSAGE = "Terjadi kendala, silahkan coba lagi"
     }
 
     override fun onAttach(context: Context) {
@@ -97,8 +96,8 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_input_shop, container, false)
         txtTermsAndConditions = view.findViewById(R.id.txt_shop_open_revamp_tnc)
-        txtInputShopName = view.findViewById(R.id.text_input_shop_open_revamp_shop_name)    // TextFieldUnify
-        txtInputDomainName = view.findViewById(R.id.text_input_shop_open_revamp_domain_name)    // TextFieldUnify
+        txtInputShopName = view.findViewById(R.id.text_input_shop_open_revamp_shop_name)
+        txtInputDomainName = view.findViewById(R.id.text_input_shop_open_revamp_domain_name)
         btnBack = view.findViewById(R.id.btn_back_input_shop)
         btnShopRegistration = view.findViewById(R.id.shop_registration_button)
         recyclerView = view.findViewById(R.id.recycler_view_shop_suggestions)
@@ -272,7 +271,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                         if (_message.isNotEmpty()) {
                             showErrorResponse(_message)
                         } else {
-                            showErrorResponse(ERROR_MESSAGE)
+                            showErrorResponse(getString(R.string.open_shop_revamp_error_retry))
                         }
                     }
                 }
