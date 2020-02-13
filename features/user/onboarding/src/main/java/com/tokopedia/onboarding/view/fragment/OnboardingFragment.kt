@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.TaskStackBuilder
-import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -43,7 +42,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     private lateinit var joinButton: UnifyButton
     private lateinit var tabIndicator: TabLayout
 
-    private var AbTestVariant = ""
+    private var abTestVariant = ""
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -81,7 +80,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             remoteConfigInstance.abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
 
     private fun setViewByAbTestVariant() {
-        when (AbTestVariant) {
+        when (abTestVariant) {
             ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> {
                 joinButton.visibility = View.VISIBLE
             }
@@ -98,16 +97,16 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     private fun getAbTestVariantAnalytics(): String {
-        return when (AbTestVariant) {
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_SCREEN
+        return when (abTestVariant) {
+            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> ""
             ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST -> ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST_SCREEN
             ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER_SCREEN
-            else -> ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_SCREEN
+            else -> ""
         }
     }
 
     private fun initAbTesting() {
-        AbTestVariant = getAbTestVariant()
+        abTestVariant = getAbTestVariant()
     }
 
     private fun initView() {
@@ -156,15 +155,18 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         context?.let {
             listItem.add(OnboardingScreenItem(
                     title = getString(R.string.title_screen_item_page_1),
-                    imageUrl = ONBOARD_IMAGE_PAGE_1_URL
+                    imageUrl = ONBOARD_IMAGE_PAGE_1_URL,
+                    placeholder = R.drawable.onboarding_image_page_1_placeholder
             ))
             listItem.add(OnboardingScreenItem(
                     title = getString(R.string.title_screen_item_page_2),
-                    imageUrl = ONBOARD_IMAGE_PAGE_2_URL
+                    imageUrl = ONBOARD_IMAGE_PAGE_2_URL,
+                    placeholder = R.drawable.onboarding_image_page_2_placeholder
             ))
             listItem.add(OnboardingScreenItem(
                     title = getString(R.string.title_screen_item_page_3),
-                    imageUrl = ONBOARD_IMAGE_PAGE_3_URL
+                    imageUrl = ONBOARD_IMAGE_PAGE_3_URL,
+                    placeholder = R.drawable.onboarding_image_page_3_placeholder
             ))
         }
         return listItem
@@ -222,12 +224,12 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val taskStackBuilder = TaskStackBuilder.create(it)
             val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
             taskStackBuilder.addNextIntent(homeIntent)
-            val loginIntent = when(AbTestVariant) {
+            val intent = when(abTestVariant) {
                 ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
                 ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.REGISTER)
                 else -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
             }
-            taskStackBuilder.addNextIntent(loginIntent)
+            taskStackBuilder.addNextIntent(intent)
             taskStackBuilder.startActivities()
         }
     }
@@ -256,9 +258,8 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         const val ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON = "All button"
         const val ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER = "All button register"
         const val ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST = "Button on last"
-        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_SCREEN = "A"
-        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER_SCREEN = "C"
-        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST_SCREEN = "B"
+        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER_SCREEN = "B"
+        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST_SCREEN = "A"
 
         const val ONBOARD_IMAGE_PAGE_1_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_1.png"
         const val ONBOARD_IMAGE_PAGE_2_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_2.png"

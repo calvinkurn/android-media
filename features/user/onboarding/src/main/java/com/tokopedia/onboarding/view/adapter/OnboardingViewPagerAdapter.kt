@@ -7,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.data.OnboardingScreenItem
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -40,7 +38,8 @@ class OnboardingViewPagerAdapter(
         val titleContent = layoutScreen.findViewById<Typography>(R.id.title_content)
 
         val item = listScreen[position]
-        ImageHandler.loadImageWithoutFit(context, imgContent, item.imageUrl)
+        ImageHandler.loadImage(context, imgContent, item.imageUrl, item.placeholder, item.placeholder)
+
         titleContent.text = item.title
 
         if (deviceHeight <= minimumHeight) {

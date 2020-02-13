@@ -10,5 +10,6 @@ import android.view.View
 
 data class OnboardingScreenItem @JvmOverloads constructor(
         var title: String = "",
-        var imageUrl: String = ""
+        var imageUrl: String = "",
+        var placeholder: Int = 0
 )

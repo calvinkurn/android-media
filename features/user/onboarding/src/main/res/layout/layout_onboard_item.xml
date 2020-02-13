@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/onboarding_image_page_1" />
+        tools:src="@drawable/onboarding_image_page_1_placeholder" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_content"
