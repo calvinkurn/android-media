@@ -262,7 +262,7 @@ class ShopOpenRevampQuisionerFragment :
                     it,
                     ErrorHandler.getErrorMessage(context, t),
                     Snackbar.LENGTH_LONG,
-                    "coba lagi",
+                    getString(R.string.open_shop_revamp_retry),
                     View.OnClickListener {
                         retry.invoke()
                     }
