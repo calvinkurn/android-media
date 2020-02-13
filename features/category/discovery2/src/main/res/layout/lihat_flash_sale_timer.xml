@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="dnejdejbdjd"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingRight="@dimen/dp_4"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_16" />
+
+
+    <include
+        android:id="@+id/hours_layout"
+        style="@style/WrapContent"
+        layout="@layout/timer_box_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/day_separator_text_view"
+        app:layout_constraintEnd_toStartOf="@id/title_tv"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hours_separator_text_view"
+        style="@style/TimerSeparatorStyle"
+        app:layout_constraintBottom_toBottomOf="@id/hours_layout"
+        app:layout_constraintEnd_toStartOf="@id/minutes_layout"
+        app:layout_constraintStart_toEndOf="@id/hours_layout"
+        app:layout_constraintTop_toTopOf="@id/minutes_layout"
+        app:layout_constraintVertical_bias="0.23" />
+
+    <include
+        android:id="@+id/minutes_layout"
+        style="@style/WrapContent"
+        layout="@layout/timer_box_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/minutes_separator_text_view"
+        app:layout_constraintStart_toEndOf="@id/hours_separator_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/minutes_separator_text_view"
+        style="@style/TimerSeparatorStyle"
+        app:layout_constraintBottom_toBottomOf="@id/minutes_layout"
+        app:layout_constraintEnd_toStartOf="@id/seconds_layout"
+        app:layout_constraintStart_toEndOf="@id/minutes_layout"
+        app:layout_constraintTop_toTopOf="@id/hours_layout"
+        app:layout_constraintVertical_bias="0.23" />
+
+
+    <include
+        android:id="@+id/seconds_layout"
+        style="@style/WrapContent"
+        layout="@layout/timer_box_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/minutes_separator_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/lihat_semua_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lihat Semua"
+        android:ellipsize="end"
+        android:gravity="end"
+        android:maxLines="1"
+        android:textColor="@color/clr_03AC0E"
+        android:textSize="@dimen/sp_14" />
+
+</LinearLayout>
