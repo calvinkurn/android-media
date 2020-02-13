@@ -45,7 +45,7 @@ class PlayCardViewHolder(
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
-        private const val DELAY_CLICKABLE = 1000L
+        private const val DELAY_CLICKABLE = 1500L
     }
 
     private var helper: HomePlayWidgetHelper? = null

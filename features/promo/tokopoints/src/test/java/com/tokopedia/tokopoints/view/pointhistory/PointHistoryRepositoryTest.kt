@@ -36,8 +36,6 @@ class PointHistoryRepositoryTest {
         runBlocking{
            assert(repository.getPointsDetail() == data)
         }
-
-
     }
 
     @Test
