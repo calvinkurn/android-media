@@ -25,12 +25,12 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class SummaryViewModel @Inject constructor(
-private val context: Context,
-private val userSession: UserSessionInterface,
-@Named("Main")
-private val dispatcher: CoroutineDispatcher,
-private val rawQueries: Map<String, String>,
-private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
+        private val context: Context,
+        private val userSession: UserSessionInterface,
+        @Named("Main")
+        private val dispatcher: CoroutineDispatcher,
+        private val rawQueries: Map<String, String>,
+        private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
     fun getTopAdsDeposit(onSuccessGetDeposit: ((TopAdsDepositResponse.Data) -> Unit),
                          onErrorGetAds: ((Throwable) -> Unit)) {
@@ -57,12 +57,10 @@ private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
     }
 
 
-    fun topAdsCreated(param :HashMap<String,Any>,onSuccessGetDeposit: ((ResponseCreateGroup) -> Unit),
-                         onErrorGetAds: ((Throwable) -> Unit)) {
+    fun topAdsCreated(param: HashMap<String, Any>, onSuccessGetDeposit: ((ResponseCreateGroup) -> Unit),
+                      onErrorGetAds: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-//                    val param = mapOf(SHOP_Id to userSession.shopId.toInt(),
-//                            CREDIT_DATA to "unclaimed", SHOP_DATA to "1")
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_activate_ads),
                                 ResponseCreateGroup::class.java,

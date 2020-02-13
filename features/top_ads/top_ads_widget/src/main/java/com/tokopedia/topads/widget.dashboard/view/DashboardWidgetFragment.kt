@@ -69,7 +69,6 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         loadData()
-        super.onResume()
     }
 
     private fun onSuccessGetStatistic(data: TopAdsStatisticResponse.Data) {

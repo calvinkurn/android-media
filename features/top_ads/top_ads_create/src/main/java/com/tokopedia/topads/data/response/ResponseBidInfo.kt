@@ -27,17 +27,6 @@ data class ResponseBidInfo(
 
                     @field:SerializedName("min_bid")
                     val minBid: Int = 0
-//
-//                    @field:SerializedName("min_daily_budget")
-//                    val minDailyBudget: Int = 0,
-
-//
-//                    @field:SerializedName("multiplier")
-//                    val multiplier: Int = 0,
-//
-
-//                    @field:SerializedName("id")
-//                    val id: Int = 0,
 
             )
         }
