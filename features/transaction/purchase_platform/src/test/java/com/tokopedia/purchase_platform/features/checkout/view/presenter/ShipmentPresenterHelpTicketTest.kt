@@ -99,11 +99,13 @@ object ShipmentPresenterHelpTicketTest : Spek({
 
         Scenario("Show Error Reporter Dialog") {
 
+            val data = CheckoutData().apply {
+                isError = true
+                errorReporter = ErrorReporter(eligible = true)
+            }
+
             Given("mock response") {
-                every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
-                    isError = true
-                    errorReporter = ErrorReporter(eligible = true)
-                })
+                every { checkoutUseCase.createObservable(any()) } returns Observable.just(data)
             }
 
             Given("mock cart") {
@@ -117,12 +119,14 @@ object ShipmentPresenterHelpTicketTest : Spek({
 
             Then("should render error reporter dialog") {
                 verify(exactly = 1) {
-                    view.renderCheckoutCartErrorReporter(any())
+                    view.renderCheckoutCartErrorReporter(data)
                 }
             }
         }
 
         Scenario("Submit Help Ticket Success") {
+
+            val result = SubmitTicketResult(status = true)
 
             Given("mock response") {
                 every {
@@ -130,7 +134,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
                         val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
                         request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
                     })
-                } returns Observable.just(SubmitTicketResult(status = true))
+                } returns Observable.just(result)
             }
 
             When("process checkout") {
@@ -143,7 +147,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
 
             Then("should render success submit ticket dialog") {
                 verify(exactly = 1) {
-                    view.renderSubmitHelpTicketSuccess(any())
+                    view.renderSubmitHelpTicketSuccess(result)
                 }
             }
         }
