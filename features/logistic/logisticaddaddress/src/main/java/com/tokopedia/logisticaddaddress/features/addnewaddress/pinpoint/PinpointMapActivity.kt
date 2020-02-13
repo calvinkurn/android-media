@@ -17,7 +17,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 class PinpointMapActivity : BaseSimpleActivity() {
     private val FINISH_FLAG = 1212
     var SCREEN_NAME = "PinpointMapActivity"
-    private var isFullFLow: Boolean? = true
+    private var isFullFLow: Boolean = true
 
     companion object {
         @JvmStatic
@@ -39,7 +39,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isFullFLow = intent?.extras?.getBoolean(EXTRA_IS_FULL_FLOW)
+        isFullFLow?.let {
+            intent?.extras?.getBoolean(EXTRA_IS_FULL_FLOW, true)
+        }
     }
 
     override fun getScreenName(): String {
@@ -77,10 +79,10 @@ class PinpointMapActivity : BaseSimpleActivity() {
         }
 
         if (isAllowed) {
-            if(isFullFLow == false) AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(eventLabel = NON_LOGISTIC_LABEL)
+            if(!isFullFLow) AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(eventLabel = NON_LOGISTIC_LABEL)
             else AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(eventLabel = LOGISTIC_LABEL)
         } else {
-            if(isFullFLow  == false) AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(eventLabel = NON_LOGISTIC_LABEL)
+            if(!isFullFLow) AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(eventLabel = NON_LOGISTIC_LABEL)
             else AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(eventLabel = LOGISTIC_LABEL)
         }
 
