@@ -15,7 +15,7 @@ import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 class PopularBrandAdapter(private val context: Context) :
         RecyclerView.Adapter<PopularBrandAdapter.PopularBrandViewHolder>() {
 
-    private var popularBrands: MutableList<Shop> = mutableListOf()
+    private var popularBrands: List<Shop> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularBrandViewHolder {
         return PopularBrandViewHolder(LayoutInflater.from(context).inflate(R.layout.brandlist_popular_brand_item, parent, false))
@@ -48,7 +48,7 @@ class PopularBrandAdapter(private val context: Context) :
     }
 
     fun setPopularBrands(popularBrandList: List<Shop>) {
-        popularBrands.addAll(popularBrandList)
+        popularBrands = popularBrandList
         notifyDataSetChanged()
     }
 

@@ -26,7 +26,8 @@ class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageT
     }
 
     override fun type(allBrandHeaderViewModel: AllBrandHeaderViewModel): Int {
-        return AllBrandHeaderViewHolder.LAYOUT
+        return if (allBrandHeaderViewModel.title.isNullOrEmpty()) HideViewHolder.LAYOUT
+        else AllBrandHeaderViewHolder.LAYOUT
     }
 
     override fun type(allBrandViewModel: AllBrandViewModel): Int {

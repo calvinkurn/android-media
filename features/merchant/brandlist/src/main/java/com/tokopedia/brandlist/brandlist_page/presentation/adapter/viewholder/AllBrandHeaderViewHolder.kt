@@ -14,18 +14,18 @@ class AllBrandHeaderViewHolder(itemView: View?) : AbstractViewHolder<AllBrandHea
     private var totalBrandView: AppCompatTextView? = null
 
     init {
-//        headerView = itemView?.findViewById(R.id.tv_header)
-//        totalBrandView = itemView?.findViewById(R.id.tv_total_brand)
+        headerView = itemView?.findViewById(R.id.tv_header)
+        totalBrandView = itemView?.findViewById(R.id.tv_total_brand)
     }
 
     override fun bind(element: AllBrandHeaderViewModel?) {
 
-//        headerView?.text = element?.title
-//
-//        val totalBrandAmount = element?.totalBrands?.toString()
-//        totalBrandAmount?.let {
-//            totalBrandView?.text = totalBrandAmount + " " + "Brand"
-//        }
+        headerView?.text = element?.title
+
+        val totalBrandAmount = element?.totalBrands?.toString()
+        totalBrandAmount?.let {
+            totalBrandView?.text = totalBrandAmount + " " + "Brand"
+        }
     }
 
     companion object {

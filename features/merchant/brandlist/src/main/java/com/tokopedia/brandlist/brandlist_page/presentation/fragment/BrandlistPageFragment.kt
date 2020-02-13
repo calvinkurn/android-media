@@ -163,7 +163,7 @@ class BrandlistPageFragment :
                         || it is PopularBrandViewModel
                         || it is NewBrandViewModel
                         || it is AllBrandHeaderViewModel
-//                        || it is AllBrandViewModel
+                        || it is AllBrandViewModel
             }
 
             adapter?.notifyDataSetChanged()
@@ -235,7 +235,7 @@ class BrandlistPageFragment :
                     swipeRefreshLayout?.isRefreshing = false
                     endlessScrollListener.updateStateAfterGetData()
                     BrandlistPageMapper.mappingAllBrandHeader(getString(R.string.brandlist_all_brand), it.data.totalBrands, adapter)
-//                    BrandlistPageMapper.mappingAllBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingAllBrand(it.data, adapter)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false

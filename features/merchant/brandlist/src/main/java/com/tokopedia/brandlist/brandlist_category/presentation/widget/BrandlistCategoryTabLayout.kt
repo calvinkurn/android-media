@@ -42,7 +42,7 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
 
         // add on tab selected listener
         clearOnTabSelectedListeners()
-        addOnTabSelectedListener(createOnTabSelectedListener(categoryTabModels))
+        addOnTabSelectedListener(createOnTabSelectedListener(viewPager, categoryTabModels))
 
         // add on page change listener
         viewPager?.clearOnPageChangeListeners()
@@ -84,7 +84,7 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
         return view
     }
 
-    private fun createOnTabSelectedListener(categoryTabModels: ArrayList<CategoryTabModel>): OnTabSelectedListener {
+    private fun createOnTabSelectedListener(viewPager: ViewPager?, categoryTabModels: ArrayList<CategoryTabModel>): OnTabSelectedListener {
         return object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab?) {
                 tab?.let { activateTab(tab, categoryTabModels[tab.position]) }
@@ -96,6 +96,7 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
 
             override fun onTabSelected(tab: Tab?) {
                 tab?.let { activateTab(tab, categoryTabModels[tab.position]) }
+                tab?.let { viewPager?.currentItem = tab.position }
             }
         }
     }
@@ -143,6 +144,7 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
             }
 
             override fun onPageSelected(position: Int) {
+                getTabAt(position)?.select()
             }
         }
     }

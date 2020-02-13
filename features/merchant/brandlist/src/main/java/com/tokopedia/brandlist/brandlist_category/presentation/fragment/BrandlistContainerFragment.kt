@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURR
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -33,7 +32,6 @@ import com.tokopedia.brandlist.brandlist_category.presentation.viewmodel.Brandli
 import com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -137,28 +135,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         mainToolbar?.let {
             configMainToolbar(it)
         }
-
-        viewPager?.addOnPageChangeListener(createOnPageChangeListener())
-    }
-
-    private fun createOnPageChangeListener(): ViewPager.OnPageChangeListener {
-
-        return object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-                val selectedCategory = tabAdapter.categories.getOrNull(position.toZeroIfNull())
-                selectedCategory.let {
-                    tabLayout?.getTabAt(position)?.select()
-                }
-            }
-
-        }
     }
 
     private fun observeBrandListCategoriesData() {
@@ -188,27 +164,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         tabLayout?.setup(viewPager, convertToCategoryTabModels(brandListCategories.categories), appbarCategory)
 
         tabLayout?.getTabAt(0)?.select()
-
-        tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                val categoryReselected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
-                categoryReselected.let {
-                    val tabPosition = tab?.position
-                    if (tabPosition != null) viewPager?.currentItem = tabPosition
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                val categorySelected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
-                categorySelected.let {
-                    val tabPosition = tab?.position
-                    if (tabPosition != null) viewPager?.currentItem = tabPosition
-                }
-            }
-
-        })
     }
 
     private fun convertToCategoryTabModels(data: List<Category>): List<BrandlistCategoryTabLayout.CategoryTabModel> {
@@ -276,7 +231,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
             mainToolbar.setNavigationIcon(R.drawable.brandlist_icon_arrow_black)
             mainToolbar.searchApplink = ApplinkConstInternalMechant.BRANDLIST_SEARCH
-            mainToolbar.setQuerySearch(getString(R.string.bl_query_search))
+            mainToolbar.setQuerySearch(getString(R.string.brandlist_search_view_hint))
             mainToolbar.btnWishlist?.hide()
             mainToolbar.btnInbox?.hide()
             mainToolbar.btnNotification?.hide()
