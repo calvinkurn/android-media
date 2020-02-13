@@ -47,16 +47,13 @@ class TalkAnalytics @Inject constructor() {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    fun trackClickReplyButton(talkId: String, productId: String) {
-        val data = mapOf(
-                TrackAppUtils.EVENT to EVENT_CLICK_PDP,
-                TrackAppUtils.EVENT_CATEGORY to CATEGORY_INBOX_TALK,
-                TrackAppUtils.EVENT_ACTION to ACTION_REPLY_TALK,
-                TrackAppUtils.EVENT_LABEL to talkId,
-                "productId" to productId
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    fun trackClickReplyButton(talkId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click on reply discussion",
+                talkId
+        ))
     }
 
     fun trackClickReplyButtonFromShop(talkId: String) {
@@ -243,6 +240,7 @@ class TalkAnalytics @Inject constructor() {
                 TrackAppUtils.EVENT to EVENT_CLICK_PDP,
                 TrackAppUtils.EVENT_CATEGORY to CATEGORY_INBOX_TALK,
                 TrackAppUtils.EVENT_ACTION to ACTION_CREATE_NEW_TALK,
+                TrackAppUtils.EVENT_LABEL to "",
                 "productId" to productId
         )
 
