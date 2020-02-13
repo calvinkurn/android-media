@@ -149,7 +149,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
             shop_name?.text = cpmData?.cpm?.cpmShop?.name
-            description?.text = cpmData?.cpm?.cpmShop?.tagline
+            description?.text = cpmData?.cpm?.cpmShop?.slogan
             kunjungi_toko?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)

@@ -106,7 +106,26 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_order"/>
+
+            </intent-filter>
+
         </activity>
+
+        <activity
+            android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="uiMode"
+            android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".requestpickup.presentation.activity.SomConfirmReqPickupActivity"

@@ -30,7 +30,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
-import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.model.NotificationViewData
@@ -277,6 +276,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
+    override fun addProductToCheckout(notification: NotificationItemViewBean) {
+        RouteManager.route(context, notification.dataNotification.checkoutUrl)
+        analytics.trackProductCheckoutBuyClick(notification)
+    }
+
     private fun updateMarkAllReadCounter() {
         markAllReadCounter -= 1
     }
@@ -323,10 +327,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
         presenter.addProductToCart(product, onSuccessAddToCart)
-    }
-
-    override fun addProductToCheckout(notification: DataNotification) {
-        RouteManager.route(context, notification.checkoutUrl)
     }
 
     override fun onTrackerAddToCart(product: ProductData, atc: DataModel) {

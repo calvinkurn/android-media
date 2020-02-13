@@ -151,13 +151,15 @@ class NormalCheckoutTracking {
                              shopName: String? = NONE_OTHER,
                              cartId: String? = NONE_OTHER,
                              trackerAttribution: String?,
-                             trackerListName: String?) {
+                             trackerListName: String?,
+                             customEventLabel: String) {
         isTrackTradeIn = true
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
                 "click beli sekarang",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
-                trackerAttribution, trackerListName, false)
+                trackerAttribution, trackerListName, false ,
+                "", false, customEventLabel,"")
     }
 
     private fun eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -198,6 +200,7 @@ class NormalCheckoutTracking {
 
         val eventLabel = when {
             reference == ApplinkConst.TOPCHAT && customEventLabel.isNotEmpty() -> customEventLabel
+            isTrackTradeIn -> customEventLabel
             else -> productVariantString
         }
 

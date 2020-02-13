@@ -27,7 +27,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -1134,16 +1134,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onShareClick(positionInFeed: Int, id: Int, title: String,
                               description: String, url: String,
                               imageUrl: String) {
-        if (activity != null) {
-            ShareBottomSheets().show(activity!!.supportFragmentManager,
-                    ShareBottomSheets.constructShareData("", imageUrl, url, description, title),
-                    object : ShareBottomSheets.OnShareItemClickListener {
-                        override fun onShareItemClicked(packageName: String) {
+        activity?.let {
 
-                        }
-                    })
+            ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
+                override fun onShareItemClicked(packageName: String) {
+
+                }
+            },"", imageUrl, url, description, title)
+        }.also {
+            fragmentManager?.run {
+                it?.show(this)
+            }
         }
-
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
     }
 
@@ -1644,6 +1646,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
+        adapter.notifyItemChanged(data.rowNumber, data.adapterPosition)
         ToasterError.make(view, data.errorMessage, BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_try_again
                 ) { v -> feedViewModel.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId) }

@@ -1,10 +1,10 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupWithErrorData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledCartItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledItemHeaderHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledCartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledShopHolderData
 import javax.inject.Inject
 
 /**

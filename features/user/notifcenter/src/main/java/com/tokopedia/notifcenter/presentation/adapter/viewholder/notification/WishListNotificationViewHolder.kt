@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseProductCampaignViewHolder
@@ -21,6 +22,7 @@ class WishListNotificationViewHolder(
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.notifcenter_ic_add_to_cart)
+        listener.getAnalytic().saveProductCardImpression(element, adapterPosition)
 
         with(product) {
             btnCart.setImageDrawable(atcDrawable)
@@ -37,6 +39,10 @@ class WishListNotificationViewHolder(
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
         }
+    }
+
+    override fun bindProductClickTrack(element: NotificationItemViewBean) {
+        listener.getAnalytic().trackAtcToPdpClick(element)
     }
 
     private fun onSuccessAddToCart(): () -> Unit {

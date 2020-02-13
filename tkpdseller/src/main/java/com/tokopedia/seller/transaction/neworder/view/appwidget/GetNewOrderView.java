@@ -1,6 +1,6 @@
 package com.tokopedia.seller.transaction.neworder.view.appwidget;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
 
 import java.util.List;

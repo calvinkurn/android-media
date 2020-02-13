@@ -26,6 +26,8 @@ abstract class BaseProductCampaignViewHolder(
 
     abstract fun bindProductView(element: NotificationItemViewBean)
 
+    abstract fun bindProductClickTrack(element: NotificationItemViewBean)
+
     override fun bindNotificationPayload(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         bindProductView(element)
@@ -51,9 +53,9 @@ abstract class BaseProductCampaignViewHolder(
 
     private fun getItemClickListener(product: ProductData, element: NotificationItemViewBean): View.OnClickListener {
         return View.OnClickListener {
-            element.isRead = true
             listener.itemClicked(element, adapterPosition)
-            listener.getAnalytic().trackAtcToPdpClick(product)
+            bindProductClickTrack(element)
+            element.isRead = true
             RouteManager.route(
                     itemView.context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,

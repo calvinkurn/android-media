@@ -64,4 +64,7 @@ object ApplinkConstInternalOrder {
     @JvmField
     val FINISHED = "$INTERNAL_SELLER/finished"
 
+    @JvmField
+    val ORDER_DETAIL = "$INTERNAL_SELLER/order/{order_id}"
+
 }

@@ -69,30 +69,24 @@ open class NotificationItemViewBean(
         parcel.writeInt(totalProduct)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     fun getAtcProduct(): ProductData? {
         var product: ProductData? = null
         if (products.isNotEmpty()) {
-            product = products[0]
+            product = products.first()
         }
         return product
     }
 
-    fun getProductIdImpression(): String {
+    private fun getProductIdImpression(): String {
         if (products.isEmpty()) return ""
-        var productId = ""
-        val product = products[0]
-        if (isWishlistPriceDrop()) {
-            productId = product.productId
-        }
-        return productId
+        val product = products.first()
+        return if (isHasProductCard()) product.productId else ""
     }
 
-    private fun isWishlistPriceDrop(): Boolean {
-        return typeLink == 3
+    private fun isHasProductCard(): Boolean {
+        return typeLink == TYPE_WISHLIST || typeLink == TYPE_PRODUCT_CHECKOUT
     }
 
     fun getImpressionTrackLabel(location: String): String {
@@ -101,7 +95,6 @@ open class NotificationItemViewBean(
     }
 
     companion object {
-
         const val BUYER_TYPE = 1
         const val SELLER_TYPE = 2
 
