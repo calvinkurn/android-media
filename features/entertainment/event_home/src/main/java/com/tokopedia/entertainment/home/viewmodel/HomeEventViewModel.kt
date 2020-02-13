@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.home.viewmodel
 
-import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -35,7 +34,6 @@ import javax.inject.Inject
  */
 
 class HomeEventViewModel @Inject constructor(
-        private val context: Context,
         private val dispatcher: CoroutineDispatcher,
         private val gqlRepository: GraphqlRepository,
         private val restRepository: RestRepository,
@@ -72,9 +70,9 @@ class HomeEventViewModel @Inject constructor(
                     val result = withContext(Dispatchers.IO) {
                         val copy = item.copy(isLiked = item.isLiked != true)
                         val actionLikedRequest = ActionLikedRequest(ActionLikedRequest.Rating(
-                                "", copy.isLiked.toString(), item.produkId, item.rating,
-                                userSession.userId.toIntOrZero()
-                        ))
+                                        isLiked = copy.isLiked.toString(),
+                                        productId = copy.produkId,
+                                        userId = userSession.userId.toIntOrZero()))
                         val headers = HashMap<String, String>()
                         headers.put("Content-Type", "application/json")
                         val restRequest = RestRequest.Builder(BASE_REST_URL + PATH_EVENTS_LIKES,
@@ -100,7 +98,7 @@ class HomeEventViewModel @Inject constructor(
     private fun mappingItem(data: EventHomeDataResponse.Data): MutableList<HomeEventItem<*>> {
         val items: MutableList<HomeEventItem<*>> = mutableListOf()
         val layouts = data.eventHome.layout
-        val bannerItem: EventHomeDataResponse.Data.EventHome.Layout? = layouts.find { it.id.toInt() == 0 }
+        val bannerItem: EventHomeDataResponse.Data.EventHome.Layout? = layouts.find { it.id.toIntOrZero() == 0 }
         bannerItem?.let {
             items.add(BannerViewModel(it))
             layouts.remove(it)

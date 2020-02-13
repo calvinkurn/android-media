@@ -14,14 +14,13 @@ import javax.inject.Inject
  */
 
 class HomeEventViewModelFactory @Inject constructor(
-        private val context: Context,
         private val dispatcher: CoroutineDispatcher,
         private val gqlRepository: GraphqlRepository,
         private val restRepository: RestRepository,
         private val userSession: UserSessionInterface) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return HomeEventViewModel(context, dispatcher, gqlRepository, restRepository, userSession) as T
+        return HomeEventViewModel(dispatcher, gqlRepository, restRepository, userSession) as T
     }
 
 }
