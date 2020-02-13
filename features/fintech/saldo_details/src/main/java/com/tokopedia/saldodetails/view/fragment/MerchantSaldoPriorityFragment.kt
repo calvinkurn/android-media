@@ -81,13 +81,14 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_prioritas, container, false)
-        val bundle = arguments
-
-        val saveInstanceCacheManagerId = bundle?.getString(BUNDLE_PARAM_SELLER_DETAILS_ID) ?: ""
-        val saveInstanceCacheManager = SaveInstanceCacheManager(context!!, saveInstanceCacheManagerId)
-        sellerDetails = saveInstanceCacheManager.get(BUNDLE_PARAM_SELLER_DETAILS, GqlDetailsResponse::class.java)
-        initViews(view)
-        setViewModelObservers()
+        if (savedInstanceState == null) {
+            val bundle = arguments
+            val saveInstanceCacheManagerId = bundle?.getString(BUNDLE_PARAM_SELLER_DETAILS_ID) ?: ""
+            val saveInstanceCacheManager = SaveInstanceCacheManager(context!!, saveInstanceCacheManagerId)
+            sellerDetails = saveInstanceCacheManager.get(BUNDLE_PARAM_SELLER_DETAILS, GqlDetailsResponse::class.java)
+            initViews(view)
+            setViewModelObservers()
+        }
         return view
     }
 
@@ -95,12 +96,13 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         merchantSaldoPriorityViewModel.gqlUpdateSaldoStatusLiveData.observe(context as AppCompatActivity,
                 Observer {
                     when (it) {
-                       is Success -> {
-                           if (it.data.merchantSaldoStatus?.isSuccess!!) {
-                                    onSaldoStatusUpdateSuccess(it.data.merchantSaldoStatus?.value ?: false)
-                                } else {
-                                    onSaldoStatusUpdateError("")
-                                }
+                        is Success -> {
+                            if (it.data.merchantSaldoStatus?.isSuccess!!) {
+                                onSaldoStatusUpdateSuccess(it.data.merchantSaldoStatus?.value
+                                        ?: false)
+                            } else {
+                                onSaldoStatusUpdateError("")
+                            }
                             hideProgressLoading()
                         }
                         else -> {
@@ -112,8 +114,10 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        populateData()
-        initListeners()
+        if (savedInstanceState == null) {
+            populateData()
+            initListeners()
+        }
     }
 
     override fun onAttach(context: Context) {

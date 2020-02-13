@@ -49,17 +49,21 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_history_list, container, false)
-        initViews(view)
-        initialVar()
-        addObserver()
+        if (savedInstanceState == null) {
+            initViews(view)
+            initialVar()
+            addObserver()
+        }
         return view
     }
 
     private fun addObserver() {
-        when (transactionType) {
-            FOR_ALL -> addAllTransactionObserver()
-            FOR_BUYER -> buyerObserver()
-            FOR_SELLER -> sellerObserver()
+        if(::viewModel.isInitialized) {
+            when (transactionType) {
+                FOR_ALL -> addAllTransactionObserver()
+                FOR_BUYER -> buyerObserver()
+                FOR_SELLER -> sellerObserver()
+            }
         }
     }
 

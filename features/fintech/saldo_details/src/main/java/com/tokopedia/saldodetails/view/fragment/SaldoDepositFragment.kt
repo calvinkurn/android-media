@@ -19,10 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -283,9 +280,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             merchantDetailLL!!.gone()
         }
 
-        saldoHistoryFragment = childFragmentManager.findFragmentById(
-                com.tokopedia.saldodetails.R.id.saldo_history_layout) as SaldoTransactionHistoryFragment?
-
+        val saldoHistoryFragment = SaldoTransactionHistoryFragment()
+        childFragmentManager.beginTransaction()
+                .replace(com.tokopedia.saldodetails.R.id.saldo_history_layout, saldoHistoryFragment,"saldo History")
+                .commit()
+        this.saldoHistoryFragment = saldoHistoryFragment
 
     }
 
