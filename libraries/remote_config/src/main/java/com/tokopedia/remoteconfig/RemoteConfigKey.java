@@ -123,8 +123,6 @@ public class RemoteConfigKey {
 
     public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
 
-    public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
-
     public static final String RC_ENABLE_REVAMP_SOM = "android_enable_revamp_som";
 
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
