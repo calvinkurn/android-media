@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.tokopedia.analytics.debugger.helper.FormatterHelperKt.formatDataExcerpt;
+
 public class GtmErrorLogLocalRepository{
     private GtmErrorLogDBSource dbSource;
     private DateFormat dateFormat;
@@ -49,12 +51,7 @@ public class GtmErrorLogLocalRepository{
                         viewModel.setName("");
                         viewModel.setCategory("");
                         viewModel.setData(gtmErrorLogDB.getData());
-                        if(gtmErrorLogDB.getData().length() > 100) {
-                            viewModel.setDataExcerpt(gtmErrorLogDB.getData().replaceAll("\\s+", " ").substring(0,100) + "...");
-                        } else {
-                            viewModel.setDataExcerpt(gtmErrorLogDB.getData().replaceAll("\\s+", " "));
-                        }
-
+                        viewModel.setDataExcerpt(formatDataExcerpt(gtmErrorLogDB.getData()));
                         viewModel.setTimestamp(dateFormat.format(new Date(gtmErrorLogDB.getTimestamp())));
 
                         return Observable.just(viewModel);
