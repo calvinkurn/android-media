@@ -1,11 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
+import android.accounts.NetworkErrorException
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.InstantTaskExecutorRuleSpek
 import com.tokopedia.logisticaddaddress.data.entity.response.GetStoreResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffUiModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
@@ -23,6 +25,7 @@ object DropoffPickerViewModelTest : Spek({
     val mapper: GetStoreMapper = mockk()
     val usecase: GraphqlUseCase<GetStoreResponse> = mockk(relaxed = true)
     val dispatcher: CoroutineDispatcher = mockk()
+    val storeObserver = mockk<Observer<Result<DropoffUiModel>>>(relaxed = true)
     lateinit var viewModel: DropoffPickerViewModel
 
     beforeEachTest {
@@ -46,20 +49,39 @@ object DropoffPickerViewModelTest : Spek({
         }
 
         Scenario("success") {
-            val observer = mockk<Observer<Result<DropoffUiModel>>>(relaxed = true)
+            val testData = DropoffUiModel(listOf(), 1)
+
             Given("gives success value") {
                 every { usecase.execute(any(), any()) } answers {
                     firstArg<(GetStoreResponse) -> Unit>().invoke(GetStoreResponse())
                 }
-                every { mapper.map(GetStoreResponse()) } returns DropoffUiModel(listOf(), 0)
+                every { mapper.map(GetStoreResponse()) } returns testData
             }
             When("executed") {
-                viewModel.storeData.observeForever(observer)
+                viewModel.storeData.observeForever(storeObserver)
                 viewModel.getStores("")
             }
             Then("data updated with success value") {
                 verify {
-                    observer.onChanged(Success(DropoffUiModel(listOf(), 0)))
+                    storeObserver.onChanged(Success(testData))
+                }
+            }
+        }
+
+        Scenario("fail") {
+            val testError = NetworkErrorException("test error")
+            Given("gives error") {
+                every { usecase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(testError)
+                }
+            }
+            When("executed") {
+                viewModel.storeData.observeForever(storeObserver)
+                viewModel.getStores("")
+            }
+            Then("data updated with error value") {
+                verify {
+                    storeObserver.onChanged(Fail(testError))
                 }
             }
         }
