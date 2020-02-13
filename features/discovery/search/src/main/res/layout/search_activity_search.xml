@@ -181,7 +181,7 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_nav_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -199,7 +199,11 @@
             android:paddingLeft="@dimen/dp_22"
             android:paddingRight="@dimen/dp_22"
             android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12">
+            android:paddingBottom="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/search_nav_divider"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -220,7 +224,11 @@
             android:id="@+id/search_nav_divider"
             android:layout_width="1px"
             android:layout_height="@dimen/dp_32"
-            android:background="@color/grey_300"/>
+            android:background="@color/grey_300"
+            app:layout_constraintStart_toEndOf="@id/button_sort"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/button_filter"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <LinearLayout
             android:id="@+id/button_filter"
@@ -230,7 +238,11 @@
             android:paddingLeft="@dimen/dp_22"
             android:paddingRight="@dimen/dp_22"
             android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12">
+            android:paddingBottom="@dimen/dp_12"
+            app:layout_constraintStart_toEndOf="@id/search_nav_divider"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -248,7 +260,7 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.filter.widget.BottomSheetFilterView
         android:id="@+id/bottomSheetFilter"
