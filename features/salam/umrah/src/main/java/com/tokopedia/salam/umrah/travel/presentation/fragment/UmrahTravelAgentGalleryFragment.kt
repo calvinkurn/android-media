@@ -8,9 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -34,6 +37,7 @@ import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragmen
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelGalleryViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_umrah_travel_agent_gallery.*
 import javax.inject.Inject
 
 class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTravelGalleryAdapterTypeFactory>(),
@@ -47,6 +51,11 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
 
     @Inject
     lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
+
+
+    @Inject
+    lateinit var umrahTracking: UmrahTrackingAnalytics
+
 
     var galleries: List<UmrahGallery> = emptyList()
     var galleriesParam: UmrahGalleriesInput = UmrahGalleriesInput()
@@ -106,7 +115,8 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
         })
     }
 
-    override fun onPlayYoutube(url: String) {
+    override fun onPlayYoutube(url: String, positionAdapter: Int, positionVideo:Int) {
+        umrahTrackingUtil.umrahTravelAgentGalleryClicked(galleries[positionAdapter], positionVideo)
         context?.let {
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(view?.context?.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
@@ -118,13 +128,51 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
         }
     }
 
+
     private fun onSuccessGetResult(data: List<UmrahGallery>) {
         galleries = data
+        rv_umrah_travel_galleries.apply{
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && userVisibleHint) {
+                        val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                        val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                        val dataList = (adapter as BaseListAdapter<*, *>).data
+                        trackImpression(firstVisibleItem, lastVisibleItem, dataList)
+                    }
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if(userVisibleHint) {
+                        val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                        val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                        val dataList = (adapter as BaseListAdapter<*, *>).data
+                        trackImpression(firstVisibleItem, lastVisibleItem, dataList)
+                    }
+                }
+            })
+        }
         renderList(data, data.size >= galleriesParam.limit)
     }
 
-    override fun getRecyclerViewResourceId(): Int = R.id.rv_umrah_travel_galleries
 
+    private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
+        for (i in startIndex..lastIndex) {
+            if (i < data.size) {
+                if (data[i] is UmrahGallery) {
+                    val gallery = data[i] as UmrahGallery
+                    if (!gallery.isViewed) {
+                        umrahTracking.umrahTravelAgentImpressionGallery(gallery)
+                        gallery.isViewed = true
+                    }
+                }
+            }
+        }
+    }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.rv_umrah_travel_galleries
 
     private fun requestData(page: Int) {
         slugName?.let {
@@ -149,20 +197,22 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
                 }
     }
 
-    override fun onClickThreeImage(position: Int) {
-        showImagePreview(position)
+    override fun onClickThreeImage(positionAdapter: Int,positionImage:Int) {
+        umrahTrackingUtil.umrahTravelAgentGalleryClicked(galleries[positionAdapter], positionImage)
+        showImagePreview(positionAdapter,positionImage)
     }
 
-    override fun onClickOneImage(position: Int) {
-        showImagePreview(position)
+    override fun onClickOneImage(positionAdapter: Int, positionImage:Int) {
+        umrahTrackingUtil.umrahTravelAgentGalleryClicked(galleries[positionAdapter], positionImage)
+        showImagePreview(positionAdapter,positionImage)
     }
 
-    private fun showImagePreview(position: Int) {
-        val mappedSource = UmrahGalleryImageMapper.galleryImageSource(galleries[position].medias)
-        val mappedThumbail = UmrahGalleryImageMapper.galleryImageThumbnail(galleries[position].medias)
+    private fun showImagePreview(positionAdapter: Int,positionImage:Int) {
+        val mappedSource = UmrahGalleryImageMapper.galleryImageSource(galleries[positionAdapter].medias)
+        val mappedThumbail = UmrahGalleryImageMapper.galleryImageThumbnail(galleries[positionAdapter].medias)
         context?.run {
             startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                    this, getString(R.string.umrah_home_page_partner_label), mappedSource, mappedThumbail, position
+                    this, getString(R.string.umrah_home_page_partner_label), mappedSource, mappedThumbail, positionImage
             ))
         }
     }

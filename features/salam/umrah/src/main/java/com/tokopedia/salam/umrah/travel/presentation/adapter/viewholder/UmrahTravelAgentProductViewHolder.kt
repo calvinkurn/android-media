@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.item_umrah_search.view.*
  * @author by Firman on 3/2/20
  */
 
-class UmrahTravelAgentProductViewHolder (view: View): AbstractViewHolder<UmrahTravelProduct>(view){
+class UmrahTravelAgentProductViewHolder (view: View, private val listener: SetOnClickListener): AbstractViewHolder<UmrahTravelProduct>(view){
     override fun bind(element: UmrahTravelProduct) {
         with(itemView){
             iv_umrah_image.loadImage(element.banners.first())
@@ -30,6 +30,7 @@ class UmrahTravelAgentProductViewHolder (view: View): AbstractViewHolder<UmrahTr
             tg_umrah_start_from_label.text = UmrahPriceUtil.getSlashedPrice(resources, element.slashPrice)
 
             setOnClickListener {
+                listener.onProductClicked(element, position)
                 RouteManager.route(context, ApplinkConst.SALAM_UMRAH_PDP, element.slugName)
             }
         }
@@ -37,5 +38,9 @@ class UmrahTravelAgentProductViewHolder (view: View): AbstractViewHolder<UmrahTr
 
     companion object{
         val LAYOUT = R.layout.item_umrah_search
+    }
+
+    interface SetOnClickListener{
+        fun onProductClicked(umrahTravelProduct: UmrahTravelProduct, position:Int)
     }
 }

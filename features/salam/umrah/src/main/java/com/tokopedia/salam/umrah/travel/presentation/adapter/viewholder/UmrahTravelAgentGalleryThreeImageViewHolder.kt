@@ -20,16 +20,28 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View, val listener : Set
             if(element.description.isNotEmpty()) tg_umrah_gallery_three_image_desc.text = element.description
             else tg_umrah_gallery_three_image_desc.gone()
 
-            if(element.medias.size >= 1 && element.medias[0].source.isNotEmpty())
+            if(element.medias.size >= 1 && element.medias[0].source.isNotEmpty()){
                 iw_umrah_gallery_three_image_first.loadImage(element.medias[0].source)
+                iw_umrah_gallery_three_image_first.setOnClickListener {
+                    listener.onClickThreeImage(adapterPosition,0)
+                }
+            }
             else iw_umrah_gallery_three_image_first.invisible()
 
-            if(element.medias.size >= 2 && element.medias[1].source.isNotEmpty())
+            if(element.medias.size >= 2 && element.medias[1].source.isNotEmpty()){
                 iw_umrah_gallery_three_image_second.loadImage(element.medias[1].source)
+                iw_umrah_gallery_three_image_second.setOnClickListener {
+                    listener.onClickThreeImage(adapterPosition,1)
+                }
+            }
             else iw_umrah_gallery_three_image_second.invisible()
 
-            if(element.medias.size >= 3 && element.medias[2].source.isNotEmpty())
+            if(element.medias.size >= 3 && element.medias[2].source.isNotEmpty()){
                 iw_umrah_gallery_three_image_third.loadImage(element.medias[2].source)
+                iw_umrah_gallery_three_image_third.setOnClickListener {
+                    listener.onClickThreeImage(adapterPosition,2)
+                }
+            }
             else iw_umrah_gallery_three_image_third.invisible()
 
             if(element.medias.size>3) {
@@ -39,7 +51,7 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View, val listener : Set
             }
 
             container_umrah_gallery_three_images.setOnClickListener {
-                listener.onClickThreeImage(adapterPosition)
+
             }
         }
     }
@@ -48,6 +60,6 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View, val listener : Set
     }
 
     interface SetOnClickListener{
-        fun onClickThreeImage(position: Int)
+        fun onClickThreeImage(positionAdapter: Int, positionImage:Int)
     }
 }

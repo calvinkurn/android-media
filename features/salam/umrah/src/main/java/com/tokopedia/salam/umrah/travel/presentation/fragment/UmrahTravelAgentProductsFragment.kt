@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -14,16 +17,20 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelProduct
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelProductAdapterTypeFactory
+import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTravelAgentProductViewHolder
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelProductViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_umrah_travel_agent_products.*
 import javax.inject.Inject
 
-class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, UmrahTravelProductAdapterTypeFactory>(), BaseEmptyViewHolder.Callback{
+class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, UmrahTravelProductAdapterTypeFactory>(),
+        BaseEmptyViewHolder.Callback, UmrahTravelAgentProductViewHolder.SetOnClickListener{
 
     var products : List<UmrahTravelProduct> =  emptyList()
     private val searchParam = UmrahSearchProductDataParam()
@@ -31,6 +38,9 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
 
     @Inject
     lateinit var umrahTravelProductViewModel: UmrahTravelProductViewModel
+
+    @Inject
+    lateinit var umrahTracking: UmrahTrackingAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +73,44 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
 
 
     private fun onSuccessGetResult(data: List<UmrahTravelProduct>){
+        rv_umrah_travel_products.apply {
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if(userVisibleHint) {
+                        val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                        val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                        val dataList = (adapter as BaseListAdapter<*, *>).data
+                        trackImpression(firstVisibleItem, lastVisibleItem, dataList)
+                    }
+                }
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && userVisibleHint) {
+                        val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                        val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                        val dataList = (adapter as BaseListAdapter<*, *>).data
+                        trackImpression(firstVisibleItem, lastVisibleItem, dataList)
+                    }
+                }
+            })
+        }
         renderList(data, data.size >= searchParam.limit)
+    }
+
+    private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
+        for (i in startIndex..lastIndex) {
+            if (i < data.size) {
+                if (data[i] is UmrahTravelProduct) {
+                    val product = data[i] as UmrahTravelProduct
+                    if (!product.isViewed) {
+                        umrahTracking.umrahTravelAgentProductImpression(product,i)
+                        product.isViewed = true
+                    }
+                }
+            }
+        }
     }
 
     private fun requestData(page:Int){
@@ -73,7 +120,7 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
         }
     }
 
-    override fun getAdapterTypeFactory(): UmrahTravelProductAdapterTypeFactory = UmrahTravelProductAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): UmrahTravelProductAdapterTypeFactory = UmrahTravelProductAdapterTypeFactory(this,this)
 
     override fun getScreenName(): String  = ""
 
@@ -94,6 +141,11 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
     override fun onItemClicked(t: UmrahTravelProduct) {
 
     }
+
+    override fun onProductClicked(umrahTravelProduct: UmrahTravelProduct, position: Int) {
+        umrahTracking.umrahTravelAgentProductClick(umrahTravelProduct, position)
+    }
+
 
     override fun getRecyclerViewResourceId(): Int = R.id.rv_umrah_travel_products
 

@@ -20,12 +20,16 @@ class UmrahTravelAgentGalleryOneImageViewHolder(view: View, val listener: SetOnC
             if(element.description.isNotEmpty()) tg_umrah_gallery_one_image_desc.text = element.description
             else tg_umrah_gallery_one_image_desc.gone()
 
-            if(element.medias[0].source.isNotEmpty())
+            if(element.medias[0].source.isNotEmpty()){
                 iw_umrah_gallery_one_image.loadImage(element.medias[0].source)
+                iw_umrah_gallery_one_image.setOnClickListener {
+                    listener.onClickOneImage(adapterPosition, 0)
+                }
+            }
             else iw_umrah_gallery_one_image.gone()
 
             container_umrah_gallery_one_image.setOnClickListener {
-                listener.onClickOneImage(adapterPosition)
+
             }
         }
     }
@@ -34,6 +38,6 @@ class UmrahTravelAgentGalleryOneImageViewHolder(view: View, val listener: SetOnC
     }
 
     interface SetOnClickListener{
-        fun onClickOneImage(position:Int)
+        fun onClickOneImage(positionAdapter:Int, positionImage:Int)
     }
 }

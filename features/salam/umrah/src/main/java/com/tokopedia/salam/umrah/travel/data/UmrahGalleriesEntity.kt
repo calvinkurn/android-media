@@ -36,7 +36,8 @@ data class UmrahGallery(
         val createdAt: String = "",
         @SerializedName("medias")
         @Expose
-        val medias: List<Media> = emptyList()
+        val medias: List<Media> = emptyList(),
+        var isViewed : Boolean = false
 ): Visitable<UmrahTravelGalleryAdapterTypeFactory> {
         override fun type(typeFactory: UmrahTravelGalleryAdapterTypeFactory?): Int =
                 typeFactory?.type(type, medias.size) ?: 0

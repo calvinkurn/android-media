@@ -132,3 +132,7 @@ const val UMRAH_TRAVEL_CLICK_ACTION_THREE_DOTS = "click three dot"
 const val UMRAH_TRAVEL_THREE_DOT_HELP = "bantuan"
 const val UMRAH_TRAVEL_THREE_DOT_SALAM = "salam"
 const val UMRAH_TRAVEL_THREE_DOT_SHARE = "share"
+
+const val UMRAH_TRAVEL_PACKET_UMROH = "paket umroh"
+const val UMRAH_IMPRESSION_CONTENT = "impression content"
+const val UMRAH_CLICK_CONTENT = "click content"

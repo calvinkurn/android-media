@@ -15,14 +15,14 @@ import com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder.UmrahTra
  * @author by Firman on 03/02/2020
  */
 
-class UmrahTravelProductAdapterTypeFactory (private val callback: BaseEmptyViewHolder.Callback): BaseAdapterTypeFactory(){
+class UmrahTravelProductAdapterTypeFactory (private val callback: BaseEmptyViewHolder.Callback, val listener: UmrahTravelAgentProductViewHolder.SetOnClickListener): BaseAdapterTypeFactory(){
     fun type(): Int = UmrahTravelAgentProductViewHolder.LAYOUT
     override fun type(viewModel: LoadingModel?): Int = UmrahTravelAgentProductLoadingViewHolder.LAYOUT
 
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when(type){
-                UmrahTravelAgentProductViewHolder.LAYOUT -> UmrahTravelAgentProductViewHolder(parent)
+                UmrahTravelAgentProductViewHolder.LAYOUT -> UmrahTravelAgentProductViewHolder(parent, listener)
                 UmrahTravelAgentProductLoadingViewHolder.LAYOUT -> UmrahTravelAgentProductLoadingViewHolder(parent)
                 EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
                 else -> super.createViewHolder(parent, type)
