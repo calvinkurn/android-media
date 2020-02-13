@@ -24,5 +24,8 @@ class FintechProductCheckout (
     var fintechAmount: Long = 0,
     @SerializedName("fintech_partner_amount")
     @Expose
-    var fintechPartnerAmount: Long = 0
+    var fintechPartnerAmount: Long = 0,
+    @SerializedName("product_name")
+    @Expose
+    var productName: String ?= null
 )
