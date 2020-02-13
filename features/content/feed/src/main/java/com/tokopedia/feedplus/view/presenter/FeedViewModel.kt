@@ -278,7 +278,6 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             }
             trackAffiliateResp.value = Success(results)
         }) {
-            trackAffiliateResp.value = Fail(it)
         }
     }
 
@@ -437,7 +436,7 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             data.id = id
             data.rowNumber = rowNumber
             val params = LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
-            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().single()
+            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             return data
         } catch (e: Throwable) {

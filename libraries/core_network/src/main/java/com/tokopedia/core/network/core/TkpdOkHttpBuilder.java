@@ -1,13 +1,15 @@
 package com.tokopedia.core.network.core;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.interceptor.DebugInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,8 +47,11 @@ public class TkpdOkHttpBuilder {
         if (GlobalConfig.isAllowDebuggingTools()) {
             LocalCacheHandler cache = new LocalCacheHandler(CoreNetworkApplication.getAppContext(), ConstantCoreNetwork.CHUCK_ENABLED);
             Boolean allowLogOnNotification = cache.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false);
-            this.addInterceptor(new ChuckInterceptor(CoreNetworkApplication.getAppContext())
-                    .showNotification(allowLogOnNotification));
+            ChuckerCollector collector = new ChuckerCollector(
+                    CoreNetworkApplication.getAppContext(), allowLogOnNotification);
+
+            this.addInterceptor(new ChuckerInterceptor(
+                    CoreNetworkApplication.getAppContext(), collector));
             this.addInterceptor(new DebugInterceptor());
         }
 

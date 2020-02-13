@@ -25,7 +25,9 @@ internal class CarouselProductCardViewHolder(
         val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
         val onWishlistClickListener = carouselProductCardModel.getOnWishlistItemClickListener()
 
-        itemView.carouselProductCardItem?.setProductModel(productCardModel)
+        itemView.carouselProductCardItem?.setProductModel(
+                productCardModel, carouselProductCardModel.blankSpaceConfig
+        )
 
         itemView.carouselProductCardItem?.setOnClickListener {
             onItemClickListener?.onItemClick(productCardModel, adapterPosition)
@@ -39,7 +41,7 @@ internal class CarouselProductCardViewHolder(
         onItemImpressedListener?.getImpressHolder(adapterPosition)?.let {
             itemView.carouselProductCardItem?.setImageProductViewHintListener(it, object : ViewHintListener {
                 override fun onViewHint() {
-                    onItemImpressedListener?.onItemImpressed(productCardModel, adapterPosition)
+                    onItemImpressedListener.onItemImpressed(productCardModel, adapterPosition)
                 }
             })
         }

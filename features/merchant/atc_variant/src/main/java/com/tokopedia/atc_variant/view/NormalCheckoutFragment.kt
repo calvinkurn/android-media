@@ -19,18 +19,29 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_variant.R
 import com.tokopedia.atc_variant.data.request.*
+import com.tokopedia.atc_variant.di.DaggerNormalCheckoutComponent
+import com.tokopedia.atc_variant.model.Fail
+import com.tokopedia.atc_variant.model.InsuranceRecommendationContainer
+import com.tokopedia.atc_variant.model.ProductInfoAndVariant
+import com.tokopedia.atc_variant.model.ProductInfoAndVariantContainer
+import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapter
+import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
+import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
+import com.tokopedia.atc_variant.view.viewmodel.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -46,27 +57,18 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_ONE_CLICK_SHIPMENT
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
-import com.tokopedia.atc_variant.di.DaggerNormalCheckoutComponent
-import com.tokopedia.atc_variant.model.Fail
-import com.tokopedia.atc_variant.model.InsuranceRecommendationContainer
-import com.tokopedia.atc_variant.model.ProductInfoAndVariant
-import com.tokopedia.atc_variant.model.ProductInfoAndVariantContainer
-import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapter
-import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
-import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
-import com.tokopedia.atc_variant.view.viewmodel.*
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_ONE_CLICK_SHIPMENT
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceRecommendationGqlResponse
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
-import com.tokopedia.track.TrackApp
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.purchase_platform.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.purchase_platform.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
+import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject
@@ -129,6 +131,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     companion object {
         const val EXTRA_IS_LEASING = "is_leasing"
         const val EXTRA_CART_ID = "cart_id"
+        const val SOURCE_ATC = "atc"
 
         const val REQUEST_CODE_LOGIN = 561
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
@@ -221,8 +224,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 } else {
                     if (!viewModel.isUserSessionActive()) {
                         tv_trade_in.setOnClickListener {
-                            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                                    REQUEST_CODE_LOGIN_THEN_TRADE_IN)
+                            startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_TRADE_IN)
                         }
                     } else {
                         tv_trade_in.setOnClickListener(null)
@@ -243,6 +245,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             generateInsuranceRequest()
             viewModel.getInsuranceProductRecommendation(insuranceRecommendationRequest)
         }
+    }
+
+    private fun generateIntentLogin(): Intent {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ATC)
+        return intent
     }
 
     private fun goToHargaFinal() {
@@ -307,9 +315,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE -> if (data != null)
-                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE))
                 ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> if (data != null)
-                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE))
                 REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
                 REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)
                 REQUEST_CODE_LOGIN_THEN_TRADE_IN -> {
@@ -399,7 +411,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun renderActionButton(productInfo: ProductInfo) {
-        if (GlobalConfig.isCustomerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
+        if (!GlobalConfig.isSellerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
                 productInfo.basic.isActive()) {
             button_buy_full.gone()
             rl_bottom_action_container.visible()
@@ -564,17 +576,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             if (!viewModel.isUserSessionActive()) {
                 context?.run {
                     //do tracking
+                    val intent = generateIntentLogin()
                     if (action == ATC_ONLY) {
                         normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
-                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                                REQUEST_CODE_LOGIN_THEN_ATC)
+                        startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_ATC)
                     } else if (action == ATC_AND_BUY) {
                         normalCheckoutTracking.eventClickBuyInVariantNotLogin(productId)
-                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                                REQUEST_CODE_LOGIN_THEN_BUY)
+                        startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_BUY)
                     } else {
-                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                                REQUEST_CODE_LOGIN_THEN_TRADE_IN)
+                        startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_TRADE_IN)
                     }
                 }
                 return@setOnClickListener
@@ -586,10 +596,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 context?.run {
                     //do tracking
                     if (action == APPLY_CREDIT) {
-                        startActivityForResult(
-                                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                                REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT
-                        )
+                        startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT)
                     }
                 }
                 return@setOnClickListener
@@ -605,8 +612,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 //do tracking
                 normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
                 //do login
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN_THEN_ATC)
+                startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_ATC)
             } else {
                 addToCart()
             }
@@ -829,7 +835,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         })
     }
 
-    private fun onGotoTradeinShipment(deviceid: String) {
+    private fun onGotoTradeinShipment(deviceid: String, phoneType: String, phonePrice: String) {
         tempQuantity = 1
         isTradeIn = 1
         addToCart(true, onFinish = { message: String?, cartId: String? ->
@@ -840,7 +846,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         selectedVariantId ?: "",
                         this, quantity,
                         shopId, shopType, shopName, cartId,
-                        trackerAttribution, trackerListName)
+                        trackerAttribution, trackerListName,
+                        getString(R.string.trade_in_event_label_phone_type_phone_price_diagnostic_id, phoneType, phonePrice, deviceid))
             }
             activity?.run {
                 val shipmentFormRequest = ShipmentFormRequest.BundleBuilder()
@@ -854,7 +861,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 startActivity(intent)
             }
         }, onRetryWhenError = {
-            onGotoTradeinShipment(deviceid)
+            onGotoTradeinShipment(deviceid, phoneType, phonePrice)
         })
     }
 
@@ -901,7 +908,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             } else {
                 message
             }
-            activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(toastMessage)
+            activity?.findViewById<View>(android.R.id.content)?.let {
+                Toaster.make(it, toastMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            }
         }, onGqlError = { e: Throwable? ->
             hideLoadingDialog()
             showToastError(e) {
@@ -1089,8 +1098,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             } else if (addToCartDataModel.errorReporter.eligible) {
                 onFinishError(addToCartDataModel)
             } else {
-                activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
-                        addToCartDataModel.errorMessage[0])
+                activity?.findViewById<View>(android.R.id.content)?.let {
+                    Toaster.make(it, addToCartDataModel.errorMessage[0], Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
                 normalCheckoutTracking.eventViewErrorWhenAddToCart(addToCartDataModel.errorMessage[0])
             }
         }

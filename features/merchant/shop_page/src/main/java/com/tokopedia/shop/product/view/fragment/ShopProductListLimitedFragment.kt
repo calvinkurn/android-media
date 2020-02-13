@@ -22,12 +22,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -49,9 +48,9 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_PRODUCT
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.FEATURED_PRODUCT
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.*
@@ -65,7 +64,7 @@ import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.common.widget.RecyclerViewPadding
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
-import com.tokopedia.shop.page.view.activity.ShopPageActivity
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -75,6 +74,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
+import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.model.*
@@ -102,7 +102,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: ShopProductLimitedViewModel
 
-    var shopPageTracking: ShopPageTrackingBuyer? = null
+    var shopPageTracking: OldShopPageTrackingBuyer? = null
     lateinit var merchantVoucherListPresenter: MerchantVoucherListPresenter
 
     private var progressDialog: ProgressDialog? = null
@@ -111,7 +111,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private var shopInfo: ShopInfo? = null
     private var shopModuleRouter: ShopModuleRouter? = null
 
-    private var onShopProductListFragmentListener: ShopProductListFragment.OnShopProductListFragmentListener? = null
+    private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
 
     private val sortName = Integer.toString(Integer.MIN_VALUE)
     private var recyclerView: RecyclerView? = null
@@ -220,7 +220,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
         super.onCreate(savedInstanceState)
 
-        context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
+        context?.let { shopPageTracking = OldShopPageTrackingBuyer(TrackingQueue(it)) }
 
         val merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
@@ -433,7 +433,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         viewModel.etalaseResponse.removeObservers(this)
         viewModel.productHighlightResp.removeObservers(this)
         viewModel.productResponse.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
         merchantVoucherListPresenter.detachView()
     }
@@ -625,7 +625,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                     data.membershipClaimBenefitResponse.subTitle,
                     data.membershipClaimBenefitResponse.resultStatus.code, lastQuestId)
             bottomSheetMembership.setListener(this)
-            bottomSheetMembership.show(fragmentManager, "membership_shop_page")
+            fragmentManager?.run {
+                bottomSheetMembership.show(this, "membership_shop_page")
+            }
         }
     }
 
@@ -861,7 +863,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             }
         }
         goToPDP(shopProductViewModel.id, attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName)
+                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.PRODUCT, selectedEtalaseName)
                         ?: "")
 
 
@@ -924,7 +926,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 promoClicked(urlNeedTobBeProceed)
             }
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK && data != null) {
-                val sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                val sortName = data.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 if (shopId == null)
                     return
 
@@ -949,26 +951,25 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-        if (context == null) {
-            return
+        context?.let {
+            shopPageTracking?.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, shopId, position)
+            //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+            /*if (!merchantVoucherListPresenter.isLogin()) {
+                if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
+                }
+            } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
+                showUseMerchantVoucherLoading();
+                merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
+                        merchantVoucherViewModel.getVoucherId());
+            }*/
+            //TOGGLE_MVC_OFF
+            showSnackBarClose(getString(R.string.title_voucher_code_copied))
         }
-        shopPageTracking!!.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, position)
-        //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
-        /*if (!merchantVoucherListPresenter.isLogin()) {
-            if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-                startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
-            }
-        } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
-            showUseMerchantVoucherLoading();
-            merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
-                    merchantVoucherViewModel.getVoucherId());
-        }*/
-        //TOGGLE_MVC_OFF
-        showSnackBarClose(getString(R.string.title_voucher_code_copied))
     }
 
-    fun showSnackBarClose(stringToShow: String) {
+    private fun showSnackBarClose(stringToShow: String) {
         activity?.let {
             val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
                     Snackbar.LENGTH_LONG)
@@ -979,7 +980,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        shopPageTracking?.clickDetailMerchantVoucher(isOwner)
+        shopPageTracking?.clickDetailMerchantVoucher(isOwner, merchantVoucherViewModel.voucherId.toString())
 
         context?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
@@ -1035,7 +1036,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>) {
-        shopPageTracking?.impressionUseMerchantVoucher(isOwner, merchantVoucherViewModelList)
+        shopPageTracking?.impressionUseMerchantVoucher(isOwner, merchantVoucherViewModelList, shopId)
 
         shopProductAdapter.setShopMerchantVoucherViewModel(ShopMerchantVoucherViewModel(merchantVoucherViewModelList))
         shopProductAdapter.refreshSticky()
@@ -1087,30 +1088,30 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         shopModuleRouter = context.applicationContext as ShopModuleRouter
-        onShopProductListFragmentListener = context as? ShopProductListFragment.OnShopProductListFragmentListener
+        onShopProductListFragmentListener = context as? OnShopProductListFragmentListener
 
     }
 
 
-    override fun onSuccessGetShopInfo(shopInfo: com.tokopedia.shop.common.data.source.cloud.model.ShopInfo) {
+    override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         // NO-Op
     }
 
     override fun onButtonClaimClicked(questId: Int) {
-        shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_COUPON_CLAIM)
+        shopPageTracking?.sendEventMembership(OldShopPageTrackingConstant.MEMBERSHIP_COUPON_CLAIM)
         lastQuestId = questId
         viewModel.claimMembershipBenefit(questId)
     }
 
     override fun goToVoucherOrRegister(url: String?, clickOrigin: String?) {
         val intent: Intent = if (url == null) {
-            shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_COUPON_CHECK)
+            shopPageTracking?.sendEventMembership(OldShopPageTrackingConstant.MEMBERSHIP_COUPON_CHECK)
             RouteManager.getIntent(context, ApplinkConst.COUPON_LISTING)
         } else {
             if (clickOrigin == GO_TO_MEMBERSHIP_DETAIL) {
-                shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_DETAIL_PAGE)
+                shopPageTracking?.sendEventMembership(OldShopPageTrackingConstant.MEMBERSHIP_DETAIL_PAGE)
             } else {
-                shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_CLICK_MEMBER)
+                shopPageTracking?.sendEventMembership(OldShopPageTrackingConstant.MEMBERSHIP_CLICK_MEMBER)
             }
 
             RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))

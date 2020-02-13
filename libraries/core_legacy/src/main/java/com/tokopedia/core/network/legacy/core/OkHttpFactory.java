@@ -2,11 +2,11 @@ package com.tokopedia.core.network.legacy.core;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.TkpdOkHttpBuilder;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

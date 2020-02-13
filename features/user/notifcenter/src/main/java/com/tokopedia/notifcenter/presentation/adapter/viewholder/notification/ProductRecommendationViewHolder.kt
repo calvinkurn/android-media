@@ -20,7 +20,7 @@ class ProductRecommendationViewHolder(
     private val thumbnail = itemView.findViewById<ImageView>(R.id.iv_product)
 
     fun bind(productData: ProductData) {
-        ImageHandler.loadImage2(thumbnail, productData.imageUrl, R.drawable.ic_loading_toped_new)
+        ImageHandler.loadImage2(thumbnail, productData.imageUrl, R.drawable.ic_notifcenter_loading_toped)
 
         itemView.setOnClickListener {
             RouteManager.route(

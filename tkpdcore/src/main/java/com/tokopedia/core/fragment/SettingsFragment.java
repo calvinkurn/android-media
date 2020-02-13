@@ -1,25 +1,21 @@
 package com.tokopedia.core.fragment;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 
 import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
 
 /**
@@ -89,19 +85,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                 return true;
             }
         });
-        optionVibrate = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_VIBRATE);
-        optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences
-                        (context);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putBoolean(SETTING_NOTIFICATION_VIBRATE, !settings.getBoolean(SETTING_NOTIFICATION_VIBRATE
-                        , false));
-                editor.apply();
-                return true;
-            }
-        });
-
+        optionVibrate = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_VIBRATE);
         optionPromo = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_PROMO);
         optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }

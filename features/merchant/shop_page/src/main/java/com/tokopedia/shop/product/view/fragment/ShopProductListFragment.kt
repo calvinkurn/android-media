@@ -21,7 +21,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -34,8 +34,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -45,6 +45,7 @@ import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListResultFragment
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.adapter.EtalaseChipAdapter
@@ -53,6 +54,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
+import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel
@@ -78,7 +80,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: ShopProductListViewModel
 
-    internal var shopPageTracking: ShopPageTrackingBuyer? = null
+    internal var shopPageTracking: OldShopPageTrackingBuyer? = null
 
     private var shopModuleRouter: ShopModuleRouter? = null
 
@@ -99,27 +101,14 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     private var remoteConfig: RemoteConfig? = null
 
     private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
-    private var onSuccessGetShopInfoListener: OnSuccessGetShopInfoListener? = null
-    private var onInitTrackingListener: OnInitTrackingListener? = null
+    private var shopPageProductListResultFragmentListener: ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener? = null
+
     private var needReloadData: Boolean = false
     private val etalaseChipAdapter: EtalaseChipAdapter by lazy {
         EtalaseChipAdapter(null, null, this)
     }
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
-
-    interface OnShopProductListFragmentListener {
-        fun updateUIByShopName(shopName: String)
-        fun updateUIByEtalaseName(etalaseName: String?)
-    }
-
-    interface OnSuccessGetShopInfoListener{
-        fun updateShopInfo(shopInfo: ShopInfo)
-    }
-
-    interface OnInitTrackingListener{
-        fun updateShopPageTracking(shopPageTracking: ShopPageTrackingBuyer?)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -197,8 +186,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
         super.onCreate(savedInstanceState)
         context?.let {
-            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
-            onInitTrackingListener?.updateShopPageTracking(shopPageTracking)
+            shopPageTracking = OldShopPageTrackingBuyer(TrackingQueue(it))
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductListViewModel::class.java)
     }
@@ -359,12 +347,12 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.menu_shop_info, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item?.itemId == R.id.action_share) {
             onShareShop()
         }
@@ -482,10 +470,8 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                     shopProductViewModel, productPosition, shopId, it.shopCore.name,it.freeOngkir.isActive)
         }
 
-        //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
-
         startActivity(getProductIntent(shopProductViewModel.id, attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName) ?: ""))
+                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, selectedEtalaseName) ?: ""))
     }
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
@@ -541,7 +527,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
         onShopProductListFragmentListener?.updateUIByShopName(shopInfo.shopCore.name)
-        onSuccessGetShopInfoListener?.updateShopInfo(shopInfo)
+        shopPageProductListResultFragmentListener?.updateShopInfo(shopInfo)
         loadInitialData()
     }
 
@@ -713,7 +699,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
                 val sortId = data!!.getStringExtra(ShopProductSortActivity.SORT_ID)
-                sortValue = data.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                sortValue = data.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 this.isLoadingInitialData = true
                 loadInitialData()
                 shopInfo?.let {
@@ -757,15 +743,14 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         viewModel.etalaseResponse.removeObservers(this)
         viewModel.shopInfoResp.removeObservers(this)
         viewModel.productResponse.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         onShopProductListFragmentListener = context as OnShopProductListFragmentListener
-        onSuccessGetShopInfoListener = context as OnSuccessGetShopInfoListener
-        onInitTrackingListener = context as OnInitTrackingListener
+        shopPageProductListResultFragmentListener = context as ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener
         shopModuleRouter = context.applicationContext as ShopModuleRouter
     }
 

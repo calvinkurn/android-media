@@ -22,9 +22,11 @@ android {
     }
     buildTypes {
         debug{
-            testCoverageEnabled (project.hasProperty('coverage')? true : false)
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
         }
         release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled false
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
@@ -71,8 +73,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
-    implementation rootProject.ext.miscDependencies.gson
-
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -91,8 +91,7 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
-    // androidTestImplementation rootProject.ext.testDependencies.dexMakerMockito, { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
+    androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker==============================--
     androidTestImplementation 'org.mockito:mockito-android:2.6.3'
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -104,4 +103,5 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.powerMockXstream
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
 }

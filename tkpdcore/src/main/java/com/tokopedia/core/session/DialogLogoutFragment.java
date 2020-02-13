@@ -26,7 +26,7 @@ import com.tokopedia.core.network.apiservices.user.SessionService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.HashMap;

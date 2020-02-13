@@ -9,15 +9,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
@@ -55,15 +52,6 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
 
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, InboxTalkActivity::class.java)
-
-    }
-
-    object DeepLinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.TALK)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            return (context.applicationContext as TalkRouter).getInboxTalkCallingIntent(context)
-        }
 
     }
 
@@ -138,11 +126,13 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         })
     }
 
+    override fun getToolbarResourceID(): Int = R.id.activity_talk_inbox_toolbar
+
     private fun setTabUnSelected(tab: TabLayout.Tab) {
         tab.customView?.run {
             val view: View = this
             val title: TextView = view.findViewById(R.id.title)
-            title.setTextColor(MethodChecker.getColor(this.context, R.color.black_38))
+            title.setTextColor(MethodChecker.getColor(this.context, com.tokopedia.design.R.color.black_38))
             title.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
         }
     }
@@ -151,7 +141,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         tab.customView?.run {
             val view: View = this
             val title: TextView = view.findViewById(R.id.title)
-            title.setTextColor(MethodChecker.getColor(this.context, R.color.medium_green))
+            title.setTextColor(MethodChecker.getColor(this.context, com.tokopedia.design.R.color.medium_green))
             title.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         }
     }

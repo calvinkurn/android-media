@@ -4,9 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class ResponseGetPromoStackUiModel(
-		val status: String = "",
-		val message: List<String> = ArrayList(),
-		val data: DataUiModel = DataUiModel()
+		var status: String = "",
+		var message: List<String> = ArrayList(),
+		var data: DataUiModel = DataUiModel()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readString(),

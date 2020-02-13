@@ -17,12 +17,13 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -43,18 +44,19 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.seamlesslogin)
     implementation project(rootProject.ext.features.purchase_platform_common)
-    
+
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
@@ -81,6 +83,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation project(rootProject.ext.features.wishlistCommon)
 
     //test
     testImplementation rootProject.ext.testDependencies.junit

@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.DatePickerUnify
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.kotlin.extensions.convertFormatDate
@@ -32,7 +31,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_RADIO
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_SEPARATOR
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.START_DATE
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomSubFilter
@@ -121,73 +119,76 @@ class SomFilterFragment : BaseDaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(flag: String) {
         context?.let {  context ->
-            val minDate = GregorianCalendar(2010, 0, 1)
-            var dateMax = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
+            val minDate = Calendar.getInstance()
+            minDate.set(Calendar.YEAR, 2017)
+            val maxDate = Calendar.getInstance()
             val isEndDateFilled = currentFilterParams?.endDate?.isNotEmpty()
             isEndDateFilled?.let { isNotEmpty ->
                 if (isNotEmpty && flag.equals(START_DATE, true)) {
                     val splitEndDate = currentFilterParams?.endDate?.split('/')
                     splitEndDate?.let {
-                        dateMax = GregorianCalendar(it[2].toInt(), it[1].toInt(), it[0].toInt())
+                        maxDate.set(it[2].toInt(), it[1].toInt() - 1, it[0].toInt())
+                    }
+                }
+            }
+            val isStartDateFilled = currentFilterParams?.startDate?.isNotEmpty()
+            isStartDateFilled?.let { isNotEmpty ->
+                if (isNotEmpty && flag.equals(END_DATE, true)) {
+                    val splitStartDate = currentFilterParams?.startDate?.split('/')
+                    splitStartDate?.let {
+                        minDate.set(it[2].toInt(), it[1].toInt() - 1, it[0].toInt())
                     }
                 }
             }
 
+            val currentDate = Calendar.getInstance()
+            val splitDate: List<String>?
+
             if (flag.equals(START_DATE, true)) {
-                val splitStartDate = currentFilterParams?.startDate?.split('/')
-                splitStartDate?.let {
-                    val dateNow = GregorianCalendar(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
-                    val datePickerStart = DatePickerUnify(context, minDate, dateNow, dateMax)
-                    datePickerStart.setTitle(getString(R.string.mulai_dari))
-                    fragmentManager?.let { it1 -> datePickerStart.show(it1, "") }
-                    datePickerStart.datePickerButton.setOnClickListener {
-                        val resultDate = datePickerStart.getDate()
-                        val monthInt = resultDate[1]+1
-                        var monthStr = monthInt.toString()
-                        if (monthStr.length == 1) monthStr = "0$monthStr"
-
-                        var dateStr = resultDate[0].toString()
-                        if (dateStr.length == 1) dateStr = "0$dateStr"
-
-                        currentFilterParams?.startDate = "$dateStr/$monthStr/${resultDate[2]}"
-                        et_start_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                        datePickerStart.dismiss()
-                    }
-                    datePickerStart.setCloseClickListener { datePickerStart.dismiss() }
-                }
+                splitDate = currentFilterParams?.startDate?.split('/')
             } else {
-                val splitEndDate = currentFilterParams?.endDate?.split('/')
-                splitEndDate?.let {
-                    val dateNow = GregorianCalendar(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
-                    val datePickerEnd = DatePickerUnify(context, minDate, dateNow, dateMax)
-                    datePickerEnd.setTitle(getString(R.string.sampai))
-                    fragmentManager?.let { it1 -> datePickerEnd.show(it1, "") }
-                    datePickerEnd.datePickerButton.setOnClickListener {
-                        val resultDate = datePickerEnd.getDate()
-                        val monthInt = resultDate[1]+1
-                        var monthStr = monthInt.toString()
-                        if (monthStr.length == 1) monthStr = "0$monthStr"
+                splitDate = currentFilterParams?.endDate?.split('/')
+            }
 
-                        var dateStr = resultDate[0].toString()
-                        if (dateStr.length == 1) dateStr = "0$dateStr"
+            splitDate?.let {
+                currentDate.set(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
+                val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
+                fragmentManager?.let { it1 -> datePicker.show(it1, "") }
+                datePicker.datePickerButton.setOnClickListener {
+                    val resultDate = datePicker.getDate()
+                    val monthInt = resultDate[1]+1
+                    var monthStr = monthInt.toString()
+                    if (monthStr.length == 1) monthStr = "0$monthStr"
 
+                    var dateStr = resultDate[0].toString()
+                    if (dateStr.length == 1) dateStr = "0$dateStr"
+
+                    if (flag.equals(START_DATE, true)) {
+                        currentFilterParams?.startDate = "$dateStr/$monthStr/${resultDate[2]}"
+                        et_start_date?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                    } else {
                         currentFilterParams?.endDate = "$dateStr/$monthStr/${resultDate[2]}"
-                        et_end_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                        datePickerEnd.dismiss()
+                        et_end_date?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
                     }
-                    datePickerEnd.setCloseClickListener { datePickerEnd.dismiss() }
+                    datePicker.dismiss()
                 }
+                if (flag.equals(START_DATE, true)) {
+                    datePicker.setTitle(getString(R.string.mulai_dari))
+                } else {
+                    datePicker.setTitle(getString(R.string.sampai))
+                }
+                datePicker.setCloseClickListener { datePicker.dismiss() }
             }
         }
     }
 
     private fun setupDatePickers() {
         currentFilterParams?.startDate?.let {
-            et_start_date.setText(convertFormatDate(it, "dd/MM/yyyy", "dd MMM yyyy"))
+            et_start_date?.setText(convertFormatDate(it, "dd/MM/yyyy", "dd MMM yyyy"))
         }
 
         currentFilterParams?.endDate?.let {
-            et_end_date.setText(convertFormatDate(it, "dd/MM/yyyy", "dd MMM yyyy"))
+            et_end_date?.setText(convertFormatDate(it, "dd/MM/yyyy", "dd MMM yyyy"))
         }
 
         et_start_date?.setOnClickListener { showDatePicker(START_DATE) }
@@ -306,12 +307,12 @@ class SomFilterFragment : BaseDaggerFragment() {
         statusList.forEach { status ->
             listStatusRadioBtn.add(SomSubFilter(status.id, status.text, status.key, status.type, FILTER_TYPE_RADIO, status.orderStatusIdList))
             if (status.orderStatusIdList == currentFilterParams?.statusList && !status.type.equals(FILTER_TYPE_SEPARATOR, true)) {
-                label_substatus.text = status.text
+                label_substatus?.text = status.text
                 statusTextFilled = true
             }
         }
         if (!statusTextFilled) {
-            label_substatus.setText(R.string.subtitle_status)
+            label_substatus?.setText(R.string.subtitle_status)
         }
 
         rl_status?.isClickable = true
@@ -339,6 +340,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     fun onResetClicked() {
         resetFilters()
         renderCourierList()
+        renderOrderType()
         SomAnalytics.eventClickResetButtonOnFilterPage()
     }
 
@@ -356,14 +358,14 @@ class SomFilterFragment : BaseDaggerFragment() {
         var startDateStr = splitStartDate[0]
         if (startDateStr.length == 1) startDateStr = "0$startDateStr"
 
-        et_start_date.setText("$startDateStr ${convertMonth((splitStartDate[1].toInt()-1))} ${splitStartDate[2]}")
+        et_start_date?.setText("$startDateStr ${convertMonth((splitStartDate[1].toInt()-1))} ${splitStartDate[2]}")
 
         // end date
         val splitEndDate = resetEndDate.split('/')
         var endDateStr = splitEndDate[0]
         if (endDateStr.length == 1) endDateStr = "0$endDateStr"
 
-        et_end_date.setText("$endDateStr ${convertMonth((splitEndDate[1].toInt()-1))} ${splitEndDate[2]}")
-        label_substatus.text = statusList.first().text
+        et_end_date?.setText("$endDateStr ${convertMonth((splitEndDate[1].toInt()-1))} ${splitEndDate[2]}")
+        label_substatus?.text = statusList.first().text
     }
 }

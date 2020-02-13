@@ -1,15 +1,11 @@
 package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData
-import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
 import kotlinx.android.synthetic.main.item_cart_recommendation.view.*
 
 /**

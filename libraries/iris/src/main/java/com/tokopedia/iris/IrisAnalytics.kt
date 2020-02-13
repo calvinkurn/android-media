@@ -5,22 +5,22 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.google.gson.Gson
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
-import com.tokopedia.iris.worker.IrisExecutor
-import com.tokopedia.iris.worker.IrisExecutor.handler
 import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -34,11 +34,12 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private var configuration: Configuration? = null
     private var isAlarmOn: Boolean = false
 
+    private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
 
-    override val coroutineContext: CoroutineContext by lazy {
-        IrisExecutor.executor + handler
-    }
+    override val coroutineContext: CoroutineContext = Dispatchers.IO +
+        CoroutineExceptionHandler { _, ex ->
+            Timber.e("P1#IRIS#CoroutineExceptionIrisAnalytics %s", ex.toString()) }
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 
@@ -54,10 +55,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 ?: ""
 
             setService(irisConfig, irisEnable)
-
-            val irisLogEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_LOG_ENABLED_TOGGLE, false)
-                ?: false
-            cache.setEnableLogEntries(irisLogEnable)
         }
     }
 
@@ -65,7 +62,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         remoteConfig = FirebaseRemoteConfigImpl(context)
         remoteConfig.fetch(remoteConfigListener)
 
-        isAlarmOn = cache.isAlarmOn()
+        isAlarmOn = false
     }
 
     override fun setService(config: String, isEnabled: Boolean) {
@@ -93,25 +90,31 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launch(coroutineContext + Dispatchers.IO) {
-                val trackingRepository = TrackingRepository(context)
-                // convert map to json then save as string
-                val event = JSONObject(map).toString()
-                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-                trackingRepository.saveEvent(resultEvent.toString(), session)
-                setAlarm(true)
+            launch(coroutineContext) {
+                try {
+                    val trackingRepository = TrackingRepository(context)
+
+                    val eventName = map["event"] as? String
+                    val eventCategory = map["eventCategory"] as? String
+                    val eventAction = map["eventAction"] as? String
+
+                    // convert map to json then save as string
+                    val event = gson.toJson(map)
+                    val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+                    trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
+                    setAlarm(true, force = false)
+                } catch (e:Exception) {
+                    Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                }
             }
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launch(coroutineContext + Dispatchers.IO) {
+            launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
-                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
-                if (isSuccess && BuildConfig.DEBUG) {
-                    logIris(cache, "Success Send Single Event")
-                }
+                trackingRepository.sendSingleEvent(gson.toJson(map), session)
             }
         }
     }
@@ -124,8 +127,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         session.setDeviceId(deviceId)
     }
 
-    override fun setAlarm(isTurnOn: Boolean) {
-        if (isTurnOn == isAlarmOn) {
+    override fun setAlarm(isTurnOn: Boolean, force: Boolean) {
+        if (!force && isTurnOn == isAlarmOn) {
             return
         }
         val pendingIntent: PendingIntent?
@@ -150,7 +153,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             }
         }
         isAlarmOn = isTurnOn
-        cache.setEnableAlarm(isAlarmOn)
     }
 
     companion object {

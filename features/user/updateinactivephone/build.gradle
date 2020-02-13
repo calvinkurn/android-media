@@ -22,7 +22,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.libraries.cameraview)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

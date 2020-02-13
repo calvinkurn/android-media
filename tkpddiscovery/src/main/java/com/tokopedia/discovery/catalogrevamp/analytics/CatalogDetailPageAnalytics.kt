@@ -87,7 +87,7 @@ class CatalogDetailPageAnalytics {
                     KEY_EVENT_LABEL, if (isTopAds) "" else "catalog product list",
                     KEY_ECOMMERCE, DataLayer.mapOf(
                     "currencyCode", "IDR",
-                    "impressions", DataLayer.listOf(list)
+                    "impressions", list
             ))
             tracker.sendEnhanceEcommerceEvent(map)
         }

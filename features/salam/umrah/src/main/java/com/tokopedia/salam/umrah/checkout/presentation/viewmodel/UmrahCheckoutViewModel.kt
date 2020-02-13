@@ -3,21 +3,15 @@ package com.tokopedia.salam.umrah.checkout.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
-import com.tokopedia.common.travel.domain.GetContactListUseCase
-import com.tokopedia.common.travel.domain.UpsertContactListUseCase
-import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutMapperEntity
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutResultEntity
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutResultParams
 import com.tokopedia.salam.umrah.checkout.presentation.usecase.UmrahCheckoutGetDataUseCase
 import com.tokopedia.salam.umrah.checkout.presentation.usecase.UmrahCheckoutResultUseCase
-
-import kotlinx.coroutines.launch
 import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
-import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Result
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 /**

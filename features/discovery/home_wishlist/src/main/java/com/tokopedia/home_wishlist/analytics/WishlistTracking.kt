@@ -53,6 +53,7 @@ object WishlistTracking {
     private const val EVENT_PRODUCT_VIEW = "productView"
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_CLICK_WISHLIST = "clickWishlist"
+    private const val EVENT_CLICK_ADD_TO_CART = "addToCart"
     private const val EVENT_LABEL_RECOM_WISHLIST = "%s - %s - %s"
     private const val EVENT_LABEL_REMOVE_BULK_WISHLIST = "%s - general - multiple remove"
     private const val EVENT_LABEL_RECOM_WISHLIST_EMPTY_WISHLIST = "%s - %s - %s - empty_wishlist"
@@ -86,7 +87,7 @@ object WishlistTracking {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
                 FIELD_PRODUCT_ID, item.id,
-                FIELD_PRODUCT_PRICE, item.price,
+                FIELD_PRODUCT_PRICE, item.rawPrice.toString(),
                 FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
@@ -186,7 +187,7 @@ object WishlistTracking {
     fun clickBuy(wishlistItem: WishlistItem, cartId: String){
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_WISHLIST,
+                        EVENT, EVENT_CLICK_ADD_TO_CART,
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                         EVENT_ACTION, EVENT_ACTION_CLICK_BUY,
                         EVENT_LABEL, wishlistItem.id,

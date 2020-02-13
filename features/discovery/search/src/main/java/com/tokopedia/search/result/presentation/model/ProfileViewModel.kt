@@ -5,23 +5,27 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.view.typefactory.ProfileListTypeFactory
 
 data class ProfileViewModel (
-    var id: String,
-    var name: String,
-    var imgUrl: String,
-    var username: String,
-    var followed: Boolean,
-    var isKol: Boolean,
-    var isAffiliate: Boolean,
-    var followers: Int,
-    var post_count: Int
+    var id: String = "",
+    var name: String = "",
+    var imgUrl: String = "",
+    var username: String = "",
+    var followed: Boolean = false,
+    var isKol: Boolean = false,
+    var isAffiliate: Boolean = false,
+    var followers: Int = 0,
+    var post_count: Int = 0,
+    val isRecommendation: Boolean = false
 ) : Visitable<ProfileListTypeFactory> {
 
-    val KEY_ID = "id"
-    val KEY_NAME = "name"
-    val KEY_CREATIVE = "creative"
-    val KEY_POSITION = "position"
+    companion object {
+        private const val KEY_ID = "id"
+        private const val KEY_NAME = "name"
+        private const val KEY_CREATIVE = "creative"
+        private const val KEY_POSITION = "position"
 
-    val VAL_NAME = "/search result - profile"
+        private const val VAL_NAME = "/search result - profile"
+        private const val RECOMMENDATION_NAME = "/no search result - top profile"
+    }
 
     var position = 0
 
@@ -35,6 +39,15 @@ data class ProfileViewModel (
             KEY_NAME, VAL_NAME,
             KEY_CREATIVE, name.toLowerCase(),
             KEY_POSITION, position.toString()
+        )
+    }
+
+    fun getRecommendationTrackingObject() : Any {
+        return DataLayer.mapOf(
+                KEY_ID, id,
+                KEY_NAME, RECOMMENDATION_NAME,
+                KEY_CREATIVE, name.toLowerCase(),
+                KEY_POSITION, position.toString()
         )
     }
 }

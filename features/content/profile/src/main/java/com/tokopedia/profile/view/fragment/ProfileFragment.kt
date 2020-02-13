@@ -8,12 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Rect
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -24,12 +18,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.feature.onboarding.view.fragment.UsernameInputFragment
@@ -54,6 +55,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -62,19 +64,28 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.di.DaggerProfileComponent
+import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
+import com.tokopedia.profile.following_list.view.activity.UserFollowerListActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.EmptyAffiliateViewHolder
@@ -82,16 +93,6 @@ import com.tokopedia.profile.view.adapter.viewholder.OtherRelatedProfileViewHold
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
-import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
-import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
-import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet
-import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
-import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
-import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
-import com.tokopedia.profile.following_list.view.activity.UserFollowerListActivity
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -100,6 +101,7 @@ import com.tokopedia.showcase.ShowCaseBuilder
 import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -537,8 +539,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onErrorShouldChangeUsername(errorMessage: String, link: String) {
-        view?.showErrorToaster(errorMessage, com.tokopedia.abstraction.R.string.title_try_again) {
-            presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
+        view?.let {
+            Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+                presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
+            })
         }
     }
 
@@ -1301,7 +1306,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun setFollowBtn(element: ProfileHeaderViewModel, isFromLogin: Boolean) {
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             if (!element.isOwner) {
                 editButton.visibility = View.GONE
                 followBtn.visibility = View.VISIBLE
@@ -1457,16 +1462,23 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun showAfterPostToaster(addAction: Boolean) {
         if (addAction) {
-            view?.showNormalToaster(getString(R.string.profile_recommend_success), getString(R.string.profile_add_more)) {
-                goToAffiliateExplore()
+            view?.let {
+                Toaster.make(it, getString(R.string.profile_recommend_success), Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL, getString(R.string.profile_add_more), View.OnClickListener {
+                    goToAffiliateExplore()
+                })
             }
         } else {
-            view?.showNormalToaster(getString(R.string.profile_recommend_success))
+            view?.let {
+                Toaster.make(it, getString(R.string.profile_recommend_success), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            }
         }
     }
 
     private fun showAfterEditToaster() {
-        view?.showNormalToaster(getString(R.string.profile_edit_success), getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)) {
+        view?.let {
+            Toaster.make(it, getString(R.string.profile_edit_success), Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok))
         }
     }
 
@@ -1761,9 +1773,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onErrorGetRelatedProfile(throwable: Throwable?) {
-        view?.showErrorToaster(ErrorHandler.getErrorMessage(requireContext(), throwable),
-                com.tokopedia.abstraction.R.string.title_try_again) {
-            getRelatedProfile()
+        view?.let {
+            Toaster.make(it, ErrorHandler.getErrorMessage(requireContext(), throwable),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+                getRelatedProfile()
+            })
         }
     }
 
@@ -1829,7 +1844,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 shareTitle,
                 imageUri
         ).also {
-            it.show(fragmentManager)
+            fragmentManager?.run {
+                it.show(this)
+            }
         }
 
         return bottomSheet.data

@@ -133,6 +133,35 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
 
+    // InboxTalkActivity
+    // tokopedia-android-internal://global/inbox-talk
+    @JvmField
+    val INBOX_TALK = "$INTERNAL_GLOBAL/inbox-talk"
+
+    // TalkProductActivity
+    // tokopedia-android-internal://global/product-talk
+    @JvmField
+    val SHOP_TALK = "$INTERNAL_GLOBAL/shop-talk"
+    @JvmField
+    val PARAM_SHOP_ID = "shop_id"
+
+    // TalkProductActivity
+    // tokopedia-android-internal://global/product-talk
+    @JvmField
+    val PRODUCT_TALK = "$INTERNAL_GLOBAL/product-talk"
+    @JvmField
+    val PARAM_PRODUCT_ID = "product_id"
+
+    // TalkDetailsActivity
+    // tokopedia-android-internal://global/detail-talk
+    @JvmField
+    val DETAIL_TALK = "$INTERNAL_GLOBAL/detail-talk"
+
+    // AddTalkActivity
+    // tokopedia-android-internal://global/add-talk
+    @JvmField
+    val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
+
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField
@@ -191,6 +220,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
     val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
+
+    // ChangePPasswordActivity
+    // tokopedia-android-internal://global/change-password
+    @JvmField
+    val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
 
     // ChangePinActivity
     // tokopedia-android-internal://global/change-pin
@@ -274,6 +308,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
 
+    // RegisterInitialActivity
+    // tokopedia-android-internal://global/init-register
+    @JvmField
+    val INIT_REGISTER = "$INTERNAL_GLOBAL/init-register"
+
     // RegisterEmailActivity
     // tokopedia-android-internal://global/email-register
     @JvmField
@@ -325,13 +364,26 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    /**
+     * LogoutActivity
+     * @applink : tokopedia-android-internal://global/logout
+     * @param   : [PARAM_IS_RETURN_HOME]
+     * default is 'true', set 'false' if you wan get activity result
+     **/
     @JvmField
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
+    @JvmField
+    val PARAM_IS_RETURN_HOME = "return_to_home"
 
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // GeneralSettingActivity
+    // tokopedia-android-internal://global/general-setting
+    @JvmField
+    val GENERAL_SETTING = "$INTERNAL_GLOBAL/general-setting"
 
     // PushNotificationCheckerActivity
     // tokopedia-android-internal://global/push-notification-troubleshooter
@@ -344,4 +396,15 @@ object ApplinkConstInternalGlobal {
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
+
+    // CrackTokenActivity
+    // tokopedia-android-internal://global/gamification
+    @JvmField
+    val GAMIFICATION = "$INTERNAL_GLOBAL/gamification"
+
+    // TapTapTokenActivity
+    // tokopedia-android-internal://global/gamification2
+    @JvmField
+    val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+
 }

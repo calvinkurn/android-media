@@ -52,7 +52,7 @@ class ValuePropositionBottomSheet : BottomSheets() {
         return R.layout.base_pdp_bottom_sheet
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         updateHeight()
     }

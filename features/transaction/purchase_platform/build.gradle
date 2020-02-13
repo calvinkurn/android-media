@@ -83,6 +83,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -90,6 +91,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
     //-------------------------------------------------------------------//
 
 
@@ -146,6 +148,11 @@ project.ext {
     groupId = 'com.tokopedia.transaction'
     versionName = "0.0.1"
     artifactName = "purchase_platform-release"
+    unitTestKotlinIncludes = [
+            '**/CartListPresenter.*'
+    ]
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

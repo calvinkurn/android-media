@@ -46,7 +46,6 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.network.CoreNetworkRouter;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.SellerRouter;
@@ -56,10 +55,9 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -69,7 +67,6 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -95,6 +92,9 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -110,6 +110,7 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -134,6 +135,7 @@ import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -175,9 +177,8 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
-        ApplinkRouter, ImageUploaderRouter,
-        NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
-        ChangePasswordRouter, WithdrawRouter,
+        ApplinkRouter,
+        NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter, WithdrawRouter,
         TalkRouter, PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -187,7 +188,6 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        CharacterPerMinuteInterface,
         ResolutionRouter,
         MLPRouter {
 
@@ -314,11 +314,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getHomeHotlistIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getInboxReputationIntent(Context context) {
         return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
     }
@@ -385,12 +380,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getRegisterIntent(Context context) {
         Intent intent = RegisterInitialActivity.getCallingIntent(context);
         return intent;
-    }
-
-    @Override
-    public void openImagePreview(Context context, ArrayList<String> images,
-                                 int position) {
-
     }
 
     private void goToDefaultRoute(Context context) {
@@ -604,6 +593,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return LoginActivity.DeepLinkIntents.getAutoLoginWebview(context, name, url);
     }
+
+    public Intent getKolFollowingPageIntent(Context context, int userId) {
+        return null;
+    }
+
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
@@ -669,6 +663,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
+        return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
@@ -716,8 +715,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Interceptor getChuckInterceptor() {
-        return getAppComponent().chuckInterceptor();
+    public Interceptor getChuckerInterceptor() {
+        return getAppComponent().ChuckerInterceptor();
     }
 
     @Override
@@ -749,11 +748,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getCartIntent(Activity activity) {
         return null;
-    }
-
-    @Override
-    public Interceptor getAuthInterceptor() {
-        return new TkpdAuthInterceptor();
     }
 
 
@@ -788,28 +782,14 @@ public abstract class SellerRouterApplication extends MainApplication
         return false; //Sellerapp dont have groupchat therefore always set false to indicator
     }
 
-    @Override
-    public void logoutToHome(Activity activity) {
-        //From DialogLogoutFragment
-        if (activity != null) {
-            new GlobalCacheManager().deleteAll();
-            PersistentCacheManager.instance.delete();
-            Router.clearEtalase(activity);
-            try {
-                TrackApp.getInstance().getMoEngage().logoutEvent();
-            } catch (Exception ignored) {}
-            SessionHandler.clearUserData(activity);
-            NotificationModHandler notif = new NotificationModHandler(activity);
-            notif.dismissAllActivedNotifications();
-            NotificationModHandler.clearCacheAllNotification(activity);
-
-            onLogout(getApplicationComponent());
-
-            Intent intent = getHomeIntent(activity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        }
+    public Intent createIntentProductVariant(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
+                                             ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
+                                             int productStock, boolean officialStore, String productSku,
+                                             boolean needRetainImage, ProductPictureViewModel productSizeChart, boolean hasOriginalVariantLevel1,
+                                             boolean hasOriginalVariantLevel2, boolean hasWholesale, boolean isAddStatus) {
+        return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
+                productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
+                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale,isAddStatus);
     }
 
     @Override
@@ -823,37 +803,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void eventClickFilterReview(Context context,
-                                       String filterName,
-                                       String productId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                CLICK_PDP,
-                "product detail page",
-                String.format(
-                        "click - filter review by %s",
-                        filterName.toLowerCase()
-                ),
-                productId
-        ));
-    }
-
-    @Override
-    public void eventImageClickOnReview(Context context,
-                                        String productId,
-                                        String reviewId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                CLICK_PDP,
-                "product detail page",
-                "click - review gallery on review list",
-                String.format(
-                        "product_id: %s - review_id : %s",
-                        productId,
-                        reviewId
-                )
-        ));
-    }
-
-    @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
                                       String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
@@ -861,7 +810,13 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-
+        if (activity != null) {
+            DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+            Intent intent = activity.getIntent();
+            intent.setData(Uri.parse(applink));
+            intent.putExtras(bundle);
+            deepLinkDelegate.dispatchFrom(activity, intent);
+        }
     }
 
     @Override
@@ -978,6 +933,9 @@ public abstract class SellerRouterApplication extends MainApplication
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
+    public void onLoginSuccess() {
+    }
+
     public String getDeviceId(Context context) {
         return "";
     }
@@ -1009,20 +967,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void saveCPM(@NonNull String cpm) {
-    }
-
-    @Override
-    public String getCPM() {
-        return "";
-    }
-
-    @Override
-    public boolean isEnable() {
-        return false;
-    }
-
-    @Override
     public boolean isToggleBuyAgainOn() {
         return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, false);
     }
@@ -1038,8 +982,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context,
-                                            BottomSheets.BottomSheetDismissListener listener) {
-        //no op
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
+
     }
 }
