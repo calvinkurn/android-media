@@ -20,7 +20,7 @@ import androidx.core.app.NotificationManagerCompat
 import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
-class NotificationChatService: JobIntentService() {
+class NotificationChatService : JobIntentService() {
 
     private val REPLY_KEY = "reply_chat_key"
     private val MESSAGE_ID = "message_chat_id"
@@ -61,7 +61,7 @@ class NotificationChatService: JobIntentService() {
 
         val remoteInput = RemoteInput.getResultsFromIntent(intent)
 
-        val message = if(intent.getStringExtra(REPLY_KEY).isNullOrEmpty()) {
+        val message = if (intent.getStringExtra(REPLY_KEY).isNullOrEmpty()) {
             remoteInput?.getCharSequence(REPLY_KEY).toString()
         } else {
             intent.getStringExtra(REPLY_KEY)
@@ -77,7 +77,9 @@ class NotificationChatService: JobIntentService() {
                 if (response.isSuccessReplyChat) {
                     clearNotification(notificationId)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        jobScheduler?.cancel(JOB_ID_RETRY)
+                        if(isJobIdRunning(JOB_ID_RETRY)) {
+                            jobScheduler?.cancel(JOB_ID_RETRY)
+                        }
                     }
                 } else {
                     onError(IllegalStateException())
@@ -103,7 +105,7 @@ class NotificationChatService: JobIntentService() {
         bundle.putString(MESSAGE_ID, messageId)
         bundle.putString(REPLY_KEY, message)
         bundle.putInt(NOTIFICATION_ID, notificationId)
-        val minDelay = TimeUnit.SECONDS.toMillis(5)
+        val minDelay = TimeUnit.SECONDS.toMillis(3)
         val maxDelay = TimeUnit.MINUTES.toMillis(2)
 
         jobScheduler?.schedule(
@@ -114,6 +116,17 @@ class NotificationChatService: JobIntentService() {
                         .setOverrideDeadline(maxDelay)
                         .setExtras(bundle)
                         .build())
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun isJobIdRunning(JobId: Int): Boolean {
+        jobScheduler?.allPendingJobs?.forEach { jobInfo ->
+            if (jobInfo.id == JobId) {
+                return true
+            }
+        }
+
+        return false
     }
 
     private fun clearNotification(notificationId: Int) {
