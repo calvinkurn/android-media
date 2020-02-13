@@ -39,8 +39,8 @@ class PinpointMapActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isFullFLow?.let {
-            intent?.extras?.getBoolean(EXTRA_IS_FULL_FLOW, true)
+        intent?.extras?.let {
+            isFullFLow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
         }
     }
 

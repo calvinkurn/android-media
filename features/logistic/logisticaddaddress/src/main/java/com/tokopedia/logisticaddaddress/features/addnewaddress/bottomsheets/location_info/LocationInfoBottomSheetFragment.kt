@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.location.LocationManager
+import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
@@ -19,7 +20,7 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
 /**
@@ -28,11 +29,16 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 class LocationInfoBottomSheetFragment : BottomSheets() {
     private var bottomSheetView: View? = null
     private lateinit var btnActivateLocation: ButtonCompat
+    private var isFullFlow: Boolean = true
 
     companion object {
         @JvmStatic
-        fun newInstance(): LocationInfoBottomSheetFragment {
-            return LocationInfoBottomSheetFragment()
+        fun newInstance(isFullFlow: Boolean): LocationInfoBottomSheetFragment {
+            return LocationInfoBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(EXTRA_IS_FULL_FLOW, isFullFlow)
+                }
+            }
         }
     }
 
@@ -48,7 +54,8 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         bottomSheetView = view
         btnActivateLocation = view.findViewById(R.id.btn_activate_location)
         btnActivateLocation.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = LOGISTIC_LABEL)
+            if(isFullFlow) AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = LOGISTIC_LABEL)
+            else AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = NON_LOGISTIC_LABEL)
             if (!context?.let { it1 -> turnGPSOn(it1) }!!) {
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
@@ -64,7 +71,8 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = LOGISTIC_LABEL)
+            if(isFullFlow) AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = LOGISTIC_LABEL)
+            else AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = NON_LOGISTIC_LABEL)
             onCloseButtonClick()
         }
     }

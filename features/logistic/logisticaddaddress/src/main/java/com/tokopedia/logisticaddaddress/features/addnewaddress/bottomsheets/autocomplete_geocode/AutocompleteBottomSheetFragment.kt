@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
@@ -258,7 +258,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     private fun showLocationInfoBottomSheet() {
-        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow = true)
         fragmentManager?.run {
             locationInfoBottomSheetFragment.show(this, "")
         }

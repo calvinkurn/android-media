@@ -205,7 +205,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         ic_current_location?.setOnClickListener {
             if(isFullFlow) AddNewAddressAnalytics.eventClickButtonPilihLokasi(eventLabel = LOGISTIC_LABEL)
             else AddNewAddressAnalytics.eventClickButtonPilihLokasi(eventLabel = NON_LOGISTIC_LABEL)
-            doUseCurrentLocation()
+            doUseCurrentLocation(isFullFlow)
         }
     }
 
@@ -330,11 +330,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    private fun doUseCurrentLocation() {
+    private fun doUseCurrentLocation(isFullFlow: Boolean) {
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             activity?.let { presenter.requestLocation(it) }
         } else {
-            showLocationInfoBottomSheet()
+            showLocationInfoBottomSheet(isFullFlow)
         }
     }
 
@@ -694,7 +694,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun useCurrentLocation() {
-        doUseCurrentLocation()
+        doUseCurrentLocation(isFullFlow)
     }
 
     private fun EditText.setupClearButtonWithAction() {
@@ -720,8 +720,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         })
     }
 
-    private fun showLocationInfoBottomSheet() {
-        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
+    private fun showLocationInfoBottomSheet(isFullFlow: Boolean) {
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow)
         fragmentManager?.run {
             locationInfoBottomSheetFragment.show(this, "")
         }
