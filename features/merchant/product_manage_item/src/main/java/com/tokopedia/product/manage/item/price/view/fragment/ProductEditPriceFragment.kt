@@ -330,7 +330,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         const val SAVED_PRODUCT_PRICE = "SAVED_PRODUCT_PRICE"
         const val DEFAULT_PRICE = 0.0
         const val MIN_ORDER = "1"
-        const val MAX_ORDER = "10,000"
+        const val MAX_ORDER = "999,999"
         const val REQUEST_CODE_GET_WHOLESALE = 1
         fun createInstance() = ProductEditPriceFragment()
     }
