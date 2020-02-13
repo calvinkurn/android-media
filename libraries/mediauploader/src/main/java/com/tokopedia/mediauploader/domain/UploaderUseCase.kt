@@ -3,6 +3,7 @@ package com.tokopedia.mediauploader.domain
 import android.graphics.BitmapFactory
 import com.tokopedia.mediauploader.data.consts.UrlBuilder
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
+import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.data.state.UploadState
 import com.tokopedia.usecase.RequestParams
@@ -16,9 +17,11 @@ class UploaderUseCase @Inject constructor(
 ) : UseCase<UploadResult>() {
 
     var requestParams = RequestParams()
+    lateinit var progressCallback: ProgressCallback
 
     override suspend fun executeOnBackground(): UploadResult {
         if (requestParams.parameters.isEmpty()) throw Exception("Not param found")
+        if (!::progressCallback.isInitialized) throw Exception("Progress callback is not initialized yet")
 
         val sourceId = requestParams.getString(PARAM_SOURCE_ID, "")
         val filePath = requestParams.getString(PARAM_FILE_PATH, "")
@@ -63,6 +66,7 @@ class UploaderUseCase @Inject constructor(
 
         //upload
         val url = UrlBuilder.generate(sourcePolicyData.host, sourceId)
+        mediaUploaderUseCase.progressCallback = progressCallback
         mediaUploaderUseCase.requestParams = MediaUploaderUseCase.createParam(url, filePath)
         val upload = mediaUploaderUseCase.executeOnBackground()
 

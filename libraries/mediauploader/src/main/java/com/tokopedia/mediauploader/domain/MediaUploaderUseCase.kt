@@ -2,6 +2,8 @@ package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.mediauploader.data.UploaderServices
 import com.tokopedia.mediauploader.data.entity.MediaUploader
+import com.tokopedia.mediauploader.data.state.ProgressCallback
+import com.tokopedia.mediauploader.util.ProgressRequestBody
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import okhttp3.MediaType
@@ -15,13 +17,14 @@ open class MediaUploaderUseCase @Inject constructor(
 ) : UseCase<MediaUploader>() {
 
     var requestParams = RequestParams()
+    lateinit var progressCallback: ProgressCallback
 
     override suspend fun executeOnBackground(): MediaUploader {
         if (requestParams.parameters.isEmpty()) throw Exception("Not param found")
         val uploadUrl = requestParams.getString(PARAM_URL_UPLOAD, "")
         val filePath = requestParams.getString(BODY_FILE_UPLOAD, "")
         val params = createParam(uploadUrl, filePath)
-        return services.uploadFile(uploadUrl, fileUploadParam(params))
+        return services.uploadFile(uploadUrl, fileUploadParam(params, progressCallback))
     }
 
     companion object {
@@ -36,10 +39,13 @@ open class MediaUploaderUseCase @Inject constructor(
             return requestParams
         }
 
-        private fun fileUploadParam(requestParams: RequestParams): MultipartBody.Part {
+        private fun fileUploadParam(
+                requestParams: RequestParams,
+                progressCallback: ProgressCallback
+        ): MultipartBody.Part {
             val file = File(requestParams.getString(BODY_FILE_UPLOAD, ""))
             val contentType = MediaType.parse("$DEFAULT_FILE_TYPE/*")
-            val requestBody: RequestBody = RequestBody.create(contentType, file)
+            val requestBody = ProgressRequestBody(file, contentType, progressCallback)
             return MultipartBody.Part.createFormData(BODY_FILE_UPLOAD, file.name, requestBody)
         }
 
