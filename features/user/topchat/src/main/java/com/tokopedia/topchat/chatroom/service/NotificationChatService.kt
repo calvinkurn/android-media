@@ -119,13 +119,12 @@ class NotificationChatService : JobIntentService() {
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun isJobIdRunning(JobId: Int): Boolean {
+    private fun isJobIdRunning(JobId: Int): Boolean {
         jobScheduler?.allPendingJobs?.forEach { jobInfo ->
             if (jobInfo.id == JobId) {
                 return true
             }
         }
-
         return false
     }
 
