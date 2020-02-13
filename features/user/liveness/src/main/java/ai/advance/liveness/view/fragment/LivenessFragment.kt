@@ -196,7 +196,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 }
                 Detector.WarnCode.FACEINACTION -> {
                     livenessWarnState = null
-//                    showActionTipUIView()
+                    showActionTipUIView()
                 }
                 else -> {}
             }
@@ -314,7 +314,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     override fun onDetectionActionChanged() {
         bgOverlay?.changeColor()
         onDetectionActionSuccess()
-        showActionTipUIView()
+//        showActionTipUIView()
     }
 
     private fun onDetectionActionSuccess(){
