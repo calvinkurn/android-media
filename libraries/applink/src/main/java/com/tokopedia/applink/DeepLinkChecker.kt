@@ -197,7 +197,7 @@ object DeepLinkChecker {
 
     // function for enable Hansel
 
-    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity"
+    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
         val uri = Uri.parse(url)
@@ -214,7 +214,7 @@ object DeepLinkChecker {
     private fun getCatalogIntent(context: Context, url: String): Intent {
         val catalogId = getLinkSegment(url)[1]
         val intent = getIntentByClassName(context, getCatalogDetailClassName())
-        intent.putExtra("ARG_EXTRA_CATALOG_ID", catalogId)
+        intent.putExtra("EXTRA_CATALOG_ID", catalogId)
         return intent
     }
 
