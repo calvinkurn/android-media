@@ -1,5 +1,5 @@
-{
-  OfficialStoreAllBrands(categoryId: 0, device: 1, offset: 0, query: "", size: 10,sort:1, firstLetter: "a") {
+query OfficialStoreAllBrands($categoryId: Int!, $device: Int!, $offset: Int!, $query: String!, $size: Int!, $sort: Int!, $firstLetter: String!) {
+  OfficialStoreAllBrands(categoryId: $categoryId, device: $device, offset: $offset, query: $query, size: $size, sort: $sort, firstLetter: $firstLetter) {
     brands {
       id
       name

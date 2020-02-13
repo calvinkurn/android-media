@@ -4,6 +4,7 @@ import com.tokopedia.brandlist.brandlist_search.data.model.BrandlistSearchRespon
 import com.tokopedia.brandlist.common.GQLQueryConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -21,8 +22,15 @@ class SearchBrandUseCase @Inject constructor(
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
-        return graphqlResponse.run {
-            getData<BrandlistSearchResponse>(BrandlistSearchResponse::class.java)
+        val error = graphqlResponse.getError(BrandlistSearchResponse::class.java) ?: listOf()
+        if (error == null || error.isEmpty()) {
+            return graphqlResponse.run {
+                getData<BrandlistSearchResponse>(BrandlistSearchResponse::class.java)
+            }
+        } else {
+            throw MessageErrorException(error.mapNotNull {
+                it.message
+            }.joinToString(separator = ", "))
         }
     }
 

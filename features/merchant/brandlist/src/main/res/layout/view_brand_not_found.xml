@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_brand_not_found"
+            android:src="@drawable/ic_icon_toped_announce"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="@string/title_brand_not_found"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/defaultText"
+                android:lineSpacingExtra="@dimen/sp_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="@string/subtitle_brand_not_found"
+                android:textSize="@dimen/sp_10"
+                android:textColor="@color/charcoal_grey_68"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_check_balance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyButtonSize="small"
+        android:text="Ganti Kata Kunci"/>
+
+</LinearLayout>

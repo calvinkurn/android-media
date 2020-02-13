@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_margin="@dimen/dp_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="@dimen/dp_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_logo_brand"
+                android:src="@drawable/ic_icon_toped_announce"
+                android:layout_gravity="center"
+                android:scaleType=""
+                android:layout_width="@dimen/dp_75"
+                android:layout_height="@dimen/dp_75" />
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+    <TextView
+        android:id="@+id/txt_title"
+        android:text="Samsung Electronics"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_4"
+        android:maxLines="2"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+
+</LinearLayout>

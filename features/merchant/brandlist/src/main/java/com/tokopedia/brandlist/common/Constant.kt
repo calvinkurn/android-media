@@ -7,3 +7,7 @@ object GQLQueryConstant {
     const val QUERY_BRANDLIST_POPULAR_BRAND = "query_brandlist_popular_brand"
     const val QUERY_BRANDLIST_NEW_BRAND = "query_brandlist_new_brand"
 }
+
+object ImageAssets {
+    const val BRAND_NOT_FOUND = "https://ecs7.tokopedia.net/android/others/ic_product_not_found.png"
+}
