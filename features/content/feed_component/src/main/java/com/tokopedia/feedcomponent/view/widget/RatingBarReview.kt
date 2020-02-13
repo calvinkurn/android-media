@@ -5,8 +5,8 @@ import android.content.res.TypedArray
 import androidx.annotation.AttrRes
 import android.util.AttributeSet
 import android.view.View
-import android.widget.RatingBar
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatRatingBar
 
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
@@ -19,7 +19,7 @@ class RatingBarReview : BaseCustomView {
     private var numstars: Int = 0
     private var rating: Int = 0
 
-    private var ratingBar: RatingBar? = null
+    private var ratingBar: AppCompatRatingBar? = null
 
     constructor(context: Context) : super(context) {
         init()

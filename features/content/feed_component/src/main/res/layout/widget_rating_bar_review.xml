@@ -7,13 +7,15 @@
     android:gravity="center"
     android:layout_height="wrap_content">
 
-    <RatingBar
+    <androidx.appcompat.widget.AppCompatRatingBar
         android:id="@+id/product_rating"
         style="@style/FeedRatingBar"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_marginRight="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_5"
+        android:stepSize="1"
+        android:numStars="5"
         android:layout_height="wrap_content"
         android:isIndicator="true"/>
 
