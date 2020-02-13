@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchRecommendationViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,5 +22,10 @@ abstract class BrandlistSearchViewModelModule {
     @IntoMap
     @ViewModelKey(BrandlistSearchViewModel::class)
     internal abstract fun brandlistSearchViewModel(viewModel: BrandlistSearchViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BrandlistSearchRecommendationViewModel::class)
+    internal abstract fun brandlistSearchRecommendationViewModel(viewModel: BrandlistSearchRecommendationViewModel): ViewModel
 
 }

@@ -1,64 +1,32 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.adapter
 
-import android.content.Context
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_search.data.model.Brand
-import com.tokopedia.brandlist.common.ImageAssets
-import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchNotFoundViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationTextViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 
-class BrandlistSearchResultAdapter(): RecyclerView.Adapter<BrandlistSearchResultAdapter.BrandlistSearchResultViewHolder>() {
+class BrandlistSearchResultAdapter(adapterTypeFactory: BrandlistSearchAdapterTypeFactory) :
+        BaseAdapter<BrandlistSearchAdapterTypeFactory>(adapterTypeFactory) {
 
-    private var searchResult: MutableList<Brand>  = mutableListOf()
-
-    fun updateSearchResultData(searchResultList: List<Brand>){
-        searchResult = searchResultList.toMutableList()
+    fun updateSearchResultData(searchResultList: List<BrandlistSearchResultViewModel>) {
+        visitables.clear()
+        visitables.addAll(searchResultList)
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandlistSearchResultViewHolder {
-        return BrandlistSearchResultViewHolder(parent.inflateLayout(R.layout.item_search_result))
-    }
-
-    override fun getItemCount(): Int {
-        return searchResult.size
-    }
-
-    override fun onBindViewHolder(holder: BrandlistSearchResultViewHolder, position: Int) {
-        holder.bindData(searchResult[position], position)
-    }
-
-    inner class BrandlistSearchResultViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val context: Context
-        val imgLogoBrand: ImageView
-//        val imgNotFound: ImageView
-        val txtBrandName: TextView
-        // val sectionSearchNotFound: LinearLayout
-
-        init {
-            context = itemView.context
-            imgLogoBrand = itemView.findViewById(R.id.img_logo_brand)
-            txtBrandName = itemView.findViewById(R.id.txt_title)
-            // sectionSearchNotFound = itemView.findViewById(R.id.view_brand_search_not_found)
-//            imgNotFound = itemView.findViewById(R.id.img_brand_not_found)
+    fun updateSearchRecommendationData(searchRecommendationList: List<BrandlistSearchRecommendationViewModel>) {
+        visitables.clear()
+        visitables.add(BrandlistSearchNotFoundViewModel())
+        if(searchRecommendationList.isNotEmpty()) {
+            visitables.add(BrandlistSearchRecommendationTextViewModel())
+            visitables.addAll(searchRecommendationList)
         }
-
-        fun bindData(brand: Brand, position: Int) {
-            txtBrandName.setText(brand.name)
-            ImageHandler.loadImage(context, imgLogoBrand, brand.logoUrl, null)
-
-//            if (searchResult.size < 1) {
-//                sectionSearchNotFound.visibility = View.VISIBLE
-//                ImageHandler.loadImage(context, imgNotFound, ImageAssets.BRAND_NOT_FOUND, null)
-//            }
-        }
-
+        notifyDataSetChanged()
     }
 
+    fun getVisitables(): MutableList<Visitable<*>> {
+        return visitables
+    }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 
-class BrandlistSearchViewModel (val brandName: String, val brandLogo: String): Visitable<BrandlistSearchAdapterTypeFactory> {
+class BrandlistSearchRecommendationTextViewModel : Visitable<BrandlistSearchAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: BrandlistSearchAdapterTypeFactory): Int {
         return adapterTypeFactory.type(this)

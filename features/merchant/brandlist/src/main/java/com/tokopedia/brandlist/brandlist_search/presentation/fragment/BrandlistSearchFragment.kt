@@ -17,16 +17,24 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
+import com.tokopedia.brandlist.brandlist_search.data.mapper.BrandlistSearchMapper
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationTextViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchRecommendationViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class BrandlistSearchFragment: BaseDaggerFragment(),
@@ -47,6 +55,10 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModel: BrandlistSearchViewModel
+    @Inject
+    lateinit var recommendationViewModel: BrandlistSearchRecommendationViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var searchView: SearchInputView? = null
     private var statusBar: View? = null
@@ -62,11 +74,20 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_brandlist_search, container, false)
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
-        layoutManager = GridLayoutManager(context, BRANDLIST_SEARCH_GRID_SPAN_COUNT)
-        adapterBrandSearch = BrandlistSearchResultAdapter()
+        layoutManager = GridLayoutManager(context, BRANDLIST_SEARCH_GRID_SPAN_COUNT).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when(adapterBrandSearch?.getItemViewType(position)) {
+                        BrandlistSearchResultViewHolder.LAYOUT -> 1
+                        else -> 3
+                    }
+                }
+            }
+        }
+        val adapterTypeFactory = BrandlistSearchAdapterTypeFactory()
+        adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
-
 
         return view
     }
@@ -77,6 +98,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
         initView(view)
         observeSearchResultData()
+        observeSearchRecommendationResultData()
     }
 
     override fun getComponent(): BrandlistSearchComponent? {
@@ -151,7 +173,27 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     val response = it.data.officialStoreAllBrands
-                    adapterBrandSearch?.updateSearchResultData(response.brands)
+                    if(response.brands.isEmpty()) {
+                        recommendationViewModel.searchRecommendation(
+                                userSession.userId.toIntOrNull(),
+                                categoryIds = "0")
+                    } else {
+                        adapterBrandSearch?.updateSearchResultData(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands))
+                    }
+                }
+                is Fail -> {
+                    showErrorNetwork(it.throwable)
+                }
+            }
+        })
+    }
+
+    private fun observeSearchRecommendationResultData() {
+        recommendationViewModel.brandlistSearchRecommendationResponse.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    val response = it.data.officialStoreBrandsRecommendation.shops
+                    adapterBrandSearch?.updateSearchRecommendationData(BrandlistSearchMapper.mapSearchRecommendationResponseToVisitable(response))
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
