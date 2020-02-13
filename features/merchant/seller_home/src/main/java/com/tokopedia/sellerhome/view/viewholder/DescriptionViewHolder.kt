@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
@@ -31,21 +32,25 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
                 tvDescriptionCta.visible()
                 icDescriptionCtaArrow.visible()
                 tvDescriptionCta.setOnClickListener {
-                    goToDetails(element.appLink, element.dataKey, element.title)
+                    goToDetails(element.appLink, element.title)
                 }
                 icDescriptionCtaArrow.setOnClickListener {
-                    goToDetails(element.appLink, element.dataKey, element.title)
+                    goToDetails(element.appLink, element.title)
                 }
             } else {
                 tvDescriptionCta.gone()
                 icDescriptionCtaArrow.gone()
             }
+
+            addOnImpressionListener(element.impressHolder) {
+                SellerHomeTracking.sendImpressionDescriptionEvent(element.title)
+            }
         }
     }
 
-    private fun goToDetails(applink: String, dataKey: String, descriptionTitle: String) {
-        if(RouteManager.route(itemView.context, applink)) {
-            SellerHomeTracking.sendClickDescriptionEvent(dataKey, descriptionTitle)
+    private fun goToDetails(appLink: String, descriptionTitle: String) {
+        if (RouteManager.route(itemView.context, appLink)) {
+            SellerHomeTracking.sendClickDescriptionEvent(descriptionTitle)
         }
     }
 }

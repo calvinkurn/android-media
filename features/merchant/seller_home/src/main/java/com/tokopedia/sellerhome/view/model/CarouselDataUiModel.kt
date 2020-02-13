@@ -1,8 +1,10 @@
 package com.tokopedia.sellerhome.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 data class CarouselDataUiModel (
         val dataKey: String = "",
-        val data: List<CarouselItemUiModel> = emptyList(),
+        val items: List<CarouselItemUiModel> = emptyList(),
         override var error: String = ""
 ): BaseDataUiModel
 
@@ -10,5 +12,6 @@ class CarouselItemUiModel (
         val id: String,
         val url: String,
         val appLink: String,
-        val featuredMediaURL: String
+        val featuredMediaURL: String,
+        val impressHolder: ImpressHolder
 )

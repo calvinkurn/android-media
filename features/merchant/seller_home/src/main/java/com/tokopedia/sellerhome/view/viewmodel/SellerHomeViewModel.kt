@@ -36,15 +36,16 @@ class SellerHomeViewModel @Inject constructor(
 
     private val shopId: String by lazy { userSession.shopId }
 
+    private val locale = Locale.getDefault()
     private val startDate: String by lazy {
-        val cal = Calendar.getInstance(Locale("id"))
+        val cal = Calendar.getInstance(locale)
         cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).minus(7))
-        return@lazy TimeFormat.format(cal.timeInMillis, "dd-MM-yyyy")
+        return@lazy TimeFormat.format(cal.timeInMillis, "dd-MM-yyyy", locale)
     }
     private val endDate: String by lazy {
-        val cal = Calendar.getInstance(Locale("id"))
+        val cal = Calendar.getInstance(locale)
         cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).minus(1))
-        return@lazy TimeFormat.format(cal.timeInMillis, "dd-MM-yyyy")
+        return@lazy TimeFormat.format(cal.timeInMillis, "dd-MM-yyyy", locale)
     }
 
     val homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
@@ -104,8 +105,9 @@ class SellerHomeViewModel @Inject constructor(
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             progressWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(userSession.shopId, "2020-02-02", dataKeys)
-                return@withContext getProgressDataUseCase.executeOnBackground()
+                val today = TimeFormat.format(Date().time, "yyyy-MM-dd", locale)
+                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(userSession.shopId, today, dataKeys)
+                getProgressDataUseCase.executeOnBackground()
             })
         }, onError = {
             progressWidgetData.value = Fail(it)
@@ -116,7 +118,7 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             postListWidgetData.value = Success(withContext(Dispatchers.IO) {
                 getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
-                getPostDataUseCase.executeOnBackground()
+                return@withContext getPostDataUseCase.executeOnBackground()
             })
         }, onError = {
             postListWidgetData.value = Fail(it)
