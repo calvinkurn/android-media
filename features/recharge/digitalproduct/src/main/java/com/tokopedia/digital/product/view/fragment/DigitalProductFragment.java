@@ -949,7 +949,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 break;
             case REQUEST_CODE_CHECK_SALDO_EMONEY:
                 if (checkETollBalanceView != null) {
-                    if (resultCode == Activity.RESULT_OK && data != null &&
+                    if (data != null &&
                             data.getParcelableExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) != null) {
                         DigitalCategoryDetailPassData passData = data.getParcelableExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
                         Bundle bundle = new Bundle();

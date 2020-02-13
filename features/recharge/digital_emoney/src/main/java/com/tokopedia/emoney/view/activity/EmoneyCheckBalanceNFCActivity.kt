@@ -77,6 +77,9 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     @Inject
     lateinit var brizziInstance: Brizzi
 
+    private var issuerIdSelected: Int = 0
+    private var operatorIdSelected: String = ""
+
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -141,6 +144,26 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
         brizziInstance.setNfcAdapter(this)
         handleIntent(intent)
+    }
+
+    override fun onBackPressed() {
+        val passData = DigitalCategoryDetailPassData.Builder()
+                .categoryId(ETOLL_CATEGORY_ID)
+                .operatorId(operatorIdSelected)
+                .clientNumber(eTollUpdateBalanceResultView.cardNumber)
+                .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
+                .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.cardLastUpdatedDate)
+                .additionalETollOperatorName(getOperatorName(issuerIdSelected))
+                .build()
+        if (intent != null && intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
+            if (intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) === DigitalExtraParam.EXTRA_NFC_FROM_PDP) {
+                val intentReturn = Intent()
+                intentReturn.putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
+                setResult(Activity.RESULT_OK, intentReturn)
+            }
+        }
+        finish()
+        super.onBackPressed()
     }
 
     override fun getLayoutRes(): Int {
@@ -340,6 +363,10 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     override fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
+        emoneyInquiry.attributesEmoneyInquiry?.let {
+            operatorIdSelected = it.operatorId
+            issuerIdSelected = it.issuer_id
+        }
         emoneyAnalytics.onShowLastBalance()
         tapETollCardView.visibility = View.GONE
         eTollUpdateBalanceResultView.visibility = View.VISIBLE
