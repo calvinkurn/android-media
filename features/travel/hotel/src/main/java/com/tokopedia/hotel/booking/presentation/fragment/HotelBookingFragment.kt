@@ -380,10 +380,9 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun setupContactDetail(cart: HotelCartData) {
         // If user email in cart.contact is empty, force user to add email
-//        if (cart.contact.email.isEmpty()) {
+        if (cart.contact.email.isEmpty()) {
             navigateToAddEmailPage()
-//        }
-
+        }
 
         // Check if contact data is empty
         if (hotelBookingPageModel.contactData.isEmpty() || hotelBookingPageModel.contactData.email.isEmpty()) {
