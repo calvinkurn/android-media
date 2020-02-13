@@ -7,8 +7,9 @@ import com.tokopedia.logisticaddaddress.data.entity.response.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
 import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
-import com.tokopedia.logisticaddaddress.domain.usecase.queryTest
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.SavedAddress
 import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.ValidatedDistrict
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -51,7 +52,7 @@ object AutoCompleteViewModelTest : Spek({
                 viewModel.autoCompleteList.observeForever(autoCompleteObserver)
                 viewModel.getAutoCompleteList("")
             }
-            Then("live data changed to success") {
+            Then("live data is changed to success") {
                 autoCompleteObserver.onChanged(Success(successList))
             }
         }
@@ -67,8 +68,84 @@ object AutoCompleteViewModelTest : Spek({
                 viewModel.autoCompleteList.observeForever(autoCompleteObserver)
                 viewModel.getAutoCompleteList("")
             }
-            Given("live data changed to error") {
+            Given("live data is changed to error") {
                 autoCompleteObserver.onChanged(Fail(testError))
+            }
+        }
+    }
+
+    Feature("get latitude longitude") {
+        val validateObserver: Observer<Result<ValidatedDistrict>> = mockk(relaxed = true)
+        Scenario("success") {
+            val successResponse = GetDistrictResponse()
+            val successDistrict = ValidatedDistrict()
+            Given("success callback") {
+                every { getDistrictUseCase.execute(any(), any()) } answers {
+                    firstArg<(GetDistrictResponse) -> Unit>().invoke(successResponse)
+                }
+                every { mapper.mapValidate(successResponse) } returns successDistrict
+            }
+            When("executed") {
+                viewModel.validatedDistrict.observeForever(validateObserver)
+                viewModel.getLatLng("")
+            }
+            Then("liva data is changed to success") {
+                validateObserver.onChanged(Success(successDistrict))
+            }
+        }
+
+        Scenario("fail") {
+            val testError = Throwable("test error")
+            Given("error callback") {
+                every { getDistrictUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(testError)
+                }
+            }
+            When("executed") {
+                viewModel.validatedDistrict.observeForever(validateObserver)
+                viewModel.getLatLng("")
+            }
+            Given("live data is changed to error") {
+                validateObserver.onChanged(Fail(testError))
+            }
+        }
+    }
+
+    Feature("get saved address") {
+        val savedObserver: Observer<Result<List<SavedAddress>>> = mockk(relaxed = true)
+        Scenario("success") {
+            val successResponse = AddressResponse()
+            val successDistrict = listOf(
+                    SavedAddress(addrId = 99)
+            )
+            Given("success callback") {
+                every { getSavedAddressUseCase.execute(any(), any()) } answers {
+                    firstArg<(AddressResponse) -> Unit>().invoke(successResponse)
+                }
+                every { mapper.mapAddress(successResponse) } returns successDistrict
+            }
+            When("executed") {
+                viewModel.savedAddress.observeForever(savedObserver)
+                viewModel.getSavedAddress()
+            }
+            Then("liva data is changed to success") {
+                savedObserver.onChanged(Success(successDistrict))
+            }
+        }
+
+        Scenario("fail") {
+            val testError = Throwable("test error")
+            Given("error callback") {
+                every { getDistrictUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(testError)
+                }
+            }
+            When("executed") {
+                viewModel.savedAddress.observeForever(savedObserver)
+                viewModel.getSavedAddress()
+            }
+            Given("live data is changed to error") {
+                savedObserver.onChanged(Fail(testError))
             }
         }
     }
