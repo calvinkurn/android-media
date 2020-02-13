@@ -229,8 +229,12 @@ open class PublishCompositeTask : DefaultTask() {
         moduleLogFile.delete()
 
         val outputFile = File("$module/build/outputs/aar/$module.aar")
+        val outputFile2 = File("$module/build/outputs/aar/$module-debug.aar")
         if (outputFile.exists()) {
             outputFile.delete()
+        }
+        if (outputFile2.exists()) {
+            outputFile2.delete()
         }
         
         val gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
@@ -238,7 +242,6 @@ open class PublishCompositeTask : DefaultTask() {
         if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
             return false
         }
-        val outputFile2 = File("$module/build/outputs/aar/$module-debug.aar")
         if (outputFile2.exists()) {
             outputFile2.copyTo(outputFile, true)
         }
