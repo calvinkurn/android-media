@@ -11,6 +11,7 @@ object LoginFingerprintQueryConstant {
 
     const val PARAM_ID = "id"
 
+    const val PARAM_USER_ID = "userId"
     const val PARAM_OTP_TYPE = "otpType"
     const val PARAM_PUBLIC_KEY = "publicKey"
     const val PARAM_SIGNATURE = "signature"

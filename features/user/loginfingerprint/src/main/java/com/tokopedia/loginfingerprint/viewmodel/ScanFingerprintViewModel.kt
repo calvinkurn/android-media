@@ -35,7 +35,8 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
     fun validateFingerprint() {
         val signature = cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
         val param = mapOf(
-                LoginFingerprintQueryConstant.PARAM_OTP_TYPE to "145",
+                LoginFingerprintQueryConstant.PARAM_USER_ID to userSession.userId,
+                LoginFingerprintQueryConstant.PARAM_OTP_TYPE to "12",
                 LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
                 LoginFingerprintQueryConstant.PARAM_TIME_UNIX to signature.datetime
         )
