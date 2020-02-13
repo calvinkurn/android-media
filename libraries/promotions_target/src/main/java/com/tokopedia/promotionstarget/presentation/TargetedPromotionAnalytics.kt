@@ -45,22 +45,26 @@ object TargetedPromotionAnalytics {
     }
 
     //5
-    fun viewClaimSuccess() {
+    fun viewClaimSuccess(screenTitle: String?) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = VIEW_TARGETED_PROMO_IRIS
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "view claim succeed"
+        screenTitle?.let {
+            map[KEY_EVENT_LABEL] = it
+        }
         getTracker().sendGeneralEvent(map)
     }
 
     //6
-    fun userClickCheckMyCoupon() {
+    fun userClickCheckMyCoupon(buttonText: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "click cek Kupon saya"
+        map[KEY_EVENT_LABEL] = buttonText
         getTracker().sendGeneralEvent(map)
     }
 

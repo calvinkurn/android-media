@@ -118,7 +118,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             when (it) {
                 is Success -> {
                     setUiForSuccessClaimGratification(it.data)
-                    TargetedPromotionAnalytics.viewClaimSuccess()
+                    TargetedPromotionAnalytics.viewClaimSuccess(it.data.popGratificationClaim?.title)
                 }
                 is Error,
                 is Fail -> {
@@ -372,7 +372,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     if (data is GetPopGratificationResponse) {
                         performActionToClaimCoupon(data as GetPopGratificationResponse, activityContext, btnActionText)
                     } else if (data is ClaimPopGratificationResponse) {
-                        performActionAfterCouponIsClaimed(activityContext, data as ClaimPopGratificationResponse)
+                        performActionAfterCouponIsClaimed(activityContext, data as ClaimPopGratificationResponse, btnActionText)
                     } else {
                         bottomSheetDialog.dismiss()
                     }
@@ -430,7 +430,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     }
 
-    private fun performActionAfterCouponIsClaimed(activityContext: Activity, data: ClaimPopGratificationResponse) {
+    private fun performActionAfterCouponIsClaimed(activityContext: Activity, data: ClaimPopGratificationResponse, buttonText: String) {
 
         val applink = data.popGratificationClaim?.popGratificationActionButton?.appLink
         if (!TextUtils.isEmpty(applink)) {
@@ -438,7 +438,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             RouteManager.route(btnAction.context, applink)
             bottomSheetDialog.dismiss()
         }
-        TargetedPromotionAnalytics.userClickCheckMyCoupon()
+        TargetedPromotionAnalytics.userClickCheckMyCoupon(buttonText)
     }
 
     private fun performActionToClaimCoupon(data: GetPopGratificationResponse, activityContext: Activity, btnActionText:String) {
