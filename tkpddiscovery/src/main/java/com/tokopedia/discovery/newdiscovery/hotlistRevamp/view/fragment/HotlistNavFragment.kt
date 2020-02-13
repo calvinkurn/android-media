@@ -621,7 +621,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onSuccessAddWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+        productNavListAdapter?.updateWishlistStatus(parseStringToInt(productId), true)
         enableWishlistButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
     }
@@ -632,18 +632,18 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
+        productNavListAdapter?.updateWishlistStatus(parseStringToInt(productId), false)
         enableWishlistButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
     }
 
 
     private fun enableWishlistButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), true)
+        productNavListAdapter?.setWishlistButtonEnabled(parseStringToInt(productId), true)
     }
 
     private fun disableWishlistButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt() , false)
+        productNavListAdapter?.setWishlistButtonEnabled(parseStringToInt(productId), false)
     }
 
     private fun removeWishlist(productId: String, userId: String) {
@@ -719,5 +719,13 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         quickFilterAdapter = null
 
         super.onDestroyView()
+    }
+
+    private fun parseStringToInt(input: String): Int {
+        return try {
+            input.toInt()
+        } catch (e: NumberFormatException) {
+            0
+        }
     }
 }
