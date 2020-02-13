@@ -155,7 +155,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         sendMessageEditText = view.findViewById(R.id.new_comment)
         sendMessageButton = view.findViewById(R.id.send_but)
         sendMessageButton.setOnClickListener {
-            analytics.trackSendCommentTalk(source, talkId, attachedProductListAdapter.data.firstOrNull()?.productId.toString())
+            analytics.trackSendCommentTalk(
+                    source,
+                    talkId,
+                    adapter.list.filterIsInstance(InboxTalkItemViewModel::class.java).firstOrNull()?.productHeader?.productId ?: "0")
             KeyboardHandler.DropKeyboard(context, view)
             if (userSession.isLoggedIn) {
                 presenter.sendComment(talkId,
