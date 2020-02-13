@@ -2,10 +2,14 @@ package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.travelhomepage.homepage.InstantTaskExecutorRuleSpek
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_BANNER
+import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_CATEGORIES
 import com.tokopedia.travelhomepage.homepage.shouldBeEquals
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyViewModelsUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -70,8 +74,8 @@ class TravelHomepageViewModelTest : Spek({
             val viewModel = TravelHomepageViewModel(mockk(), GetEmptyViewModelsUseCase(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
             val dummyData = DUMMY_BANNER
 
-            Given("Banner UseCase success") {
-                coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Success(dummyData) }
+            Given("Banner UseCase return dummy response") {
+                coEvery { bannerUseCase.execute(any(), any(), any()) } returns Success(dummyData)
             }
 
             When("Build Initial Item List") {
@@ -97,6 +101,77 @@ class TravelHomepageViewModelTest : Spek({
                     item.attribute.description shouldBeEquals dummyData.banners[index].attribute.description
                     item.attribute.imageUrl shouldBeEquals dummyData.banners[index].attribute.imageUrl
                     item.attribute.promoCode shouldBeEquals dummyData.banners[index].attribute.promoCode
+                }
+            }
+
+            Then("Banner Meta should be the same as response") {
+                val bannerMetaData = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER] as TravelHomepageBannerModel).travelCollectiveBannerModel.meta
+                bannerMetaData.webUrl shouldBeEquals dummyData.meta.webUrl
+                bannerMetaData.appUrl shouldBeEquals dummyData.meta.appUrl
+                bannerMetaData.title shouldBeEquals dummyData.meta.title
+                bannerMetaData.type shouldBeEquals dummyData.meta.type
+            }
+        }
+    }
+
+    Feature("Handle Fetch Categories") {
+        Scenario("Fetch Categories Failed") {
+            val graphqlRepository = mockk<GraphqlRepository>()
+            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyViewModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+
+            Given("Fetch Categories throw Exception") {
+                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+            }
+
+            When("Build Initial Item List") {
+                viewModel.getIntialList(true)
+            }
+
+            When("Fetch Categories") {
+                viewModel.getCategories("", true)
+            }
+
+            Then("Categories Data should be Loaded but Unsuccessful") {
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBeEquals false
+            }
+        }
+
+        Scenario("Fetch Categories Success") {
+            val graphqlRepository = mockk<GraphqlRepository>()
+            val dummyData = DUMMY_CATEGORIES
+            val graphqlSuccessResponse = GraphqlResponse(
+                    mapOf(TravelHomepageCategoryListModel.Response::class.java to TravelHomepageCategoryListModel.Response(dummyData)),
+                    mapOf(),
+                    false
+            )
+            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyViewModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+
+            Given("Fetch Categories return dummy response") {
+                coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
+            }
+
+            When("Build Initial Item List") {
+                viewModel.getIntialList(true)
+            }
+
+            When("Fetch Categories") {
+                viewModel.getCategories("", true)
+            }
+
+            Then("Categories Data should be Successfully Loaded") {
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBeEquals true
+            }
+
+            Then("Category Data should be the same as response") {
+                val categories = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER] as TravelHomepageCategoryListModel).categories
+                for ((index, item) in categories.withIndex()) {
+                    item.product shouldBeEquals dummyData.categories[index].product
+                    item.attributes.appUrl shouldBeEquals dummyData.categories[index].attributes.appUrl
+                    item.attributes.imageUrl shouldBeEquals dummyData.categories[index].attributes.imageUrl
+                    item.attributes.title shouldBeEquals dummyData.categories[index].attributes.title
+                    item.attributes.webUrl shouldBeEquals dummyData.categories[index].attributes.webUrl
                 }
             }
         }

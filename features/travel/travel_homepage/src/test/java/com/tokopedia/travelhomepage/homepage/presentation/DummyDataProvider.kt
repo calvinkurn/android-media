@@ -1,6 +1,7 @@
 package com.tokopedia.travelhomepage.homepage.presentation
 
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
 
 /**
  * @author by furqan on 13/02/2020
@@ -53,5 +54,28 @@ val DUMMY_BANNER = TravelCollectiveBannerModel(
                 title = "Lihat Semua",
                 webUrl = "https://www.tokopedia.com/promo",
                 appUrl = "tokopedia://promo"
+        )
+)
+
+val DUMMY_CATEGORIES = TravelHomepageCategoryListModel(
+        categories = arrayListOf(
+                TravelHomepageCategoryListModel.Category(
+                        product = "FLIGHT",
+                        attributes = TravelHomepageCategoryListModel.Attribute(
+                                title = "Pesawat",
+                                webUrl = "https://www.tokopedia.com/flight",
+                                appUrl = "tokopedia://pesawat",
+                                imageUrl = "https://ecs7.tokopedia.net/img/attachment/2018/7/28/5253715/5253715_60e64e5f-135e-47f6-aba3-d4b7cc15aa68.jpg"
+                        )
+                ),
+                TravelHomepageCategoryListModel.Category(
+                        product = "HOTELS",
+                        attributes = TravelHomepageCategoryListModel.Attribute(
+                                title = "Hotel",
+                                webUrl = "tokopedia://hotel",
+                                appUrl = "tokopedia://hotel",
+                                imageUrl = "https://ecs7.tokopedia.net/img/attachment/2018/7/28/5253715/5253715_60e64e5f-135e-47f6-aba3-d4b7cc15aa68.jpg"
+                        )
+                )
         )
 )
