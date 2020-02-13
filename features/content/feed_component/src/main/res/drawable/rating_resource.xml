@@ -2,11 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/ic_action_check" />
+        android:drawable="@drawable/ic_feed_star_disable" />
     <item
         android:id="@android:id/secondaryProgress"
-        android:drawable="@drawable/ic_action_check" />
+        android:drawable="@drawable/ic_feed_star_disable" />
     <item
         android:id="@android:id/progress"
-        android:drawable="@drawable/ic_action_x" />
+        android:drawable="@drawable/ic_feed_star_enable" />
 </layer-list>
