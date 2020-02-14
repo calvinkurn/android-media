@@ -4,11 +4,15 @@ import com.tokopedia.productcard.utils.*
 
 data class ProductCardModel (
         val productImageUrl: String = "",
+        @Deprecated("Cannot wishlist from product card anymore")
         var isWishlisted: Boolean = false,
+        @Deprecated("Cannot wishlist from product card anymore")
         val isWishlistVisible: Boolean = false,
         @Deprecated("replace with labelGroupList")
         val labelPromo: Label = Label(),
+        @Deprecated("No more shop image")
         val shopImageUrl: String = "",
+        @Deprecated("No more shop name")
         val shopName: String = "",
         val productName: String = "",
         val discountPercentage: String = "",

@@ -4,9 +4,10 @@ import android.view.View
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.productCardInPosition
+import com.tokopedia.productcard.test.utils.withDrawable
 import org.hamcrest.Matcher
 
 internal fun ViewInteraction.checkProductCardPerPosition() {
@@ -21,6 +22,9 @@ internal fun ViewInteraction.checkProductCardPerPosition() {
             .checkProductCardAtPosition(7, getProductCardMatchersPosition7())
             .checkProductCardAtPosition(8, getProductCardMatchersPosition8())
             .checkProductCardAtPosition(9, getProductCardMatchersPosition9())
+            .checkProductCardAtPosition(10, getProductCardMatchersPosition10())
+            .checkProductCardAtPosition(11, getProductCardMatchersPosition11())
+            .checkProductCardAtPosition(12, getProductCardMatchersPosition12())
 }
 
 private fun ViewInteraction.checkProductCardAtPosition(position: Int, elementMatchers: Map<Int, Matcher<View?>>): ViewInteraction {
@@ -32,16 +36,16 @@ private fun getProductCardMatchersPosition0(): Map<Int, Matcher<View?>> {
     val productCardModel = productCardModelTestData[0]
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = ViewMatchers.isDisplayed()
+        it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -49,18 +53,18 @@ private fun getProductCardMatchersPosition1(): Map<Int, Matcher<View?>> {
     val productCardModel = productCardModelTestData[1]
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
         it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = ViewMatchers.isDisplayed()
+        it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -68,16 +72,16 @@ private fun getProductCardMatchersPosition2(): Map<Int, Matcher<View?>> {
     val productCardModel = productCardModelTestData[2]
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = ViewMatchers.isDisplayed()
+        it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -90,20 +94,20 @@ private fun getProductCardMatchersPosition3(): Map<Int, Matcher<View?>> {
     val labelGimmick = productCardModel.getLabelGimmick() ?: throw Exception("Product Card Position $position has no label gimmick")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = ViewMatchers.isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = ViewMatchers.isDisplayed()
+        it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -115,17 +119,17 @@ private fun getProductCardMatchersPosition4(): Map<Int, Matcher<View?>> {
     val labelGimmick = productCardModel.getLabelGimmick() ?: throw Exception("Product Card Position $position has no label gimmick")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = ViewMatchers.isDisplayed()
+        it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -137,18 +141,18 @@ private fun getProductCardMatchersPosition5(): Map<Int, Matcher<View?>> {
     val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = ViewMatchers.isDisplayed()
+        it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -160,15 +164,15 @@ private fun getProductCardMatchersPosition6(): Map<Int, Matcher<View?>> {
     val labelGimmick = productCardModel.getLabelGimmick() ?: throw Exception("Product Card Position $position has no label gimmick")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -180,15 +184,15 @@ private fun getProductCardMatchersPosition7(): Map<Int, Matcher<View?>> {
     val labelCredibility = productCardModel.getLabelCredibility2() ?: throw Exception("Product Card Position $position has no label credibility")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
         it[R.id.textViewCredibility] = isDisplayedWithText(labelCredibility.title)
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -200,17 +204,17 @@ private fun getProductCardMatchersPosition8(): Map<Int, Matcher<View?>> {
     val labelShipping = productCardModel.getLabelShipping() ?: throw Exception("Product Card Position $position has no text shipping")
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = ViewMatchers.isDisplayed()
+        it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.textViewShipping] = isDisplayedWithText(labelShipping.title)
-        it[R.id.imageThreeDots] = ViewMatchers.isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 }
 
@@ -218,9 +222,56 @@ private fun getProductCardMatchersPosition9(): Map<Int, Matcher<View?>> {
     val productCardModel = productCardModelTestData[9]
 
     return mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+    }
+}
+
+private fun getProductCardMatchersPosition10(): Map<Int, Matcher<View?>> {
+    val productCardModel = productCardModelTestData[10]
+
+    return mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+    }
+}
+
+private fun getProductCardMatchersPosition11(): Map<Int, Matcher<View?>> {
+    val productCardModel = productCardModelTestData[11]
+
+    return mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+    }
+}
+
+private fun getProductCardMatchersPosition12(): Map<Int, Matcher<View?>> {
+    val productCardModel = productCardModelTestData[12]
+
+    return mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
     }
 }

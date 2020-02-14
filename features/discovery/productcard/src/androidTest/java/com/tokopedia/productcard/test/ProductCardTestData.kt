@@ -178,4 +178,44 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
             shopLocation = "DKI Jakarta",
             reviewCount = 60
     ))
+
+    it.add(11, ProductCardModel(
+            productName = "Product Rating Star 1",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            ratingCount = 1,
+            reviewCount = 60
+    ))
+
+    it.add(12, ProductCardModel(
+            productName = "Product Rating Star 2",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            ratingCount = 2,
+            reviewCount = 60
+    ))
+
+    it.add(13, ProductCardModel(
+            productName = "Product Rating Star 3",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            ratingCount = 3,
+            reviewCount = 60
+    ))
+
+    it.add(14, ProductCardModel(
+            productName = "Product Rating Star 4",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            ratingCount = 4,
+            reviewCount = 60
+    ))
+
+    it.add(15, ProductCardModel(
+            productName = "Product Rating Star 5",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            ratingCount = 5,
+            reviewCount = 60
+    ))
 }

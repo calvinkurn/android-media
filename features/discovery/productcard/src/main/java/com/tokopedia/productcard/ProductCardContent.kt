@@ -2,7 +2,9 @@ package com.tokopedia.productcard
 
 import android.graphics.Paint
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import androidx.annotation.DrawableRes
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadIcon
 import com.tokopedia.productcard.utils.shouldShowWithAction
@@ -69,10 +71,47 @@ private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderRating(productCardModel: ProductCardModel) {
-    imageRatingString?.showWithCondition(productCardModel.ratingString.isNotEmpty())
-    textViewRatingString?.shouldShowWithAction(productCardModel.ratingString.isNotEmpty()) {
-        it.text = productCardModel.ratingString
+    when {
+        productCardModel.ratingString.isNotEmpty() -> renderRatingFloat(productCardModel)
+        productCardModel.ratingCount > 0 -> renderRatingStars(productCardModel)
+        else -> hideRating()
     }
+}
+
+private fun View.renderRatingFloat(productCardModel: ProductCardModel) {
+    imageRatingString?.visible()
+    textViewRatingString?.visible()
+    textViewRatingString?.text = productCardModel.ratingString
+
+    linearLayoutImageRating?.gone()
+}
+
+private fun View.renderRatingStars(productCardModel: ProductCardModel) {
+    imageRatingString?.gone()
+    textViewRatingString?.gone()
+
+    linearLayoutImageRating?.visible()
+    setImageRating(productCardModel.ratingCount)
+}
+
+private fun View.setImageRating(rating: Int) {
+    imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
+    imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
+    imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
+    imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
+    imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
+}
+
+@DrawableRes
+private fun getRatingDrawable(isActive: Boolean): Int {
+    return if(isActive) R.drawable.product_card_ic_rating_active
+    else R.drawable.product_card_ic_rating_default
+}
+
+private fun View.hideRating() {
+    imageRatingString?.gone()
+    textViewRatingString?.gone()
+    linearLayoutImageRating?.gone()
 }
 
 private fun View.renderTextReview(productCardModel: ProductCardModel) {
