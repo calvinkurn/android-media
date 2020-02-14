@@ -62,6 +62,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
+        initializePerformance()
         resetIsRequested()
         setHideFAB()
     }
@@ -119,7 +120,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(UMRAH_HOME_PAGE)
+        initializePerformance()
         resetIsRequested()
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -153,6 +154,10 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         })
     }
 
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_HOME_PAGE_PERFORMANCE)
+    }
+
     private fun resetIsRequested(){
         isRequestedMyUmrah = false
         isRequestedCategory = false
@@ -175,8 +180,8 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -264,6 +269,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onPerformanceHomepageListener() {
         performanceMonitoring.stopTrace()
     }
+
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
         var isRequestedMyUmrah = false
@@ -275,7 +281,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         const val REQUEST_CODE_LOGIN = 400
         const val UMRAH_SEARCH_PARAM_INDEX = 0
 
-        const val UMRAH_HOME_PAGE = "sl_umrah_homepage"
+        const val UMRAH_HOME_PAGE_PERFORMANCE = "sl_umrah_homepage"
     }
 
     private fun goToLoginPage() {

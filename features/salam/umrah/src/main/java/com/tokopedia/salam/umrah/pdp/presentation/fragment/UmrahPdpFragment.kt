@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
@@ -35,6 +36,7 @@ import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentWidgetModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
+import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpGreenRectWidgetModel
@@ -93,6 +95,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
 
     private lateinit var swipeToRefresh: SwipeRefreshLayout
 
+    lateinit var performanceMonitoring: PerformanceMonitoring
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() = getComponent(UmrahPdpComponent::class.java).inject(this)
@@ -111,6 +115,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         swipeToRefresh = view.umrah_pdp_swipe_to_refresh
         swipeToRefresh.setColorSchemeColors(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G600))
         swipeToRefresh.setOnRefreshListener {
+            initializePerformance()
             hideData()
             swipeToRefresh.isRefreshing = true
             requestData()
@@ -119,6 +124,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     }
 
     private fun showGetListError() {
+        performanceMonitoring.stopTrace()
         swipeToRefresh.isEnabled = false
         NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.img_umrah_pdp_empty_state) {
             requestData()
@@ -167,6 +173,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         enableSwipeToRefresh()
         UmrahPdpFragment.umrahProduct = umrahProduct
         setupAll()
+        performanceMonitoring.stopTrace()
     }
 
     private fun setupAll() {
@@ -232,8 +239,13 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         slugName = arguments?.getString(EXTRA_SLUG_NAME, "")
         resetObject()
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_PDP_PAGE_PERFORMANCE)
     }
 
     private fun resetObject() {
@@ -587,6 +599,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
 
     companion object {
         const val REQUEST_CODE_LOGIN = 400
+        const val UMRAH_PDP_PAGE_PERFORMANCE = "sl_umrah_pdp"
 
         var umrahProduct: UmrahProductModel.UmrahProduct = UmrahProductModel.UmrahProduct()
 
@@ -628,5 +641,10 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
         }
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 }
