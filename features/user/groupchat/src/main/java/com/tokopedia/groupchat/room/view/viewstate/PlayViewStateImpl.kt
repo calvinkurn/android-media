@@ -14,7 +14,6 @@ import android.webkit.URLUtil
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
@@ -37,7 +36,6 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.R
-import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonsAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
@@ -52,6 +50,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
+import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
@@ -62,7 +61,6 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
@@ -578,20 +576,6 @@ open class PlayViewStateImpl(
     }
 
     override fun onQuickReplyClicked(message: String?) {
-//        val text = replyEditText.text.toString()
-//        val index = replyEditText.selectionStart
-//        shouldSendMessage(
-//                MethodChecker.fromHtml(String.format(
-//                        "%s %s %s",
-//                        text.substring(0, index),
-//                        message,
-//                        text.substring(index)
-//                )),
-//                isQuickReply = true
-//        )
-
-        //TODO("4. Remove this commented code, need to confirm with PO")
-
         shouldSendMessage(
                 MethodChecker.fromHtml(message),
                 isQuickReply = true
@@ -1270,7 +1254,7 @@ open class PlayViewStateImpl(
                 duration = Snackbar.LENGTH_LONG,
                 actionText = action,
                 clickListener = View.OnClickListener {
-                    RouteManager.route(view.context, ChatroomUrl.FAQ_URL)
+                    RouteManager.route(view.context, GroupChatUrl.FAQ_URL)
                 }
         )
     }

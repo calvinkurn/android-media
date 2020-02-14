@@ -86,7 +86,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getOverlayMessage(),
                 mapToBackgroundViewModel(pojo.getChannel().getBackgroundDefault(), pojo.getChannel().getBackgroundUrl()),
                 pojo.getChannel().getFreezeState(),
-                pojo.getChannel().isChatDisabled()
+                pojo.getChannel().getChatPermit() != null && pojo.getChannel().getChatPermit().isChatDisabled()
         );
     }
 

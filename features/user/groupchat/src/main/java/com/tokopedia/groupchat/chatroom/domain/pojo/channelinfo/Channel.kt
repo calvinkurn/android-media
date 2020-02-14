@@ -145,9 +145,16 @@ data class Channel(
         @SerializedName("link_info_url")
         @Expose
         val linkInfoUrl: String = "",
-        @SerializedName("is_chat_disabled")
+        @SerializedName("chat_permit")
         @Expose
-        val isChatDisabled: Boolean = false
+        val chatPermit: ChatPermit = ChatPermit()
 ) {
-        //TODO("3. Need to adjust response serialized name `is_chat_disabled` to match backend response")
+        data class ChatPermit(
+                @SerializedName("is_show_chat")
+                @Expose
+                val isChatDisabled: Boolean = false,
+                @SerializedName("error_chat_message")
+                @Expose
+                val errorMessage: String = ""
+        )
 }
