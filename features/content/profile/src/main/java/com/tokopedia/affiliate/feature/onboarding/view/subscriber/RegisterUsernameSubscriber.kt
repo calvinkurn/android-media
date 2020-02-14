@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.onboarding.view.subscriber
 
 import android.text.TextUtils
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.affiliate.feature.onboarding.data.pojo.registerusername.RegisterUsernameData

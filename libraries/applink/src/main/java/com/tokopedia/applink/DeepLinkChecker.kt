@@ -58,6 +58,7 @@ object DeepLinkChecker {
     const val PROMO_LIST = 34
     const val PRODUCT_REVIEW = 35
     const val DEALS = 36
+    const val TRAVEL_HOMEPAGE = 37
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 

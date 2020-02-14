@@ -5,10 +5,10 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.imageuploader.data.GenerateHostRepositoryImpl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
@@ -146,7 +146,7 @@ public class ImageUploaderModule {
     @ImageUploaderChuckQualifier
     @Provides
     public Interceptor provideInterceptor(@ImageUploaderQualifier Context context) {
-        return new ChuckInterceptor(context);
+        return new ChuckerInterceptor(context);
     }
 
     @ImageUploaderQualifier

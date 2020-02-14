@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
@@ -37,6 +38,7 @@ import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 
 /**
  * @author : Steven 29/11/18
@@ -68,6 +70,9 @@ class TopChatViewStateImpl(
     var isShopFollowed: Boolean = false
 
     var roomMenu = LongClickMenu()
+
+    override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
+    override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
 
     init {
         initView()
@@ -174,6 +179,18 @@ class TopChatViewStateImpl(
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
                 .blockedStatus, onUnblockChatClicked)
 
+    }
+
+    override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
+        super.updateHeader(chatroomViewModel, onToolbarClicked)
+        bindBadge(chatroomViewModel)
+    }
+
+    private fun bindBadge(chatRoom: ChatroomViewModel) {
+        val badgeView = toolbar.findViewById<ImageView>(R.id.ivBadge)
+        badgeView?.shouldShowWithAction(chatRoom.hasBadge()) {
+            ImageHandler.loadImageWithoutPlaceholder(badgeView, chatRoom.badgeUrl)
+        }
     }
 
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {

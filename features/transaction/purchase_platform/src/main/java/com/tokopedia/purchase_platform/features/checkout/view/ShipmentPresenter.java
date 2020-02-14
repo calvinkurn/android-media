@@ -9,22 +9,25 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
+import com.tokopedia.logisticcart.shipping.model.RatesParam;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -92,6 +95,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipm
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
+import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
@@ -109,6 +113,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDo
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -120,6 +125,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -144,13 +150,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final EditAddressUseCase editAddressUseCase;
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
     private final SaveShipmentStateUseCase saveShipmentStateUseCase;
-    private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
+    private final GetRatesUseCase ratesUseCase;
+    private final GetRatesApiUseCase ratesApiUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
     private final CodCheckoutUseCase codCheckoutUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final SubmitHelpTicketUseCase submitHelpTicketUseCase;
     private final UserSessionInterface userSessionInterface;
     private final GetInsuranceCartUseCase getInsuranceCartUseCase;
+    private final ShipmentDataConverter shipmentDataConverter;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
@@ -181,6 +189,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private String PARAM_MERCHANT = "merchant";
     private String PARAM_LOGISTIC = "logistic";
     private String statusOK = "OK";
+    private RatesResponseStateConverter stateConverter;
 
     @Inject
     public ShipmentPresenter(CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
@@ -193,17 +202,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              EditAddressUseCase editAddressUseCase,
                              ChangeShippingAddressUseCase changeShippingAddressUseCase,
                              SaveShipmentStateUseCase saveShipmentStateUseCase,
-                             GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+                             GetRatesUseCase ratesUseCase,
+                             GetRatesApiUseCase ratesApiUseCase,
                              CodCheckoutUseCase codCheckoutUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                              SubmitHelpTicketUseCase submitHelpTicketUseCase,
+                             RatesResponseStateConverter stateConverter,
                              ShippingCourierConverter shippingCourierConverter,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
                              UserSessionInterface userSessionInterface,
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics,
                              CheckoutAnalyticsCourierSelection checkoutAnalytics,
-                             GetInsuranceCartUseCase getInsuranceCartUseCase) {
+                             GetInsuranceCartUseCase getInsuranceCartUseCase,
+                             ShipmentDataConverter shipmentDataConverter) {
         this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
@@ -214,8 +226,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.editAddressUseCase = editAddressUseCase;
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.saveShipmentStateUseCase = saveShipmentStateUseCase;
-        this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
+        this.ratesUseCase = ratesUseCase;
+        this.ratesApiUseCase = ratesApiUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
+        this.stateConverter = stateConverter;
         this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
         this.codCheckoutUseCase = codCheckoutUseCase;
@@ -225,6 +239,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.mTrackerCod = codAnalytics;
         this.mTrackerShipment = checkoutAnalytics;
         this.getInsuranceCartUseCase = getInsuranceCartUseCase;
+        this.shipmentDataConverter = shipmentDataConverter;
     }
 
     @Override
@@ -238,8 +253,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
         }
-        if (getCourierRecommendationUseCase != null) {
-            getCourierRecommendationUseCase.unsubscribe();
+        if (ratesUseCase != null) {
+            ratesUseCase.unsubscribe();
+        }
+        if (ratesApiUseCase != null) {
+            ratesApiUseCase.unsubscribe();
         }
         if (codCheckoutUseCase != null) {
             codCheckoutUseCase.unsubscribe();
@@ -588,7 +606,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setTickerAnnouncementHolderData(null);
         }
 
-        RecipientAddressModel newAddress = getView().getShipmentDataConverter()
+        RecipientAddressModel newAddress = shipmentDataConverter
                 .getRecipientAddressModel(cartShipmentAddressFormData);
         if (!cartShipmentAddressFormData.isMultiple()) {
             setRecipientAddressModel(newAddress);
@@ -597,14 +615,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         if (cartShipmentAddressFormData.getDonation() != null) {
-            setShipmentDonationModel(getView().getShipmentDataConverter().getShipmentDonationModel(cartShipmentAddressFormData));
+            setShipmentDonationModel(shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData));
         } else {
             setShipmentDonationModel(null);
         }
 
         getView().setPromoStackingData(cartShipmentAddressFormData);
 
-        setShipmentCartItemModelList(getView().getShipmentDataConverter().getShipmentItems(
+        setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                 cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
         );
 
@@ -1763,12 +1781,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 boolean isInitialLoad, ArrayList<Product> products,
                                                 String cartString, boolean isTradeInDropOff,
                                                 RecipientAddressModel recipientAddressModel) {
-        String query = "";
-        if (isTradeInDropOff) {
-            query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_trade_in_query);
-        } else {
-            query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
-        }
         ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
@@ -1777,11 +1789,31 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
-        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(),
-                pslCode, spId, 0, shopShipmentList, shippingParam,
-                new GetCourierRecommendationSubscriber(getView(), this, shipperId, spId, itemPosition,
-                        shippingCourierConverter, shipmentCartItemModel, shopShipmentList, isInitialLoad, isTradeInDropOff)
-        );
+        boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
+
+        RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
+                .isCorner(cornerId)
+                .codHistory(counter)
+                .isLeasing(isLeasing)
+                .promoCode(pslCode)
+                .build();
+
+        Observable<ShippingRecommendationData> observable;
+        if (isTradeInDropOff) {
+            observable = ratesApiUseCase.execute(param);
+        } else {
+            observable = ratesUseCase.execute(param);
+        }
+        observable
+                .map(shippingRecommendationData ->
+                        stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                spId, 0))
+                .subscribe(
+                        new GetCourierRecommendationSubscriber(
+                                getView(), this, shipperId, spId, itemPosition,
+                                shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
+                                isInitialLoad, isTradeInDropOff
+                        ));
     }
 
     @NonNull
@@ -1804,10 +1836,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
-        shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
+        shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setTradein(shipmentDetailData.isTradein());
-        shippingParam.setTradeInDropOff(shipmentDetailData.isTradeInDropOff());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
         shippingParam.setTradeInDropOff(isTradeInDropOff);
@@ -1823,7 +1854,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
             shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
         }
-
         return shippingParam;
     }
 
@@ -1922,6 +1952,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public Token getKeroToken() {
         return token;
+    }
+
+    @NotNull
+    @Override
+    public ShipmentDataConverter getShipmentDataConverter() {
+        return shipmentDataConverter;
     }
 
     @Override

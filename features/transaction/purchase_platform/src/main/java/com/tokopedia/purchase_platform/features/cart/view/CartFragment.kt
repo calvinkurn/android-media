@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
-import com.readystatesoftware.chuck.Chuck
+import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -60,6 +60,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
@@ -571,7 +572,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onGoToChuck() {
         activity?.let {
-            startActivity(Chuck.getLaunchIntent(it))
+            startActivity(Chucker.getLaunchIntent(it, Chucker.SCREEN_HTTP))
         }
     }
 
@@ -2407,4 +2408,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
+    override fun updateCartCounter(counter: Int) {
+        val cache = LocalCacheHandler(context, CartConstant.CART);
+        cache.putInt(CartConstant.IS_HAS_CART, if (counter > 0) 1 else 0)
+        cache.putInt(CartConstant.CACHE_TOTAL_CART, counter);
+        cache.applyEditor();
+    }
 }

@@ -74,7 +74,7 @@
             android:layout_below="@+id/text_review_date"
             android:layout_alignLeft="@+id/txt_reviewer_name"
             android:layout_alignStart="@+id/txt_reviewer_name"
-            tools:srcCompat="@drawable/ic_star_five" />
+            tools:srcCompat="@drawable/ic_gold_star_five" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/text_review"

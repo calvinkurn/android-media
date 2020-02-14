@@ -41,6 +41,11 @@
     <string name="path_shop_open" translatable="false">/shop-open</string>
     <string name="path_onboarding" translatable="false">/onboarding</string>
     <string name="path_shop_page" translatable="false">/shop-page</string>
+    <string name="path_shop_info" translatable="false">/shop-info/.*\\/</string>
+    <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
+
+    <string name="path_review_inbox" translatable="false">/review</string>
+    <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>
 
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>
@@ -49,6 +54,8 @@
     <string name="path_shop_settings_notes" translatable="false">/shop-settings-notes</string>
     <string name="path_shop_setting_shipping" translatable="false">/shop-setting-shipping</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
+    <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
+    <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
     <string name="path_geolocation" translatable="false">/geolocation</string>

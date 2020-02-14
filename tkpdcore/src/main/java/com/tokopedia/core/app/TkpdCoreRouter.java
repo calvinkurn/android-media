@@ -85,8 +85,6 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionOpportunity(Context context, String query);
 
-    Intent getHomeHotlistIntent(Context context);
-
     Intent getInboxReputationIntent(Context context);
 
     /**

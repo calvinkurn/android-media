@@ -2,14 +2,17 @@ package com.tokopedia.home.analytics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerFeedViewModel;
@@ -37,7 +40,7 @@ public class HomePageTracking {
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
     public static final String LEGO_BANNER_3_IMAGE_CLICK = "lego banner 3 image click";
-    private static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
+
     private static final String ACTION_CLICK_POINT = "click point & tier status";
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomepage";
@@ -53,6 +56,7 @@ public class HomePageTracking {
     private static final String CATEGORY_HOMEPAGE_DIGITAL = "homepage digital";
     private static final String CATEGORY_TOKOPOINTS_USER_PAGE = "tokopoints - user profile page";
     private static final String CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
+    private static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
 
     private static final String ACTION_CLICK_HOME_PAGE = "clickHomePage";
     private static final String ACTION_CLICK_VIEW_ALL_PROMO = "slider banner click view all";
@@ -76,11 +80,13 @@ public class HomePageTracking {
     private static final String ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL = "lego banner 3 image click view all";
     private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
     private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
+    private static final String EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON = "click on tokopoints new coupon";
 
     private static final String LABEL_TOKOPOINTS = "tokopoints";
     private static final String LABEL_EMPTY = "";
     public static final String EVENT = "event";
     public static final String PROMO_VIEW = "promoView";
+
     public static final String EVENT_CATEGORY = "eventCategory";
     public static final String EVENT_ACTION_CLICK_ON_HOMEPAGE_RECOMMENDATION_TAB = "click on homepage recommendation tab";
     public static final String EVENT_ACTION = "eventAction";
@@ -1173,21 +1179,14 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventEnhanceImpressionPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceImpressionPlayBanner()
-            );
-        }
+    public static void eventEnhanceImpressionPlayBanner(TrackingQueue trackingQueue, PlayCardViewModel playCardViewModel) {
+        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner());
     }
 
-    public static void eventClickPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
+    public static void eventClickPlayBanner(PlayCardViewModel playCardViewModel) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickPlayBanner()
-            );
+            tracker.sendEnhanceEcommerceEvent(playCardViewModel.getEnhanceClickPlayBanner());
         }
     }
 
@@ -1788,6 +1787,15 @@ public class HomePageTracking {
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "click - home product review widget",
                 EVENT_LABEL, orderId + " - " + productId
+        ));
+    }
+
+    public static void sendClickOnTokopointsNewCouponTracker() {
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_TOKO_POINT,
+                EVENT_CATEGORY, CATEGORY_HOMEPAGE_TOKOPOINTS,
+                EVENT_ACTION, EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON,
+                EVENT_LABEL, LABEL_EMPTY
         ));
     }
 }
