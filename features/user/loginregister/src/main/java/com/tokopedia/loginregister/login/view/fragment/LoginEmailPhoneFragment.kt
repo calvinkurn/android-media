@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -275,6 +276,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             if (isShowBanner) {
                 context?.let {
                     analytics.eventViewBanner()
+                    ImageHandler.LoadImage(bannerLogin, BANNER_LOGIN_URL)
                     bannerLogin.visibility = View.VISIBLE
                 }
             } else if (isFromAtcPage() && isShowTicker) {
@@ -1405,6 +1407,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER = "android_user_banner_login"
+
+        private const val BANNER_LOGIN_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()

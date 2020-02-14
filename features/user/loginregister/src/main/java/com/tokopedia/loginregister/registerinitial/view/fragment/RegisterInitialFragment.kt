@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -283,6 +284,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             if (isShowBanner) {
                 context?.let {
                     registerAnalytics.eventViewBanner()
+                    ImageHandler.LoadImage(bannerRegister, BANNER_REGISTER_URL)
                     bannerRegister.visibility = View.VISIBLE
                 }
             } else if (isFromAtc() && isShowTicker) {
@@ -1277,6 +1279,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
+
+        private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()
