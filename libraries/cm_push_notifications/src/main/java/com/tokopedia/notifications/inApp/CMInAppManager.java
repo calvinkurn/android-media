@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
@@ -25,6 +26,9 @@ import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.KEY_CM_INAPP_END_TIME_INTERVAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 
 
 /**
@@ -42,6 +46,7 @@ public class CMInAppManager implements CmInAppListener {
 
     final Object lock = new Object();
 
+    public long cmInAppEndTimeInterval = HOURS_24_IN_MILLIS * 7;
 
     public static CMInAppManager getInstance() {
         return inAppManager;
@@ -54,6 +59,8 @@ public class CMInAppManager implements CmInAppListener {
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
+        cmInAppEndTimeInterval = ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
+                KEY_CM_INAPP_END_TIME_INTERVAL, HOURS_24_IN_MILLIS * 7);
         RulesManager.initRuleEngine(application);
         initInAppManager();
     }

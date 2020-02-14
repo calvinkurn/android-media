@@ -3,14 +3,15 @@ package com.tokopedia.notifications.inApp.viewEngine;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout;
 
 import java.util.Map;
 
-import static com.tokopedia.notifications.common.PayloadConverterKt.HOURS_24_IN_MILLIS;
-
 public class CmInAppBundleConvertor {
+
+    public static final long HOURS_24_IN_MILLIS = 24 * 60 * 60 * 1000L;
 
     public static CMInApp getCmInApp(RemoteMessage remoteMessage) {
         try {
@@ -43,7 +44,7 @@ public class CmInAppBundleConvertor {
                 cmInApp.setEndTime(getLongFromStr(map.get("et")));
 
             if (cmInApp.getEndTime() == 0L) {
-                cmInApp.setEndTime(System.currentTimeMillis() + HOURS_24_IN_MILLIS);
+                cmInApp.setEndTime(System.currentTimeMillis() + CMInAppManager.getInstance().cmInAppEndTimeInterval);
             }
 
             /*if (map.containsKey("ct"))

@@ -7,6 +7,7 @@ public class RulesUtil {
 
     public interface Constants{
         int DEFAULT_FREQ = -2;
+        String KEY_CM_INAPP_END_TIME_INTERVAL = "app_cm_inapp_end_time_interval";
     }
 
     public static boolean isValidTimeFrame(long startTime, long endTime,
