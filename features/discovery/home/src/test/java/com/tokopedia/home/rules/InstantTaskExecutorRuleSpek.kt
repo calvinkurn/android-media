@@ -1,4 +1,4 @@
-package com.example.home.rules
+package com.tokopedia.home.rules
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

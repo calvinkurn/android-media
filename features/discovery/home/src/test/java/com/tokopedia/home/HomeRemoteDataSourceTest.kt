@@ -1,15 +1,14 @@
-package com.example.tkpdhome
+package com.tokopedia.home
 
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.v2.home.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.v2.home.model.pojo.home.HomeData
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -23,11 +22,15 @@ import java.io.File
 @ExperimentalCoroutinesApi
 class HomeRemoteDataSourceTest {
     val graphqlRepository = mockk<GraphqlRepository>()
+    val userSessionInterface = mockk<UserSessionInterface>()
+    val homeQuery = ""
     private lateinit var homeRemoteDataSource: HomeRemoteDataSource
 
     @Before
     fun init(){
-        homeRemoteDataSource = HomeRemoteDataSource(graphqlRepository, Dispatchers.Unconfined)
+        homeRemoteDataSource = HomeRemoteDataSource(graphqlRepository, userSessionInterface, homeQuery)
+        every { userSessionInterface.isLoggedIn } returns true
+        every { userSessionInterface.userId } returns "-1"
     }
 
     @Test
@@ -36,12 +39,12 @@ class HomeRemoteDataSourceTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
                 HomeData::class.java to homeData
         ), mapOf(), false)
-        runBlocking(Dispatchers.Unconfined){
+        runBlocking {
             val graphqlResponse = homeRemoteDataSource.getHomeData()
             val result = graphqlResponse.getData<HomeData>(HomeData::class.java)
             Assert.assertEquals(null, graphqlResponse.getError(HomeData::class.java))
-            Assert.assertEquals(1, result.id)
-            Assert.assertEquals("16206", result.dynamicHomeChannel.channels?.first()?.id)
+            Assert.assertEquals(0, result.id)
+            Assert.assertEquals("16206", result.dynamicHomeChannel?.channels?.first()?.id)
         }
     }
 

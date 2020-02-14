@@ -1,15 +1,15 @@
-package com.example.home
+package com.tokopedia.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.example.home.rules.CoroutinesMainDispatcherRule
+import com.tokopedia.home.rules.CoroutinesMainDispatcherRule
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.v2.home.base.HomeRepository
-import com.tokopedia.v2.home.data.datasource.local.dao.HomeDao
-import com.tokopedia.v2.home.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.v2.home.data.repository.HomeRepositoryImpl
-import com.tokopedia.v2.home.model.pojo.home.HomeData
-import com.tokopedia.v2.home.model.vo.Resource
+import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
+import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.repository.HomeRepository
+import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
+import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.helper.Resource
 import io.mockk.*
 import kotlinx.coroutines.*
 import org.junit.Before

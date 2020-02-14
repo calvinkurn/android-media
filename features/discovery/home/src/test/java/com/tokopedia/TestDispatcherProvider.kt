@@ -1,4 +1,4 @@
-package com.example.home.rules
+package com.tokopedia.home_wishlist
 
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher

@@ -1662,6 +1662,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void refreshHomeData() {
+        refreshLayout.setRefreshing(true);
+        onNetworkRetry();
+    }
+
+    @Override
     public void onTokopointCheckNowClicked(@NotNull String applink) {
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);

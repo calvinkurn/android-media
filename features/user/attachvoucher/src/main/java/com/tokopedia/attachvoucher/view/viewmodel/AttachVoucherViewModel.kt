@@ -26,7 +26,7 @@ class AttachVoucherViewModel @Inject constructor(
     var shopId: String = ""
     val filter: LiveData<Int> get() = _filter
     val error: LiveData<Throwable> get() = _error
-    var filteredVouchers: LiveData<List<Voucher>> = Transformations.map(_filter) {
+    val filteredVouchers: LiveData<List<Voucher>> = Transformations.map(_filter) {
         _vouchers.value?.filter { voucher ->
             (_filter.value == NO_FILTER || _filter.value == voucher.type)
         } ?: emptyList()

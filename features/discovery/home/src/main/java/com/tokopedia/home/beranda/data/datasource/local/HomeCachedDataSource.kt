@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.datasource
+package com.tokopedia.home.beranda.data.datasource.local
 
 import android.os.SystemClock
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.domain.model.HomeRoomData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 class HomeCachedDataSource(
         private val homeDao: HomeDao) {
     private val timeout = TimeUnit.DAYS.toMillis(30)
