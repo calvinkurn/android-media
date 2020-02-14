@@ -9,7 +9,7 @@ import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepag
  * @author by jessica on 2019-08-19
  */
 
-class GetEmptyViewModelsUseCase {
+class GetEmptyModelsUseCase {
 
     fun requestEmptyViewModels(loadFromCloud: Boolean): List<TravelHomepageItemModel> {
 

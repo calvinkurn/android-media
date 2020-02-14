@@ -14,7 +14,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
-import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyViewModelsUseCase
+import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 class TravelHomepageViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
+        private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
         private val dispatcherProvider: TravelDispatcherProvider)
@@ -38,7 +38,7 @@ class TravelHomepageViewModel @Inject constructor(
     private val mapper = TravelHomepageMapper()
 
     fun getIntialList(isLoadFromCloud: Boolean) {
-        val list: List<TravelHomepageItemModel> = getEmptyViewModelsUseCase.requestEmptyViewModels(isLoadFromCloud)
+        val list: List<TravelHomepageItemModel> = getEmptyModelsUseCase.requestEmptyViewModels(isLoadFromCloud)
 
         travelItemList.value = list
         isAllError.value = false
