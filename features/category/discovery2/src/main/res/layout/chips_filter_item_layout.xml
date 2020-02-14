@@ -4,7 +4,6 @@
     android:id="@+id/chipsFilterItem"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_8"
     app:centerText="true"
     app:chipSize="medium"
     app:chipText="semua produk"

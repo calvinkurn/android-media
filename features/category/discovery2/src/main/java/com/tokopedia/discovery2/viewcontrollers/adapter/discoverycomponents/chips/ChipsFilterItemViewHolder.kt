@@ -52,6 +52,7 @@ class ChipsFilterItemViewHolder(itemView: View, private val fragment: Fragment) 
                     SELECTED
                 }
             }
+            setChipType(chipData)
         }
     }
 
