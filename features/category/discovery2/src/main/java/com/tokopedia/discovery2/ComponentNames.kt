@@ -15,6 +15,7 @@ enum class ComponentNames(val componentName: String) {
     TitleImage("title_image"),
     TextComponent("text_component"),
     ClaimCoupon("claim_coupon"),
+    ClaimCouponItem("claim_coupon_item"),
     ProductCardCarousel("product_card_carousel"),
     BrandRecommendation("brand_recommendation"),
     Margin("margin"),

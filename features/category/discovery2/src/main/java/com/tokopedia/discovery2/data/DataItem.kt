@@ -86,12 +86,6 @@ data class DataItem(
         @field:SerializedName("button_text")
         var buttonText: String? = "",
 
-        @SerializedName("title")
-        val title: String? = "",
-
-        @SerializedName("thumbnail_url_mobile")
-        val thumbnailUrlMobile: String? = "",
-
         @SerializedName("points_str")
         val pointsStr: String? = "",
 
@@ -103,9 +97,6 @@ data class DataItem(
 
         @SerializedName("points_slash")
         val pointsSlash: Int? = 0,
-
-        @SerializedName("slug")
-        val slug: String? = "",
 
         @SerializedName("btn_applink")
         val btnApplink: String? = "",
@@ -123,7 +114,48 @@ data class DataItem(
         var background: String? = "",
 
         @SerializedName("video_id")
-        val videoId: String? = ""
+        val videoId: String? = "",
+
+        @SerializedName("basecode")
+        val basecode: String? = "",
+        @SerializedName("catalog_type")
+        val catalogType: Int? = 0,
+        @SerializedName("coupon_code")
+        val couponCode: String? = "",
+        @SerializedName("cta")
+        val cta: String? = "",
+        @SerializedName("cta_desktop")
+        val ctaDesktop: String? = "",
+        @SerializedName("disabled_err_msg")
+        val disabledErrMsg: String? = "",
+        @SerializedName("id")
+        val id: Int? = 0,
+        @SerializedName("image_url")
+        val imageUrl: String? = "",
+        @SerializedName("is_disabled")
+        val isDisabled: Boolean? = false,
+        @SerializedName("is_disabled_btn")
+        val isDisabledBtn: Boolean? = false,
+        @SerializedName("min_usage")
+        val minUsage: String? = "",
+        @SerializedName("min_usage_label")
+        val minUsageLabel: String? = "",
+        @SerializedName("promo_id")
+        val promoId: Int? = 0,
+        @SerializedName("quota")
+        val quota: Int? = 0,
+        @SerializedName("slug")
+        val slug: String? = "",
+        @SerializedName("subtitle")
+        val subtitle: String? = "",
+        @SerializedName("thumbnail_url")
+        val thumbnailUrl: String? = "",
+        @SerializedName("thumbnail_url_mobile")
+        val thumbnailUrlMobile: String? = "",
+        @SerializedName("title")
+        val title: String? = "",
+        @SerializedName("upper_text_desc")
+        val upperTextDesc: List<String?>? = null
 
 ) {
     val leftMargin: Int

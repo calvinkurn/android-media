@@ -3,7 +3,11 @@ package com.tokopedia.discovery2.discoverymapper
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
-import com.tokopedia.discovery2.data.cpmtopads.*
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.cpmtopads.BadgesItem
+import com.tokopedia.discovery2.data.cpmtopads.Headline
+import com.tokopedia.discovery2.data.cpmtopads.ImageProduct
+import com.tokopedia.discovery2.data.cpmtopads.ProductItem
 
 class DiscoveryDataMapper {
 
@@ -16,7 +20,7 @@ class DiscoveryDataMapper {
         return cpmTitleData
     }
 
-    fun addShopItemToProductList(item: DataItem): ArrayList<ProductItem?>? {
+    fun addShopItemToProductList(item: com.tokopedia.discovery2.data.cpmtopads.DataItem): ArrayList<ProductItem?>? {
         val product = ProductItem()
         product.name = item.headline?.shop?.slogan
         product.buttonText = item.headline?.buttonText
@@ -47,12 +51,12 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapListToComponentList(itemList: List<com.tokopedia.discovery2.data.DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = ""): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        itemList.forEach {
+        itemList?.forEach {
             val componentsItem = ComponentsItem()
             componentsItem.name = subComponentName
-            val dataItem = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
+            val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem
             list.add(componentsItem)
