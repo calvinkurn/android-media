@@ -783,7 +783,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId))
+                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, leasingId))
             );
         } else {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -929,7 +929,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @NonNull
     private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest,
                                                                boolean isOneClickShipment,
-                                                               boolean isTradeIn, String deviceId) {
+                                                               boolean isTradeIn, String deviceId, String leasingId) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -945,7 +945,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
                 getView().showToastError(errorMessage);
-                processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
+//                processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
+                processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, null, deviceId, leasingId);
             }
 
             @Override
