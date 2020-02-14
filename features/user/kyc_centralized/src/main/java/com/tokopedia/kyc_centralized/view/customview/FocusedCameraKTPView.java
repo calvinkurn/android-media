@@ -11,6 +11,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.tokopedia.user_identification_common.KYCConstant;
+
 /**
  * @author by alvinatin on 06/11/18.
  */
@@ -82,7 +84,7 @@ public class FocusedCameraKTPView extends View {
 
         canvas.drawPath(mPath, mSemiBlackPaint);
         canvas.clipPath(mPath);
-        canvas.drawColor(Color.parseColor("#ae000000"));
+        canvas.drawColor(Color.parseColor(KYCConstant.KYC_OVERLAY_COLOR));
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,

@@ -1,6 +1,5 @@
 package ai.advance.liveness.lib
 
-
 import android.graphics.PointF
 import android.graphics.RectF
 

@@ -11,6 +11,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.tokopedia.user_identification_common.KYCConstant;
+
 /**
  * @author by alvinatin on 07/11/18.
  */
@@ -120,6 +122,6 @@ public class FocusCameraFaceView extends View {
 
         canvas.drawPath(mPath, mSemiBlackPaint);
         canvas.clipPath(mPath);
-        canvas.drawColor(Color.parseColor("#ae000000"));
+        canvas.drawColor(Color.parseColor(KYCConstant.KYC_OVERLAY_COLOR));
     }
 }

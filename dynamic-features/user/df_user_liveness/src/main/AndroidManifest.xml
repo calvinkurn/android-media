@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="ai.advance.liveness.customerapp">
+    package="com.tokopedia.liveness.customerapp">
 
     <dist:module
         dist:onDemand="true"

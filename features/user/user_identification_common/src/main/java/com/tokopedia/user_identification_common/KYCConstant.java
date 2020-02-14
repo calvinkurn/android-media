@@ -39,4 +39,8 @@ public interface KYCConstant {
     String VALUE_KYC_SRC_SELLER = "seller";
     String EXTRA_IS_SOURCE_SELLER = "source_seller";
 
+    int KTP_RETAKE = 1;
+    int FACE_RETAKE = 2;
+
+    String KYC_OVERLAY_COLOR = "#ae000000";
 }

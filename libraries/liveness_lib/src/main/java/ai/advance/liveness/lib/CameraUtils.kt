@@ -5,11 +5,6 @@ import android.app.Activity
 import android.hardware.Camera
 import android.view.Surface
 
-/**
- * createTime:2019-11-07
- *
- * @author fan.zhang@advance.ai
- */
 internal object CameraUtils {
     /**
      * get camera info

@@ -223,7 +223,6 @@ class LivenessView constructor(context: Context, attrs: AttributeSet? = null) : 
                         this.setAspectRatio(previewHeight, previewWidth)
 
                         this.mCamera.parameters = params
-//                        this.transformTexture()
                         this.startAutoFocus()
                     } catch (var4: Exception) {
                     }

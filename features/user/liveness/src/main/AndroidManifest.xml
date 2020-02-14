@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ai.advance.liveness">
+    package="com.tokopedia.liveness">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,7 +11,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="ai.advance.liveness.view.activity.LivenessActivity"
+            android:name="com.tokopedia.liveness.view.activity.LivenessActivity"
             android:label="@string/title_liveness_detection"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ai.advance.liveness.view.activity.LivenessFailedActivity"
+            android:name="com.tokopedia.liveness.view.activity.LivenessFailedActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

@@ -1,6 +1,5 @@
 package ai.advance.liveness.lib
 
-
 import ai.advance.common.utils.FileUtil
 import ai.advance.common.utils.LogUtil
 import java.io.File

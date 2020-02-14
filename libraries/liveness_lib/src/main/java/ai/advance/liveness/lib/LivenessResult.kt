@@ -6,11 +6,6 @@ import android.graphics.BitmapFactory
 import android.text.TextUtils
 import android.util.Base64
 
-/**
- * createTime:2019/2/1 10:08 AM
- *
- * @author fan.zhang@advance.ai
- */
 object LivenessResult {
     /**
      * get Base64 format picture
@@ -90,16 +85,16 @@ object LivenessResult {
         }
 
     internal fun setErrorCode(errorCode: ErrorCode) {
-        this.errorCode = errorCode.name
+        LivenessResult.errorCode = errorCode.name
     }
 
     internal fun setErrorCode(failedType: Detector.DetectionFailedType?) {
         if (failedType != null) {
             when (failedType) {
-                Detector.DetectionFailedType.TIMEOUT -> LivenessResult.setErrorCode(ErrorCode.ACTION_TIMEOUT)
-                Detector.DetectionFailedType.MUCHMOTION -> LivenessResult.setErrorCode(ErrorCode.MUCH_MOTION)
-                Detector.DetectionFailedType.FACEMISSING -> LivenessResult.setErrorCode(ErrorCode.FACE_MISSING)
-                Detector.DetectionFailedType.MULTIPLEFACE -> LivenessResult.setErrorCode(ErrorCode.MULTIPLE_FACE)
+                Detector.DetectionFailedType.TIMEOUT -> setErrorCode(ErrorCode.ACTION_TIMEOUT)
+                Detector.DetectionFailedType.MUCHMOTION -> setErrorCode(ErrorCode.MUCH_MOTION)
+                Detector.DetectionFailedType.FACEMISSING -> setErrorCode(ErrorCode.FACE_MISSING)
+                Detector.DetectionFailedType.MULTIPLEFACE -> setErrorCode(ErrorCode.MULTIPLE_FACE)
             }
         }
     }

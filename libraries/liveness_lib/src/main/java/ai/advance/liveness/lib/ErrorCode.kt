@@ -1,10 +1,5 @@
 package ai.advance.liveness.lib
 
-/**
- * createTime:2019-11-07
- *
- * @author fan.zhang@advance.ai
- */
 enum class ErrorCode {
     /**
      * face missing

@@ -48,14 +48,14 @@ class GuardianLivenessDetectionSDK internal constructor() {
          * set device type,different device types will call different cameras
          */
         fun setDeviceType(deviceType: DeviceType) {
-            GuardianLivenessDetectionSDK.isEmulator = deviceType == DeviceType.Emulator
+            isEmulator = deviceType == DeviceType.Emulator
         }
 
         /**
          * let camera
          */
         fun letSDKHandleCameraPermission() {
-            GuardianLivenessDetectionSDK.isSDKHandleCameraPermission = true
+            isSDKHandleCameraPermission = true
         }
 
 

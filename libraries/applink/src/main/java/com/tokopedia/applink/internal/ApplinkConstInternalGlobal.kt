@@ -107,8 +107,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
 
-    // LivenessActivity
-    // tokopedia-android-internal://global/liveness-detection
     @JvmField
     val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection"
 

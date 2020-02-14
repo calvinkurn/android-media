@@ -4,12 +4,13 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
     mavenCentral()
     flatDir {
-//        dirs 'libs'
         dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
     }
 }
@@ -17,9 +18,11 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
+        jcenter()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -50,11 +53,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.track)
 
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
-
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }

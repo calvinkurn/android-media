@@ -42,6 +42,7 @@ import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperMod
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.user_identification_common.KycUrl;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
@@ -207,13 +208,13 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
         for(int i=0; i<listRetake.size(); i++){
             switch (listRetake.get(i)){
-                case 1 : {
+                case KYCConstant.KTP_RETAKE : {
                     imageKtp = KycUrl.KTP_VERIF_FAIL;
                     colorKtp = null;
                     setKtpUploadButtonListener();
                     break;
                 }
-                case 2 : {
+                case KYCConstant.FACE_RETAKE : {
                     imageFace = KycUrl.FACE_VERIF_FAIL;
                     colorFace = null;
                     setFaceUploadButtonListener();
@@ -440,10 +441,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         if(!isKycSelfie){
             if(listRetake.size() == 1){
                 switch (listRetake.get(0)){
-                    case 1 : {
+                    case KYCConstant.KTP_RETAKE : {
                         analytics.eventClickBackChangeKtpFinalFormPage();
                     }
-                    case 2 : {
+                    case KYCConstant.FACE_RETAKE : {
                         analytics.eventClickBackChangeSelfieFinalFormPage();
                     }
                 }

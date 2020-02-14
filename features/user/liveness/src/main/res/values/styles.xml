@@ -4,8 +4,6 @@
     <style name="liveness_preview" parent="liveness_horizontal_center">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-<!--        <item name="layout_constraintDimensionRatio">"H,1:1"</item>-->
-<!--        <item name="layout_constraintWidth_percent">0.8</item>-->
     </style>
 
     <style name="liveness_horizontal_center">
