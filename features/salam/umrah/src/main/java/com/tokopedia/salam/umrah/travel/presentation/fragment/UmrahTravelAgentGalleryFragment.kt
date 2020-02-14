@@ -154,7 +154,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
                 }
             })
         }
-        renderList(data, data.size >= galleriesParam.limit)
+        renderList(data, true)
     }
 
 

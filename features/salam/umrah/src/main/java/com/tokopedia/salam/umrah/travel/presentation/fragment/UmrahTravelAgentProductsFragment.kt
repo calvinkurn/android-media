@@ -96,7 +96,7 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
                 }
             })
         }
-        renderList(data, data.size >= searchParam.limit)
+        renderList(data, true)
     }
 
     private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
