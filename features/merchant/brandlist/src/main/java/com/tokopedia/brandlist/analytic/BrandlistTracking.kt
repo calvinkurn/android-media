@@ -37,7 +37,7 @@ class BrandlistTracking(context: Context) {
                 TrackAppUtils.gtmData(
                         EVENT_VALUE,
                         "$EVENT_CATEGORY_VALUE - $categoryTab",
-                        "click search - $isSearchResult",
+                        "$CLICK search - $isSearchResult",
                         keyword
                 )
         )
@@ -49,7 +49,7 @@ class BrandlistTracking(context: Context) {
                 TrackAppUtils.gtmData(
                         EVENT_VALUE,
                         "$EVENT_CATEGORY_VALUE - $categoryTab",
-                        "click - shop - $optionalParam - $statusLogin",
+                        "$CLICK - shop - $optionalParam - $statusLogin",
                         keyword
                 )
         )
@@ -60,7 +60,7 @@ class BrandlistTracking(context: Context) {
                 TrackAppUtils.gtmData(
                         EVENT_VALUE,
                         "$EVENT_CATEGORY_VALUE - $currentCategoryTab",
-                        "click all brands page category tab",
+                        "$CLICK all brands page category tab",
                         categoryTabSelected
                 )
         )
@@ -72,7 +72,7 @@ class BrandlistTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
-                EVENT_ACTION, "click - shop - brand of choice list - $statusLogin",
+                EVENT_ACTION, "$CLICK - shop - brand of choice list - $statusLogin",
                 EVENT_LABEL, shopId,
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
@@ -97,7 +97,7 @@ class BrandlistTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryName",
-                EVENT_ACTION, "impression - shop - brand of choice list - $statusLogin",
+                EVENT_ACTION, "$IMPRESSION - shop - brand of choice list - $statusLogin",
                 EVENT_LABEL, "shop impression",
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
@@ -122,7 +122,7 @@ class BrandlistTracking(context: Context) {
                 TrackAppUtils.gtmData(
                         EVENT_VALUE,
                         "$EVENT_CATEGORY_VALUE - $categoryTabName",
-                        "click - brand pilihan - view all",
+                        "$CLICK - brand pilihan - view all",
                         statusLogin
                 )
         )
@@ -133,7 +133,7 @@ class BrandlistTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
-                EVENT_ACTION, "click - shop - popular brand list - $statusLogin",
+                EVENT_ACTION, "$CLICK - shop - popular brand list - $statusLogin",
                 EVENT_LABEL, shopId,
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
@@ -158,7 +158,7 @@ class BrandlistTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
-                EVENT_ACTION, "impression - shop - popular brand list - $statusLogin",
+                EVENT_ACTION, "$IMPRESSION - shop - popular brand list - $statusLogin",
                 EVENT_LABEL, "shop impression",
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
@@ -183,7 +183,7 @@ class BrandlistTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
-                EVENT_ACTION, "click - shop - new brand list - $statusLogin",
+                EVENT_ACTION, "$CLICK - shop - new brand list - $statusLogin",
                 EVENT_LABEL, shopId,
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
@@ -208,7 +208,7 @@ class BrandlistTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
-                EVENT_ACTION, "impression - shop - new brand list - $statusLogin",
+                EVENT_ACTION, "$IMPRESSION - shop - new brand list - $statusLogin",
                 EVENT_LABEL, "shop impression",
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
@@ -235,7 +235,7 @@ class BrandlistTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
-                EVENT_ACTION, "click - shop - all brand list - $statusSearch - $statusLogin",
+                EVENT_ACTION, "$CLICK - shop - all brand list - $statusSearch - $statusLogin",
                 EVENT_LABEL, "$shopId - $statusSearch - $keyword",
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
@@ -262,7 +262,7 @@ class BrandlistTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
-                EVENT_ACTION, "impression - shop - all brand list - $statusLogin",
+                EVENT_ACTION, "$IMPRESSION - shop - all brand list - $statusLogin",
                 EVENT_LABEL, "$statusSearch - $keyword",
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
