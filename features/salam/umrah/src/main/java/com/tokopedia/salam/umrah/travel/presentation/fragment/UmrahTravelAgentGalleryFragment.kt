@@ -123,7 +123,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
                 it.startActivity(UmrahYoutubePlayerActivity.createIntent(it, url))
             } else {
                 it.startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://www.youtube.com/watch?v=" + url)))
+                        Uri.parse(getString(R.string.umrah_youtube_link,url))))
             }
         }
     }
