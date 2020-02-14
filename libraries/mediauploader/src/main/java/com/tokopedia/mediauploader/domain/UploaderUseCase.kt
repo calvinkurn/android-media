@@ -65,7 +65,7 @@ class UploaderUseCase @Inject constructor(
                 val upload = mediaUploaderUseCase(mediaUploaderParams)
 
                 //get upload id
-                return UploadResult.Success(upload.data.uploadId)
+                return UploadResult.Success(upload.data?.uploadId?: "")
             }
         }
     }
