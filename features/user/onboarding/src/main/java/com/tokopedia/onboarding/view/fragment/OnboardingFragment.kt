@@ -81,18 +81,10 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun setViewByAbTestVariant() {
         when (abTestVariant) {
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> {
-                joinButton.visibility = View.VISIBLE
-            }
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST -> {
-                joinButton.visibility = View.GONE
-            }
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> {
-                joinButton.visibility = View.VISIBLE
-            }
-            else -> {
-                joinButton.visibility = View.VISIBLE
-            }
+            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> showJoinButton()
+            ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST -> hideJoinButton()
+            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> showJoinButton()
+            else -> showJoinButton()
         }
     }
 
@@ -136,7 +128,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                         val size = onboardingViewPagerAdapter.listScreen.size
                         if (position < size) {
                             setViewByAbTestVariant()
-                            nextAction.visibility = View.VISIBLE
+                            showNextAction()
                         }
 
                         if (position == size - 1) {
@@ -234,9 +226,25 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         }
     }
 
-    private fun loadLastScreen() {
+    private fun hideJoinButton() {
+        joinButton.visibility = View.GONE
+    }
+
+    private fun showJoinButton() {
         joinButton.visibility = View.VISIBLE
+    }
+
+    private fun hideNextAction() {
         nextAction.visibility = View.INVISIBLE
+    }
+
+    private fun showNextAction() {
+        nextAction.visibility = View.VISIBLE
+    }
+
+    private fun loadLastScreen() {
+        showJoinButton()
+        hideNextAction()
     }
 
     private fun finishOnBoarding() {
