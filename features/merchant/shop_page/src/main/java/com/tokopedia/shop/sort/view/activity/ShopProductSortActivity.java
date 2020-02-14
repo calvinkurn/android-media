@@ -70,11 +70,11 @@ public class ShopProductSortActivity extends BaseSimpleActivity implements HasCo
     }
 
     @Override
-    public void select(String sortId, String sortValue) {
+    public void select(String sortId, String sortValue, String name) {
         Intent intent = new Intent();
         intent.putExtra(SORT_ID, sortId);
         intent.putExtra(SORT_VALUE, sortValue);
-        intent.putExtra(SORT_NAME, sortName);
+        intent.putExtra(SORT_NAME, name);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

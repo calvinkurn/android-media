@@ -50,7 +50,7 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_SEARCH_PRODUCT_CLICK_CART_BUTTON = "click cart button - search result";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
     public static final String CLICK_SEARCH = "click search";
-    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase shop";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
     public static final String CLICK_BACK = "click back";
@@ -70,6 +70,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_ADD_AND_EDIT_SHOP_LOCATION = "click add and edit shop location";
     public static final String CLICK_SET_SHIPPING_SERVICE = "click set shipping service";
     public static final String CLICK_SHOP_PROFILE = "click shop profile";
+    public static final String CLICK_ADD_ETALASE_BUTTON = "click add etalase button";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -120,6 +121,13 @@ public class ShopPageTrackingConstant {
     public static final String SEARCH_PRODUCT = "search product";
     public static final String SEARCH_PRODUCT_RESULT = "search result";
     public static final String SEARCH_PRODUCT_NO_RESULT = "no search result";
+    public static final String SUCCESS = "success";
+    public static final String LOGIN = "login";
+    public static final String NON_LOGIN = "non login";
+    public static final String SELECTED_ETALASE_CHIP = "etalase chip %1s";
+    public static final String ETALASE_SECTION = "etalase %1s";
+    public static final String WISHLIST = "wishlist";
+
 
 
 
@@ -169,6 +177,9 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_LOCATION = "shop_location";
     public static final String URL_SLUG = "url_slug";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
+    public static final String DIMENSION_81 = "dimension81";
+    public static final String DIMENSION_79 = "dimension79";
+
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";

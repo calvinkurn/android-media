@@ -351,6 +351,7 @@ class ShopPageFragment :
     }
 
     private fun clickSort() {
+        shopPageTracking?.clickSort(isMyShop,customDimensionShopPage)
         openShopProductSortPage()
     }
 
@@ -457,6 +458,7 @@ class ShopPageFragment :
     }
 
     private fun clickSearch() {
+        shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
         redirectToShopSearchProduct()
     }
 
@@ -691,6 +693,7 @@ class ShopPageFragment :
             data?.let {
                 val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
                 redirectToShopSearchProductResultPage(sortValue)
             }
         } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {

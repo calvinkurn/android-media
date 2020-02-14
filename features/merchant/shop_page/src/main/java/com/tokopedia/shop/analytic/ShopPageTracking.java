@@ -276,7 +276,7 @@ public class ShopPageTracking {
                               String keyword,
                               boolean hasResult,
                               CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 joinDash(SEARCH_BAR, CLICK),
                 joinDash(joinSpace(SEARCH, keyword), hasResult ? SEARCH_RESULT : NO_SEARCH_RESULT),
@@ -286,7 +286,7 @@ public class ShopPageTracking {
     public void clickEtalaseChip(boolean isOwner,
                                  String etalaseName,
                                  CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 String.format(CLICK_SHOWCASE_X, etalaseName),
                 "",
@@ -305,7 +305,7 @@ public class ShopPageTracking {
 
     public void clickSort(boolean isOwner,
                           CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 CLICK_SORT,
                 "",
@@ -327,14 +327,6 @@ public class ShopPageTracking {
                 SHOP_PAGE_BUYER,
                 CLICK_VIEW_ALL,
                 "",
-                customDimensionShopPage);
-    }
-
-    public void clickZeroProduct(CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
-                SHOP_PAGE_SELLER,
-                joinDash(MANAGE_PRODUCT, CLICK),
-                CLICK_ADD_PRODUCT_FROM_ZERO_PRODUCT,
                 customDimensionShopPage);
     }
 

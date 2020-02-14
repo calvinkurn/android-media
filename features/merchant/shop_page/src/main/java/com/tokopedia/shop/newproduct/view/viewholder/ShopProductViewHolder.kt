@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatRatingBar
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -118,6 +119,13 @@ class ShopProductViewHolder(
             if (!shopProductViewModel.isSoldOut)
                 shopProductClickedListener?.onWishListClicked(shopProductViewModel, shopTrackType)
         }
+
+        productCard.setImageProductViewHintListener(shopProductViewModel, object: ViewHintListener{
+            override fun onViewHint() {
+
+            }
+
+        })
 
         if (shopProductViewModel.isCarousel) {
             if (shopProductViewModel.rating <= 0 && totalReview <= 0) {

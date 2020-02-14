@@ -438,4 +438,14 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private fun setmapDataModel(mutableMapDataModelPosition: MutableMap<String, Visitable<*>>) {
         this.mapOfDataModel = mutableMapDataModelPosition
     }
+
+    fun isEtalaseHighlightSoldProduct(passedShopProductViewModel: ShopProductViewModel): Boolean {
+        return shopProductEtalaseHighlightViewModel?.let {
+            it.etalaseHighlightCarouselViewModelList.any {  etalaseHighlightCarouselViewModelList ->
+                etalaseHighlightCarouselViewModelList.shopProductViewModelList.any {shopProductViewModel ->
+                    etalaseHighlightCarouselViewModelList.shopEtalaseViewModel.etalaseId == "8" && shopProductViewModel.id == passedShopProductViewModel.id
+                }
+            }
+        } ?: false
+    }
 }

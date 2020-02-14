@@ -116,10 +116,10 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var shopPageTrackingShopSearchProduct: ShopPageTrackingOldShopSearchProduct
+    lateinit var oldShopPageTrackingShopSearchProduct: ShopPageTrackingOldShopSearchProduct
 
     @Inject
-    lateinit var newShopPageTrackingShopSearchProduct: ShopPageTrackingShopSearchProduct
+    lateinit var shopPageTrackingShopSearchProduct: ShopPageTrackingShopSearchProduct
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -221,17 +221,19 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         when (dataModel.type) {
             ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP -> {
                 if (!isNewShopPageEnabled()) {
-                    shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
+                    oldShopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
                             SCREEN_SHOP_PAGE,
                             searchQuery,
                             String.format(SRP_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
                     )
+                } else {
+                    shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
                 }
                 redirectToSearchResultPage()
             }
             ShopSearchProductDataModel.Type.TYPE_PDP -> {
                 val model = dataModel as ShopSearchProductDynamicResultDataModel
-                shopPageTrackingShopSearchProduct.clickAutocompleteProducts(
+                oldShopPageTrackingShopSearchProduct.clickAutocompleteProducts(
                         SCREEN_SHOP_PAGE,
                         searchQuery,
                         model.url
@@ -240,11 +242,13 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
                 if (!isNewShopPageEnabled()) {
-                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
+                    oldShopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
                             SCREEN_SHOP_PAGE,
                             searchQuery,
                             String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
                     )
+                } else {
+                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
                 }
                 redirectToShopProductListPage()
             }
@@ -273,7 +277,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            shopPageTrackingShopSearchProduct.clickManualSearch(
+            oldShopPageTrackingShopSearchProduct.clickManualSearch(
                     SCREEN_SHOP_PAGE,
                     searchQuery,
                     String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
@@ -320,11 +324,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 val sortValue = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                 sortValue?.let {
-                    newShopPageTrackingShopSearchProduct.clickSortBy(
-                            isMyShop,
-                            sortValue,
-                            customDimensionShopPage
-                    )
+                    shopPageTrackingShopSearchProduct.sortProduct(sortName, isMyShop, customDimensionShopPage)
                     this.sortValue = sortValue
                     searchQuery = editTextSearchProduct.text.toString()
                     redirectToShopProductListPage()
@@ -497,6 +497,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 timer?.cancel()
+                shopPageTrackingShopSearchProduct.typeSearch(isMyShop, text.toString(), customDimensionShopPage)
                 if (TextUtils.isEmpty(text.toString())) {
                     showSortButton()
                 } else {
@@ -612,6 +613,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun onClickSort() {
+        shopPageTrackingShopSearchProduct.clickSort(isMyShop, customDimensionShopPage)
         redirectToShopProductSortPage()
     }
 
@@ -626,7 +628,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private fun onShareShop() {
         shopInfo?.run {
-            shopPageTrackingShopSearchProduct.clickShareButton(SCREEN_SEARCH_BAR, searchQuery)
+            oldShopPageTrackingShopSearchProduct.clickShareButton(SCREEN_SEARCH_BAR, searchQuery)
             var shopShareMsg: String = remoteConfig.getString(RemoteConfigKey.SHOP_SHARE_MSG)
             shopShareMsg = if (shopShareMsg.isNotEmpty()) {
                 FindAndReplaceHelper.findAndReplacePlaceHolders(
@@ -654,7 +656,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private fun onClickCart() {
         shopInfo?.run {
-            shopPageTrackingShopSearchProduct.clickCartButton(SCREEN_SEARCH_BAR, searchQuery)
+            oldShopPageTrackingShopSearchProduct.clickCartButton(SCREEN_SEARCH_BAR, searchQuery)
             goToCart()
         }
     }
