@@ -22,7 +22,6 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 
 class TopChatRoomActivity : BaseChatToolbarActivity() {
 
-
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
     }

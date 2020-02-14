@@ -18,13 +18,10 @@ class AttachInvoiceViewModel @Inject constructor(
         private val getInvoiceUseCase: GetInvoiceUseCase
 ) : ViewModel() {
 
-    var messageId: String = ""
-    var opponentName: String = ""
-
     private var _invoices = MutableLiveData<Result<List<Invoice>>>()
     val invoices: LiveData<Result<List<Invoice>>> get() = _invoices
 
-    fun loadInvoices(page: Int) {
+    fun loadInvoices(page: Int, messageId: String) {
         if (messageId.isEmpty()) return
         getInvoiceUseCase.getInvoices(
                 ::onSuccessGetInvoice,
@@ -40,26 +37,6 @@ class AttachInvoiceViewModel @Inject constructor(
 
     private fun onErrorGetInvoice(throwable: Throwable) {
         _invoices.value = Fail(throwable)
-    }
-
-    fun initializeArguments(arguments: Bundle?) {
-        if (arguments == null) return
-        messageId = arguments.getString(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, "")
-        opponentName = arguments.getString(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, "")
-    }
-
-    fun getInvoicePreviewIntent(invoice: Invoice): Intent {
-        return Intent().apply {
-            putExtra(ApplinkConst.Chat.INVOICE_ID, invoice.id.toString())
-            putExtra(ApplinkConst.Chat.INVOICE_CODE, invoice.code)
-            putExtra(ApplinkConst.Chat.INVOICE_TITLE, invoice.productName)
-            putExtra(ApplinkConst.Chat.INVOICE_DATE, invoice.timeStamp)
-            putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, invoice.thumbnailUrl)
-            putExtra(ApplinkConst.Chat.INVOICE_URL, invoice.url)
-            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, invoice.statusId.toString())
-            putExtra(ApplinkConst.Chat.INVOICE_STATUS, invoice.status)
-            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, invoice.productPrice)
-        }
     }
 
 }
