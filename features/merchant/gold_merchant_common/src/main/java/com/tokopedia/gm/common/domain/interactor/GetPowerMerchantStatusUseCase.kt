@@ -6,6 +6,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import com.tokopedia.user_identification_common.domain.usecase.GetUserProjectInfoUseCase
 import rx.Observable
@@ -37,7 +38,7 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
     }
 
     private fun getKycStatus(): Observable<KycUserProjectInfoPojo> {
-        val requestParams = GetUserProjectInfoUseCase.getRequestParam(PROJECT_ID_POWER_MERCHANT_KYC)
+        val requestParams = GetUserProjectInfoUseCase.getRequestParam(MERCHANT_KYC_PROJECT_ID)
         return getUserProjectInfoUseCase.execute(requestParams)
     }
 
@@ -47,8 +48,5 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
                 putString(GMParamApiContant.SHOP_ID, shopId)
             }
         }
-
-        const val PROJECT_ID = "projectId"
-        const val PROJECT_ID_POWER_MERCHANT_KYC = 10
     }
 }

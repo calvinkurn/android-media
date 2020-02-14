@@ -12,6 +12,7 @@ public interface KYCConstant {
     String UNHANDLED_RESPONSE = "1005";
 
     int KYC_PROJECT_ID = 1;
+    int MERCHANT_KYC_PROJECT_ID = 10;
 
     String EXTRA_STRING_IMAGE_RESULT = "image_result";
 
