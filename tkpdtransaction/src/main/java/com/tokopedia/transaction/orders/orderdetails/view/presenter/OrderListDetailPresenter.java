@@ -104,7 +104,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private boolean isdownloadable = false;
     private OrderDetails details;
     private List<Body> retryBody = new ArrayList<>();
-    ArrayList<String> categoryList;
+    ArrayList<Integer> categoryList;
     String category;
 
     @Inject
@@ -164,25 +164,22 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
 
-                    if (!orderDetails.getItems().isEmpty()) {
+                    if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                         List<Items> list = orderDetails.getItems();
                         categoryList = new ArrayList<>();
                         for (Items item : list) {
-                            categoryList.add(Integer.toString(item.getCategoryID()));
-                            categoryList.add(Integer.toString(item.getCategoryL1()));
-                            categoryList.add(Integer.toString(item.getCategoryL2()));
-                            categoryList.add(Integer.toString(item.getCategoryL3()));
+                            categoryList.add(item.getCategoryID());
+                            categoryList.add(item.getCategoryL1());
+                            categoryList.add(item.getCategoryL2());
+                            categoryList.add(item.getCategoryL3());
                         }
-                    }
 
-                    if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                             category = String.join(",", category);
                         } else {
                             category = category.toString().substring(1, category.toString().length() - 1);
                         }
                     } else {
-                        category = "";
                         RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
                         getView().setRecommendation(rechargeWidgetResponse);
                     }
