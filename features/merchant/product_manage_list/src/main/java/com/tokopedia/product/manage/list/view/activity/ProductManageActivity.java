@@ -10,6 +10,8 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.product.manage.list.constant.AppScreen;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.user.session.UserSession;
@@ -47,6 +49,12 @@ public class ProductManageActivity extends BaseSimpleActivity {
         checkLogin();
     }
 
+    @Override
+    public void onBackPressed() {
+        goToSellerAppDashboard();
+        super.onBackPressed();
+    }
+
     private void checkLogin() {
         if (!userSession.isLoggedIn()) {
             RouteManager.route(this, ApplinkConst.LOGIN);
@@ -60,5 +68,11 @@ public class ProductManageActivity extends BaseSimpleActivity {
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_MANAGE_PROD;
+    }
+
+    private void goToSellerAppDashboard() {
+        if(GlobalConfig.isSellerApp()) {
+            RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD);
+        }
     }
 }
