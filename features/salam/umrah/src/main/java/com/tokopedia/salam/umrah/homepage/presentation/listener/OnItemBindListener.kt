@@ -32,4 +32,6 @@ interface onItemBindListener{
 
     fun onImpressionBanner(banner: UmrahBanner, position: Int)
     fun onClickBanner(banner: UmrahBanner, position: Int)
+
+    fun onPerformanceHomepageListener()
 }

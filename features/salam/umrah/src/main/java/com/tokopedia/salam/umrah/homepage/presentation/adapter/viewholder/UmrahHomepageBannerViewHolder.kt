@@ -43,8 +43,8 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                         }
                     }
                     buildView()
-
                 }
+                onBindListener.onPerformanceHomepageListener()
 
             } else if (element.isLoaded && element.umrahBanners.isEmpty()) {
                 umrah_banner_shimmering.gone()
