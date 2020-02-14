@@ -18,6 +18,7 @@ import com.tokopedia.topads.internal.ParamObject.SHOP_ID
 import com.tokopedia.topads.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.internal.ParamObject.SORT_BY
 import com.tokopedia.topads.internal.ParamObject.START
+import com.tokopedia.topads.internal.ParamObject.STATUS
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -66,6 +67,7 @@ class ProductAdsListViewModel @Inject constructor(
                             SORT_BY to sortBy,
                             ROWS to rows,
                             START to start,
+                            STATUS to isPromoted,
                             SHOP_ID to Integer.parseInt(userSession.shopId)
                     )
                     val result = withContext(Dispatchers.IO) {

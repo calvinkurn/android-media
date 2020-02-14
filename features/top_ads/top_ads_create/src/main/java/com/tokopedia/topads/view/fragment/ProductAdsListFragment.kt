@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -47,9 +46,9 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     companion object {
 
-        private const val NOT_PROMOTED = "0"
-        private const val PROMOTED = "4"
-        private const val ALL = "1"
+        private const val NOT_PROMOTED = "not_promoted"
+        private const val PROMOTED = "promoted"
+        private const val ALL = "all"
         private const val ROW = 10
         private const val START = 0
 
@@ -210,8 +209,10 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         clearRefreshLoading()
         btn_next.isEnabled = false
         data.forEach { result -> productListAdapter.items.add(ProductItemViewModel(result)) }
+        productListAdapter.setSelectedList(stepperModel?.selectedProductIds!!)
+        onProductListSelected()
         productListAdapter.notifyDataSetChanged()
-    }
+     }
 
     private fun clearRefreshLoading() {
         swipe_refresh_layout.isRefreshing = false
@@ -227,7 +228,4 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         (activity as StepperActivity).updateToolbarTitle(getString(R.string.product_list_step))
 
     }
-
-
-
 }

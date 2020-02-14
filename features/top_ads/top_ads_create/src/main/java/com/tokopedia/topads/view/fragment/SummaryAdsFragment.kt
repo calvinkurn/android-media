@@ -22,7 +22,7 @@ import com.tokopedia.topads.view.activity.SuccessActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
-import java.util.ArrayList
+import java.lang.NumberFormatException
 import javax.inject.Inject
 
 /**
@@ -116,17 +116,20 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                var input = 0
-                if (s.isNotEmpty()) {
-                    input = Integer.parseInt(s.toString())
-                    stepperModel?.dailyBudget = input
+                try {
+                    var input = 0
+                    if (s.isNotEmpty()) {
+                        input = Integer.parseInt(s.toString())
+                        stepperModel?.dailyBudget = input
+                    }
+                    if (input < 25) {
+                        error_text.visibility = View.VISIBLE
+                    } else
+                        error_text.visibility = View.GONE
 
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
                 }
-                if (input < 25) {
-                    error_text.visibility = View.VISIBLE
-                } else
-                    error_text.visibility = View.GONE
-
             }
         })
 

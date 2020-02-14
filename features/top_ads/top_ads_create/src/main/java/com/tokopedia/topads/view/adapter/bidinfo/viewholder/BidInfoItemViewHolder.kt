@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import kotlinx.android.synthetic.main.topads_create_layout_budget_list_item.view.*
+import java.lang.NumberFormatException
 
 class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<String>, var selectedSuggestBid: MutableList<Int>, var actionClose: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
 
@@ -31,16 +32,19 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val result = Integer.parseInt(view.budget.text.toString())
+                    try {
+                        val result = Integer.parseInt(view.budget.text.toString())
+                        if (result < selectedSuggestBid[adapterPosition]) {
+                            view.error_text.visibility = View.VISIBLE
+                            view.recom_txt.visibility = View.GONE
+                            view.error_text.text = String.format(view.resources.getString(R.string.min_bid_error), selectedSuggestBid[adapterPosition])
+                        } else {
+                            view.error_text.visibility = View.GONE
+                            view.recom_txt.visibility = View.VISIBLE
 
-                    if (result < selectedSuggestBid[adapterPosition]) {
-                        view.error_text.visibility = View.VISIBLE
-                        view.recom_txt.visibility = View.GONE
-                        view.error_text.text = String.format(view.resources.getString(R.string.min_bid_error), selectedSuggestBid[adapterPosition])
-                    } else {
-                        view.error_text.visibility = View.GONE
-                        view.recom_txt.visibility = View.VISIBLE
-
+                        }
+                    } catch (e: NumberFormatException) {
+                        e.printStackTrace()
                     }
                 }
             })

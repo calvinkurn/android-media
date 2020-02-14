@@ -82,12 +82,13 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         var s = list.toString()
         var productId = s.substring(1, s.length - 1)
         viewModel.getSugestionKeyword(productId, 0, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
+        keywordListAdapter.setSelectedList(stepperModel?.selectedKeywords!!)
+        keywordListAdapter.notifyDataSetChanged()
     }
-
 
     private fun onKeywordSelected(pos: Int) {
         coachitem_title.visibility = View.GONE
-        showErrorMessage()
+        showSelectMessage()
         if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel) {
             if ((keywordListAdapter.items[pos] as KeywordItemViewModel).data.totalSearch == "Tidak diketahui") {
 
@@ -98,7 +99,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     }
 
-    private fun showErrorMessage() {
+    private fun showSelectMessage() {
         var count = keywordListAdapter.getSelectedItems().size
         selected_info.text = String.format(getString(R.string.format_selected_keyword), count)
         if (count >= 50) {
@@ -210,7 +211,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         add_btn.setOnClickListener {
             coachitem_title.visibility = View.GONE
             var alreadyExists: Boolean = keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(editText.text.toString()))
-            showErrorMessage()
+            showSelectMessage()
             if (alreadyExists) {
                 makeToast()
             }
@@ -224,10 +225,12 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 var text = validateKeyword(s)
                 if (!text.isNullOrBlank()) {
                     add_btn.isEnabled = false
+                    editText.imeOptions = EditorInfo.IME_ACTION_NONE
                     error_text.visibility = View.VISIBLE
                     error_text.text = text
                 } else {
                     add_btn.isEnabled = true
+                    editText.imeOptions = EditorInfo.IME_ACTION_NEXT
                     error_text.visibility = View.INVISIBLE
                 }
             }
@@ -243,7 +246,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     var alreadyExists: Boolean = keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(editText.text.toString()))
-                    showErrorMessage()
+                    showSelectMessage()
                     if (alreadyExists) {
                         makeToast()
                     }

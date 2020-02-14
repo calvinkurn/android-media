@@ -16,7 +16,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_filter"
+        app:layout_constraintEnd_toStartOf="@+id/btn_sort"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,6 +28,31 @@
         android:id="@+id/btn_sort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="@+id/searchInputView"
+        app:layout_constraintEnd_toStartOf="@+id/view3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/searchInputView"
+        app:layout_constraintTop_toTopOf="@+id/searchInputView"
+        app:srcCompat="@drawable/topads_create_ic_sort" />
+
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="1dp"
+        android:layout_height="50dp"
+        android:background="#E5E7E9"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_sort"
+        app:layout_constraintEnd_toStartOf="@+id/btn_filter"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_sort"
+        app:layout_constraintTop_toTopOf="@+id/btn_sort" />
+
+    <ImageButton
+        android:id="@+id/btn_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -37,31 +62,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/view3"
         app:layout_constraintTop_toTopOf="@+id/view3"
-        app:srcCompat="@drawable/topads_create_ic_sort" />
-
-
-    <View
-        android:id="@+id/view3"
-        android:layout_width="1dp"
-        android:layout_height="50dp"
-        android:background="#E5E7E9"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_filter"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sort"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_filter"
-        app:layout_constraintTop_toTopOf="@+id/btn_filter" />
-
-    <ImageButton
-        android:id="@+id/btn_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="@dimen/dp_10"
-        app:layout_constraintBottom_toBottomOf="@+id/searchInputView"
-        app:layout_constraintEnd_toStartOf="@+id/view3"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/searchInputView"
-        app:layout_constraintTop_toTopOf="@+id/searchInputView"
         app:srcCompat="@drawable/topads_create_ic_filter" />
 
     <RadioGroup
@@ -151,10 +151,10 @@
         android:layout_height="6dp"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@drawable/topads_create_bg_shader_gray"
-        tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_next"
@@ -165,14 +165,14 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:text="@string/lanjutkan"
         android:enabled="false"
-        tools:visibility="visible"
+        android:text="@string/lanjutkan"
         app:buttonCompatType="primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/select_product_info" />
+        app:layout_constraintStart_toEndOf="@+id/select_product_info"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/select_product_info"
@@ -182,14 +182,14 @@
         android:layout_marginLeft="16dp"
         android:layout_weight="1"
         android:padding="@dimen/dp_16"
-        tools:visibility="visible"
         android:text="@string/_0_produk"
         app:layout_constraintBottom_toBottomOf="@+id/btn_next"
         app:layout_constraintEnd_toStartOf="@+id/btn_next"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_next"
-        app:typographyType="heading_6" />
+        app:typographyType="heading_6"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

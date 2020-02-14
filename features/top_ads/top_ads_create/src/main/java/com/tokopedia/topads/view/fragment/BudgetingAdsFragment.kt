@@ -27,6 +27,7 @@ import com.tokopedia.topads.view.sheet.TipSheetBudgetList
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.budget
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.tip_btn
+import java.lang.NumberFormatException
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -163,15 +164,22 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val result = Integer.parseInt(budget.text.toString())
-                stepperModel?.suggestedBidPerClick = result
-                if (result < minBid) {
-                    error_text.visibility = View.VISIBLE
-                    recom_txt.visibility = View.GONE
-                } else {
-                    error_text.visibility = View.GONE
-                    recom_txt.visibility = View.VISIBLE
+                try {
+                    val result = Integer.parseInt(budget.text.toString())
+                    stepperModel?.suggestedBidPerClick = result
+                    if (result < minBid) {
+                        error_text.visibility = View.VISIBLE
+                        recom_txt.visibility = View.GONE
+                    } else {
+                        error_text.visibility = View.GONE
+                        recom_txt.visibility = View.VISIBLE
+                    }
                 }
+                catch ( e:NumberFormatException){
+                    e.printStackTrace()
+
+                }
+
             }
             override fun afterTextChanged(s: Editable?) {
 

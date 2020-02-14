@@ -24,4 +24,5 @@ object ParamObject {
     const val SORT_BY = "sort_by"
     const val START = "start"
     const val ROWS = "rows"
+    const val STATUS = "status"
 }

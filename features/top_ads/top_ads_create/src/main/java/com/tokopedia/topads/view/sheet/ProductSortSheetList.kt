@@ -58,10 +58,10 @@ class ProductSortSheetList {
     }
 
     companion object {
-        val TERBARU = "9"
-        val TERENDAH = "3"
-        val TERLARIS = "8"
-        val TERTINGGI = "4"
+        val TERBARU = "newest"
+        val TERENDAH = "cheapest"
+        val TERLARIS = "most_sales"
+        val TERTINGGI = "most_expensive"
 
         fun newInstance(context: Context): ProductSortSheetList {
             val fragment = ProductSortSheetList()

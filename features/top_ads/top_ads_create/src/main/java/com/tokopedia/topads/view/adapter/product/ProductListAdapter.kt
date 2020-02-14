@@ -48,7 +48,21 @@ class ProductListAdapter(val typeFactory: ProductListAdapterTypeFactory) : Recyc
 
     fun getSelectedItems(): List<ResponseProductList.Result.TopadsGetListProduct.Data> {
         var selected = mutableListOf<ResponseProductList.Result.TopadsGetListProduct.Data>()
-        items.forEachIndexed { index, productViewModel -> if((productViewModel as ProductItemViewModel).isChecked) selected.add(productViewModel.data) }
+        selected.clear()
+        items.forEachIndexed { index, productViewModel -> if((productViewModel as ProductItemViewModel).isChecked )
+            selected.add(productViewModel.data) }
         return selected
+    }
+
+    fun setSelectedList(selectedProductIds: MutableList<Int>) {
+        items.forEachIndexed{index,productViewModel->
+            selectedProductIds.forEach {
+                if((productViewModel as ProductItemViewModel).data.productID == it){
+                    productViewModel.isChecked = true
+                }
+            }
+        }
+        notifyDataSetChanged()
+
     }
 }

@@ -100,4 +100,17 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
         items.addAll(remains)
         notifyDataSetChanged()
     }
+
+    fun setSelectedList(selectedKeywords: MutableList<String>) {
+        items.forEachIndexed { index, key ->
+            selectedKeywords.forEach {
+                if (key is KeywordItemViewModel) {
+                    if (key.data.keyword == it) {
+                        key.isChecked = true
+                    }
+                }
+            }
+        }
+        notifyDataSetChanged()
+    }
 }

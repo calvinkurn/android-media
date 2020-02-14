@@ -1,5 +1,5 @@
-query topadsGetListProduct($shopID: Int!, $keyword: String, $etalase: String, $sortBy: String,  $rows: Int!, $start: Int) {
-  topadsGetListProduct(shopID: $shopID, keyword: $keyword, etalase: $etalase, sortBy: $sortBy,  rows: $rows, start: $start) {
+query topadsGetListProduct($shopID: Int!, $keyword: String, $etalase: String, $sortBy: String,  $rows: Int!, $start: Int,$status:String) {
+  topadsGetListProduct(shopID: $shopID, keyword: $keyword, etalase: $etalase, sortBy: $sortBy,  rows: $rows, start: $start,status:$status) {
     data {
       productID
       productName
