@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -101,6 +102,10 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         adapter.addAll(data)
 
         initialStateViewUpdateListener?.showInitialStateView()
+    }
+
+    override fun setData(initialStateVisitableList: List<Visitable<*>>) {
+
     }
 
     private fun stopTracePerformanceMonitoring() {

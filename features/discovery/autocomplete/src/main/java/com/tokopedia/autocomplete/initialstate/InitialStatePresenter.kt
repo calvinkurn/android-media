@@ -174,6 +174,11 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
         return data
     }
 
+    override fun getInitialStateData(searchParameter: Map<String, Any>) {
+
+
+    }
+
     private fun MutableList<Visitable<*>>.insertTitle(name: String): List<Visitable<*>> {
         val titleSearch = ReecentViewTitleViewModel()
         titleSearch.title = name

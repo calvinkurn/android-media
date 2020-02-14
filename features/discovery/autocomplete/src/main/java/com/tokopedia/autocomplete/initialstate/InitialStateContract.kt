@@ -11,6 +11,9 @@ import com.tokopedia.discovery.common.model.SearchParameter
 interface InitialStateContract {
     interface View : CustomerView {
         fun showInitialStateResult(initialStateViewModel: InitialStateViewModel)
+
+        //
+        fun setData(initialStateVisitableList: List<Visitable<*>>)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -23,5 +26,10 @@ interface InitialStateContract {
         fun refreshPopularSearch(searchParameter: SearchParameter)
 
         fun getInitialStateResult(list: MutableList<InitialStateData>, searchTerm: String): List<Visitable<*>>
+
+
+
+        //
+        fun getInitialStateData(searchParameter: Map<String, Any>)
     }
 }
