@@ -2,13 +2,12 @@ package com.tokopedia.brandlist.brandlist_search.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchNotFoundViewModel
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationTextViewModel
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationViewModel
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.*
 
 class BrandlistSearchResultAdapter(adapterTypeFactory: BrandlistSearchAdapterTypeFactory) :
         BaseAdapter<BrandlistSearchAdapterTypeFactory>(adapterTypeFactory) {
+
+    private val numberOfShimmeringCards = 5
 
     fun updateSearchResultData(searchResultList: List<BrandlistSearchResultViewModel>) {
         visitables.clear()
@@ -26,7 +25,11 @@ class BrandlistSearchResultAdapter(adapterTypeFactory: BrandlistSearchAdapterTyp
         notifyDataSetChanged()
     }
 
-    fun getVisitables(): MutableList<Visitable<*>> {
-        return visitables
+    fun showShimmering() {
+        visitables.clear()
+        for(i in 0 until numberOfShimmeringCards) {
+            visitables.add(BrandlistSearchShimmeringViewModel())
+        }
+        notifyDataSetChanged()
     }
 }

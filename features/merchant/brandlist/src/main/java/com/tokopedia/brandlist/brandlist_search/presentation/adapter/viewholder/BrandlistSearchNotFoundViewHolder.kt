@@ -1,6 +1,8 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder
 
+import android.content.Context
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.brandlist.R
@@ -19,7 +21,8 @@ class BrandlistSearchNotFoundViewHolder(view: View): AbstractViewHolder<Brandlis
         ImageHandler.loadImage(itemView.context, itemView.img_brand_not_found,
                 ImageAssets.BRAND_NOT_FOUND, null)
         itemView.btn_check_balance.setOnClickListener {
-            // Set focus on search bar
+            val inputManager = itemView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
         }
     }
 }
