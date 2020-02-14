@@ -45,6 +45,7 @@ import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseC
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -122,7 +123,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
-        if (orderCategory.equalsIgnoreCase("marketplace")) {
+        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
             variables.put("orderCategory", orderCategory);
             variables.put(ORDER_ID, orderId);
             graphqlRequest = new
@@ -163,7 +164,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
 
-                    if (orderCategory.equalsIgnoreCase("marketplace")) {
+                    if (!orderDetails.getItems().isEmpty()) {
                         List<Items> list = orderDetails.getItems();
                         categoryList = new ArrayList<>();
                         for (Items item : list) {
@@ -172,12 +173,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             categoryList.add(Integer.toString(item.getCategoryL2()));
                             categoryList.add(Integer.toString(item.getCategoryL3()));
                         }
+                    }
+
+                    if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                             category = String.join(",", category);
                         } else {
                             category = category.toString().substring(1, category.toString().length() - 1);
                         }
                     } else {
+                        category = "";
                         RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
                         getView().setRecommendation(rechargeWidgetResponse);
                     }
