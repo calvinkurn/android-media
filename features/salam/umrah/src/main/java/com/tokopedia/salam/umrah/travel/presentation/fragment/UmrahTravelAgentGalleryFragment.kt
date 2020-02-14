@@ -115,8 +115,8 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
         })
     }
 
-    override fun onPlayYoutube(url: String, positionAdapter: Int, positionVideo:Int) {
-        umrahTrackingUtil.umrahTravelAgentGalleryClicked(galleries[positionAdapter], positionVideo)
+    override fun onPlayYoutube(gallery: UmrahGallery,url: String, positionAdapter: Int, positionVideo:Int) {
+        umrahTrackingUtil.umrahTravelAgentGalleryClicked(gallery, positionVideo)
         context?.let {
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(view?.context?.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {

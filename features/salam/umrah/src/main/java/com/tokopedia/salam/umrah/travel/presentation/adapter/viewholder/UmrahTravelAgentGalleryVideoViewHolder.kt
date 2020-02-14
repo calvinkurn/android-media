@@ -28,7 +28,7 @@ class UmrahTravelAgentGalleryVideoViewHolder(view: View, val listener: OnYoutube
 
             container_umrah_youtube_player.setOnClickListener {
                 if(!element.medias[0].source.isNullOrEmpty())
-                listener.onPlayYoutube(UmrahUriFormat.getLastPathUrl(element.medias[0].source), adapterPosition,0)
+                listener.onPlayYoutube(element, UmrahUriFormat.getLastPathUrl(element.medias[0].source), adapterPosition,0)
             }
         }
     }
@@ -38,6 +38,6 @@ class UmrahTravelAgentGalleryVideoViewHolder(view: View, val listener: OnYoutube
     }
 
     interface OnYoutubeClick {
-        fun onPlayYoutube(url: String,positionAdapter:Int, positionVideo:Int)
+        fun onPlayYoutube(gallery: UmrahGallery,url: String,positionAdapter:Int, positionVideo:Int)
     }
 }
