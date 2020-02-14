@@ -137,6 +137,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         widgetHasMap.clear()
         adapter.data.clear()
         adapter.notifyDataSetChanged()
+        sahGlobalError.gone()
         showGetWidgetProgress(true)
         sellerHomeViewModel.getWidgetLayout()
     }
@@ -250,6 +251,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         isLoadFromCache = true
+        view?.sahGlobalError?.gone()
         recyclerView.visible()
         renderList(widgets)
         widgets.forEach {
