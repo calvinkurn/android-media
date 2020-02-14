@@ -231,11 +231,18 @@ class BrandlistPageFragment :
         viewModel.getAllBrandResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+
                     adapter?.hideLoading()
                     swipeRefreshLayout?.isRefreshing = false
+
                     endlessScrollListener.updateStateAfterGetData()
-                    BrandlistPageMapper.mappingAllBrandHeader(getString(R.string.brandlist_all_brand), it.data.totalBrands, adapter)
+
                     BrandlistPageMapper.mappingAllBrand(it.data, adapter)
+
+                    viewModel.updateTotalBrandSize(it.data.totalBrands)
+                    viewModel.updateCurrentOffset(it.data.brands.size)
+                    viewModel.updateCurrentLetter()
+                    viewModel.updateEndlessRequestParameter()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false

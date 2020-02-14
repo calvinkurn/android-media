@@ -4,14 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationTextViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchNotFoundViewModel
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationTextViewModel
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationViewModel
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.*
 
 
 class BrandlistSearchAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistSearchTypeFactory {
@@ -32,12 +26,17 @@ class BrandlistSearchAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistSea
         return BrandlistSearchRecommendationTextViewHolder.LAYOUT
     }
 
+    override fun type(brandlistSearchShimmeringViewModel: BrandlistSearchShimmeringViewModel): Int {
+        return BrandlistSearchShimmeringViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             BrandlistSearchResultViewHolder.LAYOUT -> BrandlistSearchResultViewHolder(parent)
             BrandlistSearchRecommendationViewHolder.LAYOUT -> BrandlistSearchRecommendationViewHolder(parent)
             BrandlistSearchNotFoundViewHolder.LAYOUT -> BrandlistSearchNotFoundViewHolder(parent)
             BrandlistSearchRecommendationTextViewHolder.LAYOUT -> BrandlistSearchRecommendationTextViewHolder(parent)
+            BrandlistSearchShimmeringViewHolder.LAYOUT -> BrandlistSearchShimmeringViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
