@@ -175,7 +175,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         viewModel.digitalHomePageList.observe(this, Observer {
             clearAllData()
             it?.run {
-                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_ORDER])?.let { categoryData ->
+                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
                     trackingUtil.eventCategoryImpression(categoryData)
                 }
                 val list = this.filter { item -> !item.isEmpty }
@@ -199,14 +199,14 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         adapter.clearAllElements()
         showLoading()
 
-        viewModel.getInitialList()
         val queryList = mapOf(
                 QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
                 QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
                 QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
                 QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
         )
-        viewModel.getData(queryList, swipeToRefresh?.isRefreshing ?: false)
+        viewModel.initialize(queryList)
+        viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
     }
 
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {

@@ -11,19 +11,30 @@ import com.tokopedia.usecase.coroutines.UseCase
 class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                               var isFromCloud: Boolean = true): UseCase<List<DigitalHomePageItemModel>>() {
 
-    private lateinit var queryList: Map<String, String>
-
-    fun setQueries(queryList: Map<String, String>): Boolean {
-        return if (queryList.containsKey(QUERY_BANNER)
-                && queryList.containsKey(QUERY_CATEGORY)
-                && queryList.containsKey(QUERY_RECOMMENDATION)
-                && queryList.containsKey(QUERY_SECTIONS)) {
-            this.queryList = queryList
-            true
-        } else {
-            false
+    var queryList: Map<String, String> = mapOf()
+        set(value) {
+            if (value.isNotEmpty()
+                    && value.containsKey(QUERY_BANNER)
+                    && value.containsKey(QUERY_CATEGORY)
+                    && value.containsKey(QUERY_RECOMMENDATION)
+                    && value.containsKey(QUERY_SECTIONS)) {
+                field = value
+            }
         }
-    }
+    var sectionOrdering: Map<String, Int> = mapOf()
+        set(value) {
+            if (value.isNotEmpty()
+                    && value.containsKey(BANNER_ORDER)
+                    && value.containsKey(CATEGORY_ORDER)
+                    && value.containsKey(RECOMMENDATION_ORDER)
+                    && value.containsKey(FAVORITES_ORDER)
+                    && value.containsKey(TRUST_MARK_ORDER)
+                    && value.containsKey(NEW_USER_ZONE_ORDER)
+                    && value.containsKey(SPOTLIGHT_ORDER)
+                    && value.containsKey(SUBSCRIPTION_ORDER)) {
+                field = value
+            }
+        }
 
     fun getEmptyList(): List<DigitalHomePageItemModel>{
         val homeBanner = DigitalHomePageBannerModel()
@@ -47,7 +58,7 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
     }
 
     override suspend fun executeOnBackground(): List<DigitalHomePageItemModel> {
-        if (::queryList.isInitialized) {
+        if (queryList.isNotEmpty() && sectionOrdering.isNotEmpty()) {
             useCase.clearRequest()
             useCase.setCacheStrategy(GraphqlCacheStrategy
                     .Builder(if (isFromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
@@ -82,8 +93,17 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
             val gqlResponse = useCase.executeOnBackground()
             val sectionList = getEmptyList().toMutableList()
 
+            val bannerOrder = sectionOrdering[BANNER_ORDER] ?: 0
+            val categoryOrder = sectionOrdering[CATEGORY_ORDER] ?: 0
+            val recommendationOrder = sectionOrdering[RECOMMENDATION_ORDER] ?: 0
+            val favoritesOrder = sectionOrdering[FAVORITES_ORDER] ?: 0
+            val trustMarkOrder = sectionOrdering[TRUST_MARK_ORDER] ?: 0
+            val newUserZoneOrder = sectionOrdering[NEW_USER_ZONE_ORDER] ?: 0
+            val spotlightOrder = sectionOrdering[SPOTLIGHT_ORDER] ?: 0
+            val subscriptionOrder = sectionOrdering[SUBSCRIPTION_ORDER] ?: 0
+
             // Banner
-            var bannerData = sectionList[BANNER_ORDER]
+            var bannerData = sectionList[bannerOrder]
             try {
                 val responseBannerData = gqlResponse.getSuccessData<DigitalHomePageBannerModel>()
                 responseBannerData.isLoaded = true
@@ -93,10 +113,10 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                 bannerData.isLoaded = true
                 bannerData.isSuccess = false
             }
-            sectionList[BANNER_ORDER] = bannerData
+            sectionList[bannerOrder] = bannerData
 
             // Category
-            var categoryData = sectionList[CATEGORY_ORDER]
+            var categoryData = sectionList[categoryOrder]
             try {
                 val responseCategoryData = gqlResponse.getSuccessData<DigitalHomePageCategoryModel>()
                 responseCategoryData.isLoaded = true
@@ -106,10 +126,10 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                 categoryData.isLoaded = true
                 categoryData.isSuccess = false
             }
-            sectionList[CATEGORY_ORDER] = categoryData
+            sectionList[categoryOrder] = categoryData
 
             // Recommendation
-            var recommendationData = sectionList[RECOMMENDATION_ORDER]
+            var recommendationData = sectionList[recommendationOrder]
             try {
                 val responseRecommendationData = gqlResponse.getSuccessData<DigitalHomePageRecommendationModel>()
                 responseRecommendationData.isLoaded = true
@@ -119,10 +139,10 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                 recommendationData.isLoaded = true
                 recommendationData.isSuccess = false
             }
-            sectionList[RECOMMENDATION_ORDER] = recommendationData
+            sectionList[recommendationOrder] = recommendationData
 
             // Favorites
-            var favoritesData = sectionList[FAVORITES_ORDER]
+            var favoritesData = sectionList[favoritesOrder]
             try {
                 val responseFavoritesData = gqlResponse.getSuccessData<DigitalHomePageFavoritesModel>()
                 responseFavoritesData.isLoaded = true
@@ -133,10 +153,10 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                 favoritesData.isLoaded = true
                 favoritesData.isSuccess = false
             }
-            sectionList[FAVORITES_ORDER] = favoritesData
+            sectionList[favoritesOrder] = favoritesData
 
             // Trust Mark
-            var trustMarkData = sectionList[TRUST_MARK_ORDER]
+            var trustMarkData = sectionList[trustMarkOrder]
             try {
                 val responseTrustMarkData = gqlResponse.getSuccessData<DigitalHomePageTrustMarkModel>()
                 responseTrustMarkData.isLoaded = true
@@ -147,10 +167,10 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                 trustMarkData.isLoaded = true
                 trustMarkData.isSuccess = false
             }
-            sectionList[TRUST_MARK_ORDER] = trustMarkData
+            sectionList[trustMarkOrder] = trustMarkData
 
             // New User Zone
-            var newUserZoneData = sectionList[NEW_USER_ZONE_ORDER]
+            var newUserZoneData = sectionList[newUserZoneOrder]
             try {
                 val responseNewUserZoneData = gqlResponse.getSuccessData<DigitalHomePageNewUserZoneModel>()
                 responseNewUserZoneData.isLoaded = true
@@ -161,10 +181,10 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                 newUserZoneData.isLoaded = true
                 newUserZoneData.isSuccess = false
             }
-            sectionList[NEW_USER_ZONE_ORDER] = newUserZoneData
+            sectionList[newUserZoneOrder] = newUserZoneData
 
             // Spotlight
-            var spotlightData = sectionList[SPOTLIGHT_ORDER]
+            var spotlightData = sectionList[spotlightOrder]
             try {
                 val responseSpotlightData = gqlResponse.getSuccessData<DigitalHomePageSpotlightModel>()
                 responseSpotlightData.isLoaded = true
@@ -175,10 +195,10 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                 spotlightData.isLoaded = true
                 spotlightData.isSuccess = false
             }
-            sectionList[SPOTLIGHT_ORDER] = spotlightData
+            sectionList[spotlightOrder] = spotlightData
 
             // Subscription
-            var subscriptionData = sectionList[SUBSCRIPTION_ORDER]
+            var subscriptionData = sectionList[subscriptionOrder]
             try {
                 val responseSubscriptionData = gqlResponse.getSuccessData<DigitalHomePageSubscriptionModel>()
                 responseSubscriptionData.isLoaded = true
@@ -189,7 +209,7 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                 subscriptionData.isLoaded = true
                 subscriptionData.isSuccess = false
             }
-            sectionList[SUBSCRIPTION_ORDER] = subscriptionData
+            sectionList[subscriptionOrder] = subscriptionData
 
             return sectionList
         }
@@ -228,14 +248,14 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
         const val PARAM_DEVICE_ID = "device_id"
         const val DEFAULT_DEVICE_ID = 5
 
-        const val BANNER_ORDER = 0
-        const val FAVORITES_ORDER = 1
-        const val TRUST_MARK_ORDER = 2
-        const val RECOMMENDATION_ORDER = 3
-        const val NEW_USER_ZONE_ORDER = 4
-        const val SPOTLIGHT_ORDER = 5
-        const val SUBSCRIPTION_ORDER = 6
-        const val CATEGORY_ORDER = 7
-        const val PROMO_ORDER = 8
+        const val BANNER_ORDER = "BANNER_ORDER"
+        const val FAVORITES_ORDER = "FAVORITES_ORDER"
+        const val TRUST_MARK_ORDER = "TRUST_MARK_ORDER"
+        const val RECOMMENDATION_ORDER = "RECOMMENDATION_ORDER"
+        const val NEW_USER_ZONE_ORDER = "NEW_USER_ZONE_ORDER"
+        const val SPOTLIGHT_ORDER = "SPOTLIGHT_ORDER"
+        const val SUBSCRIPTION_ORDER = "SUBSCRIPTION_ORDER"
+        const val CATEGORY_ORDER = "CATEGORY_ORDER"
+        const val PROMO_ORDER = "PROMO_ORDER"
     }
 }
