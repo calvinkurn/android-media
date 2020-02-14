@@ -75,7 +75,7 @@ class ShopOpenRevampViewModel @Inject constructor(
 
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                delay(700)
+                delay(400)
 
                 if (currentShopName != shopName) {
                     return@withContext
@@ -224,7 +224,7 @@ class ShopOpenRevampViewModel @Inject constructor(
 
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                delay(700)
+                delay(400)
 
                 if (currentShopDomain != domain) {
                     return@withContext
