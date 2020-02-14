@@ -22,6 +22,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -99,6 +100,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     var variantId: String = ""
     var departDate: String = ""
     var promoCode : String = ""
+    lateinit var performanceMonitoring: PerformanceMonitoring
+
 
     private val umrahCheckoutPilgrimsListAdapter by lazy { UmrahCheckoutPilgrimsListAdapter(this, this) }
     private val umrahCheckoutSummaryAdapter by lazy { UmrahCheckoutSummaryListAdapter() }
@@ -115,6 +118,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         arguments?.let{
             slugName = it.getString(EXTRA_SLUG_NAME, "")
             variantId = it.getString(EXTRA_VARIANT, "")
@@ -194,6 +198,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
         })
 
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_CHECKOUT_PAGE_PERFORMANCE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -280,6 +288,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             onButtonCheckoutClicked()
         }
 
+        performanceMonitoring.stopTrace()
     }
 
     private fun initProgressDialog() {
@@ -870,6 +879,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         const val EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE"
         const val EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
 
+        const val UMRAH_CHECKOUT_PAGE_PERFORMANCE = "sl_umrah_checkout"
+
 
         const val PROMO_EXTRA_LIST_ACTIVITY_RESULT = 123
 
@@ -917,5 +928,9 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         trackingUmrahUtil.getClickBackCheckoutTracker()
     }
 
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
+    }
 
 }
