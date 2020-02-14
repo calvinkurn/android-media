@@ -7,10 +7,10 @@
         </shape>
     </item>
 
-    <item android:bottom="@dimen/floating_shadow_margin"
-        android:right="@dimen/floating_shadow_margin"
-        android:left="@dimen/floating_shadow_margin"
-        android:top="@dimen/floating_shadow_margin">
+    <item android:bottom="@dimen/gami_core_floating_shadow_margin"
+        android:right="@dimen/gami_core_floating_shadow_margin"
+        android:left="@dimen/gami_core_floating_shadow_margin"
+        android:top="@dimen/gami_core_floating_shadow_margin">
         <shape
             android:shape="oval">
             <solid android:color="@color/red_pink" />

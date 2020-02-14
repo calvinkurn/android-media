@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.contract;
+package com.tokopedia.tokopoints.view.catalogdetail;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -55,8 +55,7 @@ public interface CouponCatalogContract {
         void onFinishRendering();
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
+    interface Presenter {
 
         void getCatalogDetail(String uniqueCatalogCode);
 
