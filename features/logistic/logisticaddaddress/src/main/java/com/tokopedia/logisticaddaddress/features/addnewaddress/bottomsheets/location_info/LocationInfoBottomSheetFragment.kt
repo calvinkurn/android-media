@@ -7,6 +7,7 @@ import android.content.IntentSender
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.common.api.ApiException
@@ -45,8 +46,9 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW)
+            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
         }
+        Log.d("FLOWINI", isFullFlow.toString())
     }
 
     override fun state(): BottomSheetsState {
@@ -61,8 +63,13 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         bottomSheetView = view
         btnActivateLocation = view.findViewById(R.id.btn_activate_location)
         btnActivateLocation.setOnClickListener {
-            if(isFullFlow) AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = LOGISTIC_LABEL)
-            else AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = NON_LOGISTIC_LABEL)
+            Log.d("FLOWINI2", isFullFlow.toString())
+            if(isFullFlow) {
+                AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = LOGISTIC_LABEL)
+            }
+            else {
+                AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = NON_LOGISTIC_LABEL)
+            }
             if (!context?.let { it1 -> turnGPSOn(it1) }!!) {
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
@@ -78,8 +85,13 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            if(isFullFlow) AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = LOGISTIC_LABEL)
-            else AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = NON_LOGISTIC_LABEL)
+            Log.d("FLOWINI3", isFullFlow.toString())
+            if(isFullFlow) {
+                AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = LOGISTIC_LABEL)
+            }
+            else {
+                AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = NON_LOGISTIC_LABEL)
+            }
             onCloseButtonClick()
         }
     }
