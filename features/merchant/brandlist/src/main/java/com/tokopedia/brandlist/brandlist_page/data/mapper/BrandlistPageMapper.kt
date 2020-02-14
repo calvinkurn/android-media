@@ -6,6 +6,7 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsReco
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
 class BrandlistPageMapper {
 
@@ -16,30 +17,30 @@ class BrandlistPageMapper {
         const val NEW_BRAND_POSITION = 2
         const val ALL_BRAND_HEADER_POSITION = 3
 
-        fun mappingFeaturedBrand(featuredBrand: OfficialStoreFeaturedShop, adapter: BrandlistPageAdapter?) {
-            notifyElement(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(featuredBrand.shops, featuredBrand.header), adapter)
+        fun mappingFeaturedBrand(featuredBrand: OfficialStoreFeaturedShop, adapter: BrandlistPageAdapter?, listener: BrandlistPageTracking) {
+            notifyElement(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(featuredBrand.shops, featuredBrand.header, listener), adapter)
         }
 
-        fun mappingPopularBrand(popularBrand: OfficialStoreBrandsRecommendation, adapter: BrandlistPageAdapter?) {
-            notifyElement(POPULAR_BRAND_POSITION, PopularBrandViewModel(popularBrand.shops, popularBrand.header), adapter)
+        fun mappingPopularBrand(popularBrand: OfficialStoreBrandsRecommendation, adapter: BrandlistPageAdapter?, listener: BrandlistPageTracking) {
+            notifyElement(POPULAR_BRAND_POSITION, PopularBrandViewModel(popularBrand.shops, popularBrand.header, listener), adapter)
         }
 
-        fun mappingNewBrand(newBrand: OfficialStoreBrandsRecommendation, adapter: BrandlistPageAdapter?) {
-            notifyElement(NEW_BRAND_POSITION, NewBrandViewModel(newBrand.shops, newBrand.header), adapter)
+        fun mappingNewBrand(newBrand: OfficialStoreBrandsRecommendation, adapter: BrandlistPageAdapter?, listener: BrandlistPageTracking) {
+            notifyElement(NEW_BRAND_POSITION, NewBrandViewModel(newBrand.shops, newBrand.header, listener), adapter)
         }
 
-        fun mappingAllBrandHeader(title: String, totalBrands: Int, adapter: BrandlistPageAdapter?) {
-            notifyElement(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel(title, totalBrands), adapter)
+        fun mappingAllBrandHeader(title: String, totalBrands: Int, adapter: BrandlistPageAdapter?, listener: BrandlistPageTracking) {
+            notifyElement(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel(title, totalBrands, listener), adapter)
         }
 
-        fun mappingAllBrandGroupHeader(groupHeaderText: String, adapter: BrandlistPageAdapter?) {
+        fun mappingAllBrandGroupHeader(groupHeaderText: String, adapter: BrandlistPageAdapter?, listener: BrandlistPageTracking) {
             adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText))
             adapter?.notifyItemRangeInserted(adapter.lastIndex, 1)
         }
 
-        fun mappingAllBrand(allBrand: OfficialStoreAllBrands, adapter: BrandlistPageAdapter?) {
+        fun mappingAllBrand(allBrand: OfficialStoreAllBrands, adapter: BrandlistPageAdapter?, listener: BrandlistPageTracking) {
             allBrand.brands.forEach {
-                adapter?.getVisitables()?.add(AllBrandViewModel(it))
+                adapter?.getVisitables()?.add(AllBrandViewModel(it, listener))
             }
             adapter?.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
         }

@@ -10,7 +10,10 @@ import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.B
 import com.tokopedia.brandlist.common.ImageAssets
 import kotlinx.android.synthetic.main.view_brand_not_found.view.*
 
-class BrandlistSearchNotFoundViewHolder(view: View): AbstractViewHolder<BrandlistSearchNotFoundViewModel>(view) {
+class BrandlistSearchNotFoundViewHolder(
+        view: View,
+        private val listener: Listener
+): AbstractViewHolder<BrandlistSearchNotFoundViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.view_brand_not_found
@@ -23,6 +26,11 @@ class BrandlistSearchNotFoundViewHolder(view: View): AbstractViewHolder<Brandlis
         itemView.btn_check_balance.setOnClickListener {
             val inputManager = itemView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+            listener.focusSearchView()
         }
+    }
+
+    interface Listener {
+        fun focusSearchView()
     }
 }

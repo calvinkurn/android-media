@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
+import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper
 import com.tokopedia.brandlist.brandlist_page.di.BrandlistPageComponent
@@ -24,6 +25,7 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPage
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -34,7 +36,7 @@ import javax.inject.Inject
 
 class BrandlistPageFragment :
         BaseDaggerFragment(),
-        HasComponent<BrandlistPageComponent> {
+        HasComponent<BrandlistPageComponent>, BrandlistPageTracking {
 
     companion object {
         const val BRANDLIST_GRID_SPAN_COUNT = 3
@@ -50,6 +52,7 @@ class BrandlistPageFragment :
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var brandlistTracking: BrandlistTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: GridLayoutManager? = null
@@ -76,6 +79,9 @@ class BrandlistPageFragment :
         arguments?.let {
             category = it.getParcelable(KEY_CATEGORY)
         }
+        context?.let {
+            brandlistTracking = BrandlistTracking(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -89,7 +95,7 @@ class BrandlistPageFragment :
         recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = BrandlistPageAdapterTypeFactory()
-        adapter = BrandlistPageAdapter(adapterTypeFactory)
+        adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
 
@@ -192,7 +198,7 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingFeaturedBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingFeaturedBrand(it.data, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -207,7 +213,7 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingPopularBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingPopularBrand(it.data, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -222,7 +228,7 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingNewBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingNewBrand(it.data, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -238,7 +244,7 @@ class BrandlistPageFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     val title = getString(R.string.brandlist_all_brand)
-                    BrandlistPageMapper.mappingAllBrandHeader(title, it.data.totalBrands, adapter)
+                    BrandlistPageMapper.mappingAllBrandHeader(title, it.data.totalBrands, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -262,10 +268,10 @@ class BrandlistPageFragment :
                     val groupHeader = viewModel.getCurrentLetter().toUpperCase()
 
                     if (currentOffset == 0) {
-                        BrandlistPageMapper.mappingAllBrandGroupHeader(groupHeader, adapter)
+                        BrandlistPageMapper.mappingAllBrandGroupHeader(groupHeader, adapter, this)
                     }
 
-                    BrandlistPageMapper.mappingAllBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingAllBrand(it.data, adapter, this)
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
@@ -285,5 +291,53 @@ class BrandlistPageFragment :
             viewModel.loadInitialData(category, userId)
             isInitialDataLoaded = true
         }
+    }
+
+    override fun clickSearchBox() {
+
+    }
+
+    override fun clickBrandOnSearchBox() {
+
+    }
+
+    override fun clickCategory() {
+
+    }
+
+    override fun clickBrandPilihan() {
+
+    }
+
+    override fun impressionBrandPilihan() {
+
+    }
+
+    override fun clickLihatSemua() {
+
+    }
+
+    override fun clickBrandPopular() {
+
+    }
+
+    override fun impressionBrandPopular() {
+
+    }
+
+    override fun clickBrandBaruTokopedia() {
+
+    }
+
+    override fun impressionBrandBaru() {
+
+    }
+
+    override fun clickBrand() {
+
+    }
+
+    override fun impressionBrand() {
+
     }
 }

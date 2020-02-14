@@ -12,10 +12,13 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.All
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment
 import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.ALL_BRAND_GRID_SPAN_COUNT
 import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.BRANDLIST_GRID_SPAN_COUNT
 
-class BrandlistPageAdapter(adapterTypeFactory: BrandlistPageAdapterTypeFactory) :
+class BrandlistPageAdapter(
+        adapterTypeFactory: BrandlistPageAdapterTypeFactory,
+        private val brandlistPageFragment: BrandlistPageFragment) :
         BaseAdapter<BrandlistPageAdapterTypeFactory>(adapterTypeFactory) {
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
@@ -34,10 +37,10 @@ class BrandlistPageAdapter(adapterTypeFactory: BrandlistPageAdapterTypeFactory) 
     }
 
     fun initAdapter() {
-        visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(mutableListOf(), null))
-        visitables.add(POPULAR_BRAND_POSITION, PopularBrandViewModel(mutableListOf(), null))
-        visitables.add(NEW_BRAND_POSITION, NewBrandViewModel(mutableListOf(), null))
-        visitables.add(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel("", 0))
+        visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(POPULAR_BRAND_POSITION, PopularBrandViewModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(NEW_BRAND_POSITION, NewBrandViewModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel("", 0, brandlistPageFragment))
     }
 
     fun getVisitables(): MutableList<Visitable<*>> {

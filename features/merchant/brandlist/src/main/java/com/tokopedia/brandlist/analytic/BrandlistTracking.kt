@@ -3,6 +3,7 @@ package com.tokopedia.brandlist.analytic
 import android.content.Context
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -29,228 +30,254 @@ class BrandlistTracking(context: Context) {
     private val EVENT_VALUE = "clickOSAllBrands"
     private val EVENT_CATEGORY_VALUE = "official store all brands page"
 
-    fun clickSearchBox() {
+
+    fun clickSearchBox(categoryTab: String, keyword: String, isThereAnySearchResult: Boolean) {
+        val isSearchResult = if (isThereAnySearchResult) "search result" else "no search result"
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - $categoryTab",
+                        "$CLICK search - $isSearchResult",
+                        keyword
+                )
+        )
+    }
+
+    fun clickBrandOnSearchBox(categoryTab: String, optionalParam: String, isLogin: Boolean, keyword: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - $categoryTab",
+                        "$CLICK - shop - $optionalParam - $statusLogin",
+                        keyword
+                )
+        )
+    }
+
+    fun clickCategory(categoryTabSelected: String, currentCategoryTab: String) {
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - $currentCategoryTab",
+                        "$CLICK all brands page category tab",
+                        categoryTabSelected
+                )
+        )
+    }
+
+    fun clickBrandPilihan(shopId: String, isLogin: Boolean, shopName: String,
+                          imgUrl: String, shoplogoPosition: String, categoryTabName: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
         val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-                EVENT_ACTION, "click search - {search result/no search result}",
-                EVENT_LABEL, "{keyword}"
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
+                EVENT_ACTION, "$CLICK - shop - brand of choice list - $statusLogin",
+                EVENT_LABEL, shopId,
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "id", shopId,
+                                    "name", "/officialstore/brand/$categoryTabName - brand of choice list",
+                                    "position", shoplogoPosition,
+                                    "creative", shopName,
+                                    "creative_url", imgUrl
+                            )
+                        )
+                    )
+                )
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun clickBrandOnSearchBox() {
+    fun impressionBrandPilihan(isLogin: Boolean, categoryName: String, shopId: String, shoplogoPosition: String,
+                               imgUrl: String, shopName: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
         val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "click - shop - {optional parameter} - {login/non login}",
-      EVENT_LABEL, "{shop_id} - {keyword}"
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
-
-  fun clickCategory() {
-    val data = DataLayer.mapOf(
-      EVENT, EVENT_VALUE,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{current category tab}}",
-      EVENT_ACTION, "click all brands page category tab",
-      EVENT_LABEL, "{{clicked category tab}}"
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
-
-  fun clickBrandPilihan() {
-    val data = DataLayer.mapOf(
-      EVENT, PROMO_CLICK,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "click - shop - brand of choice list - {login/non login}",
-      EVENT_LABEL, "{shopId}",
-      ECOMMERCE, DataLayer.mapOf(
-        PROMO_CLICK, DataLayer.mapOf(
-          PROMOTIONS, DataLayer.listOf(
-            DataLayer.mapOf(
-              "id", "{{shopId}}",
-              "name", "/officialstore/brand/{category tab name} - brand of choice list",
-              "position", "{{shoplogo_position}}",
-              "creative", "{{shop_name}}",
-              "creative_url", "{{image_url}}"
-            )
-          )
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryName",
+                EVENT_ACTION, "$IMPRESSION - shop - brand of choice list - $statusLogin",
+                EVENT_LABEL, "shop impression",
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                            PROMOTIONS, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        "id", shopId,
+                                        "name", "/officialstore/brand/$categoryName - brand of choice list",
+                                        "position", shoplogoPosition,
+                                        "creative", shopName,
+                                        "creative_url", imgUrl
+                                )
+                            )
+                    )
+                )
         )
-      )
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
 
-  fun impressionBrandPilihan() {
-    val data = DataLayer.mapOf(
-      EVENT, PROMO_VIEW,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "impression - shop - brand of choice list - {login/non login}",
-      EVENT_LABEL, "shop impression",
-      ECOMMERCE, DataLayer.mapOf(
-        PROMO_CLICK, DataLayer.mapOf(
-          PROMOTIONS, DataLayer.listOf(
-            DataLayer.mapOf(
-              "id", "{{shopId}}",
-              "name", "/officialstore/brand/{category tab name} - brand of choice list",
-              "position", "{{shoplogo_position}}",
-              "creative", "{{shop_name}}",
-              "creative_url", "{{image_url}}"
-            )
-          )
+    fun clickLihatSemua(isLogin: Boolean, categoryTabName: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - $categoryTabName",
+                        "$CLICK - brand pilihan - view all",
+                        statusLogin
+                )
         )
-      )
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
+    }
 
-  fun clickLihatSemua() {
-    val data = DataLayer.mapOf(
-      EVENT, EVENT_VALUE,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "click - brand pilihan - view all",
-      EVENT_LABEL, "{login/non login}"
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
-
-  fun clickBrandPopular() {
-    val data = DataLayer.mapOf(
-      EVENT, PROMO_CLICK,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "click - shop - popular brand list - {login/non login}",
-      EVENT_LABEL, "{shop_id}",
-      ECOMMERCE, DataLayer.mapOf(
-        PROMO_CLICK, DataLayer.mapOf(
-          PROMOTIONS, DataLayer.listOf(
-            DataLayer.mapOf(
-              "id", "{{shopId}}",
-              "name", "/officialstore/brand/{category tab name} - popular brand list",
-              "position", "{{shoplogo_position}}",
-              "creative", "{{shop_name}}",
-              "creative_url", "{{image_url}}"
-            )
-          )
+    fun clickBrandPopular(categoryTabName: String, shopId: String, shopLogoPosition: String, shopName: String, imgUrl: String, isLogin: Boolean) {
+        val statusLogin =  if (isLogin) "login" else "non login"
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
+                EVENT_ACTION, "$CLICK - shop - popular brand list - $statusLogin",
+                EVENT_LABEL, shopId,
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "id", shopId,
+                                    "name", "/officialstore/brand/$categoryTabName - popular brand list",
+                                    "position", shopLogoPosition,
+                                    "creative", shopName,
+                                    "creative_url", imgUrl
+                            )
+                        )
+                    )
+                )
         )
-      )
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
 
-  fun impressionBrandPopular() {
-    val data = DataLayer.mapOf(
-      EVENT, PROMO_VIEW,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "impression - shop - popular brand list - {login/non login}",
-      EVENT_LABEL, "shop impression",
-      ECOMMERCE, DataLayer.mapOf(
-        PROMO_CLICK, DataLayer.mapOf(
-          PROMOTIONS, DataLayer.listOf(
-            DataLayer.mapOf(
-              "id", "{{shopId}}",
-              "name", "/officialstore/brand/{category tab name} - popular brand list",
-              "position", "{{shoplogo_position}}",
-              "creative", "{{shop_name}}",
-              "creative_url", "{{image_url}}"
-            )
-          )
+    fun impressionBrandPopular(isLogin: Boolean, shopId: String, categoryTabName: String, shoplogoPosition: String,
+                               shopName: String, imgUrl: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
+                EVENT_ACTION, "$IMPRESSION - shop - popular brand list - $statusLogin",
+                EVENT_LABEL, "shop impression",
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "id", shopId,
+                                    "name", "/officialstore/brand/$categoryTabName - popular brand list",
+                                    "position", shoplogoPosition,
+                                    "creative", shopName,
+                                    "creative_url", imgUrl
+                            )
+                        )
+                    )
+                )
         )
-      )
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
 
-  fun clickBrandBaruTokopedia() {
-    val data = DataLayer.mapOf(
-      EVENT, PROMO_CLICK,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "click - shop - new brand list - {login/non login}",
-      EVENT_LABEL, "{shop id}",
-      ECOMMERCE, DataLayer.mapOf(
-        PROMO_CLICK, DataLayer.mapOf(
-          PROMOTIONS, DataLayer.listOf(
-            DataLayer.mapOf(
-              "id", "{{shopId}}",
-              "name", "/officialstore/brand/{category tab name} - new brand list",
-              "position", "{{shoplogo_position}}",
-              "creative", "{{shop_name}}",
-              "creative_url", "{{image_url}}"
-            )
-          )
+    fun clickBrandBaruTokopedia(isLogin: Boolean, shopId: String, categoryTabName: String, shoplogoPosition: String,
+                                shopName: String, imgUrl: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
+                EVENT_ACTION, "$CLICK - shop - new brand list - $statusLogin",
+                EVENT_LABEL, shopId,
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "id", shopId,
+                                    "name", "/officialstore/brand/$categoryTabName - new brand list",
+                                    "position", shoplogoPosition,
+                                    "creative", shopName,
+                                    "creative_url", imgUrl
+                            )
+                        )
+                    )
+                )
         )
-      )
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
 
-  fun impressionBrandBaru() {
-    val data = DataLayer.mapOf(
-      EVENT, PROMO_VIEW,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "impression - shop - new brand list - {login/non login}",
-      EVENT_LABEL, "shop impression",
-      ECOMMERCE, DataLayer.mapOf(
-        PROMO_CLICK, DataLayer.mapOf(
-          PROMOTIONS, DataLayer.listOf(
-            DataLayer.mapOf(
-              "id", "{{shopId}}",
-              "name", "/officialstore/brand/{category tab name} - new brand list",
-              "position", "{{shoplogo_position}}",
-              "creative", "{{shop_name}}",
-              "creative_url", "{{image_url}}"
-            )
-          )
+    fun impressionBrandBaru(isLogin: Boolean, shopId: String, categoryTabName: String, shoplogoPosition: String,
+                            shopName: String, imgUrl: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
+                EVENT_ACTION, "$IMPRESSION - shop - new brand list - $statusLogin",
+                EVENT_LABEL, "shop impression",
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "id", shopId,
+                                    "name", "/officialstore/brand/$categoryTabName - new brand list",
+                                    "position", shoplogoPosition,
+                                    "creative", shopName,
+                                    "creative_url", imgUrl
+                            )
+                        )
+                    )
+                )
         )
-      )
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
 
-  fun clickBrand() {
-    val data = DataLayer.mapOf(
-      EVENT, PROMO_CLICK,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "click - shop - all brand list - {search result/not search result} - {login/non login}",
-      EVENT_LABEL, "{shop id} - {search result/ not search result} - {keyword}",
-      ECOMMERCE, DataLayer.mapOf(
-        PROMO_CLICK, DataLayer.mapOf(
-          PROMOTIONS, DataLayer.listOf(
-            DataLayer.mapOf(
-              "id", "{{shopId}}",
-              "name", "/officialstore/brand/{category tab name} - {search result/ not search result} - {keyword/NaN} - all brand list",
-              "position", "{{shoplogo_position}}",
-              "creative", "{{shop_name}}",
-              "creative_url", "{{image_url}}"
-            )
-          )
+    fun clickBrand(isLogin: Boolean, shopId: String, categoryTabName: String, shoplogoPosition: String,
+                   shopName: String, imgUrl: String, isSearch: Boolean, keyword: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
+        val statusSearch = if (isSearch) "search result" else "not search result"
+        val keywordValue = if (keyword.isEmpty()) "NaN" else keyword
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
+                EVENT_ACTION, "$CLICK - shop - all brand list - $statusSearch - $statusLogin",
+                EVENT_LABEL, "$shopId - $statusSearch - $keyword",
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "id", shopId,
+                                    "name", "/officialstore/brand/$categoryTabName - $statusSearch - $keywordValue - all brand list",
+                                    "position", shoplogoPosition,
+                                    "creative", shopName,
+                                    "creative_url", imgUrl
+                            )
+                        )
+                    )
+                )
         )
-      )
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
 
-  fun impressionBrand() {
-    val data = DataLayer.mapOf(
-      EVENT, PROMO_VIEW,
-      EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - {{category tab}}",
-      EVENT_ACTION, "impression - shop - all brand list - {login/non login}",
-      EVENT_LABEL, "{search result/ not search result} - {keyword}",
-      ECOMMERCE, DataLayer.mapOf(
-        PROMO_CLICK, DataLayer.mapOf(
-          PROMOTIONS, DataLayer.listOf(
-            DataLayer.mapOf(
-              "id", "{{shopId}}",
-              "name", "/officialstore/brand/{category tab name} - {search result/ not search result} - {keyword/NaN} - all brand list",
-              "position", "{{shoplogo_position}}",
-              "creative", "{{shop_name}}",
-              "creative_url", "{{image_url}}"
-            )
-          )
+    fun impressionBrand(isLogin: Boolean, shopId: String, categoryTabName: String, shoplogoPosition: String,
+                        shopName: String, imgUrl: String, isSearch: Boolean, keyword: String) {
+        val statusLogin =  if (isLogin) "login" else "non login"
+        val statusSearch = if (isSearch) "search result" else "not search result"
+        val keywordValue = if (keyword.isEmpty()) "NaN" else keyword
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - $categoryTabName",
+                EVENT_ACTION, "$IMPRESSION - shop - all brand list - $statusLogin",
+                EVENT_LABEL, "$statusSearch - $keyword",
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "id", shopId,
+                                    "name", "/officialstore/brand/$categoryTabName - $statusSearch - $keywordValue - all brand list",
+                                    "position", shoplogoPosition,
+                                    "creative", shopName,
+                                    "creative_url", imgUrl
+                            )
+                        )
+                    )
+                )
         )
-      )
-    )
-    trackingQueue.putEETracking(data as HashMap<String, Any>)
-  }
-
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
 }

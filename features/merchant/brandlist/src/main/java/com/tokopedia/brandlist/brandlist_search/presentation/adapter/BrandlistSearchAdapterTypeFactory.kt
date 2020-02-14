@@ -6,9 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.*
+import com.tokopedia.brandlist.brandlist_search.presentation.fragment.BrandlistSearchFragment
 
 
-class BrandlistSearchAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistSearchTypeFactory {
+class BrandlistSearchAdapterTypeFactory(
+        private val brandlistSearchFragment: BrandlistSearchFragment
+) : BaseAdapterTypeFactory(), BrandlistSearchTypeFactory {
 
     override fun type(brandlistSearchResultViewModel: BrandlistSearchResultViewModel): Int {
         return BrandlistSearchResultViewHolder.LAYOUT
@@ -22,8 +25,8 @@ class BrandlistSearchAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistSea
         return BrandlistSearchNotFoundViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchRecommendationTextViewModel: BrandlistSearchRecommendationTextViewModel): Int {
-        return BrandlistSearchRecommendationTextViewHolder.LAYOUT
+    override fun type(brandlistSearchHeaderViewModel: BrandlistSearchHeaderViewModel): Int {
+        return BrandlistSearchHeaderViewHolder.LAYOUT
     }
 
     override fun type(brandlistSearchShimmeringViewModel: BrandlistSearchShimmeringViewModel): Int {
@@ -34,8 +37,8 @@ class BrandlistSearchAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistSea
         return when (type) {
             BrandlistSearchResultViewHolder.LAYOUT -> BrandlistSearchResultViewHolder(parent)
             BrandlistSearchRecommendationViewHolder.LAYOUT -> BrandlistSearchRecommendationViewHolder(parent)
-            BrandlistSearchNotFoundViewHolder.LAYOUT -> BrandlistSearchNotFoundViewHolder(parent)
-            BrandlistSearchRecommendationTextViewHolder.LAYOUT -> BrandlistSearchRecommendationTextViewHolder(parent)
+            BrandlistSearchNotFoundViewHolder.LAYOUT -> BrandlistSearchNotFoundViewHolder(parent,brandlistSearchFragment)
+            BrandlistSearchHeaderViewHolder.LAYOUT -> BrandlistSearchHeaderViewHolder(parent)
             BrandlistSearchShimmeringViewHolder.LAYOUT -> BrandlistSearchShimmeringViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
