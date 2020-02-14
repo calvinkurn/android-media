@@ -5,6 +5,5 @@ enum class UploadState {
     FILE_MAX_SIZE,
     TINY_RESOLUTION,
     BIG_RESOLUTION,
-    EXT_NOT_ALLOWED,
-    UPLOAD_ERROR
+    EXT_NOT_ALLOWED
 }
