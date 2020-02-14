@@ -12,11 +12,11 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocomplete.*
 import com.tokopedia.autocomplete.adapter.ItemClickListener
-import com.tokopedia.autocomplete.adapter.SearchAdapterTypeFactory
 import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.di.AutoCompleteComponent
 import com.tokopedia.autocomplete.di.DaggerAutoCompleteComponent
 import com.tokopedia.autocomplete.AutoCompleteActivity
+import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateAdapterTypeFactory
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
@@ -37,6 +37,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
     private lateinit var adapter: InitialStateAdapter
 
     private var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +74,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
     }
 
     private fun prepareView(view: View) {
-        val typeFactory = SearchAdapterTypeFactory(this)
+        val typeFactory = InitialStateAdapterTypeFactory(this)
         val layoutManager = LinearLayoutManager(view.context,
                 LinearLayoutManager.VERTICAL, false)
         adapter = InitialStateAdapter(typeFactory)

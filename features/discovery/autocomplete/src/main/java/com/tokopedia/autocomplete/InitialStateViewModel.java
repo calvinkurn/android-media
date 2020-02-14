@@ -1,21 +1,21 @@
 package com.tokopedia.autocomplete;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.autocomplete.domain.model.SearchData;
+import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InitialStateViewModel implements Visitable<HostAutoCompleteTypeFactory> {
 
-    private List<SearchData> list = new ArrayList<>();
+    private List<InitialStateData> list = new ArrayList<>();
     private String searchTerm = "";
 
-    public void addList(SearchData visitable) {
+    public void addList(InitialStateData visitable) {
         this.list.add(visitable);
     }
 
-    public List<SearchData> getList() {
+    public List<InitialStateData> getList() {
         return list;
     }
 

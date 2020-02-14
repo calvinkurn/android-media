@@ -19,13 +19,8 @@ public class TitleViewHolder extends AbstractViewHolder<TitleSearch> {
     public TitleViewHolder(View itemView, final ItemClickListener clickListener) {
         super(itemView);
         titleTextView = itemView.findViewById(R.id.titleTextView);
-        btnDelete = itemView.findViewById(R.id.btnDelete);
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickListener.onDeleteAllRecentSearch();
-            }
-        });
+        btnDelete = itemView.findViewById(R.id.actionDeleteButton);
+        btnDelete.setOnClickListener(v -> clickListener.onDeleteAllRecentSearch());
     }
 
     @Override

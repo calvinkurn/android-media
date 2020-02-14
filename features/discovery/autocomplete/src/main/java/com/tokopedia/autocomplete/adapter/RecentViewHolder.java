@@ -1,24 +1,24 @@
 package com.tokopedia.autocomplete.adapter;
 
-import androidx.annotation.LayoutRes;
-import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
+import androidx.annotation.LayoutRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.autocomplete.R;
-import com.tokopedia.autocomplete.adapter.decorater.SpacingItemDecoration;
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking;
 import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.autocomplete.viewmodel.RecentSearch;
-import com.tokopedia.design.item.DeletableItemView;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
@@ -34,12 +34,7 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
         super(itemView);
         this.clickListener = clickListener;
         recyclerView = itemView.findViewById(R.id.recyclerView);
-        ChipsLayoutManager layoutManager = ChipsLayoutManager.newBuilder(itemView.getContext())
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build();
-        int staticDimen8dp = itemView.getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8);
-        recyclerView.addItemDecoration(new SpacingItemDecoration(staticDimen8dp));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext());
         recyclerView.setLayoutManager(layoutManager);
         ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR);
         adapter = new ItemAdapter(clickListener);
@@ -86,49 +81,33 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
         public class ItemViewHolder extends RecyclerView.ViewHolder {
 
             private final ItemClickListener clickListener;
-            DeletableItemView textView;
+            ConstraintLayout recentSearch;
+            Typography text;
+            ImageView removeButton;
 
             public ItemViewHolder(View itemView, ItemClickListener clickListener) {
                 super(itemView);
                 this.clickListener = clickListener;
-                textView = itemView.findViewById(R.id.autocomplete_chips_item);
+                recentSearch = itemView.findViewById(R.id.autocompleteRecentSearchItem);
+                text = itemView.findViewById(R.id.recentSearchTextView);
+                removeButton = itemView.findViewById(R.id.actionRemoveButton);
             }
 
             public void bind(final BaseItemAutoCompleteSearch item) {
-                textView.setItemName(item.getKeyword());
-                textView.setOnDeleteListener(new DeletableItemView.OnDeleteListener() {
-                    @Override
-                    public void onDelete() {
-                        clickListener.onDeleteRecentSearchItem(item.getKeyword());
-                    }
+                text.setText(item.getKeyword());
+                removeButton.setOnClickListener(v -> clickListener.onDeleteRecentSearchItem(item.getKeyword()));
+                recentSearch.setOnClickListener(v -> {
+                    AutocompleteTracking.eventClickRecentSearch(
+                            itemView.getContext(),
+                            String.format(
+                                    "value: %s - po: %s - applink: %s",
+                                    item.getKeyword(),
+                                    String.valueOf(getAdapterPosition() + 1),
+                                    item.getApplink()
+                            )
+                    );
+                    clickListener.onItemClicked(item.getApplink(), item.getUrl());
                 });
-                textView.setOnTextClickListener(new DeletableItemView.OnTextClickListener() {
-                    @Override
-                    public void onClick() {
-                        AutocompleteTracking.eventClickRecentSearch(
-                                itemView.getContext(),
-                                String.format(
-                                        "value: %s - po: %s - applink: %s",
-                                        item.getKeyword(),
-                                        String.valueOf(getAdapterPosition() + 1),
-                                        item.getApplink()
-                                )
-                        );
-                        clickListener.onItemClicked(item.getApplink(), item.getUrl());
-                    }
-                });
-            }
-
-            private boolean getAutoCompleteItemIsOfficial(BaseItemAutoCompleteSearch autoCompleteSearch) {
-                boolean isOfficial = false;
-
-                HashMap<String, String> applinkParameterHashMap = autoCompleteSearch.getApplinkParameterHashmap();
-
-                if(applinkParameterHashMap.containsKey(SearchApiConst.OFFICIAL)) {
-                    isOfficial = Boolean.parseBoolean(applinkParameterHashMap.get(SearchApiConst.OFFICIAL));
-                }
-
-                return isOfficial;
             }
         }
     }

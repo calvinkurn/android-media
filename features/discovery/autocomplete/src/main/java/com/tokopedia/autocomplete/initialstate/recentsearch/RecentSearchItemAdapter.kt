@@ -1,0 +1,59 @@
+package com.tokopedia.autocomplete.initialstate.recentsearch
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.autocomplete.R
+import com.tokopedia.autocomplete.adapter.ItemClickListener
+import com.tokopedia.autocomplete.initialstate.newfiles.BaseItemInitialStateSearch
+
+class RecentSearchItemAdapter(private val listener: ItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object{
+        private const val TEMPLATE_ONE_LINE = "list_single_line"
+        private const val TYPE_ONE_LINE = 1
+        private const val TYPE_TWO_LINE = 2
+    }
+
+
+    private var data: List<BaseItemInitialStateSearch> = ArrayList()
+
+    fun setData(data: List<BaseItemInitialStateSearch>) {
+        this.data = data
+        notifyItemRangeInserted(0, data.size)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when(data[position].template){
+            TEMPLATE_ONE_LINE -> TYPE_ONE_LINE
+            else -> TYPE_TWO_LINE
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when(viewType){
+            TYPE_TWO_LINE -> {
+                val itemView = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.layout_recent_item_autocomplete_two_line, parent, false)
+                ItemTwoLineViewHolder(itemView, listener)
+            }
+            else -> {
+                val itemView = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.layout_recent_item_autocomplete, parent, false)
+                ItemOneLineViewHolder(itemView, listener)
+            }
+        }
+
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when(getItemViewType(position)){
+            TYPE_TWO_LINE -> (holder as ItemTwoLineViewHolder).bind(data[position])
+            else -> (holder as ItemOneLineViewHolder).bind(data[position])
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+}

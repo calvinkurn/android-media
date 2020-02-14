@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.autocomplete.adapter.SearchTypeFactory;
+import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateTypeFactory;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,9 +19,9 @@ import java.util.List;
 public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
-    private final SearchTypeFactory typeFactory;
+    private final InitialStateTypeFactory typeFactory;
 
-    public InitialStateAdapter(SearchTypeFactory typeFactory) {
+    public InitialStateAdapter(InitialStateTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
         this.list = new ArrayList<>();
     }

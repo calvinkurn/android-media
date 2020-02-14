@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -16,6 +15,7 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking;
 import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.unifycomponents.ChipsUnify;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,30 +86,27 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
         public class ItemViewHolder extends RecyclerView.ViewHolder {
 
             private final ItemClickListener clickListener;
-            TextView textView;
+            ChipsUnify chipsUnify;
 
             public ItemViewHolder(View itemView, ItemClickListener clickListener) {
                 super(itemView);
                 this.clickListener = clickListener;
-                textView = itemView.findViewById(R.id.autocomplete_chips_item);
+                chipsUnify = itemView.findViewById(R.id.autocompleteRecentSearchItem);
             }
 
             public void bind(final BaseItemAutoCompleteSearch item) {
-                textView.setText(item.getKeyword());
-                textView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        AutocompleteTracking.eventClickPopularSearch(
-                                itemView.getContext(),
-                                String.format(
-                                        "value: %s - po: %s - applink: %s",
-                                        item.getKeyword(),
-                                        String.valueOf(getAdapterPosition() + 1),
-                                        item.getApplink()
-                                )
-                        );
-                        clickListener.onItemClicked(item.getApplink(), item.getUrl());
-                    }
+                chipsUnify.getChip_text().setText(item.getKeyword());
+                chipsUnify.setOnClickListener(view -> {
+                    AutocompleteTracking.eventClickPopularSearch(
+                            itemView.getContext(),
+                            String.format(
+                                    "value: %s - po: %s - applink: %s",
+                                    item.getKeyword(),
+                                    String.valueOf(getAdapterPosition() + 1),
+                                    item.getApplink()
+                            )
+                    );
+                    clickListener.onItemClicked(item.getApplink(), item.getUrl());
                 });
             }
 

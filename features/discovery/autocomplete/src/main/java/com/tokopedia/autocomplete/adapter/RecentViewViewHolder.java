@@ -86,7 +86,7 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
             public ItemViewHolder(View itemView, ItemClickListener clickListener) {
                 super(itemView);
                 this.clickListener = clickListener;
-                recentImage = itemView.findViewById(R.id.autocomplete_recent_view_item);
+                recentImage = itemView.findViewById(R.id.autocompleteRecentViewItem);
             }
 
             public void bind(final BaseItemAutoCompleteSearch item) {

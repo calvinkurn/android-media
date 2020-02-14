@@ -3,6 +3,7 @@ package com.tokopedia.autocomplete.analytics;
 import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.autocomplete.initialstate.newfiles.BaseItemInitialStateSearch;
 import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -221,6 +222,43 @@ public class AutocompleteTracking {
                                                                       String position) {
         return DataLayer.mapOf(
                 PRODUCT_NAME, data.getKeyword(),
+                PRODUCT_ID, data.getProductId(),
+                PRODUCT_PRICE, data.getProductPrice(),
+                PRODUCT_BRAND, NONE_OTHER,
+                PRODUCT_CATEGORY, NONE_OTHER,
+                PRODUCT_VARIANT, NONE_OTHER,
+                PRODUCT_POSITION, position
+        );
+    }
+
+    public static void eventClickRecentView(String position,
+                                            BaseItemInitialStateSearch data) {
+        Map<String, Object> productData = convertSearchItemToProductData(data, position);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PRODUCT_CLICK,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV,
+                        EVENT_ACTION, CLICK_RECENT_VIEW_PRODUCT,
+                        EVENT_LABEL, String.
+                                format(LABEL_RECENT_VIEW_CLICK,
+                                        position,
+                                        data.getApplink()),
+                        ECOMMERCE, DataLayer.mapOf(
+                                CLICK,
+                                DataLayer.mapOf(
+                                        ACTION_FIELD, DataLayer.mapOf(LIST, RECENT_VIEW_ACTION_FIELD),
+                                        PRODUCTS, DataLayer.listOf(
+                                                productData
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    private static Map<String, Object> convertSearchItemToProductData(BaseItemInitialStateSearch data,
+                                                                      String position) {
+        return DataLayer.mapOf(
+                PRODUCT_NAME, data.getTitle(),
                 PRODUCT_ID, data.getProductId(),
                 PRODUCT_PRICE, data.getProductPrice(),
                 PRODUCT_BRAND, NONE_OTHER,
