@@ -969,7 +969,7 @@ final class ProductListPresenter
             list.add(productViewModel.getQuickFilterModel());
         }
 
-        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
+        if (productViewModel.getCpmModel() != null && shouldShowCpmShop(productViewModel)) {
             CpmViewModel cpmViewModel = new CpmViewModel();
             cpmViewModel.setCpmModel(productViewModel.getCpmModel());
             list.add(cpmViewModel);
