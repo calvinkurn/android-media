@@ -43,9 +43,6 @@ class OnboardingViewPagerAdapter(
         titleContent.text = item.title
 
         if (deviceHeight <= minimumHeight) {
-            val parameter = titleContent.layoutParams as ConstraintLayout.LayoutParams
-            parameter.setMargins(16, 16, 16, 0)
-            titleContent.layoutParams = parameter
             titleContent.setType(Typography.HEADING_2)
         }
 
