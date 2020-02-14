@@ -5,18 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
-import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
@@ -24,8 +22,8 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
@@ -43,7 +41,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -97,8 +94,6 @@ import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -166,7 +161,6 @@ import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.user.session.UserSession;
@@ -652,7 +646,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToUserPaymentList(Activity activity) {
-        RouteManager.route(context, ApplinkConstInternalPayment.PAYMENT_SETTING);
+        RouteManager.route(activity, ApplinkConstInternalPayment.PAYMENT_SETTING);
     }
 
     @Override
