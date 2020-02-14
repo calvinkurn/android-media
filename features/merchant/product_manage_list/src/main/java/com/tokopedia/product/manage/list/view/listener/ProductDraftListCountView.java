@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.list.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by User on 6/21/2017.
