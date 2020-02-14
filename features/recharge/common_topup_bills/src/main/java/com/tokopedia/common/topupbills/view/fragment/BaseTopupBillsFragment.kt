@@ -26,7 +26,6 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
@@ -53,6 +52,14 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     lateinit var topupBillsViewModel: TopupBillsViewModel
 
     var promoTicker: TickerPromoStackingCheckoutView? = null
+        set(value) {
+            field = value
+            val _promoData = promoData
+            if (_promoData != null) {
+                setupPromoTicker(_promoData)
+            }
+        }
+    var promoData: PromoData? = null
 
     // Promo Checkout
     var promoCode: String = ""
@@ -123,7 +130,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         checkoutView?.run {
             promoTicker = getPromoTicker()
             promoTicker?.actionListener = getPromoListener()
-            setupPromoTicker(TickerCheckoutView.State.EMPTY)
+            resetPromoTicker()
         }
     }
 
@@ -143,31 +150,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
                     data?.let {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
                             val itemPromoData = it.getParcelableExtra<PromoData>(EXTRA_PROMO_DATA)
-                            promoCode = itemPromoData.promoCode
-                            isCoupon = itemPromoData.typePromo == PromoData.TYPE_COUPON
-
-                            when (itemPromoData.state) {
-                                TickerCheckoutView.State.EMPTY -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.EMPTY)
-                                }
-                                TickerCheckoutView.State.FAILED -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.FAILED,
-                                            itemPromoData?.title.toEmptyStringIfNull(),
-                                            itemPromoData?.description.toEmptyStringIfNull())
-
-                                }
-                                TickerCheckoutView.State.ACTIVE -> {
-                                    setupPromoTicker(TickerCheckoutView.State.ACTIVE,
-                                            itemPromoData?.title.toEmptyStringIfNull(),
-                                            itemPromoData?.description.toEmptyStringIfNull())
-                                }
-                                else -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.EMPTY)
-                                }
-                            }
+                            setupPromoTicker(itemPromoData)
                         }
                     }
                 }
@@ -186,13 +169,11 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
             }
 
             override fun onResetPromoDiscount() {
-                promoCode = ""
-                setupPromoTicker(TickerCheckoutView.State.EMPTY)
+                resetPromoTicker()
             }
 
             override fun onDisablePromoDiscount() {
-                promoCode = ""
-                setupPromoTicker(TickerCheckoutView.State.EMPTY)
+                resetPromoTicker()
             }
 
             override fun onClickDetailPromo() {
@@ -226,17 +207,35 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         return promoModel
     }
 
-    private fun setupPromoTicker(state: TickerCheckoutView.State,
-                                 title: String = "",
-                                 description: String = "") {
-        promoTicker?.let { ticker ->
-            ticker.title = title
-            ticker.desc = description
-            ticker.state = when(state) {
-                TickerCheckoutView.State.ACTIVE -> TickerPromoStackingCheckoutView.State.ACTIVE
-                TickerCheckoutView.State.FAILED -> TickerPromoStackingCheckoutView.State.FAILED
-                else -> TickerPromoStackingCheckoutView.State.EMPTY
+    private fun setupPromoTicker(data: PromoData?) {
+        val ticker = promoTicker
+        if (ticker != null) {
+            promoData = null
+            if (data != null) {
+                promoCode = if (data.isActive()) data.promoCode else ""
+                isCoupon = data.typePromo == PromoData.TYPE_COUPON
+                ticker.title = data.title
+                ticker.desc = data.description
+                ticker.state = when (data.state) {
+                    TickerCheckoutView.State.ACTIVE -> TickerPromoStackingCheckoutView.State.ACTIVE
+                    TickerCheckoutView.State.FAILED -> TickerPromoStackingCheckoutView.State.FAILED
+                    else -> TickerPromoStackingCheckoutView.State.EMPTY
+                }
+            } else { // Reset data & set ticker to deafult (empty) state
+                resetPromoTicker()
             }
+        } else { // Save data until ticker is set
+            if (data != null) promoData = data
+        }
+    }
+
+    private fun resetPromoTicker() {
+        promoTicker?.run {
+            promoCode = ""
+            isCoupon = false
+            title = ""
+            desc = ""
+            state = TickerPromoStackingCheckoutView.State.EMPTY
         }
     }
 
@@ -263,10 +262,9 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     }
 
     fun processExpressCheckout(inputs: Map<String, String>) {
-        val _price = price
-        if (productId > 0 && _price != null && inputs.isNotEmpty()) {
+        if (productId > 0 && inputs.isNotEmpty()) {
             topupBillsViewModel.processExpressCheckout(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_express_checkout),
-                    topupBillsViewModel.createExpressCheckoutParams(productId, inputs, _price))
+                    topupBillsViewModel.createExpressCheckoutParams(productId, inputs, price ?: 0))
         }
     }
 

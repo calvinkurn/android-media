@@ -175,7 +175,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun createExpressCheckoutParams(productId: Int,
                                     inputs: Map<String, String>,
-                                    transactionAmount: Long,
+                                    transactionAmount: Long = 0,
                                     voucherCode: String = "",
                                     isInstantCheckout: Boolean = false,
                                     addToMyBills: Boolean = false): Map<String, Any> {
@@ -183,15 +183,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         for ((key, value) in inputs) {
             fields.add(createExpressCheckoutFieldParam(key, value))
         }
-        return mapOf(PARAM_CART to mapOf(
-            PARAM_FIELDS to fields,
-            EXPRESS_PARAM_INSTANT_CHECKOUT to isInstantCheckout,
-            EXPRESS_PARAM_TRANSACTION_AMOUNT to transactionAmount,
-            EXPRESS_PARAM_VOUCHER_CODE to voucherCode,
-            EXPRESS_PARAM_PRODUCT_ID to productId,
-            EXPRESS_PARAM_DEVICE_ID to EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE,
-            EXPRESS_PARAM_ADD_TO_BILLS to addToMyBills
-        ))
+
+        val params = mutableMapOf(
+                PARAM_FIELDS to fields,
+                EXPRESS_PARAM_INSTANT_CHECKOUT to isInstantCheckout,
+                EXPRESS_PARAM_VOUCHER_CODE to voucherCode,
+                EXPRESS_PARAM_PRODUCT_ID to productId,
+                EXPRESS_PARAM_DEVICE_ID to EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE,
+                EXPRESS_PARAM_ADD_TO_BILLS to addToMyBills
+        )
+        if (transactionAmount > 0) params[EXPRESS_PARAM_TRANSACTION_AMOUNT] = transactionAmount
+        return mapOf(PARAM_CART to params)
     }
 
     private fun createExpressCheckoutFieldParam(key: String, value: String): Map<String, String> {

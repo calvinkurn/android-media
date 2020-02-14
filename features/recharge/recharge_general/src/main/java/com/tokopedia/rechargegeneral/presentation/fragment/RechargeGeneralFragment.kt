@@ -145,6 +145,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (::checkoutBottomSheet.isInitialized) checkoutBottomSheet.dismiss()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -242,7 +247,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     }
                 }
             }
-        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_CART_DIGITAL) {
+        } else if (resultCode == Activity.RESULT_CANCELED) {
             // Render enquiry data
             enquiryData?.let{
                 renderCheckoutView(it)
@@ -811,7 +816,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun processCheckout(data: TopupBillsEnquiry) {
-        if (::checkoutBottomSheet.isInitialized) checkoutBottomSheet.dismiss()
         rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, selectedProduct?.title ?: "")
         rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
 
