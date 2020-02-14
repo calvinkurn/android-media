@@ -29,8 +29,6 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
-import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase.Companion.PROJECT_ID
-import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase.Companion.PROJECT_ID_POWER_MERCHANT_KYC
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
@@ -50,6 +48,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.dialog_score_verification.*
@@ -100,7 +100,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
         const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
 
-        private const val APPLINK_PARAMS_KYC = "${PROJECT_ID}=${PROJECT_ID_POWER_MERCHANT_KYC}"
+        private const val APPLINK_PARAMS_KYC = "${PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}"
         const val APPLINK_POWER_MERCHANT_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC"
     }
 

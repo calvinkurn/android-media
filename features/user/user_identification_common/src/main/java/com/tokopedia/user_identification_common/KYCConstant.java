@@ -39,5 +39,5 @@ public interface KYCConstant {
     String PARAM_KYC_SRC = "source";
     String VALUE_KYC_SRC_SELLER = "seller";
     String EXTRA_IS_SOURCE_SELLER = "source_seller";
-
+    String PARAM_PROJECT_ID = "projectId";
 }
