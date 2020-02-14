@@ -37,20 +37,14 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
     }
 
     private fun getKycStatus(): Observable<KycUserProjectInfoPojo> {
-        val requestParams = createKycStatusRequestParam()
-        return getUserProjectInfoUseCase.execute(requestParams.parameters)
+        val requestParams = GetUserProjectInfoUseCase.getRequestParam(PROJECT_ID_POWER_MERCHANT_KYC)
+        return getUserProjectInfoUseCase.execute(requestParams)
     }
 
     companion object {
         fun createRequestParams(shopId: String): RequestParams {
             return RequestParams.create().apply {
                 putString(GMParamApiContant.SHOP_ID, shopId)
-            }
-        }
-
-        fun createKycStatusRequestParam(): RequestParams {
-            return RequestParams.create().apply {
-                putInt(PROJECT_ID, PROJECT_ID_POWER_MERCHANT_KYC)
             }
         }
 
