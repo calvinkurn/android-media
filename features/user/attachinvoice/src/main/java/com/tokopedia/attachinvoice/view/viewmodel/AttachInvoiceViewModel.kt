@@ -1,11 +1,8 @@
 package com.tokopedia.attachinvoice.view.viewmodel
 
-import android.content.Intent
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachinvoice.data.GetInvoiceResponse
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.usecase.GetInvoiceUseCase
