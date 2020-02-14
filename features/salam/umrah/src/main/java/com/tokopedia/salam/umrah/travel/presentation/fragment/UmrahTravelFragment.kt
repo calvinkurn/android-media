@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -34,6 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_travel_agent_permission.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_travel_agent.*
+import kotlinx.android.synthetic.main.fragment_umrah_travel_agent.view.*
 import kotlinx.android.synthetic.main.widget_umrah_item.*
 import javax.inject.Inject
 
@@ -56,6 +58,8 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     var positionBefore: Int = 0
 
     private lateinit var umrahTravelAgentViewPagerAdapter: UmrahTravelAgentViewPagerAdapter
+
+    lateinit var swipeToRefresh : SwipeRefreshLayout
 
 
     private var slugName: String? = ""
@@ -83,6 +87,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupSwipeToRefresh(view)
         requestData()
     }
 
@@ -122,6 +127,20 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
         const val POSITION_INFO = 2
     }
 
+    private fun setupSwipeToRefresh(view: View) {
+        swipeToRefresh = view.umrah_travel_swipe_to_refresh
+        swipeToRefresh.setColorSchemeColors(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G600))
+        swipeToRefresh.setOnRefreshListener {
+            hideLayout()
+            swipeToRefresh.isRefreshing = true
+            requestData()
+        }
+    }
+
+    private fun enableSwipeToRefresh() {
+        swipeToRefresh.isRefreshing = false
+        swipeToRefresh.isEnabled = true
+    }
 
     private fun showLayout() {
         container_umrah_travel_shimmering.gone()
@@ -138,6 +157,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
         setupTravelAgent(travelAgentBySlugName.umrahTravelAgentBySlug)
         setupViewPager(travelAgentBySlugName)
         setupChat()
+        enableSwipeToRefresh()
     }
 
     private fun setupChat() {

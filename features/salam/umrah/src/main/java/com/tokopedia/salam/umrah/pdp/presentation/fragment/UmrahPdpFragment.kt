@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -90,7 +91,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     private var isAirlinesScrolled = false
     private var isHotelsScrolled = false
 
-    private lateinit var swipeToRefresh: SwipeToRefresh
+    private lateinit var swipeToRefresh: SwipeRefreshLayout
 
     override fun getScreenName(): String = ""
 
@@ -108,6 +109,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
 
     private fun setupSwipeToRefresh(view: View) {
         swipeToRefresh = view.umrah_pdp_swipe_to_refresh
+        swipeToRefresh.setColorSchemeColors(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G600))
         swipeToRefresh.setOnRefreshListener {
             hideData()
             swipeToRefresh.isRefreshing = true
