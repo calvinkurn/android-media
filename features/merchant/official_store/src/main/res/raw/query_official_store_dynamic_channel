@@ -60,6 +60,10 @@ query dynamicHomeChannel($type: String) {
                 image_url
                 attribution
             }
+            galaxy_attribution
+	        persona
+       	    category_persona
+       	    brand_id
         }
     }
 }

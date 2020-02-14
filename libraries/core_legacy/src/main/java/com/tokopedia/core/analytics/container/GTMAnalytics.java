@@ -47,7 +47,6 @@ import timber.log.Timber;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 public class GTMAnalytics extends ContextAnalytics {
-    private static final String TAG = GTMAnalytics.class.getSimpleName();
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 150; // 150 minutes (2.5 hours)
     private static final String KEY_GTM_EXPIRED_TIME = "android_gtm_expired_time";
 
@@ -326,11 +325,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 Double.valueOf(PriceUtil.from(doubleRaw));
     }
 
-    private double emptyInt(String intRaw) {
-        return TextUtils.isEmpty(intRaw) ? 0 :
-                Double.valueOf(PriceUtil.from(intRaw));
-    }
-
     private void transactionBundle(Bundle bundle, Map<String, Object> ecommerce) {
         Object promotionObj;
         Map<String, Object> purchase = (Map<String, Object>) ecommerce.remove("purchase");
@@ -578,18 +572,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         return new ViewProductResult(product1, list);
 
-    }
-
-    private String emptyString(Object string) {
-        if (string instanceof String) {
-            return emptyString(string);
-        } else {
-            return bruteForceCastToString(string);
-        }
-    }
-
-    private String emptyString(String string) {
-        return !TextUtils.isEmpty(string) ? string : "";
     }
 
     private Bundle atcMap(Map<String, Object> value) {
@@ -966,17 +948,6 @@ public class GTMAnalytics extends ContextAnalytics {
         sendScreen(screenName, customDimension);
     }
 
-    public void sendScreenAuthenticated2(String screenName, String shopID, String shopType, String pageType, String productId) {
-        if (TextUtils.isEmpty(screenName)) return;
-        Map<String, String> customDimension = new HashMap<>();
-        customDimension.put(Authenticated.KEY_SHOP_ID_SELLER, shopID);
-        customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);
-        customDimension.put(Authenticated.KEY_SHOP_TYPE, shopType);
-        customDimension.put(Authenticated.KEY_PRODUCT_ID, productId);
-        eventAuthenticate(customDimension);
-        sendScreen(screenName, customDimension);
-    }
-
     public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
         if (TextUtils.isEmpty(screenName)) return;
         Map<String, String> customDimension = new HashMap<>();
@@ -1017,17 +988,6 @@ public class GTMAnalytics extends ContextAnalytics {
             map.putAll(customDimension);
         }
         pushEvent(Authenticated.KEY_CD_NAME, map);
-    }
-
-    public GTMAnalytics eventAddtoCart(GTMCart cart) {
-        pushEvent("addToCart", DataLayer.mapOf("ecommerce", cart.getCartMap()));
-        return this;
-    }
-
-    public GTMAnalytics clearAddtoCartDataLayer(String act) {
-        pushGeneral(DataLayer.mapOf("products", null,
-                "currencyCode", null, "addToCart", null, "ecommerce", null, act, null));
-        return this;
     }
 
     private static final String TRANSACTION = "transaction";
@@ -1126,17 +1086,6 @@ public class GTMAnalytics extends ContextAnalytics {
         pushEventV5(params.get(KEY_EVENT) + "", bundle, context);
     }
 
-    public void pushGeneralGtmV5Internal(String event, String category, String action, String label) {
-        sendGeneralEvent(event, category, action, label);
-
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_CATEGORY, category);
-        bundle.putString(KEY_ACTION, action);
-        bundle.putString(KEY_LABEL, label);
-
-        pushEventV5(event, bundle, context);
-    }
-
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
@@ -1233,11 +1182,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 iris.saveEvent(values);
             }
         }
-    }
-
-    private static class GTMBody {
-        Map<String, Object> values;
-        String eventName;
     }
 
     private Subscriber<Boolean> getDefaultSubscriber() {

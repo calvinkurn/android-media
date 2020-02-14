@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.card.ToolTipUtils;
 
 /**
  * @author by stevenfredian on 8/16/17.

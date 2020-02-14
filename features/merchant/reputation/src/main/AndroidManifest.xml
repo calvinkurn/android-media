@@ -11,12 +11,36 @@
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_review_inbox"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".inbox.view.activity.InboxReputationDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_review_inbox_detail"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".inbox.view.activity.InboxReputationFormActivity"
             android:label="@string/title_activity_submit_review"
@@ -45,7 +69,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -63,7 +87,7 @@
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -80,7 +104,19 @@
             android:name=".review.shop.view.ReviewShopInfoActivity"
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_review"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

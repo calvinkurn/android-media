@@ -20,7 +20,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.BuildConfig;
 import com.tokopedia.product.manage.item.R;

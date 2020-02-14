@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import java.util.*
@@ -48,6 +49,8 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         super.onViewAttachedToWindow(holder)
         if(holder is PlayCardViewHolder) {
             holder.onViewAttach()
+        } else if(holder is BannerViewHolder){
+            holder.onResume()
         }
     }
 
@@ -55,6 +58,8 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         super.onViewDetachedFromWindow(holder)
         if(holder is PlayCardViewHolder) {
             holder.onViewDetach()
+        } else if(holder is BannerViewHolder){
+            holder.onPause()
         }
     }
 
@@ -83,17 +88,24 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
 
     fun onResume() {
         val positions = getPositionPlay()
-        if(positions.isNotEmpty() && getViewHolder(positions.first()) is PlayCardViewHolder){
+        if(positions.isNotEmpty()){
             currentSelected = positions.first()
-            (getViewHolder(currentSelected) as PlayCardViewHolder).resume()
+            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.resume()
+        }
+
+        if(itemCount > 0){
+            (getViewHolder(0) as? BannerViewHolder)?.onResume()
         }
     }
 
     fun onPause() {
         val positions = getPositionPlay()
-        if(positions.isNotEmpty() && getViewHolder(positions.first()) is PlayCardViewHolder){
+        if(positions.isNotEmpty()){
             currentSelected = positions.first()
-            (getViewHolder(currentSelected) as PlayCardViewHolder).pause()
+            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause()
+        }
+        if(itemCount > 0){
+            (getViewHolder(0) as? BannerViewHolder)?.onPause()
         }
     }
 
