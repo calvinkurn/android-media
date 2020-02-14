@@ -5,18 +5,22 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventAdapter
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.data.ActionLikedResponse
+import com.tokopedia.entertainment.home.data.EventFavoriteResponse
 import com.tokopedia.entertainment.home.di.EventHomeComponent
 import com.tokopedia.entertainment.home.viewmodel.FragmentView
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
@@ -25,6 +29,7 @@ import com.tokopedia.entertainment.home.widget.MenuSheet
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_home_fragment.*
+import kotlinx.android.synthetic.main.ent_layout_shimering_home.*
 import javax.inject.Inject
 
 /**
@@ -41,14 +46,16 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         const val REQUEST_LOGIN_FAVORITE = 213
         const val REQUEST_LOGIN_TRANSACTION = 214
         const val REQUEST_LOGIN_POST_LIKES = 215
+        private const val COACH_MARK_TAG = "event_home"
     }
 
     @Inject
-    lateinit var factory : HomeEventViewModelFactory
+    lateinit var factory: HomeEventViewModelFactory
     @Inject
     lateinit var userSession: UserSessionInterface
-    lateinit var viewModel : HomeEventViewModel
-    lateinit var homeAdapter:  HomeEventAdapter
+    lateinit var viewModel: HomeEventViewModel
+    lateinit var homeAdapter: HomeEventAdapter
+    var favMenuItem : View? = null
 
 
     override fun getScreenName(): String {
@@ -69,7 +76,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getHomeData(this, this::onSuccessGetData, this::onErrorGetData, CacheType.CACHE_FIRST)
+        viewModel.getHomeData(this, ::onSuccessGetData, ::onErrorGetData, CacheType.CACHE_FIRST)
 
         recycler_view.apply {
             setHasFixedSize(true)
@@ -85,7 +92,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     private fun actionItemAdapter(item: EventItemModel, onSuccessPostLike: ((EventItemModel) -> Unit),
                                   onErrorPostLike: ((Throwable) -> Unit)) {
-        if(userSession.isLoggedIn) {
+        if (userSession.isLoggedIn) {
             viewModel.postLiked(item, onSuccessPostLike, onErrorPostLike)
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_POST_LIKES)
@@ -98,13 +105,17 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
 
-    private fun onErrorGetData(throwable: Throwable){
-        Log.e(TAG, throwable.localizedMessage)
+    private fun onErrorGetData(throwable: Throwable) {
+        swipe_refresh_layout?.isRefreshing = false
+        Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {
+        shimering_layout.visibility = View.GONE
+        content.visibility = View.VISIBLE
         homeAdapter.setItems(data)
         swipe_refresh_layout?.isRefreshing = false
+        startShowCase()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -121,7 +132,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode){
+        when (requestCode) {
             REQUEST_LOGIN_FAVORITE -> actionMenuFavorite()
             REQUEST_LOGIN_TRANSACTION -> onMenuTransactionListClick()
         }
@@ -132,10 +143,20 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     private fun actionMenuFavorite() {
-        if(userSession.isLoggedIn) {
+        if (userSession.isLoggedIn) {
             RouteManager.route(context, ApplinkConstInternalEntertainment.EVENT_FAVORITE)
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_FAVORITE)
+        }
+    }
+
+    private fun startShowCase() {
+        val coachMark = CoachMarkBuilder().build()
+        if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
+            var coachItems = ArrayList<CoachMarkItem>()
+            coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.coach_mark_title_1), getString(R.string.coach_mark_desc_1)))
+            coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.action_favorite), getString(R.string.coach_mark_title_2), getString(R.string.coach_mark_desc_2)))
+            coachMark.show(activity, COACH_MARK_TAG, coachItems)
         }
     }
 
@@ -148,7 +169,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     override fun onMenuTransactionListClick() {
-        if(userSession.isLoggedIn){
+        if (userSession.isLoggedIn) {
             RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_TRANSACTION)

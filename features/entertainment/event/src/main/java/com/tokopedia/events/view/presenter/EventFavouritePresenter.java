@@ -13,12 +13,19 @@ import com.tokopedia.events.view.contractor.EventFavouriteContract;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.events.view.viewmodel.CategoryViewModel;
+import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by pranaymohapatra on 16/05/18.
@@ -46,7 +53,30 @@ public class EventFavouritePresenter extends BaseDaggerPresenter<EventBaseContra
         if (favouriteItemList != null && favouriteItemList.size() > 0)
             mView.renderFavourites(favouriteItemList);
         else
-            mView.toggleEmptyLayout(View.VISIBLE);
+            mGetUserLikesCase.getExecuteObservable(RequestParams.create())
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap((Func1<List<Integer>, Observable<List<CategoryItemsViewModel>>>) integers -> {
+                        List<CategoryItemsViewModel> favouritesItems = new ArrayList<>();
+
+                        return Observable.just(favouritesItems);
+                    }).subscribe(new Subscriber<List<CategoryItemsViewModel>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    mView.toggleEmptyLayout(View.VISIBLE);
+                }
+
+                @Override
+                public void onNext(List<CategoryItemsViewModel> categoryItemsViewModels) {
+                    favouriteItemList = categoryItemsViewModels;
+                    mView.renderFavourites(favouriteItemList);
+                }
+            });
     }
 
     @Override

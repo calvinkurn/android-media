@@ -28,10 +28,11 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/promo"
+        android:textColor="@color/ent_black_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_close"
-        app:typographyType="heading_4" />
+        app:typographyType="heading_5" />
 
     <View
         android:id="@+id/line1"
@@ -53,10 +54,11 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/daftar_transaksi"
+        android:textColor="@color/ent_black_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line1"
-        app:typographyType="heading_4" />
+        app:typographyType="heading_5" />
 
 
     <View
@@ -80,10 +82,11 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:text="@string/bantuan"
+        android:textColor="@color/ent_black_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line2"
-        app:typographyType="heading_4" />
+        app:typographyType="heading_5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

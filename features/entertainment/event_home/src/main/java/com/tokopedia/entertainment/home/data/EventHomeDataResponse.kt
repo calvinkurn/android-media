@@ -17,7 +17,7 @@ data class EventHomeDataResponse(
     ) {
         data class EventChildCategory(
                 @SerializedName("categories")
-                val categories: List<Category> = listOf()
+                val categories: MutableList<Category> = mutableListOf()
         ) {
             data class Category(
                     @SerializedName("app_url")
@@ -81,7 +81,11 @@ data class EventHomeDataResponse(
                         @SerializedName("title")
                         val title: String = "",
                         @SerializedName("is_liked")
-                        val isLiked: Boolean
+                        var isLiked: Boolean,
+                        @SerializedName("is_promo")
+                        var isPromo: Int = 0,
+                        @SerializedName("seo_url")
+                        val seoUrl: String = ""
                 )
             }
         }

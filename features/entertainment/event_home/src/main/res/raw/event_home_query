@@ -44,6 +44,8 @@ query EventCategories($category:String!){
         schedule
         app_url
         url
+        is_promo
+        seo_url
       }
     }
   }

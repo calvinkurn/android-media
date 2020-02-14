@@ -8,13 +8,15 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class CategoryViewModel(var category : EventHomeDataResponse.Data.EventChildCategory): HomeEventItem<HomeTypeFactory> {
+class CategoryViewModel(var category: EventHomeDataResponse.Data.EventChildCategory) : HomeEventItem<HomeTypeFactory> {
 
-    var items : MutableList<CategoryEventViewHolder.CategoryItemModel> = mutableListOf()
+    var items: MutableList<CategoryEventViewHolder.CategoryItemModel> = mutableListOf()
 
     init {
-        category.categories.forEach {
-            items.add(CategoryEventViewHolder.CategoryItemModel(it.mediaUrl, it.title, it.appUrl))
+        category.categories.removeAt(0)
+        category.categories.forEachIndexed { index, category ->
+            if (index < 5)
+                items.add(CategoryEventViewHolder.CategoryItemModel(category.mediaUrl, category.title, category.appUrl))
         }
     }
 

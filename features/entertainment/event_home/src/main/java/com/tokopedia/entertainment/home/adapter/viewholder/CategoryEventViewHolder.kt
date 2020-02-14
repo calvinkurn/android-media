@@ -61,7 +61,7 @@ class CategoryEventViewHolder(itemView: View): HomeEventViewHolder<CategoryViewM
             Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.icon)
             holder.view.title.text = items.get(position).title
             holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context, items.get(position).applink)
+               // RouteManager.route(holder.view.context, items.get(position).applink)
             }
         }
         override fun getItemCount() = items.size

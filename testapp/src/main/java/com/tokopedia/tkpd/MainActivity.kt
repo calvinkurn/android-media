@@ -198,6 +198,6 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-        RouteManager.route(this, ApplinkConstInternalEntertainment.ENTERTAINMENT_HOME)
+        RouteManager.route(this, ApplinkConstInternalEntertainment.EVENT_HOME)
     }
 }

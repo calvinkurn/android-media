@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory;
+import com.tokopedia.entertainment.home.data.EventFavoriteResponse;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
