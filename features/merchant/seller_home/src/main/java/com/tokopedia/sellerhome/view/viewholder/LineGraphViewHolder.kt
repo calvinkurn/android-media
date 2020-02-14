@@ -59,7 +59,7 @@ class LineGraphViewHolder(
     }
 
     private fun openAppLink(appLink: String, dataKey: String, value: String) {
-        if(RouteManager.route(itemView.context, appLink)) {
+        if (RouteManager.route(itemView.context, appLink)) {
             SellerHomeTracking.sendClickLineGraphEvent(dataKey, value)
         }
     }
@@ -145,7 +145,7 @@ class LineGraphViewHolder(
         if (isShown) {
             showLineGraph(element)
             itemView.addOnImpressionListener(element.impressHolder) {
-                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header ?: "")
+                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header.orEmpty())
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError

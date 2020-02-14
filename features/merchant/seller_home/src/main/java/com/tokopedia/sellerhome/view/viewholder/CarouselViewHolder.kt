@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.viewholder
 
-import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -92,7 +91,7 @@ class CarouselViewHolder(
         indicatorCarouselBanner.setIndicator(banners.size)
 
         val bannerAdapter = CarouselBannerAdapter(element.dataKey, banners)
-        val linearLayoutManager = getBannerLayoutManager(context)
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         rvCarouselBanner.layoutManager = linearLayoutManager
         rvCarouselBanner.adapter = bannerAdapter
@@ -100,7 +99,8 @@ class CarouselViewHolder(
         rvCarouselBanner.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val position = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
+                val mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
                 indicatorCarouselBanner.setCurrentIndicator(position)
             }
         })
@@ -121,14 +121,6 @@ class CarouselViewHolder(
             }
         } else {
             btnCarouselSeeAll.gone()
-        }
-    }
-
-    private fun getBannerLayoutManager(context: Context?): LinearLayoutManager {
-        return object : LinearLayoutManager(context, HORIZONTAL, false) {
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
         }
     }
 

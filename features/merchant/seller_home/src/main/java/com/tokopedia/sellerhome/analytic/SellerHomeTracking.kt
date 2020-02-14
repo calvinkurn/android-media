@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.analytic
 
+import com.tokopedia.sellerhome.view.model.CarouselItemUiModel
 import com.tokopedia.track.TrackApp
 
 /**
@@ -136,7 +137,7 @@ object SellerHomeTracking {
                         TrackingConstant.HOME,
                         TrackingConstant.CLICK_WIDGET_BANNER,
                         dataKey,
-                        items[position].appLink //to be changed with banner name
+                        TrackingConstant.NONE_OTHER
                 ).joinToString(" - "),
                 action = arrayOf(TrackingConstant.CLICK_WIDGET_BANNER, dataKey).joinToString(" - "),
                 label = arrayOf(items[position].appLink, position.toString()).joinToString(" - ")
@@ -164,14 +165,11 @@ object SellerHomeTracking {
 
     private fun getBannerPromotions(items: List<CarouselItemUiModel>, position: Int): List<Map<String, String>> {
         return items.map {
-            val creativeUrl = it.featuredMediaURL
-            val creativeName = creativeUrl.substring(creativeUrl.lastIndexOf("/"), creativeUrl.length)
-                    .replace("/", "")
             return@map mapOf(
                     TrackingConstant.ID to "{${it.id}}",
                     TrackingConstant.NAME to TrackingConstant.SELLER_WIDGET,
-                    TrackingConstant.CREATIVE to "{$creativeName}",
-                    TrackingConstant.CREATIVE_URL to creativeUrl,
+                    TrackingConstant.CREATIVE to "{${TrackingConstant.NONE_OTHER}}",
+                    TrackingConstant.CREATIVE_URL to it.featuredMediaURL,
                     TrackingConstant.POSITION to position.toString()
             )
         }

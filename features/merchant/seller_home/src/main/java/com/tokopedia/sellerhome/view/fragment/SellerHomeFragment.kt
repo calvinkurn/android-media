@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,13 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.util.getResColor
-import com.tokopedia.sellerhome.util.toJson
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
@@ -27,7 +26,10 @@ import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -59,6 +61,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val tooltipBottomSheet by lazy { BottomSheetUnify() }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
 
+    private var isLoadFromCache = false
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
     private var hasLoadProgressData = false
@@ -117,6 +120,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshLayout.isRefreshing = false
+            refreshWidget()
+        }
+
+        sahGlobalError.setActionClickListener {
             refreshWidget()
         }
     }
@@ -242,6 +249,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
+        isLoadFromCache = true
         recyclerView.visible()
         renderList(widgets)
         widgets.forEach {
@@ -255,16 +263,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun setOnErrorGetLayout() = view?.run {
-        Toaster.make(
-                this,
-                context.getString(R.string.sah_failed_to_get_information),
-                Toaster.toasterLength,
-                Toaster.TYPE_ERROR,
-                context.getString(R.string.sah_reload),
-                View.OnClickListener {
-                    refreshWidget()
-                }
-        )
+        if (isLoadFromCache) {
+            Toaster.make(
+                    this,
+                    context.getString(R.string.sah_failed_to_get_information),
+                    Toaster.toasterLength,
+                    Toaster.TYPE_ERROR,
+                    context.getString(R.string.sah_reload),
+                    View.OnClickListener {
+                        refreshWidget()
+                    }
+            )
+            sahGlobalError.gone()
+        } else {
+            sahGlobalError.visible()
+        }
         showGetWidgetProgress(false)
     }
 
@@ -272,7 +285,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTickers(it.data)
-                is Fail -> view?.relTicker?.visibility = View.GONE
+                is Fail -> view?.relTicker?.gone()
             }
         })
         sellerHomeViewModel.getTicker()
@@ -321,31 +334,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
 
-        val isTickerVisible = if (tickers.isEmpty()) View.GONE else View.VISIBLE
-
-        view?.relTicker?.visibility = isTickerVisible
+        view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
+            isAutoSliderActive = true
             val tickersData = tickers.map {
                 TickerData(it.title, it.message, getTickerType(it.color))
             }
 
             val adapter = TickerPagerAdapter(activity, tickersData)
-            adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    println("tickerView : onPageDescriptionViewClick")
-                }
-            })
             addPagerView(adapter, tickersData)
 
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    println("tickerView : click")
+                    println("tickerView : onDescriptionViewClick")
                 }
 
                 override fun onDismiss() {
                     println("tickerView : onDismiss")
                 }
-
             })
         }
     }
