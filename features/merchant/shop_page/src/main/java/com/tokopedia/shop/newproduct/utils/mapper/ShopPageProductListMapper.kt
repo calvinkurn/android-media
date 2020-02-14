@@ -34,7 +34,7 @@ object ShopPageProductListMapper {
         )
     }
 
-    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean): ShopProductViewModel =
+    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String): ShopProductViewModel =
             with(shopProduct) {
                 ShopProductViewModel().also {
                     it.id = productId
@@ -58,6 +58,7 @@ object ShopPageProductListMapper {
                     it.isShowWishList = !isMyOwnProduct
                     it.isShowFreeOngkir = freeOngkir.isActive
                     it.freeOngkirPromoIcon = freeOngkir.imgUrl
+                    it.etalaseId = etalaseId
                 }
             }
 

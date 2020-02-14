@@ -325,11 +325,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
         if (shopInfo != null) {
-            var finalProductPosition = shopProductAdapter.getProductViewModelRealPosition(
-                    shopProductViewModel
-            )
-            if (finalProductPosition < 0)
-                finalProductPosition = productPosition
             when (shopTrackType) {
                 ShopTrackProductTypeDef.FEATURED -> shopInfo?.let {
                     shopPageTracking?.clickProduct(
@@ -345,7 +340,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                     attribution
                             ),
                             shopProductViewModel,
-                            finalProductPosition,
+                            productPosition + 1,
                             shopId,
                             shopInfo!!.shopCore.name,
                             it.freeOngkir.isActive
@@ -363,18 +358,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                     shopProductViewModel.id,
                                     attribution
                             ),
-                            shopProductViewModel, finalProductPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                            shopProductViewModel, productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
                             it.freeOngkir.isActive)
                 }
                 ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopInfo?.let {
                     shopPageTracking?.clickProduct(isOwner,
                             isLogin,
                             selectedEtalaseName,
-                            if(shopProductAdapter.isEtalaseHighlightSoldProduct(shopProductViewModel)) {
-                                "sold product"
-                            }else{
-                                shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel)
-                            },
+                            shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
                             CustomDimensionShopPageAttribution.create(
                                     shopInfo!!.shopCore.shopID,
                                     shopInfo!!.goldOS.isOfficial == 1,
@@ -382,7 +373,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                     shopProductViewModel.id,
                                     attribution
                             ),
-                            shopProductViewModel, finalProductPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                            shopProductViewModel, productPosition + 1, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
                             it.freeOngkir.isActive)
                 }
             }

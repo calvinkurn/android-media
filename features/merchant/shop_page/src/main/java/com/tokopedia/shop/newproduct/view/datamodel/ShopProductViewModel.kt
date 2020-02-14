@@ -35,6 +35,7 @@ class ShopProductViewModel : BaseShopProductViewModel, ImpressHolder {
     var isShowFreeOngkir: Boolean = false
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
+    var etalaseId = ""
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
         return typeFactory.type(this)

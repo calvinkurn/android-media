@@ -32,7 +32,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     }
 
     private List<Object> createProductListMap(List<ShopProductViewModel> shopProductViewModelList,
-                                              boolean isOwner, String selectedEtalaseName, String etalaseName, int productPositionStart,
+                                              boolean isOwner, String selectedEtalaseName, String etalaseName, int productPosition,
                                               String shopTypeDef,
                                               String loginNonLoginString,
                                               String shopId,
@@ -49,7 +49,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                     CATEGORY, NONE,
                     VARIANT, NONE,
                     LIST, joinDash(SHOPPAGE, shopId, etalaseEvent, loginNonLoginString),
-                    POSITION, productPositionStart + i + 1
+                    POSITION, productPosition
             ));
             if (isOwner) {
                 event.put(DIMENSION_81, shopTypeDef);
