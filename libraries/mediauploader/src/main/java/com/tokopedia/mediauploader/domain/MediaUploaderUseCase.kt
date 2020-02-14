@@ -6,7 +6,6 @@ import com.tokopedia.mediauploader.data.entity.MediaUploader
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.util.ProgressRequestBody
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import java.io.File
