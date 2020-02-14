@@ -33,7 +33,41 @@ class BrandlistPageViewModel @Inject constructor(
     val getNewBrandResult = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
     val getAllBrandResult = MutableLiveData<Result<OfficialStoreAllBrands>>()
 
-    var newOffset = INITIAL_OFFSET
+    private var firstLetterChanged = false
+    private var totalBrandSize = 0
+    private var currentOffset = INITIAL_OFFSET
+    private var currentLetter = INITIAL_LETTER
+
+    fun updateTotalBrandSize(totalBrandSize: Int) {
+        this.totalBrandSize = totalBrandSize
+    }
+
+    fun updateCurrentOffset(renderedBrands: Int) {
+        currentOffset += renderedBrands
+    }
+
+    fun updateCurrentLetter() {
+        val firstLetter = getTheFirstLetter(totalBrandSize, currentOffset)
+        if (firstLetter != currentLetter) {
+            currentLetter = firstLetter
+            firstLetterChanged = true
+        }
+    }
+
+    fun updateEndlessRequestParameter() {
+        if (firstLetterChanged) {
+            totalBrandSize = 0
+            currentOffset = 0
+            firstLetterChanged = false
+        }
+    }
+
+    private fun getTheFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
+        return if (totalBrandSize == currentOffset) {
+            val newLetter = currentLetter + 1
+            newLetter
+        } else currentLetter
+    }
 
     fun loadInitialData(category: Category?, userId: String?) {
         launchCatchError(block = {
@@ -46,21 +80,33 @@ class BrandlistPageViewModel @Inject constructor(
                     ALL_BRANDS_QUERY,
                     ALL_BRANDS_REQUEST_SIZE,
                     ALPHABETIC_ASC_SORT,
-                    FIRST_LETTER).await()))
+                    INITIAL_LETTER.toString()).await()))
         }, onError = {})
     }
 
     fun loadMoreAllBrands(category: Category?) {
+
+        val requestSize = geRequestSize(totalBrandSize, currentOffset)
+
         launchCatchError(block = {
-            newOffset += ALL_BRANDS_REQUEST_SIZE
             getAllBrandResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,
-                    newOffset,
+                    currentOffset,
                     ALL_BRANDS_QUERY,
-                    ALL_BRANDS_REQUEST_SIZE,
+                    requestSize,
                     ALPHABETIC_ASC_SORT,
-                    FIRST_LETTER).await()))
+                    currentLetter.toString()).await()))
         }, onError = {})
+    }
+
+    private fun geRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
+        if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
+        val remainingBrands = totalBrandSize - renderedBrands
+        return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {
+            ALL_BRANDS_REQUEST_SIZE
+        } else {
+            remainingBrands
+        }
     }
 
     private fun getFeaturedBrandsAsync(categoryId: String?): Deferred<OfficialStoreFeaturedShop> {
@@ -128,8 +174,8 @@ class BrandlistPageViewModel @Inject constructor(
     companion object {
         private const val INITIAL_OFFSET = 0
         private const val ALL_BRANDS_QUERY = ""
-        private const val ALL_BRANDS_REQUEST_SIZE = 9
+        private const val ALL_BRANDS_REQUEST_SIZE = 30
         private const val ALPHABETIC_ASC_SORT = 3
-        private const val FIRST_LETTER = "a"
+        private const val INITIAL_LETTER = 'a'
     }
 }
