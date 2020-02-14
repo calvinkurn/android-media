@@ -12,10 +12,13 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
+import com.tokopedia.sellerhome.util.dpToPx
+import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
 import com.tokopedia.sellerhome.view.model.TooltipUiModel
+import kotlinx.android.synthetic.main.sah_item_post.view.*
 import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_post_list_widget_error.view.*
@@ -193,5 +196,28 @@ class PostListViewHolder(
 
     interface Listener : BaseViewHolderListener {
         fun getPostData()
+    }
+
+    class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
+
+        companion object {
+            val RES_LAYOUT = R.layout.sah_item_post
+        }
+
+        override fun bind(element: PostUiModel) {
+            with(element) {
+                itemView.tvPostTitle.text = title.parseAsHtml()
+                itemView.tvPostDescription.text = subtitle.parseAsHtml()
+                loadImage(featuredMediaURL)
+            }
+        }
+
+        private fun loadImage(featuredMediaURL: String) = with(itemView) {
+            if (featuredMediaURL.isNotEmpty()) {
+                ImageHandler.loadImageRounded(context, imgPost, featuredMediaURL, context.dpToPx(8))
+            } else {
+                ImageHandler.loadImageRounded2(context, imgPost, R.drawable.error_drawable, context.dpToPx(8))
+            }
+        }
     }
 }

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.view.model.PostUiModel
-import com.tokopedia.sellerhome.view.viewholder.PostViewHolder
+import com.tokopedia.sellerhome.view.viewholder.PostListViewHolder.PostViewHolder
 
 class ListAdapterTypeFactory : BaseAdapterTypeFactory() {
     fun type(post: PostUiModel): Int {

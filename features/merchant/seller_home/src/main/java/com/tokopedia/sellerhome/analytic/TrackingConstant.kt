@@ -46,4 +46,5 @@ object TrackingConstant {
 
     //other value
     const val SELLER_WIDGET = "/seller widget"
+    const val NONE_OTHER = "none/other"
 }
