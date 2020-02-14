@@ -18,14 +18,26 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.producttalk.view.fragment.ProductTalkFragment
 
 class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        addExtrasIfFromAppLink()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun getComponent(): TalkComponent {
         return DaggerTalkComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }
 
+    private fun addExtrasIfFromAppLink() {
+        val uri = intent.data ?: return
+        val productId = uri.lastPathSegment ?: return
+        if (productId.isNotEmpty()) {
+            intent.putExtra(PRODUCT_ID, productId)
+        }
+    }
 
     companion object {
-
         val PRODUCT_ID = "product_id"
         val SHOP_ID = "shop_id"
         val PRODUCT_PRICE = "product_price"
@@ -62,23 +74,6 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
             intent.putExtra(SHOP_AVATAR, shopAvatar)
             return intent
         }
-    }
-
-    object DeepLinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.PRODUCT_TALK)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            val productId = extras.getString(PRODUCT_ID, "")
-
-            return RouteManager.getIntent(context, ApplinkConst.PRODUCT_TALK)
-                        .apply {
-                            data = uri.build()
-                            putExtras(extras)
-                            putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId)
-                        }
-        }
-
     }
 
     override fun getNewFragment(): Fragment {
