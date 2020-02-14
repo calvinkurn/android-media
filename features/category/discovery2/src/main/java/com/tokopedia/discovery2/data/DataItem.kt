@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.data
 
+import android.media.Rating
 import com.google.gson.annotations.SerializedName
 
 
@@ -123,9 +124,64 @@ data class DataItem(
         var background: String? = "",
 
         @SerializedName("video_id")
-        val videoId: String? = ""
+        val videoId: String? = "",
 
-) {
+        @SerializedName("cashback")
+        val cashback: String? = "",
+
+        @SerializedName("is_topads")
+        val isTopads: String? = "",
+
+        @SerializedName("discounted_price")
+        val discountedPrice: String? = "",
+
+        @SerializedName("gold_merchant")
+        val goldMerchant: Boolean? = false,
+
+        @SerializedName("price")
+        val price: String? = "",
+
+        @SerializedName("shop_name")
+        val shopName: String? = "",
+
+        @SerializedName("shop_location")
+        val shopLocation: String? = "",
+
+        @SerializedName("discount_percentage")
+        val discountPercentage: Int? = 0,
+
+        @SerializedName("shop_applink")
+        val shopApplink: String? = "",
+
+        @SerializedName("count_review")
+        val countReview: Int? = 0,
+
+        @SerializedName("preorder")
+        val preorder: String? = "",
+
+        @SerializedName("topads_view_url")
+        val topadsViewUrl: String? = "",
+
+        @SerializedName("product_id")
+        val productId: Long? = 1L,
+
+        @SerializedName("rating")
+        val rating: Int? = 0,
+
+        @SerializedName("shop_logo")
+        val shopLogo: String? = "",
+
+        @SerializedName("official_store")
+        val officialStore: Boolean? = false,
+
+        @SerializedName("stock")
+        val stock: String? = "",
+
+        @SerializedName("topads_click_url")
+        val topadsClickUrl: String? = ""
+
+
+        ) {
     val leftMargin: Int
         get() {
             if (leftMarginMobile != null && !leftMarginMobile.isEmpty()) leftMarginMobile.toInt()

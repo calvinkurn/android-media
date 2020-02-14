@@ -23,10 +23,9 @@ class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tokopointsItemViewModel = discoveryBaseViewModel as TokopointsItemViewModel
-
+        initView()
         itemView.setOnClickListener(this)
         tokopointsItemViewModel.getDataItemValue().observe(fragment.viewLifecycleOwner, Observer { item ->
-            initView()
             couponTitleTv.text = item.title
             ImageHandler.LoadImage(bannerImageView, item.thumbnailUrlMobile)
             if (item.pointsSlash != null && item.pointsSlash > 0 && item.pointsSlashStr?.isNotEmpty()!!) {

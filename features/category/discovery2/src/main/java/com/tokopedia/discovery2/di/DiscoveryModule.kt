@@ -11,6 +11,8 @@ import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
+import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
+import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.tradein_common.repository.BaseRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -54,6 +56,13 @@ class DiscoveryModule {
     @Provides
     fun provideTokopointsRestRepository(@ApplicationContext context: Context): TokopointsRepository {
         return TokopointsRestRepository()
+    }
+
+
+    @DiscoveryScope
+    @Provides
+    fun provideProductCardsRestRepository(@ApplicationContext context: Context): ProductCardsRepository {
+        return ProductCardsRestRepository()
     }
 
 
