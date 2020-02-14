@@ -107,7 +107,9 @@ object ProductTrackingConstant {
         const val IMPRESSION_USE_MERCHANT_VOUCHER = "impression - merchant voucher - use voucher"
         const val LANDSCAPE_VIEW = "landscape view"
         const val CLICK_LAST_DISCUSSION = "click - lihat semua diskusi on diskusi terakhir"
-        const val CLICK_TRADEIN= "click trade in widget"
+        const val CLICK_TRADEIN = "click trade in widget"
+        const val CLICK_UNFOLLOW = "click - unfollow shop"
+        const val CLICK_FOLLOW = "click - follow shop"
     }
 
     object Label {

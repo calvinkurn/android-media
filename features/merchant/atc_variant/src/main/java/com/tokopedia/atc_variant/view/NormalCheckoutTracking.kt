@@ -220,7 +220,7 @@ class NormalCheckoutTracking {
                         "eventAction" to eventAction,
                         "eventLabel" to eventLabel,
                         KEY_PRODUCT_ID to selectedProductInfo.basic.id,
-                        "layout" to "layout:${layoutName};catName:${originalProductInfoAndVariant.productInfo.category.name};catId:${originalProductInfoAndVariant.productInfo.category.id}",
+                        "layout" to "layout:${layoutName};catName:${originalProductInfoAndVariant.productInfo.category.name};catId:${originalProductInfoAndVariant.productInfo.category.id};",
                         "component" to "",
                         "ecommerce" to mutableMapOf(
                                 "currencyCode" to "IDR",

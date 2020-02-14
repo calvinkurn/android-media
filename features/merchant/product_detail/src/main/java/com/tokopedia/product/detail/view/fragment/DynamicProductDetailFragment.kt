@@ -2050,10 +2050,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun onShopFavoriteClick() {
+    private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null) {
         val shop = viewModel.shopInfo ?: return
         activity?.let {
             if (viewModel.isUserSessionActive) {
+                trackToggleFavoriteShop(componentTrackDataModel)
                 pdpHashMapUtil?.getShopInfo?.toogleFavorite = false
                 dynamicAdapter.notifyShopInfo(pdpHashMapUtil?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
                 viewModel.toggleFavorite(shop.shopCore.shopID)
@@ -2062,6 +2063,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
+    }
+
+    private fun trackToggleFavoriteShop(componentTrackDataModel: ComponentTrackDataModel?) {
+        val favorite = pdpHashMapUtil?.getShopInfo?.shopInfo?.favoriteData ?: return
+        val shopName = pdpHashMapUtil?.getShopInfo?.shopInfo?.shopCore?.name ?: ""
+
+        if (favorite.alreadyFavorited == 1)
+            DynamicProductDetailTracking.Click.eventUnfollowShop(viewModel.getDynamicProductInfoP1, componentTrackDataModel,
+                    shopName)
+        else
+            DynamicProductDetailTracking.Click.eventFollowShop(viewModel.getDynamicProductInfoP1, componentTrackDataModel,
+                    shopName)
     }
 
     private fun onSuccessFavoriteShop(isSuccess: Boolean) {

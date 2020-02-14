@@ -35,6 +35,28 @@ object DynamicProductDetailTracking {
 
     object Click {
 
+        fun eventFollowShop(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?,
+                            shopName: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_FOLLOW,
+                    shopName)
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_FOLLOW)
+        }
+
+        fun eventUnfollowShop(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?,
+                              shopName: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_UNFOLLOW,
+                    shopName)
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_UNFOLLOW)
+        }
+
         fun trackTradeinBeforeDiagnotics(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
