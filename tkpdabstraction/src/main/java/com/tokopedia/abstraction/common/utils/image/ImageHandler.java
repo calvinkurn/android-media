@@ -611,6 +611,24 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    public static void loadImageFitCenter(Context context, ImageView imageview, String url, int placeholder, int error_image) {
+        if(placeholder < 0) {
+            loadImageWithoutPlaceholder(imageview, url);
+            return;
+        }
+        Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), placeholder);
+        Drawable errorDrawable = AppCompatResources.getDrawable(imageview.getContext(), error_image);
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .fitCenter()
+                .placeholder(drawable)
+                .error(errorDrawable)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(imageview);
+    }
+
     public static void loadImageBlur(final Context context, final ImageView imageView, String imageUrl) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
