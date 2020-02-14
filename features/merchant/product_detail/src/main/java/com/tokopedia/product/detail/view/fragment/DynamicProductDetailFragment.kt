@@ -194,6 +194,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var isAffiliate = false
     private var affiliateString: String? = null
     private var deeplinkUrl: String = ""
+    private var isFromDeeplink: Boolean = false
     private var userInputNotes = ""
     private var userInputQuantity = 0
     private var userInputVariant: String? = null
@@ -290,6 +291,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             affiliateString = it.getString(ProductDetailConstant.ARG_AFFILIATE_STRING)
             isAffiliate = it.getBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
+            isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
         }
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
@@ -706,7 +708,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 onShipmentClicked()
             }
             ProductDetailConstant.TRADE_IN -> {
-                onTradeinClicked()
+                onTradeinClicked(componentTrackDataModel)
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
@@ -731,8 +733,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductRecommendationViewHolder Listener
      */
-    override fun onSeeAllRecomClicked(pageName: String, applink: String) {
-        productDetailTracking.eventClickSeeMoreRecomWidget(pageName)
+    override fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Click.eventClickSeeMoreRecomWidget(pageName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         RouteManager.route(context, applink)
     }
 
@@ -1069,6 +1071,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     onSuccessGetDataP1(it.data)
                 }
                 is Fail -> {
+                    ErrorHelper.logDeeplinkError(it.throwable, isFromDeeplink, deeplinkUrl)
                     logException(it.throwable)
                     renderPageError(it.throwable)
                 }
@@ -1322,12 +1325,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun onTradeinClicked() {
+    private fun onTradeinClicked(componentTrackDataModel: ComponentTrackDataModel) {
         goToNormalCheckout(TRADEIN_BUY)
         if (viewModel.tradeInParams.usedPrice > 0)
-            productDetailTracking.trackTradeinAfterDiagnotics()
+            DynamicProductDetailTracking.Click.trackTradeinAfterDiagnotics(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         else
-            productDetailTracking.trackTradeinBeforeDiagnotics()
+            DynamicProductDetailTracking.Click.trackTradeinBeforeDiagnotics(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
     }
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {

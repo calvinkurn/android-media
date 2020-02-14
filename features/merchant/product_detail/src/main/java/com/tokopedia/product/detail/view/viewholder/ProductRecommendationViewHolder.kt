@@ -45,7 +45,7 @@ class ProductRecommendationViewHolder(private val view: View,
                 view.seeMoreRecom.hide()
             }
             view.seeMoreRecom.setOnClickListener {
-                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink)
+                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink, getComponentTrackData(element))
             }
             initAdapter(this, element.cardModel, getComponentTrackData(element))
         }
