@@ -1,7 +1,8 @@
 package com.tokopedia.mediauploader.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.mediauploader.MediaRepository
+import com.tokopedia.mediauploader.MediaRepositoryImpl
 import com.tokopedia.mediauploader.data.UploaderServices
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
@@ -12,16 +13,16 @@ import dagger.Provides
 @Module class MediaUploaderModule {
 
     @Provides
-    fun provideGraphqlRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
+    fun provideMediaRepository(): MediaRepository {
+        return MediaRepositoryImpl(GraphqlInteractor.getInstance().graphqlRepository)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideDataPolicyUseCase(
-            graphqlRepository: GraphqlRepository
+            repository: MediaRepository
     ): DataPolicyUseCase {
-        return DataPolicyUseCase(graphqlRepository)
+        return DataPolicyUseCase(repository)
     }
 
     @Provides
