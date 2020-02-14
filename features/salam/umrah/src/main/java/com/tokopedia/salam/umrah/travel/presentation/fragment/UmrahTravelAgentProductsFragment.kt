@@ -78,7 +78,7 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
     }
 
     private fun initializePerformance(){
-        performanceMonitoring = PerformanceMonitoring.start(UMRAH_TRAVEL_PRODUCT_PAGE)
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_TRAVEL_PRODUCT_PERFORMANCE)
     }
 
     private fun onSuccessGetResult(data: List<UmrahTravelProduct>){
@@ -174,7 +174,7 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
                         putString(UmrahTravelFragment.EXTRA_SLUGNAME, slugName)
                     }
                 }
-        const val UMRAH_TRAVEL_PRODUCT_PAGE = "sl_umrah_travel_agent_product"
+        const val UMRAH_TRAVEL_PRODUCT_PERFORMANCE = "sl_umrah_travel_agent_product"
     }
 
     override fun onDestroyView() {

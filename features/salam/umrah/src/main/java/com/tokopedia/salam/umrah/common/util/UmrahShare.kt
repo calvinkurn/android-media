@@ -46,20 +46,24 @@ class UmrahShare(private val activity: Activity) {
 
     private fun generateBranchLink(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
         loadShare()
-        if(isBranchUrlActive())
-        LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0,
-                        travelDataToLinkerDataMapper(data), object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult) {
-                        openIntentShare(data.name, linkerShareData.shareContents)
-                        doneLoadShare()
-                    }
+        if(isBranchUrlActive()) {
+            LinkerManager.getInstance().executeShareRequest(
+                    LinkerUtils.createShareRequest(0,
+                            travelDataToLinkerDataMapper(data), object : ShareCallback {
+                        override fun urlCreated(linkerShareData: LinkerShareResult) {
+                            openIntentShare(data.name, linkerShareData.shareContents)
+                            doneLoadShare()
+                        }
 
-                    override fun onError(linkerError: LinkerError) {
-                        Log.d("ERRORLINKER",linkerError.errorMessage)
-                        doneLoadShare()
-                    }
-                }))
+                        override fun onError(linkerError: LinkerError) {
+                            Log.d("ERRORLINKER", linkerError.errorMessage)
+                            doneLoadShare()
+                        }
+                    }))
+        }else{
+            openIntentShare(data.name,activity.resources.getString(R.string.umrah_agen_link_share, data.slugName))
+            doneLoadShare()
+        }
     }
 
     private fun travelDataToLinkerDataMapper(data: TravelAgent): LinkerShareData {
