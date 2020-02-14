@@ -1,7 +1,7 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
 open class RecommendationWidget(
-        var recommendationItemList: List<RecommendationItem> = listOf(),
+        val recommendationItemList: List<RecommendationItem> = listOf(),
         val title: String = "",
         val foreignTitle: String = "",
         val source: String = "",

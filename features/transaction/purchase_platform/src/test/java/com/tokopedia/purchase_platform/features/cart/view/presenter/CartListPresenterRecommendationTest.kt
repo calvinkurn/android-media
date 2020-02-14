@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -73,12 +74,20 @@ object CartListPresenterRecommendationTest : Spek({
 
         Scenario("get recommendation success") {
 
+            val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList": 
+                    [
+                        {
+                            "productId":0
+                        }
+                    ]
+                }
+            """.trimIndent()
+
             val response = mutableListOf<RecommendationWidget>().apply {
-                add(RecommendationWidget().apply {
-                    recommendationItemList = mutableListOf<RecommendationItem>().apply {
-                        add(RecommendationItem())
-                    }
-                })
+                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+                add(recommendationWidget)
             }
 
             Given("success response") {
@@ -110,10 +119,17 @@ object CartListPresenterRecommendationTest : Spek({
 
         Scenario("get recommendation empty") {
 
+            val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList": 
+                    [
+                    ]
+                }
+            """.trimIndent()
+
             val response = mutableListOf<RecommendationWidget>().apply {
-                add(RecommendationWidget().apply {
-                    recommendationItemList = mutableListOf<RecommendationItem>()
-                })
+                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+                add(recommendationWidget)
             }
 
             Given("empty response") {
