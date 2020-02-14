@@ -41,25 +41,19 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun setUpObservers() {
-        if (!carouselBannerViewModel.getComponentLiveData().hasActiveObservers()) {
-            carouselBannerViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-                carouselBannerTitle.setTextAndCheckShow(item.title)
-            })
-        }
+        carouselBannerViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            carouselBannerTitle.setTextAndCheckShow(item.title)
+        })
 
-        if (!carouselBannerViewModel.getListDataLiveData().hasActiveObservers()) {
-            carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-                carouselBannerRecycleAdapter.setDataList(item)
-            })
-        }
+        carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            carouselBannerRecycleAdapter.setDataList(item)
+        })
 
-        if (carouselBannerViewModel.getSeeAllButtonLiveData().hasActiveObservers()) {
-            carouselBannerViewModel.getSeeAllButtonLiveData().observe(fragment.viewLifecycleOwner, Observer {
-                it?.let {
-                    bannerDotIndicator.setBtnAppLink(it)
-                }
-            })
-        }
+        carouselBannerViewModel.getSeeAllButtonLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            it?.let {
+                bannerDotIndicator.setBtnAppLink(it)
+            }
+        })
     }
 
     override fun attachRecyclerView() {
