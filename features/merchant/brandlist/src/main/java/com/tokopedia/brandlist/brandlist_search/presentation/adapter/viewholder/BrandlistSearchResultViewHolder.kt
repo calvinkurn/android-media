@@ -54,6 +54,12 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
         }
     }
 
+    // To Do
+    // Should be implemented tracking when card is clicked
+    // clickBrandOnSearchBox(categoryTab: String, optionalParam: String, isLogin: Boolean, keyword: String)
+    // optionalParam = "optional param"
+    // categoryTab = "categoryTab"
+
     private fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {
         return if (!TextUtils.isEmpty(searchTerm)) {
             displayName.toLowerCase(Locale.getDefault()).indexOf(searchTerm.toLowerCase(Locale.getDefault()))

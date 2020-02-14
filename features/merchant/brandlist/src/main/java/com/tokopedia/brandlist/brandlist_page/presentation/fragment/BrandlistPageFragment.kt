@@ -24,6 +24,7 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPage
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -34,7 +35,7 @@ import javax.inject.Inject
 
 class BrandlistPageFragment :
         BaseDaggerFragment(),
-        HasComponent<BrandlistPageComponent> {
+        HasComponent<BrandlistPageComponent>, BrandlistPageTracking {
 
     companion object {
         const val ALL_BRAND_GRID_SPAN_COUNT = 3
@@ -257,5 +258,53 @@ class BrandlistPageFragment :
             viewModel.loadInitialData(category, userId)
             isInitialDataLoaded = true
         }
+    }
+
+    override fun clickSearchBox() {
+
+    }
+
+    override fun clickBrandOnSearchBox() {
+
+    }
+
+    override fun clickCategory() {
+
+    }
+
+    override fun clickBrandPilihan() {
+
+    }
+
+    override fun impressionBrandPilihan() {
+
+    }
+
+    override fun clickLihatSemua() {
+
+    }
+
+    override fun clickBrandPopular() {
+
+    }
+
+    override fun impressionBrandPopular() {
+
+    }
+
+    override fun clickBrandBaruTokopedia() {
+
+    }
+
+    override fun impressionBrandBaru() {
+
+    }
+
+    override fun clickBrand() {
+
+    }
+
+    override fun impressionBrand() {
+        
     }
 }
