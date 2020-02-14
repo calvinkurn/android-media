@@ -10,7 +10,7 @@ import com.tokopedia.DeepLinkActivity;
 import com.tokopedia.ShadowBottomNavigationView;
 import com.tokopedia.ShadowLocalBroadcastManager;
 import com.tokopedia.ShadowTaskStackBuilder;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.home.HomeApp;

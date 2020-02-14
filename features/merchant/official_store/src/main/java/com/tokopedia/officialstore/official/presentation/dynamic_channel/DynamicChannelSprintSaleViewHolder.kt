@@ -54,7 +54,7 @@ class DynamicChannelSprintSaleViewHolder(
             if (header.applink.isNotEmpty()) {
                 headerActionText.apply {
                     visibility = View.VISIBLE
-                    setOnClickListener(dcEventHandler.onClickFlashSaleActionText(header.applink))
+                    setOnClickListener(dcEventHandler.onClickFlashSaleActionText(header.applink, header.id))
                 }
             } else {
                 headerActionText.visibility = View.GONE

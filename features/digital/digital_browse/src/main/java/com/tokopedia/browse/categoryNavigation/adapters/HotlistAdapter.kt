@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
+import com.tokopedia.design.image.RoundedCornerImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -21,7 +22,7 @@ class HotlistAdapter(private val list: MutableList<ListItem>,
     val viewMap = HashMap<Int, Boolean>()
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotlistAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_category_hotlist, parent, false)
         return ViewHolder(v)
@@ -49,10 +50,10 @@ class HotlistAdapter(private val list: MutableList<ListItem>,
             }
         })
 
-        ImageHandler.loadImage(holder.itemView.context, holder.hotlist_image, list[position].imgSquare, R.drawable.loading_page)
+        ImageHandler.loadImage(holder.itemView.context, holder.hotlistImage, list[position].imgSquare, R.drawable.loading_page)
 
-        holder.hotlist_image.setOnClickListener {
-            fireApplink(holder.hotlist_image.context, list[position].applink)
+        holder.hotlistImage.setOnClickListener {
+            fireApplink(holder.hotlistImage.context, list[position].applink)
             CategoryAnalytics.createInstance().eventHotlistBannerClick(list[position], position)
         }
 
@@ -66,7 +67,7 @@ class HotlistAdapter(private val list: MutableList<ListItem>,
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val hotlist_image = view.hotlist_image
+        val hotlistImage: RoundedCornerImageView = view.hotlist_image
 
     }
 }
