@@ -12,5 +12,7 @@ interface BrandlistPageTypeFactory {
 
     fun type(allBrandHeaderViewModel: AllBrandHeaderViewModel): Int
 
+    fun type(allBrandGroupHeaderViewModel: AllBrandGroupHeaderViewModel): Int
+
     fun type(allBrandViewModel: AllBrandViewModel): Int
 }

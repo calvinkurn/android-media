@@ -31,12 +31,21 @@ class BrandlistPageViewModel @Inject constructor(
     val getFeaturedBrandResult = MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     val getPopularBrandResult = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
     val getNewBrandResult = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
+    val getAllBrandHeaderResult = MutableLiveData<Result<OfficialStoreAllBrands>>()
     val getAllBrandResult = MutableLiveData<Result<OfficialStoreAllBrands>>()
 
     private var firstLetterChanged = false
     private var totalBrandSize = 0
     private var currentOffset = INITIAL_OFFSET
     private var currentLetter = INITIAL_LETTER
+
+    fun getCurrentOffset(): Int {
+        return currentOffset
+    }
+
+    fun getCurrentLetter(): String {
+        return currentLetter.toString()
+    }
 
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
@@ -54,12 +63,19 @@ class BrandlistPageViewModel @Inject constructor(
         }
     }
 
-    fun updateEndlessRequestParameter() {
+    fun updateAllBrandRequestParameter() {
         if (firstLetterChanged) {
             totalBrandSize = 0
             currentOffset = 0
             firstLetterChanged = false
         }
+    }
+
+    fun resetAllBrandRequestParameter() {
+        firstLetterChanged = false
+        totalBrandSize = 0
+        currentOffset = INITIAL_OFFSET
+        currentLetter = INITIAL_LETTER
     }
 
     private fun getTheFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
@@ -71,9 +87,19 @@ class BrandlistPageViewModel @Inject constructor(
 
     fun loadInitialData(category: Category?, userId: String?) {
         launchCatchError(block = {
+
             getFeaturedBrandResult.postValue(Success(getFeaturedBrandsAsync(category?.categoryId).await()))
             getPopularBrandResult.postValue(Success(getPopularBrandsAsync(userId, category?.categoryId).await()))
             getNewBrandResult.postValue(Success(getNewBrandsAsync(userId, category?.categoryId).await()))
+
+            getAllBrandHeaderResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_HEADER_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    "").await()))
+
             getAllBrandResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,
                     INITIAL_OFFSET,
@@ -81,6 +107,7 @@ class BrandlistPageViewModel @Inject constructor(
                     ALL_BRANDS_REQUEST_SIZE,
                     ALPHABETIC_ASC_SORT,
                     INITIAL_LETTER.toString()).await()))
+
         }, onError = {})
     }
 
@@ -174,6 +201,7 @@ class BrandlistPageViewModel @Inject constructor(
     companion object {
         private const val INITIAL_OFFSET = 0
         private const val ALL_BRANDS_QUERY = ""
+        private const val ALL_BRANDS_HEADER_REQUEST_SIZE = 1
         private const val ALL_BRANDS_REQUEST_SIZE = 30
         private const val ALPHABETIC_ASC_SORT = 3
         private const val INITIAL_LETTER = 'a'

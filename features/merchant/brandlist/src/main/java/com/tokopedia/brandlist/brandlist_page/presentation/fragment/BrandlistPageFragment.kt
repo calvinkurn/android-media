@@ -37,7 +37,8 @@ class BrandlistPageFragment :
         HasComponent<BrandlistPageComponent> {
 
     companion object {
-        const val ALL_BRAND_GRID_SPAN_COUNT = 3
+        const val BRANDLIST_GRID_SPAN_COUNT = 3
+        const val ALL_BRAND_GRID_SPAN_COUNT = 1
         const val KEY_CATEGORY = "BRAND_LIST_CATEGORY"
         @JvmStatic
         fun newInstance(bundle: Bundle?) = BrandlistPageFragment().apply { arguments = bundle }
@@ -84,7 +85,7 @@ class BrandlistPageFragment :
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout)
 
         recyclerView = rootView.findViewById(R.id.recycler_view)
-        layoutManager = GridLayoutManager(context, ALL_BRAND_GRID_SPAN_COUNT)
+        layoutManager = GridLayoutManager(context, BRANDLIST_GRID_SPAN_COUNT)
         recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = BrandlistPageAdapterTypeFactory()
@@ -104,6 +105,7 @@ class BrandlistPageFragment :
         observeFeaturedBrands()
         observePopularBrands()
         observeNewBrands()
+        observeAllBrandHeader()
         observeAllBrands()
 
         swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
@@ -163,8 +165,11 @@ class BrandlistPageFragment :
                         || it is PopularBrandViewModel
                         || it is NewBrandViewModel
                         || it is AllBrandHeaderViewModel
+                        || it is AllBrandGroupHeaderViewModel
                         || it is AllBrandViewModel
             }
+
+            viewModel.resetAllBrandRequestParameter()
 
             adapter?.notifyDataSetChanged()
 
@@ -227,6 +232,22 @@ class BrandlistPageFragment :
         })
     }
 
+    private fun observeAllBrandHeader() {
+        viewModel.getAllBrandHeaderResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    val title = getString(R.string.brandlist_all_brand)
+                    BrandlistPageMapper.mappingAllBrandHeader(title, it.data.totalBrands, adapter)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorMessage(it.throwable)
+                }
+            }
+        })
+    }
+
     private fun observeAllBrands() {
         viewModel.getAllBrandResult.observe(this, Observer {
             when (it) {
@@ -237,12 +258,19 @@ class BrandlistPageFragment :
 
                     endlessScrollListener.updateStateAfterGetData()
 
+                    val currentOffset = viewModel.getCurrentOffset()
+                    val groupHeader = viewModel.getCurrentLetter().toUpperCase()
+
+                    if (currentOffset == 0) {
+                        BrandlistPageMapper.mappingAllBrandGroupHeader(groupHeader, adapter)
+                    }
+
                     BrandlistPageMapper.mappingAllBrand(it.data, adapter)
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
                     viewModel.updateCurrentLetter()
-                    viewModel.updateEndlessRequestParameter()
+                    viewModel.updateAllBrandRequestParameter()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false

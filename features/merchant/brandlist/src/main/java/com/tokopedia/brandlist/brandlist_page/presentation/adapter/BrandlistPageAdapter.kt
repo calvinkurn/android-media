@@ -7,11 +7,13 @@ import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper.Co
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper.Companion.FEATURED_BRAND_POSITION
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper.Companion.NEW_BRAND_POSITION
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper.Companion.POPULAR_BRAND_POSITION
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandHeaderViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.ALL_BRAND_GRID_SPAN_COUNT
+import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.BRANDLIST_GRID_SPAN_COUNT
 
 class BrandlistPageAdapter(adapterTypeFactory: BrandlistPageAdapterTypeFactory) :
         BaseAdapter<BrandlistPageAdapterTypeFactory>(adapterTypeFactory) {
@@ -19,12 +21,13 @@ class BrandlistPageAdapter(adapterTypeFactory: BrandlistPageAdapterTypeFactory) 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when (position) {
-                    FEATURED_BRAND_POSITION -> ALL_BRAND_GRID_SPAN_COUNT
-                    POPULAR_BRAND_POSITION -> ALL_BRAND_GRID_SPAN_COUNT
-                    NEW_BRAND_POSITION -> ALL_BRAND_GRID_SPAN_COUNT
-                    ALL_BRAND_HEADER_POSITION -> ALL_BRAND_GRID_SPAN_COUNT
-                    else -> 1
+                return when (visitables[position].type(adapterTypeFactory)) {
+                    FeaturedBrandViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
+                    PopularBrandViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
+                    NewBrandViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
+                    AllBrandHeaderViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
+                    AllBrandGroupHeaderViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
+                    else -> ALL_BRAND_GRID_SPAN_COUNT
                 }
             }
         }

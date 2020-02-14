@@ -27,4 +27,8 @@ class StickyHeaderItemDecoration : RecyclerView.ItemDecoration() {
         header.draw(canvas)
         canvas.restore()
     }
+
+    private fun moveHeader() {
+
+    }
 }

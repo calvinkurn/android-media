@@ -30,6 +30,10 @@ class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageT
         else AllBrandHeaderViewHolder.LAYOUT
     }
 
+    override fun type(allBrandGroupHeaderViewModel: AllBrandGroupHeaderViewModel): Int {
+        return AllBrandGroupHeaderViewHolder.LAYOUT
+    }
+
     override fun type(allBrandViewModel: AllBrandViewModel): Int {
         return AllBrandViewHolder.LAYOUT
     }
@@ -40,6 +44,7 @@ class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageT
             PopularBrandViewHolder.LAYOUT -> PopularBrandViewHolder(parent)
             NewBrandViewHolder.LAYOUT -> NewBrandViewHolder(parent)
             AllBrandHeaderViewHolder.LAYOUT -> AllBrandHeaderViewHolder(parent)
+            AllBrandGroupHeaderViewHolder.LAYOUT -> AllBrandGroupHeaderViewHolder(parent)
             AllBrandViewHolder.LAYOUT -> AllBrandViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)

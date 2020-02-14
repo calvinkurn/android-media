@@ -32,6 +32,11 @@ class BrandlistPageMapper {
             notifyElement(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel(title, totalBrands), adapter)
         }
 
+        fun mappingAllBrandGroupHeader(groupHeaderText: String, adapter: BrandlistPageAdapter?) {
+            adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText))
+            adapter?.notifyItemRangeInserted(adapter.lastIndex, 1)
+        }
+
         fun mappingAllBrand(allBrand: OfficialStoreAllBrands, adapter: BrandlistPageAdapter?) {
             allBrand.brands.forEach {
                 adapter?.getVisitables()?.add(AllBrandViewModel(it))
