@@ -112,7 +112,7 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
                 btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
                         androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_check_green_24), null, null, null)
             } else {
-                btn_favorite.text = context.getString(R.string.label_favorite)
+                btn_favorite.text = context.getString(R.string.label_follow)
                 btn_favorite.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.dark_primary))
                 btn_favorite.background = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.bg_button_green)
                 btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
