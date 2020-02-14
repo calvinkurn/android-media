@@ -685,6 +685,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private GraphqlRequest makegraphqlRequestForMPRecommendation() {
+        if (category.equals("null")) category = "";
         GraphqlRequest graphqlRequestForMPRecommendation;
         Map<String, Object> variable = new HashMap<>();
         variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
