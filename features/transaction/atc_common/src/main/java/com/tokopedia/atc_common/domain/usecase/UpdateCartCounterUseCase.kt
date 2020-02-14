@@ -1,9 +1,9 @@
-package com.tokopedia.product.detail.updatecartcounter.interactor
+package com.tokopedia.atc_common.domain.usecase
 
+import com.tokopedia.atc_common.AtcConstant
+import com.tokopedia.atc_common.domain.model.response.updatecartcounter.UpdateCartCounterGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.product.detail.updatecartcounter.data.model.UpdateCartCounterGqlResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -15,11 +15,12 @@ import javax.inject.Named
  */
 
 class UpdateCartCounterUseCase @Inject constructor(
-        @Named(RawQueryKeyConstant.MUTATION_UPDATE_CART_COUNTER) private val queryString: String,
-        private val graphqlUseCase: GraphqlUseCase) : UseCase<Int>() {
+        @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER) private val queryString: String
+) : UseCase<Int>() {
 
     override fun createObservable(p0: RequestParams?): Observable<Int> {
         val graphqlRequest = GraphqlRequest(queryString, UpdateCartCounterGqlResponse::class.java)
+        val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
