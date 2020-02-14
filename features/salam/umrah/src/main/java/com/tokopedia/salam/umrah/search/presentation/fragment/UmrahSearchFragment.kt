@@ -427,8 +427,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
-
 }

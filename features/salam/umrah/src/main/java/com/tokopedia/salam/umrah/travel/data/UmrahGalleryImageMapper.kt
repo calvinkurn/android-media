@@ -16,8 +16,4 @@ object UmrahGalleryImageMapper {
             }
         }
     }
-
-
-
-
 }
