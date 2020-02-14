@@ -188,7 +188,7 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingFeaturedBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingFeaturedBrand(it.data, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -203,7 +203,7 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingPopularBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingPopularBrand(it.data, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -218,7 +218,7 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingNewBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingNewBrand(it.data, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -238,7 +238,7 @@ class BrandlistPageFragment :
 
                     endlessScrollListener.updateStateAfterGetData()
 
-                    BrandlistPageMapper.mappingAllBrand(it.data, adapter)
+                    BrandlistPageMapper.mappingAllBrand(it.data, adapter, this)
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
