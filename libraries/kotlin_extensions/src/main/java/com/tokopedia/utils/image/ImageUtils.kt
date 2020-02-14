@@ -60,6 +60,21 @@ object ImageUtils {
         }
     }
 
+    fun loadImageFitCenter(context: Context, imageview: ImageView, url: String, placeholder: Int, error_image: Int) {
+        if(placeholder < 0) {
+            loadImageWithoutPlaceholderAndError(imageview, url)
+            return
+        }
+        val drawable = AppCompatResources.getDrawable(context, placeholder)
+        val errorDrawable = AppCompatResources.getDrawable(context, error_image)
+        Glide.with(context)
+                .load(url)
+                .optionalFitCenter()
+                .placeholder(drawable)
+                .error(errorDrawable)
+                .into(imageview)
+    }
+
     fun loadImageWithIdWithoutPlaceholder(imageview: ImageView, resId: Int) {
         if (imageview.context != null) {
             val drawable = AppCompatResources.getDrawable(imageview.context, resId)
