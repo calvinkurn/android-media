@@ -3,6 +3,7 @@ query OfficialStoreAllBrands($categoryId: Int!, $device: Int!, $offset: Int!, $q
     brands {
       id
       name
+      appsUrl
       defaultUrl
       logoUrl
       isNew

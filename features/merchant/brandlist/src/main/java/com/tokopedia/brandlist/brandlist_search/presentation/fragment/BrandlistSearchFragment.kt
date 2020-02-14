@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
@@ -21,8 +22,10 @@ import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
-import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchRecommendationViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchShimmeringViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import com.tokopedia.design.text.SearchInputView
@@ -34,7 +37,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class BrandlistSearchFragment: BaseDaggerFragment(),
-        HasComponent<BrandlistSearchComponent>, BrandlistSearchTrackingListener {
+        HasComponent<BrandlistSearchComponent>,
+        BrandlistSearchTrackingListener,
+        BrandlistSearchNotFoundViewHolder.Listener {
 
     companion object {
         const val BRANDLIST_SEARCH_GRID_SPAN_COUNT = 3
@@ -52,8 +57,6 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: BrandlistSearchViewModel
     @Inject
-    lateinit var recommendationViewModel: BrandlistSearchRecommendationViewModel
-    @Inject
     lateinit var userSession: UserSessionInterface
 
     private var searchView: SearchInputView? = null
@@ -62,6 +65,17 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private var layoutManager: GridLayoutManager? = null
     private var adapterBrandSearch: BrandlistSearchResultAdapter? = null
     private var toolbar: Toolbar? = null
+    private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
+        object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.loadMoreBrands()
+                if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultViewModel) {
+                    adapterBrandSearch?.showLoading()
+                }
+            }
+        }
+    }
+    private var isInitialDataLoaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,11 +95,12 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                 }
             }
         }
-        val adapterTypeFactory = BrandlistSearchAdapterTypeFactory()
+        val adapterTypeFactory = BrandlistSearchAdapterTypeFactory(this)
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
-
+        viewModel.getTotalBrands()
+        loadInitialData()
         return view
     }
 
@@ -96,6 +111,9 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         initView(view)
         observeSearchResultData()
         observeSearchRecommendationResultData()
+        observeTotalBrands()
+        observeAllBrands()
+        recyclerView?.addOnScrollListener(endlessScrollListener)
     }
 
     override fun getComponent(): BrandlistSearchComponent? {
@@ -118,8 +136,15 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     override fun onDestroy() {
         viewModel.brandlistSearchResponse.removeObservers(this)
+        viewModel.brandlistAllBrandTotal.removeObservers(this)
+        viewModel.brandlistAllBrandsSearchResponse.removeObservers(this)
+        viewModel.brandlistSearchRecommendationResponse.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
+    }
+
+    override fun focusSearchView() {
+        searchView?.requestFocus()
     }
 
     private fun initView(view: View) {
@@ -171,7 +196,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                 is Success -> {
                     val response = it.data.officialStoreAllBrands
                     if(response.brands.isEmpty()) {
-                        recommendationViewModel.searchRecommendation(
+                        viewModel.searchRecommendation(
                                 userSession.userId.toIntOrNull(),
                                 categoryIds = "0")
                     } else {
@@ -188,7 +213,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     }
 
     private fun observeSearchRecommendationResultData() {
-        recommendationViewModel.brandlistSearchRecommendationResponse.observe(this, Observer {
+        viewModel.brandlistSearchRecommendationResponse.observe(this, Observer {
             when(it) {
                 is Success -> {
                     val response = it.data.officialStoreBrandsRecommendation.shops
@@ -200,6 +225,45 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun observeTotalBrands() {
+        viewModel.brandlistAllBrandTotal.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    adapterBrandSearch?.updateAllBrandsValue(it.data)
+                }
+                is Fail -> {
+                    showErrorNetwork(it.throwable)
+                }
+            }
+        })
+    }
+
+    private fun observeAllBrands() {
+        viewModel.brandlistAllBrandsSearchResponse.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    val response = it.data.officialStoreAllBrands
+                    endlessScrollListener.updateStateAfterGetData()
+                    adapterBrandSearch?.updateSearchResultData(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands, "", this))
+                    viewModel.updateTotalBrandSize(response.totalBrands)
+                    viewModel.updateCurrentOffset(response.brands.size)
+                    viewModel.updateCurrentLetter()
+                    viewModel.updateEndlessRequestParameter()
+                }
+                is Fail -> {
+                    showErrorNetwork(it.throwable)
+                }
+            }
+        })
+    }
+
+    private fun loadInitialData() {
+        if (!isInitialDataLoaded) {
+            viewModel.loadInitialBrands()
+            isInitialDataLoaded = true
+        }
     }
 
     private fun showErrorNetwork(t: Throwable) {

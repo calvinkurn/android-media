@@ -8,6 +8,7 @@ import android.text.style.TextAppearanceSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 import kotlinx.android.synthetic.main.item_search_result.view.*
@@ -28,6 +29,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
     override fun bind(element: BrandlistSearchResultViewModel) {
         processString(element.name, element.searchQuery)
         bindData(element.defaultUrl, element.logoUrl)
+        setupApplink(element.appsUrl)
     }
 
     private fun bindData(brandLogoUrl: String, brandImageUrl: String) {
@@ -37,6 +39,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
         } else {
             imgBrandImage.visibility = View.GONE
         }
+
     }
 
     private fun processString(name: String, searchQuery: String) {
@@ -64,5 +67,11 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
         return if (!TextUtils.isEmpty(searchTerm)) {
             displayName.toLowerCase(Locale.getDefault()).indexOf(searchTerm.toLowerCase(Locale.getDefault()))
         } else -1
+    }
+
+    private fun setupApplink(applink: String) {
+        itemView.search_result.setOnClickListener {
+            RouteManager.route(itemView.context,applink)
+        }
     }
 }

@@ -26,5 +26,7 @@ data class Brand(
         @SerializedName("logoUrl")
         val logoUrl: String = "",
         @SerializedName("name")
-        val name: String = ""
+        val name: String = "",
+        @SerializedName("appsUrl")
+        val appsUrl: String = ""
 )

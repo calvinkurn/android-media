@@ -11,7 +11,7 @@ interface BrandlistSearchTypeFactory {
 
     fun type(brandlistSearchNotFoundViewModel: BrandlistSearchNotFoundViewModel): Int
 
-    fun type(brandlistSearchRecommendationTextViewModel: BrandlistSearchRecommendationTextViewModel): Int
+    fun type(brandlistSearchHeaderViewModel: BrandlistSearchHeaderViewModel): Int
 
     fun type(brandlistSearchShimmeringViewModel: BrandlistSearchShimmeringViewModel): Int
 

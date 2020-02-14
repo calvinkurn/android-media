@@ -1,7 +1,7 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.adapter
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.*
 
 class BrandlistSearchResultAdapter(adapterTypeFactory: BrandlistSearchAdapterTypeFactory) :
@@ -19,9 +19,14 @@ class BrandlistSearchResultAdapter(adapterTypeFactory: BrandlistSearchAdapterTyp
         visitables.clear()
         visitables.add(BrandlistSearchNotFoundViewModel())
         if(searchRecommendationList.isNotEmpty()) {
-            visitables.add(BrandlistSearchRecommendationTextViewModel())
+            visitables.add(BrandlistSearchHeaderViewModel(BrandlistSearchHeaderViewModel.RECOMMENDATION_HEADER, ""))
             visitables.addAll(searchRecommendationList)
         }
+        notifyDataSetChanged()
+    }
+
+    fun updateAllBrandsValue(totalBrands: Int) {
+        visitables.add(BrandlistSearchHeaderViewModel(BrandlistSearchHeaderViewModel.TOTAL_BRANDS_HEADER, totalBrands.toString()))
         notifyDataSetChanged()
     }
 
@@ -32,4 +37,6 @@ class BrandlistSearchResultAdapter(adapterTypeFactory: BrandlistSearchAdapterTyp
         }
         notifyDataSetChanged()
     }
+
+    fun getVisitables() = this.visitables
 }
