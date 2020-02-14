@@ -1,16 +1,15 @@
 package com.tokopedia.mediauploader.data.consts
 
-object MediaUploaderQuery {
+object GraphQueryBuilder {
 
     private const val paramSourceId = "\$source"
 
-    var dataPolicyQuery = """
-        query dataPolicyQuery($paramSourceId: String){
-          uploadpedia_policy(source: $paramSourceId){
-            source_policy{
+    var mediaPolicy = """
+        query dataPolicyQuery($paramSourceId: String) {
+          uploadpedia_policy(source: $paramSourceId) {
+            source_policy {
               host
-              source_type
-              image_policy{
+              image_policy {
                 max_file_size
                 max_res {
                   w
