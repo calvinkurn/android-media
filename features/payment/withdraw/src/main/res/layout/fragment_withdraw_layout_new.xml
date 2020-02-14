@@ -317,11 +317,11 @@
             android:layout_height="match_parent"
             android:visibility="gone"/>
 
-        <ImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/iv_emptySaldo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/swd_no_saldo_copy"
+            app:remoteFileName="swd_no_saldo_copy.png"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/dp_40"
             app:layout_constraintStart_toStartOf="parent"
