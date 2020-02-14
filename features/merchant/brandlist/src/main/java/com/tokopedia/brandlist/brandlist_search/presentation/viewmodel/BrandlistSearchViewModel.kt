@@ -2,7 +2,6 @@ package com.tokopedia.brandlist.brandlist_search.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
 import com.tokopedia.brandlist.brandlist_search.data.model.BrandListSearchRecommendationResponse
 import com.tokopedia.brandlist.brandlist_search.data.model.BrandlistSearchResponse
 import com.tokopedia.brandlist.brandlist_search.domain.SearchBrandUseCase
@@ -30,6 +29,16 @@ class BrandlistSearchViewModel @Inject constructor(
         private const val INITIAL_LETTER = 'a'
     }
 
+    val brandlistSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
+    val brandlistSearchRecommendationResponse = MutableLiveData<Result<BrandListSearchRecommendationResponse>>()
+    val brandlistAllBrandsSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
+    val brandlistAllBrandTotal = MutableLiveData<Result<Int>>()
+
+    private var firstLetterChanged = false
+    private var totalBrandSize = 0
+    private var currentOffset = INITIAL_OFFSET
+    private var currentLetter = INITIAL_LETTER
+
     fun loadInitialBrands() {
         searchAllBrands(
                 categoryId = 0,
@@ -53,26 +62,6 @@ class BrandlistSearchViewModel @Inject constructor(
         )
     }
 
-    val brandlistSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
-    val brandlistSearchRecommendationResponse = MutableLiveData<Result<BrandListSearchRecommendationResponse>>()
-    val brandlistAllBrandsSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
-    val brandlistAllBrandTotal = MutableLiveData<Result<Int>>()
-
-    private var firstLetterChanged = false
-    private var totalBrandSize = 0
-    private var currentOffset = INITIAL_OFFSET
-    private var currentLetter = INITIAL_LETTER
-
-    private fun getRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
-        if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
-        val remainingBrands = totalBrandSize - renderedBrands
-        return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {
-            ALL_BRANDS_REQUEST_SIZE
-        } else {
-            remainingBrands
-        }
-    }
-
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
     }
@@ -82,7 +71,7 @@ class BrandlistSearchViewModel @Inject constructor(
     }
 
     fun updateCurrentLetter() {
-        val firstLetter = getTheFirstLetter(totalBrandSize, currentOffset)
+        val firstLetter = getFirstLetter(totalBrandSize, currentOffset)
         if (firstLetter != currentLetter) {
             currentLetter = firstLetter
             firstLetterChanged = true
@@ -95,13 +84,6 @@ class BrandlistSearchViewModel @Inject constructor(
             currentOffset = 0
             firstLetterChanged = false
         }
-    }
-
-    private fun getTheFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
-        return if (totalBrandSize == currentOffset) {
-            val newLetter = currentLetter + 1
-            newLetter
-        } else currentLetter
     }
 
     fun searchBrand(
@@ -183,5 +165,22 @@ class BrandlistSearchViewModel @Inject constructor(
         }) {
             brandlistAllBrandTotal.value = Fail(it)
         }
+    }
+
+    private fun getRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
+        if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
+        val remainingBrands = totalBrandSize - renderedBrands
+        return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {
+            ALL_BRANDS_REQUEST_SIZE
+        } else {
+            remainingBrands
+        }
+    }
+
+    private fun getFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
+        return if (totalBrandSize == currentOffset) {
+            val newLetter = currentLetter + 1
+            newLetter
+        } else currentLetter
     }
 }

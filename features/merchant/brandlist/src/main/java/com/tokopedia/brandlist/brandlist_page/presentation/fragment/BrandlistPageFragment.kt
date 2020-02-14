@@ -89,7 +89,7 @@ class BrandlistPageFragment :
         recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = BrandlistPageAdapterTypeFactory()
-        adapter = BrandlistPageAdapter(adapterTypeFactory)
+        adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
 

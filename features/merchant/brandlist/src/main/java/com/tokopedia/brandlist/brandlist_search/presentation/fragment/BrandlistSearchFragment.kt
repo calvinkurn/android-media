@@ -22,6 +22,7 @@ import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchHeaderViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchShimmeringViewHolder
@@ -88,9 +89,9 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return when(adapterBrandSearch?.getItemViewType(position)) {
-                        BrandlistSearchResultViewHolder.LAYOUT -> 1
-                        BrandlistSearchShimmeringViewHolder.LAYOUT -> 1
-                        else -> 3
+                        BrandlistSearchHeaderViewHolder.LAYOUT -> 3
+                        BrandlistSearchNotFoundViewHolder.LAYOUT -> 3
+                        else -> 1
                     }
                 }
             }
@@ -99,13 +100,12 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
-        viewModel.getTotalBrands()
-        loadInitialData()
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getTotalBrands()
         searchView = view.findViewById(R.id.search_input_view)
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
         initView(view)
@@ -232,6 +232,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
             when(it) {
                 is Success -> {
                     adapterBrandSearch?.updateAllBrandsValue(it.data)
+                    loadInitialData()
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
@@ -244,9 +245,10 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         viewModel.brandlistAllBrandsSearchResponse.observe(this, Observer {
             when(it) {
                 is Success -> {
+                    adapterBrandSearch?.hideLoading()
                     val response = it.data.officialStoreAllBrands
                     endlessScrollListener.updateStateAfterGetData()
-                    adapterBrandSearch?.updateSearchResultData(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands, "", this))
+                    adapterBrandSearch?.updateBrands(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands, "", this))
                     viewModel.updateTotalBrandSize(response.totalBrands)
                     viewModel.updateCurrentOffset(response.brands.size)
                     viewModel.updateCurrentLetter()

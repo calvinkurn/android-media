@@ -26,7 +26,13 @@ class BrandlistSearchResultAdapter(adapterTypeFactory: BrandlistSearchAdapterTyp
     }
 
     fun updateAllBrandsValue(totalBrands: Int) {
+        visitables.clear()
         visitables.add(BrandlistSearchHeaderViewModel(BrandlistSearchHeaderViewModel.TOTAL_BRANDS_HEADER, totalBrands.toString()))
+        notifyDataSetChanged()
+    }
+
+    fun updateBrands(searchResultList: List<BrandlistSearchResultViewModel>) {
+        visitables.addAll(searchResultList)
         notifyDataSetChanged()
     }
 
