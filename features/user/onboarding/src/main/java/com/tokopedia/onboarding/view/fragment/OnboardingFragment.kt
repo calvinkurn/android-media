@@ -14,6 +14,9 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.DFInstaller
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
@@ -227,19 +230,19 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     private fun hideJoinButton() {
-        joinButton.visibility = View.GONE
+        joinButton.hide()
     }
 
     private fun showJoinButton() {
-        joinButton.visibility = View.VISIBLE
+        joinButton.show()
     }
 
     private fun hideNextAction() {
-        nextAction.visibility = View.INVISIBLE
+        nextAction.invisible()
     }
 
     private fun showNextAction() {
-        nextAction.visibility = View.VISIBLE
+        nextAction.show()
     }
 
     private fun loadLastScreen() {
