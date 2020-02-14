@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
+import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_search.data.mapper.BrandlistSearchMapper
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
@@ -59,6 +60,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var brandlistTracking: BrandlistTracking? = null
     private var searchView: SearchInputView? = null
     private var statusBar: View? = null
     private var recyclerView: RecyclerView? = null
@@ -79,6 +81,9 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context?.let {
+            brandlistTracking = BrandlistTracking(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -273,7 +278,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     }
 
     override fun clickSearchBox() {
-
+        
     }
 
     override fun clickBrandOnSearchBox() {

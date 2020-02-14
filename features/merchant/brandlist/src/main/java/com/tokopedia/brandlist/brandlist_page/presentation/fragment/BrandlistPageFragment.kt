@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
+import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper
 import com.tokopedia.brandlist.brandlist_page.di.BrandlistPageComponent
@@ -50,6 +51,7 @@ class BrandlistPageFragment :
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var brandlistTracking: BrandlistTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: GridLayoutManager? = null
@@ -75,6 +77,9 @@ class BrandlistPageFragment :
         super.onCreate(savedInstanceState)
         arguments?.let {
             category = it.getParcelable(KEY_CATEGORY)
+        }
+        context?.let {
+            brandlistTracking = BrandlistTracking(it)
         }
     }
 
