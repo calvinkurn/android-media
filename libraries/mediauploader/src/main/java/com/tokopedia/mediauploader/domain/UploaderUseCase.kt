@@ -1,121 +1,97 @@
 package com.tokopedia.mediauploader.domain
 
-import android.graphics.BitmapFactory
+import com.tokopedia.mediauploader.BaseUseCase
 import com.tokopedia.mediauploader.data.consts.UrlBuilder
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.data.state.UploadState
+import com.tokopedia.mediauploader.util.UploadValidatorUtil.getFileExtension
+import com.tokopedia.mediauploader.util.UploadValidatorUtil.isMaxBitmapResolution
+import com.tokopedia.mediauploader.util.UploadValidatorUtil.isMaxFileSize
+import com.tokopedia.mediauploader.util.UploadValidatorUtil.isMinBitmapResolution
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import java.io.File
 import javax.inject.Inject
 
 class UploaderUseCase @Inject constructor(
         private val dataPolicyUseCase: DataPolicyUseCase,
         private val mediaUploaderUseCase: MediaUploaderUseCase
-) : UseCase<UploadResult>() {
+) : BaseUseCase<RequestParams, UploadResult>() {
 
-    var requestParams = RequestParams()
-    lateinit var progressCallback: ProgressCallback
+    private var progressCallback: ProgressCallback? = null
 
-    override suspend fun executeOnBackground(): UploadResult {
-        if (requestParams.parameters.isEmpty()) throw Exception("Not param found")
-        if (!::progressCallback.isInitialized) throw Exception("Progress callback is not initialized yet")
-
-        val sourceId = requestParams.getString(PARAM_SOURCE_ID, "")
-        val filePath = requestParams.getString(PARAM_FILE_PATH, "")
-        val fileUpload = File(filePath)
-
-        if (!fileUpload.exists()) return UploadResult.Error(UploadState.NOT_FOUND)
+    override suspend fun execute(params: RequestParams): UploadResult {
+        if (params.parameters.isEmpty()) throw Exception("Not param found")
+        val sourceId = params.getString(PARAM_SOURCE_ID, "")
+        val filePath = params.getString(PARAM_FILE_PATH, "")
 
         //get media upload policy
-        dataPolicyUseCase.requestParams = DataPolicyUseCase.createParams(sourceId)
-        val policy = dataPolicyUseCase.executeOnBackground()
-        val sourcePolicyData = ImagePolicyMapper.mapToSourcePolicy(policy.dataPolicy)
+        val dataPolicyParams = dataPolicyUseCase.createParams(sourceId)
+        val policyData = dataPolicyUseCase(dataPolicyParams)
+        val policyDataMapper = ImagePolicyMapper.mapToSourcePolicy(policyData.dataPolicy)
 
-        //validation
-        val imagePolicy = sourcePolicyData.imagePolicy
+        //validator
+        val maxFileSize = policyDataMapper.imagePolicy.maxFileSize
+        val maxWidth = policyDataMapper.imagePolicy.maximumRes.width
+        val maxHeight = policyDataMapper.imagePolicy.maximumRes.height
+        val minWidth = policyDataMapper.imagePolicy.minimumRes.width
+        val minHeight = policyDataMapper.imagePolicy.minimumRes.height
+        val acceptExtension = policyDataMapper.imagePolicy.extension.split(",")
 
-        val maxFileSize = imagePolicy.maxFileSize
-        val maxWidth = imagePolicy.maximumRes.width
-        val maxHeight = imagePolicy.maximumRes.height
-        val minWidth = imagePolicy.minimumRes.width
-        val minHeight = imagePolicy.minimumRes.height
-        val acceptExtension = imagePolicy.extension.split(",")
+        return when {
+            !File(filePath).exists() -> {
+                UploadResult.Error(UploadState.NOT_FOUND)
+            }
+            !acceptExtension.contains(getFileExtension(filePath)) -> {
+                UploadResult.Error(UploadState.EXT_NOT_ALLOWED)
+            }
+            isMaxFileSize(filePath, maxFileSize) -> {
+                UploadResult.Error(UploadState.FILE_MAX_SIZE)
+            }
+            isMinBitmapResolution(filePath, minWidth, minHeight) -> {
+                UploadResult.Error(UploadState.TINY_RESOLUTION)
+            }
+            isMaxBitmapResolution(filePath, maxWidth, maxHeight) -> {
+                UploadResult.Error(UploadState.BIG_RESOLUTION)
+            }
+            else -> {
+                //progress of uploader
+                mediaUploaderUseCase.progressCallback = progressCallback
 
-        //check file extension
-        if (!acceptExtension.contains(getFileExtension(filePath))) {
-            return UploadResult.Error(UploadState.EXT_NOT_ALLOWED)
-        }
+                //uploading a media
+                val generatedUrl = UrlBuilder.generate(policyDataMapper.host, sourceId)
+                val mediaUploaderParams = mediaUploaderUseCase.createParams(generatedUrl, filePath)
+                val upload = mediaUploaderUseCase(mediaUploaderParams)
 
-        //max file size
-        if (isMaxFileSize(fileUpload, maxFileSize)) {
-            return UploadResult.Error(UploadState.FILE_MAX_SIZE)
-        }
-
-        //minimum resolution
-        if (isMinBitmapResolution(filePath, minWidth, minHeight)) {
-            return UploadResult.Error(UploadState.TINY_RESOLUTION)
-        }
-
-        //maximum resolution
-        if (isMaxBitmapResolution(filePath, maxWidth, maxHeight)) {
-            return UploadResult.Error(UploadState.BIG_RESOLUTION)
-        }
-
-        //upload
-        val url = UrlBuilder.generate(sourcePolicyData.host, sourceId)
-        mediaUploaderUseCase.progressCallback = progressCallback
-        mediaUploaderUseCase.requestParams = MediaUploaderUseCase.createParam(url, filePath)
-        val upload = mediaUploaderUseCase.executeOnBackground()
-
-        return if (upload.header.isSuccess) {
-            UploadResult.Success(upload.data.uploadId)
-        } else {
-            UploadResult.Error(UploadState.UPLOAD_ERROR)
+                //get upload id
+                return UploadResult.Success(upload.data.uploadId)
+            }
         }
     }
 
-    private fun getFileExtension(filePath: String): String {
-        val lastIndexOf = filePath.lastIndexOf(".")
-        return if (lastIndexOf == -1) "" else filePath.substring(lastIndexOf)
+    fun trackProgress(test: (percentage: Int) -> Unit) {
+        this.progressCallback = object : ProgressCallback {
+            override fun onProgress(percentage: Int) {
+                test(percentage)
+            }
+        }
     }
 
-    private fun isMaxFileSize(file: File, maxFileSize: Int): Boolean {
-        return file.length() > maxFileSize
-    }
-
-    private fun getBitmapOptions(filePath: String): BitmapFactory.Options {
-        val bitmapOptions = BitmapFactory.Options()
-        bitmapOptions.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(filePath, bitmapOptions)
-        return bitmapOptions
-    }
-
-    private fun isMaxBitmapResolution(filePath: String, maxWidth: Int, maxHeight: Int): Boolean {
-        val bitmapOptions = getBitmapOptions(filePath)
-        val width = bitmapOptions.outWidth
-        val height = bitmapOptions.outHeight
-        return width > maxWidth && height > maxHeight
-    }
-
-    private fun isMinBitmapResolution(filePath: String, minWidth: Int, minHeight: Int): Boolean {
-        val bitmapOptions = getBitmapOptions(filePath)
-        val width = bitmapOptions.outWidth
-        val height = bitmapOptions.outHeight
-        return width < minWidth && height < minHeight
+    fun createParams(sourceId: String, filePath: String): RequestParams {
+        val params = RequestParams()
+        params.putString(PARAM_SOURCE_ID, sourceId)
+        params.putString(PARAM_FILE_PATH, filePath)
+        return params
     }
 
     companion object {
+        /**
+         * keys of params
+         * @param source_id
+         * @param file_path
+         */
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
-
-        fun createParams(sourceId: String, filePath: String): RequestParams {
-            val params = RequestParams()
-            params.putString(PARAM_SOURCE_ID, sourceId)
-            params.putString(PARAM_FILE_PATH, filePath)
-            return params
-        }
     }
 }
