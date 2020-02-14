@@ -37,7 +37,7 @@ class UmrahItemWidget @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    fun setPermissionPdp(){
+    fun setPermissionTravel(){
         tg_widget_umrah_pdp_item_desc.text = resources.getString(R.string.umrah_pdp_permission_number,umrahItemWidgetModel.desc)
         tg_widget_umrah_pdp_item_title.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
         tg_widget_umrah_pdp_item_title.setWeight(2)

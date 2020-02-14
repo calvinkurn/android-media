@@ -13,6 +13,7 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -60,7 +61,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     private lateinit var umrahTravelAgentViewPagerAdapter: UmrahTravelAgentViewPagerAdapter
 
     lateinit var swipeToRefresh : SwipeRefreshLayout
-
+    lateinit var performanceMonitoring: PerformanceMonitoring
 
     private var slugName: String? = ""
     private val OFF_SCREEN_LIMIT = 3
@@ -71,6 +72,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         slugName = savedInstanceState?.getString(EXTRA_SLUG_NAME)
                 ?: arguments?.getString(EXTRA_SLUG_NAME) ?: ""
     }
@@ -80,6 +82,10 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
             umrahTravelViewModel.requestTravelData(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_travel_by_slugname), it)
         }
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_TRAVEL_MAIN_PAGE_PERFORMANCE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -99,8 +105,10 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
                 is Success -> {
                     travelAgent = it.data.umrahTravelAgentBySlug
                     setupAll(it.data)
+                    performanceMonitoring.stopTrace()
                 }
                 is Fail -> {
+                    performanceMonitoring.stopTrace()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView, it.throwable.message, null, null, R.drawable.umrah_img_empty_search_png) {
                         requestData()
                     }
@@ -125,12 +133,15 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
         const val POSITION_PRODUCT = 0
         const val POSITION_GALLERY = 1
         const val POSITION_INFO = 2
+
+        const val UMRAH_TRAVEL_MAIN_PAGE_PERFORMANCE = "sl_umrah_travel_agent_info"
     }
 
     private fun setupSwipeToRefresh(view: View) {
         swipeToRefresh = view.umrah_travel_swipe_to_refresh
         swipeToRefresh.setColorSchemeColors(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G600))
         swipeToRefresh.setOnRefreshListener {
+            initializePerformance()
             hideLayout()
             swipeToRefresh.isRefreshing = true
             requestData()
@@ -222,7 +233,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
         iw_umrah_travel_agent.apply {
             umrahItemWidgetModel = umrahItemWidgetModelData
             buildView()
-            setPermissionPdp()
+            setPermissionTravel()
             setVerifiedTravel()
         }
 
@@ -332,5 +343,10 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
 
     fun showLoading() {
         umrah_pb_travel_share.show()
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 }

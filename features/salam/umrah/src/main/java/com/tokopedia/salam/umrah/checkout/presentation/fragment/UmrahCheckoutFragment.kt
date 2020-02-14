@@ -136,8 +136,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             when (it) {
                 is Success -> {
                     renderView(it.data)
+                    performanceMonitoring.stopTrace()
                 }
                 is Fail -> {
+                    performanceMonitoring.stopTrace()
                     val data = it.throwable
                     view?.let {
                         Toaster.showErrorWithAction(it, data.message
@@ -287,8 +289,6 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         btn_umrah_checkout.setOnClickListener {
             onButtonCheckoutClicked()
         }
-
-        performanceMonitoring.stopTrace()
     }
 
     private fun initProgressDialog() {

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
@@ -42,8 +43,11 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
     @Inject
     lateinit var umrahTracking: UmrahTrackingAnalytics
 
+    lateinit var performanceMonitoring: PerformanceMonitoring
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         slugName = arguments?.getString(UmrahTravelFragment.EXTRA_SLUGNAME, "")
     }
 
@@ -60,8 +64,10 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
             when (it) {
                 is Success -> {
                     onSuccessGetResult(it.data)
+                    performanceMonitoring.stopTrace()
                 }
                 is Fail -> {
+                    performanceMonitoring.stopTrace()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView, null, null, null, R.drawable.img_umrah_pdp_empty_state) {
                         loadInitialData()
                     }
@@ -71,6 +77,9 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
         })
     }
 
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_TRAVEL_PRODUCT_PAGE)
+    }
 
     private fun onSuccessGetResult(data: List<UmrahTravelProduct>){
         rv_umrah_travel_products.apply {
@@ -165,5 +174,11 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
                         putString(UmrahTravelFragment.EXTRA_SLUGNAME, slugName)
                     }
                 }
+        const val UMRAH_TRAVEL_PRODUCT_PAGE = "sl_umrah_travel_agent_product"
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 }

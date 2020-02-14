@@ -217,8 +217,10 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                 is Success -> {
                     onSuccessGetResult(it.data)
                     fab_umrah_search_message.show()
+                    performanceMonitoring.stopTrace()
                 }
                 is Fail -> {
+                    performanceMonitoring.stopTrace()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView, null, null, null, R.drawable.img_umrah_pdp_empty_state) {
                         loadInitialData()
                     }
@@ -291,7 +293,6 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         }
         umrah_search_bottom_action_view.visible()
         renderList(data, data.size >= searchParam.limit)
-        performanceMonitoring.stopTrace()
     }
 
     private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
