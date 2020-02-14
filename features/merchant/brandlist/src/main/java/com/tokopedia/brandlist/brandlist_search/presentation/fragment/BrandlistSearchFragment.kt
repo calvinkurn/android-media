@@ -18,15 +18,13 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.data.mapper.BrandlistSearchMapper
+import com.tokopedia.brandlist.brandlist_search.data.model.BrandlistSearchResponse
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationTextViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchRecommendationViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.design.text.SearchInputView
@@ -79,6 +77,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                 override fun getSpanSize(position: Int): Int {
                     return when(adapterBrandSearch?.getItemViewType(position)) {
                         BrandlistSearchResultViewHolder.LAYOUT -> 1
+                        BrandlistSearchShimmeringViewHolder.LAYOUT -> 1
                         else -> 3
                     }
                 }
@@ -151,7 +150,6 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
             }
 
             override fun onSearchTextChanged(text: String?) {
-                println(text)
                 text?.let {
                     if (it.isNotEmpty()) {
                         val categoryId = 0
@@ -161,6 +159,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                         val brandSize = 10
                         viewModel.searchBrand(categoryId, offset, it,
                                 brandSize, sortType, firstLetter)
+                        adapterBrandSearch?.showShimmering()
                     }
                 }
             }
@@ -178,7 +177,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                                 userSession.userId.toIntOrNull(),
                                 categoryIds = "0")
                     } else {
-                        adapterBrandSearch?.updateSearchResultData(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands))
+                        adapterBrandSearch?.updateSearchResultData(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands, searchView?.searchText ?: ""))
                     }
                 }
                 is Fail -> {

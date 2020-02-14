@@ -23,14 +23,15 @@ class BrandlistSearchMapper {
             return visitables
         }
 
-        fun mapSearchResultResponseToVisitable(brands: List<Brand>): List<BrandlistSearchResultViewModel> {
+        fun mapSearchResultResponseToVisitable(brands: List<Brand>, searchQuery: String): List<BrandlistSearchResultViewModel> {
             val visitables = mutableListOf<BrandlistSearchResultViewModel>()
             for (brand in brands) {
                 visitables.add(
                         BrandlistSearchResultViewModel(
                                 brand.name,
                                 brand.defaultUrl,
-                                brand.logoUrl
+                                brand.logoUrl,
+                                searchQuery
                         )
                 )
             }
