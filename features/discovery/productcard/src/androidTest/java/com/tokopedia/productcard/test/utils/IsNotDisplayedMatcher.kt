@@ -1,6 +1,8 @@
 package com.tokopedia.productcard.test.utils
 
 import android.view.View
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -15,6 +17,6 @@ private class IsNotDisplayedMatcher: TypeSafeMatcher<View?>() {
     }
 
     override fun matchesSafely(item: View?): Boolean {
-        return item != null && item.visibility == View.GONE
+        return item != null && withEffectiveVisibility(Visibility.GONE).matches(item)
     }
 }

@@ -148,7 +148,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
         app:srcCompat="@drawable/product_card_ic_rating_active"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewRatingString"
@@ -165,83 +165,87 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="4.5"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
-    <!--        <LinearLayout-->
-    <!--            android:id="@+id/linearLayoutImageRating"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="@dimen/dp_18"-->
-    <!--            android:layout_marginLeft="@dimen/dp_8"-->
-    <!--            android:layout_marginStart="@dimen/dp_8"-->
-    <!--            android:visibility="gone"-->
-    <!--            android:orientation="horizontal"-->
-    <!--            android:gravity="center"-->
-    <!--            app:layout_constraintStart_toStartOf="@id/imageProduct"-->
-    <!--            app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"-->
-    <!--            tools:visibility="gone">-->
+    <LinearLayout
+        android:id="@+id/linearLayoutImageRating"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+        tools:visibility="visible">
 
-    <!--            <ImageView-->
-    <!--                android:id="@+id/imageViewRating1"-->
-    <!--                android:layout_width="@dimen/dp_12"-->
-    <!--                android:layout_height="@dimen/dp_12"-->
-    <!--                android:adjustViewBounds="true"-->
-    <!--                android:gravity="center"-->
-    <!--                android:scaleType="centerCrop"-->
-    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+        <ImageView
+            android:id="@+id/imageViewRating1"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/product_card_ic_rating_active" />
 
-    <!--            <ImageView-->
-    <!--                android:id="@+id/imageViewRating2"-->
-    <!--                android:layout_width="@dimen/dp_12"-->
-    <!--                android:layout_height="@dimen/dp_12"-->
-    <!--                android:adjustViewBounds="true"-->
-    <!--                android:gravity="center"-->
-    <!--                android:scaleType="centerCrop"-->
-    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+        <ImageView
+            android:id="@+id/imageViewRating2"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/product_card_ic_rating_active" />
 
-    <!--            <ImageView-->
-    <!--                android:id="@+id/imageViewRating3"-->
-    <!--                android:layout_width="@dimen/dp_12"-->
-    <!--                android:layout_height="@dimen/dp_12"-->
-    <!--                android:adjustViewBounds="true"-->
-    <!--                android:gravity="center"-->
-    <!--                android:scaleType="centerCrop"-->
-    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+        <ImageView
+            android:id="@+id/imageViewRating3"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/product_card_ic_rating_active" />
 
-    <!--            <ImageView-->
-    <!--                android:id="@+id/imageViewRating4"-->
-    <!--                android:layout_width="@dimen/dp_12"-->
-    <!--                android:layout_height="@dimen/dp_12"-->
-    <!--                android:adjustViewBounds="true"-->
-    <!--                android:gravity="center"-->
-    <!--                android:scaleType="centerCrop"-->
-    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+        <ImageView
+            android:id="@+id/imageViewRating4"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/product_card_ic_rating_active" />
 
-    <!--            <ImageView-->
-    <!--                android:id="@+id/imageViewRating5"-->
-    <!--                android:layout_width="@dimen/dp_12"-->
-    <!--                android:layout_height="@dimen/dp_12"-->
-    <!--                android:adjustViewBounds="true"-->
-    <!--                android:gravity="center"-->
-    <!--                android:scaleType="centerCrop"-->
-    <!--                tools:src="@drawable/product_card_ic_rating_active" />-->
+        <ImageView
+            android:id="@+id/imageViewRating5"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/product_card_ic_rating_active" />
 
-    <!--        </LinearLayout>-->
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierRatingView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:barrierMargin="@dimen/dp_2"
+        app:barrierAllowsGoneWidgets="false"
+        app:constraint_referenced_ids="imageRatingString,textViewRatingString,linearLayoutImageRating" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewReviewCount"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_2"
         android:gravity="center_vertical"
         android:textColor="@color/charcoal_grey_44"
         android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@id/textViewRatingString"
+        app:layout_constraintStart_toEndOf="@id/barrierRatingView"
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
         app:typographyType="body_3"
-        app:layout_goneMarginStart="@dimen/dp_0"
-        app:layout_goneMarginLeft="@dimen/dp_0"
         tools:text="(60)"
         tools:visibility="visible" />
 
@@ -257,7 +261,7 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Terjual 122"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierCredibility"
@@ -288,7 +292,7 @@
         android:visibility="gone"
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageRatingString"
+        app:layout_constraintTop_toBottomOf="@id/barrierCredibility"
         tools:visibility="visible"
         tools:text="Ongkir Rp11 rb"/>
 
