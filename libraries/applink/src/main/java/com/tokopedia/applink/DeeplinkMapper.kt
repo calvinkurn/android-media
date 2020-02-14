@@ -94,6 +94,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
+                    deeplink.startsWith(ApplinkConst.TALK, true) -> getRegisteredNavigationTalk(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -114,6 +115,23 @@ object DeeplinkMapper {
             else -> deeplink
         }
         return mappedDeepLink
+    }
+
+    private fun getRegisteredNavigationTalk(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        val query = uri.query ?: ""
+        val path = uri.path ?: ""
+        var deepLinkInternal = ApplinkConstInternalGlobal.INBOX_TALK
+        if (path.isNotEmpty()){
+            deepLinkInternal = "${ApplinkConstInternalGlobal.DETAIL_TALK}$path"
+            if (!deepLinkInternal.endsWith("/")) {
+                deepLinkInternal += "/"
+            }
+        }
+        if (query.isNotEmpty()) {
+            deepLinkInternal += "?$query"
+        }
+        return deepLinkInternal
     }
 
     private fun isChatBotTrue(deeplink: String): Boolean {
@@ -181,9 +199,7 @@ object DeeplinkMapper {
             ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
-            ApplinkConst.TALK -> return ApplinkConstInternalGlobal.INBOX_TALK
             ApplinkConst.PRODUCT_TALK -> return ApplinkConstInternalGlobal.PRODUCT_TALK
-            ApplinkConst.TALK_DETAIL -> return ApplinkConstInternalGlobal.DETAIL_TALK
             ApplinkConst.SHOP_TALK -> return ApplinkConstInternalGlobal.SHOP_TALK
             else -> ""
         }
