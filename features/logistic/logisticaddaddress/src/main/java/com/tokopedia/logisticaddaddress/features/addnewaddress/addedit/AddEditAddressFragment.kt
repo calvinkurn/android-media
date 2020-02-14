@@ -418,11 +418,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun doSaveAddress() {
         setSaveAddressModel()
-
-        if (isMismatch) {
-            presenter.saveAddress(saveAddressDataModel, ANA_NEGATIVE)
-        } else {
-            presenter.saveAddress(saveAddressDataModel, ANA_POSITIVE)
+        saveAddressDataModel?.let {
+            if (isMismatch) {
+                presenter.saveAddress(it, ANA_NEGATIVE)
+            } else {
+                presenter.saveAddress(it, ANA_POSITIVE)
+            }
         }
     }
 
