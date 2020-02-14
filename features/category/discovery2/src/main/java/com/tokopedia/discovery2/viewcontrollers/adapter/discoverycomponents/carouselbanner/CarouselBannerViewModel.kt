@@ -36,7 +36,6 @@ class CarouselBannerViewModel(val application: Application, components: Componen
             componentsItem.data = dataItem
             list.add(componentsItem)
         }
-        list[1].name = "banner_image"
         return list
     }
 
