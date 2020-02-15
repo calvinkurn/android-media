@@ -133,7 +133,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     override fun inflateResource(context: Context) {
-        View.inflate(context, R.layout.home_main_toolbar, this)
+        View.inflate(context, R.layout.home_main_toolbar_v2, this)
     }
 
     fun setBackgroundAlpha(alpha: Float) {
