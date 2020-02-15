@@ -46,6 +46,7 @@ class FeaturedBrandAdapter(
         }
 
         fun bindData(shop: Shop, position: Int) {
+
             Glide.with(context)
                     .load(shop.imageUrl)
                     .dontAnimate()

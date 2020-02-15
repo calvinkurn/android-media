@@ -26,9 +26,19 @@ class BrandlistTracking(context: Context) {
     private val PROMO_CLICK = "promoClick"
     private val PROMO_VIEW = "promoView"
     private val PROMOTIONS = "promotions"
+    private val OPEN_SCREEN = "openScreen"
 
     private val EVENT_VALUE = "clickOSAllBrands"
     private val EVENT_CATEGORY_VALUE = "official store all brands page"
+
+
+    fun sendScreen(categoryName: String) {
+        val screenName = "/official-store/brand/$categoryName"
+        val customDimension = java.util.HashMap<String, String>()
+        customDimension["event"] = "openScreen"
+        customDimension["screenName"] = "/official-store/brand/categoryName"
+        tracker.sendScreenAuthenticated(screenName, customDimension)
+    }
 
 
     fun clickSearchBox(categoryTab: String, keyword: String, isThereAnySearchResult: Boolean) {

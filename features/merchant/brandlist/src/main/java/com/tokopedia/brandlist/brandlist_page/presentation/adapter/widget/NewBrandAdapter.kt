@@ -52,6 +52,10 @@ class NewBrandAdapter(
         }
 
         fun bindData(shop: Shop, position: Int) {
+            listener.impressionBrandBaru(
+                    (shop.id).toString(),
+                    (position + 1).toString(),
+                    shop.name, shop.imageUrl)
             itemView.setOnClickListener {
                 listener.clickBrandBaruTokopedia(
                         (shop.id).toString(),

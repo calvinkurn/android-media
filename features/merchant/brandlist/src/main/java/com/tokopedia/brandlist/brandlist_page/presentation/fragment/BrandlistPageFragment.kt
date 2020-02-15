@@ -60,6 +60,7 @@ class BrandlistPageFragment :
     private var adapter: BrandlistPageAdapter? = null
     private var isInitialDataLoaded: Boolean = false
     private var isScrolling = false
+    private var categoryName = ""
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -81,6 +82,9 @@ class BrandlistPageFragment :
         }
         context?.let {
             brandlistTracking = BrandlistTracking(it)
+        }
+        category?.let {
+            categoryName = it.title
         }
     }
 
@@ -295,64 +299,61 @@ class BrandlistPageFragment :
 
     override fun clickBrandPopular(shopId: String, shopLogoPosition: String, shopName: String, imgUrl: String) {
         val isLogin = userSession.isLoggedIn
-        brandlistTracking?.clickBrandPopular(category.toString(), shopId,
+        brandlistTracking?.clickBrandPopular(categoryName, shopId,
                 shopLogoPosition, shopName, imgUrl, isLogin)
     }
 
     override fun clickBrandPilihan(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String) {
         val isLogin = userSession.isLoggedIn
-        brandlistTracking?.clickBrandPilihan(shopId, isLogin, shopName, imgUrl, shoplogoPosition, category.toString())
+        brandlistTracking?.clickBrandPilihan(shopId, isLogin, shopName,
+                imgUrl, shoplogoPosition, categoryName)
     }
 
     override fun clickLihatSemua() {
         val isLogin = userSession.isLoggedIn
-        brandlistTracking?.clickLihatSemua(isLogin, category.toString())
+        brandlistTracking?.clickLihatSemua(isLogin, categoryName)
     }
 
     override fun clickBrandBaruTokopedia(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String)  {
         val isLogin = userSession.isLoggedIn
         brandlistTracking?.clickBrandBaruTokopedia(
-                isLogin, shopId, category.toString(),
+                isLogin, shopId, categoryName,
                 shoplogoPosition, shopName, imgUrl)
     }
 
-
-
-
-
-    override fun clickSearchBox() {
-
+    override fun clickBrand(shopId: String, shoplogoPosition: String, shopName: String, imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrand(
+                isLogin, shopId, categoryName, shoplogoPosition, shopName,
+                imgUrl, false, "")
     }
 
-    override fun clickBrandOnSearchBox() {
-
+    override fun impressionBrandPilihan(shopId: String, shoplogoPosition: String, imgUrl: String, shopName: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.impressionBrandPilihan(
+                isLogin, categoryName, shopId, shoplogoPosition,
+                imgUrl, shopName)
     }
 
-
-
-    override fun clickCategory() {
-
+    override fun impressionBrandPopular(shopId: String, shoplogoPosition: String, shopName: String,
+                                        imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.impressionBrandPopular(isLogin, shopId, categoryName,
+                shoplogoPosition, shopName, imgUrl)
     }
 
-    override fun impressionBrandPilihan() {
-
+    override fun impressionBrandBaru(shopId: String, shoplogoPosition: String, shopName: String,
+                                     imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.impressionBrandBaru(isLogin, shopId, categoryName, shoplogoPosition,
+                shopName, imgUrl)
     }
 
-    override fun impressionBrandPopular() {
-
+    override fun impressionBrand(shopId: String, shoplogoPosition: String, shopName: String,
+                                 imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.impressionBrand(isLogin, shopId, categoryName, shoplogoPosition, shopName,
+                imgUrl, false, "")
     }
 
-
-
-    override fun impressionBrandBaru() {
-
-    }
-
-    override fun clickBrand() {
-
-    }
-
-    override fun impressionBrand() {
-
-    }
 }

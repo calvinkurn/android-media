@@ -52,6 +52,11 @@ class PopularBrandAdapter(
         }
 
         fun bindData(shop: Shop, position: Int) {
+            listener.impressionBrandPopular(
+                    (shop.id).toString(),
+                    (position + 1).toString(),
+                    shop.name,
+                    shop.imageUrl)
             itemView.setOnClickListener {
                 listener.clickBrandPopular(
                         (shop.id).toString(),
