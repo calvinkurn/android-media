@@ -9,7 +9,7 @@
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:layout_height="match_parent">
+    tools:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutProductCard"
@@ -70,16 +70,24 @@
             app:typographyWeight="bold" />
 
         <include
-            app:layout_constraintStart_toEndOf="@id/imageProduct"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
+            app:layout_constraintStart_toEndOf="@id/imageProduct"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             layout="@layout/product_card_content_layout" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierImageContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="imageProduct,productCardContentLayout"/>
 
         <ImageView
             android:id="@+id/imageThreeDots"
@@ -89,14 +97,38 @@
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
             android:visibility="gone"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_goneMarginBottom="@dimen/dp_0"
+            app:layout_constraintBottom_toTopOf="@id/buttonAddToCart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/product_card_ic_three_dots"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonAddToCart"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:text="@string/product_card_text_add_to_cart_list"
+            android:foreground="?attr/selectableItemBackground"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:srcCompat="@drawable/product_card_ic_three_dots"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:unifyButtonType="transaction"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="small"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

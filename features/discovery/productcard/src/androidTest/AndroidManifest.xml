@@ -9,11 +9,11 @@
         tools:replace="android:label">
 
         <activity
-            android:name=".ProductCardGridActivityTest"
+            android:name=".grid.ProductCardGridActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
-            android:name=".ProductCardListActivityTest"
+            android:name=".list.ProductCardListActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>

@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.test
+package com.tokopedia.productcard.test.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.productcard.test.utils.ProductCardItemDecoration
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.ProductCardListView
+import com.tokopedia.productcard.test.R
+import com.tokopedia.productcard.test.productCardModelTestData
 
 internal class ProductCardListActivityTest: AppCompatActivity() {
 

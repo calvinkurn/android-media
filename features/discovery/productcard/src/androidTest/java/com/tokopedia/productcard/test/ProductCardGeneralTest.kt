@@ -5,13 +5,14 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.productCardInPosition
 import com.tokopedia.productcard.test.utils.withDrawable
 import org.hamcrest.Matcher
 
-internal fun ViewInteraction.checkProductCardPerPosition() {
-    this
+internal fun ViewInteraction.checkProductCardGeneralCases(): ViewInteraction {
+    return this
             .checkProductCardAtPosition(0, getProductCardMatchersPosition0())
             .checkProductCardAtPosition(1, getProductCardMatchersPosition1())
             .checkProductCardAtPosition(2, getProductCardMatchersPosition2())

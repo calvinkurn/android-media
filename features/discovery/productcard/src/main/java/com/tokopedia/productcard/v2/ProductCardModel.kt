@@ -30,7 +30,8 @@ data class ProductCardModel (
         val isTopAds: Boolean = false,
         val ratingString: String = "",
         val hasOptions: Boolean = false,
-        val labelGroupList: List<LabelGroup> = listOf()
+        val labelGroupList: List<LabelGroup> = listOf(),
+        val hasAddToCart: Boolean = false
 ) {
     var isProductSoldOut: Boolean = false
     var isProductPreOrder: Boolean = false
