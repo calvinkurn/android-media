@@ -22,4 +22,6 @@ class GetBrandlistCategoriesUseCase @Inject constructor(
                     .OfficialStoreCategories
         }
     }
+
+    companion object { }
 }
