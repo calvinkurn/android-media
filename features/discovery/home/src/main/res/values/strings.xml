@@ -80,4 +80,9 @@
     <string name="home_transition_description">description_play</string>
     <string name="home_transition_root">root_play</string>
     <string name="home_transition_video">video_play</string>
+
+    <string name="discovery_home_title_error">Ada gangguan di rumah Toped</string>
+    <string name="discovery_home_desc_error">Sambil kita perbaiki, lihat-lihat dulu kebawah atau </string>
+    <string name="discovery_home_action_error"> coba lagi</string>
+
 </resources>

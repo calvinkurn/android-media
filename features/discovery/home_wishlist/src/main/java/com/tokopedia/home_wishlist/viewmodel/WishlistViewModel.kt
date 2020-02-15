@@ -172,11 +172,7 @@ open class WishlistViewModel @Inject constructor(
         }){
             isWishlistErrorInFirstPage.value = true
             it.printStackTrace()
-            if(it is CancellationException){
-                wishlistData.value = listOf(ErrorWishlistDataModel("Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."))
-            }else {
-                wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
-            }
+            wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
             currentPage--
         }
     }

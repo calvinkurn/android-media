@@ -95,6 +95,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipm
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
+import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
@@ -112,6 +113,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDo
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -156,6 +158,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final SubmitHelpTicketUseCase submitHelpTicketUseCase;
     private final UserSessionInterface userSessionInterface;
     private final GetInsuranceCartUseCase getInsuranceCartUseCase;
+    private final ShipmentDataConverter shipmentDataConverter;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
@@ -211,7 +214,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics,
                              CheckoutAnalyticsCourierSelection checkoutAnalytics,
-                             GetInsuranceCartUseCase getInsuranceCartUseCase) {
+                             GetInsuranceCartUseCase getInsuranceCartUseCase,
+                             ShipmentDataConverter shipmentDataConverter) {
         this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
@@ -235,6 +239,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.mTrackerCod = codAnalytics;
         this.mTrackerShipment = checkoutAnalytics;
         this.getInsuranceCartUseCase = getInsuranceCartUseCase;
+        this.shipmentDataConverter = shipmentDataConverter;
     }
 
     @Override
@@ -601,7 +606,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setTickerAnnouncementHolderData(null);
         }
 
-        RecipientAddressModel newAddress = getView().getShipmentDataConverter()
+        RecipientAddressModel newAddress = shipmentDataConverter
                 .getRecipientAddressModel(cartShipmentAddressFormData);
         if (!cartShipmentAddressFormData.isMultiple()) {
             setRecipientAddressModel(newAddress);
@@ -610,14 +615,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         if (cartShipmentAddressFormData.getDonation() != null) {
-            setShipmentDonationModel(getView().getShipmentDataConverter().getShipmentDonationModel(cartShipmentAddressFormData));
+            setShipmentDonationModel(shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData));
         } else {
             setShipmentDonationModel(null);
         }
 
         getView().setPromoStackingData(cartShipmentAddressFormData);
 
-        setShipmentCartItemModelList(getView().getShipmentDataConverter().getShipmentItems(
+        setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                 cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
         );
 
@@ -1947,6 +1952,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public Token getKeroToken() {
         return token;
+    }
+
+    @NotNull
+    @Override
+    public ShipmentDataConverter getShipmentDataConverter() {
+        return shipmentDataConverter;
     }
 
     @Override
