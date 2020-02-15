@@ -228,7 +228,11 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
                         val errorMesssage = it.data.validateDomainShopName.error.message
-                        validateShopName(true, errorMesssage)
+                        if (shopNameValue.length < MIN_SHOP_NAME_LENGTH) {
+                            validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
+                        } else {
+                            validateShopName(true, errorMesssage)
+                        }
                     } else {
                         validateShopName(false, getString(R.string.open_shop_revamp_default_hint_input_shop))
                         viewModel.getDomainShopNameSuggestions(shopNameValue)
