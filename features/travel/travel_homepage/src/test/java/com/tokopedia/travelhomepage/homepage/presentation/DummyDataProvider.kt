@@ -2,8 +2,11 @@ package com.tokopedia.travelhomepage.homepage.presentation
 
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelMetaModel
+import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 
 /**
  * @author by furqan on 13/02/2020
@@ -139,5 +142,128 @@ val DUMMY_ORDER_LIST = TravelHomepageOrderListModel(
                 title = "Lihat Semua",
                 appUrl = "tokopedia.com://orderlist/flight",
                 webUrl = "https://www.tokopedia.com/order/list"
+        )
+)
+
+val DUMMY_RECENT_SEARCH = TravelRecentSearchModel(
+        items = arrayListOf(
+                TravelRecentSearchModel.Item(
+                        product = "HOTEL",
+                        title = "Harris Hotel",
+                        subtitle = "Stay 10 Jan - 12 Jan 19",
+                        prefix = "Check in jam 14.00",
+                        prefixStyling = "normal",
+                        value = "",
+                        webUrl = "",
+                        appUrl = "",
+                        imageUrl = ""
+                ),
+                TravelRecentSearchModel.Item(
+                        product = "DEALS",
+                        title = "Sour Sally",
+                        subtitle = "Voucher value Rp 250.000",
+                        prefix = "Rp 200.000",
+                        prefixStyling = "strikethrough",
+                        value = "Rp 190.000",
+                        webUrl = "",
+                        appUrl = "",
+                        imageUrl = ""
+                ),
+                TravelRecentSearchModel.Item(
+                        product = "FLIGHT",
+                        title = "Jakarta - Singapore",
+                        subtitle = "",
+                        prefix = "Mulai Dari",
+                        prefixStyling = "normal",
+                        value = "Rp 1.990.000",
+                        webUrl = "",
+                        appUrl = "",
+                        imageUrl = ""
+                ),
+                TravelRecentSearchModel.Item(
+                        product = "TRAIN",
+                        title = "Jakarta - Bandung",
+                        subtitle = "",
+                        prefix = "Mulai Dari",
+                        prefixStyling = "normal",
+                        value = "Rp 130.000",
+                        webUrl = "",
+                        appUrl = "",
+                        imageUrl = ""
+                ),
+                TravelRecentSearchModel.Item(
+                        product = "EVENTS",
+                        title = "Running Man",
+                        subtitle = "Running Man Fans Meeting Jakarta",
+                        prefix = "Mulai Dari",
+                        prefixStyling = "normal",
+                        value = "Rp 1.000.000",
+                        webUrl = "",
+                        appUrl = "",
+                        imageUrl = ""
+                )
+        ),
+        travelMeta = TravelMetaModel(
+                title = "Terakhir dicari",
+                appUrl = "",
+                webUrl = ""
+        )
+)
+
+val DUMMY_RECOMMENDATION = TravelHomepageRecommendationModel(
+        items = arrayListOf(
+                TravelHomepageRecommendationModel.Item(
+                        product = "DEALS",
+                        title = "Sour Sally",
+                        subtitle = "Voucher value Rp 250.000",
+                        prefix = "Rp 200.000",
+                        prefixStyling = "strikethrough",
+                        value = "Rp 190.000",
+                        webUrl = "",
+                        appUrl = "",
+                        imageUrl = ""
+                ),
+                TravelHomepageRecommendationModel.Item(
+                        product = "DEALS",
+                        title = "KFC",
+                        subtitle = "Voucher value",
+                        prefix = "Mulai Dari",
+                        prefixStyling = "normal",
+                        value = "Rp 50.000",
+                        webUrl = "",
+                        appUrl = "",
+                        imageUrl = ""
+                )
+        ),
+        travelMeta = TravelMetaModel(
+                title = "Pilihan DEALS terbaik",
+                appUrl = "https://www.tokopedia.com/order/list",
+                webUrl = "tokopedia.com://orderlist/flight"
+        )
+)
+
+val DUMMY_DESTINATION = TravelHomepageDestinationModel(
+        destination = arrayListOf(
+                TravelHomepageDestinationModel.Destination(
+                        attributes = TravelHomepageDestinationModel.Attribute(
+                                title = "Bandung",
+                                subtitle = "Kota Pahlawan",
+                                webUrl = "https://www.tokopedia.com/blog/bandung",
+                                appUrl = "tokopedia://subhomepage/destination?city_id=1",
+                                imageUrl = "https://ecs7.tokopedia.net/img/attachment/2018/7/28/5253715/5253715_60e64e5f-135e-47f6-aba3-d4b7cc15aa68.jpg"
+                        )
+                ),
+                TravelHomepageDestinationModel.Destination(
+                        attributes = TravelHomepageDestinationModel.Attribute(
+                                title = "Yogyakarta",
+                                subtitle = "Kota Bersejarah",
+                                webUrl = "https://www.tokopedia.com/blog/yogyakarta",
+                                appUrl = "tokopedia://subhomepage/destination?city_id=2",
+                                imageUrl = "https://ecs7.tokopedia.net/img/attachment/2018/7/28/5253715/5253715_60e64e5f-135e-47f6-aba3-d4b7cc15aa68.jpg"
+                        )
+                )
+        ),
+        meta = TravelHomepageDestinationModel.MetaModel(
+                title = "Destinasi Impian"
         )
 )

@@ -62,8 +62,8 @@ class TravelHomepageViewModel @Inject constructor(
                         updatedList[BANNER_ORDER].isLoaded = true
                         updatedList[BANNER_ORDER].isSuccess = false
                         travelItemList.value = updatedList
-                        checkIfAllError()
                     }
+                    checkIfAllError()
                 }
             }
         }
@@ -91,8 +91,8 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[CATEGORIES_ORDER].isLoaded = true
                 updatedList[CATEGORIES_ORDER].isSuccess = false
                 travelItemList.value = updatedList
-                checkIfAllError()
             }
+            checkIfAllError()
         }
     }
 
@@ -119,8 +119,8 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[ORDER_LIST_ORDER].isLoaded = true
                 updatedList[ORDER_LIST_ORDER].isSuccess = false
                 travelItemList.value = updatedList
-                checkIfAllError()
             }
+            checkIfAllError()
         }
     }
 
@@ -141,8 +141,8 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
                 updatedList[RECENT_SEARCHES_ORDER].isSuccess = false
                 travelItemList.value = updatedList
-                checkIfAllError()
             }
+            checkIfAllError()
         }
     }
 
@@ -169,8 +169,8 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[RECOMMENDATION_ORDER].isLoaded = true
                 updatedList[RECOMMENDATION_ORDER].isSuccess = false
                 travelItemList.value = updatedList
-                checkIfAllError()
             }
+            checkIfAllError()
         }
     }
 
@@ -196,8 +196,8 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[DESTINATION_ORDER].isLoaded = true
                 updatedList[DESTINATION_ORDER].isSuccess = false
                 travelItemList.value = updatedList
-                checkIfAllError()
             }
+            checkIfAllError()
         }
     }
 
@@ -210,7 +210,7 @@ class TravelHomepageViewModel @Inject constructor(
                     break
                 }
             }
-            if (!isSuccess) isAllError.value = true
+            isAllError.value = !isSuccess
         }
     }
 
@@ -222,10 +222,10 @@ class TravelHomepageViewModel @Inject constructor(
         const val RECOMMENDATION_ORDER = 4
         const val DESTINATION_ORDER = 5
 
-        val PARAM_PAGE = "page"
-        val PARAM_PER_PAGE = "perPage"
-        val PARAM_FILTER_STATUS = "filterStatus"
-        val PARAM_PRODUCT = "product"
+        const val PARAM_PAGE = "page"
+        const val PARAM_PER_PAGE = "perPage"
+        const val PARAM_FILTER_STATUS = "filterStatus"
+        const val PARAM_PRODUCT = "product"
     }
 
 }
