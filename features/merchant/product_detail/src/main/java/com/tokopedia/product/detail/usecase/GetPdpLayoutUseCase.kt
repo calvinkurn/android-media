@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -36,29 +37,31 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
         gqlUseCase.addRequest(GraphqlRequest(rawQueries[QUERY_GET_PDP_LAYOUT], ProductDetailLayout::class.java, requestParams.parameters))
         gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
-        val cacheStrategyString = if (forceRefresh) "P1#PDP_CACHE#CACHE_FALSE;$productId" else "P1#PDP_CACHE#CACHE_TRUE;$productId"
+
+        if (forceRefresh) {
+            Timber.w("P2#PDP_CACHE#CACHE_FALSE;$productId")
+        } else {
+            Timber.w("P2#PDP_CACHE#CACHE_TRUE;$productId")
+        }
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
-        val data = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java)
-        val blacklistMessage = data.data.basicInfo.blacklistMessage
+        val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data ?: PdpGetLayout()
+        val blacklistMessage = data.basicInfo.blacklistMessage
 
         if (error != null && error.isNotEmpty()) {
+            Timber.w("P2#PDP_NOT_FOUND#CACHE_FALSE;$productId")
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
-        } else if (data == null) {
-            throw RuntimeException()
-        } else if (data.data.basicInfo.isBlacklisted) {
+        } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
             throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
         }
-
-        Timber.d(cacheStrategyString)
         return mapIntoModel(data)
     }
 
-    private fun mapIntoModel(data: ProductDetailLayout): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.data.components)
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data.data)
+    private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components)
+        val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData)
     }
 

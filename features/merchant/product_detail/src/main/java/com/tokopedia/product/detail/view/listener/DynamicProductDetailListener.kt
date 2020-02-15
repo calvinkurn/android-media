@@ -33,7 +33,7 @@ interface DynamicProductDetailListener {
     fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>)
     fun onCategoryClicked(url: String)
     fun onEtalaseClicked(url: String)
-
+    fun goToApplink(url: String)
     /**
      * ProductDiscussionViewHolder
      */
@@ -90,5 +90,5 @@ interface DynamicProductDetailListener {
      */
     fun onRetryClicked(forceRefresh:Boolean)
     fun goToHomePageClicked()
-    fun goToTobacooError(url: String)
+    fun goToWebView(url: String)
 }

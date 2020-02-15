@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="@color/bg_topchat_right_message" />
+    <corners
+        android:bottomLeftRadius="@dimen/dimen_topchat_20dp"
+        android:bottomRightRadius="@dimen/dimen_topchat_20dp"
+        android:topLeftRadius="@dimen/dimen_topchat_20dp" />
+
+</shape>

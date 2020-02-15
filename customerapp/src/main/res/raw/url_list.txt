@@ -1,0 +1,12 @@
+{
+  "multiDpi": [
+    "cat_ic_banned_item.png",
+    "ic_empty_cart.png"
+  ],
+  "pendingDownload": [
+    "swd_no_saldo_copy.png",
+    "ovo_premier_verifikasi_sukses.png",
+    "kesalahan_teknis.png",
+    "drawer_header_bg.png"
+  ]
+}

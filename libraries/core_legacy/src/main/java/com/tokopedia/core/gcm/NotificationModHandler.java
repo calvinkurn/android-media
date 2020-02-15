@@ -8,13 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.service.notification.StatusBarNotification;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryAndServerIdUseCase;
@@ -25,6 +24,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 public class NotificationModHandler {
     public static final String PACKAGE_SELLER_APP = "com.tokopedia.sellerapp";
@@ -74,9 +74,9 @@ public class NotificationModHandler {
             @Override
             public void onNext(Boolean aBoolean) {
                 if (aBoolean)
-                    CommonUtils.dumper("Success Clear Storage Notification");
+                    Timber.d("Success Clear Storage Notification");
                 else
-                    CommonUtils.dumper("Failed Clear Storage Notification");
+                    Timber.d("Failed Clear Storage Notification");
             }
         });
     }
@@ -109,9 +109,9 @@ public class NotificationModHandler {
             @Override
             public void onNext(Boolean aBoolean) {
                 if (aBoolean) {
-                    CommonUtils.dumper("Success Clear Storage Notification");
+                    Timber.d("Success Clear Storage Notification");
                 } else {
-                    CommonUtils.dumper("Failed Clear Storage Notification");
+                    Timber.d("Failed Clear Storage Notification");
                 }
             }
         });
@@ -140,9 +140,9 @@ public class NotificationModHandler {
             @Override
             public void onNext(Boolean aBoolean) {
                 if (aBoolean) {
-                    CommonUtils.dumper("Success Clear Storage Notification");
+                    Timber.d("Success Clear Storage Notification");
                 } else {
-                    CommonUtils.dumper("Failed Clear Storage Notification");
+                    Timber.d("Failed Clear Storage Notification");
                 }
             }
         });

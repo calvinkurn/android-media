@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -79,6 +78,11 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
+
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_ASK_SELLER;
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_BUY_AGAIN;
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_SUBMIT_CANCELLATION;
 
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
 
@@ -214,9 +218,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         }
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
-
-        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-            variables.put(OrderCategory.KEY_LABEL, orderCategory);
+        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)|| orderCategory.equalsIgnoreCase(OrderCategory.DIGITAL)) {
+          variables.put(OrderCategory.KEY_LABEL, orderCategory);
             variables.put(OrderCategory.PAGE, page);
             variables.put(OrderCategory.PER_PAGE, PER_PAGE_COUNT);
             variables.put(SEARCH, getView().getSearchedString());
@@ -249,7 +252,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper("error =" + e.toString());
+                    Timber.d("error =" + e.toString());
                     getView().removeProgressBarView();
                     getView().displayLoadMore(false);
                     getView().unregisterScrollListener();
@@ -708,7 +711,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper("error occured" + e);
+                    Timber.d("error occured" + e);
                     getView().displayLoadMore(false);
                 }
             }
@@ -729,14 +732,14 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     private void handleActionButtonClick(String buttonLabel) {
         switch (buttonLabel) {
-            case "beli lagi":
+            case ACTION_BUY_AGAIN:
                 buyAgainItem();
                 break;
-            case "tanya penjual":
+            case ACTION_ASK_SELLER:
                 getView().startSellerAndAddInvoice();
                 orderListAnalytics.sendActionButtonClickEventList("click ask seller",orderDetails.getStatusInfo());
                 break;
-            case "ajukan pembatalan":
+            case ACTION_SUBMIT_CANCELLATION:
                 getView().requestCancelOrder(getStatus());
                 orderListAnalytics.sendActionButtonClickEventList("", "");
                 break;
@@ -840,7 +843,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                             @Override
                                             public void onError(Throwable e) {
                                                 if (getView() != null && getView().getAppContext() != null) {
-                                                    CommonUtils.dumper(e.getStackTrace());
+                                                    Timber.d(e);
                                                     getView().showFailureMessage(e.getMessage());
                                                     getView().displayLoadMore(false);
                                                     getView().finishOrderDetail();
@@ -892,7 +895,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper(e.getStackTrace());
+                    Timber.d(e);
                     getView().displayLoadMore(false);
                     getView().showFailureMessage(e.getMessage());
                     getView().finishOrderDetail();

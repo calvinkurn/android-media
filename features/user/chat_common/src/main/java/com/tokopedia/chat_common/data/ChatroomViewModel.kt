@@ -14,8 +14,28 @@ class ChatroomViewModel(val listChat: ArrayList<Visitable<*>> = ArrayList(),
                         val replyable: Boolean = false,
                         var blockedStatus: BlockedStatus = BlockedStatus()) {
 
+    val badgeUrl get() = headerModel.badge
+
+    val role get() = headerModel.role.toLowerCase(Locale.getDefault())
+
     fun isSeller(): Boolean {
-        return headerModel.role.toLowerCase(Locale.getDefault()) == ChatRoomHeaderViewModel.Companion.ROLE_USER
+        return role == ChatRoomHeaderViewModel.Companion.ROLE_USER
+    }
+
+    fun isChattingWithSeller(): Boolean {
+        return role.contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)
+    }
+
+    fun hasBadge(): Boolean {
+        return (headerModel.isGold || headerModel.isOfficial) && headerModel.badge.isNotEmpty()
+    }
+
+    fun getInterlocutorName(): CharSequence {
+        var name = headerModel.name
+        if (name.length > 12) {
+            name = name.substring(0, 12) + "..."
+        }
+        return name
     }
 
 }

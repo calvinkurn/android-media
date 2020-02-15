@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.data.source;
 
-import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
+import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.UploadImageService;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapper;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.UploadImageDomain;
 

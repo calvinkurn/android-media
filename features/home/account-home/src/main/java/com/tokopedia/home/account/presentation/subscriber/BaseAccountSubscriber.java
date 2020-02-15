@@ -1,6 +1,6 @@
 package com.tokopedia.home.account.presentation.subscriber;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 
 import java.net.SocketTimeoutException;

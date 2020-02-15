@@ -38,7 +38,7 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -159,6 +159,7 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_product_trade_in.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import tradein_common.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -466,6 +467,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productInfoViewModel.deviceId = TradeInUtils.getDeviceId(context) ?: productInfoViewModel.userSessionInterface.deviceId
 
         performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
@@ -522,7 +524,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
                 activity?.let {
                     //TOGGLE_MVC_OFF
-                    productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, position)
+                    productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, productInfo?.basic?.shopID.orZero().toString(), productId.orEmpty(), position)
                     showSnackbarClose(getString(R.string.title_voucher_code_copied))
                 }
             }
@@ -530,7 +532,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
                 activity?.let {
                     productInfo?.run {
-                        productDetailTracking.eventClickMerchantVoucherSeeDetail(basic.id)
+                        productDetailTracking.eventClickMerchantVoucherSeeDetail(merchantVoucherViewModel.voucherId, productId.orEmpty())
                         val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
                                 merchantVoucherViewModel, basic.shopID.toString())
                         startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
@@ -541,7 +543,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onSeeAllClicked() {
                 activity?.let {
                     productInfo?.run {
-                        productDetailTracking.eventClickMerchantVoucherSeeAll(basic.id)
+                        productDetailTracking.eventClickMerchantVoucherSeeAll(productId.orEmpty())
                         if (shopInfo == null) return@let
 
                         val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID.toString(),
@@ -695,6 +697,21 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     override fun onResume() {
         super.onResume()
         updateStickyContent()
+        reloadCartCounter()
+    }
+
+    private fun reloadCartCounter() {
+        activity?.run {
+            if (isAdded) {
+                menu?.let {
+                    if (it.size() > 2) {
+                        val menuCart = it.findItem(R.id.action_cart)
+                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_dark
+                        setBadgeMenuCart(menuCart)
+                    }
+                }
+            }
+        }
     }
 
     private fun doBuy() {
@@ -1517,9 +1534,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (productInfoP2.vouchers.isNotEmpty()) {
             merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
             merchantVoucherListWidget.visible()
-            if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID
-                            ?: 0)) {
-                productDetailTracking.eventImpressionMerchantVoucherUse(productInfoP2.vouchers)
+            if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID.orZero())) {
+                productDetailTracking.eventImpressionMerchantVoucherUse(
+                        productInfo?.basic?.shopID.orZero(),
+                        productId ?: return,
+                        productInfoP2.vouchers)
             }
         } else {
             merchantVoucherListWidget.gone()
@@ -1643,7 +1662,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
-        performanceMonitoringP1.stopTrace()
         val data = productInfoP1.productInfo
         // Assign productId with selected variant Id
         productId = data.basic.id.toString()

@@ -24,9 +24,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
@@ -158,7 +160,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                 Context context = view.getContext();
                 new FireTopAdsActionAsyncTask().execute(item.getShopClickUrl());
                 eventFavoriteViewRecommendation();
-                Intent intent = ShopPageActivity.createIntent(context, item.getShopId());
+                Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, item.getShopId());
                 context.startActivity(intent);
             }
         };

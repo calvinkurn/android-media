@@ -1,14 +1,17 @@
 package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
+
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -18,14 +21,8 @@ import java.util.Map;
 
 public interface ProductListSectionContract {
 
-    interface View extends SearchSectionContract.View {
+    interface View extends CustomerView {
         String getUserId();
-
-        void incrementStart();
-
-        void storeTotalData(int totalData);
-
-        void setHeaderTopAds(boolean hasHeader);
 
         void addProductList(List<Visitable> list);
 
@@ -110,9 +107,51 @@ public interface ProductListSectionContract {
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
         void redirectToBrowser(String url);
+
+        HashMap<String, String> getSelectedSort();
+
+        void setSelectedSort(HashMap<String, String> selectedSort);
+
+        HashMap<String, String> getSelectedFilter();
+
+        void refreshFilterController(HashMap<String, String> selectedFilter);
+
+        void showRefreshLayout();
+
+        void hideRefreshLayout();
+
+        String getScreenNameId();
+
+        void setTotalSearchResultCount(String formattedResultCount);
+
+        BaseAppComponent getBaseAppComponent();
+
+        void logDebug(String tag, String message);
+
+        void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
+
+        void renderFailRequestDynamicFilter();
+
+        boolean isFirstActiveTab();
+
+        void setupSearchNavigation();
+
+        void trackScreenAuthenticated();
+
+        void reloadData();
+
+        void showBottomNavigation();
+
+        void hideBottomNavigation();
+
+        void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
     }
 
-    interface Presenter extends SearchSectionContract.Presenter<View> {
+    interface Presenter extends CustomerPresenter<View> {
+
+        void initInjector(View view);
+
+        void requestDynamicFilter(Map<String, Object> searchParameter);
 
         void loadMoreData(Map<String, Object> searchParameter);
 
@@ -130,10 +169,20 @@ public interface ProductListSectionContract {
 
         boolean isUserLoggedIn();
 
-        void setIsFirstTimeLoad(boolean isFirstTimeLoad);
-
-        void setIsTickerHasDismissed(boolean isTickerHasDismissed);
+        void onPriceFilterTickerDismissed();
 
         boolean getIsTickerHasDismissed();
+
+        boolean hasNextPage();
+
+        void clearData();
+
+        void setStartFrom(int startFrom);
+
+        int getStartFrom();
+
+        void onViewCreated();
+
+        void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
     }
 }

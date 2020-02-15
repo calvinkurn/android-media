@@ -37,7 +37,6 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.libraries.cameraview)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
