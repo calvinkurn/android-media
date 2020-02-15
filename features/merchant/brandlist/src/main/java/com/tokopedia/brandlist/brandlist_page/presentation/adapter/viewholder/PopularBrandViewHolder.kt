@@ -9,9 +9,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.PopularBrandAdapter
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 import com.tokopedia.unifyprinciples.Typography
 
-class PopularBrandViewHolder(itemView: View?) : AbstractViewHolder<PopularBrandViewModel>(itemView) {
+class PopularBrandViewHolder(itemView: View?, listener: BrandlistPageTracking) : AbstractViewHolder<PopularBrandViewModel>(itemView) {
 
     private var context: Context? = null
     private var adapter: PopularBrandAdapter? = null
@@ -24,16 +25,14 @@ class PopularBrandViewHolder(itemView: View?) : AbstractViewHolder<PopularBrandV
 
         itemView?.context?.let {
             context = it
-            adapter = PopularBrandAdapter(it)
+            adapter = PopularBrandAdapter(it, listener)
             recyclerView?.adapter = adapter
             recyclerView?.layoutManager = GridLayoutManager(it, 3)
         }
     }
 
     override fun bind(element: PopularBrandViewModel?) {
-
         headerView?.text = element?.header?.title
-
         element?.popularBrands?.let {
             adapter?.setPopularBrands(it)
         }

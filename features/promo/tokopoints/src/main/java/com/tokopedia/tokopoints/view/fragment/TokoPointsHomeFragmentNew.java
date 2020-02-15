@@ -53,7 +53,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.notification.model.PopupNotification;
-import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
+import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeNewActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
@@ -70,6 +70,7 @@ import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -615,7 +616,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         });
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-            startActivity(CouponListingStackedActivity.getCallingIntent(getActivityContext()));
+            startActivity(CouponListingStackedActivity.Companion.getCallingIntent(getActivityContext()));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -1052,7 +1053,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         if (getActivity() == null) {
             return;
         }
-        startActivity(CouponListingStackedActivity.getCallingIntent(getActivity()));
+        startActivity(CouponListingStackedActivity.Companion.getCallingIntent(getActivity()));
         AnalyticsTrackerUtil.sendEvent(getContext(),
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,

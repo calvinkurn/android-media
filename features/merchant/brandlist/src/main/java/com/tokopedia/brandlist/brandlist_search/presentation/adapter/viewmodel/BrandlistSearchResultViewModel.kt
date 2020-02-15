@@ -9,8 +9,8 @@ class BrandlistSearchResultViewModel(
         val defaultUrl: String,
         val logoUrl: String,
         val searchQuery: String,
-        val listener: BrandlistSearchTrackingListener,
-        val appsUrl: String
+        val appsUrl: String,
+        val listener: BrandlistSearchTrackingListener
 ) : Visitable<BrandlistSearchAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: BrandlistSearchAdapterTypeFactory): Int {

@@ -9,10 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
-class NewBrandAdapter(private val context: Context) :
+class NewBrandAdapter(
+        private val context: Context,
+        private val listener: BrandlistPageTracking) :
         RecyclerView.Adapter<NewBrandAdapter.NewBrandViewHolder>() {
 
     private var newBrands: List<Shop> = listOf()
@@ -26,25 +30,7 @@ class NewBrandAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: NewBrandViewHolder, position: Int) {
-        val newBrand = newBrands[position]
-        holder.brandLogoView?.let {
-            loadImageToImageView(newBrand.logoUrl, it)
-        }
-        holder.brandImageView?.let {
-            loadImageToImageView(newBrand.imageUrl, it)
-        }
-        holder.brandNameView?.let {
-            it.text = newBrand.name
-        }
-    }
-
-    private fun loadImageToImageView(imageUrl: String, brandView: ImageView) {
-        Glide.with(context)
-                .load(imageUrl)
-                .dontAnimate()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(brandView)
+        holder.bindData(newBrands[position], position)
     }
 
     fun setNewBrands(newBrandList: List<Shop>) {
@@ -52,16 +38,45 @@ class NewBrandAdapter(private val context: Context) :
         notifyDataSetChanged()
     }
 
-    class NewBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+    inner class NewBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var context: Context
         var brandLogoView: ImageView? = null
         var brandImageView: ImageView? = null
         var brandNameView: TextView? = null
 
         init {
+            context = itemView.context
             brandLogoView = itemView.findViewById(R.id.iv_brand_logo)
             brandImageView = itemView.findViewById(R.id.iv_brand_image)
             brandNameView = itemView.findViewById(R.id.tv_brand_name)
+        }
+
+        fun bindData(shop: Shop, position: Int) {
+            itemView.setOnClickListener {
+                listener.clickBrandBaruTokopedia(
+                        (shop.id).toString(),
+                        shop.name, shop.imageUrl,
+                        (position + 1).toString())
+                RouteManager.route(context, shop.url)
+            }
+            brandLogoView?.let {
+                loadImageToImageView(shop.logoUrl, it)
+            }
+            brandImageView?.let {
+                loadImageToImageView(shop.imageUrl, it)
+            }
+            brandNameView?.let {
+                it.text = shop.name
+            }
+        }
+
+        private fun loadImageToImageView(imageUrl: String, brandView: ImageView) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .dontAnimate()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(brandView)
         }
     }
 }

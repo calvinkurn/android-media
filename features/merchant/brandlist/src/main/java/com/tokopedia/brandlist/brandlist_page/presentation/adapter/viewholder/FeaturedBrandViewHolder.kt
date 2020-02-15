@@ -11,19 +11,28 @@ import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.FeaturedBrandAdapter
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifyprinciples.Typography
 
-class FeaturedBrandViewHolder(itemView: View?) : AbstractViewHolder<FeaturedBrandViewModel>(itemView) {
+class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracking) :
+        AbstractViewHolder<FeaturedBrandViewModel>(itemView) {
 
     private var featuredBrandList: List<Shop> = listOf()
     private var incrementalBrandList: List<Shop> = listOf()
-
     private var context: Context? = null
     private var headerView: Typography? = null
     private var adapter: FeaturedBrandAdapter? = null
     private var recyclerView: RecyclerView? = null
     private var expandButtonView: AppCompatTextView? = null
+
+    companion object {
+        const val INITIAL_AMOUNT = 4
+        const val INCREMENTAL_AMOUNT = 6
+
+        @LayoutRes
+        val LAYOUT = R.layout.brandlist_featured_brand_layout
+    }
 
     init {
         headerView = itemView?.findViewById(R.id.tv_header)
@@ -32,7 +41,7 @@ class FeaturedBrandViewHolder(itemView: View?) : AbstractViewHolder<FeaturedBran
 
         itemView?.context?.let {
             context = it
-            adapter = FeaturedBrandAdapter(it)
+            adapter = FeaturedBrandAdapter(it, listener)
             recyclerView?.layoutManager = GridLayoutManager(it, 2)
             recyclerView?.adapter = adapter
         }
@@ -42,10 +51,8 @@ class FeaturedBrandViewHolder(itemView: View?) : AbstractViewHolder<FeaturedBran
         headerView?.text = element?.header?.title
 
         element?.featuredBrands?.let {
-
             setFeaturedBrandList(it)
             setIncrementalBrandList(getInitialBrandList(it))
-
             adapter?.setFeaturedBrands(getInitialBrandList(incrementalBrandList))
         }
 
@@ -62,6 +69,7 @@ class FeaturedBrandViewHolder(itemView: View?) : AbstractViewHolder<FeaturedBran
     }
 
     private fun createExpandButtonOnClickListener(): View.OnClickListener? {
+        listener.clickLihatSemua()
         return View.OnClickListener {
             if (featuredBrandList.size != incrementalBrandList.size) {
                 val incrementalAmount = getIncrementalAmount(featuredBrandList, incrementalBrandList)
@@ -92,14 +100,5 @@ class FeaturedBrandViewHolder(itemView: View?) : AbstractViewHolder<FeaturedBran
         val incrementalAmount = renderedBrands + INCREMENTAL_AMOUNT
         return if (incrementalAmount <= totalSize) incrementalAmount
         else totalSize
-    }
-
-    companion object {
-
-        const val INITIAL_AMOUNT = 4
-        const val INCREMENTAL_AMOUNT = 6
-
-        @LayoutRes
-        val LAYOUT = R.layout.brandlist_featured_brand_layout
     }
 }

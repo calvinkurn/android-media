@@ -96,7 +96,7 @@ class BrandlistPageFragment :
         layoutManager = GridLayoutManager(context, BRANDLIST_GRID_SPAN_COUNT)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = BrandlistPageAdapterTypeFactory()
+        val adapterTypeFactory = BrandlistPageAdapterTypeFactory(this)
         adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
         recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapter as StickyHeaderInterface))
@@ -296,6 +296,33 @@ class BrandlistPageFragment :
         }
     }
 
+    override fun clickBrandPopular(shopId: String, shopLogoPosition: String, shopName: String, imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrandPopular(category.toString(), shopId,
+                shopLogoPosition, shopName, imgUrl, isLogin)
+    }
+
+    override fun clickBrandPilihan(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrandPilihan(shopId, isLogin, shopName, imgUrl, shoplogoPosition, category.toString())
+    }
+
+    override fun clickLihatSemua() {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickLihatSemua(isLogin, category.toString())
+    }
+
+    override fun clickBrandBaruTokopedia(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String)  {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrandBaruTokopedia(
+                isLogin, shopId, category.toString(),
+                shoplogoPosition, shopName, imgUrl)
+    }
+
+
+
+
+
     override fun clickSearchBox() {
 
     }
@@ -304,11 +331,9 @@ class BrandlistPageFragment :
 
     }
 
+
+
     override fun clickCategory() {
-
-    }
-
-    override fun clickBrandPilihan() {
 
     }
 
@@ -316,21 +341,11 @@ class BrandlistPageFragment :
 
     }
 
-    override fun clickLihatSemua() {
-
-    }
-
-    override fun clickBrandPopular() {
-
-    }
-
     override fun impressionBrandPopular() {
 
     }
 
-    override fun clickBrandBaruTokopedia() {
 
-    }
 
     override fun impressionBrandBaru() {
 

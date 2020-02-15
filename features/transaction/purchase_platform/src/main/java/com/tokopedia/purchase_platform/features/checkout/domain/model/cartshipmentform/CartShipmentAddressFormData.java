@@ -7,7 +7,7 @@ import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +41,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private boolean isIneligbilePromoDialogEnabled;
     private TickerData tickerData;
     private AddressesData addressesData;
+    private DisabledFeaturesDetailData disabledFeaturesDetailData;
 
     public boolean isHasError() {
         return hasError;
@@ -234,6 +235,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.addressesData = addressesData;
     }
 
+    public DisabledFeaturesDetailData getDisabledFeaturesDetailData() {
+        return disabledFeaturesDetailData;
+    }
+
+    public void setDisabledFeaturesDetailData(DisabledFeaturesDetailData disabledFeaturesDetailData) {
+        this.disabledFeaturesDetailData = disabledFeaturesDetailData;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -259,6 +268,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         isIneligbilePromoDialogEnabled = in.readByte() != 0;
         tickerData = in.readParcelable(TickerData.class.getClassLoader());
         addressesData = in.readParcelable(AddressesData.class.getClassLoader());
+        disabledFeaturesDetailData = in.readParcelable(DisabledFeaturesDetailData.class.getClassLoader());
     }
 
     @Override
@@ -284,6 +294,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeByte((byte) (isIneligbilePromoDialogEnabled ? 1 : 0));
         dest.writeParcelable(tickerData, flags);
         dest.writeParcelable(addressesData, flags);
+        dest.writeParcelable(disabledFeaturesDetailData, flags);
     }
 
     @Override

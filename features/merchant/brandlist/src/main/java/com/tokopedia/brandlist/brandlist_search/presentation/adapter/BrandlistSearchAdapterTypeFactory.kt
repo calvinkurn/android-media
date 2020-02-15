@@ -33,6 +33,10 @@ class BrandlistSearchAdapterTypeFactory(
         return BrandlistSearchShimmeringViewHolder.LAYOUT
     }
 
+    override fun type(brandlistSearchAllBrandHeaderViewModel: BrandlistSearchAllBrandLabelViewModel): Int {
+        return BrandlistSearchAllBrandLabelViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             BrandlistSearchResultViewHolder.LAYOUT -> BrandlistSearchResultViewHolder(parent)
@@ -40,6 +44,7 @@ class BrandlistSearchAdapterTypeFactory(
             BrandlistSearchNotFoundViewHolder.LAYOUT -> BrandlistSearchNotFoundViewHolder(parent,brandlistSearchFragment)
             BrandlistSearchHeaderViewHolder.LAYOUT -> BrandlistSearchHeaderViewHolder(parent)
             BrandlistSearchShimmeringViewHolder.LAYOUT -> BrandlistSearchShimmeringViewHolder(parent)
+            BrandlistSearchAllBrandLabelViewHolder.LAYOUT -> BrandlistSearchAllBrandLabelViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -37,7 +37,6 @@ class GlideErrorLogHelper(): CoroutineScope {
         }
 
         if (!isNetworkAvailable(context)) {
-            Timber.w("P2#IMAGE_TRACEROUTE#network not available")
             return
         }
 

@@ -28,7 +28,15 @@ import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -45,9 +53,15 @@ public abstract class MainApplication extends MainRouterApplication{
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
     private UserSession userSession;
+    protected RemoteConfig remoteConfig;
+
 
     public static MainApplication getInstance() {
         return instance;
+    }
+
+    protected void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override
@@ -81,8 +95,8 @@ public abstract class MainApplication extends MainRouterApplication{
         super.onCreate();
         instance = this;
         userSession = new UserSession(this);
-        init();
         initCrashlytics();
+        initBranch();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -92,11 +106,29 @@ public abstract class MainApplication extends MainRouterApplication{
 
         locationUtils = new LocationUtils(this);
         locationUtils.initLocationBackground();
-        TooLargeTool.startLogging(this);
-
-        initBranch();
         NotificationUtils.setNotificationChannel(this);
+
+        createAndCallBgWork();
+    }
+
+    private void createAndCallBgWork(){
+        WeaveInterface executeBgWorkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executeInBackground();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(executeBgWorkWeave,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ3_ASYNC, remoteConfig));
+    }
+
+    @NotNull
+    private Boolean executeInBackground(){
+        TooLargeTool.startLogging(MainApplication.this);
+        init();
         upgradeSecurityProvider();
+        return true;
     }
 
     private void upgradeSecurityProvider() {
@@ -145,7 +177,8 @@ public abstract class MainApplication extends MainRouterApplication{
         this.appComponent = appComponent;
     }
 
-    private void initBranch() {
+    @NotNull
+    private Boolean initBranch(){
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
 
         if(userSession.isLoggedIn()) {
@@ -155,6 +188,7 @@ public abstract class MainApplication extends MainRouterApplication{
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
                     userData));
         }
+        return true;
     }
 
     @Override

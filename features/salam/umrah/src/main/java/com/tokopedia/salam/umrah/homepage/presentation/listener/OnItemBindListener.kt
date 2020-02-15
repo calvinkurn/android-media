@@ -14,6 +14,7 @@ interface onItemBindListener{
     fun onBindCategoryVH(isLoadFromCloud: Boolean)
     fun onBindCategoryFeaturedVH(isLoadFromCloud: Boolean)
     fun onBindBannerVH(isLoadFromCloud: Boolean)
+    fun onBindPartnerVH(isLoadFromCloud: Boolean)
 
     fun onImpressionDanaImpian()
     fun onClickDanaImpian()

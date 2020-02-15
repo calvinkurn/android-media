@@ -39,7 +39,7 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
         TrackApp.getInstance().initializeAllApis();
         GraphqlClient.init(this);
         GlobalConfig.DEBUG = true;
-        com.tokopedia.abstraction.common.utils.GlobalConfig.DEBUG = true;
+        com.tokopedia.config.GlobalConfig.DEBUG = true;
         super.onCreate();
     }
 

@@ -6,18 +6,18 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.phoneverification.data.network.PhoneVerificationBearerInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
-import com.tokopedia.phoneverification.data.network.PhoneVerificationInterceptor;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.data.PhoneVerificationApi;
+import com.tokopedia.phoneverification.data.network.PhoneVerificationBearerInterceptor;
+import com.tokopedia.phoneverification.data.network.PhoneVerificationInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -143,9 +143,9 @@ public class PhoneVerificationModule {
 
     @Provides
     @PhoneVerificationScope
-    public Interceptor provideChuckInterceptor(@ApplicationContext Context context) {
+    public Interceptor provideChuckerInterceptor(@ApplicationContext Context context) {
         if (context instanceof PhoneVerificationRouter) {
-            return ((PhoneVerificationRouter) context).getChuckInterceptor();
+            return ((PhoneVerificationRouter) context).getChuckerInterceptor();
         }
         throw new RuntimeException("App should implement " + PhoneVerificationRouter.class
                 .getSimpleName());

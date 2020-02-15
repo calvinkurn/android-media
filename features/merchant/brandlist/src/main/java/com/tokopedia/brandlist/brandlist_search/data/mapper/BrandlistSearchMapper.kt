@@ -38,8 +38,8 @@ class BrandlistSearchMapper {
                                 brand.defaultUrl,
                                 brand.logoUrl,
                                 searchQuery,
-                                listener,
-                                brand.appsUrl
+                                brand.appsUrl,
+                                listener
                         )
                 )
             }

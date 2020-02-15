@@ -1,13 +1,11 @@
 package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
-import androidx.core.util.Preconditions;
 import android.text.TextUtils;
 
 import com.moe.pushlibrary.MoEHelper;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.core.MoEngage;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -22,7 +20,15 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.moe.pushlibrary.utils.MoEHelperConstants.*;
+import timber.log.Timber;
+
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_UNIQUE_ID;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_BDAY;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_EMAIL;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_FIRST_NAME;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_MOBILE;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_NAME;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_ID;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_NAME;
@@ -134,7 +140,7 @@ public class MoengageAnalytics extends ContextAnalytics {
         final String fullName = customerWrapper[1];
         final String emailAddress = customerWrapper[2];
 
-        com.tkpd.library.utils.legacy.CommonUtils.dumper("MoEngage check user " + customerId);
+        Timber.d("MoEngage check user " + customerId);
 
         MoEHelper helper = MoEHelper.getInstance(getContext());
         helper.setFullName(fullName);
@@ -150,7 +156,7 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     public void sendMoengageRegisterEvent(String fullName, String mobileNo) {
-        CommonUtils.dumper("MoEngage check user " + fullName);
+        Timber.d("MoEngage check user " + fullName);
         Map<String, Object> map = new HashMap<>();
         map.put(AppEventTracking.MOENGAGE.NAME, fullName);
         map.put(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo);
@@ -205,57 +211,6 @@ public class MoengageAnalytics extends ContextAnalytics {
 
         if (checkNull(value.get(USER_ATTRIBUTE_USER_GENDER)))
             helper.setGender(value.get(USER_ATTRIBUTE_USER_GENDER).equals("1") ? "male" : "female");
-    }
-
-    public void setUserData(CustomerWrapper value, final String source) {
-        MoEHelper helper = MoEHelper.getInstance(getContext());
-
-        if (checkNull(value.getFullName()))
-            helper.setFullName(value.getFullName());
-
-        if (checkNull(value.getFirstName()))
-            helper.setFirstName(value.getFirstName());
-
-        if (checkNull(value.getCustomerId()))
-            helper.setUniqueId(value.getCustomerId());
-
-        if (checkNull(value.getEmailAddress()))
-            helper.setEmail(value.getEmailAddress());
-
-        if (checkNull(value.getPhoneNumber()))
-            helper.setNumber(value.getPhoneNumber());
-
-        if (!TextUtils.isEmpty(value.getDateOfBirth())) {
-            helper.setBirthDate(value.getDateOfBirth());
-        }
-
-        if (checkNull(value.isGoldMerchant()))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()));
-
-        if (checkNull(value.getShopId()))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
-
-        if (checkNull(value.getShopName()))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName());
-
-        if (checkNull(value.getTotalItemSold()))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, value.getTotalItemSold());
-
-        if (checkNull(value.getTopAdsAmt()))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, value.getTopAdsAmt());
-
-        if (checkNull(value.isHasPurchasedMarketplace()))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, value.isHasPurchasedMarketplace());
-
-        if (checkNull(value.getLastTransactionDate()))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, value.getLastTransactionDate());
-
-        if (checkNull(value.getShopScore()))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());
-
-        if (checkNull(value.getGender()))
-            helper.setGender(value.getGender().equals("1") ? "male" : "female");
-
     }
 
     public void setPushPreference(boolean status) {

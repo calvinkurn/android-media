@@ -32,7 +32,7 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.wallet.TokoCashCoreRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
@@ -72,7 +72,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     public void initializeDrawer() {
         setupDrawer();
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             registerBroadcastReceiverHeaderTokoCash();
             registerBroadcastReceiverHeaderTokoCashPending();
             registerBroadcastReceiverHeaderTokoPoint();
@@ -207,10 +207,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         if (sessionHandler.isV4Login()) {
             setDataDrawer();
 
-            if (GlobalConfig.isCustomerApp()) {
+            if (!GlobalConfig.isSellerApp()) {
                 getTokoPointData();
-                getDrawerUserAttrUseCase(sessionHandler);
-            } else if(GlobalConfig.isPosApp()) {
                 getDrawerUserAttrUseCase(sessionHandler);
             } else {
                 getDrawerSellerAttrUseCase(sessionHandler);

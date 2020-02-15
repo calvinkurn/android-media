@@ -11,12 +11,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
-class FeaturedBrandAdapter(private val context: Context) :
-        RecyclerView.Adapter<FeaturedBrandAdapter.FeaturedBrandViewHolder>() {
+class FeaturedBrandAdapter(
+        private val context: Context,
+        private val listener: BrandlistPageTracking) : RecyclerView.Adapter<FeaturedBrandAdapter.FeaturedBrandViewHolder>() {
 
     private var featuredBrands: List<Shop> = listOf()
-    private var brandlistTracking: BrandlistTracking? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeaturedBrandViewHolder {
         return FeaturedBrandViewHolder(LayoutInflater.from(context).inflate(R.layout.brandlist_featured_brand_item, parent, false))
@@ -28,27 +29,14 @@ class FeaturedBrandAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: FeaturedBrandViewHolder, position: Int) {
         holder.bindData(featuredBrands[position], position)
-//        val featuredBrand = featuredBrands[position]
-//        holder.brandView?.let {
-//            loadImageToImageView(featuredBrand.imageUrl, it)
-//        }
     }
-
-//    private fun loadImageToImageView(imageUrl: String, brandView: ImageView) {
-//        Glide.with(context)
-//                .load(imageUrl)
-//                .dontAnimate()
-//                .skipMemoryCache(true)
-//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-//                .into(brandView)
-//    }
 
     fun setFeaturedBrands(featuredBrandList: List<Shop>) {
         featuredBrands = featuredBrandList
         notifyDataSetChanged()
     }
 
-    class FeaturedBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class FeaturedBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context: Context
         var brandImg: ImageView
 
@@ -64,9 +52,9 @@ class FeaturedBrandAdapter(private val context: Context) :
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(brandImg)
-            brandImg.setOnClickListener {
-                // brandlistTracking
-                println("lasdhas")
+            brandImg.setOnClickListener{
+                listener.clickBrandPilihan((shop.id).toString(),
+                        shop.name, shop.imageUrl, (position + 1).toString())
             }
         }
     }

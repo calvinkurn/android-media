@@ -27,8 +27,9 @@ class DynamicChannelViewModel : HomeVisitable {
     override fun equalsWith(b: Any?): Boolean {
         if (b is DynamicChannelViewModel) {
             if (channel?.grids?.size != b.channel?.grids?.size?:0) return false
+            if(channel?.layout ?: "" != b.channel?.layout ?: "") return false
             channel?.grids?.let {
-                it.forEachIndexed() {position, grid->
+                it.forEachIndexed {position, grid->
                     b.channel?.grids?.let {newGrid->
                         if (grid.imageUrl != newGrid[position].imageUrl) return false
                     }
@@ -42,15 +43,32 @@ class DynamicChannelViewModel : HomeVisitable {
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         val bundle = Bundle()
         if (b is DynamicChannelViewModel) {
-            if (channel?.banner?.imageUrl != b.channel?.banner?.imageUrl?:"") {
+            if (isDcMixType(b) && isBannerImageSame(b)) {
                 bundle.putString(HOME_RV_BANNER_IMAGE_URL, b.channel?.banner?.imageUrl)
             }
 
-            if (channel?.header?.backImage != b.channel?.header?.backImage?:"") {
+            if (isSprintType(b) && isSprintBackImageSame(b)) {
                 bundle.putString(HOME_RV_SPRINT_BG_IMAGE_URL, b.channel?.header?.backImage)
             }
         }
         return bundle
+    }
+
+    private fun isSprintType(b: DynamicChannelViewModel): Boolean {
+        return b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT ||
+                b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO ||
+                b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL
+    }
+
+    private fun isSprintBackImageSame(b: DynamicChannelViewModel) =
+            channel?.header?.backImage != b.channel?.header?.backImage ?: ""
+
+    private fun isBannerImageSame(b: DynamicChannelViewModel) =
+            channel?.banner?.imageUrl != b.channel?.banner?.imageUrl ?: ""
+
+    private fun isDcMixType(dynamicChannelViewModel: DynamicChannelViewModel): Boolean {
+        return dynamicChannelViewModel.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL ||
+                dynamicChannelViewModel.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC
     }
 
     override fun isCache(): Boolean {
@@ -58,7 +76,7 @@ class DynamicChannelViewModel : HomeVisitable {
     }
 
     override fun visitableId(): String {
-        return "dcSection"
+        return channel?.id?:""
     }
 
     fun setCache(cache: Boolean) {
