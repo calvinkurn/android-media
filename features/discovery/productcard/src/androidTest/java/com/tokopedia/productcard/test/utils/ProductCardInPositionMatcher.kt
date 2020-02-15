@@ -16,11 +16,11 @@ private class ProductCardInPositionMatcher(
         private val itemMatcherList: Map<Int, Matcher<View?>>
 ): BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
 
-    private var currentViewComponentDescription = ""
+    private var currentViewComponentName = ""
     private var currentMatcher : Matcher<View?>? = null
 
     override fun describeTo(description: Description?) {
-        description?.appendText("Product Card Position: $position, $currentViewComponentDescription ")
+        description?.appendText("Product Card Position: $position, $currentViewComponentName ")
         currentMatcher?.describeTo(description)
     }
 
@@ -45,7 +45,7 @@ private class ProductCardInPositionMatcher(
     }
 
     private fun Matcher<View?>.matchProductCardComponent(view: View): Boolean {
-        currentViewComponentDescription = view.resources.getResourceEntryName(view.id)
+        currentViewComponentName = view.resources.getResourceEntryName(view.id)
         currentMatcher = this
 
         return this.matches(view)

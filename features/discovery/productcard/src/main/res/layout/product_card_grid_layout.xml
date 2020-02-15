@@ -109,6 +109,8 @@
             android:text="@string/product_card_text_add_to_cart_grid"
             android:foreground="?attr/selectableItemBackground"
             android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
             app:layout_constraintEnd_toEndOf="parent"

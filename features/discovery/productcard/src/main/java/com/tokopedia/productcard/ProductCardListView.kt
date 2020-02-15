@@ -8,7 +8,7 @@ import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
 class ProductCardListView: BaseCustomView {
 
@@ -38,5 +38,7 @@ class ProductCardListView: BaseCustomView {
         renderProductCardContent(productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasOptions)
+
+        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCart)
     }
 }

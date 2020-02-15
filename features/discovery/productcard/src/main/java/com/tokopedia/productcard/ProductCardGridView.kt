@@ -38,5 +38,7 @@ class ProductCardGridView: BaseCustomView {
         renderProductCardContent(productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasOptions)
+
+        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCart)
     }
 }
