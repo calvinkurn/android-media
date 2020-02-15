@@ -204,7 +204,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     if(response.brands.isEmpty()) {
                         viewModel.searchRecommendation(
                                 userSession.userId.toIntOrNull(),
-                                categoryIds = 0)
+                                categoryIds = "0")
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(

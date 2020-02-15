@@ -5,8 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.common.GQLQueryConstant.QUERY_BRANDLIST_FEATURED_BRAND
-import com.tokopedia.brandlist.common.GQLQueryConstant.QUERY_BRANDLIST_NEW_BRAND
-import com.tokopedia.brandlist.common.GQLQueryConstant.QUERY_BRANDLIST_POPULAR_BRAND
+import com.tokopedia.brandlist.common.GQLQueryConstant.QUERY_BRANDLIST_RECOMMENDATION
 import com.tokopedia.brandlist.common.GQLQueryConstant.QUERY_BRANDLIST_SEARCH_BRAND
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,16 +32,9 @@ class BrandlistPageModule {
 
     @BrandlistPageScope
     @Provides
-    @Named(QUERY_BRANDLIST_POPULAR_BRAND)
+    @Named(QUERY_BRANDLIST_RECOMMENDATION)
     fun provideQueryBrandlistPopularBrand(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_brandlist_popular_brand)
-    }
-
-    @BrandlistPageScope
-    @Provides
-    @Named(QUERY_BRANDLIST_NEW_BRAND)
-    fun provideQueryBrandlistNewBrand(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_brandlist_new_brand)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_brandlist_recommendation)
     }
 
     @BrandlistPageScope

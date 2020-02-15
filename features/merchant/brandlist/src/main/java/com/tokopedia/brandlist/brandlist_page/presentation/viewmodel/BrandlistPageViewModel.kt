@@ -8,7 +8,6 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsReco
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistFeaturedBrandUseCase
-import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistNewBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistPopularBrandUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,7 +22,6 @@ import javax.inject.Inject
 class BrandlistPageViewModel @Inject constructor(
         private val getBrandListFeaturedBrandUseCase: GetBrandlistFeaturedBrandUseCase,
         private val getBrandListPopularBrandUseCase: GetBrandlistPopularBrandUseCase,
-        private val getBrandListNewBrandUseCase: GetBrandlistNewBrandUseCase,
         private val getBrandlistAllBrandUseCase: GetBrandlistAllBrandUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -155,7 +153,10 @@ class BrandlistPageViewModel @Inject constructor(
             var popularBrand = OfficialStoreBrandsRecommendation()
             try {
                 getBrandListPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase
-                        .createParams(userId?.toIntOrNull() ?: 0, categoryId?.toIntOrNull() ?: 0)
+                        .createParams(userId?.toIntOrNull() ?: 0,
+                                categoryId ?: "0",
+                                GetBrandlistPopularBrandUseCase.POPULAR_WIDGET_NAME
+                        )
                 popularBrand = getBrandListPopularBrandUseCase.executeOnBackground()
             } catch (t: Throwable) {
                 getPopularBrandResult.value = Fail(t)
@@ -168,9 +169,13 @@ class BrandlistPageViewModel @Inject constructor(
         return async(Dispatchers.IO) {
             var newBrand = OfficialStoreBrandsRecommendation()
             try {
-                getBrandListNewBrandUseCase.params = GetBrandlistNewBrandUseCase
-                        .createParams(userId?.toIntOrNull() ?: 0, categoryId?.toIntOrNull() ?: 0)
-                newBrand = getBrandListNewBrandUseCase.executeOnBackground()
+                getBrandListPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase
+                        .createParams(
+                                userId?.toIntOrNull() ?: 0,
+                                categoryId ?: "0",
+                                GetBrandlistPopularBrandUseCase.NEW_WIDGET_NAME
+                        )
+                newBrand = getBrandListPopularBrandUseCase.executeOnBackground()
             } catch (t: Throwable) {
                 getNewBrandResult.value = Fail(t)
             }

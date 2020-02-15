@@ -11,7 +11,7 @@ import javax.inject.Named
 
 class GetBrandlistPopularBrandUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_BRANDLIST_POPULAR_BRAND) val query: String
+        @Named(GQLQueryConstant.QUERY_BRANDLIST_RECOMMENDATION) val query: String
 ) : UseCase<OfficialStoreBrandsRecommendation>() {
 
     var params: Map<String, Any> = mapOf()
@@ -33,11 +33,18 @@ class GetBrandlistPopularBrandUseCase @Inject constructor(
 
         const val USER_ID = "user_id"
         const val CATEGORY_IDS = "category_ids"
+        const val DEVICE = "device"
+        const val ANDROID_DEVICE_NUMBER = 4
+        const val NEW_WIDGET_NAME = "NEW"
+        const val POPULAR_WIDGET_NAME = "POPULAR"
+        const val WIDGET_NAME = "widgetName"
 
-        fun createParams(userId: Int, categoryId: Int): Map<String, Any> {
+        fun createParams(userId: Int, categoryId: String, widgetName: String): Map<String, Any> {
             return mutableMapOf<String, Any>().apply {
                 put(USER_ID, userId)
                 put(CATEGORY_IDS, categoryId)
+                put(WIDGET_NAME, widgetName)
+                put(DEVICE, ANDROID_DEVICE_NUMBER)
             }
         }
     }
