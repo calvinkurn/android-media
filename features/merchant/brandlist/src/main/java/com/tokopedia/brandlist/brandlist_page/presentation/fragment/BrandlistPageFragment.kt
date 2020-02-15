@@ -24,6 +24,8 @@ import com.tokopedia.brandlist.brandlist_page.di.DaggerBrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
 import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
@@ -97,6 +99,7 @@ class BrandlistPageFragment :
         val adapterTypeFactory = BrandlistPageAdapterTypeFactory()
         adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
+        recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapter as StickyHeaderInterface))
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
 
         recyclerView?.addOnScrollListener(endlessScrollListener)

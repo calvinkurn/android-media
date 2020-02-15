@@ -12,14 +12,15 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.All
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.PopularBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment
 import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.ALL_BRAND_GRID_SPAN_COUNT
 import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.BRANDLIST_GRID_SPAN_COUNT
 
 class BrandlistPageAdapter(
-        adapterTypeFactory: BrandlistPageAdapterTypeFactory,
+        private val adapterTypeFactory: BrandlistPageAdapterTypeFactory,
         private val brandlistPageFragment: BrandlistPageFragment) :
-        BaseAdapter<BrandlistPageAdapterTypeFactory>(adapterTypeFactory) {
+        BaseAdapter<BrandlistPageAdapterTypeFactory>(adapterTypeFactory), StickyHeaderInterface {
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
@@ -45,5 +46,13 @@ class BrandlistPageAdapter(
 
     fun getVisitables(): MutableList<Visitable<*>> {
         return visitables
+    }
+
+    override fun getHeaderLayout(headerPosition: Int): Int {
+        return AllBrandGroupHeaderViewHolder.LAYOUT
+    }
+
+    override fun isHeader(itemPosition: Int): Boolean {
+        return visitables[itemPosition].type(adapterTypeFactory) == AllBrandGroupHeaderViewHolder.LAYOUT
     }
 }
