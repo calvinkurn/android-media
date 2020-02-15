@@ -5,13 +5,13 @@ import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.travelhomepage.homepage.InstantTaskExecutorRuleSpek
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
+import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_BANNER
 import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_CATEGORIES
+import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_ORDER_LIST
+import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment
 import com.tokopedia.travelhomepage.homepage.shouldBeEquals
-import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyViewModelsUseCase
+import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -28,7 +28,7 @@ class TravelHomepageViewModelTest : Spek({
 
     Feature("Create Travel Homepage View Model") {
         Scenario("Create Travel Homepage View Model with Initial List") {
-            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyViewModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
 
             When("Create Travel Homepage and Create Initial Items") {
                 viewModel.getIntialList(true)
@@ -49,7 +49,7 @@ class TravelHomepageViewModelTest : Spek({
     Feature("Handle Fetch Banner") {
         Scenario("Fetch Banner Failed") {
             val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
-            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyViewModelsUseCase(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
+            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyModelsUseCase(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
 
             Given("Banner UseCase throw Exception") {
                 coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Fail(Throwable()) }
@@ -71,7 +71,7 @@ class TravelHomepageViewModelTest : Spek({
 
         Scenario("Fetch Banner Success") {
             val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
-            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyViewModelsUseCase(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
+            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyModelsUseCase(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
             val dummyData = DUMMY_BANNER
 
             Given("Banner UseCase return dummy response") {
@@ -117,7 +117,7 @@ class TravelHomepageViewModelTest : Spek({
     Feature("Handle Fetch Categories") {
         Scenario("Fetch Categories Failed") {
             val graphqlRepository = mockk<GraphqlRepository>()
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyViewModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
 
             Given("Fetch Categories throw Exception") {
                 coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
@@ -145,7 +145,7 @@ class TravelHomepageViewModelTest : Spek({
                     mapOf(),
                     false
             )
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyViewModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
 
             Given("Fetch Categories return dummy response") {
                 coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
@@ -172,6 +172,75 @@ class TravelHomepageViewModelTest : Spek({
                     item.attributes.imageUrl shouldBeEquals dummyData.categories[index].attributes.imageUrl
                     item.attributes.title shouldBeEquals dummyData.categories[index].attributes.title
                     item.attributes.webUrl shouldBeEquals dummyData.categories[index].attributes.webUrl
+                }
+            }
+        }
+    }
+
+    Feature("Handle Fetch Order List") {
+        Scenario("Fetch Order List") {
+            val graphqlRepository = mockk<GraphqlRepository>()
+            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+
+            Given("Fetch Order List throw Exception") {
+                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+            }
+
+            When("Build Initial Item List") {
+                viewModel.getIntialList(true)
+            }
+
+            When("Fetch Order List") {
+                viewModel.getOrderList("", true)
+            }
+
+            Then("Order List Data should be Loaded but Unsuccessful") {
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBeEquals false
+            }
+        }
+
+        Scenario("Fetch Order List Success") {
+            val graphqlRepository = mockk<GraphqlRepository>()
+            val dummyData = DUMMY_ORDER_LIST
+            val graphqlSuccessResponse = GraphqlResponse(
+                    mapOf(TravelHomepageOrderListModel.Response::class.java to TravelHomepageOrderListModel.Response(dummyData)),
+                    mapOf(),
+                    false
+            )
+            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+
+            Given("Fetch Order List return dummy response") {
+                coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
+            }
+
+            When("Build Initial Item List") {
+                viewModel.getIntialList(true)
+            }
+
+            When("Fetch Order List") {
+                viewModel.getOrderList("", true)
+            }
+
+            Then("Order List Data should be Successfully Loaded") {
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBeEquals true
+            }
+
+            Then("Order List Data mapper should map response correctly") {
+                val orderList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER] as TravelHomepageSectionModel)
+                orderList.title shouldBeEquals dummyData.travelMeta.title
+                orderList.type shouldBeEquals TravelHomepageFragment.TYPE_ORDER_LIST
+                orderList.seeAllUrl shouldBeEquals dummyData.travelMeta.appUrl
+
+                for ((index, item) in orderList.list.withIndex()) {
+                    item.title shouldBeEquals dummyData.orders[index].title
+                    item.subtitle shouldBeEquals dummyData.orders[index].subtitle
+                    item.prefix shouldBeEquals dummyData.orders[index].prefix
+                    item.value shouldBeEquals dummyData.orders[index].value
+                    item.appUrl shouldBeEquals dummyData.orders[index].appUrl
+                    item.imageUrl shouldBeEquals dummyData.orders[index].imageUrl
+                    item.product shouldBeEquals dummyData.orders[index].product
                 }
             }
         }

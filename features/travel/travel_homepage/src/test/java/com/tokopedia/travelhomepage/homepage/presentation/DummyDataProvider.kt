@@ -1,7 +1,9 @@
 package com.tokopedia.travelhomepage.homepage.presentation
 
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.data.entity.TravelMetaModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
 
 /**
  * @author by furqan on 13/02/2020
@@ -77,5 +79,65 @@ val DUMMY_CATEGORIES = TravelHomepageCategoryListModel(
                                 imageUrl = "https://ecs7.tokopedia.net/img/attachment/2018/7/28/5253715/5253715_60e64e5f-135e-47f6-aba3-d4b7cc15aa68.jpg"
                         )
                 )
+        )
+)
+
+val DUMMY_ORDER_LIST = TravelHomepageOrderListModel(
+        orders = arrayListOf(
+                TravelHomepageOrderListModel.Order(
+                        product = "HOTEL",
+                        title = "Harris Hotel",
+                        subtitle = "22 Feb 2019 - 25 Feb 2019",
+                        prefix = "Check-In",
+                        value = "02.00-20.00 WIB",
+                        webUrl = "https://www.tokopedia.com/hotel",
+                        appUrl = "https://www.tokopedia.com/hotel",
+                        imageUrl = "https://tvlk.imgix.net/imageResource/2019/07/01/1561969742861-54d523759500f217d6b7a094c3db0e43.jpeg?auto=compress%2Cformat&amp;cs=srgb&amp;fm=pjpg&amp;ixlib=java-1.1.12&amp;q=75"
+                ),
+                TravelHomepageOrderListModel.Order(
+                        product = "DEALS",
+                        title = "Rice Bowl",
+                        subtitle = "Voucher value Rp 150.000",
+                        prefix = "Berlaku hingga",
+                        value = "29 Mar 2019",
+                        webUrl = "https://www.tokopedia.com/deals/i/voucher-senilai-rp-150000-untuk-semua-makanan-17996/",
+                        appUrl = "https://www.tokopedia.com/deals/i/voucher-senilai-rp-150000-untuk-semua-makanan-17996/",
+                        imageUrl = "https://image-assets.access.myfave.gdn/attachments/030cc596a1f59fc72d5be22eeb6df9e3ec5e5ca8/store/fill/200/200/9914b5572972c08bf35ac7e279753f846f29f81643aa4d197e02f3bd0f60/logo.jpg"
+                ),
+                TravelHomepageOrderListModel.Order(
+                        product = "FLIGHT",
+                        title = "JAKARTA (CGK) -> SINGAPORE (SIN)",
+                        subtitle = "",
+                        prefix = "",
+                        value = "Sel, 23 Okt 2019 | 13.45",
+                        webUrl = "https://www.tokopedia.com/flight/",
+                        appUrl = "https://www.tokopedia.com/flight/",
+                        imageUrl = "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_7f755496-e7cd-480d-bcc0-081c84828d37.png"
+                ),
+                TravelHomepageOrderListModel.Order(
+                        product = "TRAIN",
+                        title = "JAKARTA (GMR) -> SOLO (SLO)",
+                        subtitle = "",
+                        prefix = "",
+                        value = "Sel, 23 Okt 2019 | 13.45",
+                        webUrl = "https://tiket.tokopedia.com/kereta-api/",
+                        appUrl = "https://tiket.tokopedia.com/kereta-api/",
+                        imageUrl = "https://ecs7.tokopedia.net/tiket-production/kereta-api/img/kai-illustration-01.png"
+                ),
+                TravelHomepageOrderListModel.Order(
+                        product = "EVENTS",
+                        title = "Running Man",
+                        subtitle = "Istora Senayan, Jakarta",
+                        prefix = "",
+                        value = "20 Jan 19",
+                        webUrl = "https://www.tokopedia.com/events/detail/running-man",
+                        appUrl = "https://www.tokopedia.com/events/detail/running-man",
+                        imageUrl = "https://ecs7.tokopedia.net/img/banner/2019/7/11/19887731/19887731_a3fb9963-a7ee-430a-814f-0503cf9275a3.jpg"
+                )
+        ),
+        travelMeta = TravelMetaModel(
+                title = "Lihat Semua",
+                appUrl = "tokopedia.com://orderlist/flight",
+                webUrl = "https://www.tokopedia.com/order/list"
         )
 )
