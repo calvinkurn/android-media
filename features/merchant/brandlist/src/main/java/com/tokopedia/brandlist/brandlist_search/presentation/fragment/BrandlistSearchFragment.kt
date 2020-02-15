@@ -307,25 +307,6 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     }
 
-    override fun impressionBrandPilihan() {
-
-    }
-
-    override fun clickLihatSemua() {
-
-    }
-
-    override fun clickBrandPopular() {
-
-    }
-
-    override fun impressionBrandPopular() {
-
-    }
-
-    override fun clickBrandBaruTokopedia() {
-
-    }
 
     override fun impressionBrandBaru() {
 

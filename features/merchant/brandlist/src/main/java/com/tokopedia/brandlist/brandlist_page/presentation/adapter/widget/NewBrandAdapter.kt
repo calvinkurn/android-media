@@ -9,13 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
 class NewBrandAdapter(
         private val context: Context,
-        val listener: BrandlistPageTracking) :
+        private val listener: BrandlistPageTracking) :
         RecyclerView.Adapter<NewBrandAdapter.NewBrandViewHolder>() {
 
     private var newBrands: List<Shop> = listOf()
@@ -37,7 +38,7 @@ class NewBrandAdapter(
         notifyDataSetChanged()
     }
 
-    class NewBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class NewBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var context: Context
         var brandLogoView: ImageView? = null
         var brandImageView: ImageView? = null
@@ -51,6 +52,13 @@ class NewBrandAdapter(
         }
 
         fun bindData(shop: Shop, position: Int) {
+            itemView.setOnClickListener {
+                listener.clickBrandBaruTokopedia(
+                        (shop.id).toString(),
+                        shop.name, shop.imageUrl,
+                        (position + 1).toString())
+                RouteManager.route(context, shop.url)
+            }
             brandLogoView?.let {
                 loadImageToImageView(shop.logoUrl, it)
             }

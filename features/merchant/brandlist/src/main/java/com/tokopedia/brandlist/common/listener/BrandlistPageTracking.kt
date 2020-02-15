@@ -4,6 +4,7 @@ interface BrandlistPageTracking {
 
     fun clickBrandPopular(shopId: String, shopLogoPosition: String, shopName: String, imgUrl: String)
     fun clickBrandPilihan(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String)
+    fun clickBrandBaruTokopedia(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String)
     fun clickLihatSemua()
 
     fun clickSearchBox()
@@ -11,7 +12,7 @@ interface BrandlistPageTracking {
     fun clickCategory()
     fun impressionBrandPilihan()
     fun impressionBrandPopular()
-    fun clickBrandBaruTokopedia()
+
     fun impressionBrandBaru()
     fun clickBrand()
     fun impressionBrand()
