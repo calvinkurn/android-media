@@ -40,13 +40,13 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAd
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticaddaddress.utils.rxPinPoint
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
@@ -385,7 +385,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
     }
 
-    override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
+    override fun onSuccessAutofill(autofillDataUiModel: Data) {
         if (isShowingAutocomplete) {
             handler.postDelayed({
                 updateAfterOnSuccessAutofill(autofillDataUiModel)
@@ -395,7 +395,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    private fun updateAfterOnSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
+    private fun updateAfterOnSuccessAutofill(autofillDataUiModel: Data) {
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE

@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -98,10 +99,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                     txt_variant_review_pdp.text = reviews.first().productVariantReview.variantTitle
                 } else {
                     txt_variant_review_pdp.hide()
+
                 }
 
-                rating_review_pdp.setImageDrawable(ContextCompat.getDrawable(view.context,
-                        RatingView.getRatingDrawable(reviewData.productRating)))
+                ImageHandler.loadImageRounded2(context, rating_review_pdp, RatingView.getRatingDrawable(reviewData.productRating), 0f)
                 txt_date_user_pdp.text = MethodChecker.fromHtml(
                         view.context.getString(R.string.date_review_pattern, reviewData.reviewCreateTime, "<b>" + reviewData.user.fullName + "</b>"))
                 txt_desc_review_pdp.maxLines = 4

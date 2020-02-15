@@ -22,7 +22,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
+import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogListingOuter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
@@ -203,7 +203,7 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
         holder.imgBanner.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, item.getSlug());
-            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
+            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.Companion.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
             sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
 

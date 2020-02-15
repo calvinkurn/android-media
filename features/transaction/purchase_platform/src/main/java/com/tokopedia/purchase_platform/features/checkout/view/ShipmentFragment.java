@@ -208,8 +208,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Inject
     ShipmentContract.Presenter shipmentPresenter;
     @Inject
-    ShipmentDataConverter shipmentDataConverter;
-    @Inject
     RatesDataConverter ratesDataConverter;
     @Inject
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
@@ -1286,11 +1284,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                                                 boolean isAnalyticsPurpose) {
         ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose);
         return requestData.getCheckoutRequestData();
-    }
-
-    @Override
-    public ShipmentDataConverter getShipmentDataConverter() {
-        return shipmentDataConverter;
     }
 
     private void updateAppliedPromoStack(PromoStackingData cartPromoStacking) {

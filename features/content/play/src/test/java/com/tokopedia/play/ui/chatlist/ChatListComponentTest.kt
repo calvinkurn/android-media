@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.chatlist
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayChatUiModel
@@ -112,7 +113,7 @@ class ChatListComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class ChatListComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ChatListComponent(container, bus, coroutineScope) {
+    class ChatListComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ChatListComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ChatListView {
             return mockk(relaxed = true)
         }
