@@ -9,8 +9,7 @@
     <group>
 
         <clip-path
-            android:pathData="M0 0H360V640H0V0Z"
-            />
+            android:pathData="M0 0H360V640H0V0Z" />
 
         <path
             android:pathData="M0 0V640H360V0"
