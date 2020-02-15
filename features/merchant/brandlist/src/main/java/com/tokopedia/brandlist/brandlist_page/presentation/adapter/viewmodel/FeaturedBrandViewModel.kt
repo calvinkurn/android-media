@@ -6,7 +6,10 @@ import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageTypeFactory
 import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
-class FeaturedBrandViewModel(val featuredBrands: List<Shop>, val header: Header?, listener: BrandlistPageTracking) : Visitable<BrandlistPageTypeFactory> {
+class FeaturedBrandViewModel(
+        val featuredBrands: List<Shop>,
+        val header: Header?,
+        val listener: BrandlistPageTracking) : Visitable<BrandlistPageTypeFactory> {
 
     override fun type(adapterTypeFactory: BrandlistPageTypeFactory): Int {
         return adapterTypeFactory.type(this)

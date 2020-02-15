@@ -4,7 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageTypeFactory
 import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
-class AllBrandHeaderViewModel(val title: String?, val totalBrands: Int?, listener: BrandlistPageTracking) : Visitable<BrandlistPageTypeFactory> {
+class AllBrandHeaderViewModel(
+        val title: String?,
+        val totalBrands: Int?,
+        val listener: BrandlistPageTracking) : Visitable<BrandlistPageTypeFactory> {
 
     override fun type(adapterTypeFactory: BrandlistPageTypeFactory): Int {
         return adapterTypeFactory.type(this)
