@@ -37,7 +37,7 @@ class OnboardingViewPagerAdapter(
         val titleContent = layoutScreen.findViewById<Typography>(R.id.title_content)
 
         val item = listScreen[position]
-        ImageUtils.loadImageFitCenter(context, imgContent, item.imageUrl, item.placeholder, item.placeholder)
+        ImageUtils.loadImage(imgContent, item.imageUrl, item.placeholder)
 
         titleContent.text = item.title
 
