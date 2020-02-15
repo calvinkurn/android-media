@@ -23,10 +23,8 @@ import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchHeaderViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchShimmeringViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchAllBrandLabelViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
@@ -97,6 +95,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     return when(adapterBrandSearch?.getItemViewType(position)) {
                         BrandlistSearchHeaderViewHolder.LAYOUT -> 3
                         BrandlistSearchNotFoundViewHolder.LAYOUT -> 3
+                        BrandlistSearchAllBrandLabelViewHolder.LAYOUT -> 3
                         else -> 1
                     }
                 }
@@ -205,7 +204,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     if(response.brands.isEmpty()) {
                         viewModel.searchRecommendation(
                                 userSession.userId.toIntOrNull(),
-                                categoryIds = "0")
+                                categoryIds = 0)
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
@@ -223,7 +222,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         viewModel.brandlistSearchRecommendationResponse.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    val response = it.data.officialStoreBrandsRecommendation.shops
+                    val response = it.data.shops
                     adapterBrandSearch?.updateSearchRecommendationData(
                             BrandlistSearchMapper.mapSearchRecommendationResponseToVisitable(response, this))
                 }
@@ -255,6 +254,13 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     adapterBrandSearch?.hideLoading()
                     val response = it.data.officialStoreAllBrands
                     endlessScrollListener.updateStateAfterGetData()
+                    val currentOffset = viewModel.currentOffset
+                    val groupHeader = viewModel.currentLetter.toUpperCase()
+
+                    if (currentOffset == 0) {
+                        adapterBrandSearch?.getVisitables()?.add(BrandlistSearchAllBrandLabelViewModel(groupHeader.toString()))
+                        adapterBrandSearch?.notifyItemRangeInserted((adapterBrandSearch as BrandlistSearchResultAdapter).lastIndex, 1)
+                    }
                     adapterBrandSearch?.updateBrands(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands, "", this))
                     viewModel.updateTotalBrandSize(response.totalBrands)
                     viewModel.updateCurrentOffset(response.brands.size)

@@ -2,10 +2,10 @@ package com.tokopedia.brandlist.brandlist_search.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.brandlist.brandlist_search.data.model.BrandListSearchRecommendationResponse
+import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
+import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistPopularBrandUseCase
 import com.tokopedia.brandlist.brandlist_search.data.model.BrandlistSearchResponse
 import com.tokopedia.brandlist.brandlist_search.domain.SearchBrandUseCase
-import com.tokopedia.brandlist.brandlist_search.domain.SearchRecommedationBrandUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class BrandlistSearchViewModel @Inject constructor(
-        private val searchRecommendedBrandUseCase: SearchRecommedationBrandUseCase,
+        private val getBrandlistPopularBrandUseCase: GetBrandlistPopularBrandUseCase,
         private val searchBrandUseCase: SearchBrandUseCase,
         dispatcher: CoroutineDispatcher
 ): BaseViewModel(dispatcher) {
@@ -30,14 +30,14 @@ class BrandlistSearchViewModel @Inject constructor(
     }
 
     val brandlistSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
-    val brandlistSearchRecommendationResponse = MutableLiveData<Result<BrandListSearchRecommendationResponse>>()
+    val brandlistSearchRecommendationResponse = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
     val brandlistAllBrandsSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
     val brandlistAllBrandTotal = MutableLiveData<Result<Int>>()
 
     private var firstLetterChanged = false
     private var totalBrandSize = 0
-    private var currentOffset = INITIAL_OFFSET
-    private var currentLetter = INITIAL_LETTER
+    var currentOffset = INITIAL_OFFSET
+    var currentLetter = INITIAL_LETTER
 
     fun loadInitialBrands() {
         searchAllBrands(
@@ -111,14 +111,14 @@ class BrandlistSearchViewModel @Inject constructor(
 
     fun searchRecommendation(
             userId: Int?,
-            categoryIds: String
+            categoryIds: Int?
     ) {
-        searchRecommendedBrandUseCase.cancelJobs()
+        getBrandlistPopularBrandUseCase.cancelJobs()
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                searchRecommendedBrandUseCase.params = SearchRecommedationBrandUseCase.
-                        createRequestParam(userId, categoryIds)
-                val searchRecommendationResult = searchRecommendedBrandUseCase.executeOnBackground()
+                getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
+                        createParams(userId ?: 0, categoryIds ?: 0)
+                val searchRecommendationResult = getBrandlistPopularBrandUseCase.executeOnBackground()
                 searchRecommendationResult.let {
                     brandlistSearchRecommendationResponse.postValue(Success(it))
                 }
