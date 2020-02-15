@@ -112,6 +112,8 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             screenViewpager.adapter = onboardingViewPagerAdapter
             tabIndicator.setupWithViewPager(screenViewpager)
 
+            screenViewpager.offscreenPageLimit = 2
+
             skipAction.setOnClickListener(skipActionClickListener())
             nextAction.setOnClickListener(nextActionClickListener())
             joinButton.setOnClickListener(joinActionClickListener())

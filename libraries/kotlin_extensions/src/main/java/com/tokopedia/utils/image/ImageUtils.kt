@@ -21,11 +21,13 @@ object ImageUtils {
         if (imageView.context != null) {
             Glide.with(imageView.context)
                     .load(url)
-                    .skipMemoryCache(true)
-                    .dontAnimate()
                     .into(object : CustomTarget<Drawable>() {
                         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                             imageView.setImageDrawable(resource)
+                        }
+
+                        override fun onLoadStarted(placeholder: Drawable?) {
+                            imageView.setImageResource(resPlaceholder)
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
