@@ -25,6 +25,9 @@ internal fun ViewInteraction.checkProductCardPerPosition() {
             .checkProductCardAtPosition(10, getProductCardMatchersPosition10())
             .checkProductCardAtPosition(11, getProductCardMatchersPosition11())
             .checkProductCardAtPosition(12, getProductCardMatchersPosition12())
+            .checkProductCardAtPosition(13, getProductCardMatchersPosition13())
+            .checkProductCardAtPosition(14, getProductCardMatchersPosition14())
+            .checkProductCardAtPosition(15, getProductCardMatchersPosition15())
 }
 
 private fun ViewInteraction.checkProductCardAtPosition(position: Int, elementMatchers: Map<Int, Matcher<View?>>): ViewInteraction {
@@ -273,5 +276,56 @@ private fun getProductCardMatchersPosition12(): Map<Int, Matcher<View?>> {
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+    }
+}
+
+private fun getProductCardMatchersPosition13(): Map<Int, Matcher<View?>> {
+    val productCardModel = productCardModelTestData[13]
+
+    return mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+    }
+}
+
+private fun getProductCardMatchersPosition14(): Map<Int, Matcher<View?>> {
+    val productCardModel = productCardModelTestData[14]
+
+    return mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+    }
+}
+
+private fun getProductCardMatchersPosition15(): Map<Int, Matcher<View?>> {
+    val productCardModel = productCardModelTestData[15]
+
+    return mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_active)
     }
 }
