@@ -11,9 +11,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
-class FeaturedBrandAdapter(private val context: Context) :
-        RecyclerView.Adapter<FeaturedBrandAdapter.FeaturedBrandViewHolder>() {
+class FeaturedBrandAdapter(
+        private val context: Context,
+        val listener: BrandlistPageTracking) : RecyclerView.Adapter<FeaturedBrandAdapter.FeaturedBrandViewHolder>() {
 
     private var featuredBrands: List<Shop> = listOf()
     private var brandlistTracking: BrandlistTracking? = null

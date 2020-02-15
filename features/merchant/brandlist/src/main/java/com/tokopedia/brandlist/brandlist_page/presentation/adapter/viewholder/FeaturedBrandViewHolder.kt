@@ -11,10 +11,12 @@ import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.FeaturedBrandAdapter
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifyprinciples.Typography
 
-class FeaturedBrandViewHolder(itemView: View?) : AbstractViewHolder<FeaturedBrandViewModel>(itemView) {
+class FeaturedBrandViewHolder(itemView: View?, listener: BrandlistPageTracking) :
+        AbstractViewHolder<FeaturedBrandViewModel>(itemView) {
 
     private var featuredBrandList: List<Shop> = listOf()
     private var incrementalBrandList: List<Shop> = listOf()
@@ -32,7 +34,7 @@ class FeaturedBrandViewHolder(itemView: View?) : AbstractViewHolder<FeaturedBran
 
         itemView?.context?.let {
             context = it
-            adapter = FeaturedBrandAdapter(it)
+            adapter = FeaturedBrandAdapter(it, listener)
             recyclerView?.layoutManager = GridLayoutManager(it, 2)
             recyclerView?.adapter = adapter
         }

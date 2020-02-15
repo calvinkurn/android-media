@@ -94,7 +94,7 @@ class BrandlistPageFragment :
         layoutManager = GridLayoutManager(context, BRANDLIST_GRID_SPAN_COUNT)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = BrandlistPageAdapterTypeFactory()
+        val adapterTypeFactory = BrandlistPageAdapterTypeFactory(this)
         adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup

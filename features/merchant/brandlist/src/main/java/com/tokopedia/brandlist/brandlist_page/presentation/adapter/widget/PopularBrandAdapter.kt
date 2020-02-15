@@ -14,7 +14,9 @@ import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
-class PopularBrandAdapter(private val context: Context, val listener: BrandlistPageTracking) :
+class PopularBrandAdapter(
+        private val context: Context,
+        val listener: BrandlistPageTracking) :
         RecyclerView.Adapter<PopularBrandAdapter.PopularBrandViewHolder>() {
 
     private var popularBrands: List<Shop> = listOf()

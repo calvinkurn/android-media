@@ -43,9 +43,9 @@ class BrandlistPageAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(parent)
+            FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(parent, trackingListener)
             PopularBrandViewHolder.LAYOUT -> PopularBrandViewHolder(parent, trackingListener)
-            NewBrandViewHolder.LAYOUT -> NewBrandViewHolder(parent)
+            NewBrandViewHolder.LAYOUT -> NewBrandViewHolder(parent, trackingListener)
             AllBrandHeaderViewHolder.LAYOUT -> AllBrandHeaderViewHolder(parent)
             AllBrandGroupHeaderViewHolder.LAYOUT -> AllBrandGroupHeaderViewHolder(parent)
             AllBrandViewHolder.LAYOUT -> AllBrandViewHolder(parent)
