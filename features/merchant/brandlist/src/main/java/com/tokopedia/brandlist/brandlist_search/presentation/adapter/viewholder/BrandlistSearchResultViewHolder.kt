@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
+import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import kotlinx.android.synthetic.main.item_search_result.view.*
 import java.util.*
 
@@ -29,7 +30,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
     override fun bind(element: BrandlistSearchResultViewModel) {
         processString(element.name, element.searchQuery)
         bindData(element.defaultUrl, element.logoUrl)
-        setupApplink(element.appsUrl)
+        setupApplink(element.appsUrl, element.listener)
     }
 
     private fun bindData(brandLogoUrl: String, brandImageUrl: String) {
@@ -57,21 +58,16 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
         }
     }
 
-    // To Do
-    // Should be implemented tracking when card is clicked
-    // clickBrandOnSearchBox(categoryTab: String, optionalParam: String, isLogin: Boolean, keyword: String)
-    // optionalParam = "optional param"
-    // categoryTab = "categoryTab"
-
     private fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {
         return if (!TextUtils.isEmpty(searchTerm)) {
             displayName.toLowerCase(Locale.getDefault()).indexOf(searchTerm.toLowerCase(Locale.getDefault()))
         } else -1
     }
 
-    private fun setupApplink(applink: String) {
+    private fun setupApplink(applink: String, tracking: BrandlistSearchTrackingListener) {
         itemView.search_result.setOnClickListener {
-            RouteManager.route(itemView.context,applink)
+            tracking.clickBrandOnSearchBox()
+            RouteManager.route(itemView.context, applink)
         }
     }
 }

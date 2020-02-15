@@ -7,8 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
+import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
-class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageTypeFactory {
+class BrandlistPageAdapterTypeFactory(
+        private val trackingListener: BrandlistPageTracking
+) : BaseAdapterTypeFactory(), BrandlistPageTypeFactory {
 
     override fun type(featuredBrandViewModel: FeaturedBrandViewModel): Int {
         return if (featuredBrandViewModel.featuredBrands.isEmpty()) HideViewHolder.LAYOUT
@@ -41,7 +44,7 @@ class BrandlistPageAdapterTypeFactory : BaseAdapterTypeFactory(), BrandlistPageT
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(parent)
-            PopularBrandViewHolder.LAYOUT -> PopularBrandViewHolder(parent)
+            PopularBrandViewHolder.LAYOUT -> PopularBrandViewHolder(parent, trackingListener)
             NewBrandViewHolder.LAYOUT -> NewBrandViewHolder(parent)
             AllBrandHeaderViewHolder.LAYOUT -> AllBrandHeaderViewHolder(parent)
             AllBrandGroupHeaderViewHolder.LAYOUT -> AllBrandGroupHeaderViewHolder(parent)

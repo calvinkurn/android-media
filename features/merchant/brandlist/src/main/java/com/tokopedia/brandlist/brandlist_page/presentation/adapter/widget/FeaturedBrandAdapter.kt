@@ -28,20 +28,7 @@ class FeaturedBrandAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: FeaturedBrandViewHolder, position: Int) {
         holder.bindData(featuredBrands[position], position)
-//        val featuredBrand = featuredBrands[position]
-//        holder.brandView?.let {
-//            loadImageToImageView(featuredBrand.imageUrl, it)
-//        }
     }
-
-//    private fun loadImageToImageView(imageUrl: String, brandView: ImageView) {
-//        Glide.with(context)
-//                .load(imageUrl)
-//                .dontAnimate()
-//                .skipMemoryCache(true)
-//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-//                .into(brandView)
-//    }
 
     fun setFeaturedBrands(featuredBrandList: List<Shop>) {
         featuredBrands = featuredBrandList
@@ -64,10 +51,6 @@ class FeaturedBrandAdapter(private val context: Context) :
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(brandImg)
-            brandImg.setOnClickListener {
-                // brandlistTracking
-                println("lasdhas")
-            }
         }
     }
 }

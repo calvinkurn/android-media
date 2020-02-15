@@ -68,6 +68,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private var layoutManager: GridLayoutManager? = null
     private var adapterBrandSearch: BrandlistSearchResultAdapter? = null
     private var toolbar: Toolbar? = null
+    private var keywordSearch = ""
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -185,6 +186,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                         val sortType = 1
                         val firstLetter = ""
                         val brandSize = 10
+                        keywordSearch = it
                         viewModel.searchBrand(categoryId, offset, it,
                                 brandSize, sortType, firstLetter)
                         adapterBrandSearch?.showShimmering()
@@ -279,11 +281,15 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun clickSearchBox() {
-        
+    override fun clickBrandOnSearchBox() {
+        val isLogin = userSession.isLoggedIn
+        val optionalParam = "optional parameter"
+        brandlistTracking?.clickBrandOnSearchBox("", optionalParam, isLogin, keywordSearch)
     }
 
-    override fun clickBrandOnSearchBox() {
+
+
+    override fun clickSearchBox() {
 
     }
 
