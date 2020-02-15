@@ -293,6 +293,26 @@ class BrandlistPageFragment :
         }
     }
 
+    override fun clickBrandPopular(shopId: String, shopLogoPosition: String, shopName: String, imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrandPopular(category.toString(), shopId,
+                shopLogoPosition, shopName, imgUrl, isLogin)
+    }
+
+    override fun clickBrandPilihan(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrandPilihan(shopId, isLogin, shopName, imgUrl, shoplogoPosition, category.toString())
+    }
+
+    override fun clickLihatSemua() {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickLihatSemua(isLogin, category.toString())
+    }
+
+
+
+
+
     override fun clickSearchBox() {
 
     }
@@ -301,23 +321,13 @@ class BrandlistPageFragment :
 
     }
 
+
+
     override fun clickCategory() {
 
     }
 
-    override fun clickBrandPilihan() {
-
-    }
-
     override fun impressionBrandPilihan() {
-
-    }
-
-    override fun clickLihatSemua() {
-
-    }
-
-    override fun clickBrandPopular() {
 
     }
 

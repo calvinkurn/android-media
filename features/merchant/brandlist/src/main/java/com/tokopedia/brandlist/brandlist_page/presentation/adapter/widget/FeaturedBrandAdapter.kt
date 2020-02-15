@@ -15,10 +15,9 @@ import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
 
 class FeaturedBrandAdapter(
         private val context: Context,
-        val listener: BrandlistPageTracking) : RecyclerView.Adapter<FeaturedBrandAdapter.FeaturedBrandViewHolder>() {
+        private val listener: BrandlistPageTracking) : RecyclerView.Adapter<FeaturedBrandAdapter.FeaturedBrandViewHolder>() {
 
     private var featuredBrands: List<Shop> = listOf()
-    private var brandlistTracking: BrandlistTracking? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeaturedBrandViewHolder {
         return FeaturedBrandViewHolder(LayoutInflater.from(context).inflate(R.layout.brandlist_featured_brand_item, parent, false))
@@ -37,7 +36,7 @@ class FeaturedBrandAdapter(
         notifyDataSetChanged()
     }
 
-    class FeaturedBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class FeaturedBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context: Context
         var brandImg: ImageView
 
@@ -53,6 +52,10 @@ class FeaturedBrandAdapter(
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(brandImg)
+            brandImg.setOnClickListener{
+                listener.clickBrandPilihan((shop.id).toString(),
+                        shop.name, shop.imageUrl, (position + 1).toString())
+            }
         }
     }
 }
