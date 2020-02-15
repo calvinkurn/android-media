@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
@@ -29,10 +30,18 @@ class BrandlistSearchViewModel @Inject constructor(
         private const val INITIAL_LETTER = 'a'
     }
 
-    val brandlistSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
-    val brandlistSearchRecommendationResponse = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
-    val brandlistAllBrandsSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
-    val brandlistAllBrandTotal = MutableLiveData<Result<Int>>()
+    private val _brandlistSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
+    val brandlistSearchResponse: LiveData<Result<BrandlistSearchResponse>>
+            get() = _brandlistSearchResponse
+    private val _brandlistSearchRecommendationResponse = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
+    val brandlistSearchRecommendationResponse: LiveData<Result<OfficialStoreBrandsRecommendation>>
+        get() = _brandlistSearchRecommendationResponse
+    private val _brandlistAllBrandsSearchResponse = MutableLiveData<Result<BrandlistSearchResponse>>()
+    val brandlistAllBrandsSearchResponse: LiveData<Result<BrandlistSearchResponse>>
+        get() = _brandlistAllBrandsSearchResponse
+    private val _brandlistAllBrandTotal = MutableLiveData<Result<Int>>()
+    val brandlistAllBrandTotal: LiveData<Result<Int>>
+        get() = _brandlistAllBrandTotal
 
     private var firstLetterChanged = false
     private var totalBrandSize = 0
@@ -101,30 +110,34 @@ class BrandlistSearchViewModel @Inject constructor(
                         query, brandSize, sortType, firstLetter)
                 val searchBrandResult = searchBrandUseCase.executeOnBackground()
                 searchBrandResult.let {
-                    brandlistSearchResponse.postValue(Success(it))
+                    _brandlistSearchResponse.postValue(Success(it))
                 }
             }
         }) {
-            brandlistSearchResponse.value = Fail(it)
+            _brandlistSearchResponse.value = Fail(it)
         }
     }
 
     fun searchRecommendation(
             userId: Int?,
-            categoryIds: Int?
+            categoryIds: String
     ) {
         getBrandlistPopularBrandUseCase.cancelJobs()
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
-                        createParams(userId ?: 0, categoryIds ?: 0)
+                        createParams(
+                                userId ?: 0,
+                                categoryIds,
+                                GetBrandlistPopularBrandUseCase.POPULAR_WIDGET_NAME
+                        )
                 val searchRecommendationResult = getBrandlistPopularBrandUseCase.executeOnBackground()
                 searchRecommendationResult.let {
-                    brandlistSearchRecommendationResponse.postValue(Success(it))
+                    _brandlistSearchRecommendationResponse.postValue(Success(it))
                 }
             }
         }) {
-            brandlistSearchRecommendationResponse.value = Fail(it)
+            _brandlistSearchRecommendationResponse.value = Fail(it)
         }
     }
 
@@ -143,11 +156,11 @@ class BrandlistSearchViewModel @Inject constructor(
                         query, brandSize, sortType, firstLetter)
                 val searchBrandResult = searchBrandUseCase.executeOnBackground()
                 searchBrandResult.let {
-                    brandlistAllBrandsSearchResponse.postValue(Success(it))
+                    _brandlistAllBrandsSearchResponse.postValue(Success(it))
                 }
             }
         }) {
-            brandlistAllBrandsSearchResponse.value = Fail(it)
+            _brandlistAllBrandsSearchResponse.value = Fail(it)
         }
     }
 
@@ -159,11 +172,11 @@ class BrandlistSearchViewModel @Inject constructor(
                         ALL_BRANDS_QUERY, 0, ALPHABETIC_ASC_SORT, "")
                 val searchBrandResult = searchBrandUseCase.executeOnBackground()
                 searchBrandResult.let {
-                    brandlistAllBrandTotal.postValue(Success(it.officialStoreAllBrands.totalBrands))
+                    _brandlistAllBrandTotal.postValue(Success(it.officialStoreAllBrands.totalBrands))
                 }
             }
         }) {
-            brandlistAllBrandTotal.value = Fail(it)
+            _brandlistAllBrandTotal.value = Fail(it)
         }
     }
 
