@@ -31,7 +31,8 @@ data class ProductCardModel (
         val ratingString: String = "",
         val hasOptions: Boolean = false,
         val labelGroupList: List<LabelGroup> = listOf(),
-        val hasAddToCart: Boolean = false
+        val hasAddToCartButton: Boolean = false,
+        val hasRemoveFromWishlistButton: Boolean = false
 ) {
     var isProductSoldOut: Boolean = false
     var isProductPreOrder: Boolean = false

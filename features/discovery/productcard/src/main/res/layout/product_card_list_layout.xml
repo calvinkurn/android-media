@@ -9,7 +9,7 @@
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:layout_height="wrap_content">
+    tools:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutProductCard"
@@ -108,6 +108,33 @@
             app:srcCompat="@drawable/product_card_ic_three_dots"
             tools:visibility="visible" />
 
+<!--        <FrameLayout-->
+<!--            android:id="@+id/buttonRemoveFromWishlist"-->
+<!--            android:layout_width="@dimen/dp_32"-->
+<!--            android:layout_height="@dimen/dp_32"-->
+<!--            android:layout_marginLeft="@dimen/dp_8"-->
+<!--            android:layout_marginStart="@dimen/dp_8"-->
+<!--            android:background="@drawable/productcard_module_bg_button_delete"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:foreground="?selectableItemBackground"-->
+<!--            android:padding="@dimen/dp_6"-->
+<!--            android:tint="@color/Neutral_N400"-->
+<!--            android:visibility="gone"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/barrierImageContent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintVertical_bias="1.0"-->
+<!--            tools:visibility="visible">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="@dimen/dp_20"-->
+<!--                android:layout_height="@dimen/dp_20"-->
+<!--                android:tint="@color/Neutral_N400"-->
+<!--                app:srcCompat="@drawable/ic_system_action_delete_black_24"/>-->
+
+<!--        </FrameLayout>-->
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonAddToCart"
             android:layout_width="@dimen/dp_0"
@@ -125,7 +152,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="1.0"
             app:unifyButtonType="transaction"

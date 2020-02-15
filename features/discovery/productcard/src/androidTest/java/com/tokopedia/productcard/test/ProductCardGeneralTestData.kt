@@ -237,7 +237,7 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
                 labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN))
                 labelGroups.add(LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00"))
             },
-            hasAddToCart = true
+            hasAddToCartButton = true
     ))
 
     it.add(17, ProductCardModel(
@@ -245,6 +245,28 @@ internal val productCardModelTestData = mutableListOf<ProductCardModel>().also {
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
             hasOptions = true,
-            hasAddToCart = true
+            hasAddToCartButton = true
+    ))
+
+    it.add(18, ProductCardModel(
+            productName = "With Add to Cart Button",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingString = "4.5",
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasOptions = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = DARK_GREY))
+                labelGroups.add(LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN))
+                labelGroups.add(LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00"))
+            },
+            hasAddToCartButton = true,
+            hasRemoveFromWishlistButton = true
     ))
 }

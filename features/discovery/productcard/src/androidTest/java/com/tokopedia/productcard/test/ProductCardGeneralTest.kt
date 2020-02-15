@@ -33,7 +33,7 @@ internal fun ViewInteraction.checkProductCardGeneralCases(): ViewInteraction {
             .checkProductCardAtPosition(17, getProductCardMatchersPosition17())
 }
 
-private fun ViewInteraction.checkProductCardAtPosition(position: Int, elementMatchers: Map<Int, Matcher<View?>>): ViewInteraction {
+internal fun ViewInteraction.checkProductCardAtPosition(position: Int, elementMatchers: Map<Int, Matcher<View?>>): ViewInteraction {
     return perform(RecyclerViewActions.scrollToPosition<ProductCardGridActivityTest.ViewHolder>(position))
             .check(ViewAssertions.matches(productCardInPosition(position, elementMatchers)))
 }
