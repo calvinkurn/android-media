@@ -309,6 +309,13 @@ class BrandlistPageFragment :
         brandlistTracking?.clickLihatSemua(isLogin, category.toString())
     }
 
+    override fun clickBrandBaruTokopedia(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String)  {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrandBaruTokopedia(
+                isLogin, shopId, category.toString(),
+                shoplogoPosition, shopName, imgUrl)
+    }
+
 
 
 
@@ -335,9 +342,7 @@ class BrandlistPageFragment :
 
     }
 
-    override fun clickBrandBaruTokopedia() {
 
-    }
 
     override fun impressionBrandBaru() {
 
