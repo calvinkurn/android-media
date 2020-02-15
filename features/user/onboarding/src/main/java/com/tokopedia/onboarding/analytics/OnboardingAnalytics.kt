@@ -13,9 +13,9 @@ class OnboardingAnalytics {
 
     fun trackScreen(position: Int, variant: String) {
         val screenName = String.format(SCREEN_ONBOARDING, position.toString(), variant)
-        Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | 
-            |${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | 
-            |${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""".trimMargin())
+        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT
+                + " | " + Build.MANUFACTURER + " | " + Build.BRAND + " | " + Build.DEVICE
+                + " | " + Build.PRODUCT + " | " + Build.MODEL + " | " + Build.TAGS)
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
