@@ -8,6 +8,8 @@ class BrandlistSearchRecommendationViewModel(
         val name: String,
         val logoUrl: String,
         val imageUrl: String,
+        val id: Int,
+        val url: String,
         val listener: BrandlistSearchTrackingListener
 ) : Visitable<BrandlistSearchAdapterTypeFactory> {
 

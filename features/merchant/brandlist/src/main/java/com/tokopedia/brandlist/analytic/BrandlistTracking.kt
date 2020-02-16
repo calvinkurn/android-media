@@ -53,14 +53,14 @@ class BrandlistTracking(context: Context) {
         )
     }
 
-    fun clickBrandOnSearchBox(categoryTab: String, optionalParam: String, isLogin: Boolean, keyword: String) {
+    fun clickBrandOnSearchBox(categoryTab: String, optionalParam: String, isLogin: Boolean, keyword: String, shopId: String) {
         val statusLogin =  if (isLogin) "login" else "non login"
         tracker.sendGeneralEvent(
                 TrackAppUtils.gtmData(
                         EVENT_VALUE,
                         "$EVENT_CATEGORY_VALUE - $categoryTab",
                         "$CLICK - shop - $optionalParam - $statusLogin",
-                        keyword
+                        "$shopId - $keyword"
                 )
         )
     }

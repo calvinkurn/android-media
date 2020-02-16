@@ -20,6 +20,8 @@ class BrandlistSearchMapper {
                                 shop.name,
                                 shop.logoUrl,
                                 shop.imageUrl,
+                                shop.id,
+                                shop.url,
                                 listener
                         )
                 )
@@ -39,6 +41,7 @@ class BrandlistSearchMapper {
                                 brand.logoUrl,
                                 searchQuery,
                                 brand.appsUrl,
+                                brand.id,
                                 listener
                         )
                 )

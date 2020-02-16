@@ -67,6 +67,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private var adapterBrandSearch: BrandlistSearchResultAdapter? = null
     private var toolbar: Toolbar? = null
     private var keywordSearch = ""
+    private var categoryName = ""
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -287,37 +288,24 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun clickBrandOnSearchBox() {
+    override fun clickBrandOnSearchBox(shopId: String) {
         val isLogin = userSession.isLoggedIn
         val optionalParam = "optional parameter"
-        brandlistTracking?.clickBrandOnSearchBox("", optionalParam, isLogin, keywordSearch)
+        brandlistTracking?.clickBrandOnSearchBox(categoryName, optionalParam, isLogin, keywordSearch, shopId)
     }
 
-
-
-    override fun clickSearchBox() {
-
+    override fun impressionBrand(shopId: String, shoplogoPosition: String,
+                                 shopName: String, imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.impressionBrand(isLogin, shopId, categoryName, shoplogoPosition, shopName,
+                imgUrl, true, keywordSearch)
     }
 
-    override fun clickCategory() {
-
-    }
-
-    override fun clickBrandPilihan() {
-
-    }
-
-
-    override fun impressionBrandBaru() {
-
-    }
-
-    override fun clickBrand() {
-
-    }
-
-    override fun impressionBrand() {
-
+    override fun clickBrand(shopId: String, shoplogoPosition: String, shopName: String, imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrand(
+                isLogin, shopId, categoryName, shoplogoPosition, shopName,
+                imgUrl, true, keywordSearch)
     }
 
 }
