@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.mediauploader.data.entity.*
 import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.data.state.UploadState
+import com.tokopedia.mediauploader.data.state.UploadErrorState
 import com.tokopedia.usecase.RequestParams
 import io.mockk.coEvery
 import io.mockk.every
@@ -82,7 +82,7 @@ class UploaderUseCaseTest: Spek({
                 runBlocking {
                     when(val execute = useCase(requestParams)) {
                         is UploadResult.Error -> {
-                            assertEquals(UploadState.NOT_FOUND, execute.reason)
+                            assertEquals(UploadErrorState.NOT_FOUND, execute.reason)
                         }
                     }
                 }
@@ -116,7 +116,7 @@ class UploaderUseCaseTest: Spek({
                 runBlocking {
                     when(val execute = useCase(requestParams)) {
                         is UploadResult.Error -> {
-                            assertEquals(UploadState.EXT_NOT_ALLOWED, execute.reason)
+                            assertEquals(UploadErrorState.EXT_ISSUE, execute.reason)
                         }
                     }
                 }
@@ -157,7 +157,7 @@ class UploaderUseCaseTest: Spek({
                 runBlocking {
                     when(val execute = useCase(requestParams)) {
                         is UploadResult.Error -> {
-                            assertEquals(UploadState.FILE_MAX_SIZE, execute.reason)
+                            assertEquals(UploadErrorState.MAX_SIZE, execute.reason)
                         }
                     }
                 }
