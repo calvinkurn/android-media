@@ -70,7 +70,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     private var targetCategoryName = ""
 
 
-    private var categorySlug = "0"
+    private var keyCategorySlug = "0"
 
     private val tabAdapter: BrandlistContainerAdapter by lazy {
         BrandlistContainerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
@@ -82,7 +82,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             brandlistTracking = BrandlistTracking(it)
         }
         arguments?.let {
-            categorySlug = it.getString(CATEGORY_EXTRA_APPLINK, "0")
+            keyCategorySlug = it.getString(CATEGORY_EXTRA_APPLINK, "0")
         }
     }
 
@@ -126,9 +126,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     private fun init(view: View) {
-
         configStatusBar(view)
-
         mainToolbar = view.findViewById(R.id.maintoolbar)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingLayout = view.findViewById(R.id.view_category_tab_loading)
@@ -140,6 +138,15 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         mainToolbar?.let {
             configMainToolbar(it)
         }
+    }
+
+    private fun getSelectedCategory(brandListCategories: BrandlistCategories): Int {
+        brandListCategories.categories.forEachIndexed { index, category ->
+            if (keyCategorySlug !== "0" && category.categoryId == keyCategorySlug) {
+                return index
+            }
+        }
+        return 0
     }
 
     private fun observeBrandListCategoriesData() {
@@ -164,7 +171,8 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         }
         tabAdapter.notifyDataSetChanged()
         tabLayout?.setup(viewPager, convertToCategoryTabModels(brandListCategories.categories), appbarCategory)
-        tabLayout?.getTabAt(0)?.select()
+        val categorySelected = getSelectedCategory(brandListCategories)
+        tabLayout?.getTabAt(categorySelected)?.select()
 
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) { }
