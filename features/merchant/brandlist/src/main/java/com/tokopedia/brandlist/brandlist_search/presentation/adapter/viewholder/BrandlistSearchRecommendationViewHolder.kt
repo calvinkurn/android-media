@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationViewModel
+import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import kotlinx.android.synthetic.main.item_search_result.view.*
 
 
@@ -21,16 +23,26 @@ class BrandlistSearchRecommendationViewHolder(view: View): AbstractViewHolder<Br
     private val txtBrandName = itemView.tv_brand_name
 
     override fun bind(element: BrandlistSearchRecommendationViewModel) {
-        bindData(element.name, element.logoUrl, element.imageUrl)
+        bindData(element.name, element.logoUrl, element.imageUrl,
+                element.id, element.url, element.listener)
     }
 
-    private fun bindData(name: String, brandLogoUrl: String, brandImageUrl: String) {
+    private fun bindData(name: String, brandLogoUrl: String, brandImageUrl: String,
+                         shopId: Int, Applink: String, tracking: BrandlistSearchTrackingListener) {
         txtBrandName.text = name
         ImageHandler.loadImage(context, imgBrandLogo, brandLogoUrl, null)
-        if(brandImageUrl.isNotBlank()) {
+        if (brandImageUrl.isNotBlank()) {
             ImageHandler.loadImage(context, imgBrandImage, brandImageUrl, null)
         } else {
             imgBrandImage.visibility = View.GONE
+        }
+
+        // Todo - Need Shop position
+        val shoplogoPosition = 1
+        tracking.impressionBrand(shopId.toString(), shoplogoPosition.toString(), name, brandImageUrl)
+        itemView.setOnClickListener {
+            tracking.clickBrand(shopId.toString(), shoplogoPosition.toString(), name, brandImageUrl)
+            RouteManager.route(context, Applink)
         }
     }
 }

@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
 import com.tokopedia.brandlist.brandlist_search.data.mapper.BrandlistSearchMapper
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
@@ -67,6 +69,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private var adapterBrandSearch: BrandlistSearchResultAdapter? = null
     private var toolbar: Toolbar? = null
     private var keywordSearch = ""
+    private var categoryName = ""
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -105,6 +108,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
+        recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapterBrandSearch as StickyHeaderInterface))
         return view
     }
 
@@ -200,15 +204,15 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         viewModel.brandlistSearchResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val response = it.data.officialStoreAllBrands
-                    if(response.brands.isEmpty()) {
+                    val response = it.data.brands
+                    if(response.isEmpty()) {
                         viewModel.searchRecommendation(
-                                userSession.userId.toIntOrNull(),
+                                3045010,
                                 categoryIds = "0")
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
-                                        response.brands, searchView?.searchText ?: "", this))
+                                        response, searchView?.searchText ?: "", this))
                     }
                 }
                 is Fail -> {
@@ -252,7 +256,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
             when(it) {
                 is Success -> {
                     adapterBrandSearch?.hideLoading()
-                    val response = it.data.officialStoreAllBrands
+                    val response = it.data
                     endlessScrollListener.updateStateAfterGetData()
                     val currentOffset = viewModel.currentOffset
                     val groupHeader = viewModel.currentLetter.toUpperCase()
@@ -287,37 +291,24 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun clickBrandOnSearchBox() {
+    override fun clickBrandOnSearchBox(shopId: String) {
         val isLogin = userSession.isLoggedIn
         val optionalParam = "optional parameter"
-        brandlistTracking?.clickBrandOnSearchBox("", optionalParam, isLogin, keywordSearch)
+        brandlistTracking?.clickBrandOnSearchBox(categoryName, optionalParam, isLogin, keywordSearch, shopId)
     }
 
-
-
-    override fun clickSearchBox() {
-
+    override fun impressionBrand(shopId: String, shoplogoPosition: String,
+                                 shopName: String, imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.impressionBrand(isLogin, shopId, categoryName, shoplogoPosition, shopName,
+                imgUrl, true, keywordSearch)
     }
 
-    override fun clickCategory() {
-
-    }
-
-    override fun clickBrandPilihan() {
-
-    }
-
-
-    override fun impressionBrandBaru() {
-
-    }
-
-    override fun clickBrand() {
-
-    }
-
-    override fun impressionBrand() {
-
+    override fun clickBrand(shopId: String, shoplogoPosition: String, shopName: String, imgUrl: String) {
+        val isLogin = userSession.isLoggedIn
+        brandlistTracking?.clickBrand(
+                isLogin, shopId, categoryName, shoplogoPosition, shopName,
+                imgUrl, true, keywordSearch)
     }
 
 }

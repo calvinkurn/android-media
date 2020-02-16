@@ -29,6 +29,8 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
     companion object {
         const val INITIAL_AMOUNT = 4
         const val INCREMENTAL_AMOUNT = 6
+        const val START_INDEX_IMPRESSION = 0
+        const val INCREMENTAL_INDEX_IMPRESSION = 3
 
         @LayoutRes
         val LAYOUT = R.layout.brandlist_featured_brand_layout
@@ -53,6 +55,7 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
         element?.featuredBrands?.let {
             setFeaturedBrandList(it)
             setIncrementalBrandList(getInitialBrandList(it))
+            setImpressionDataTracking(getInitialBrandList(incrementalBrandList), START_INDEX_IMPRESSION)
             adapter?.setFeaturedBrands(getInitialBrandList(incrementalBrandList))
         }
 
@@ -61,6 +64,15 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
         } else {
             expandButtonView?.text = getString(R.string.brandlist_action_expand_all)
             expandButtonView?.setOnClickListener(createExpandButtonOnClickListener())
+        }
+    }
+
+    private fun setImpressionDataTracking(shops: List<Shop>, position: Int) {
+        shops.forEachIndexed { index, shop ->
+            listener.impressionBrandPilihan(
+                    (shop.id).toString(),
+                    (position + index + 1).toString(),
+                    shop.imageUrl, shop.name)
         }
     }
 
@@ -75,6 +87,7 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
                 val incrementalAmount = getIncrementalAmount(featuredBrandList, incrementalBrandList)
                 val incrementedBrandList = getIncrementedBrandList(featuredBrandList, incrementalAmount)
                 setIncrementalBrandList(incrementedBrandList)
+                setImpressionDataTracking(getInitialBrandList(incrementalBrandList), INCREMENTAL_INDEX_IMPRESSION)
                 adapter?.setFeaturedBrands(incrementedBrandList)
             }
         }

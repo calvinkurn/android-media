@@ -10,6 +10,7 @@ class BrandlistSearchResultViewModel(
         val logoUrl: String,
         val searchQuery: String,
         val appsUrl: String,
+        val id: Int,
         val listener: BrandlistSearchTrackingListener
 ) : Visitable<BrandlistSearchAdapterTypeFactory> {
 

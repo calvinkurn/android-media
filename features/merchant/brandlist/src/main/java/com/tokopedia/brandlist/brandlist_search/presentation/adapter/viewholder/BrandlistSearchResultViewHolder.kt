@@ -30,7 +30,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
     override fun bind(element: BrandlistSearchResultViewModel) {
         processString(element.name, element.searchQuery)
         bindData(element.defaultUrl, element.logoUrl)
-        setupApplink(element.appsUrl, element.listener)
+        setupApplink(element.appsUrl, element.listener, element.id)
     }
 
     private fun bindData(brandLogoUrl: String, brandImageUrl: String) {
@@ -64,9 +64,9 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
         } else -1
     }
 
-    private fun setupApplink(applink: String, tracking: BrandlistSearchTrackingListener) {
+    private fun setupApplink(applink: String, tracking: BrandlistSearchTrackingListener, shopId: Int) {
         itemView.search_result.setOnClickListener {
-            tracking.clickBrandOnSearchBox()
+            tracking.clickBrandOnSearchBox(shopId.toString())
             RouteManager.route(itemView.context, applink)
         }
     }

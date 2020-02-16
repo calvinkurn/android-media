@@ -2,17 +2,8 @@ package com.tokopedia.brandlist.common.listener
 
 interface BrandlistSearchTrackingListener {
 
-    fun clickBrandOnSearchBox()
-
-
-
-    fun clickSearchBox()
-    fun clickCategory()
-    fun clickBrandPilihan()
-
-
-    fun impressionBrandBaru()
-    fun clickBrand()
-    fun impressionBrand()
+    fun impressionBrand(shopId: String, shoplogoPosition: String, shopName: String, imgUrl: String)
+    fun clickBrandOnSearchBox(shopId: String)
+    fun clickBrand(shopId: String, shoplogoPosition: String, shopName: String, imgUrl: String)
 
 }

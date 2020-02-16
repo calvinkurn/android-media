@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
@@ -46,6 +47,7 @@ class FeaturedBrandAdapter(
         }
 
         fun bindData(shop: Shop, position: Int) {
+
             Glide.with(context)
                     .load(shop.imageUrl)
                     .dontAnimate()
@@ -55,6 +57,7 @@ class FeaturedBrandAdapter(
             brandImg.setOnClickListener{
                 listener.clickBrandPilihan((shop.id).toString(),
                         shop.name, shop.imageUrl, (position + 1).toString())
+                RouteManager.route(context, shop.url)
             }
         }
     }

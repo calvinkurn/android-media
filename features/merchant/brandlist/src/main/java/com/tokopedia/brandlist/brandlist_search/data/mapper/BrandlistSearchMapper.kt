@@ -1,7 +1,7 @@
 package com.tokopedia.brandlist.brandlist_search.data.mapper
 
+import com.tokopedia.brandlist.brandlist_page.data.model.Brand
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
-import com.tokopedia.brandlist.brandlist_search.data.model.Brand
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
@@ -20,6 +20,8 @@ class BrandlistSearchMapper {
                                 shop.name,
                                 shop.logoUrl,
                                 shop.imageUrl,
+                                shop.id,
+                                shop.url,
                                 listener
                         )
                 )
@@ -39,6 +41,7 @@ class BrandlistSearchMapper {
                                 brand.logoUrl,
                                 searchQuery,
                                 brand.appsUrl,
+                                brand.id,
                                 listener
                         )
                 )

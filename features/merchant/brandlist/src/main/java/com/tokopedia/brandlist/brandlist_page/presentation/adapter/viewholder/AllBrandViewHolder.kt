@@ -8,6 +8,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,8 +34,25 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
     }
 
     override fun bind(element: AllBrandViewModel?) {
-
         val brand = element?.brand
+
+        // Todo - Need Shop position
+        brand?.let {
+            itemView.setOnClickListener{
+                element.listener.clickBrand(
+                        (brand.id).toString(),
+                        "",
+                        brand.name,
+                        brand.exclusiveLogoURL)
+                RouteManager.route(context, brand.appsUrl)
+            }
+
+            element.listener.impressionBrand(
+                    (brand.id).toString(),
+                    "",
+                    brand.name,
+                    brand.exclusiveLogoURL)
+        }
 
         brandNewBadgeView?.let {
             if (brand != null) {

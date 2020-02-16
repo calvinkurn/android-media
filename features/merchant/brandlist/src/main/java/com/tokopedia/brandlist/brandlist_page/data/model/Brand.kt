@@ -7,6 +7,8 @@ data class Brand(
         val defaultUrl: String = "",
         @SerializedName("exclusiveLogoURL")
         val exclusiveLogoURL: String = "",
+        @SerializedName("appsUrl")
+        val appsUrl: String = "",
         @SerializedName("id")
         val id: Int = 0,
         @SerializedName("isNew")
