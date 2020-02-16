@@ -2,7 +2,7 @@ package com.tokopedia.travelhomepage.homepage.presentation.adapter.itemdecoratio
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.travelhomepage.homepage.shouldBeEquals
+import com.tokopedia.travelhomepage.shouldBeEquals
 import io.mockk.every
 import io.mockk.mockk
 import org.spekframework.spek2.Spek

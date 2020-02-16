@@ -5,12 +5,12 @@ import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.travelhomepage.homepage.InstantTaskExecutorRuleSpek
+import com.tokopedia.travelhomepage.InstantTaskExecutorRuleSpek
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.presentation.*
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment
-import com.tokopedia.travelhomepage.homepage.shouldBeEquals
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
+import com.tokopedia.travelhomepage.shouldBeEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
