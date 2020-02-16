@@ -8,13 +8,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationViewModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
-import kotlinx.android.synthetic.main.item_search_result.view.*
+import kotlinx.android.synthetic.main.item_search_recommendation.view.*
 
 
 class BrandlistSearchRecommendationViewHolder(view: View): AbstractViewHolder<BrandlistSearchRecommendationViewModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_search_result
+        val LAYOUT = R.layout.item_search_recommendation
     }
 
     private val context: Context = itemView.context

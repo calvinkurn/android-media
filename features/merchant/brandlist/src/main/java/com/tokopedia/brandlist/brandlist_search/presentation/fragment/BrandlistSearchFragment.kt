@@ -209,6 +209,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                         viewModel.searchRecommendation(
                                 (userSession.userId).toInt(),
                                 categoryIds = "0")
+                        recyclerView?.clearOnScrollListeners()
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(

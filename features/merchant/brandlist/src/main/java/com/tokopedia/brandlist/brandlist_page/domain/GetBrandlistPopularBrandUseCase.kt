@@ -31,8 +31,8 @@ class GetBrandlistPopularBrandUseCase @Inject constructor(
 
     companion object {
 
-        const val USER_ID = "user_id"
-        const val CATEGORY_IDS = "category_ids"
+        const val USER_ID = "userID"
+        const val CATEGORY_IDS = "categoryIds"
         const val DEVICE = "device"
         const val ANDROID_DEVICE_NUMBER = 4
         const val NEW_WIDGET_NAME = "NEW"
