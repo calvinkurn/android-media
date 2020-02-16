@@ -25,13 +25,6 @@ open class MediaUploaderUseCase @Inject constructor(
         return services.uploadFile(uploadUrl, fileParam(paramBuilder, progressCallback))
     }
 
-    fun createParams(uploadUrl: String, filePath: String): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(PARAM_URL_UPLOAD, uploadUrl)
-        requestParams.putAll(bodyParam(filePath))
-        return requestParams
-    }
-
     companion object {
         /**
          * keys of params
@@ -61,6 +54,13 @@ open class MediaUploaderUseCase @Inject constructor(
             val contentType = MediaType.parse("$DEFAULT_FILE_TYPE/*")
             val requestBody = ProgressRequestBody(file, contentType, progressCallback)
             return MultipartBody.Part.createFormData(BODY_FILE_UPLOAD, file.name, requestBody)
+        }
+
+        fun createParams(uploadUrl: String, filePath: String): RequestParams {
+            val requestParams = RequestParams.create()
+            requestParams.putString(PARAM_URL_UPLOAD, uploadUrl)
+            requestParams.putAll(bodyParam(filePath))
+            return requestParams
         }
     }
 
