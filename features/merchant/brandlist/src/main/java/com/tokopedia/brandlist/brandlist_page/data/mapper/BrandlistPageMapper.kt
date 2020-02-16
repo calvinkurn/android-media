@@ -39,8 +39,8 @@ class BrandlistPageMapper {
         }
 
         fun mappingAllBrand(allBrand: OfficialStoreAllBrands, adapter: BrandlistPageAdapter?, listener: BrandlistPageTracking) {
-            allBrand.brands.forEach {
-                adapter?.getVisitables()?.add(AllBrandViewModel(it, listener))
+            allBrand.brands.forEachIndexed { index, brand ->
+                adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
             }
             adapter?.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
         }
