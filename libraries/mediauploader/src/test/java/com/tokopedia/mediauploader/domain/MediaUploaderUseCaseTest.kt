@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.mediauploader.MockUploaderResponse
 import com.tokopedia.mediauploader.data.UploaderServices
 import com.tokopedia.mediauploader.data.entity.MediaUploader
+import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.usecase.RequestParams
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -17,7 +18,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
-import kotlin.test.assert
 import kotlin.test.assertFailsWith
 
 class MediaUploaderUseCaseTest: Spek({
@@ -33,11 +33,15 @@ class MediaUploaderUseCaseTest: Spek({
         val services = mockk<UploaderServices>()
         val useCase = MediaUploaderUseCase(services)
 
+        useCase.progressCallback = object : ProgressCallback {
+            override fun onProgress(percentage: Int) {}
+        }
+
         Scenario("create param with upload url and file path") {
             var requestParams = RequestParams()
 
             When("create param") {
-                requestParams = useCase.createParams(uploadUrl, filePath)
+                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath)
             }
             Then("it should return upload url correctly") {
                 assert(requestParams.getString("url", "") == uploadUrl)
@@ -59,7 +63,7 @@ class MediaUploaderUseCaseTest: Spek({
             var requestParams = RequestParams()
 
             Given("set param with upload url and file path") {
-                requestParams = useCase.createParams(uploadUrl, filePath)
+                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath)
             }
 
             Given("upload network services") {
