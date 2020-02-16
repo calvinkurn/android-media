@@ -14,7 +14,7 @@ class BrandlistSearchMapper {
                 shops: List<Shop>,
                 listener: BrandlistSearchTrackingListener): List<BrandlistSearchRecommendationViewModel> {
             val visitables = mutableListOf<BrandlistSearchRecommendationViewModel>()
-            for (shop in shops) {
+            shops.forEachIndexed { index, shop ->
                 visitables.add(
                         BrandlistSearchRecommendationViewModel(
                                 shop.name,
@@ -22,7 +22,8 @@ class BrandlistSearchMapper {
                                 shop.imageUrl,
                                 shop.id,
                                 shop.url,
-                                listener
+                                listener,
+                                (index + 1).toString()
                         )
                 )
             }
