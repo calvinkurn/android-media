@@ -5,7 +5,7 @@ import com.tokopedia.mediauploader.data.consts.UrlBuilder
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.data.state.UploadState
+import com.tokopedia.mediauploader.data.state.UploadErrorState
 import com.tokopedia.mediauploader.util.UploadValidatorUtil.getFileExtension
 import com.tokopedia.mediauploader.util.UploadValidatorUtil.isMaxBitmapResolution
 import com.tokopedia.mediauploader.util.UploadValidatorUtil.isMaxFileSize
@@ -42,19 +42,19 @@ class UploaderUseCase @Inject constructor(
 
         return when {
             !fileToUpload.exists() -> {
-                UploadResult.Error(UploadState.NOT_FOUND)
+                UploadResult.Error(UploadErrorState.NOT_FOUND)
             }
             !acceptExtension.contains(getFileExtension(filePath)) -> {
-                UploadResult.Error(UploadState.EXT_NOT_ALLOWED)
+                UploadResult.Error(UploadErrorState.EXT_ISSUE)
             }
             isMaxFileSize(filePath, maxFileSize) -> {
-                UploadResult.Error(UploadState.FILE_MAX_SIZE)
+                UploadResult.Error(UploadErrorState.MAX_SIZE)
             }
             isMinBitmapResolution(filePath, minWidth, minHeight) -> {
-                UploadResult.Error(UploadState.TINY_RESOLUTION)
+                UploadResult.Error(UploadErrorState.TINY_RES)
             }
             isMaxBitmapResolution(filePath, maxWidth, maxHeight) -> {
-                UploadResult.Error(UploadState.BIG_RESOLUTION)
+                UploadResult.Error(UploadErrorState.LARGE_RES)
             }
             else -> {
                 //progress of uploader
@@ -74,10 +74,10 @@ class UploaderUseCase @Inject constructor(
         }
     }
 
-    fun trackProgress(test: (percentage: Int) -> Unit) {
+    fun trackProgress(progress: (percentage: Int) -> Unit) {
         this.progressCallback = object : ProgressCallback {
             override fun onProgress(percentage: Int) {
-                test(percentage)
+                progress(percentage)
             }
         }
     }
