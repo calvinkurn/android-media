@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.brandlist_page.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
@@ -22,15 +23,29 @@ import javax.inject.Inject
 class BrandlistPageViewModel @Inject constructor(
         private val getBrandListFeaturedBrandUseCase: GetBrandlistFeaturedBrandUseCase,
         private val getBrandListPopularBrandUseCase: GetBrandlistPopularBrandUseCase,
-        private val getBrandlistAllBrandUseCase: GetBrandlistAllBrandUseCase,
+        private val getBrandListAllBrandUseCase: GetBrandlistAllBrandUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    val getFeaturedBrandResult = MutableLiveData<Result<OfficialStoreFeaturedShop>>()
-    val getPopularBrandResult = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
-    val getNewBrandResult = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
-    val getAllBrandHeaderResult = MutableLiveData<Result<OfficialStoreAllBrands>>()
-    val getAllBrandResult = MutableLiveData<Result<OfficialStoreAllBrands>>()
+    private val _getFeaturedBrandResult = MutableLiveData<Result<OfficialStoreFeaturedShop>>()
+    val getFeaturedBrandResult: LiveData<Result<OfficialStoreFeaturedShop>>
+        get() = _getFeaturedBrandResult
+
+    private val _getPopularBrandResult = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
+    val getPopularBrandResult: LiveData<Result<OfficialStoreBrandsRecommendation>>
+        get() = _getPopularBrandResult
+
+    private val _getNewBrandResult = MutableLiveData<Result<OfficialStoreBrandsRecommendation>>()
+    val getNewBrandResult: LiveData<Result<OfficialStoreBrandsRecommendation>>
+        get() = _getNewBrandResult
+
+    private val _getAllBrandHeaderResult = MutableLiveData<Result<OfficialStoreAllBrands>>()
+    val getAllBrandHeaderResult: LiveData<Result<OfficialStoreAllBrands>>
+        get() = _getAllBrandHeaderResult
+
+    private val _getAllBrandResult = MutableLiveData<Result<OfficialStoreAllBrands>>()
+    val getAllBrandResult: LiveData<Result<OfficialStoreAllBrands>>
+        get() = _getAllBrandResult
 
     private var firstLetterChanged = false
     private var totalBrandSize = 0
@@ -86,11 +101,11 @@ class BrandlistPageViewModel @Inject constructor(
     fun loadInitialData(category: Category?, userId: String?) {
         launchCatchError(block = {
 
-            getFeaturedBrandResult.postValue(Success(getFeaturedBrandsAsync(category?.categoryId).await()))
-            getPopularBrandResult.postValue(Success(getPopularBrandsAsync(userId, category?.categoryId).await()))
-            getNewBrandResult.postValue(Success(getNewBrandsAsync(userId, category?.categoryId).await()))
+            _getFeaturedBrandResult.postValue(Success(getFeaturedBrandsAsync(category?.categoryId).await()))
+            _getPopularBrandResult.postValue(Success(getPopularBrandsAsync(userId, category?.categoryId).await()))
+            _getNewBrandResult.postValue(Success(getNewBrandsAsync(userId, category?.categoryId).await()))
 
-            getAllBrandHeaderResult.postValue(Success(getAllBrandAsync(
+            _getAllBrandHeaderResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,
                     INITIAL_OFFSET,
                     ALL_BRANDS_QUERY,
@@ -98,7 +113,7 @@ class BrandlistPageViewModel @Inject constructor(
                     ALPHABETIC_ASC_SORT,
                     "").await()))
 
-            getAllBrandResult.postValue(Success(getAllBrandAsync(
+            _getAllBrandResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,
                     INITIAL_OFFSET,
                     ALL_BRANDS_QUERY,
@@ -114,7 +129,7 @@ class BrandlistPageViewModel @Inject constructor(
         val requestSize = geRequestSize(totalBrandSize, currentOffset)
 
         launchCatchError(block = {
-            getAllBrandResult.postValue(Success(getAllBrandAsync(
+            _getAllBrandResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,
                     currentOffset,
                     ALL_BRANDS_QUERY,
@@ -142,7 +157,7 @@ class BrandlistPageViewModel @Inject constructor(
                         .createParams(categoryId?.toIntOrNull() ?: 0)
                 featuredbrand = getBrandListFeaturedBrandUseCase.executeOnBackground()
             } catch (t: Throwable) {
-                getFeaturedBrandResult.value = Fail(t)
+                _getFeaturedBrandResult.value = Fail(t)
             }
             featuredbrand
         }
@@ -159,7 +174,7 @@ class BrandlistPageViewModel @Inject constructor(
                         )
                 popularBrand = getBrandListPopularBrandUseCase.executeOnBackground()
             } catch (t: Throwable) {
-                getPopularBrandResult.value = Fail(t)
+                _getPopularBrandResult.value = Fail(t)
             }
             popularBrand
         }
@@ -177,7 +192,7 @@ class BrandlistPageViewModel @Inject constructor(
                         )
                 newBrand = getBrandListPopularBrandUseCase.executeOnBackground()
             } catch (t: Throwable) {
-                getNewBrandResult.value = Fail(t)
+                _getNewBrandResult.value = Fail(t)
             }
             newBrand
         }
@@ -192,12 +207,12 @@ class BrandlistPageViewModel @Inject constructor(
         return async(Dispatchers.IO) {
             var allBrand = OfficialStoreAllBrands()
             try {
-                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase
+                getBrandListAllBrandUseCase.params = GetBrandlistAllBrandUseCase
                         .createParams(categoryId?.toIntOrNull()
                                 ?: 0, offset, query, brandSize, sortType, firstLetter)
-                allBrand = getBrandlistAllBrandUseCase.executeOnBackground()
+                allBrand = getBrandListAllBrandUseCase.executeOnBackground()
             } catch (t: Throwable) {
-                getAllBrandResult.value = Fail(t)
+                _getAllBrandResult.value = Fail(t)
             }
             allBrand
         }
