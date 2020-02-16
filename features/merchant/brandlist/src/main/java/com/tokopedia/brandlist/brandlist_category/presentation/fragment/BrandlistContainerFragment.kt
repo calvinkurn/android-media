@@ -82,8 +82,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             brandlistTracking = BrandlistTracking(it)
         }
         arguments?.let {
-            categorySlug = it.getString(CATEGORY_EXTRA_APPLINK)
-            println(categorySlug)
+            categorySlug = it.getString(CATEGORY_EXTRA_APPLINK, "0")
         }
     }
 
@@ -243,7 +242,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     private fun configMainToolbar(mainToolbar: MainToolbar) {
 
         activity?.let {
-            (it as AppCompatActivity).let {
+            (it as? AppCompatActivity)?.let {
                 it.setSupportActionBar(mainToolbar)
                 it.supportActionBar?.setDisplayShowTitleEnabled(false)
                 it.supportActionBar?.setDisplayHomeAsUpEnabled(true)

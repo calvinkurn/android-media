@@ -4,5 +4,5 @@
     <string name="path_redirect_create_shop" translatable="false">/redirect-create-shop</string>
 
     <string name="path_brandlist" translatable="false">/official-store/brand/.*\\/</string>
-    <string name="path_brandlist_search" translatable="false">/official-store/brand/search/</string>
+    <string name="path_brandlist_search" translatable="false">/official-store/brand/search</string>
 </resources>
