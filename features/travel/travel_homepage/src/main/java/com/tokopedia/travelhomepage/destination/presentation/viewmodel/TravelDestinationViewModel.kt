@@ -13,7 +13,7 @@ import com.tokopedia.travelhomepage.destination.model.TravelDestinationCityModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
 import com.tokopedia.travelhomepage.destination.model.mapper.TravelDestinationMapper
-import com.tokopedia.travelhomepage.destination.usecase.GetEmptyViewModelsUseCase
+import com.tokopedia.travelhomepage.destination.usecase.GetEmptyModelsUseCase
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 class TravelDestinationViewModel  @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
+        private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -47,7 +47,7 @@ class TravelDestinationViewModel  @Inject constructor(
     private val mapper = TravelDestinationMapper()
 
     fun getInitialList() {
-        travelDestinationItemListMutable.value = getEmptyViewModelsUseCase.requestEmptyViewModels()
+        travelDestinationItemListMutable.value = getEmptyModelsUseCase.requestEmptyViewModels()
     }
 
     fun getDestinationCityData(query: String, webUrl: String) {
