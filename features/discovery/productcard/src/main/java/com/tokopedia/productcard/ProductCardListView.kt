@@ -39,6 +39,8 @@ class ProductCardListView: BaseCustomView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasOptions)
 
+        buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
+
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
     }
 }

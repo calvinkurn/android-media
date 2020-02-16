@@ -2,7 +2,6 @@ package com.tokopedia.productcard.test.list
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
@@ -26,34 +25,35 @@ internal class ProductCardListTest {
     fun testProductCardList() {
         onView(withId(R.id.productCardListTestRecyclerView))
                 .checkProductCardGeneralCases()
-//                .checkProductCardAtPosition(18, getProductCardMatchersPosition18())
+                .checkProductCardAtPosition(18, getProductCardMatchersPosition18())
     }
 
-//    private fun getProductCardMatchersPosition18(): Map<Int, Matcher<View?>> {
-//        val position = 18
-//        val productCardModel = productCardModelTestData[position]
-//
-//        val labelProductStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position $position has no label status")
-//        val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
-//        val labelGimmick = productCardModel.getLabelGimmick() ?: throw Exception("Product Card Position $position has no label gimmick")
-//
-//        return mutableMapOf<Int, Matcher<View?>>().also {
-//            it[R.id.imageProduct] = isDisplayed()
-//            it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-//            it[R.id.textTopAds] = isDisplayed()
-//            it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-//            it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-//            it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-//            it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-//            it[R.id.imageShopBadge] = isDisplayed()
-//            it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-//            it[R.id.imageRatingString] = isDisplayed()
-//            it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
-//            it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-//            it[R.id.imageFreeOngkirPromo] = isDisplayed()
-//            it[R.id.imageThreeDots] = isDisplayed()
-//            it[R.id.buttonAddToCart] = isDisplayed()
-//            it[R.id.buttonRemoveFromWishlist] = isDisplayed()
-//        }
-//    }
+    private fun getProductCardMatchersPosition18(): Map<Int, Matcher<View?>> {
+        val position = 18
+        val productCardModel = productCardModelTestData[position]
+
+        val labelProductStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position $position has no label status")
+        val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")
+        val labelGimmick = productCardModel.getLabelGimmick() ?: throw Exception("Product Card Position $position has no label gimmick")
+
+        return mutableMapOf<Int, Matcher<View?>>().also {
+            it[R.id.imageProduct] = isDisplayed()
+            it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+            it[R.id.textTopAds] = isDisplayed()
+            it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+            it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+            it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+            it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+            it[R.id.imageShopBadge] = isDisplayed()
+            it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+            it[R.id.imageRatingString] = isDisplayed()
+            it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+            it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+            it[R.id.imageFreeOngkirPromo] = isDisplayed()
+            it[R.id.imageThreeDots] = isDisplayed()
+            it[R.id.buttonAddToCart] = isDisplayed()
+            it[R.id.buttonRemoveFromWishlist] = isDisplayed()
+            it[R.id.imageRemoveFromWishlist] = isDisplayed()
+        }
+    }
 }
