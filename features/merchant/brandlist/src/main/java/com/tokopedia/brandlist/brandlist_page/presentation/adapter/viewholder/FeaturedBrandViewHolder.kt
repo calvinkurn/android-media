@@ -46,6 +46,7 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
             adapter = FeaturedBrandAdapter(it, listener)
             recyclerView?.layoutManager = GridLayoutManager(it, 2)
             recyclerView?.adapter = adapter
+            expandButtonView?.setOnClickListener(createExpandButtonOnClickListener())
         }
     }
 
@@ -63,7 +64,6 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
             expandButtonView?.hide()
         } else {
             expandButtonView?.text = getString(R.string.brandlist_action_expand_all)
-            expandButtonView?.setOnClickListener(createExpandButtonOnClickListener())
         }
     }
 
@@ -81,7 +81,6 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
     }
 
     private fun createExpandButtonOnClickListener(): View.OnClickListener? {
-        listener.clickLihatSemua()
         return View.OnClickListener {
             if (featuredBrandList.size != incrementalBrandList.size) {
                 val incrementalAmount = getIncrementalAmount(featuredBrandList, incrementalBrandList)
@@ -89,6 +88,7 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
                 setIncrementalBrandList(incrementedBrandList)
                 setImpressionDataTracking(getInitialBrandList(incrementalBrandList), INCREMENTAL_INDEX_IMPRESSION)
                 adapter?.setFeaturedBrands(incrementedBrandList)
+                listener.clickLihatSemua()
             }
         }
     }

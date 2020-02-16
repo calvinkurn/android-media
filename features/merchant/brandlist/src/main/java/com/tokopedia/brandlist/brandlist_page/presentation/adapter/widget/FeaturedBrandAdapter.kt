@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,11 @@ class FeaturedBrandAdapter(
 
     private var featuredBrands: List<Shop> = listOf()
 
+    companion object {
+        const val TAG_SHOP = 0
+        const val TAG_POSITION = 1
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeaturedBrandViewHolder {
         return FeaturedBrandViewHolder(LayoutInflater.from(context).inflate(R.layout.brandlist_featured_brand_item, parent, false))
     }
@@ -36,28 +42,51 @@ class FeaturedBrandAdapter(
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NewApi")
     inner class FeaturedBrandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val context: Context
-        var brandImg: ImageView
+
+        val context: Context = itemView.context
+        var brandImageView: ImageView? = null
 
         init {
-            context = itemView.context
-            brandImg = itemView.findViewById(R.id.iv_featured_brand)
+            brandImageView = itemView.findViewById(R.id.iv_featured_brand)
+
+            itemView.setOnClickListener {
+
+                val view = it
+                val shopObj = it.getTag(TAG_SHOP)
+
+                shopObj?.let {
+
+                    val shop: Shop = view.getTag(TAG_SHOP) as Shop
+                    val position: Int = view.getTag(TAG_POSITION) as Int
+
+                    listener.clickBrandPilihan((shop.id).toString(), shop.name, shop.imageUrl, (position + 1).toString())
+
+                    RouteManager.route(context, shop.url)
+                }
+            }
         }
 
-        fun bindData(shop: Shop, position: Int) {
+        fun bindData(shop: Shop?, position: Int) {
 
+            itemView.setTag(NewBrandAdapter.TAG_SHOP, shop)
+            itemView.setTag(NewBrandAdapter.TAG_POSITION, position)
+
+            shop?.let {
+                brandImageView?.let {
+                    loadImageToImageView(shop.imageUrl, it)
+                }
+            }
+        }
+
+        private fun loadImageToImageView(imageUrl: String, brandImageView: ImageView) {
             Glide.with(context)
-                    .load(shop.imageUrl)
+                    .load(imageUrl)
                     .dontAnimate()
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(brandImg)
-            brandImg.setOnClickListener{
-                listener.clickBrandPilihan((shop.id).toString(),
-                        shop.name, shop.imageUrl, (position + 1).toString())
-                RouteManager.route(context, shop.url)
-            }
+                    .into(brandImageView)
         }
     }
 }

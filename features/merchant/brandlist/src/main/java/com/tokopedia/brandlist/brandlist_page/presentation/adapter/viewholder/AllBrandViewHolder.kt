@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
@@ -10,10 +11,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
+import com.tokopedia.brandlist.brandlist_page.data.model.Brand
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandViewModel
+import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 
+@SuppressLint("NewApi")
 class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel>(itemView) {
 
     private var context: Context? = null
@@ -31,6 +35,27 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
         itemView?.context?.let {
             context = it
         }
+
+        itemView?.setOnClickListener {
+
+            val view = it
+            val brandObj = it.getTag(TAG_BRAND)
+
+            brandObj?.let {
+
+                val brand = view.getTag(TAG_BRAND) as Brand
+                val index = view.getTag(TAG_POSITION) as Int
+                val listener = view.getTag(TAG_LISTENER) as BrandlistPageTrackingListener
+
+                listener.clickBrand(
+                        (brand.id).toString(),
+                        index.toString(),
+                        brand.name,
+                        brand.exclusiveLogoURL)
+
+                RouteManager.route(context, brand.appsUrl)
+            }
+        }
     }
 
     override fun bind(element: AllBrandViewModel?) {
@@ -39,14 +64,10 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
         val brand = element?.brand
 
         brand?.let {
-            itemView.setOnClickListener{
-                element.listener.clickBrand(
-                        (brand.id).toString(),
-                        index.toString(),
-                        brand.name,
-                        brand.exclusiveLogoURL)
-                RouteManager.route(context, brand.appsUrl)
-            }
+
+            itemView.setTag(TAG_BRAND, brand)
+            itemView.setTag(TAG_POSITION, index)
+            itemView.setTag(TAG_LISTENER, element.listener)
 
             element.listener.impressionBrand(
                     (brand.id).toString(),
@@ -94,6 +115,11 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
     }
 
     companion object {
+
+        const val TAG_BRAND = 0
+        const val TAG_POSITION = 1
+        const val TAG_LISTENER = 2
+
         @LayoutRes
         val LAYOUT = R.layout.brandlist_all_brand_item
     }
