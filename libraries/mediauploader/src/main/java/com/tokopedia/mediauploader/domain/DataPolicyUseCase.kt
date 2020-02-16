@@ -23,12 +23,6 @@ open class DataPolicyUseCase @Inject constructor(
         }
     }
 
-    fun createParams(sourceId: String): Map<String, Any> {
-        val requestParams = hashMapOf<String, Any>()
-        requestParams[PARAM_SOURCE_ID] = sourceId
-        return requestParams
-    }
-
     companion object {
         /**
          * GraphQueryBuilder: query builder,
@@ -41,6 +35,12 @@ open class DataPolicyUseCase @Inject constructor(
          * @param source_id
          */
         private const val PARAM_SOURCE_ID = "source"
+
+        fun createParams(sourceId: String): Map<String, Any> {
+            val requestParams = hashMapOf<String, Any>()
+            requestParams[PARAM_SOURCE_ID] = sourceId
+            return requestParams
+        }
     }
 
 }
