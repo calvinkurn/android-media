@@ -159,17 +159,17 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private fun initView(view: View) {
         statusBar = view.findViewById(R.id.statusbar)
         toolbar = view.findViewById(R.id.toolbar)
-        configToolbar(view)
+        configToolbar()
         initSearchView()
     }
 
-    private fun configToolbar(view: View){
-        toolbar?.setNavigationIcon(com.tokopedia.brandlist.R.drawable.brandlist_icon_arrow_black)
+    private fun configToolbar() {
+        toolbar?.setNavigationIcon(R.drawable.brandlist_icon_arrow_black)
         activity?.let {
-            (it as AppCompatActivity).let {
-                it.setSupportActionBar(toolbar)
-                it.supportActionBar?.setDisplayShowTitleEnabled(false)
-                it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (it as? AppCompatActivity)?.let { appCompatActivity ->
+                appCompatActivity.setSupportActionBar(toolbar)
+                appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
+                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
         }
     }
