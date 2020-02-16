@@ -228,7 +228,7 @@ object DeeplinkMapper {
         val parsedUri = Uri.parse(deeplink)
         val segments = parsedUri.pathSegments
 
-        val categoryId = if (segments.size > 1) segments.last() else ""
+        val categoryId = if (segments.size > 1) segments.last() else "0"
         val completedURI = UriUtil.buildUri(ApplinkConstInternalMechant.BRANDLIST, categoryId)
         return completedURI
     }
