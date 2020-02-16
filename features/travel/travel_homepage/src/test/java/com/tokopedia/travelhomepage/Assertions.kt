@@ -1,4 +1,4 @@
-package com.tokopedia.travelhomepage.homepage
+package com.tokopedia.travelhomepage
 
 /**
  * @author by furqan on 04/02/2020

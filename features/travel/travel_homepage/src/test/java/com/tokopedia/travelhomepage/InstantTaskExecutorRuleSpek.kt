@@ -1,4 +1,4 @@
-package com.tokopedia.travelhomepage.homepage
+package com.tokopedia.travelhomepage
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
