@@ -646,7 +646,7 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     private fun logout() {
-        if (GlobalConfig.isSellerApp() && context.isTaskRoot) {
+        if (GlobalConfig.isSellerApp()) {
             showLogoutDialog()
         }
     }
