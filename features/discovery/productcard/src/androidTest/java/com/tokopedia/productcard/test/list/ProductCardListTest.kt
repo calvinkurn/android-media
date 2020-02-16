@@ -5,10 +5,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.productcard.test.ProductCardTest
 import com.tokopedia.productcard.test.R
-import com.tokopedia.productcard.test.checkProductCardAtPosition
-import com.tokopedia.productcard.test.checkProductCardGeneralCases
-import com.tokopedia.productcard.test.productCardModelTestData
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import org.hamcrest.Matcher
 import org.junit.Rule
@@ -23,14 +21,18 @@ internal class ProductCardListTest {
 
     @Test
     fun testProductCardList() {
-        onView(withId(R.id.productCardListTestRecyclerView))
-                .checkProductCardGeneralCases()
-                .checkProductCardAtPosition(18, getProductCardMatchersPosition18())
+        val recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
+        val additionalProductCardMatchers = mutableListOf<Map<Int, Matcher<View?>>>().also {
+            it.add(getProductCardMatchersPosition18())
+        }
+
+        ProductCardTest(recyclerViewViewInteraction, additionalProductCardMatchers)
+                .startTest()
     }
 
     private fun getProductCardMatchersPosition18(): Map<Int, Matcher<View?>> {
         val position = 18
-        val productCardModel = productCardModelTestData[position]
+        val productCardModel = productCardListTestData[position]
 
         val labelProductStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position $position has no label status")
         val labelPrice = productCardModel.getLabelPrice() ?: throw Exception("Product Card Position $position has no label price")

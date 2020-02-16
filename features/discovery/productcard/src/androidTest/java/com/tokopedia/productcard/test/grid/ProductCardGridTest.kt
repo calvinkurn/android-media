@@ -3,8 +3,8 @@ package com.tokopedia.productcard.test.grid
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.productcard.test.ProductCardTest
 import com.tokopedia.productcard.test.R
-import com.tokopedia.productcard.test.checkProductCardGeneralCases
 import org.junit.Rule
 import org.junit.Test
 
@@ -17,6 +17,8 @@ internal class ProductCardGridTest {
 
     @Test
     fun testProductCardGrid() {
-        onView(withId(R.id.productCardGridTestRecyclerView)).checkProductCardGeneralCases()
+        val recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
+
+        ProductCardTest(recyclerViewViewInteraction).startTest()
     }
 }
