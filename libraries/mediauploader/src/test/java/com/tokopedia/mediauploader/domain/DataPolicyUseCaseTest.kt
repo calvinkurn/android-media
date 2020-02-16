@@ -9,6 +9,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class DataPolicyUseCaseTest: Spek({
@@ -16,15 +17,13 @@ class DataPolicyUseCaseTest: Spek({
         val repository = mockk<MediaRepository>(relaxed = true)
         val useCase = DataPolicyUseCase(repository)
         val sourceId = "WXjxja"
-        val dataUploaderPolicy = DataUploaderPolicy(
-                UploaderPolicy(SourcePolicy(sourceType = "test"))
-        )
+        val dataUploaderPolicy = DataUploaderPolicy()
 
         Scenario("create param with source id") {
             var requestParams = mapOf<String, Any>()
 
             When("create param") {
-                requestParams = useCase.createParams(sourceId)
+                requestParams = DataPolicyUseCase.createParams(sourceId)
             }
             Then("it should return source id correctly") {
                 assert(requestParams["source"] == sourceId)
@@ -48,7 +47,7 @@ class DataPolicyUseCaseTest: Spek({
             var requestParams = mapOf<String, Any>()
 
             Given("request param") {
-                requestParams = useCase.createParams(sourceId)
+                requestParams = DataPolicyUseCase.createParams(sourceId)
             }
             Given("graphql repository") {
                 repository.stubDataPolicyRepository(onError = mapOf())
@@ -56,7 +55,7 @@ class DataPolicyUseCaseTest: Spek({
             Then("it should return policy of uploader") {
                 runBlocking {
                     val result = useCase(requestParams)
-                    assert(result == dataUploaderPolicy)
+                    assertEquals(dataUploaderPolicy, result)
                 }
             }
         }
@@ -64,7 +63,7 @@ class DataPolicyUseCaseTest: Spek({
         Scenario("request data policy with null error") {
             var requestParams = mapOf<String, Any>()
             Given("create param") {
-                requestParams = useCase.createParams(sourceId)
+                requestParams = DataPolicyUseCase.createParams(sourceId)
             }
             Given("graphql repository") {
                 repository.stubDataPolicyRepository(onError = null)
