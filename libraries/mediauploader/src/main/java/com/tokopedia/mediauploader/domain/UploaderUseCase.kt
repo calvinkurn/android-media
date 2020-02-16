@@ -24,10 +24,11 @@ class UploaderUseCase @Inject constructor(
     override suspend fun execute(params: RequestParams): UploadResult {
         if (params.parameters.isEmpty()) throw Exception("Not param found")
         val sourceId = params.getString(PARAM_SOURCE_ID, "")
-        val filePath = params.getString(PARAM_FILE_PATH, "")
+        val fileToUpload = params.getObject(PARAM_FILE_PATH) as File
+        val filePath = fileToUpload.path
 
         //get media upload policy
-        val dataPolicyParams = dataPolicyUseCase.createParams(sourceId)
+        val dataPolicyParams = DataPolicyUseCase.createParams(sourceId)
         val policyData = dataPolicyUseCase(dataPolicyParams)
         val policyDataMapper = ImagePolicyMapper.mapToSourcePolicy(policyData.dataPolicy)
 
@@ -40,7 +41,7 @@ class UploaderUseCase @Inject constructor(
         val acceptExtension = policyDataMapper.imagePolicy.extension.split(",")
 
         return when {
-            !File(filePath).exists() -> {
+            !fileToUpload.exists() -> {
                 UploadResult.Error(UploadState.NOT_FOUND)
             }
             !acceptExtension.contains(getFileExtension(filePath)) -> {
@@ -61,7 +62,10 @@ class UploaderUseCase @Inject constructor(
 
                 //uploading a media
                 val generatedUrl = UrlBuilder.generate(policyDataMapper.host, sourceId)
-                val mediaUploaderParams = mediaUploaderUseCase.createParams(generatedUrl, filePath)
+                val mediaUploaderParams = MediaUploaderUseCase.createParams(
+                        uploadUrl = generatedUrl,
+                        filePath = fileToUpload.path
+                )
                 val upload = mediaUploaderUseCase(mediaUploaderParams)
 
                 //get upload id
@@ -78,10 +82,10 @@ class UploaderUseCase @Inject constructor(
         }
     }
 
-    fun createParams(sourceId: String, filePath: String): RequestParams {
+    fun createParams(sourceId: String, filePath: File): RequestParams {
         val params = RequestParams()
         params.putString(PARAM_SOURCE_ID, sourceId)
-        params.putString(PARAM_FILE_PATH, filePath)
+        params.putObject(PARAM_FILE_PATH, filePath)
         return params
     }
 
