@@ -3,15 +3,18 @@ package com.tokopedia.sellerhomedrawer.presentation.view.drawer
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -35,7 +38,7 @@ import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataList
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.custom_action_bar_title.view.*
+import kotlinx.android.synthetic.main.sah_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_custom_actionbar_drawer_notification.view.*
 import rx.Observable
 import javax.inject.Inject
@@ -81,14 +84,14 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         }
     }
 
-    fun injectDependency() {
+    private fun injectDependency() {
         val component: SellerHomeDrawerComponent = DaggerSellerHomeDrawerComponent.builder()
                 .sellerHomeDashboardModule(SellerHomeDashboardModule(this))
                 .build()
         component.inject(this)
     }
 
-    fun setupDrawer() {
+    private fun setupDrawer() {
 
         val sellerTokoCashObservable = Observable.just(SellerTokoCashData())
         val sellerTokoCashUseCase = SellerTokoCashUseCase(sellerTokoCashObservable)
@@ -298,6 +301,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
             removeAllViews()
             initNotificationMenu()
             initTitle()
+            background = ColorDrawable(ContextCompat.getColor(context, R.color.tkpd_main_green))
         }
 
         setSupportActionBar(toolbar)
