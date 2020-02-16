@@ -14,7 +14,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         app:corners="16" />
