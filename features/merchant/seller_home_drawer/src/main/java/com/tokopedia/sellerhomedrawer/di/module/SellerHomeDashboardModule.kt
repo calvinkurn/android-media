@@ -14,15 +14,18 @@ import dagger.Provides
 @Module(includes = [SellerHomeDashboardQueryModule::class, SellerHomeDashboardUseCaseModule::class])
 class SellerHomeDashboardModule(val context: Context) {
 
+    @SellerHomeDashboardScope
     @Provides
     fun providePresenter(getShopStatusUseCase: GetShopStatusUseCase,
                          flashSaleGetSellerStatusUseCase: FlashSaleGetSellerStatusUseCase,
                          userSession: UserSessionInterface): SellerHomeDashboardDrawerPresenter =
             SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession)
 
+    @SellerHomeDashboardScope
     @Provides
     fun provideUserSession(): UserSessionInterface = UserSession(context)
 
+    @SellerHomeDashboardScope
     @Provides
     fun provideContext(): Context = context
 }

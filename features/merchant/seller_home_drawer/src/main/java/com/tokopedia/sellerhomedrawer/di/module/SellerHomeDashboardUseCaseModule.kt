@@ -14,17 +14,21 @@ import javax.inject.Named
 @Module
 class SellerHomeDashboardUseCaseModule {
 
+    @SellerHomeDashboardScope
     @Provides
     fun provideGraphQlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
+    @SellerHomeDashboardScope
     @Provides
     fun provideFlashSaleGetSellerStatusUseCase(graphqlUseCase: GraphqlUseCase): FlashSaleGetSellerStatusUseCase =
         FlashSaleGetSellerStatusUseCase(graphqlUseCase)
 
+    @SellerHomeDashboardScope
     @Provides
     fun provideGetShopStatusUseCase(graphqlUseCase: GraphqlUseCase, @Named(SellerHomeParamConstant.RAW_GM_STATUS) rawQuery: String) :
             GetShopStatusUseCase = GetShopStatusUseCase(graphqlUseCase, rawQuery)
 
+    @SellerHomeDashboardScope
     @Provides
     fun provideGetSellerHomeUserAttributesUseCase(graphqlUseCase: GraphqlUseCase, @Named(SellerHomeParamConstant.SELLER_DRAWER_DATA) rawQuery: String) :
             GetSellerHomeUserAttributesUseCase = GetSellerHomeUserAttributesUseCase(graphqlUseCase, rawQuery)
