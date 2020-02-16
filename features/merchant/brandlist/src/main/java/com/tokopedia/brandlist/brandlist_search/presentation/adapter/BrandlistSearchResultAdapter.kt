@@ -9,7 +9,9 @@ class BrandlistSearchResultAdapter(
         private val adapterTypeFactory: BrandlistSearchAdapterTypeFactory) :
         BaseAdapter<BrandlistSearchAdapterTypeFactory>(adapterTypeFactory), StickyHeaderInterface {
 
-    private val numberOfShimmeringCards = 5
+    companion object {
+        private const val numberOfShimmeringCards = 5
+    }
 
     fun updateSearchResultData(searchResultList: List<BrandlistSearchResultViewModel>) {
         visitables.clear()
