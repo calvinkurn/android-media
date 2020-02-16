@@ -10,7 +10,8 @@ class BrandlistSearchRecommendationViewModel(
         val imageUrl: String,
         val id: Int,
         val url: String,
-        val listener: BrandlistSearchTrackingListener
+        val listener: BrandlistSearchTrackingListener,
+        val position: String
 ) : Visitable<BrandlistSearchAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: BrandlistSearchAdapterTypeFactory): Int {

@@ -41,7 +41,7 @@ class BrandlistSearchAdapterTypeFactory(
         return when (type) {
             BrandlistSearchResultViewHolder.LAYOUT -> BrandlistSearchResultViewHolder(parent)
             BrandlistSearchRecommendationViewHolder.LAYOUT -> BrandlistSearchRecommendationViewHolder(parent)
-            BrandlistSearchNotFoundViewHolder.LAYOUT -> BrandlistSearchNotFoundViewHolder(parent,brandlistSearchFragment)
+            BrandlistSearchNotFoundViewHolder.LAYOUT -> BrandlistSearchNotFoundViewHolder(parent, brandlistSearchFragment)
             BrandlistSearchHeaderViewHolder.LAYOUT -> BrandlistSearchHeaderViewHolder(parent)
             BrandlistSearchShimmeringViewHolder.LAYOUT -> BrandlistSearchShimmeringViewHolder(parent)
             BrandlistSearchAllBrandLabelViewHolder.LAYOUT -> BrandlistSearchAllBrandLabelViewHolder(parent)

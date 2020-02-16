@@ -27,8 +27,9 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
-import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
+import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,7 +39,7 @@ import javax.inject.Inject
 
 class BrandlistPageFragment :
         BaseDaggerFragment(),
-        HasComponent<BrandlistPageComponent>, BrandlistPageTracking {
+        HasComponent<BrandlistPageComponent>, BrandlistPageTrackingListener {
 
     companion object {
         const val BRANDLIST_GRID_SPAN_COUNT = 3
@@ -61,7 +62,8 @@ class BrandlistPageFragment :
     private var category: Category? = null
     private var adapter: BrandlistPageAdapter? = null
     private var isInitialDataLoaded: Boolean = false
-    private var isScrolling = false
+    private var isLoadedOnce: Boolean = false
+    private var isScrolling: Boolean = false
     private var categoryName = ""
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
@@ -294,9 +296,15 @@ class BrandlistPageFragment :
     }
 
     private fun loadData(category: Category, userId: String, isRefresh: Boolean = false) {
-        if (!isInitialDataLoaded || isRefresh) {
-            viewModel.loadInitialData(category, userId)
-            isInitialDataLoaded = true
+        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
+            if (!isLoadedOnce  || isRefresh) {
+                viewModel.loadInitialData(category, userId)
+                isLoadedOnce = true
+
+                if (!isRefresh) {
+                    brandlistTracking?.sendScreen(categoryName.toEmptyStringIfNull())
+                }
+            }
         }
     }
 

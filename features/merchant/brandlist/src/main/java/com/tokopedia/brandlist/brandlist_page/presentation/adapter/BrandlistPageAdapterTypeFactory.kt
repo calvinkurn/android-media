@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
-import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
+import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 
 class BrandlistPageAdapterTypeFactory(
-        private val trackingListener: BrandlistPageTracking
+        private val trackingListener: BrandlistPageTrackingListener
 ) : BaseAdapterTypeFactory(), BrandlistPageTypeFactory {
 
     override fun type(featuredBrandViewModel: FeaturedBrandViewModel): Int {

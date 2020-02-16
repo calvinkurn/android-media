@@ -24,11 +24,11 @@ class BrandlistSearchRecommendationViewHolder(view: View): AbstractViewHolder<Br
 
     override fun bind(element: BrandlistSearchRecommendationViewModel) {
         bindData(element.name, element.logoUrl, element.imageUrl,
-                element.id, element.url, element.listener)
+                element.id, element.url, element.listener, element.position)
     }
 
-    private fun bindData(name: String, brandLogoUrl: String, brandImageUrl: String,
-                         shopId: Int, Applink: String, tracking: BrandlistSearchTrackingListener) {
+    private fun bindData(name: String, brandLogoUrl: String, brandImageUrl: String, shopId: Int,
+                         Applink: String, tracking: BrandlistSearchTrackingListener, position: String) {
         txtBrandName.text = name
         ImageHandler.loadImage(context, imgBrandLogo, brandLogoUrl, null)
         if (brandImageUrl.isNotBlank()) {
@@ -37,11 +37,9 @@ class BrandlistSearchRecommendationViewHolder(view: View): AbstractViewHolder<Br
             imgBrandImage.visibility = View.GONE
         }
 
-        // Todo - Need Shop position
-        val shoplogoPosition = 1
-        tracking.impressionBrand(shopId.toString(), shoplogoPosition.toString(), name, brandImageUrl)
+        tracking.impressionBrand(shopId.toString(), position, name, brandImageUrl)
         itemView.setOnClickListener {
-            tracking.clickBrand(shopId.toString(), shoplogoPosition.toString(), name, brandImageUrl)
+            tracking.clickBrand(shopId.toString(), position, name, brandImageUrl)
             RouteManager.route(context, Applink)
         }
     }
