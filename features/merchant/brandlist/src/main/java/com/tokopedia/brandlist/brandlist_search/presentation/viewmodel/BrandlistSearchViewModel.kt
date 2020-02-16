@@ -103,7 +103,6 @@ class BrandlistSearchViewModel @Inject constructor(
             sortType: Int,
             firstLetter: String
     ) {
-        getBrandlistAllBrandUseCase.cancelJobs()
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(categoryId, offset,
@@ -122,7 +121,6 @@ class BrandlistSearchViewModel @Inject constructor(
             userId: Int?,
             categoryIds: String
     ) {
-        getBrandlistPopularBrandUseCase.cancelJobs()
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
@@ -149,7 +147,6 @@ class BrandlistSearchViewModel @Inject constructor(
             sortType: Int,
             firstLetter: String
     ) {
-        getBrandlistAllBrandUseCase.cancelJobs()
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(categoryId, offset,
@@ -165,7 +162,6 @@ class BrandlistSearchViewModel @Inject constructor(
     }
 
     fun getTotalBrands() {
-        getBrandlistAllBrandUseCase.cancelJobs()
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(0, INITIAL_OFFSET,
