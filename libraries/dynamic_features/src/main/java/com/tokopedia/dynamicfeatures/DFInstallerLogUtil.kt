@@ -130,6 +130,7 @@ object DFInstallerLogUtil {
             messageBuilder.append(";play_str=${getPlayStoreVersionName(context)}")
             messageBuilder.append(";play_str_l=${getPlayStoreLongVersionCode(context)}")
             messageBuilder.append(";play_srv=${getPlayServiceLongVersionCode(context)}")
+            messageBuilder.append(";installer_pkg=${getInstallerPackageName(context)}")
 
             Timber.w("P1#$tag#$messageBuilder")
         }
@@ -170,6 +171,15 @@ object DFInstallerLogUtil {
             PackageInfoCompat.getLongVersionCode(pm.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0))
         } catch (e: Exception) {
             -1
+        }
+    }
+
+    private fun getInstallerPackageName(context: Context):String {
+        return try {
+            val pm: PackageManager = context.packageManager
+            pm.getInstallerPackageName(context.packageName)
+        } catch (e: Exception) {
+            "-"
         }
     }
 }
