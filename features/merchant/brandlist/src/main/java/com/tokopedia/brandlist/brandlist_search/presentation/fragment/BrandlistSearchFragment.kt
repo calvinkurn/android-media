@@ -207,7 +207,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     val response = it.data.brands
                     if(response.isEmpty()) {
                         viewModel.searchRecommendation(
-                                3045010,
+                                (userSession.userId).toInt(),
                                 categoryIds = "0")
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
