@@ -21,8 +21,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
-import com.tokopedia.brandlist.applink.BrandlistApplinkModule;
-import com.tokopedia.brandlist.applink.BrandlistApplinkModuleLoader;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -151,7 +149,6 @@ import rx.schedulers.Schedulers;
         UserIdentificationApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
-        BrandlistApplinkModule.class,
         WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class
 })
@@ -197,7 +194,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new UserIdentificationApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new BrandlistApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader()
             );
