@@ -10,7 +10,7 @@ import java.io.File
 import java.io.FileInputStream
 
 
-class ProgressRequestBody(
+class UploadRequestBody(
         private val file: File,
         private val contentType: MediaType?,
         private val callback: ProgressCallback?

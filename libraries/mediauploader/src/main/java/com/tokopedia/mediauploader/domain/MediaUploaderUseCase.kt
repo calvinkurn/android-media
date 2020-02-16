@@ -4,7 +4,7 @@ import com.tokopedia.mediauploader.BaseUseCase
 import com.tokopedia.mediauploader.data.UploaderServices
 import com.tokopedia.mediauploader.data.entity.MediaUploader
 import com.tokopedia.mediauploader.data.state.ProgressCallback
-import com.tokopedia.mediauploader.util.ProgressRequestBody
+import com.tokopedia.mediauploader.util.UploadRequestBody
 import com.tokopedia.usecase.RequestParams
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -52,7 +52,7 @@ open class MediaUploaderUseCase @Inject constructor(
         ): MultipartBody.Part {
             val file = File(requestParams.getString(BODY_FILE_UPLOAD, ""))
             val contentType = MediaType.parse("$DEFAULT_FILE_TYPE/*")
-            val requestBody = ProgressRequestBody(file, contentType, progressCallback)
+            val requestBody = UploadRequestBody(file, contentType, progressCallback)
             return MultipartBody.Part.createFormData(BODY_FILE_UPLOAD, file.name, requestBody)
         }
 
