@@ -63,15 +63,22 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     lateinit var getSellerHomeUserAttributesUseCase: GetSellerHomeUserAttributesUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (!isSellerHome && GlobalConfig.isSellerApp()) {
+            setTheme(R.style.Theme_Green_NoOverlay)
+        }
         super.onCreate(savedInstanceState)
         userSession = UserSession(applicationContext)
         drawerCache = LocalCacheHandler(this, SellerDrawerHelper.DRAWER_CACHE)
         remoteConfig = FirebaseRemoteConfigImpl(this)
 
         injectDependency()
-        setupDrawer()
-        setupToolbar()
-        setupDrawerStatusBar()
+
+        if (GlobalConfig.isSellerApp()) {
+            setupDrawer()
+            setupToolbar()
+            setupParentViewLayout()
+            setupDrawerStatusBar()
+        }
     }
 
     fun injectDependency() {
@@ -260,8 +267,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     open fun Toolbar.initNotificationMenu() {
-        //TODO: Put default layout
-        val notif = layoutInflater.inflate(R.layout.custom_actionbar_drawer_notification, null)
+        val notif = layoutInflater.inflate(R.layout.sah_custom_actionbar_drawer_notification, null)
         val drawerToggle = notif.findViewById<ImageView>(R.id.toggle_but_ab)
         drawerToggle.setOnClickListener {
             if (sellerDrawerHelper.isOpened())
@@ -273,24 +279,27 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     open fun Toolbar.initTitle() {
-        //TODO: Put default layout
         toolbarTitle = layoutInflater.inflate(R.layout.custom_action_bar_title, null)
         toolbarTitle.actionbar_title.text = title
         this.addView(toolbarTitle)
     }
 
     open fun setToolbarTitle(title: String) {
-        //TODO: Put default layout
-        toolbar.actionbar_title.text = title
+        toolbar.actionbar_title.text = getTitle()
     }
 
     open fun setupToolbar() {
-        //TODO: Put default layout
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById<AppBarLayout>(R.id.app_bar_layout).outlineProvider = null
+        }
+
         toolbar.apply {
             removeAllViews()
             initNotificationMenu()
             initTitle()
         }
+
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayShowCustomEnabled(true)
@@ -301,15 +310,22 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     open fun setupDrawerStatusBar() {
-        //TODO: Put default layout
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.apply {
-                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                statusBarColor = ContextCompat.getColor(context, com.tokopedia.design.R.color.white_95)
-            }
-        }
+
     }
 
+    protected open fun getParentViewLayoutId(): Int? {
+        return null
+    }
+
+    protected open val isSellerHome = false
+
+    private fun setupParentViewLayout() {
+        val resId = getParentViewLayoutId()
+        if (resId != null) {
+            val inflatedView = View.inflate(this, resId, null)
+            val frameLayout = findViewById<FrameLayout>(R.id.parent_view)
+            frameLayout.addView(inflatedView)
+        }
+    }
 
 }

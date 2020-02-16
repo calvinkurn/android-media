@@ -4,9 +4,13 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.TaskStackBuilder
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -35,9 +39,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.S
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.sh_drawer_activity.*
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
-import kotlinx.android.synthetic.main.sh_drawer_shop.*
 
 class SellerDrawerHelper(val context: Activity,
                          val userSession: UserSession,
@@ -217,9 +219,9 @@ class SellerDrawerHelper(val context: Activity,
         }
     }
 
-    fun closeDrawer() { context.drawer_layout_nav.closeDrawer(GravityCompat.START) }
+    fun closeDrawer() { context.findViewById<DrawerLayout>(R.id.drawer_layout_nav).closeDrawer(GravityCompat.START) }
 
-    fun openDrawer() { context.drawer_layout_nav.openDrawer(GravityCompat.START) }
+    fun openDrawer() { context.findViewById<DrawerLayout>(R.id.drawer_layout_nav).openDrawer(GravityCompat.START) }
 
     override fun notifyDataSetChanged() {
         sellerDrawerAdapter?.notifyDataSetChanged()
@@ -403,8 +405,8 @@ class SellerDrawerHelper(val context: Activity,
                     isSelected = selectedPosition == SellerHomeState.DrawerPosition.LOGOUT
             ))
         }
-        context.drawer_shop.visibility = View.VISIBLE
-        context.drawer_footer_shadow.visibility = View.VISIBLE
+        context.findViewById<FrameLayout>(R.id.drawer_shop).visibility = View.VISIBLE
+        context.findViewById<TextView>(R.id.drawer_footer_shadow).visibility = View.VISIBLE
         return drawerItemData
     }
 
@@ -425,11 +427,11 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     fun setFooterData(profile: SellerDrawerProfile) {
-        context.shop_label.text = profile.shopName
-        context.shop_icon.visibility = View.VISIBLE
-        context.shop_sublabel.visibility = View.VISIBLE
-        ImageHandler.LoadImage(context.shop_icon, profile.shopAvatar)
-        context.drawer_shop.setOnClickListener {
+        context.findViewById<TextView>(R.id.shop_label).text = profile.shopName
+        context.findViewById<ImageView>(R.id.shop_icon).visibility = View.VISIBLE
+        context.findViewById<TextView>(R.id.shop_sublabel).visibility = View.VISIBLE
+        ImageHandler.LoadImage(context.findViewById(R.id.shop_icon), profile.shopAvatar)
+        context.findViewById<FrameLayout>(R.id.drawer_shop).setOnClickListener {
             onGoToShop()
         }
     }
@@ -469,7 +471,7 @@ class SellerDrawerHelper(val context: Activity,
         return null
     }
 
-    fun isOpened() = context.drawer_layout_nav.isDrawerOpen(GravityCompat.START)
+    fun isOpened() = context.findViewById<DrawerLayout>(R.id.drawer_layout_nav).isDrawerOpen(GravityCompat.START)
 
     private fun getSellerMenu() : SellerDrawerItem {
         val isExpanded = drawerCache.getBoolean(SellerDrawerAdapter.IS_SHOP_OPENED, false)

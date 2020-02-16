@@ -47,18 +47,14 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
     //    @Inject
     lateinit var sellerHomeDashboardDrawerPresenter: SellerHomeDashboardDrawerPresenter
 
+    override val isSellerHome: Boolean
+        get() = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initInjector()
         sellerHomeDashboardDrawerPresenter.attachView(this)
-
-        if (savedInstanceState != null) {
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, sellerHomeFragment, TAG)
-                    .commit()
-        }
-
         checkAppUpdate()
 
     }
