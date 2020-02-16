@@ -90,12 +90,7 @@ object DFInstallerLogUtil {
 
             messageBuilder.append(";dl_times=$downloadTimes")
 
-            messageBuilder.append(";err=")
-            if (errorList.isNotEmpty()) {
-                messageBuilder.append(errorList.joinToString("|"))
-            } else {
-                messageBuilder.append("--")
-            }
+            messageBuilder.append(";err=${getError(errorList)}")
 
             messageBuilder.append(";mod_size=")
             if (moduleSize > 0) {
@@ -138,6 +133,19 @@ object DFInstallerLogUtil {
 
     private fun getSizeInMB(size: Long) : String {
         return String.format("%.2f", size.toDouble() / MEGA_BYTE)
+    }
+
+    private fun getError(errorList: List<String>):String {
+        if (errorList.isEmpty()) {
+            return "0"
+        }
+        val errorFirst = errorList.first()
+        for (error in errorList) {
+            if (error != errorFirst) {
+                return errorList.joinToString("|")
+            }
+        }
+        return errorFirst
     }
 
     private fun getPlayStoreVersionName(context: Context):String {
