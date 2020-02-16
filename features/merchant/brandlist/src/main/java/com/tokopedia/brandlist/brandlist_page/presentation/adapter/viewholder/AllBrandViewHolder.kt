@@ -34,14 +34,15 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
     }
 
     override fun bind(element: AllBrandViewModel?) {
+
+        val index = element?.index
         val brand = element?.brand
 
-        // Todo - Need Shop position
         brand?.let {
             itemView.setOnClickListener{
                 element.listener.clickBrand(
                         (brand.id).toString(),
-                        "",
+                        index.toString(),
                         brand.name,
                         brand.exclusiveLogoURL)
                 RouteManager.route(context, brand.appsUrl)

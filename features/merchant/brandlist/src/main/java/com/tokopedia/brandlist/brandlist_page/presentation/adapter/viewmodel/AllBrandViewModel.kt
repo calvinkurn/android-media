@@ -6,6 +6,7 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPage
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 
 class AllBrandViewModel(
+        val index: Int,
         val brand: Brand,
         val listener: BrandlistPageTrackingListener) : Visitable<BrandlistPageTypeFactory> {
 
