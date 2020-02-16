@@ -14,15 +14,7 @@ import java.util.concurrent.TimeUnit
 
     @Provides
     fun provideOkHttpClientBuilder(): OkHttpClient.Builder {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level = if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.NONE
-        }
-
         return OkHttpClient.Builder()
-                .addInterceptor(httpLoggingInterceptor)
                 .connectTimeout(NET_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(NET_READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(NET_WRITE_TIMEOUT, TimeUnit.SECONDS)
