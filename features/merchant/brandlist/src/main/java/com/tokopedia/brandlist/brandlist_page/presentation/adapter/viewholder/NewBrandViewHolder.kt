@@ -9,10 +9,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.NewBrandAdapter
-import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
+import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.unifyprinciples.Typography
 
-class NewBrandViewHolder(itemView: View?, listener: BrandlistPageTracking) :
+class NewBrandViewHolder(itemView: View?, listener: BrandlistPageTrackingListener) :
         AbstractViewHolder<NewBrandViewModel>(itemView) {
 
     private var context: Context? = null

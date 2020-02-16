@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURR
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -21,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
+import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.BrandlistCategories
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryComponent
@@ -56,6 +58,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: BrandlistCategoryViewModel
 
+    private var brandlistTracking: BrandlistTracking? = null
     private var rootView: View? = null
     private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
@@ -63,6 +66,9 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     private var loadingLayout: View? = null
     private var viewPager: ViewPager? = null
     private var appbarCategory: AppBarLayout? = null
+    private var currentCategoryName = ""
+    private var targetCategoryName = ""
+
 
     private var categorySlug = "0"
 
@@ -73,7 +79,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            // Insert tracking here
+            brandlistTracking = BrandlistTracking(it)
         }
         arguments?.let {
             categorySlug = it.getString(CATEGORY_EXTRA_APPLINK)
@@ -154,16 +160,30 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     private fun populateCategoriesData(brandListCategories: BrandlistCategories) {
-
         brandListCategories.categories.forEachIndexed { _, category ->
             tabAdapter.categories.add(category)
         }
-
         tabAdapter.notifyDataSetChanged()
-
         tabLayout?.setup(viewPager, convertToCategoryTabModels(brandListCategories.categories), appbarCategory)
-
         tabLayout?.getTabAt(0)?.select()
+
+        tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) { }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                tab?.let {
+                    currentCategoryName = it.text.toString()
+                }
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.let {
+                    targetCategoryName = it.text.toString()
+                    brandlistTracking?.clickCategory(targetCategoryName, currentCategoryName)
+                }
+            }
+
+        })
     }
 
     private fun convertToCategoryTabModels(data: List<Category>): List<BrandlistCategoryTabLayout.CategoryTabModel> {
@@ -235,6 +255,10 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             mainToolbar.btnWishlist?.hide()
             mainToolbar.btnInbox?.hide()
             mainToolbar.btnNotification?.hide()
+            mainToolbar.setOnClickListener {
+                val keywordSearch = ""
+                brandlistTracking?.clickSearchBox(targetCategoryName, keywordSearch, false)
+            }
         }
     }
 }

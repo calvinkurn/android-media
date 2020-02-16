@@ -11,11 +11,11 @@ import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.FeaturedBrandAdapter
-import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
+import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifyprinciples.Typography
 
-class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracking) :
+class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTrackingListener) :
         AbstractViewHolder<FeaturedBrandViewModel>(itemView) {
 
     private var featuredBrandList: List<Shop> = listOf()

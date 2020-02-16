@@ -1,6 +1,6 @@
 package com.tokopedia.brandlist.common.listener
 
-interface BrandlistPageTracking {
+interface BrandlistPageTrackingListener {
 
     fun clickBrandPopular(shopId: String, shopLogoPosition: String, shopName: String, imgUrl: String)
     fun clickBrandPilihan(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String)

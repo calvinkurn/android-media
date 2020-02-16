@@ -11,13 +11,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
-import com.tokopedia.brandlist.common.listener.BrandlistPageTracking
+import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 
 class PopularBrandAdapter(
         private val context: Context,
-        private val listener: BrandlistPageTracking) : RecyclerView.Adapter<PopularBrandAdapter.PopularBrandViewHolder>() {
+        private val listener: BrandlistPageTrackingListener) : RecyclerView.Adapter<PopularBrandAdapter.PopularBrandViewHolder>() {
 
     private var popularBrands: List<Shop> = listOf()
 
