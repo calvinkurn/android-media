@@ -7,6 +7,6 @@ data class Header(
         val title: String = "",
         @SerializedName("ctaText")
         val ctaText: String = "",
-        @SerializedName("url")
+        @SerializedName("link")
         val link: String = ""
 )

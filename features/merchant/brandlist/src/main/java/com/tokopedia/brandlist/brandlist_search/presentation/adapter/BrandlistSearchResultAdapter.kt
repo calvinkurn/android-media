@@ -1,7 +1,6 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchAllBrandLabelViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.*

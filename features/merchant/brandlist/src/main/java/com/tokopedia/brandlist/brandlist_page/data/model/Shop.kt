@@ -15,8 +15,6 @@ data class Shop(
         val imageUrl: String = "",
         @SerializedName("additionalInformation")
         val additionalInformation: String = "",
-        @SerializedName("featuredBrandId")
-        val featuredBrandId: String = "",
         @SerializedName("exclusive_logo_url")
         val exclusiveLogoUrl: String = ""
 )
