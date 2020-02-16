@@ -84,15 +84,15 @@ class NormalCheckoutTracking {
     }
 
 
-    fun eventClickBuyInVariantNotLogin(productId: String?) {
+    fun eventClickBuyInVariantNotLogin(productInfo: ProductInfo?,
+                                       layoutName: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - beli on variants page - before login",
-                productId ?: ""
+                productInfo?.basic?.id.toString()
         )
-        mapEvent[KEY_PRODUCT_ID] = productId ?: ""
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        addComponentTracker(mapEvent, productInfo, layoutName)
     }
 
     fun eventClickAddToCartInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -109,7 +109,8 @@ class NormalCheckoutTracking {
                                      reference: String,
                                      isFreeOngkir: Boolean,
                                      customEventLabel: String,
-                                     customEventAction: String
+                                     customEventAction: String,
+                                     layoutName: String
     ) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
                 "click - tambah ke keranjang on variants page",
@@ -133,13 +134,14 @@ class NormalCheckoutTracking {
                                isFreeOngkir: Boolean,
                                reference: String,
                                customEventLabel: String,
-                               customEventAction: String) {
+                               customEventAction: String,
+                               layoutName: String?) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
                 "click - beli on variants page",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
                 trackerAttribution, trackerListName, multiOrigin, reference, isFreeOngkir,
-                customEventLabel, customEventAction)
+                customEventLabel, customEventAction, layoutName ?: "")
     }
 
     fun eventClickBuyTradeIn(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -152,14 +154,15 @@ class NormalCheckoutTracking {
                              cartId: String? = NONE_OTHER,
                              trackerAttribution: String?,
                              trackerListName: String?,
-                             customEventLabel: String) {
+                             customEventLabel: String,
+                             layoutName: String) {
         isTrackTradeIn = true
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
                 "click beli sekarang",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
-                trackerAttribution, trackerListName, false ,
-                "", false, customEventLabel,"")
+                trackerAttribution, trackerListName, false,
+                "", false, customEventLabel, "", layoutName)
     }
 
     private fun eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -177,7 +180,8 @@ class NormalCheckoutTracking {
                                                   reference: String = "",
                                                   isFreeOngkir: Boolean = false,
                                                   customEventLabel: String = "",
-                                                  customEventAction: String = ""
+                                                  customEventAction: String = "",
+                                                  layoutName: String = ""
     ) {
         val dimension83 = if (isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
         if (originalProductInfoAndVariant == null) {
@@ -216,6 +220,8 @@ class NormalCheckoutTracking {
                         "eventAction" to eventAction,
                         "eventLabel" to eventLabel,
                         KEY_PRODUCT_ID to selectedProductInfo.basic.id,
+                        "layout" to "layout:${layoutName};catName:${originalProductInfoAndVariant.productInfo.category.name};catId:${originalProductInfoAndVariant.productInfo.category.id};",
+                        "component" to "",
                         "ecommerce" to mutableMapOf(
                                 "currencyCode" to "IDR",
                                 "add" to mutableMapOf(
@@ -250,18 +256,18 @@ class NormalCheckoutTracking {
     }
 
 
-    fun eventClickAtcInVariantNotLogin(productId: String?) {
+    fun eventClickAtcInVariantNotLogin(productInfo: ProductInfo?, layoutName: String?) {
         val mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - tambah ke keranjang on variants page - before login",
-                productId ?: ""
+                productInfo?.basic?.id.toString()
         )
-        mapEvent[KEY_PRODUCT_ID] = productId ?: ""
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        addComponentTracker(mapEvent, productInfo, layoutName ?: "")
+
     }
 
-    fun eventSelectSizeVariant(size: String?, productId: String) {
+    fun eventSelectSizeVariant(size: String?, productId: String, productInfo: ProductInfo?, layoutName: String?) {
         if (size.isNullOrEmpty()) return
         val mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
@@ -270,10 +276,11 @@ class NormalCheckoutTracking {
                 size
         )
         mapEvent[KEY_PRODUCT_ID] = productId
+        addComponentTracker(mapEvent, productInfo, layoutName ?: "")
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventSelectColorVariant(color: String?, productId: String) {
+    fun eventSelectColorVariant(color: String?, productId: String, productInfo: ProductInfo?, layoutName: String?) {
         if (color.isNullOrEmpty()) return
         val mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
@@ -282,6 +289,7 @@ class NormalCheckoutTracking {
                 color
         )
         mapEvent[KEY_PRODUCT_ID] = productId
+        addComponentTracker(mapEvent, productInfo, layoutName ?: "")
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -329,6 +337,15 @@ class NormalCheckoutTracking {
                     jsonArray.put(jsonObject)
                     it[AFInAppEventParameterName.CONTENT] = jsonArray.toString()
                 })
+    }
+
+    private fun addComponentTracker(mapEvent: MutableMap<String, Any>,
+                                    productInfo: ProductInfo?, layoutName: String) {
+        mapEvent[KEY_PRODUCT_ID] = productInfo?.basic?.id.toString()
+        mapEvent["layout"] = "layout:${layoutName};catName:${productInfo?.category?.name};catId:${productInfo?.category?.id};"
+        mapEvent["component"] = ""
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
     private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when (isMultiOrigin) {
