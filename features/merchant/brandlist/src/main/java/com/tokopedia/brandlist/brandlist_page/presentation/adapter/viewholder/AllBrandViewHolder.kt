@@ -36,6 +36,7 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
     override fun bind(element: AllBrandViewModel?) {
         val brand = element?.brand
 
+        // Todo - Need Shop position
         brand?.let {
             itemView.setOnClickListener{
                 element.listener.clickBrand(
