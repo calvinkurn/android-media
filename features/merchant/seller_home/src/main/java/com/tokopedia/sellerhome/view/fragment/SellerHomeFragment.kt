@@ -343,7 +343,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 TickerData(it.title, it.message, getTickerType(it.color))
             }
 
-            val adapter = TickerPagerAdapter(activity, tickersData)
+            val adapter = TickerPagerAdapter(context, tickersData)
             addPagerView(adapter, tickersData)
 
             setDescriptionClickEvent(object : TickerCallback {

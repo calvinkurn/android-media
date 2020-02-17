@@ -12,6 +12,11 @@ object TrackingConstant {
     const val EVENT_ACTION = "eventAction"
     const val EVENT_LABEL = "eventLabel"
     const val ECOMMERCE = "ecommerce"
+    const val ID = "id"
+    const val NAME = "name"
+    const val CREATIVE = "creative"
+    const val CREATIVE_URL = "creative_url"
+    const val POSITION = "position"
 
     //event
     const val VIEW_SELLER_WIDGET = "viewSellerWidget"
@@ -19,11 +24,6 @@ object TrackingConstant {
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
     const val PROMOTIONS = "promotions"
-    const val ID = "id"
-    const val NAME = "name"
-    const val CREATIVE = "creative"
-    const val CREATIVE_URL = "creative_url"
-    const val POSITION = "position"
 
     //category
     const val HOME = "home"
