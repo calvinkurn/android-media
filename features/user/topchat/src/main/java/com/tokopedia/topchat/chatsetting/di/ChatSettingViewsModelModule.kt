@@ -12,7 +12,7 @@ import dagger.multibindings.IntoMap
 
 @Module
 @ChatSettingScope
-abstract class ChatSettingViewModelModule {
+abstract class ChatSettingViewsModelModule {
 
     @Binds
     @IntoMap
