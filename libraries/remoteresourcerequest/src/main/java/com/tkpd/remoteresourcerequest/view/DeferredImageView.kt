@@ -62,5 +62,9 @@ class DeferredImageView : AppCompatImageView {
                 .stopDeferredImageViewRendering(mRemoteFileName, this)
 
     }
+    fun loadRemoteImageDrawable(name : String){
+        mRemoteFileName = name
+        downloadAndSetResource()
+    }
 }
 
