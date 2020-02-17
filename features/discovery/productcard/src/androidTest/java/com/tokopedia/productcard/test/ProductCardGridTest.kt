@@ -1,10 +1,10 @@
-package com.tokopedia.productcard.test.grid
+package com.tokopedia.productcard.test
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.productcard.test.ProductCardTest
-import com.tokopedia.productcard.test.R
+import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest
+import com.tokopedia.productcard.test.grid.productCardGridTestData
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,6 +19,6 @@ internal class ProductCardGridTest {
     fun testProductCardGrid() {
         val recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
 
-        ProductCardTest(recyclerViewViewInteraction).startTest()
+        ProductCardTest(recyclerViewViewInteraction, productCardGridTestData).startTest()
     }
 }

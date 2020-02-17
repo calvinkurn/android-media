@@ -48,7 +48,7 @@ internal class ProductCardGridActivityTest: AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(productCardGridTestData[position])
+            holder.bind(productCardGridTestData[position].productCardModel)
         }
     }
 

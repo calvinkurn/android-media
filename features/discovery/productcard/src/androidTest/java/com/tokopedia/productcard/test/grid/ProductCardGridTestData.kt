@@ -1,5 +1,5 @@
 package com.tokopedia.productcard.test.grid
 
-import com.tokopedia.productcard.test.productCardGeneralTestData
+import com.tokopedia.productcard.test.productCardModelMatcherData
 
-internal val productCardGridTestData = productCardGeneralTestData
+internal val productCardGridTestData = productCardModelMatcherData

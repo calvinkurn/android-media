@@ -3,26 +3,26 @@ package com.tokopedia.productcard.test
 import android.view.View
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.*
 import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest
 import com.tokopedia.productcard.test.utils.productCardInPosition
 import org.hamcrest.Matcher
 
 internal class ProductCardTest(
         private val recyclerViewViewInteraction: ViewInteraction,
-        additionalProductCardTestMatchers: List<Map<Int, Matcher<View?>>> = listOf()
+        private val productCardModelMatcherData: List<ProductCardModelMatcher>
 ) {
 
-    private val productCardMatchers = productCardGeneralTestMatchers + additionalProductCardTestMatchers
-
     fun startTest() {
-        productCardMatchers.forEachIndexed { index, matcher ->
-            recyclerViewViewInteraction.checkProductCardAtPosition(index, matcher)
+        productCardModelMatcherData.forEachIndexed { index, productCardModelMatcher ->
+            recyclerViewViewInteraction.checkProductCardAtPosition(index, productCardModelMatcher.productCardMatcher)
         }
     }
 
     private fun ViewInteraction.checkProductCardAtPosition(position: Int, elementMatchers: Map<Int, Matcher<View?>>): ViewInteraction {
-        return perform(RecyclerViewActions.scrollToPosition<ProductCardGridActivityTest.ViewHolder>(position))
-                .check(ViewAssertions.matches(productCardInPosition(position, elementMatchers)))
+        return perform(scrollToPosition<ProductCardGridActivityTest.ViewHolder>(position))
+                .check(matches(productCardInPosition(position, elementMatchers)))
     }
 }
