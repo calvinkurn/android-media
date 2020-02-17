@@ -1,9 +1,12 @@
 package tkpd.tokopedia.com.brandlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
+import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistPopularBrandUseCase
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -11,6 +14,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -49,11 +53,12 @@ class BrandlistSearchViewModelTest {
         mockkObject(getBrandlistAllBrandUseCase)
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
-        }
+        } returns OfficialStoreAllBrands()
         viewModel.loadInitialBrands()
         coVerify {
             getBrandlistAllBrandUseCase.executeOnBackground()
         }
+        Assert.assertTrue(viewModel.brandlistAllBrandsSearchResponse.value is Success)
     }
 
     @Test
@@ -61,11 +66,12 @@ class BrandlistSearchViewModelTest {
         mockkObject(getBrandlistAllBrandUseCase)
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
-        }
+        } returns OfficialStoreAllBrands()
         viewModel.loadMoreBrands()
         coVerify {
             getBrandlistAllBrandUseCase.executeOnBackground()
         }
+        Assert.assertTrue(viewModel.brandlistAllBrandsSearchResponse.value is Success)
     }
 
     @Test
@@ -73,7 +79,7 @@ class BrandlistSearchViewModelTest {
         mockkObject(getBrandlistAllBrandUseCase)
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
-        }
+        } returns OfficialStoreAllBrands()
         val categoryId = 0
         val offset = 0
         val query = "Samsung"
@@ -84,6 +90,7 @@ class BrandlistSearchViewModelTest {
         coVerify {
             getBrandlistAllBrandUseCase.executeOnBackground()
         }
+        Assert.assertTrue(viewModel.brandlistSearchResponse.value is Success)
     }
 
     @Test
@@ -91,13 +98,14 @@ class BrandlistSearchViewModelTest {
         mockkObject(getBrandlistAllBrandUseCase)
         coEvery {
             getBrandlistPopularBrandUseCase.executeOnBackground()
-        }
+        } returns OfficialStoreBrandsRecommendation()
         val userId = 640
         val categoryIds = "0"
         viewModel.searchRecommendation(userId, categoryIds)
         coVerify {
             getBrandlistPopularBrandUseCase.executeOnBackground()
         }
+        Assert.assertTrue(viewModel.brandlistSearchRecommendationResponse.value is Success)
     }
 
     @Test
@@ -105,7 +113,7 @@ class BrandlistSearchViewModelTest {
         mockkObject(getBrandlistAllBrandUseCase)
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
-        }
+        } returns OfficialStoreAllBrands()
         val categoryId = 0
         val offset = 0
         val query = ""
@@ -116,6 +124,7 @@ class BrandlistSearchViewModelTest {
         coVerify {
             getBrandlistAllBrandUseCase.executeOnBackground()
         }
+        Assert.assertTrue(viewModel.brandlistAllBrandsSearchResponse.value is Success)
     }
 
     @Test
@@ -123,11 +132,12 @@ class BrandlistSearchViewModelTest {
         mockkObject(getBrandlistAllBrandUseCase)
         coEvery {
             getBrandlistAllBrandUseCase.executeOnBackground()
-        }
+        } returns OfficialStoreAllBrands()
         viewModel.getTotalBrands()
         coVerify {
             getBrandlistAllBrandUseCase.executeOnBackground()
         }
+        Assert.assertTrue(viewModel.brandlistAllBrandTotal.value is Success)
     }
 
 }
