@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/skeleton"
+        app:srcCompat="@drawable/skeleton"
         app:layout_constraintBottom_toBottomOf="@+id/skeleton_2"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
         android:layout_marginTop="@dimen/dp_17"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/skeleton"
+        app:srcCompat="@drawable/skeleton"
         app:layout_constraintBottom_toTopOf="@+id/line_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -40,7 +40,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_17"
-        android:background="@drawable/line"
+        app:srcCompat="@drawable/line"
         app:layout_constraintBottom_toBottomOf="@+id/line_2"
         app:layout_constraintEnd_toStartOf="@+id/line_2"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_17"
-        android:background="@drawable/line"
+        app:srcCompat="@drawable/line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/skeleton_2" />
@@ -73,7 +73,7 @@
             android:layout_marginLeft="@dimen/dp_17"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            android:background="@drawable/background" />
+            app:srcCompat="@drawable/background_shimmer" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/background_2"
@@ -81,7 +81,7 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            android:background="@drawable/background" />
+            app:srcCompat="@drawable/background_shimmer" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/background_3"
@@ -89,7 +89,7 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            android:background="@drawable/background" />
+            app:srcCompat="@drawable/background_shimmer" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/background_4"
@@ -97,11 +97,11 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            android:background="@drawable/background" />
+            app:srcCompat="@drawable/background_shimmer" />
 
     </LinearLayout>
 
-    <com.google.android.material.card.MaterialCardView
+    <com.tokopedia.design.loading.LoadingStateView
         android:id="@+id/rectangle_8_1"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_76"
@@ -119,15 +119,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/rectangle_1"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="@dimen/dp_32"
                 android:layout_height="@dimen/dp_32"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_22"
                 android:layout_marginBottom="@dimen/dp_22"
-                android:background="@drawable/rectangle_1"
+                app:srcCompat="@drawable/rectangle_1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -141,7 +141,7 @@
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:background="@drawable/rectangle_2"
+                app:srcCompat="@drawable/rectangle_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/rectangle_1"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -156,7 +156,7 @@
                 android:layout_marginEnd="@dimen/dp_56"
                 android:layout_marginRight="@dimen/dp_56"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:background="@drawable/rectangle_3"
+                app:srcCompat="@drawable/rectangle_3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/rectangle_1"
@@ -164,7 +164,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </com.tokopedia.design.loading.LoadingStateView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -180,7 +180,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <View
+        <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0_5"
@@ -189,11 +189,9 @@
             android:background="@drawable/rectangle_8_2" />
 
         <include
-            layout="@layout/partial_shimmering_product_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            layout="@layout/partial_shimmering_product_list" />
 
-        <View
+        <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_3"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0_5"
@@ -202,11 +200,9 @@
             android:background="@drawable/rectangle_8_2" />
 
         <include
-            layout="@layout/partial_shimmering_product_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            layout="@layout/partial_shimmering_product_list" />
 
-        <View
+        <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_4"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0_5"
@@ -215,9 +211,29 @@
             android:background="@drawable/rectangle_8_2" />
 
         <include
-            layout="@layout/partial_shimmering_product_list"
+            layout="@layout/partial_shimmering_product_list" />
+
+        <com.tokopedia.design.loading.LoadingStateView
+            android:id="@+id/rectangle_8_5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="@dimen/dp_0_5"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:background="@drawable/rectangle_8_2" />
+
+        <include
+            layout="@layout/partial_shimmering_product_list" />
+
+        <com.tokopedia.design.loading.LoadingStateView
+            android:id="@+id/rectangle_8_6"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:background="@drawable/rectangle_8_2" />
+
+        <include
+            layout="@layout/partial_shimmering_product_list" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

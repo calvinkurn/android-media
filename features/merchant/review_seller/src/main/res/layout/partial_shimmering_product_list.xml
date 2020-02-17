@@ -15,15 +15,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/rectangle4"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_64"
                 android:layout_height="@dimen/dp_64"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:background="@drawable/rectangle_4"
+                app:srcCompat="@drawable/rectangle_4"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_12"
-                android:background="@drawable/rectangle_2"
+                app:srcCompat="@drawable/rectangle_2"
                 app:layout_constraintEnd_toEndOf="@+id/rectangle6"
                 app:layout_constraintStart_toStartOf="@+id/rectangle6"
                 app:layout_constraintTop_toBottomOf="@+id/rectangle6" />
@@ -47,7 +47,7 @@
                 android:layout_marginTop="21dp"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:background="@drawable/rectangle_2"
+                app:srcCompat="@drawable/rectangle_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/rectangle4"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -60,7 +60,7 @@
                 android:layout_marginEnd="@dimen/dp_128"
                 android:layout_marginRight="@dimen/dp_182"
                 android:layout_marginBottom="21dp"
-                android:background="@drawable/rectangle_5"
+                app:srcCompat="@drawable/rectangle_5"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
