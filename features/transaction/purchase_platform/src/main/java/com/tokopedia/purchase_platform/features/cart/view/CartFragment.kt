@@ -1356,16 +1356,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         if (!flagAutoApplyStack) {
-//            if (cartListData.globalCouponAttrData?.description?.isNotEmpty() == true) {
-//                builderGlobal.title(cartListData.globalCouponAttrData?.description ?: "")
-//                builderGlobal.titleDefault(cartListData.globalCouponAttrData?.description ?: "")
-//            }
+            if (cartListData.globalCouponAttrData?.description?.isNotEmpty() == true) {
+                builderGlobal.title(cartListData.globalCouponAttrData?.description ?: "")
+                builderGlobal.titleDefault(cartListData.globalCouponAttrData?.description ?: "")
+            }
 
-//            if (cartListData.globalCouponAttrData?.quantityLabel?.isNotEmpty() == true) {
-//                builderGlobal.counterLabel(cartListData.globalCouponAttrData?.quantityLabel ?: "")
-//                builderGlobal.counterLabelDefault(cartListData.globalCouponAttrData?.quantityLabel
-//                        ?: "")
-//            }
+            if (cartListData.globalCouponAttrData?.quantityLabel?.isNotEmpty() == true) {
+                builderGlobal.counterLabel(cartListData.globalCouponAttrData?.quantityLabel ?: "")
+                builderGlobal.counterLabelDefault(cartListData.globalCouponAttrData?.quantityLabel
+                        ?: "")
+            }
         }
 
         return builderGlobal.build()
