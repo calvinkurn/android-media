@@ -118,14 +118,14 @@ class BrandlistSearchViewModel @Inject constructor(
     }
 
     fun searchRecommendation(
-            userId: Int?,
+            userId: String,
             categoryIds: String
     ) {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
                         createParams(
-                                userId ?: 0,
+                                userId.toInt(),
                                 categoryIds,
                                 GetBrandlistPopularBrandUseCase.POPULAR_WIDGET_NAME
                         )

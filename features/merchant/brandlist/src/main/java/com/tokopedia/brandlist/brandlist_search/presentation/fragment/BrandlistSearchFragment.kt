@@ -31,6 +31,7 @@ import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.B
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -201,13 +202,14 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     }
 
     private fun observeSearchResultData() {
+        val userId = if(userSession.userId.isEmpty()) "0" else userSession.userId
         viewModel.brandlistSearchResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
                     val response = it.data.brands
                     if(response.isEmpty()) {
                         viewModel.searchRecommendation(
-                                (userSession.userId).toInt(),
+                                userId,
                                 categoryIds = "0")
                         recyclerView?.clearOnScrollListeners()
                     } else {
