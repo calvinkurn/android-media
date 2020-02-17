@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 /**
@@ -18,7 +17,6 @@ class ImageDualAnnouncementViewModel
  * @param fromRole          role of sender
  * @param attachmentId      attachment id
  * @param attachmentType    attachment type. Please refer to
- * [WebSocketMapper] types
  * @param replyTime         replytime in unixtime
  * @param imageUrlTop       image url Top image
  * @param redirectUrlTop    redirect url in http for Top image click
