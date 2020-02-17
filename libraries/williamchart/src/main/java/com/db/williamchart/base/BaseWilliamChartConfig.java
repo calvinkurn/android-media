@@ -122,10 +122,21 @@ public class BaseWilliamChartConfig {
 
             lineSet.setmPointVisible(dataSetConfiguration.isVisible());
 
-            for (int i = 0; i < baseWilliamChartModel.size(); i++) {
-                lineSet.addPoint(
-                        baseWilliamChartModel.getLabels()[i],
-                        baseWilliamChartModel.getValues()[i]);
+            if (baseWilliamChartModel.hasCustomValues()) {
+                for (int i = 0; i < baseWilliamChartModel.size(); i++) {
+                    lineSet.addPoint(
+                            baseWilliamChartModel.getLabels()[i],
+                            baseWilliamChartModel.getValues()[i],
+                            baseWilliamChartModel.getCustomValues()[i]
+                    );
+                }
+            } else {
+                for (int i = 0; i < baseWilliamChartModel.size(); i++) {
+                    lineSet.addPoint(
+                            baseWilliamChartModel.getLabels()[i],
+                            baseWilliamChartModel.getValues()[i]
+                    );
+                }
             }
 
             lineSet.setSmooth(LineSet.SMOOTH_QUAD)

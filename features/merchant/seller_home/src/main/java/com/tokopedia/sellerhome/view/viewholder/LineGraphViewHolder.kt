@@ -59,7 +59,7 @@ class LineGraphViewHolder(
     }
 
     private fun openAppLink(appLink: String, dataKey: String, value: String) {
-        if(RouteManager.route(itemView.context, appLink)) {
+        if (RouteManager.route(itemView.context, appLink)) {
             SellerHomeTracking.sendClickLineGraphEvent(dataKey, value)
         }
     }
@@ -135,17 +135,17 @@ class LineGraphViewHolder(
 
         if (isCtaVisible) {
             btnLineGraphMore.setOnClickListener {
-                openAppLink(element.appLink, element.dataKey, element.data?.header ?: "")
+                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
             }
             btnLineGraphNext.setOnClickListener {
-                openAppLink(element.appLink, element.dataKey, element.data?.header ?: "")
+                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
             }
         }
 
         if (isShown) {
             showLineGraph(element)
             itemView.addOnImpressionListener(element.impressHolder) {
-                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header ?: "")
+                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header.orEmpty())
             }
         }
     }
@@ -153,7 +153,8 @@ class LineGraphViewHolder(
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
         val yValue: List<Int> = element.data?.list.orEmpty().map { it.yVal }
         val xLabel: List<String> = element.data?.list.orEmpty().map { it.xLabel }
-        val lineGraphModel: BaseWilliamChartModel = GMStatisticUtil.getChartModel(xLabel, yValue)
+        val customValues: List<String> = element.data?.list.orEmpty().map { it.yLabel }
+        val lineGraphModel: BaseWilliamChartModel = GMStatisticUtil.getChartModel(xLabel, yValue, customValues)
 
         val lineGraphConfig: BaseWilliamChartConfig = getLineGraphConfig(lineGraphModel)
         with(lineGraphConfig) {

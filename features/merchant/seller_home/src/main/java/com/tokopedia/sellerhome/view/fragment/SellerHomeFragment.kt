@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.ShopStatus
@@ -26,10 +25,11 @@ import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -61,6 +61,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val tooltipBottomSheet by lazy { BottomSheetUnify() }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
 
+    private var isLoadFromCache = false
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
     private var hasLoadProgressData = false
@@ -86,14 +87,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hideTooltipIfExist()
         setupView()
 
-        observeTickerLiveData()
         observeWidgetLayoutLiveData()
-
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(sellerHomeViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.progressWidgetData, WidgetType.PROGRESS)
         observeWidgetData(sellerHomeViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
+        observeTickerLiveData()
     }
 
     private fun hideTooltipIfExist() {
@@ -116,11 +116,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
             }
         }
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
         recyclerView.layoutManager = gridLayoutManager
 
         swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshLayout.isRefreshing = false
+            refreshWidget()
+        }
+
+        sahGlobalError.setActionClickListener {
             refreshWidget()
         }
     }
@@ -134,6 +137,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         widgetHasMap.clear()
         adapter.data.clear()
         adapter.notifyDataSetChanged()
+        sahGlobalError.gone()
         showGetWidgetProgress(true)
         sellerHomeViewModel.getWidgetLayout()
     }
@@ -236,23 +240,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> {
-                    recyclerView.visible()
-                    renderList(result.data)
-                    result.data.forEach {
-                        if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
-                            widgetHasMap[it.widgetType] = mutableListOf(it)
-                            return@forEach
-                        }
-                        widgetHasMap[it.widgetType]?.add(it)
-                    }
-                    showGetWidgetProgress(false)
-                }
-                is Fail -> {
-                    //it should be not like this
-                    Toast.makeText(context, "Oops : ${result.throwable.message}", Toast.LENGTH_LONG).show()
-                    showGetWidgetProgress(false)
-                }
+                is Success -> setOnSuccessGetLayout(result.data)
+                is Fail -> setOnErrorGetLayout()
             }
         })
 
@@ -260,11 +249,45 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.getWidgetLayout()
     }
 
+    private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
+        isLoadFromCache = true
+        view?.sahGlobalError?.gone()
+        recyclerView.visible()
+        renderList(widgets)
+        widgets.forEach {
+            if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
+                widgetHasMap[it.widgetType] = mutableListOf(it)
+                return@forEach
+            }
+            widgetHasMap[it.widgetType]?.add(it)
+        }
+        showGetWidgetProgress(false)
+    }
+
+    private fun setOnErrorGetLayout() = view?.run {
+        if (isLoadFromCache) {
+            Toaster.make(
+                    this,
+                    context.getString(R.string.sah_failed_to_get_information),
+                    Toaster.toasterLength,
+                    Toaster.TYPE_ERROR,
+                    context.getString(R.string.sah_reload),
+                    View.OnClickListener {
+                        refreshWidget()
+                    }
+            )
+            sahGlobalError.gone()
+        } else {
+            sahGlobalError.visible()
+        }
+        showGetWidgetProgress(false)
+    }
+
     private fun observeTickerLiveData() {
         sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTickers(it.data)
-                is Fail -> view?.relTicker?.visibility = View.GONE
+                is Fail -> view?.relTicker?.gone()
             }
         })
         sellerHomeViewModel.getTicker()
@@ -313,22 +336,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
 
-        val isTickerVisible = if (tickers.isEmpty()) View.GONE else View.VISIBLE
-
-        view?.relTicker?.visibility = isTickerVisible
+        view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
             val tickersData = tickers.map {
                 TickerData(it.title, it.message, getTickerType(it.color))
             }
 
-            val adapter = TickerPagerAdapter(activity, tickersData)
-            adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    //implement tooltipClickListener on click
+            val adapter = TickerPagerAdapter(context, tickersData)
+            addPagerView(adapter, tickersData)
+
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    println("tickerView : onDescriptionViewClick")
+                }
+
+                override fun onDismiss() {
+                    println("tickerView : onDismiss")
                 }
             })
-
-            addPagerView(adapter, tickersData)
         }
     }
 }

@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/imgCarouselBanner"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/layout_lvl1"
+    android:layout_height="@dimen/sah_banner_image_height"
+    android:layout_marginStart="@dimen/layout_lvl1"
     android:layout_marginLeft="@dimen/layout_lvl1"
-    app:cardPreventCornerOverlap="false"
-    app:elevation="@dimen/unify_banner_card_elevation"
-    app:cardCornerRadius="@dimen/unify_banner_card_radius">
-
-    <ImageView
-        android:layout_gravity="center"
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_banner_image_height_default"
-        android:adjustViewBounds="true"
-        android:focusable="true"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/bannerview_image_placeholder" />
-
-</com.tokopedia.unifycomponents.CardUnify>
+    android:layout_marginEnd="@dimen/layout_lvl1"
+    android:layout_marginRight="@dimen/layout_lvl1"
+    android:adjustViewBounds="true"
+    android:focusable="true"
+    android:scaleType="fitXY"
+    app:srcCompat="@drawable/bannerview_image_placeholder" />

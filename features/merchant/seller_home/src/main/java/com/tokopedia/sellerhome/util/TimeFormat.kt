@@ -13,8 +13,8 @@ object TimeFormat {
         return Locale("id")
     }
 
-    fun format(time: Long, pattern: String): String {
-        val sdf = SimpleDateFormat(pattern, getLocale())
+    fun format(time: Long, pattern: String, locale: Locale = getLocale()): String {
+        val sdf = SimpleDateFormat(pattern, locale)
         return sdf.format(time)
     }
 }

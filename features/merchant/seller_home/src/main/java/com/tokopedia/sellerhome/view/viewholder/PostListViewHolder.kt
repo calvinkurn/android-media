@@ -12,10 +12,13 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
+import com.tokopedia.sellerhome.util.dpToPx
+import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
 import com.tokopedia.sellerhome.view.model.TooltipUiModel
+import kotlinx.android.synthetic.main.sah_item_post.view.*
 import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_post_list_widget_error.view.*
@@ -53,16 +56,20 @@ class PostListViewHolder(
     }
 
     private fun onError(cardTitle: String) {
-        showErrorState(cardTitle)
+        hideListLayout()
+        hideShimmeringLayout()
+        with(itemView) {
+            tvPostListTitleOnError.text = cardTitle
+            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            showErrorLayout()
+        }
     }
 
     private fun onSuccessLoadData(postListWidgetUiModel: PostListWidgetUiModel) {
-        with(postListWidgetUiModel) {
-            if (data?.items.isNullOrEmpty()) {
-                listener.removeWidget(adapterPosition, postListWidgetUiModel)
-            } else {
-                showSuccessState(postListWidgetUiModel)
-            }
+        if (postListWidgetUiModel.data?.items.isNullOrEmpty()) {
+            listener.removeWidget(adapterPosition, postListWidgetUiModel)
+        } else {
+            showSuccessState(postListWidgetUiModel)
         }
     }
 
@@ -70,16 +77,6 @@ class PostListViewHolder(
         hideErrorLayout()
         hideListLayout()
         showShimmeringLayout()
-    }
-
-    private fun showErrorState(cardTitle: String) {
-        hideListLayout()
-        hideShimmeringLayout()
-        with(itemView) {
-            tvPostListTitleOnError.text = cardTitle
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
-            sahPostListOnErrorLayout.visible()
-        }
     }
 
     private fun showSuccessState(element: PostListWidgetUiModel) {
@@ -120,6 +117,10 @@ class PostListViewHolder(
 
     private fun hideErrorLayout() {
         itemView.sahPostListOnErrorLayout.gone()
+    }
+
+    private fun showErrorLayout() {
+        itemView.sahPostListOnErrorLayout.visible()
     }
 
     private fun setupTooltip(tooltip: TooltipUiModel?) = with(itemView) {
@@ -195,5 +196,28 @@ class PostListViewHolder(
 
     interface Listener : BaseViewHolderListener {
         fun getPostData()
+    }
+
+    class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
+
+        companion object {
+            val RES_LAYOUT = R.layout.sah_item_post
+        }
+
+        override fun bind(element: PostUiModel) {
+            with(element) {
+                itemView.tvPostTitle.text = title.parseAsHtml()
+                itemView.tvPostDescription.text = subtitle.parseAsHtml()
+                loadImage(featuredMediaURL)
+            }
+        }
+
+        private fun loadImage(featuredMediaURL: String) = with(itemView) {
+            if (featuredMediaURL.isNotEmpty()) {
+                ImageHandler.loadImageRounded(context, imgPost, featuredMediaURL, context.dpToPx(8))
+            } else {
+                ImageHandler.loadImageRounded2(context, imgPost, R.drawable.error_drawable, context.dpToPx(8))
+            }
+        }
     }
 }
