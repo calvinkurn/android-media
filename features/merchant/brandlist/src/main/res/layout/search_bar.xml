@@ -7,7 +7,8 @@
     <Button
         android:id="@+id/btn_search"
         android:layout_height="match_parent"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:background="@null"/>
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_view"
