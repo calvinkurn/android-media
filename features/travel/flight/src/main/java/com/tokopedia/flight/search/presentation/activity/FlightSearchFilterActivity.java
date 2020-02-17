@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterAirlineBottomSheet;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presentation.FlightFilterCountView;
@@ -256,7 +258,8 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     @Override
     public void onAirlineLabelClicked() {
-        replaceFragment(FlightFilterAirlineFragment.newInstance(), FlightFilterAirlineFragment.TAG);
+//        replaceFragment(FlightFilterAirlineFragment.newInstance(), FlightFilterAirlineFragment.TAG);
+        FlightFilterAirlineBottomSheet.Companion.getInstance().show(getSupportFragmentManager(), FlightFilterAirlineBottomSheet.TAG_FILTER_AIRLINE);
     }
 
     @Override
