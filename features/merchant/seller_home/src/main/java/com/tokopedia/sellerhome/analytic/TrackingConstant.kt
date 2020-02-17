@@ -17,13 +17,13 @@ object TrackingConstant {
     const val CREATIVE = "creative"
     const val CREATIVE_URL = "creative_url"
     const val POSITION = "position"
+    const val PROMOTIONS = "promotions"
 
     //event
     const val VIEW_SELLER_WIDGET = "viewSellerWidget"
     const val CLICK_SELLER_WIDGET = "clickSellerWidget"
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
-    const val PROMOTIONS = "promotions"
 
     //category
     const val HOME = "home"
