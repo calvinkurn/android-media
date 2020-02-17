@@ -39,6 +39,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.liha
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import kotlin.reflect.KFunction
 
 class DiscoveryHomeFactory {
@@ -73,16 +77,16 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ProductCardCarousel, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.BrandRecommendation, ::BrandRecommendationViewHolder, ::BrandRecommendationViewModel)
             initializeComponent(ComponentsList.BrandRecommendationItem, ::BrandRecommendationItemViewHolder, ::BrandRecommendationItemViewModel)
-            initializeComponent(ComponentsList.Margin, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.CustomTopChat, ::ComingSoonViewHolder, ::ComingSoonViewModel)
-            initializeComponent(ComponentsList.Tabs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
+            initializeComponent(ComponentsList.ComingSoonTabs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.ProductCardRevamp, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.BreadCrumbs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.Default, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.Tokopoints, ::TokopointsViewHolder, ::TokopointsViewModel)
             initializeComponent(ComponentsList.TokopointsItem, ::TokopointsItemViewHolder, ::TokopointsItemViewModel)
-            initializeComponent(ComponentsList.CpmTopAdsProductItem, ::CpmTopadsProductItemViewHolder, ::CpmTopadsProductItemViewModel)
             initializeComponent(ComponentsList.Spacing, ::SpacingViewHolder, ::SpacingViewModel)
+            initializeComponent(ComponentsList.Tabs, ::TabsViewHolder, ::TabsViewModel)
+            initializeComponent(ComponentsList.TabsItem, ::TabsItemViewHolder, ::TabsItemViewModel)
             initializeComponent(ComponentsList.ChipsFilter, ::ChipsFilterViewHolder, ::ChipsFilterViewModel)
             initializeComponent(ComponentsList.ChipsFilterItem, ::ChipsFilterItemViewHolder, ::ChipsFilterItemViewModel)
         }

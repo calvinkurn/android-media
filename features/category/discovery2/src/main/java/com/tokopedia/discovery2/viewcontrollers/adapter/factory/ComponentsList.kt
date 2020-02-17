@@ -34,12 +34,13 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TextComponent(R.layout.coming_soon_view, ComponentNames.TextComponent.componentName),
     ClaimCoupon(R.layout.coming_soon_view, ComponentNames.ClaimCoupon.componentName),
     ProductCardCarousel(R.layout.coming_soon_view, ComponentNames.ProductCardCarousel.componentName),
-    Margin(R.layout.coming_soon_view, ComponentNames.Margin.componentName),
     CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
-    Tabs(R.layout.coming_soon_view, ComponentNames.Tabs.componentName),
+    ComingSoonTabs(R.layout.coming_soon_view, ComponentNames.ComingSoonTabs.componentName),
     ProductCardRevamp(R.layout.coming_soon_view, ComponentNames.ProductCardRevamp.componentName),
     BreadCrumbs(R.layout.coming_soon_view, ComponentNames.Breadcrumbs.componentName),
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
     ChipsFilter(R.layout.widget_recycler_view, ComponentNames.ChipsFilter.componentName),
     ChipsFilterItem(R.layout.chips_filter_item_layout, ComponentNames.ChipsFilterItem.componentName),
+    Tabs(R.layout.widget_recycler_view, ComponentNames.Tabs.componentName),
+    TabsItem(R.layout.tabs_item_layout, ComponentNames.TabsItem.componentName)
 }

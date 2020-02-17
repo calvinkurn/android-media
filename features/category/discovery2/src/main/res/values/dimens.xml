@@ -6,8 +6,4 @@
     <dimen name="shop_card_height">68dp</dimen>
     <dimen name="dp_60">60dp</dimen>
 
-    <dimen name="itemDecorationOuterPadding">8dp</dimen>
-    <dimen name="radius">4dp</dimen>
-    <dimen name="itemDecorationInnerPadding">5dp</dimen>
-
 </resources>

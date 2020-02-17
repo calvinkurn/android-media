@@ -17,6 +17,9 @@ import com.tokopedia.discovery2.viewcontrollers.customview.DiscoveryBannerView
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_recycler_view.view.*
+import kotlin.properties.Delegates
+import kotlin.properties.Delegates.observable
+import kotlin.properties.Delegates.vetoable
 
 class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), DiscoveryBannerView.DiscoveryBannerViewInteraction {
 
@@ -37,17 +40,13 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
     }
 
     private fun setUpObservers() {
-        if (!sliderBannerViewModel.getComponentsLiveData().hasActiveObservers()) {
-            sliderBannerViewModel.getComponentsLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-                sliderBannerTitle.setTextAndCheckShow(item.title)
-            })
-        }
+        sliderBannerViewModel.getComponentsLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            sliderBannerTitle.setTextAndCheckShow(item.title)
+        })
 
-        if (!sliderBannerViewModel.getListDataLiveData().hasActiveObservers()) {
-            sliderBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-                sliderBannerRecycleAdapter.setDataList(item)
-            })
-        }
+        sliderBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            sliderBannerRecycleAdapter.setDataList(item)
+        })
     }
 
     override fun attachRecyclerView() {
@@ -68,9 +67,9 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
 
     private fun getBannerDotIndicator(context: Context): BannerDotIndicator {
         context.run {
-            val radius = resources.getDimensionPixelSize(R.dimen.radius)
-            val padding = resources.getDimensionPixelSize(R.dimen.itemDecorationInnerPadding)
-            val indicatorPadding = resources.getDimensionPixelSize(R.dimen.itemDecorationOuterPadding)
+            val radius = resources.getDimensionPixelSize(R.dimen.dp_4)
+            val padding = resources.getDimensionPixelSize(R.dimen.dp_5)
+            val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
             val activeColor = ContextCompat.getColor(context, R.color.activeBannerDot)
             val inActiveColor = ContextCompat.getColor(context, R.color.inActiveBannerDot)
             return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.SLIDER_BANNER_INDICATOR)

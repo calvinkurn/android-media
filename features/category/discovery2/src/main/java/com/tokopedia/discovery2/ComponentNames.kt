@@ -31,9 +31,11 @@ enum class ComponentNames(val componentName: String) {
     ProductCardCarousel("product_card_carousel"),
     Margin("margin"),
     CustomTopchat("custom_topchat"),
-    Tabs("tabs"),
+    ComingSoonTabs("coming_soon_tabs"),
     ProductCardRevamp("product_card_revamp"),
     Breadcrumbs("breadcrumbs"),
     ChipsFilter("chips_filter"),
     ChipsFilterItem("chips_filter_item"),
+    Tabs("tabs"),
+    TabsItem("tabs_item"),
 }
