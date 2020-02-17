@@ -18,8 +18,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.unifyprinciples.Typography
 import android.view.ViewStub
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 
 abstract class DynamicChannelViewHolder(itemView: View,
@@ -66,10 +64,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
     override fun bind(element: DynamicChannelViewModel) {
         try {
             val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
-            val stubChannelTitle: ViewStub? = itemView.findViewById(R.id.stub_channel_title)
-            val stubCountDownView: ViewStub? = itemView.findViewById(R.id.stub_count_down)
-            val stubSeeAllButton: ViewStub? = itemView.findViewById(R.id.stub_see_all_button)
-            val stubSeeAllButtonUnify: ViewStub? = itemView.findViewById(R.id.stub_see_all_button)
+            val stubChannelTitle: ViewStub? = itemView.findViewById(R.id.channel_title)
+            val stubCountDownView: ViewStub? = itemView.findViewById(R.id.count_down)
+            val stubSeeAllButton: ViewStub? = itemView.findViewById(R.id.see_all_button)
+            val stubSeeAllButtonUnify: ViewStub? = itemView.findViewById(R.id.see_all_button_unify)
 
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name

@@ -106,9 +106,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
             channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
             backgroundThematic.show()
-
-            seeAllButtonUnify?.show()
-            seeAllButton?.hide()
             seeAllButtonUnify?.setOnClickListener {
                 homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                 HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
@@ -116,9 +113,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
 
             }
-        } else {
-            seeAllButton?.hide()
-            backgroundThematic.hide()
         }
     }
 
