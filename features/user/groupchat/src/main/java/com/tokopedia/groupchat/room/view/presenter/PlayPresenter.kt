@@ -20,6 +20,7 @@ import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetStickyComponentUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetVideoStreamUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
@@ -145,7 +146,7 @@ class PlayPresenter @Inject constructor(
             settingGroupChat: SettingGroupChat?,
             refreshInfo: Boolean
     ) {
-        var settings = settingGroupChat ?: SettingGroupChat()
+        val settings = settingGroupChat ?: SettingGroupChat()
         processUrl(userSession, channelId, groupChatToken, settings)
         connectWebSocket(userSession.accessToken, settings, refreshInfo)
     }
@@ -180,8 +181,7 @@ class PlayPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", "item")
                 }
 
-                var item = webSocketMessageMapper.map(webSocketResponse)
-                var hideMessage = webSocketMessageMapper.mapHideMessage(webSocketResponse)
+                val item = webSocketMessageMapper.map(webSocketResponse)
                 item?.let {
                     when (it) {
                         is ParticipantViewModel -> view.onTotalViewChanged(it)
@@ -198,6 +198,7 @@ class PlayPresenter @Inject constructor(
                         is SprintSaleAnnouncementViewModel -> view.onSprintSaleReceived(it)
                         is StickyComponentsViewModel -> view.onStickyComponentReceived(it)
                         is VideoStreamViewModel -> view.onVideoStreamUpdated(it)
+                        is ChatPermitViewModel -> view.onChatDisabled(it)
                         else -> {
                             view.addIncomingMessage(it)
                         }

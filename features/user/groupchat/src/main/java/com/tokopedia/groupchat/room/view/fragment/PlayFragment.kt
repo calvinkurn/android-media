@@ -38,6 +38,7 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
@@ -543,6 +544,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         } else {
             viewState.onVideoVerticalUpdated(it)
         }
+    }
+
+    override fun onChatDisabled(chatPermitViewModel: ChatPermitViewModel) {
+        viewState.setChatPermitDisabled(chatPermitViewModel)
     }
 
     override fun handleEvent(it: EventGroupChatViewModel) {

@@ -58,6 +58,7 @@ import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
@@ -96,6 +97,7 @@ open class PlayViewStateImpl(
 ) : PlayViewState {
 
     private var viewModel: ChannelInfoViewModel? = null
+    private var chatPermitViewModel: ChatPermitViewModel? = null
     private var dynamicButtonsViewModel: DynamicButtonsViewModel? = null
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
@@ -129,7 +131,6 @@ open class PlayViewStateImpl(
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
     private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
     private var gradientBackground = view.findViewById<View>(R.id.top_guideline)
-
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -384,13 +385,12 @@ open class PlayViewStateImpl(
         showBottomSheetFirstTime(it)
         backgroundHelper.setDefaultBackground()
         onSuccessGetInfo(it)
-
     }
 
     override fun onSuccessGetInfo(it: ChannelInfoViewModel) {
         loadingView.hide()
 
-        var needCueVideo = viewModel?.videoId != it.videoId
+        val needCueVideo = viewModel?.videoId != it.videoId
         viewModel = it
         viewModel?.infoUrl = it.infoUrl
 
@@ -422,6 +422,8 @@ open class PlayViewStateImpl(
         sponsorHelper.setSponsor()
         overflowMenuHelper.assignViewModel(it)
         stickyComponentHelper.assignViewModel(it)
+
+        chatPermitViewModel = it.chatPermitViewModel
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
@@ -1246,10 +1248,14 @@ open class PlayViewStateImpl(
         return false
     }
 
+    override fun setChatPermitDisabled(chatPermitViewModel: ChatPermitViewModel) {
+        this.chatPermitViewModel = chatPermitViewModel
+    }
+
     override fun onChatDisabledError(message: String, action: String) {
         Toaster.make(
                 view,
-                viewModel?.errorMessageChatDisabled?:message,
+                chatPermitViewModel?.errorMessage?:message,
                 type = Toaster.TYPE_ERROR,
                 duration = Snackbar.LENGTH_LONG,
                 actionText = action,
@@ -1416,7 +1422,7 @@ open class PlayViewStateImpl(
                     userSession.name,
                     userSession.profilePicture,
                     isInfluencer = false,
-                    isChatDisabled = viewModel?.isChatDisabled ?: false,
+                    isChatDisabled = chatPermitViewModel?.isChatDisabled?:false,
                     isQuickReply = isQuickReply)
             sendMessage(pendingChatViewModel)
         }
