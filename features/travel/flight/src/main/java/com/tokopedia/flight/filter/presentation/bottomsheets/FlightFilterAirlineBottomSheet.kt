@@ -15,6 +15,7 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify() {
         showCloseIcon = false
         isFullpage = false
         showKnob = true
+        isDragable = true
         setTitle(getString(R.string.airline))
         setAction(getString(R.string.reset)) {
 
