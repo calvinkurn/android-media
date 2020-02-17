@@ -9,13 +9,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 
 /**
  * Created by Hendri on 22/06/18.
  */
 class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: DualAnnouncementListener)
-    : BaseChatViewHolder<ImageDualAnnouncementViewModel>(itemView) {
+    : BaseChatViewHolder<ImageDualAnnouncementUiModel>(itemView) {
 
     private val top: ImageView?
     private val bottom: ImageView?
@@ -26,7 +26,7 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
         bottom = itemView.findViewById(R.id.dual_image_bottom)
     }
 
-    override fun bind(viewModel: ImageDualAnnouncementViewModel) {
+    override fun bind(viewModel: ImageDualAnnouncementUiModel) {
         super.bind(viewModel)
 
         ImageHandler.loadImageWithListener(top, viewModel.imageUrlTop, DynamicSizeImageRequestListener())

@@ -27,7 +27,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftCha
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
@@ -62,7 +62,7 @@ open class TopChatTypeFactoryImpl(
         }
     }
 
-    override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementViewModel): Int {
+    override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int {
         return ImageDualAnnouncementViewHolder.LAYOUT
     }
 

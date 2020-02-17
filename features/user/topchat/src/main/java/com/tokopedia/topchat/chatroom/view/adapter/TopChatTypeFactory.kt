@@ -5,13 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 interface TopChatTypeFactory {
 
-    fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementViewModel): Int
+    fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int
 
     fun type(voucherViewModel: TopChatVoucherUiModel): Int
 

@@ -7,7 +7,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 /**
  * Created by Hendri on 22/06/18.
  */
-class ImageDualAnnouncementViewModel
+class ImageDualAnnouncementUiModel
 /**
  * Constructor for WebSocketResponse / API Response
  *
