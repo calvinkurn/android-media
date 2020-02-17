@@ -38,7 +38,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
             tvDraftProductInfo.text = MethodChecker.fromHtml(getString(com.tokopedia.product.manage.list.R.string.product_manage_you_have_x_unfinished_product, rowCount))
             tvDraftProductInfo.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
-                RouteManager.route(activity, ApplinkConst.PRODUCT_MANAGE)
+                RouteManager.route(activity, ApplinkConst.PRODUCT_DRAFT)
             }
             tvDraftProductInfo.visibility = View.VISIBLE
         }
