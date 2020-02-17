@@ -6,6 +6,7 @@
     <dimen name="dp_minus4">-4dp</dimen>
     <dimen name="dp_minus2">-2dp</dimen>
     <dimen name="dp_0">0dp</dimen>
+    <dimen name="dp_0_5">0.5dp</dimen> <!-- not recommended -->
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_3">3dp</dimen>
@@ -22,6 +23,7 @@
     <dimen name="dp_14">14dp</dimen>
     <dimen name="dp_15">15dp</dimen> <!-- not recommended -->
     <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_17">17dp</dimen> <!-- not recommended -->
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_19">19dp</dimen>
     <dimen name="dp_20">20dp</dimen>
