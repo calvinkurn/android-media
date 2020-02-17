@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.onetap
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -39,6 +40,8 @@ class OneTapView(container: ViewGroup) : UIView(container) {
     }
 
     fun showAnimated() {
+        show()
+
         val animatorSet = AnimatorSet()
 
         val fadeInAnimation = ObjectAnimator.ofFloat(view, View.ALPHA, INVISIBLE_ALPHA, VISIBLE_ALPHA).apply {
@@ -54,7 +57,24 @@ class OneTapView(container: ViewGroup) : UIView(container) {
         }
 
         animatorSet
-                .apply { playSequentially(fadeInAnimation, stayAnimation, fadeOutAnimation) }
+                .apply {
+                    playSequentially(fadeInAnimation, stayAnimation, fadeOutAnimation)
+                    addListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {
+                        }
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            hide()
+                            animation?.removeAllListeners()
+                        }
+
+                        override fun onAnimationCancel(animation: Animator?) {
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+                        }
+                    })
+                }
                 .start()
 
     }

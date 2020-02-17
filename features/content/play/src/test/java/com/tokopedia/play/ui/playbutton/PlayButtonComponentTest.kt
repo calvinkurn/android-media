@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.playbutton
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -117,7 +118,7 @@ class PlayButtonComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class PlayButtonComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : PlayButtonComponent(container, bus, coroutineScope) {
+    class PlayButtonComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : PlayButtonComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): PlayButtonView {
             return mockk(relaxed = true)
         }
