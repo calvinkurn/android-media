@@ -26,7 +26,7 @@ class HomePlayWidgetHelper(
 
     companion object{
         private const val DELAY_PLAYING = 2000L
-        private const val DELAY_BACK = 500L
+        private const val DELAY_BACK = 1000L
     }
 
     private var mPlayer: ExoPlayer? = null

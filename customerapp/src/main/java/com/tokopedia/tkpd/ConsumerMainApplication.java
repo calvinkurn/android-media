@@ -60,6 +60,8 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.tkpd.timber.UserIdChangeCallback;
+import com.tokopedia.tkpd.timber.UserIdSubscriber;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpd.utils.DeviceUtil;
@@ -116,7 +118,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this));
+        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -141,9 +143,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 openShakeDetectCampaignPage(isLongShake);
             }
         });
-        registerActivityLifecycleCallbacks(shakeSubscriber);
-
+        UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
+            @Override
+            public void onUserIdChanged() {
+                TimberWrapper.init(ConsumerMainApplication.this);
+            }
+        });
         NFCSubscriber nfcSubscriber = new NFCSubscriber();
+      
+        registerActivityLifecycleCallbacks(shakeSubscriber);
+        registerActivityLifecycleCallbacks(userIdSubscriber);
         registerActivityLifecycleCallbacks(nfcSubscriber);
     }
 

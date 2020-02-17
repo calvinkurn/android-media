@@ -182,6 +182,11 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         } else {
             chatReadStatus.setVisibility(View.GONE);
         }
+        if (element.isSender()) {
+            chatReadStatus.setVisibility(View.VISIBLE);
+        } else {
+            chatReadStatus.setVisibility(View.GONE);
+        }
     }
 
     protected void bindRoleHeader(SendableViewModel chat, int gravity) {

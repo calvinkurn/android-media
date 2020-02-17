@@ -44,13 +44,17 @@ class ResourceDownloadManager private constructor() {
 
     private var density: String = ""
 
-    fun initialize(context: Context, @RawRes resourceId: Int) : ResourceDownloadManager{
+    fun initialize(context: Context, @RawRes resourceId: Int): ResourceDownloadManager {
         initializeFields()
         this.context = WeakReference(context.applicationContext)
         roomDB = ResourceDB.getDatabase(context)
         density = getDisplayDensity(context)
-        DeferredWorker.schedulePeriodicWorker(context, this, resourceId)
+        scheduleWorker(context, resourceId)
         return this
+    }
+
+    fun scheduleWorker(context: Context, resourceId: Int) {
+        DeferredWorker.schedulePeriodicWorker(context, this, resourceId)
     }
 
     fun addDeferredCallback(deferredCallback: DeferredCallback): ResourceDownloadManager {
@@ -106,7 +110,7 @@ class ResourceDownloadManager private constructor() {
 
 
         val customUrl = getResourceUrl(remoteFileName)
-        var task = resourceDownloadTaskQueue.poll()
+        var task = pollForIdleTask()
         if (task == null) {
             task = getNewDownloadTaskInstance()
         }
@@ -278,6 +282,8 @@ class ResourceDownloadManager private constructor() {
     fun getMainHandler() = Handler(Looper.getMainLooper()) {
         handleMessage(it)
     }
+
+    fun pollForIdleTask(): DeferredResourceTask? = resourceDownloadTaskQueue.poll()
 
     companion object {
 

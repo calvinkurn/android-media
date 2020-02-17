@@ -13,6 +13,7 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.model.PremiumAccountCopyWriting;
 import com.tokopedia.home.account.data.model.PremiumAccountResponse;
+import com.tokopedia.home.account.data.model.ShopInfoLocation;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
@@ -65,6 +66,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
     @Override
     public SellerViewModel call(GraphqlResponse graphqlResponse) {
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+        ShopInfoLocation shopInfoLocation = graphqlResponse.getData(ShopInfoLocation.class);
         SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
         accountModel.setSaldoModel(saldoModel);
         DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
@@ -73,7 +75,16 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             dataDeposit = dataDepositResponse.getDataResponse().getDataDeposit();
         }
         SellerViewModel sellerViewModel;
+        int provinceId = 0;
+        if (shopInfoLocation != null
+                && shopInfoLocation.getShopInfoByID() != null
+                && shopInfoLocation.getShopInfoByID().getResult().size() > 0
+                && shopInfoLocation.getShopInfoByID().getResult().get(0).getShippingLoc() != null) {
+            provinceId = shopInfoLocation.getShopInfoByID().getResult().get(0).getShippingLoc().getProvinceID();
+        }
+
         if (accountModel.getShopInfo() != null
+                && provinceId != 0
                 && accountModel.getShopInfo().getInfo() != null
                 && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())
                 && !accountModel.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1")) {

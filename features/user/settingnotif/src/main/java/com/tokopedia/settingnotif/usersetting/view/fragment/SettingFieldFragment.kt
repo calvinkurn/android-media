@@ -131,9 +131,11 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     protected fun showMessage(@StringRes messageRes: Int) {
-        val message = getString(messageRes)
-        view?.let {
-            Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
+        activity?.let {
+            val message = it.getString(messageRes)
+            view?.let { view ->
+                Toaster.showNormal(view, message, Snackbar.LENGTH_SHORT)
+            }
         }
     }
 

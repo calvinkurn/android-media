@@ -57,7 +57,14 @@
                         android:id="@+id/rv_digital_product"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                        android:orientation="vertical"
+                        tools:listitem="@layout/view_topup_bills_input_field"/>
+
+                    <com.tokopedia.unifycomponents.ticker.Ticker
+                        android:id="@+id/ticker_recharge_general_product_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tickerType="announcement" />
 
                     <com.tokopedia.unifycomponents.UnifyButton
                         android:id="@+id/recharge_general_enquiry_button"
@@ -112,7 +119,8 @@
         android:id="@+id/loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/white"
+        tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/dp_50"
