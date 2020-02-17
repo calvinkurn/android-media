@@ -39,7 +39,9 @@ public class DigitalProductActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Uri uriData = getIntent().getData();
-        if (uriData != null && uriData.getQueryParameterNames().size() > 0) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) != null) {
+            passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
+        } else {
             boolean isFromWidget = false;
             if (!TextUtils.isEmpty(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET))) {
                 isFromWidget = Boolean.valueOf(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET));
@@ -58,8 +60,6 @@ public class DigitalProductActivity extends BaseSimpleActivity
                     .isCouponApplied(isCouponApplied)
                     .build();
             this.passData = passData;
-        } else if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) != null) {
-            passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
         }
         super.onCreate(savedInstanceState);
     }

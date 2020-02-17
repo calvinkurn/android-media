@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.authentication.AuthKey
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
