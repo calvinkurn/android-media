@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -29,7 +30,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
     }
 
     companion object {
-        const val FOUR_FRAGMENT_TAG = "four"
+        const val LOTTIE_ANIMATION = "https://ecs7.tokopedia.net/android/lottie/merchant/others/REV_Merchant_Onboarding_lottie.json"
     }
 
     override fun onAttach(context: Context) {
@@ -49,7 +50,14 @@ class ShopOpenRevampFinishFragment : Fragment() {
 
         val shopId = userSession.shopId
         val userName = userSession.name
-        val firstName = userName.substring(0, userName.indexOf(" "))
+        var firstName =  ""
+
+        if (userName.contains(" ")) {
+            firstName = userName.substring(0, userName.indexOf(" "));
+        } else {
+            firstName = userName
+        }
+
         val greetingText = "Selamat $firstName, \nTokomu sudah jadi!"
         txt_greeting.text = greetingText
 
@@ -60,9 +68,15 @@ class ShopOpenRevampFinishFragment : Fragment() {
     }
 
     private fun setupAnimation(view: View) {
-        lottieAnimationView.visibility = View.VISIBLE
-        lottieAnimationView.playAnimation()
-        lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, LOTTIE_ANIMATION)
+
+            lottieCompositionLottieTask.addListener { result ->
+                lottieAnimationView.visibility = View.VISIBLE
+                lottieAnimationView.playAnimation()
+                lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+            }
+        }
     }
 
 }

@@ -51,7 +51,14 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         setupIconImage(view)
 
         val userName = userSession.name
-        val firstName = userName.substring(0, userName.indexOf(" "))
+        var firstName =  ""
+
+        if (userName.contains(" ")) {
+            firstName = userName.substring(0, userName.indexOf(" "));
+        } else {
+            firstName = userName
+        }
+
         val greetingText = "Hore ${firstName}!"
         txt_greeting.text = greetingText
         handler.postDelayed({
