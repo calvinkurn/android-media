@@ -33,6 +33,7 @@ class LivenessDetectionViewModelTest: Spek({
         val facePath = "test"
         val tkpdProjectId = "1"
         val livenessData = LivenessData()
+        val exceptionMock = Exception("Oops!")
 
         Scenario("get success register result from Liveness API") {
             Given("usecase succeed properly") {
@@ -52,7 +53,13 @@ class LivenessDetectionViewModelTest: Spek({
 
             Then("It should return response from API correctly") {
                 verify { observerSuccess.onChanged(Success(livenessData)) }
+            }
+
+            Then("Liveness Live Data should be instance of Success"){
                 viewModel.livenessResponseLiveData.value.shouldBeInstanceOf<Success<LivenessData>>()
+            }
+
+            Then("The variable isSuccessRegister should be true"){
                 val result = viewModel.livenessResponseLiveData.value
                 assertTrue { (result as Success).data.isSuccessRegister }
             }
@@ -76,20 +83,40 @@ class LivenessDetectionViewModelTest: Spek({
 
             Then("It should return response from API correctly too") {
                 verify { observerSuccess.onChanged(Success(livenessData)) }
+            }
+
+            Then("Liveness Live Data should be instance of Success too"){
                 viewModel.livenessResponseLiveData.value.shouldBeInstanceOf<Success<LivenessData>>()
+            }
+
+            Then("The variable isSuccessRegister should be false"){
                 val result = viewModel.livenessResponseLiveData.value
                 assertFalse { (result as Success).data.isSuccessRegister }
             }
         }
 
         Scenario("get error from Liveness API") {
-
             val errorViewModel = mockk<LivenessDetectionViewModel>()
-            val exceptionMock = Exception("Oops!")
 
-            Given("usecase throw something") {
+            Given("uploadImages throw something") {
                 coEvery {
                     errorViewModel.uploadImages(ktpPath, facePath, tkpdProjectId)
+                } throws exceptionMock
+            }
+
+            Then("It should throw something") {
+                assertFailsWith<Exception> {
+                    errorViewModel.uploadImages(ktpPath, facePath, tkpdProjectId)
+                }
+            }
+        }
+
+        Scenario("get result from Liveness API with bad params (ktp path or image path empty string)") {
+            val errorViewModel = mockk<LivenessDetectionViewModel>()
+
+            Given("uploadImages throw something") {
+                coEvery {
+                    errorViewModel.uploadImages("", "", tkpdProjectId)
                 } throws exceptionMock
             }
 
