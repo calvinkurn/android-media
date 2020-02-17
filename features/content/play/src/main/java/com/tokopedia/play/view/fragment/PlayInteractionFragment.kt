@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -63,6 +64,7 @@ import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -143,11 +145,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
-    override fun onResume() {
-        super.onResume()
-        playViewModel.resume()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
         initComponents(view as ViewGroup)
@@ -214,7 +211,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             insets
         }
 
-        view.requestApplyInsets()
+        invalidateInsets(view)
     }
 
     //region observe
@@ -232,6 +229,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            if (it.state == TokopediaPlayVideoState.Playing) PlayAnalytics.clickPlayVideo(channelId, playViewModel.isLive)
             if (it.state == TokopediaPlayVideoState.Ended) showInteractionIfWatchMode()
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -404,7 +402,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initSendChatComponent(container: ViewGroup): UIComponent<SendChatInteractionEvent> {
-        val sendChatComponent = SendChatComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val sendChatComponent = SendChatComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
 
         launch {
@@ -424,7 +422,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initLikeComponent(container: ViewGroup): UIComponent<LikeInteractionEvent> {
-        val likeComponent = LikeComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val likeComponent = LikeComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
             likeComponent.getUserInteractionEvents()
@@ -439,11 +437,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initStatsComponent(container: ViewGroup): UIComponent<Unit> {
-        return StatsComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return StatsComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initPinnedComponent(container: ViewGroup): UIComponent<PinnedInteractionEvent> {
-        val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
             pinnedComponent.getUserInteractionEvents()
@@ -461,12 +459,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initChatListComponent(container: ViewGroup): UIComponent<Unit> {
-        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
     private fun initVideoControlComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
@@ -475,11 +473,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initGradientBackgroundComponent(container: ViewGroup): UIComponent<Unit> {
-        return GradientBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return GradientBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initToolbarComponent(container: ViewGroup): UIComponent<PlayToolbarInteractionEvent> {
-        val toolbarComponent = ToolbarComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val toolbarComponent = ToolbarComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
             toolbarComponent.getUserInteractionEvents()
@@ -497,16 +495,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initPlayButtonComponent(container: ViewGroup): UIComponent<PlayButtonInteractionEvent> {
-        val playButtonComponent = PlayButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val playButtonComponent = PlayButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
             playButtonComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            PlayButtonInteractionEvent.PlayClicked -> {
-                                PlayAnalytics.clickPlayVideo(channelId)
-                                playViewModel.startCurrentVideo()
-                            }
+                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
                         }
                     }
         }
@@ -515,7 +510,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initImmersiveBoxComponent(container: ViewGroup): UIComponent<ImmersiveBoxInteractionEvent> {
-        val immersiveBoxComponent = ImmersiveBoxComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val immersiveBoxComponent = ImmersiveBoxComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
             immersiveBoxComponent.getUserInteractionEvents()
@@ -533,7 +528,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initQuickReplyComponent(container: ViewGroup): UIComponent<QuickReplyInteractionEvent> {
-        val quickReplyComponent = QuickReplyComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val quickReplyComponent = QuickReplyComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
             quickReplyComponent.getUserInteractionEvents()
@@ -551,7 +546,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun initEndLiveInfoComponent(container: ViewGroup): UIComponent<EndLiveInfoInteractionEvent> {
-        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
             endLiveInfoComponent.getUserInteractionEvents()
@@ -572,7 +567,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     //endregion
 
     private fun sendInitState() {
-        launch {
+        launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
                     ScreenStateEvent.Init
@@ -967,8 +962,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.doLikeUnlike(playViewModel.contentId,
                 playViewModel.contentType,
                 playViewModel.likeType,
-                shouldLike,
-                playViewModel.isLive)
+                shouldLike)
 
         sendEventLikeContent(shouldLike)
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
@@ -1080,5 +1074,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun showInteractionIfWatchMode() {
         view?.performClick()
+    }
+
+    private fun invalidateInsets(view: View) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) view.requestApplyInsets()
+            else view.requestFitSystemWindows()
+        } catch (e: Exception) {}
     }
 }

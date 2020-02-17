@@ -3,12 +3,12 @@ package com.tokopedia.common_digital.common.di
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.common_digital.cart.data.datasource.DigitalAddToCartDataSource
 import com.tokopedia.common_digital.cart.data.datasource.DigitalInstantCheckoutDataSource
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData
@@ -60,7 +60,7 @@ class DigitalCommonModule {
     @Provides
     @DigitalCommonChuckQualifier
     fun provideChuckInterceptor(@ApplicationContext context: Context): Interceptor {
-        return ChuckInterceptor(context)
+        return ChuckerInterceptor(context)
     }
 
     @DigitalCommonScope
@@ -92,7 +92,7 @@ class DigitalCommonModule {
                                           digitalInterceptor: DigitalInterceptor,
                                           networkRouter: NetworkRouter,
                                           userSession: UserSession,
-                                          @DigitalCommonChuckQualifier chuckInterceptor: Interceptor): OkHttpClient {
+                                          @DigitalCommonChuckQualifier chuckerInterceptor: Interceptor): OkHttpClient {
         val retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy()
         val builder = OkHttpClient.Builder()
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -104,7 +104,7 @@ class DigitalCommonModule {
         builder.addInterceptor(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(chuckInterceptor)
+                    .addInterceptor(chuckerInterceptor)
         }
 
         return builder.build()

@@ -63,10 +63,8 @@ ext {
 //            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
-            homePageBanner                  : ":features:discovery:home_page_banner",
             homeRecom                       : ":features:discovery:home_recom",
             homeWishlist                    : ":features:discovery:home_wishlist",
-            smartRecycler                   : ":features:discovery:smart_recycler_diffutil_helper",
 //            home                          : ":features:discovery:home_no_op",
             recentview                      : ":features:discovery:recentview",
             //recentview                    : ":features:discovery:recentview_no_op",
@@ -103,7 +101,7 @@ ext {
 
             logisticdata                    : ":features:logistic:logisticdata",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
-            tracking                        : ":features:logistic:tracking",
+            logisticorder                   : ":features:logistic:logisticorder",
             logisticcart                    : ":features:logistic:logisticcart",
 
             goldMerchant                    : ":features:merchant:gold_merchant",
@@ -198,6 +196,7 @@ ext {
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
+            profileCommon                   : ":features:user:profilecommon",
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",

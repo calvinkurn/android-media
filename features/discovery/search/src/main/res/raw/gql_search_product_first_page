@@ -1,5 +1,5 @@
 query SearchProduct(
-    $params: String,
+    $params: String!,
     $query: String!,
     $headline_params: String
 ) {
@@ -327,6 +327,30 @@ query SearchProduct(
                 strikethrough
                 background_url
                 logo_url
+            }
+        }
+    }
+
+    searchInspirationCarousel(params: $params) {
+        data {
+            title
+            type
+            position
+            options {
+                title
+                url
+                applink
+                product {
+                    id
+                    name
+                    price
+                    price_str
+                    image_url
+                    rating
+                    count_review
+                    url
+                    applink
+                }
             }
         }
     }

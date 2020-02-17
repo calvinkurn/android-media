@@ -3,7 +3,9 @@ package com.tokopedia.product.detail.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.product.detail.R
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
@@ -252,8 +254,8 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
-    @Named(RawQueryKeyConstant.MUTATION_UPDATE_CART_COUNTER)
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+    @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
+    fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
     }
 }

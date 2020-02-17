@@ -2,12 +2,11 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.play.view.custom.RoundedFrameLayout
+    <FrameLayout
         android:id="@+id/rfl_video_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:transitionName="@string/play_transition_video"
-        tools:parentTag="android.widget.FrameLayout">
+        android:transitionName="@string/play_transition_video">
 
         <com.tokopedia.play.ui.video.VideoPlayCustom
             android:id="@+id/pv_video"
@@ -16,6 +15,6 @@
             android:background="@color/play_video_background"
             tools:parentTag="android.widget.FrameLayout" />
 
-    </com.tokopedia.play.view.custom.RoundedFrameLayout>
+    </FrameLayout>
 
 </merge>

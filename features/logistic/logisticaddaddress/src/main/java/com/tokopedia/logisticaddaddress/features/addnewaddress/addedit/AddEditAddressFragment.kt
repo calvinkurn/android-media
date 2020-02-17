@@ -29,8 +29,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_NEGATIVE
-import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
@@ -44,13 +43,13 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.Pinpoint
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
@@ -217,7 +216,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             presenter.disconnectGoogleApi()
 
             if (!isMismatch && !isMismatchSolved) {
-                AddNewAddressAnalytics.eventClickBackArrowOnPositivePageChangeAddressPositive()
+                AddNewAddressAnalytics.eventClickBackArrowOnPositivePageChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
             }
 
             activity?.finish()
@@ -226,7 +225,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (!isMismatch && !isMismatchSolved) {
             et_detail_address.apply {
                 addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper))
-                setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive() }
+                setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive(eventLabel = LOGISTIC_LABEL) }
                 addTextChangedListener(setDetailAlamatWatcher())
 
                 setOnTouchListener { view, event ->
@@ -243,7 +242,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             et_receiver_name.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
+                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
                     }
                 }
 
@@ -267,7 +266,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
+                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
                     }
                 }
             }
@@ -278,7 +277,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper))
                     setOnClickListener {
                         showDistrictRecommendationBottomSheet()
-                        AddNewAddressAnalytics.eventClickFieldKotaKecamatanChangeAddressNegative()
+                        AddNewAddressAnalytics.eventClickFieldKotaKecamatanChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
                     }
                 }
             }
@@ -288,7 +287,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 addTextChangedListener(setAlamatWatcher())
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative()
+                        AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
                     }
                 }
                 setOnTouchListener { view, event ->
@@ -315,7 +314,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
+                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
                     }
                 }
             }
@@ -331,7 +330,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative()
+                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
                     }
                 }
             }
@@ -410,19 +409,20 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun eventShowListLabelAlamat(type: String) {
         showLabelAlamatList()
         if (type.equals("positive", true)) {
-            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive()
+            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
         } else {
-            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressNegative()
+            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
         }
     }
 
     private fun doSaveAddress() {
         setSaveAddressModel()
-
-        if (isMismatch) {
-            presenter.saveAddress(saveAddressDataModel, ANA_NEGATIVE)
-        } else {
-            presenter.saveAddress(saveAddressDataModel, ANA_POSITIVE)
+        saveAddressDataModel?.let {
+            if (isMismatch) {
+                presenter.saveAddress(it, ANA_NEGATIVE)
+            } else {
+                presenter.saveAddress(it, ANA_POSITIVE)
+            }
         }
     }
 
@@ -439,7 +439,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
 
         if (!validated) {
-            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field)
+            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field, eventLabel = LOGISTIC_LABEL)
         }
 
         if (!validateFormDefault(field)) validated = false
@@ -482,7 +482,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
 
         if (!validated) {
-            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field, eventLabel = LOGISTIC_LABEL)
         }
 
         if (!validateFormDefault(field)) validated = false
@@ -524,9 +524,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
         if (!validated) {
             if (isMismatch) {
-                AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
+                AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field, eventLabel = LOGISTIC_LABEL)
             } else {
-                AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field)
+                AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field, eventLabel = LOGISTIC_LABEL)
             }
         }
         return validated
@@ -639,7 +639,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun eventShowZipCodes() {
         showZipCodes()
-        AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative()
+        AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
     }
 
     private fun setupRvKodePosChips() {
@@ -672,7 +672,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, false,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
-                AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive()
+                AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
             }
         }
     }
@@ -690,11 +690,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 hideKeyboard()
                 if (et_kota_kecamatan_mismatch?.text.isNullOrEmpty()) {
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
-                    AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
+                    AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu(eventLabel = LOGISTIC_LABEL)
                 } else {
                     goToPinpointActivity(currentLat, currentLong, false, token, true,
                             isMismatchSolved, isMismatch, saveAddressDataModel)
-                    AddNewAddressAnalytics.eventClickButtonPilihLokasiIni()
+                    AddNewAddressAnalytics.eventClickButtonPilihLokasiIni(eventLabel = LOGISTIC_LABEL)
                 }
             }
         }
@@ -944,7 +944,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         moveMap(getLatLng(currentLat, currentLong))
     }
 
-    override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
+    override fun onSuccessAutofill(autofillDataUiModel: Data, errMsg: String) {
     }
 
     override fun showFailedDialog() {
@@ -971,10 +971,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         rv_kodepos_chips_mismatch.visibility = View.GONE
         et_kode_pos_mismatch.apply {
             setText(zipCode)
-            AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative()
+            AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
         }
         saveAddressDataModel?.postalCode = zipCode
-        AddNewAddressAnalytics.eventClickChipsKodePosChangeAddressNegative()
+        AddNewAddressAnalytics.eventClickChipsKodePosChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
     }
 
     override fun showAutoComplete(lat: Double, long: Double) {
@@ -996,9 +996,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             setSelection(et_label_address?.text?.length ?: 0)
         }
         if (!isMismatch && !isMismatchSolved) {
-            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive()
+            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
         } else {
-            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressNegative()
+            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
         }
     }
 

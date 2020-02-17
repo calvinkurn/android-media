@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -56,7 +56,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_recharge_general_digital_product.*
+import kotlinx.android.synthetic.main.fragment_recharge_general.*
 import kotlinx.android.synthetic.main.view_recharge_general_product_input_info_bottom_sheet.view.*
 import javax.inject.Inject
 
@@ -105,7 +105,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recharge_general_digital_product, container, false)
+        return inflater.inflate(R.layout.fragment_recharge_general, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -203,8 +203,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
             }
         })
-        enquiry_button.isEnabled = false
-        enquiry_button.setOnClickListener {
+        recharge_general_enquiry_button.isEnabled = false
+        recharge_general_enquiry_button.setOnClickListener {
             enquire()
         }
 
@@ -395,6 +395,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                             promo?.newPrice ?: price,
                             slashedPrice,
                             isPromo = promo != null)
+
+                    // Show product info ticker
+                    if (detailCompact.isNotEmpty()) {
+                        ticker_recharge_general_product_info.show()
+                        ticker_recharge_general_product_info.setHtmlDescription(detailCompact)
+                    } else {
+                        ticker_recharge_general_product_info.hide()
+                    }
                 }
             }
         }
@@ -634,7 +642,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun hideInputView() {
         operator_cluster_select.hide()
         operator_select.hide()
-        enquiry_button.hide()
+        recharge_general_enquiry_button.hide()
     }
 
     private fun hideFooterView() {
@@ -644,7 +652,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun loadData() {
-        enquiry_button.show()
+        recharge_general_enquiry_button.show()
         loading_view.show()
 
         getMenuDetail(menuId)
@@ -664,7 +672,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (label.isNotEmpty() && input.isNotEmpty() && isManual) {
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
         }
-        updateInputData(label, input, position)
+        updateInputData(label, input)
     }
 
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget, position: Int, data: List<RechargeGeneralProductSelectData>?) {
@@ -676,7 +684,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun updateInputData(label: String, input: String, position: Int) {
+    private fun updateInputData(label: String, input: String) {
         if (label.isNotEmpty() && input.isNotEmpty()) {
             inputData[label] = input
         } else {
@@ -686,20 +694,21 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun toggleEnquiryButton() {
-        enquiry_button.isEnabled = validateEnquiry()
-        if (enquiryLabel.isNotEmpty()) enquiry_button.text = enquiryLabel
+        recharge_general_enquiry_button.isEnabled = validateEnquiry()
+        if (enquiryLabel.isNotEmpty()) recharge_general_enquiry_button.text = enquiryLabel
     }
 
     private fun setEnquiryButtonLabel(label: String) {
         if (label.isNotEmpty()) {
             enquiryLabel = label
-            enquiry_button.text = enquiryLabel
+            recharge_general_enquiry_button.text = enquiryLabel
         }
     }
 
     private fun validateEnquiry(): Boolean {
         return operatorId > 0 && selectedProduct != null
-                && ::inputDataKeys.isInitialized && inputData.keys.toList() == inputDataKeys
+                && ::inputDataKeys.isInitialized
+                && inputData.keys.toList().sorted() == inputDataKeys.sorted()
     }
 
     private fun enquire() {

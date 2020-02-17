@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.autocomplete.searchbar.SearchBarView
-        android:id="@+id/search_bar"
+        android:id="@+id/autocompleteSearchBar"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"/>
 
