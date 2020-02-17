@@ -945,7 +945,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         moveMap(getLatLng(currentLat, currentLong))
     }
 
-    override fun onSuccessAutofill(autofillDataUiModel: Data) {
+    override fun onSuccessAutofill(autofillDataUiModel: Data, errMsg: String) {
     }
 
     override fun showFailedDialog() {
