@@ -13,13 +13,13 @@ public class DeleteChatListUiModel {
 
     @SerializedName("list")
     @Expose
-    private List<DeleteChatViewModel> list;
+    private List<DeleteChatUiModel> list;
 
-    public List<DeleteChatViewModel> getList() {
+    public List<DeleteChatUiModel> getList() {
         return list;
     }
 
-    public void setList(List<DeleteChatViewModel> list) {
+    public void setList(List<DeleteChatUiModel> list) {
         this.list = list;
     }
 }
