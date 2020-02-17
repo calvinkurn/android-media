@@ -39,13 +39,13 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
         itemView?.setOnClickListener {
 
             val view = it
-            val brandObj = it.getTag(TAG_BRAND)
+            val brandObj = it.getTag(R.id.brand)
 
             brandObj?.let {
 
-                val brand = view.getTag(TAG_BRAND) as Brand
-                val index = view.getTag(TAG_POSITION) as Int
-                val listener = view.getTag(TAG_LISTENER) as BrandlistPageTrackingListener
+                val brand = view.getTag(R.id.brand) as Brand
+                val index = view.getTag(R.id.position) as Int
+                val listener = view.getTag(R.id.listener) as BrandlistPageTrackingListener
 
                 listener.clickBrand(
                         (brand.id).toString(),
@@ -65,9 +65,9 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
 
         brand?.let {
 
-            itemView.setTag(TAG_BRAND, brand)
-            itemView.setTag(TAG_POSITION, index)
-            itemView.setTag(TAG_LISTENER, element.listener)
+            itemView.setTag(R.id.brand, brand)
+            itemView.setTag(R.id.position, index)
+            itemView.setTag(R.id.listener, element.listener)
 
             element.listener.impressionBrand(
                     (brand.id).toString(),
@@ -115,10 +115,6 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
     }
 
     companion object {
-
-        const val TAG_BRAND = 0
-        const val TAG_POSITION = 1
-        const val TAG_LISTENER = 2
 
         @LayoutRes
         val LAYOUT = R.layout.brandlist_all_brand_item

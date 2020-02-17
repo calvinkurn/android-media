@@ -21,11 +21,6 @@ class NewBrandAdapter(
 
     private var newBrands: List<Shop> = listOf()
 
-    companion object {
-        const val TAG_SHOP = 0
-        const val TAG_POSITION = 1
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewBrandViewHolder {
         return NewBrandViewHolder(LayoutInflater.from(context).inflate(R.layout.brandlist_popular_brand_item, parent, false))
     }
@@ -59,12 +54,12 @@ class NewBrandAdapter(
             itemView.setOnClickListener {
 
                 val view = it
-                val shopObj = it.getTag(TAG_SHOP)
+                val shopObj = it.getTag(R.id.brand)
 
                 shopObj?.let {
 
-                    val shop: Shop = view.getTag(TAG_SHOP) as Shop
-                    val position: Int = view.getTag(TAG_POSITION) as Int
+                    val shop: Shop = view.getTag(R.id.brand) as Shop
+                    val position: Int = view.getTag(R.id.position) as Int
 
                     listener.clickBrandBaruTokopedia(
                             (shop.id).toString(),
@@ -78,8 +73,8 @@ class NewBrandAdapter(
 
         fun bindData(shop: Shop?, position: Int) {
 
-            itemView.setTag(TAG_SHOP, shop)
-            itemView.setTag(TAG_POSITION, position)
+            itemView.setTag(R.id.brand, shop)
+            itemView.setTag(R.id.position, position)
 
             shop?.let {
                 listener.impressionBrandBaru(

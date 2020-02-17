@@ -20,11 +20,6 @@ class FeaturedBrandAdapter(
 
     private var featuredBrands: List<Shop> = listOf()
 
-    companion object {
-        const val TAG_SHOP = 0
-        const val TAG_POSITION = 1
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeaturedBrandViewHolder {
         return FeaturedBrandViewHolder(LayoutInflater.from(context).inflate(R.layout.brandlist_featured_brand_item, parent, false))
     }
@@ -54,12 +49,12 @@ class FeaturedBrandAdapter(
             itemView.setOnClickListener {
 
                 val view = it
-                val shopObj = it.getTag(TAG_SHOP)
+                val shopObj = it.getTag(R.id.brand)
 
                 shopObj?.let {
 
-                    val shop: Shop = view.getTag(TAG_SHOP) as Shop
-                    val position: Int = view.getTag(TAG_POSITION) as Int
+                    val shop: Shop = view.getTag(R.id.brand) as Shop
+                    val position: Int = view.getTag(R.id.position) as Int
 
                     listener.clickBrandPilihan((shop.id).toString(), shop.name, shop.imageUrl, (position + 1).toString())
 
@@ -70,8 +65,8 @@ class FeaturedBrandAdapter(
 
         fun bindData(shop: Shop?, position: Int) {
 
-            itemView.setTag(NewBrandAdapter.TAG_SHOP, shop)
-            itemView.setTag(NewBrandAdapter.TAG_POSITION, position)
+            itemView.setTag(R.id.brand, shop)
+            itemView.setTag(R.id.position, position)
 
             shop?.let {
                 brandImageView?.let {
