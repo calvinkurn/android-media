@@ -13,7 +13,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 import javax.inject.Inject
 
@@ -100,7 +100,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                         message.attachment?.attributes,
                         QuotationAttributes::class.java
                 )
-        return QuotationViewModel(
+        return QuotationUiModel(
                 quotationPojo = quotationAttributes.quotation,
                 messageId = message.msgId.toString(),
                 fromUid = message.senderId.toString(),

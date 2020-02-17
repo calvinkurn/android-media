@@ -7,7 +7,7 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -481,7 +481,7 @@ public class TopChatAnalytics {
     }
 
     // #QT1
-    public void eventClickQuotation(@NotNull QuotationViewModel msg) {
+    public void eventClickQuotation(@NotNull QuotationUiModel msg) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,

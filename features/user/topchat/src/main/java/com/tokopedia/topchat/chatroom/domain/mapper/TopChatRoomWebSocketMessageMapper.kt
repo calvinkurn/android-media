@@ -10,7 +10,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 import javax.inject.Inject
 
@@ -70,7 +70,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
         val quotationAttributes = GsonBuilder()
                 .create()
                 .fromJson<QuotationAttributes>(jsonAttributes, QuotationAttributes::class.java)
-        return QuotationViewModel(
+        return QuotationUiModel(
                 quotationPojo = quotationAttributes.quotation,
                 messageId = payload.msgId.toString(),
                 fromUid = payload.fromUid,

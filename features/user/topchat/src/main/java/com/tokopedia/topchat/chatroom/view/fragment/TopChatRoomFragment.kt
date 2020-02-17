@@ -66,7 +66,7 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
@@ -982,7 +982,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         })
     }
 
-    override fun trackClickQuotation(msg: QuotationViewModel) {
+    override fun trackClickQuotation(msg: QuotationUiModel) {
         analytics.eventClickQuotation(msg)
     }
 

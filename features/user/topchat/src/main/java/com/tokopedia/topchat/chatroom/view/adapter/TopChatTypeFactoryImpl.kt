@@ -28,7 +28,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightCh
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 
 open class TopChatTypeFactoryImpl(
@@ -86,7 +86,7 @@ open class TopChatTypeFactoryImpl(
         return RoomSettingFraudAlertViewHolder.LAYOUT
     }
 
-    override fun type(quotationViewModel: QuotationViewModel): Int {
+    override fun type(quotationViewModel: QuotationUiModel): Int {
         return QuotationViewHolder.LAYOUT
     }
 
