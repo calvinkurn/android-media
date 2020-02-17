@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatlist.data.source;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper;
-import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 
 import rx.Observable;
@@ -22,7 +22,7 @@ public class CloudMessageDataSource {
         this.deleteMessageMapper = deleteMessageMapper;
     }
 
-    public Observable<DeleteChatListViewModel> deleteMessage(JsonObject parameters) {
+    public Observable<DeleteChatListUiModel> deleteMessage(JsonObject parameters) {
         return chatApi.deleteMessage(parameters).map(deleteMessageMapper);
     }
 }

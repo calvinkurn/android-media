@@ -9,7 +9,7 @@ import java.util.List;
  * Created by stevenfredian on 10/30/17.
  */
 
-public class DeleteChatListViewModel {
+public class DeleteChatListUiModel {
 
     @SerializedName("list")
     @Expose
