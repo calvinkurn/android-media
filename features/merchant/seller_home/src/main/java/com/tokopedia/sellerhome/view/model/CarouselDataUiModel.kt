@@ -12,6 +12,7 @@ class CarouselItemUiModel (
         val id: String,
         val url: String,
         val appLink: String,
+        val creativeName: String,
         val featuredMediaURL: String,
         val impressHolder: ImpressHolder
 )

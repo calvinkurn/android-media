@@ -137,7 +137,7 @@ object SellerHomeTracking {
                         TrackingConstant.HOME,
                         TrackingConstant.CLICK_WIDGET_BANNER,
                         dataKey,
-                        TrackingConstant.NONE_OTHER
+                        items[position].creativeName
                 ).joinToString(" - "),
                 action = arrayOf(TrackingConstant.CLICK_WIDGET_BANNER, dataKey).joinToString(" - "),
                 label = arrayOf(items[position].appLink, position.toString()).joinToString(" - ")
@@ -168,7 +168,7 @@ object SellerHomeTracking {
             return@map mapOf(
                     TrackingConstant.ID to "{${it.id}}",
                     TrackingConstant.NAME to TrackingConstant.SELLER_WIDGET,
-                    TrackingConstant.CREATIVE to "{${TrackingConstant.NONE_OTHER}}",
+                    TrackingConstant.CREATIVE to "{${it.creativeName}}",
                     TrackingConstant.CREATIVE_URL to it.featuredMediaURL,
                     TrackingConstant.POSITION to position.toString()
             )

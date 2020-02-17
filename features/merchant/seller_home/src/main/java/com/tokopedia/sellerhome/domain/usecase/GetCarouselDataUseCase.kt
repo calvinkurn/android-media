@@ -64,6 +64,7 @@ class GetCarouselDataUseCase(
                 "      items {\n" +
                 "        ID\n" +
                 "        URL\n" +
+                "        CreativeName\n" +
                 "        AppLink\n" +
                 "        FeaturedMediaURL\n" +
                 "      }\n" +

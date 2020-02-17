@@ -29,6 +29,7 @@ class CarouselMapper @Inject constructor() {
         return CarouselItemUiModel(
                 id = item.id,
                 url = item.url,
+                creativeName = item.creativeName,
                 appLink = item.appLink,
                 featuredMediaURL = item.mediaUrl,
                 impressHolder = ImpressHolder()

@@ -39,6 +39,9 @@ data class CarouselItemModel(
         @SerializedName("URL")
         val url: String,
         @Expose
+        @SerializedName("CreativeName")
+        val creativeName: String,
+        @Expose
         @SerializedName("AppLink")
         val appLink: String,
         @Expose
