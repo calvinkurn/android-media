@@ -253,7 +253,7 @@ class BottomSheetImageReviewSlider : FrameLayout, ImageReviewSliderView {
             }
 
             if (item.rating != ImageReviewItem.NO_RATING_DATA) {
-                rating.setImageResource(RatingView.getRatingDrawable(item.rating))
+                ImageHandler.loadImageRounded2(itemView.context, rating, RatingView.getRatingDrawable(item.rating), 0f)
                 rating.visibility = View.VISIBLE
             } else {
                 rating.visibility = View.GONE

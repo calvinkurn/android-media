@@ -25,9 +25,6 @@ class SubmitHelpTicketUseCase @Inject constructor(@Named(QUERY_NAME) val querySt
                         mapOf(PARAM to params.getObject(PARAM)))
         )
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map {
                     val submitHelpTicketGql = it.getData<SubmitHelpTicketGqlResponse>(SubmitHelpTicketGqlResponse::class.java)
                     val submitHelpTicket = submitHelpTicketGql.submitHelpTicketResponse
@@ -50,6 +47,9 @@ class SubmitHelpTicketUseCase @Inject constructor(@Named(QUERY_NAME) val querySt
                     }
                     submitTicketResult
                 }
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     companion object {

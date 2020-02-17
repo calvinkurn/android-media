@@ -22,7 +22,7 @@ import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
  */
 class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>>() {
     var listDataDetail = mutableListOf<SomDetailData>()
-    private lateinit var actionListener: ActionListener
+    private var actionListener: ActionListener? = null
 
     interface ActionListener {
         fun onShowBottomSheetInfo(title: String, resIdDesc: Int)
