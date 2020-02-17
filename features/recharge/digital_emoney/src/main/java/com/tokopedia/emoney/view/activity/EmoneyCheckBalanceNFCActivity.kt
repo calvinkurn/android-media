@@ -495,6 +495,10 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         }
     }
 
+    override fun isAllowNFC(): Boolean {
+        return true
+    }
+
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
 
