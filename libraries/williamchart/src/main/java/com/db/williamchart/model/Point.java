@@ -82,6 +82,7 @@ public class Point extends ChartEntry {
 	 *
 	 * @param label
 	 * @param value
+	 * @param customValue
 	 */
 	public Point(String label, float value, String customValue) {
 

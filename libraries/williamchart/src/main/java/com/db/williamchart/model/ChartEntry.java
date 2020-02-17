@@ -77,6 +77,13 @@ public abstract class ChartEntry implements Comparable<ChartEntry> {
 		mShadowColor = new int[4];
 	}
 
+	/**
+	 * Constructor.
+	 *
+	 * @param label
+	 * @param value
+	 * @param customValue
+	 */
 	ChartEntry(String label, float value, String customValue) {
 
 		mLabel = label;

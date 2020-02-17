@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class BaseWilliamChartModel {
     private String[] labels;
     private float[] values;
-    private String[] customValues = null;
+    private String[] customValues = new String[0];
 
     public BaseWilliamChartModel(String[] labels, float[] values) {
         if (labels == null)
@@ -69,7 +69,7 @@ public class BaseWilliamChartModel {
     }
 
     public boolean hasCustomValues() {
-        return customValues.length == values.length;
+        return customValues.length > 0 && customValues.length == values.length;
     }
 
     public void increment(int increment) {

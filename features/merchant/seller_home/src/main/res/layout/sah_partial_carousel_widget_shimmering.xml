@@ -20,7 +20,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/shimmering_banner"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="210dp"
+        android:layout_height="@dimen/sah_banner_image_height"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
         app:corners="10"
