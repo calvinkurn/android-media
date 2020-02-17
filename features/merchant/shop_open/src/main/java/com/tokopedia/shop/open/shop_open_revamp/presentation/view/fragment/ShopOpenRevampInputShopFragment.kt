@@ -262,13 +262,14 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     val _shopId = it.data.createShop.createdId
                     val _isSuccess = it.data.createShop.success
                     val _message = it.data.createShop.message
+                    var isSuccess = false
                     if (_shopId.isNotEmpty() && _isSuccess) {
-                        val isSuccess = true
+                        isSuccess = true
                         userSession.shopId = _shopId
                         fragmentNavigationInterface.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
                         shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                     } else {
-                        val isSuccess = false
+                        isSuccess = false
                         shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                         if (_message.isNotEmpty()) {
                             showErrorResponse(_message)
