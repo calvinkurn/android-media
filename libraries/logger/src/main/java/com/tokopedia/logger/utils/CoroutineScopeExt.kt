@@ -3,7 +3,7 @@ package com.tokopedia.logger.utils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-fun globalScopeLaunch(block: suspend (()->Unit), onError: suspend (Throwable)-> Unit) =
+fun globalScopeLaunch(block: suspend (()->Unit), onError: suspend (Throwable)-> Unit, finally: ()->Unit) =
     GlobalScope.launch {
         try{
             block()
@@ -13,5 +13,7 @@ fun globalScopeLaunch(block: suspend (()->Unit), onError: suspend (Throwable)-> 
             } catch (e: Throwable){
 
             }
+        } finally {
+            finally()
         }
     }

@@ -12,7 +12,13 @@ import com.tokopedia.logger.utils.globalScopeLaunch
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class ServerJobService : JobService() {
 
+    companion object {
+        var isRunning = false
+    }
+
     override fun onStartJob(params: JobParameters?): Boolean {
+        if(isRunning) return false
+        isRunning = true
         globalScopeLaunch({
             LogManager.deleteExpiredLogs()
             if(isNetworkAvailable(application) and (LogManager.getCount() > 0)) {
@@ -21,6 +27,8 @@ class ServerJobService : JobService() {
             jobFinished(params, false)
         }, {
             it.printStackTrace()
+        }, {
+            isRunning = false
         })
         return false
     }
