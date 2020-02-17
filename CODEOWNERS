@@ -48,6 +48,7 @@
 /features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
 
 /features/merchant/atc_variant/                         @tokopedia/minion-stuart
+/features/merchant/brandlist/                           @tokopedia/minion-stuart
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
 /features/merchant/gold_merchant_resource/              @tokopedia/minion-stuart
@@ -68,7 +69,6 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
-/features/merchant/brandlist/                           @tokopedia/minion-stuart
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
