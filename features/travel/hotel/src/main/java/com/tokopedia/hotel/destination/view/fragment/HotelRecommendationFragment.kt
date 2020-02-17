@@ -1,20 +1,20 @@
 package com.tokopedia.hotel.destination.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -107,7 +107,8 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 .build()
         val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
         val recentSearchRecyclerView = view.findViewById(R.id.recent_search_recycler_view) as RecyclerView
-        recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp ?: 0, staticDimen8dp ?: 0))
+        recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp
+                ?: 0, staticDimen8dp ?: 0))
         recentSearchRecyclerView.layoutManager = layoutManager
         ViewCompat.setLayoutDirection(recentSearchRecyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
         recentSearchAdapter = RecentSearchAdapter(this)
@@ -171,7 +172,11 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         destinationViewModel.longLat.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onClickCurrentLocation(lang = it.data.first, lat = it.data.second)
-                is Fail -> checkGPS()
+                is Fail -> if (!it.throwable.message.isNullOrEmpty() && it.throwable.message.equals(GPS_FAILED_SHOW_ERROR)) {
+                    onErrorGetLocation()
+                } else {
+                    checkGPS()
+                }
             }
         })
     }
@@ -262,9 +267,8 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
             if (gpsRetryCounter < GPS_MAX_RETRY) {
                 gpsRetryCounter++
                 destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
-            }
-            else {
-                onErrorGetLocation()
+            } else {
+                destinationViewModel.getLocationFromUpdates(fusedLocationProviderClient)
                 gpsRetryCounter = 0
             }
         }
@@ -294,7 +298,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_GPS -> {
                 destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
             }
@@ -315,6 +319,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     companion object {
         private const val REQUEST_CODE_GPS = 10101
+        const val GPS_FAILED_SHOW_ERROR = "GPS_FAILED_SHOW_ERROR"
 
         fun getInstance(): HotelRecommendationFragment = HotelRecommendationFragment()
     }

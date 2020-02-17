@@ -80,6 +80,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_ASK_SELLER;
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_BUY_AGAIN;
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_SUBMIT_CANCELLATION;
+
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
 
     private static final String ORDER_CATEGORY = "orderCategoryStr";
@@ -728,14 +732,14 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     private void handleActionButtonClick(String buttonLabel) {
         switch (buttonLabel) {
-            case "beli lagi":
+            case ACTION_BUY_AGAIN:
                 buyAgainItem();
                 break;
-            case "tanya penjual":
+            case ACTION_ASK_SELLER:
                 getView().startSellerAndAddInvoice();
                 orderListAnalytics.sendActionButtonClickEventList("click ask seller",orderDetails.getStatusInfo());
                 break;
-            case "ajukan pembatalan":
+            case ACTION_SUBMIT_CANCELLATION:
                 getView().requestCancelOrder(getStatus());
                 orderListAnalytics.sendActionButtonClickEventList("", "");
                 break;

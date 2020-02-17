@@ -119,12 +119,6 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
-    //   switch for New category belanja page
-    public static final String APP_CATEGORY_BROWSE_V1 = "app_category_browse_v1";
-
-     //   switch for New category belanja page A/B testing
-    public static final String APP_CATEGORY_BROWSE_ENABLE_AB = "app_category_browse_enable_ab";
-
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 
@@ -151,6 +145,8 @@ public class RemoteConfigKey {
     public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
 
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
+
+    public static final String APP_ENABLE_OPEN_SHOP_REVAMP = "app_enable_open_shop_revamp";
 
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
 

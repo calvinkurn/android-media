@@ -9,7 +9,7 @@ import com.tokopedia.tradein.model.MoneyInCheckoutMutationResponse.ResponseData.
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +18,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 
-class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
+class MoneyInCheckoutViewModel(application: Application) : BaseTradeInViewModel(application), CoroutineScope {
 
     private val pickupScheduleOptionLiveData = MutableLiveData<Result<GetPickupScheduleOption>>()
     private val courierRatesLiveData = MutableLiveData<Result<RatesV4.Data>>()

@@ -19,6 +19,7 @@ import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener;
  */
 
 public class ShopProductSortActivity extends BaseSimpleActivity implements HasComponent<ShopComponent>, ShopProductSortFragmentListener {
+    public static final String SORT_VALUE = "SORT_VALUE";
     public static final String SORT_NAME = "SORT_NAME";
     public static final String SORT_ID = "SORT_ID";
     private ShopComponent component;
@@ -26,7 +27,7 @@ public class ShopProductSortActivity extends BaseSimpleActivity implements HasCo
 
     public static Intent createIntent(Context context, String sortName){
            Intent intent = new Intent(context, ShopProductSortActivity.class);
-           intent.putExtra(SORT_NAME, sortName);
+           intent.putExtra(SORT_VALUE, sortName);
            return intent;
     }
 
@@ -48,7 +49,7 @@ public class ShopProductSortActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if(getIntent() != null && savedInstanceState == null){
-            sortName = getIntent().getStringExtra(SORT_NAME);
+            sortName = getIntent().getStringExtra(SORT_VALUE);
 
             if (sortName.equalsIgnoreCase(Integer.toString(Integer.MIN_VALUE))) {
                 sortName = null;
@@ -69,9 +70,10 @@ public class ShopProductSortActivity extends BaseSimpleActivity implements HasCo
     }
 
     @Override
-    public void select(String sortId, String sortName) {
+    public void select(String sortId, String sortValue) {
         Intent intent = new Intent();
         intent.putExtra(SORT_ID, sortId);
+        intent.putExtra(SORT_VALUE, sortValue);
         intent.putExtra(SORT_NAME, sortName);
         setResult(Activity.RESULT_OK, intent);
         finish();

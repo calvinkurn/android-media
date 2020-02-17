@@ -6,7 +6,8 @@ package com.tokopedia.shop.analytic;
 
 public class ShopPageTrackingConstant {
 
-    public static final String FEATURED_PRODUCT = "Produk Unggulan";
+    public static final String FEATURED_PRODUCT = "top product";
+    public static final String HIGHLIGHT_SOLD_PRODUCT = "sold product";
 
     //event
     public static final String CLICK_SHOP_PAGE = "clickShopPage";
@@ -27,6 +28,8 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_PAGE = "shop page";
     public static final String TOP_NAV = "top nav - %s";
     public static final String MEMBERSHIP_SHOP_PAGE = "membership - shop page";
+    public static final String SETTING_PAGE_SELLER = "setting page - seller";
+    public static final String SHOP_PROFILE_PAGE_BUYER = "shop profile page - buyer";
 
     //ACTION
     public static final String TOP_SECTION = "top section";
@@ -37,7 +40,7 @@ public class ShopPageTrackingConstant {
     public static final String MANAGE_SHOP = "manage shop";
     public static final String MANAGE_PRODUCT = "manage product";
     public static final String CLICK = "click";
-    public static final String CLICK_MESSAGE_SELLER = "click message seller";
+    public static final String CLICK_CHAT_SELLER = "click chat seller";
     public static final String FOLLOW = "follow";
     public static final String UNFOLLOW = "unfollow";
     public static final String SEARCH_BAR = "search bar";
@@ -46,16 +49,32 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SEND_CHAT = "click on kirim pesan";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_CART_BUTTON = "click cart button - search result";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
-    public static final String SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX = "click search box";
-    public static final String SHOP_SEARCH_PRODUCT_CLICK_SEARCH = "click - search";
-    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click - etalase autocomplete";
-    public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click - global autocomplete";
+    public static final String CLICK_SEARCH = "click search";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
+    public static final String CLICK_BACK = "click back";
+    public static final String CLICK_X_TAB = "click %1s tab";
+    public static final String CLICK_SHOWCASE_X = "click etalase %1s";
+    public static final String CLICK_SHOWCASE_LIST = "click etalase list";
+    public static final String SORT_PRODUCT = "sort product";
+    public static final String CLICK_SETTING = "click setting";
+    public static final String CLICK_SHOP_DASHBOARD = "click shop dashboard";
+    public static final String CLICK_CHANGE_SHOP_PROFILE = "click change shop profile";
+    public static final String CLICK_CHANGE_SHOP_NOTE = "click change shop note";
+    public static final String CLICK_SET_OPEN_SHOP_TIME = "click set open shop time";
+    public static final String CLICK_SEE_PRODUCT = "click see product";
+    public static final String CLICK_ADD_AND_EDIT_ETALASE = "click add and edit etalase";
+    public static final String CLICK_PUSAT_BANTUAN = "click pusat bantuan";
+    public static final String CLICK_PUSAT_SELLER = "click pusat seller";
+    public static final String CLICK_ADD_AND_EDIT_SHOP_LOCATION = "click add and edit shop location";
+    public static final String CLICK_SET_SHIPPING_SERVICE = "click set shipping service";
+    public static final String CLICK_SHOP_PROFILE = "click shop profile";
 
     //label
     public static final String CLICK_TAB = "click tab";
-    public static final String CLICK_SHARE_BUTTON = "click share button";
-    public static final String CLICK_CART_BUTTON = "click cart button";
+    public static final String CLICK_SHARE = "click share";
+    public static final String CLICK_CART_BUTTON = "click my cart";
     public static final String CLICK_REQUEST_OPEN_SHOP = "click request open shop";
     public static final String IMPRESSION_OF_REQUEST_OPEN_SHOP = "impression of request open shop";
     public static final String SEARCH_RESULT = "search result";
@@ -72,9 +91,10 @@ public class ShopPageTrackingConstant {
     public static final String REMOVE = "remove";
     public static final String CLICK_SORT = "click sort";
     public static final String LIST = "list";
-    public static final String CLICK_SORT_BY = "click sort by";
+    public static final String CLICK_SORT_BY = "sort %1s";
     public static final String CLICK_ADD_PRODUCT = "click add product";
-    public static final String CLICK_FOLLOWER_LIST = "click follower list";
+    public static final String CLICK_FOLLOW = "click follow";
+    public static final String CLICK_UNFOLLOW = "click unfollow";
     public static final String CLICK_ADD_NOTE = "click add note";
     public static final String SEE_ALL = "see all";
     public static final String MVC_DETAIL = "mvc detail";
@@ -95,6 +115,13 @@ public class ShopPageTrackingConstant {
     public static final String MEMBERSHIP_DETAIL_PAGE = "click membership detail page";
     public static final String MEMBERSHIP_COUPON_CLAIM = "click klaim kupon";
     public static final String MEMBERSHIP_COUPON_CHECK = "click cek kupon saya";
+    public static final String ETALASE_X = "etalase %1s";
+    public static final String CLICK_PRODUCT = "click product";
+    public static final String SEARCH_PRODUCT = "search product";
+    public static final String SEARCH_PRODUCT_RESULT = "search result";
+    public static final String SEARCH_PRODUCT_NO_RESULT = "no search result";
+
+
 
     //key
     public static final String EVENT = "event";
@@ -103,7 +130,7 @@ public class ShopPageTrackingConstant {
     public static final String EVENT_LABEL = "eventLabel";
     public static final String EVENT_PROMO_ID = "promoId";
     public static final String EVENT_PRODUCT_ID = "productId";
-    public static final String SHOP_ID = "shop_id";
+    public static final String SHOP_ID = "shopId";
     public static final String SHOP_NAME = "shop_name";
     public static final String PAGE_TYPE = "page_type";
     public static final String PRODUCT_ID = "product_id";

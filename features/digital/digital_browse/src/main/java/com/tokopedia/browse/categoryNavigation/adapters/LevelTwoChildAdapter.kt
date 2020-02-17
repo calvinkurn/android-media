@@ -4,6 +4,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
@@ -26,7 +28,7 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?,
     }
 
     override fun getItemCount(): Int {
-        return list?.size?:0
+        return list?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -70,7 +72,7 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?,
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val productImage = view.product_image
-        val productName = view.product_name
+        val productImage: ImageView = view.product_image
+        val productName: TextView = view.product_name
     }
 }

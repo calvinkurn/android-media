@@ -144,11 +144,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
-    override fun onResume() {
-        super.onResume()
-        playViewModel.resume()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
         initComponents(view as ViewGroup)
@@ -966,8 +961,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.doLikeUnlike(playViewModel.contentId,
                 playViewModel.contentType,
                 playViewModel.likeType,
-                shouldLike,
-                playViewModel.isLive)
+                shouldLike)
 
         sendEventLikeContent(shouldLike)
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)

@@ -46,6 +46,9 @@
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
+  
+    <!-- Dynamic feature for Change Password -->
+    <string name="change_password_app_name">Ubah Kata Sandi</string>
 
     <!-- Dynamic feature for Open Shop-->
     <string name="title_open_shop">Buka Toko Gratis</string>
@@ -82,6 +85,7 @@
     <string name="similar_search_app_name">similarsearch</string>
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_autocomplete_module_name" >Pencarian</string>
+    <string name="title_home_wishlist_module_name">Wishlist</string>
     <string name="autocomplete_app_name">autocomplete</string>
     <string name="title_search_result" >Pencarian</string>
     <string name="title_search_result_module_name" >Pencarian</string>
