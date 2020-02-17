@@ -338,7 +338,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
-            isAutoSliderActive = true
             val tickersData = tickers.map {
                 TickerData(it.title, it.message, getTickerType(it.color))
             }
