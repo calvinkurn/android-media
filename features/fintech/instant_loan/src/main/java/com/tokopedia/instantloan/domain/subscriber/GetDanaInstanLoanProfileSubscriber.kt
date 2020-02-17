@@ -28,7 +28,7 @@ class GetDanaInstanLoanProfileSubscriber(var presenter: DanaInstanLoanContractor
     override fun onError(e: Throwable?) {
         if (presenter.isViewAttached()) {
             presenter.getView().onErrorLoanProfileStatus(
-                    ErrorHandler.getErrorMessage(presenter.getView().getActivityContext(), e))
+                    ErrorHandler.getErrorMessage(presenter.getView().getContext(), e))
         }
     }
 
