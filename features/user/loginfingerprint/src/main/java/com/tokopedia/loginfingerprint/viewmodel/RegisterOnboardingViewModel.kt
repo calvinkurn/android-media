@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.PreferenceHelper
-import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -36,12 +35,7 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispa
 
     fun registerFingerprint(){
         val signature = cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-        val param = mapOf(
-            LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to cryptographyUtils.getPublicKey(),
-            LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
-            LoginFingerprintQueryConstant.PARAM_DATETIME to signature.datetime
-        )
-        registerFingerprintUseCase.setRequestParams(param)
+        registerFingerprintUseCase.setRequestParams(registerFingerprintUseCase.createRequestParam(signature, cryptographyUtils.getPublicKey()))
         registerFingerprintUseCase.executeUseCase(onSuccessRegisterFP(), onErrorRegisterFP())
     }
 
@@ -53,6 +47,7 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispa
             if (errorMessage.isBlank() && isSuccess) {
                 mutableRegisterFingerprintResult.value = Success(it.data)
                 preferenceHelper.registerFingerprint()
+                preferenceHelper.saveUserId(userSession.userId)
             } else if (!errorMessage.isBlank()) {
                 mutableRegisterFingerprintResult.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
@@ -69,4 +64,7 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispa
         }
     }
 
+    fun unregisterFP(){
+        preferenceHelper.unregisterFingerprint()
+    }
 }

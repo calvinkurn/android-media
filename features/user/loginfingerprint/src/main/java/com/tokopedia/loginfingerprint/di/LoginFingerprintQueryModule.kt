@@ -5,11 +5,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintPojo
-import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -42,4 +41,7 @@ class LoginFingerprintQueryModule {
     fun provideValidateFingerprintUsecase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<ValidateFingerprintPojo> = GraphqlUseCase(graphqlRepository)
 
+    @Provides
+    fun provideLoginTokenUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<LoginTokenPojo> = GraphqlUseCase(graphqlRepository)
 }

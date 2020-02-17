@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintResult
-import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
+import com.tokopedia.loginfingerprint.data.preference.PreferenceHelper
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,37 +26,47 @@ import javax.inject.Inject
 class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                    private val userSession: UserSessionInterface,
                                                    val cryptographyUtils: CryptographyUtils,
+                                                   private val preferenceHelper: PreferenceHelper,
+                                                   private val loginTokenUseCase: LoginTokenUseCase,
                                                    private val validateFingerprintUseCase: ValidateFingerprintUseCase)
     : BaseViewModel(dispatcher) {
 
-    private val mutableValidateFingerprintResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<ValidateFingerprintResult>>()
-    val verifyValidateFingerprintResult: LiveData<com.tokopedia.usecase.coroutines.Result<ValidateFingerprintResult>>
-        get() = mutableValidateFingerprintResult
+    private val mutableLoginFingerprintResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<LoginTokenPojo>>()
+    val loginFingerprintResult: LiveData<com.tokopedia.usecase.coroutines.Result<LoginTokenPojo>>
+        get() = mutableLoginFingerprintResult
+
+//    private val mutableValidateFingerprintResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<ValidateFingerprintResult>>()
+//    val validateFingerprintResult: LiveData<com.tokopedia.usecase.coroutines.Result<ValidateFingerprintResult>>
+//        get() = mutableValidateFingerprintResult
 
     fun validateFingerprint() {
         val signature = cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-        val param = mapOf(
-                LoginFingerprintQueryConstant.PARAM_USER_ID to userSession.userId,
-                LoginFingerprintQueryConstant.PARAM_OTP_TYPE to "12",
-                LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
-                LoginFingerprintQueryConstant.PARAM_TIME_UNIX to signature.datetime
-        )
-        validateFingerprintUseCase.setRequestParams(param)
+        validateFingerprintUseCase.setRequestParams(validateFingerprintUseCase.createRequestParams(
+                preferenceHelper.getFingerprintUserId(),
+                "12",
+                signature
+        ))
         validateFingerprintUseCase.executeUseCase(onSuccessValidateFP(), onErrorValidateFP())
+    }
+
+    private fun loginToken(validateToken: String){
+        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
+                userSession, validateToken), LoginTokenSubscriber(userSession,
+                { mutableLoginFingerprintResult.value = Success(it) },
+                onErrorValidateFP(), {}, {}))
     }
 
     private fun onSuccessValidateFP(): (ValidateFingerprintResult) -> Unit {
         return {
             val errorMessage = it.errorMessage
             val isSuccess = it.success
-
             if (errorMessage.isBlank() && isSuccess) {
-                mutableValidateFingerprintResult.value = Success(it)
+                loginToken(it.validateToken)
             } else if (!errorMessage.isBlank()) {
-                mutableValidateFingerprintResult.value = Fail(MessageErrorException(errorMessage,
+                mutableLoginFingerprintResult.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
             } else {
-                mutableValidateFingerprintResult.value = Fail(RuntimeException())
+                mutableLoginFingerprintResult.value = Fail(RuntimeException())
             }
         }
     }
@@ -63,7 +74,7 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
     private fun onErrorValidateFP(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
-            mutableValidateFingerprintResult.postValue(Fail(it))
+            mutableLoginFingerprintResult.postValue(Fail(it))
         }
     }
 

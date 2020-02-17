@@ -37,15 +37,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.DeeplinkDFMapper
-import com.tokopedia.applink.DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.dynamicfeatures.DFInstaller
-import com.tokopedia.dynamicfeatures.DFInstaller.Companion.isInstalled
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -55,6 +51,8 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
+import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
+import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
@@ -63,6 +61,7 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
+import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -70,7 +69,6 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
@@ -96,10 +94,6 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
-import kotlinx.android.synthetic.main.fragment_login_with_phone.container
-import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
-import kotlinx.android.synthetic.main.fragment_login_with_phone.progress_bar
-import kotlinx.android.synthetic.main.fragment_login_with_phone.socmed_btn
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -107,7 +101,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
+class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, LoginEmailPhoneContract.View {
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -366,6 +360,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
         }
 
+        if(ScanFingerprintDialog.isFingerprintAvailable(activity) && presenter.isLastUserRegistered()){
+            fingerprint_btn.visibility = View.VISIBLE
+            fingerprint_btn.setOnClickListener {
+                activity?.run {
+                    ScanFingerprintDialog(this, this@LoginEmailPhoneFragment).showWithMode(ScanFingerprintDialog.MODE_LOGIN)
+                }
+            }
+        }
+
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
@@ -608,6 +611,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 presenter.discoverLogin(this)
             }
         }.showRetrySnackbar()
+    }
+
+    override fun onLoginFingerprintSuccess() {
+        onSuccessLogin()
     }
 
     override fun onSuccessLogin() {
@@ -876,7 +883,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
                 onGoToChangeName()
             } else {
-                checkStatusPinAfterSQ()
+                checkAdditionalLoginOptionsAfterSQ()
             }
         }
     }
@@ -1059,7 +1066,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME) {
-                checkStatusPinAfterSQ()
+                checkAdditionalLoginOptionsAfterSQ()
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 showLoading(true)
@@ -1081,11 +1088,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                         if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
                             onGoToSecurityQuestion("")
                         } else {
-                            checkStatusPin()
+                            checkAdditionalLoginOptions()
+                            checkAdditionalLoginOptions()
                         }
                     }
                 } else {
-                    checkStatusPin()
+                    checkAdditionalLoginOptions()
                 }
 
             } else if (requestCode == REQUEST_LOGIN_PHONE
@@ -1245,12 +1253,41 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    private fun checkStatusPin() {
-        presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
+    private fun checkAdditionalLoginOptions() {
+        if(ScanFingerprintDialog.isFingerprintAvailable(activity))
+//            onSuccessCheckStatusFingerprint()
+            presenter.checkStatusFingerprint(onSuccessCheckStatusFingerprint(), onErrorCheckStatusFingerprint())
+        else
+            presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
     }
 
-    private fun checkStatusPinAfterSQ() {
-        presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
+    private fun checkAdditionalLoginOptionsAfterSQ() {
+        if(ScanFingerprintDialog.isFingerprintAvailable(activity))
+            presenter.checkStatusFingerprint(onSuccessCheckStatusFingerprint(), onErrorCheckStatusFingerprint())
+        else
+            presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
+    }
+
+    private fun onErrorCheckStatusFingerprint(): (Throwable) -> Unit {
+        return {
+            dismissLoadingLogin()
+            it.printStackTrace()
+            view?.run {
+                val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
+                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
+            }
+        }
+    }
+
+    private fun onSuccessCheckStatusFingerprint(): (StatusFingerprint) -> Unit {
+        return {
+            dismissLoadingLogin()
+            if (!it.isValid && isFromAccountPage()) {
+                RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
+            } else {
+                onSuccessLogin()
+            }
+        }
     }
 
     private fun onErrorCheckStatusPin(): (Throwable) -> Unit {
@@ -1287,9 +1324,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     isFromAccountPage() &&
                     userSession.phoneNumber.isNotEmpty() &&
                     userSession.isMsisdnVerified) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-                startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_SQ)
+                activity?.run {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+                    startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_SQ)
+                }
             } else {
                 onSuccessLogin()
             }
@@ -1403,5 +1442,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun onFingerprintValid() {
+        Toaster.make(parent_container, "SUKSES", Toaster.LENGTH_LONG, type = Toaster.TYPE_NORMAL)
+    }
+
+    override fun onFingerprintError(msg: String, errCode: Int) {
+        Toaster.make(parent_container, msg, Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR)
     }
 }

@@ -6,6 +6,12 @@ package com.tokopedia.loginfingerprint.listener
  */
 
 interface ScanFingerprintInterface {
+    /* Called when scanned fingerprint valid and mode != LOGIN */
     fun onFingerprintValid()
+
+    /* Called when user encounter error or scanned fingerprint is not avalod and mode != LOGIN */
     fun onFingerprintError(msg: String, errCode: Int)
+
+    /* Only called when mode = LOGIN and after login token success */
+    fun onLoginFingerprintSuccess()
 }

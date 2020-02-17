@@ -11,6 +11,7 @@ class PreferenceHelper(context: Context) {
 
     companion object {
         const val LOGIN_FINGERPRINT_STATUS_KEY = "loginFingerprintStatusKey"
+        const val LOGIN_FINGERPRINT_USER_ID_KEY = "loginFingerprintUserIdKey"
     }
 
     private val prefName = "LoginFingerprintPrefs"
@@ -21,5 +22,15 @@ class PreferenceHelper(context: Context) {
         prefs.edit().putBoolean(LOGIN_FINGERPRINT_STATUS_KEY, true).apply()
     }
 
-    fun isFingerprintRegistered(): Boolean = prefs.contains(LOGIN_FINGERPRINT_STATUS_KEY)
+    fun saveUserId(userId: String){
+        prefs.edit().putString(LOGIN_FINGERPRINT_USER_ID_KEY, userId).apply()
+    }
+
+    fun getFingerprintUserId(): String = prefs.getString(LOGIN_FINGERPRINT_USER_ID_KEY, "") ?: ""
+
+    fun unregisterFingerprint(){
+        prefs.edit().putBoolean(LOGIN_FINGERPRINT_STATUS_KEY, false).apply()
+    }
+
+    fun isFingerprintRegistered(): Boolean = prefs.getBoolean(LOGIN_FINGERPRINT_STATUS_KEY, false)
 }

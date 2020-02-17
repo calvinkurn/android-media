@@ -6,9 +6,13 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.loginfingerprint.data.preference.PreferenceHelper
+import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.domain.StatusFingerprint
+import com.tokopedia.loginregister.login.domain.StatusFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
@@ -46,6 +50,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val getProfileUseCase: GetProfileUseCase,
                                                    private val tickerInfoUseCase: TickerInfoUseCase,
                                                    private val statusPinUseCase: StatusPinUseCase,
+                                                   private val statusFingerprintUseCase: StatusFingerprintUseCase,
+                                                   private val cryptographyUtils: CryptographyUtils,
+                                                   private val preferenceHelper: PreferenceHelper,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -57,6 +64,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         super.attachView(view)
         this.viewEmailPhone = viewEmailPhone
     }
+
+    fun isLastUserRegistered(): Boolean = preferenceHelper.isFingerprintRegistered()
 
     override fun discoverLogin(context: Context) {
         view?.let { view ->
@@ -259,6 +268,11 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
 
     override fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit) {
         statusPinUseCase.executeCoroutines(onSuccess, onError)
+    }
+
+    override fun checkStatusFingerprint(onSuccess: (StatusFingerprint) -> Unit, onError: (Throwable) -> Unit) {
+        val signature = cryptographyUtils.generateFingerprintSignature(userId = userSession.userId, deviceId = userSession.deviceId)
+        statusFingerprintUseCase.executeCoroutines(onSuccess, onError, signature)
     }
 
     override fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit) {

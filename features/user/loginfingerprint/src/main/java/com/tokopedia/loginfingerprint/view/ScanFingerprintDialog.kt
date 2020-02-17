@@ -12,7 +12,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
@@ -114,21 +117,21 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
             setBodyText(text, textColor)
         })
 
-        viewModel.verifyValidateFingerprintResult.observe(this, Observer {
+        viewModel.loginFingerprintResult.observe(this, Observer {
             when (it) {
-                is Success -> onSuccessValidateFP()
-                is Fail -> onErrorValidateFP(it.throwable)
+                is Success -> onSuccessLoginFp()
+                is Fail -> onErrorLoginFp(it.throwable)
             }
         })
     }
 
-    private fun onSuccessValidateFP(){
+    private fun onSuccessLoginFp(){
         hideProgressBar()
         viewState.postValue(STATE_SUCCESS)
-        listener?.onFingerprintValid()
+        listener?.onLoginFingerprintSuccess()
     }
 
-    private fun onErrorValidateFP(e: Throwable){
+    private fun onErrorLoginFp(e: Throwable){
         animateLottieError {
             startListening()
             hideProgressBar()
