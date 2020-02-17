@@ -52,7 +52,7 @@ import tradein_common.TradeInUtils;
 
 import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
 
-public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessRequestListener {
+public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
 
 
     private TextView mTvPriceElligible;
@@ -228,29 +228,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvGoToProductDetails.setOnClickListener(v -> {
                             if (imeiView.getVisibility() == View.VISIBLE) {
                                 if (editTextImei.getText().length() == 15) {
-                                    laku6TradeIn.checkImeiValidation(new Laku6TradeIn.TradeInListener() {
-                                        @Override
-                                        public void onFinished(JSONObject jsonObject) {
-                                            tradeInHomeViewModel.setDeviceId(editTextImei.getText().toString());
-                                            inputImei = true;
-                                            TradeInUtils.setImeiNumber(TradeInHomeActivity.this, editTextImei.getText().toString());
-                                            getPriceFromSDK(TradeInHomeActivity.this);
-                                            typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
-                                            typographyImeiDescription.setTextColor(MethodChecker.getColor(TradeInHomeActivity.this,R.color.tradein_black));
-                                        }
-
-                                        @Override
-                                        public void onError(JSONObject error) {
-                                            String errorMessage = getString(R.string.wrong_imei_string);
-                                            try {
-                                                errorMessage = error.getString("message");
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                            typographyImeiDescription.setText(errorMessage);
-                                            typographyImeiDescription.setTextColor(MethodChecker.getColor(TradeInHomeActivity.this,R.color.tradein_hint_red));
-                                        }
-                                    }, editTextImei.getText().toString());
+                                    showProgressBar();
+                                    laku6TradeIn.checkImeiValidation(this, editTextImei.getText().toString());
                                 } else if (editTextImei.getText().length() == 0){
                                     typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
                                     typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
@@ -534,4 +513,27 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         IrisAnalytics.getInstance(this).sendEvent(values);
     }
 
+    @Override
+    public void onFinished(JSONObject jsonObject) {
+        hideProgressBar();
+        tradeInHomeViewModel.setDeviceId(editTextImei.getText().toString());
+        inputImei = true;
+        TradeInUtils.setImeiNumber(this, editTextImei.getText().toString());
+        getPriceFromSDK(this);
+        typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
+        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_black));
+    }
+
+    @Override
+    public void onError(JSONObject error) {
+        hideProgressBar();
+        String errorMessage = getString(R.string.wrong_imei_string);
+        try {
+            errorMessage = error.getString("message");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        typographyImeiDescription.setText(errorMessage);
+        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+    }
 }
