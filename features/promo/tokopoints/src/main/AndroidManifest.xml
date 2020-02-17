@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.CatalogListingActivity"
+            android:name=".view.cataloglisting.CatalogListingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
             <intent-filter >

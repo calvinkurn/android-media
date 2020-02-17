@@ -21,8 +21,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
-import com.tokopedia.tokopoints.di.TokoPointComponent
-import com.tokopedia.tokopoints.view.activity.CatalogListingActivity
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.contract.CouponListingStackedContract
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
