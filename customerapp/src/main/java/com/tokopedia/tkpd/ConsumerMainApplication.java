@@ -137,22 +137,24 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initGqlNWClient();
         createAndCallPostSeq();
         createAndCallFontLoad();
+
         ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
             }
         });
+        registerActivityLifecycleCallbacks(shakeSubscriber);
+
         UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
             @Override
             public void onUserIdChanged() {
                 TimberWrapper.init(ConsumerMainApplication.this);
             }
         });
-        NFCSubscriber nfcSubscriber = new NFCSubscriber();
-      
-        registerActivityLifecycleCallbacks(shakeSubscriber);
         registerActivityLifecycleCallbacks(userIdSubscriber);
+
+        NFCSubscriber nfcSubscriber = new NFCSubscriber();
         registerActivityLifecycleCallbacks(nfcSubscriber);
     }
 
