@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.reflect.TypeToken;
-import com.meituan.robust.patch.RobustModify;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
@@ -188,10 +187,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         buttonActivatePowerMerchant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RobustModify.modify();
                 powerMerchantTracking.eventUpgradeShopHome();
                 RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
-//                Integer.parseInt("");
             }
         });
 
