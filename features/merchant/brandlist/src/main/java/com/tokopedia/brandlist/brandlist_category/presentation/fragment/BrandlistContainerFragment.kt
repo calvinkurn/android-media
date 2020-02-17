@@ -37,6 +37,7 @@ import com.tokopedia.brandlist.brandlist_category.presentation.viewmodel.Brandli
 import com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
@@ -47,6 +48,8 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         RecyclerViewScrollListener {
 
     companion object {
+        const val CATEGORY_INTENT = "category"
+
         @JvmStatic
         fun createInstance(category: String): Fragment {
             return BrandlistContainerFragment().apply {
@@ -71,6 +74,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     private var targetCategoryName = ""
     private var searchInputView: Button? = null
     private var toolbar: Toolbar? = null
+    private var categoryData: Category? = null
 
 
     private var keyCategorySlug = "0"
@@ -144,9 +148,11 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     private fun getSelectedCategory(brandListCategories: BrandlistCategories): Int {
         brandListCategories.categories.forEachIndexed { index, category ->
             if (keyCategorySlug !== "0" && category.categoryId == keyCategorySlug) {
+                categoryData = category
                 return index
             }
         }
+        categoryData = brandListCategories.categories.get(0)
         return 0
     }
 
@@ -176,7 +182,10 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         tabLayout?.getTabAt(categorySelected)?.select()
 
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) { }
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                val _categoryReselected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
+                _categoryReselected?.let { }
+            }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 tab?.let {
@@ -185,8 +194,10 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.let {
-                    targetCategoryName = it.text.toString()
+                val _categorySelected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
+                _categorySelected?.let {
+                    targetCategoryName = it.title
+                    categoryData = it
                     brandlistTracking?.clickCategory(targetCategoryName, currentCategoryName)
                 }
             }
@@ -258,7 +269,11 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             }
         }
         searchInputView?.setOnClickListener {
-            RouteManager.route(this.context, ApplinkConstInternalMechant.BRANDLIST_SEARCH)
+            context?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.BRANDLIST_SEARCH)
+                intent.putExtra(CATEGORY_INTENT, categoryData)
+                startActivity(intent)
+            }
         }
     }
 }

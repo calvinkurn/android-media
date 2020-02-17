@@ -45,6 +45,7 @@ class BrandlistPageFragment :
         const val BRANDLIST_GRID_SPAN_COUNT = 3
         const val ALL_BRAND_GRID_SPAN_COUNT = 1
         const val KEY_CATEGORY = "BRAND_LIST_CATEGORY"
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = BrandlistPageFragment().apply { arguments = bundle }
     }
