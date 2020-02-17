@@ -281,4 +281,6 @@
     <string name="title_video">Video</string>
     <string name="title_image">Gambar</string>
     <string name="choose_video">Pilih Video</string>
+
+    <string name="error_field_required">Harus diisi</string>
 </resources>

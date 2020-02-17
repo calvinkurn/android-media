@@ -22,27 +22,20 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             itemView.tv_receiver_phone.text = item.dataObject.receiverPhone
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
-            if (item.dataObject.shippingNotes.isNotEmpty()) {
-                itemView.tv_receiver_notes.visibility = View.VISIBLE
-                itemView.tv_notes_label.visibility = View.VISIBLE
-                itemView.tv_receiver_notes.text = item.dataObject.shippingNotes
-            } else {
-                itemView.tv_receiver_notes.visibility = View.GONE
-                itemView.tv_notes_label.visibility = View.GONE
-            }
 
-            if (item.dataObject.isFreeShipping) {
+            if (item.dataObject.isFreeShipping || item.dataObject.isRemoveAwb) {
                 itemView.label_harus_sesuai.visibility = View.VISIBLE
                 itemView.ic_harus_sesuai.visibility = View.VISIBLE
                 itemView.label_harus_sesuai.setOnClickListener {
                     actionListener.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier)
-                    }
+                }
                 itemView.ic_harus_sesuai.setOnClickListener {
                     actionListener.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
-                            R.string.desc_bottomsheet_immutable_courier) }
+                            R.string.desc_bottomsheet_immutable_courier)
+                }
             } else {
                 itemView.label_harus_sesuai.visibility = View.GONE
                 itemView.ic_harus_sesuai.visibility = View.GONE
@@ -115,6 +108,16 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
                     }
                 }
+            }
+
+            // dropshipper
+            if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
+                itemView.rl_som_dropshipper.visibility = View.VISIBLE
+                itemView.tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                itemView.tv_som_dropshipper_phone.text = item.dataObject.dropshipperPhone
+
+            } else {
+                itemView.rl_som_dropshipper.visibility = View.GONE
             }
         }
     }

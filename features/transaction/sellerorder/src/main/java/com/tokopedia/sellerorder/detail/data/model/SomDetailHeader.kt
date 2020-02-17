@@ -6,6 +6,7 @@ package com.tokopedia.sellerorder.detail.data.model
 data class SomDetailHeader (
         val statusId: Int = -1,
         val statusText: String = "",
+        val isBuyerRequestCancel: Boolean = false,
         val invoice: String = "",
         val invoiceUrl: String = "",
         val paymentDate: String = "",

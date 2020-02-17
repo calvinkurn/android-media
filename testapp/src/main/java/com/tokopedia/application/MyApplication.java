@@ -22,6 +22,7 @@ import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
@@ -375,4 +376,8 @@ public class MyApplication extends BaseMainApplication
         return null;
     }
 
+    @Override
+    public void onActivityDestroyed(String screenName, Activity baseActivity) {
+
+    }
 }

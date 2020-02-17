@@ -35,11 +35,6 @@ public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<Depa
     }
 
     @Override
-    public int getRecyclerViewResourceId() {
-        return R.id.recycler_view;
-    }
-
-    @Override
     public void renderList(@NonNull List<DepartureStat> list) {
         super.renderList(list);
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();

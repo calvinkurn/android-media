@@ -87,4 +87,5 @@
     <string name="notif_transaction_for_you">Untuk Kamu</string>
     <string name="notif_transaction_waiting_payment">Menunggu Pembayaran</string>
     <string name="title_read_more">Lihat Semua</string>
+    <string name="no_notification_update_yet">Belum ada Notification</string>
 </resources>

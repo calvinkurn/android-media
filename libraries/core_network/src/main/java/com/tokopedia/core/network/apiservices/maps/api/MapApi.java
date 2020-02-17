@@ -16,9 +16,6 @@ import rx.Observable;
 @Deprecated
 public interface MapApi {
 
-    /*@GET(TkpdBaseURL.Maps.PATH_MAPS_PLACES)
-    Observable<ArrayList<Prediction>> getRecommendedPlaces(String query);*/
-
     @GET(TkpdBaseURL.Maps.PATH_MAPS_PLACES)
     Observable<Response<TkpdResponse>> getRecommendedPlaces(
             @QueryMap TKPDMapParam<String, Object> params
@@ -33,5 +30,4 @@ public interface MapApi {
     Observable<Response<TkpdResponse>> getLatLngGeocode(
             @QueryMap TKPDMapParam<String, Object> params
     );
-
 }

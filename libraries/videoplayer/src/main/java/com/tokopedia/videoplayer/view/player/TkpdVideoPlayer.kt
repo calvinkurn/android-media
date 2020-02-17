@@ -5,11 +5,11 @@ import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
@@ -21,7 +21,6 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -29,8 +28,8 @@ import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.state.*
 import com.tokopedia.videoplayer.state.Player.Companion.STATE_BUFFERING
 import com.tokopedia.videoplayer.state.Player.Companion.STATE_READY
-import com.tokopedia.videoplayer.state.RepeatMode
-import com.tokopedia.videoplayer.utils.*
+import com.tokopedia.videoplayer.utils.sendViewToBack
+import com.tokopedia.videoplayer.utils.showToast
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import java.io.File
 

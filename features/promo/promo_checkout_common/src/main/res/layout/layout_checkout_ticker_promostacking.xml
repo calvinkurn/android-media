@@ -10,9 +10,7 @@
     <RelativeLayout
         android:id="@+id/relativeLayoutUsePromoGlobal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_card_shadow"
-        tools:visibility="gone">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/ic_button_coupon"
@@ -94,9 +92,7 @@
         android:id="@+id/layoutState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_4"
-        android:background="@drawable/bg_card_shadow"
-        tools:visibility="gone">
+        android:layout_margin="@dimen/dp_4">
 
         <FrameLayout
             android:id="@+id/layoutTickerFrameGlobal"
@@ -113,7 +109,6 @@
                     android:id="@+id/bg_active_up"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_alignTop="@id/layout_content"
                     android:layout_alignEnd="@id/layout_content"
                     android:layout_alignRight="@id/layout_content"

@@ -86,4 +86,5 @@
     <string name="payment_label_credit_card">Kartu Kredit</string>
     <string name="payment_label_button_add_card">Tambah Kartu</string>
 
+    <string name="title_product_manage">Daftar Produk</string>
 </resources>
