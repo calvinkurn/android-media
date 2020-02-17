@@ -135,13 +135,10 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationTalk(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         val query = uri.query ?: ""
-        val path = uri.path ?: ""
+        val path = uri.lastPathSegment ?: ""
         var deepLinkInternal = ApplinkConstInternalGlobal.INBOX_TALK
         if (path.isNotEmpty()){
-            deepLinkInternal = "${ApplinkConstInternalGlobal.DETAIL_TALK}$path"
-            if (!deepLinkInternal.endsWith("/")) {
-                deepLinkInternal += "/"
-            }
+            deepLinkInternal = "${ApplinkConstInternalGlobal.DETAIL_TALK_BASE}$path/"
         }
         if (query.isNotEmpty()) {
             deepLinkInternal += "?$query"

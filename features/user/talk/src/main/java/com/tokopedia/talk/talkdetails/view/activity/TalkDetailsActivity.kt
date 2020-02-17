@@ -39,6 +39,7 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         val threadId = uri.lastPathSegment ?: ""
         val shopId = uri.getQueryParameter(APPLINK_SHOP_ID) ?: ""
         val commentId = uri.getQueryParameter(APPLINK_COMMENT_ID) ?: ""
+        val source = uri.getQueryParameter(SOURCE) ?: ""
         if (threadId.isNotEmpty()) {
             intent.putExtra(THREAD_TALK_ID, threadId)
         }
@@ -47,6 +48,9 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         }
         if (commentId.isNotEmpty()) {
             intent.putExtra(COMMENT_ID, commentId)
+        }
+        if (source.isNotEmpty()) {
+            intent.putExtra(SOURCE, source)
         }
     }
 
