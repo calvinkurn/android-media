@@ -125,7 +125,7 @@
 /features/user/profilecompletion/                       @tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
 /features/user/otp/                             		@tokopedia/minion-kevin
-/features/user/settingbank/                     		@tokopedia/minion-kevin
+/features/user/settingbank/                     		@tokopedia/minion-yoda
 /features/user/settingnotif/                    		@tokopedia/minion-kevin
 /features/user/changepassword/                  		@tokopedia/minion-kevin
 /features/user/logout/                          		@tokopedia/minion-kevin

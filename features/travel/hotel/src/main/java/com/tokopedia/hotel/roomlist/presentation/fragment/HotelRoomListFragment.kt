@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
@@ -99,7 +100,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
             hotelRoomListPageModel.destinationName = it.getString(ARG_DESTINATION_NAME, "")
-            hotelRoomListPageModel.destinationType =  it.getString(ARG_DESTINATION_TYPE, "")
+            hotelRoomListPageModel.destinationType = it.getString(ARG_DESTINATION_TYPE, "")
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -135,13 +136,17 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this,it.data.response.cartId,
+                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId,
                                 hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
                                 hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
                     }
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
+                        navigateToAddPhonePage()
+                    } else {
+                        NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    }
                 }
             }
         })
@@ -160,7 +165,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_ROOM_LIST_MODEL)) {
-            hotelRoomListPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_ROOM_LIST_MODEL) ?: HotelRoomListPageModel()
+            hotelRoomListPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_ROOM_LIST_MODEL)
+                    ?: HotelRoomListPageModel()
         }
 
         (activity as HotelRoomListActivity).updateTitle(hotelRoomListPageModel.propertyName)
@@ -311,7 +317,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),
                 getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label), minSelectDateFromToday)
 
-        hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener{
+        hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
@@ -373,7 +379,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     hotelAddCartParam)
         } else {
-            goToLoginPage()
+            navigateToLoginPage()
         }
     }
 
@@ -381,7 +387,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
     }
 
-    fun goToLoginPage() {
+    private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -394,6 +400,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         adapter.errorNetworkModel.subErrorMessage = ErrorHandlerHotel.getErrorMessage(context, throwable)
         adapter.errorNetworkModel.onRetryListener = this
         adapter.showErrorNetwork()
+    }
+
+    private fun navigateToAddPhonePage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
     companion object {
