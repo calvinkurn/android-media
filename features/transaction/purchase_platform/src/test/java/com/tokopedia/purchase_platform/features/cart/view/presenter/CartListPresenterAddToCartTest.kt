@@ -91,6 +91,7 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
@@ -147,6 +148,7 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
@@ -221,6 +223,7 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
