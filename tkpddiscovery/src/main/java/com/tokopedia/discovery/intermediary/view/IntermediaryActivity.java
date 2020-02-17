@@ -109,7 +109,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     private void checkAndOpenCategoryPage(Uri uri) {
         if (uri.getQuery() != null && !uri.getQuery().isEmpty() && uri.toString().contains(CategoryNavActivity.EXTRA_CATEGORY_NAME)) {
-            CategoryActivity.moveTo(this, uri.toString(), null);
+            CategoryActivity.moveTo(this, uri.toString(), new Bundle());
             finish();
         }
     }

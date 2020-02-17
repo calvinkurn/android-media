@@ -75,7 +75,13 @@ object ApplinkConstInternalMarketplace {
 
     // CreateReviewActivity
     @JvmField
-    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/?rating={rating}"
+    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
+
+    // InboxReputationActivity
+    val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
+
+    // InboxReputationDetailActivity
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{reputation_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -91,10 +97,21 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
 
+    //ShopInfoActivity
+    @JvmField
+    val SHOP_INFO = "$INTERNAL_MARKETPLACE/shop-info/{shop_id}/"
+
+    //ShopPageActivity
+    @JvmField
+    val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
+
+    //ReviewShopInfoActiviy
+    @JvmField
+    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
+
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
-
 
     @JvmField
     val CONTACT_US = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://customercare/{ticket_id}"
@@ -128,6 +145,9 @@ object ApplinkConstInternalMarketplace {
     //ShopSettingsAddressActivity
     @JvmField
     val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
+
+    @JvmField
+    val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField
@@ -179,8 +199,13 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    @JvmField
+    val SHOP_PAGE_SETTING = "$INTERNAL_MARKETPLACE/shop-page-setting"
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
+
+    @JvmField
+    val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
 
 }

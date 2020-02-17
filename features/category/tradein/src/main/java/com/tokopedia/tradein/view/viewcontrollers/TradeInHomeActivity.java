@@ -3,7 +3,6 @@ package com.tokopedia.tradein.view.viewcontrollers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -31,20 +30,25 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein_common.Constants;
-import com.tokopedia.tradein_common.IAccessRequestListener;
+import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 import timber.log.Timber;
 import tradein_common.TradeInUtils;
+
+import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
 
 public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessRequestListener {
 
@@ -63,6 +67,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private boolean isShowingPermissionPopup;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
     private String errorDialogGTMLabel = "";
+    private String productName = "";
     private LinearLayout imeiView;
     private EditText editTextImei;
     private Typography typographyImeiDescription;
@@ -179,12 +184,22 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 });
             } else {
                 HomeResult.PriceState state = homeResult.getPriceStatus();
+                productName = tradeInHomeViewModel.getTradeInParams().getProductName() != null
+                        ? tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase()
+                        : "";
                 switch (state) {
                     case DIAGNOSED_INVALID:
                         tvIndicateive.setVisibility(View.GONE);
                         mTvGoToProductDetails.setText(closeButtonText);
                         mTvGoToProductDetails.setOnClickListener(v -> {
                             sendGoToProductDetailGTM();
+                            if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
+                                sendGeneralEvent(clickEvent,
+                                        category,
+                                        TradeInGTMConstants.ACTION_KEMBALI_KE_DETAIL_PRODUK,
+                                        getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                                                productName, homeResult.minPrice.toString(), homeResult.maxPrice.toString()));
+                            }
                             finish();
                         });
 
@@ -199,8 +214,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvModelName.setText(homeResult.getDeviceDisplayName());
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(R.string.moneyin_sell_now);
-                        mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal());
-                        goToHargaFinal();
+                        if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
+                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                        }
+                        mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal(homeResult.getDeviceDisplayName()));
+                        goToHargaFinal(homeResult.getDeviceDisplayName());
                         break;
                     case NOT_DIAGNOSED:
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -227,9 +245,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                             sendGeneralEvent(clickEvent,
                                     category,
                                     TradeInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
-                                    "");
+                                    TRADEIN_TYPE != TRADEIN_MONEYIN ? getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                                            productName, homeResult.minPrice.toString(), homeResult.maxPrice.toString()) : "");
 
                         });
+                        if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
+                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                        }
                         if(inputImei){
                             laku6TradeIn.startGUITest();
                             break;
@@ -275,10 +297,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 label);
     }
 
-    private void goToHargaFinal() {
+    private void goToHargaFinal(String deviceDisplayName) {
         Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
         TradeInParams params = tradeInHomeViewModel.getTradeInParams();
         finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), params);
+        if(deviceDisplayName!=null)
+            finalPriceIntent.putExtra(PARAM_TRADEIN_PHONE_TYPE, deviceDisplayName.toLowerCase());
         finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_TYPE);
         navigateToActivityRequest(finalPriceIntent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE);
     }
@@ -478,4 +502,17 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         } else {
         }
     }
+
+    private void sendIrisEvent(Integer maxPrice, Integer minPrice){
+        HashMap<String, Object> values = new HashMap<>();
+        values.put(TradeInGTMConstants.EVENT, TradeInGTMConstants.ACTION_VIEW_TRADEIN_IRIS);
+        values.put(TradeInGTMConstants.EVENT_CATEGORY, TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE);
+        values.put(TradeInGTMConstants.EVENT_ACTION, TradeInGTMConstants.VIEW_PRICE_RANGE_PAGE);
+        values.put(TradeInGTMConstants.EVENT_LABEL,  getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                productName, minPrice.toString(), maxPrice.toString()));
+        values.put(TradeInGTMConstants.PRODUCT_ID,  tradeInHomeViewModel.getTradeInParams().getProductId());
+
+        IrisAnalytics.getInstance(this).sendEvent(values);
+    }
+
 }

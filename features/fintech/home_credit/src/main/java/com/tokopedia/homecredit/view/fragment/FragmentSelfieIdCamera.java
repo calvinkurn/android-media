@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tokopedia.cameraview.Facing;
+import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.homecredit.R;

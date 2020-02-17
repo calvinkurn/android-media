@@ -7,13 +7,16 @@ import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 
 class VideoPicturePagerAdapter(val context: Context,
                                private val media: MutableList<ProductMediaDataModel> = mutableListOf(),
-                               val onPictureClickListener: ((Int) -> Unit)?,
-                               val fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
+                               private val onPictureClickListener: ((Int) -> Unit)?,
+                               fragmentManager: FragmentManager,
+                               private val componentTrackData: ComponentTrackDataModel,
+                               private val onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)?) : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragment = SparseArrayCompat<Fragment>()
 
@@ -26,6 +29,8 @@ class VideoPicturePagerAdapter(val context: Context,
         }
         val f = VideoPictureFragment.createInstance(urlMedia, mediaItem.type, position)
         f.onPictureClickListener = onPictureClickListener
+        f.onPictureClickTrackListener = onPictureClickTrackListener
+        f.componentTrackDataModel = componentTrackData
         return f
     }
 

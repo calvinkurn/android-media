@@ -16,8 +16,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.glide.loadImage
-import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
+import com.tokopedia.home.beranda.helper.glide.FPM_PRODUCT_ORGANIC_CHANNEL
 import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
@@ -77,8 +76,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
             adapter = OrganicAdapter(context,
                     homeCategoryListener,
                     channel,
-                    getLayoutType(channel),
-                    countDownView)
+                    getLayoutType(channel))
             recyclerView.adapter = adapter
         } else {
             adapter?.grids = channel.grids
@@ -98,8 +96,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
     class OrganicAdapter(private val context: Context,
                          private val listener: HomeCategoryListener,
                          private val channels: DynamicHomeChannel.Channels,
-                         private val sprintType: Int,
-                         private val countDownView: CountDownView) : RecyclerView.Adapter<OrganicViewHolder>() {
+                         private val sprintType: Int) : RecyclerView.Adapter<OrganicViewHolder>() {
         var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrganicViewHolder {
@@ -110,7 +107,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
         override fun onBindViewHolder(holder: OrganicViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                holder.channelImage1.loadImageRounded(grid.imageUrl, 8)
+                holder.channelImage1.loadImageRounded(grid.imageUrl, 8, FPM_PRODUCT_ORGANIC_CHANNEL)
                 holder.channelName.displayTextOrHide(grid.name)
                 holder.channelPrice1.displayTextOrHide(grid.price)
                 holder.channelDiscount1.displayTextOrHide(grid.discount)

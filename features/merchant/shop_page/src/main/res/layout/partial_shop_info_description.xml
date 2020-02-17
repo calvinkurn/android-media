@@ -13,10 +13,10 @@
 
     <TextView
         style="@style/TextView.Title.Bold"
-        android:text="@string/shop_page_label_description"
-        android:paddingBottom="@dimen/dp_16"/>
+        android:text="@string/shop_page_label_description" />
     
     <TextView
+        android:layout_marginTop="@dimen/dp_16"
         style="@style/TextView.Micro.BlackSecondary"
         android:id="@+id/shopInfoDescription"
         tools:text="@string/shop_page_label_favorite"/>

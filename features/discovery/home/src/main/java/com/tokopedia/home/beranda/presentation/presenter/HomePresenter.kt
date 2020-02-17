@@ -1,14 +1,15 @@
 package com.tokopedia.home.beranda.presentation.presenter
 
+import android.annotation.SuppressLint
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
-import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
-import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
@@ -16,10 +17,12 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
+import com.tokopedia.home.beranda.data.usecase.PlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Event
+import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.presentation.view.HomeContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
@@ -28,7 +31,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
-import com.tokopedia.home.beranda.presentation.view.subscriber.*
+import com.tokopedia.home.beranda.presentation.view.subscriber.KeywordSearchHomeSubscriber
+import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber
+import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber
+import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -39,9 +45,13 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.isActive
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -50,19 +60,22 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import rx.subscriptions.Subscriptions
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class HomePresenter(private val userSession: UserSessionInterface,
-                    private val coroutineDispatcher: CoroutineDispatcher,
-                    private val homeUseCase: HomeUseCase) :
-        BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
+@SuppressLint("SyntheticAccessor")
+open class HomePresenter (
+        private val homeUseCase: HomeUseCase,
+        private val homeDispatcher: HomeDispatcherProvider
+) : BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
-    protected var compositeSubscription: CompositeSubscription
-    protected var subscription: Subscription?
+    private var compositeSubscription: CompositeSubscription = CompositeSubscription()
+    protected var subscription: Subscription? = Subscriptions.empty()
     private val masterJob = SupervisorJob()
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var getFeedTabUseCase: GetFeedTabUseCase
@@ -92,30 +105,39 @@ class HomePresenter(private val userSession: UserSessionInterface,
     lateinit var dismissHomeReviewUseCase: DismissHomeReviewUseCase
 
     @Inject
-    lateinit var playCardHomeUseCase: PlayCardHomeUseCase
+    lateinit var playCardHomeUseCase: PlayLiveDynamicUseCase
 
-    val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData()
+    private val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData().flowOn(homeDispatcher.io())
 
     val homeLiveData: LiveData<HomeViewModel>
     get() = _homeLiveData
-    val _homeLiveData: MutableLiveData<HomeViewModel> = MutableLiveData()
+    private val _homeLiveData: MutableLiveData<HomeViewModel> = MutableLiveData()
+
 
     val trackingLiveData: LiveData<Event<List<Visitable<*>>>>
         get() = _trackingLiveData
-    val _trackingLiveData = MutableLiveData<Event<List<Visitable<*>>>>()
+    private val _trackingLiveData = MutableLiveData<Event<List<Visitable<*>>>>()
 
     private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
     val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
+
+    private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardViewModel>>()
+    val requestImageTestLiveData: LiveData<Event<PlayCardViewModel>> get() = _requestImageTestLiveData
 
     private var homeDataMapper: HomeDataMapper? = null
 
     private var currentCursor = ""
     private var fetchFirstData = false
-    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
-    private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
+
+    private var getHomeDataJob: Job? = null
+    private var getTokocashPendingBalanceSubscription: Subscription? = null
+    private var getUniversePlaceholderSubscription: Subscription? = null
+    private var getTokopointsDrawerSubscription: Subscription? = null
+
+    private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     override val coroutineContext: CoroutineContext
-        get() = coroutineDispatcher + masterJob
+        get() = homeDispatcher.ui() + masterJob
 
     override fun detachView() {
         super.detachView()
@@ -133,9 +155,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun onResume() {
-        val needRefresh = lastRequestTimeHomeData + REQUEST_DELAY_HOME_DATA < System.currentTimeMillis()
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
-        if (isViewAttached && !fetchFirstData && needRefresh) {
+        if (isViewAttached && !fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             refreshHomeData()
         }
         if (needSendGeolocationRequest && view?.hasGeolocationPermission() == true) {
@@ -148,7 +169,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     fun sendGeolocationData() {
-        sendGeolocationInfoUseCase?.createObservable(RequestParams.EMPTY)
+        sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -193,12 +214,12 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun refreshHomeData() {
-        lastRequestTimeHomeData = System.currentTimeMillis()
-        launchCatchError(coroutineContext, block = {
+        if (getHomeDataJob?.isActive == true) return
+        getHomeDataJob = launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
-            _updateNetworkLiveData.setValue(resource)
-        }){
-            Timber.tag(HomePresenter::class.java.name).e(it)
+            _updateNetworkLiveData.value = resource
+        }) {
+            homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
         }
     }
@@ -302,7 +323,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
             val currentPosition = _homeLiveData.value?.list?.indexOf(headerViewModel)?:-1
 
-            headerViewModel?.let {
+            headerViewModel.let {
                 tokopointsDrawer?.let { headerViewModel.tokopointsDrawerHomeData = it }
                 homeHeaderWalletAction?.let { headerViewModel.homeHeaderWalletActionData = it }
                 cashBackData?.let { headerViewModel.cashBackData = it }
@@ -318,7 +339,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     val newHomeViewModel = _homeLiveData.value?.copy(
                             list = it
                     )
-                    _homeLiveData.setValue(newHomeViewModel)
+                    _homeLiveData.value = newHomeViewModel
                 }
             }
         }
@@ -332,14 +353,14 @@ class HomePresenter(private val userSession: UserSessionInterface,
         if (isActive && !masterJob.isCancelled){
             masterJob.children.map { it.cancel() }
         }
-        if (getFeedTabUseCase != null) {
-            getFeedTabUseCase?.unsubscribe()
+        if (this::getFeedTabUseCase.isInitialized) {
+            getFeedTabUseCase.unsubscribe()
         }
         if (subscription != null) {
             subscription?.unsubscribe()
         }
-        if (stickyLoginUseCase != null) {
-            stickyLoginUseCase?.cancelJobs()
+        if (this::stickyLoginUseCase.isInitialized) {
+            stickyLoginUseCase.cancelJobs()
         }
     }
 
@@ -347,7 +368,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
      * Tokocash & Tokopoint
      */
     private fun getTokocashBalance() {
-            compositeSubscription.add(getWalletBalanceUseCase?.createObservable(RequestParams.EMPTY)
+            compositeSubscription.add(getWalletBalanceUseCase.createObservable(RequestParams.EMPTY)
                     .subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -355,35 +376,44 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
 
     fun getTokocashPendingBalance(){
-        compositeSubscription.add(getPendingCasbackUseCase?.createObservable(RequestParams.EMPTY)
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(PendingCashbackHomeSubscriber(this)))
+        if (getTokocashPendingBalanceSubscription?.isUnsubscribed != false) {
+            getTokocashPendingBalanceSubscription = getPendingCasbackUseCase.createObservable(RequestParams.EMPTY)
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(PendingCashbackHomeSubscriber(this))
+            compositeSubscription.add(getTokocashPendingBalanceSubscription)
+        }
     }
 
     fun getTokopoint(){
         val graphqlResponseObservable = tokopointsObservable
         if (graphqlResponseObservable != null) {
-            compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(TokopointHomeSubscriber(this)))
+            if (getTokopointsDrawerSubscription?.isUnsubscribed != false) {
+                getTokopointsDrawerSubscription = graphqlResponseObservable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(TokopointHomeSubscriber(this))
+                compositeSubscription.add(getTokopointsDrawerSubscription)
+            }
         }
     }
 
     fun searchHint(){
             val graphqlResponseObservable = keywordSearchObservable
             if (graphqlResponseObservable != null) {
-                compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(KeywordSearchHomeSubscriber(this)))
+                if (getUniversePlaceholderSubscription?.isUnsubscribed != false) {
+                    getUniversePlaceholderSubscription = graphqlResponseObservable.subscribeOn(Schedulers.newThread())
+                            .unsubscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(KeywordSearchHomeSubscriber(this))
+                    compositeSubscription.add(getUniversePlaceholderSubscription)
+                }
             }
         }
 
     private val tokopointsObservable: Observable<GraphqlResponse>?
-        private get() {
+        get() {
             if (getHomeTokopointsDataUseCaseLazy != null) {
                 val getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCaseLazy.get()
                 getHomeTokopointsDataUseCase.clearRequest()
@@ -394,7 +424,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
 
     private val keywordSearchObservable: Observable<GraphqlResponse>?
-        private get() {
+        get() {
             if (getKeywordSearchUseCaseLazy != null) {
                 val getKeywordSearchUseCase = getKeywordSearchUseCaseLazy?.get()
                 getKeywordSearchUseCase.clearRequest()
@@ -425,7 +455,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun onBannerClicked(slidesModel: BannerSlidesModel) {
-        if (slidesModel.redirectUrl != null && !slidesModel.redirectUrl.isEmpty()) {
+        if (slidesModel.redirectUrl.isNotEmpty()) {
             ImpresionTask().execute(slidesModel.redirectUrl)
         }
     }
@@ -469,7 +499,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val newHomeViewModel = currentData?.copy(
                         list = visitableMutableList)
 
-                _homeLiveData.setValue(newHomeViewModel)
+                _homeLiveData.value = newHomeViewModel
             }
 
             override fun onCompleted() {
@@ -497,15 +527,15 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val newHomeViewModel = currentData?.copy(
                         list = visitableMutableList)
 
-                _homeLiveData.setValue(newHomeViewModel)
+                _homeLiveData.value = newHomeViewModel
             }
 
         })
     }
 
     override fun getStickyContent() {
-        stickyLoginUseCase?.setParams(StickyLoginConstant.Page.HOME)
-        stickyLoginUseCase?.execute(
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.HOME)
+        stickyLoginUseCase.execute(
                 { (response) ->
                     for (ticker in response.tickers) {
                         if (ticker.layout == StickyLoginConstant.LAYOUT_FLOATING) {
@@ -515,35 +545,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     }
                     view?.hideStickyLogin()
                 }
-        ) { throwable: Throwable? ->
+        ) {
             view?.hideStickyLogin()
-        }
-    }
-
-    fun getPlayBanner(){
-        playCardHomeUseCase.execute(
-                onSuccess = {
-                    onPlayBannerSuccess(it)
-                },
-                onError = {}
-        )
-    }
-
-    fun onPlayBannerSuccess(playCardHome: PlayCardHome) {
-        val currentData = _homeLiveData.value
-        val visitableMutableList: MutableList<Visitable<*>> = currentData?.list?.toMutableList()?: mutableListOf()
-
-        val findPlayCardModel = _homeLiveData.value?.list?.find { visitable ->
-            visitable is PlayCardViewModel
-        }
-        val indexOfPlayCardModel = visitableMutableList.indexOf(findPlayCardModel)
-
-        if (findPlayCardModel is PlayCardViewModel) {
-            findPlayCardModel.setPlayCardHome(playCardHome)
-            visitableMutableList[indexOfPlayCardModel] = findPlayCardModel
-            val newHomeViewModel = currentData?.copy(
-                    list = visitableMutableList)
-            _homeLiveData.setValue(newHomeViewModel)
         }
     }
 
@@ -569,12 +572,12 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val newHomeViewModel = _homeLiveData.value?.copy(
                         list = it
                 )
-                _homeLiveData.setValue(newHomeViewModel)
+                _homeLiveData.value = newHomeViewModel
             }
         }
     }
 
-    fun removeSuggestedReview(homeViewModel: HomeViewModel?): HomeViewModel? {
+    private fun removeSuggestedReview(homeViewModel: HomeViewModel?): HomeViewModel? {
         homeViewModel?.let { it->
             val findReviewViewModel =
                     it.list.find { visitable -> visitable is ReviewViewModel }
@@ -582,10 +585,9 @@ class HomePresenter(private val userSession: UserSessionInterface,
             currentList.let { list->
                 if (findReviewViewModel is ReviewViewModel) {
                     list.remove(findReviewViewModel)
-                    val newHomeViewModel =it.copy(
+                    return it.copy(
                             list = list
                     )
-                    return newHomeViewModel
                 }
             }
         }
@@ -595,6 +597,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     fun removeSuggestedReview() {
         val findReviewViewModel =
                 _homeLiveData.value?.list?.find { visitable -> visitable is ReviewViewModel }
+                        ?: return
         val currentList = _homeLiveData.value?.list?.toMutableList()
         currentList?.let {
             if (findReviewViewModel is ReviewViewModel) {
@@ -602,7 +605,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val newHomeViewModel = _homeLiveData.value?.copy(
                         list = it
                 )
-                _homeLiveData.setValue(newHomeViewModel)
+                _homeLiveData.value = newHomeViewModel
             }
         }
     }
@@ -619,6 +622,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         homeViewModel?.let {
             var newHomeViewModel = homeViewModel
             if(viewNeedToShowGeolocationComponent()) newHomeViewModel = removeSuggestedReview(it)
+            newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             return newHomeViewModel
@@ -635,54 +639,124 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
                 currentList.let {
                     it.remove(findGeolocationModel)
-                    val newHomeViewModel = homeViewModel.copy(list = it)
-                    return newHomeViewModel
+                    return homeViewModel.copy(list = it)
                 }
             }
         }
         return homeViewModel
     }
 
+    // Logic detect play banner should load data from API
+    private fun getPlayBanner(){
+        // Check the current index is play card view model
+        val playBanner = _homeLiveData.value?.list?.find { it is PlayCardViewModel }
+        if(playBanner != null && playBanner is PlayCardViewModel) {
+            loadPlayBannerFromNetwork(playBanner)
+        }
+    }
+
+    // Load data play from API
+    @VisibleForTesting
+    fun loadPlayBannerFromNetwork(playBanner: PlayCardViewModel){
+        launchCatchError(coroutineContext, block = {
+            playCardHomeUseCase.execute().collect {
+                // If no data && no cover url don't show play widget
+                if (it.isEmpty() || it.first().coverUrl.isEmpty()) {
+                    clearPlayBanner()
+                    return@collect
+                }
+                _requestImageTestLiveData.value = Event(playBanner.copy(playCardHome = it.first()))
+            }
+        }){
+            clearPlayBanner()
+        }
+    }
+
+    // If the image is valid it will be set play banner to UI
+    fun setPlayBanner(playCardViewModel: PlayCardViewModel){
+        val newList = mutableListOf<Visitable<*>>()
+        newList.addAll(_homeLiveData.value?.list ?: listOf())
+        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+        if(playIndex != -1 && newList[playIndex] is PlayCardViewModel){
+            newList[playIndex] = playCardViewModel
+        }
+        _homeLiveData.value = _homeLiveData.value?.copy(
+                list = newList
+        )
+    }
+
+    // play widget it will be removed when load image is failed (deal from PO)
+    // because don't let the banner blank
+    fun clearPlayBanner(){
+        val newList = mutableListOf<Visitable<*>>()
+        newList.addAll(_homeLiveData.value?.list ?: listOf())
+
+        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+        if(playIndex != -1) {
+            newList.removeAt(playIndex)
+            _homeLiveData.value = _homeLiveData.value?.copy(
+                    list = newList
+            )
+        }
+    }
+
     companion object {
         private const val CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
-        const val FLAG_FROM_NETWORK = 99
-        const val FLAG_FROM_CACHE = 98
+        private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
+        private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
     init {
-        compositeSubscription = CompositeSubscription()
-        subscription = Subscriptions.empty()
         initHeaderViewModelData()
         initFlow()
     }
 
     private fun initFlow() {
-        launchCatchError(coroutineContext, block = {
+        launchCatchError(homeDispatcher.io(), block = {
             homeFlowData.collect {
                 var homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
                     homeData = evaluateAvailableComponent(homeData)
-                    _homeLiveData.setValue(homeData)
+                    _homeLiveData.postValue(homeData)
                     getHeaderData()
-                    getPlayData()
                     getReviewData()
+                    getPlayBanner()
 
-                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf()))
+                    _trackingLiveData.postValue(Event(_homeLiveData.value?.list?: emptyList()))
                 } else {
-                    _homeLiveData.setValue(homeData)
+                    _homeLiveData.postValue(homeData)
                     refreshHomeData()
                 }
             }
         }) {
-            Timber.tag(HomePresenter::class.java.name).e(it)
             _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
         }
     }
 
+    private fun evaluatePlayWidget(homeViewModel: HomeViewModel?): HomeViewModel? {
+        homeViewModel?.let { homeViewModel ->
+            // find the old data from current list
+            val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCardViewModel}
+            if(playWidget != null) {
+                // Find the new play widget is still available or not
+                val list = homeViewModel.list.toMutableList()
+                val playIndex = list.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+
+                // if on new home available the data, it will be load new data
+                if(playIndex != -1){
+                    list[playIndex] = playWidget
+                    return homeViewModel.copy(list = list)
+                }
+            }
+        }
+
+        return homeViewModel
+    }
+
     private fun evaluateBuWidgetData(homeViewModel: HomeViewModel?): HomeViewModel? {
-        homeViewModel?.let {homeViewModel->
+        homeViewModel?.let { homeViewModel ->
             val findBuWidgetViewModel =
                     _homeLiveData.value?.list?.find { visitable -> visitable is BusinessUnitViewModel }
             findBuWidgetViewModel?.let { findBu->
@@ -701,9 +775,10 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
                 currentList.let {list ->
                     val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
-                    list[buwidgetIndex] = findBu
-                    val newHomeViewModel = homeViewModel.copy(list = list)
-                    return newHomeViewModel
+                    if(buwidgetIndex != -1) {
+                        list[buwidgetIndex] = findBu
+                        return homeViewModel.copy(list = list)
+                    }
                 }
             }
 
@@ -719,23 +794,16 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
                     currentList.let {list ->
                         val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
-                        list[buwidgetIndex] = findCurrentBuWidgetViewModel
-                        val newHomeViewModel = homeViewModel.copy(list = list)
-                        return newHomeViewModel
+                        if(buwidgetIndex != -1) {
+                            list[buwidgetIndex] = findCurrentBuWidgetViewModel
+                            val newHomeViewModel = homeViewModel.copy(list = list)
+                            return newHomeViewModel
+                        }
                     }
                 }
             }
         }
         return homeViewModel
-    }
-
-    private fun getPlayData() {
-        val detectPlayCardModel = _homeLiveData.value?.list?.find {
-            visitable -> visitable is PlayCardViewModel
-        }
-        detectPlayCardModel?.let {
-            getPlayBanner()
-        }
     }
 
     private fun evaluateRecommendationSection(homeViewModel: HomeViewModel?): HomeViewModel? {
@@ -746,18 +814,17 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 currentList.add(detectHomeRecom)
                 return homeViewModel.copy(list = currentList)
             } else {
-                val currentData = homeViewModel
-                val visitableMutableList: MutableList<Visitable<*>> = currentData?.list?.toMutableList()?: mutableListOf()
-                val findRetryModel = homeViewModel.list?.find {
+                val visitableMutableList: MutableList<Visitable<*>> = homeViewModel.list.toMutableList()
+                val findRetryModel = homeViewModel.list.find {
                     visitable -> visitable is HomeRetryModel
                 }
-                val findLoadingModel = homeViewModel.list?.find {
+                val findLoadingModel = homeViewModel.list.find {
                     visitable -> visitable is HomeLoadingMoreModel
                 }
                 visitableMutableList.remove(findLoadingModel)
                 visitableMutableList.remove(findRetryModel)
                 visitableMutableList.add(HomeLoadingMoreModel())
-                val newHomeViewModel = currentData?.copy(
+                val newHomeViewModel = homeViewModel.copy(
                         list = visitableMutableList)
                 getFeedTabData()
                 return newHomeViewModel
@@ -772,7 +839,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         detectGeolocation?.let {
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
-            _homeLiveData.setValue(homeViewModel.copy(list = currentList))
+            _homeLiveData.value = homeViewModel.copy(list = currentList)
         }
     }
 
@@ -782,7 +849,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         detectTicker?.let {
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
-            _homeLiveData.setValue(homeViewModel.copy(list = currentList))
+            _homeLiveData.value = homeViewModel.copy(list = currentList)
         }
     }
 

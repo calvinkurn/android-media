@@ -130,11 +130,11 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDat
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
@@ -207,8 +207,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ShipmentAdapter shipmentAdapter;
     @Inject
     ShipmentContract.Presenter shipmentPresenter;
-    @Inject
-    ShipmentDataConverter shipmentDataConverter;
     @Inject
     RatesDataConverter ratesDataConverter;
     @Inject
@@ -1288,11 +1286,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         return requestData.getCheckoutRequestData();
     }
 
-    @Override
-    public ShipmentDataConverter getShipmentDataConverter() {
-        return shipmentDataConverter;
-    }
-
     private void updateAppliedPromoStack(PromoStackingData cartPromoStacking) {
         shipmentPresenter.setCouponStateChanged(true);
         shipmentAdapter.updateItemPromoGlobalStack(cartPromoStacking);
@@ -1530,7 +1523,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentDetailData.setSelectedCourier(oldShipmentDetailData.getSelectedCourier());
         }
         shipmentDetailData.setTradein(isTradeIn());
-        shipmentDetailData.setTradeInDropOff(isTradeInByDropOff());
 
         return shipmentDetailData;
     }
@@ -2028,7 +2020,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
                 shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),
-                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCheckoutLeasingId());
+                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
                 break;
             case REQUEST_CODE_COD:
                 shipmentPresenter.proceedCodCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),

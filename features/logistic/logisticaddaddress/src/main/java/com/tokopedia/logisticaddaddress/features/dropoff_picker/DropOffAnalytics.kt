@@ -124,7 +124,7 @@ private object Event {
 }
 
 private object Category {
-    const val LOCATION_SELECTION = "click - nanti saja button on gps pop up"
+    const val LOCATION_SELECTION = "location selection trade in"
 }
 
 private object Action {

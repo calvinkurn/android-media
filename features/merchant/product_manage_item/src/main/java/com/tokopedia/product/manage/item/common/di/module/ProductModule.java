@@ -5,7 +5,12 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -19,6 +24,8 @@ import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoReposi
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;

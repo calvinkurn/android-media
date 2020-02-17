@@ -11,6 +11,7 @@ public class SettingConstant {
     public static final int SETTING_OUT_ID = 8;
     public static final int SETTING_SHAKE_ID = 9;
     public static final int SETTING_GEOLOCATION_ID = 98;
+    public static final int SETTING_SAFE_SEARCH_ID = 99;
     public static final int SETTING_ACCOUNT_PERSONAL_DATA_ID = 11;
     public static final int SETTING_ACCOUNT_PASS_ID = 12;
     public static final int SETTING_ACCOUNT_ADDRESS_ID = 13;
@@ -39,8 +40,8 @@ public class SettingConstant {
 
     public static class Url {
         public static final String BASE_MOBILE = "https://m.tokopedia.com/";
-        public static final String PATH_TERM_CONDITION = "terms.pl";
-        public static final String PATH_PRIVACY_POLICY = "privacy.pl";
+        public static final String PATH_TERM_CONDITION = "terms.pl?isBack=true";
+        public static final String PATH_PRIVACY_POLICY = "privacy.pl?isBack=true";
         public static final String PATH_CHECKOUT_TEMPLATE = "user/settings/template-pembelian";
         public static final String BASE_WEBVIEW_APPLINK = "tokopedia://webview?url=";
     }

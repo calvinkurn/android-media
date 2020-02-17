@@ -3,13 +3,13 @@ package com.tokopedia.topchat.chattemplate.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -71,9 +71,9 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    ChuckInterceptor provideChuckInterceptor(
+    ChuckerInterceptor provideChuckerInterceptor(
             @ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+        return new ChuckerInterceptor(context);
     }
 
 
@@ -102,7 +102,7 @@ public class TemplateChatModule {
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
-                                     ChuckInterceptor chuckInterceptor,
+                                     ChuckerInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      NetworkRouter networkRouter,
                                      UserSessionInterface userSessionInterface,

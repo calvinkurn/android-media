@@ -65,6 +65,7 @@
     <string name="product_shop_label">Penjual</string>
     <string name="label_chat_seller">Chat Penjual</string>
     <string name="label_favorite">Favoritkan</string>
+    <string name="label_follow">Follow</string>
     <string name="label_favorited">Followed</string>
     <string name="template_shop_last_login">\u2022 %s</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
@@ -150,7 +151,7 @@
     <string name="counter_pattern_string">%1$s / %2$d</string>
     <string name="shipping_pattern_string">%1$d Kurir • </string>
     <string name="ongkir_pattern_string">%1s dari <b>%2s</b></string>
-    <string name="ongkir_pattern_string_dynamic_pdp">%1s \nke %2s</string>
+    <string name="ongkir_pattern_string_dynamic_pdp"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
     <string name="review_counter">• %1$d ulasan</string>
     <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
 
@@ -166,7 +167,7 @@
     <string name="pdp_installment_desc">Lihat Semua Metode</string>
 
     <string name="pdp_etalase_applink_builder">https://www.tokopedia.com/%s/etalase</string>
-    <string name="pdp_category_applink">https://tokopedia.com/p/</string>
+    <string name="pdp_category_applink">https://www.tokopedia.com/p/</string>
 
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>
@@ -178,5 +179,10 @@
     <string name="image_preview_add_wishlist_success">Berhasil menambahkan ke Wishlist</string>
     <string name="image_preview_remove_wishlist_success">Berhasil menghapus dari Wishlist</string>
     <string name="on_error_p1_string_builder">Error getPdpLayout. userId: %1$s | userEmail: %2$s | %3$s</string>
+
+    //Error section
+    <string name="banned_product_title">Barang ini dilarang</string>
+    <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
+
 
 </resources>
