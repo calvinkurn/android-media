@@ -18,6 +18,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.tokopedia.analytics.debugger.helper.FormatterHelperKt.formatDataExcerpt;
+
 public class IrisSendLogLocalRepository {
     private IrisSendLogDBSource dbSource;
     private DateFormat dateFormat;
@@ -47,12 +49,7 @@ public class IrisSendLogLocalRepository {
                         viewModel.setName("");
                         viewModel.setCategory("");
                         viewModel.setData(logDB.getData());
-                        if(logDB.getData().length() > 100) {
-                            viewModel.setDataExcerpt(logDB.getData().replaceAll("\\s+", " ").substring(0,100) + "...");
-                        } else {
-                            viewModel.setDataExcerpt(logDB.getData().replaceAll("\\s+", " "));
-                        }
-
+                        viewModel.setDataExcerpt(formatDataExcerpt(logDB.getData()));
                         viewModel.setTimestamp(dateFormat.format(new Date(logDB.getTimestamp())));
 
                         return Observable.just(viewModel);

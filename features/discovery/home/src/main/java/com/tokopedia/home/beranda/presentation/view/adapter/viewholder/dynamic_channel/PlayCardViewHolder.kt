@@ -45,7 +45,7 @@ class PlayCardViewHolder(
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
-        private const val DELAY_CLICKABLE = 1000L
+        private const val DELAY_CLICKABLE = 1500L
     }
 
     private var helper: HomePlayWidgetHelper? = null
@@ -61,8 +61,17 @@ class PlayCardViewHolder(
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.IO
 
-    override fun bind(element: PlayCardViewModel) {
-        container.hide()
+    override fun bind(element: PlayCardViewModel?) {
+        if(element?.playCardHome == null){
+            container.hide()
+        } else {
+            playCardViewModel = element
+            playCardViewModel?.let{ playCardViewModel ->
+                if (container.visibility == View.GONE) container.show()
+                initView(playCardViewModel)
+                playCardViewModel.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+            }
+        }
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {

@@ -7,7 +7,7 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
@@ -56,7 +56,7 @@ import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
-import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
@@ -675,7 +675,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val product = (productInfoP1Resp.value ?: return) as? Success ?: return
         loadTopAdsProduct.value = Loading
         launch(Dispatchers.IO) {
-            val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
+            val topAdsProductDef = if (!GlobalConfig.isSellerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
                 try {
                     val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
