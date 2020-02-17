@@ -1,5 +1,7 @@
 package com.tokopedia.entertainment.home.adapter.viewmodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 data class EventItemModel(var produkId: Int,
                           var rating: Int,
                           var imageUrl: String,
@@ -8,4 +10,4 @@ data class EventItemModel(var produkId: Int,
                           var price: String,
                           var date: String,
                           var isLiked: Boolean,
-                          var appUrl: String)
+                          var appUrl: String): ImpressHolder()

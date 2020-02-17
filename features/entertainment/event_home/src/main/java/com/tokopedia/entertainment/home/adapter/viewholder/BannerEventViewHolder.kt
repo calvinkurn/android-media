@@ -12,6 +12,7 @@ import com.tokopedia.banner.Indicator
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.BannerViewModel
+import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.entertainment.home.fragment.EventHomeFragment
 import kotlinx.android.synthetic.main.ent_banner_view.view.*
 
@@ -47,7 +48,10 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
     }
 
     override fun onPromoClick(p: Int) {
-        el?.let { RouteManager.route(context, it.layout.items.get(p).url) }
+        el?.let {
+            RouteManager.route(context, it.layout.items.get(p).url)
+            EventHomePageTracking.getInstance().clickBanner(it.layout.items.get(p), p)
+        }
     }
 
     override fun onPromoAllClick() {
@@ -55,6 +59,7 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
     }
 
     override fun onPromoScrolled(pos: Int) {
+
     }
 
     override fun onPromoDragEnd() {

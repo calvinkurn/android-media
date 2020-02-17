@@ -2,7 +2,6 @@ package com.tokopedia.entertainment.home.adapter.viewmodel
 
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory
-import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventViewHolder
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 
 /**
@@ -11,11 +10,14 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 class EventLocationViewModel(var loc: EventHomeDataResponse.Data.EventLocationSearch)
     : HomeEventItem<HomeTypeFactory> {
 
-    var items: MutableList<EventLocationEventViewHolder.EventItemModel> = mutableListOf()
+    var items: MutableList<EventItemLocationModel> = mutableListOf()
 
     init {
         loc.locations.forEach {
-            items.add(EventLocationEventViewHolder.EventItemModel(it.imageApp, it.name, it.address))
+            items.add(EventItemLocationModel(
+                    it.id, it.imageApp,
+                    it.name, it.address,
+                    it.locationType.name))
         }
     }
 

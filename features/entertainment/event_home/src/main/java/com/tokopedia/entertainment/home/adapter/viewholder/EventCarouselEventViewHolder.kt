@@ -13,7 +13,9 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselViewModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
+import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.entertainment.home.fragment.EventHomeFragment
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
 import java.text.SimpleDateFormat
@@ -22,9 +24,9 @@ import java.util.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventCarouselEventViewHolder(itemView: View, action:((data: EventItemModel,
-                                                            onSuccess: (EventItemModel)->Unit,
-                                                            onError: (Throwable)->Unit) -> Unit))
+class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemModel,
+                                                             onSuccess: (EventItemModel) -> Unit,
+                                                             onError: (Throwable) -> Unit) -> Unit))
     : HomeEventViewHolder<EventCarouselViewModel>(itemView) {
 
     var itemAdapter = ItemAdapter(action)
@@ -34,6 +36,9 @@ class EventCarouselEventViewHolder(itemView: View, action:((data: EventItemModel
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL,
                     false)
             adapter = itemAdapter
+        }
+        itemView.ent_btn_see_more.setOnClickListener {
+            EventHomePageTracking.getInstance().clickSeeAllTopEventProduct()
         }
     }
 
@@ -48,14 +53,14 @@ class EventCarouselEventViewHolder(itemView: View, action:((data: EventItemModel
         val TAG = EventCarouselEventViewHolder::class.java.simpleName
     }
 
-    class ItemAdapter(val action:(data: EventItemModel,
-                                  onSuccess: (EventItemModel)->Unit,
-                                  onError: (Throwable)->Unit) -> Unit)
+    class ItemAdapter(val action: (data: EventItemModel,
+                                   onSuccess: (EventItemModel) -> Unit,
+                                   onError: (Throwable) -> Unit) -> Unit)
         : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-        lateinit var items : List<EventItemModel>
+        lateinit var items: List<EventItemModel>
         var sdf = SimpleDateFormat("dd/MM/yy")
         var newsdf = SimpleDateFormat("dd\nMMM")
 
@@ -65,6 +70,7 @@ class EventCarouselEventViewHolder(itemView: View, action:((data: EventItemModel
                             false)
             return ItemViewHolder(view)
         }
+
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
             var item = items.get(position)
             Glide.with(holder.view).load(item.imageUrl).into(holder.view.event_image)
@@ -72,24 +78,28 @@ class EventCarouselEventViewHolder(itemView: View, action:((data: EventItemModel
             holder.view.event_title.text = item.title
             holder.view.event_date.text = formatedSchedule(item.date)
             holder.view.event_price.text = item.price
-            if(item.isLiked){
+            if (item.isLiked) {
                 holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
             } else {
                 holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
             }
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context, item.appUrl)
+                EventHomePageTracking.getInstance().clickTopEventProduct(item, position + 1)
             }
+            holder.view.addOnImpressionListener(item, {
+                Log.d(EventGridEventViewHolder.TAG, "Impression On "+item.title)
+            })
             holder.view.iv_favorite.setOnClickListener {
                 action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
             }
         }
 
-        fun onSuccessPostLiked(data: EventItemModel){
+        fun onSuccessPostLiked(data: EventItemModel) {
             notifyDataSetChanged()
         }
 
-        fun onErrorPostLiked(throwable: Throwable){
+        fun onErrorPostLiked(throwable: Throwable) {
             notifyDataSetChanged()
             Log.e(TAG, throwable.localizedMessage)
         }

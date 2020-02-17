@@ -13,15 +13,17 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridViewModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
+import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.*
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridEventViewHolder(itemView: View, action:((data: EventItemModel,
-                                                        onSuccess: (EventItemModel)->Unit,
-                                                        onError: (Throwable)->Unit) -> Unit))
+class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
+                                                         onSuccess: (EventItemModel) -> Unit,
+                                                         onError: (Throwable) -> Unit) -> Unit))
     : HomeEventViewHolder<EventGridViewModel>(itemView) {
 
     var itemAdapter = ItemAdapter(action)
@@ -45,14 +47,14 @@ class EventGridEventViewHolder(itemView: View, action:((data: EventItemModel,
         val TAG = EventGridEventViewHolder::class.java.simpleName
     }
 
-    class ItemAdapter(val action:(data: EventItemModel,
-                                  onSuccess: (EventItemModel)->Unit,
-                                  onError: (Throwable)->Unit) -> Unit)
+    class ItemAdapter(val action: (data: EventItemModel,
+                                   onSuccess: (EventItemModel) -> Unit,
+                                   onError: (Throwable) -> Unit) -> Unit)
         : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-        lateinit var items : List<EventItemModel>
+        lateinit var items: List<EventItemModel>
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
@@ -60,31 +62,36 @@ class EventGridEventViewHolder(itemView: View, action:((data: EventItemModel,
                             false)
             return ItemViewHolder(view)
         }
+
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
             var item = items.get(position)
             Glide.with(holder.view).load(item.imageUrl).into(holder.view.image)
             holder.view.txt_location.text = item.location
             holder.view.txt_title.text = item.title
             holder.view.txt_price.text = item.price
-            if(item.isLiked){
+            if (item.isLiked) {
                 holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
             } else {
                 holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
             }
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context, item.appUrl)
+                EventHomePageTracking.getInstance().clickRecomendationEventProduct(item, position + 1)
             }
+            holder.view.addOnImpressionListener(item, {
+                Log.d(TAG, "Impression On "+item.title)
+            })
             holder.view.iv_favorite.setOnClickListener {
                 action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
             }
         }
 
-        fun onSuccessPostLiked(data: EventItemModel){
+        fun onSuccessPostLiked(data: EventItemModel) {
 
             notifyDataSetChanged()
         }
 
-        fun onErrorPostLiked(throwable: Throwable){
+        fun onErrorPostLiked(throwable: Throwable) {
             notifyDataSetChanged()
             Log.e(TAG, throwable.localizedMessage)
         }

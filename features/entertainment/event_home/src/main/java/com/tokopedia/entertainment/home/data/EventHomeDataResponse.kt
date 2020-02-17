@@ -4,8 +4,8 @@ package com.tokopedia.entertainment.home.data
 import com.google.gson.annotations.SerializedName
 
 data class EventHomeDataResponse(
-    @SerializedName("data")
-    val `data`: Data = Data()
+        @SerializedName("data")
+        val `data`: Data = Data()
 ) {
     data class Data(
             @SerializedName("event_child_category")
@@ -110,7 +110,18 @@ data class EventHomeDataResponse(
                     @SerializedName("priority")
                     val priority: String = "",
                     @SerializedName("address")
-                    val address: String = ""
+                    val address: String = "",
+                    @SerializedName("location_type")
+                    val locationType: LocationType = LocationType()
+            )
+
+            data class LocationType(
+                    @SerializedName("display_name")
+                    val displayName: String = "",
+                    @SerializedName("id")
+                    val id: Int = 0,
+                    @SerializedName("name")
+                    val name: String = ""
             )
         }
     }

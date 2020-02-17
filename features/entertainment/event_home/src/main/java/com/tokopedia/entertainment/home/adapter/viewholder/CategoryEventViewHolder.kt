@@ -12,6 +12,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryViewModel
+import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import kotlinx.android.synthetic.main.ent_layout_category_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
 import java.util.*
@@ -19,7 +20,7 @@ import java.util.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class CategoryEventViewHolder(itemView: View): HomeEventViewHolder<CategoryViewModel>(itemView) {
+class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryViewModel>(itemView) {
 
     val listAdapter = SimpleCategoryItemAdapter()
 
@@ -43,13 +44,13 @@ class CategoryEventViewHolder(itemView: View): HomeEventViewHolder<CategoryViewM
         var LAYOUT: Int = R.layout.ent_layout_viewholder_category
     }
 
-    data class CategoryItemModel(var imageUrl: String, var title : String, var applink: String)
+    data class CategoryItemModel(var imageUrl: String, var title: String, var applink: String)
 
     class SimpleCategoryItemAdapter : RecyclerView.Adapter<SimpleCategoryItemAdapter.ItemViewHolder>() {
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-        lateinit var items : List<CategoryItemModel>
+        lateinit var items: List<CategoryItemModel>
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
@@ -61,9 +62,11 @@ class CategoryEventViewHolder(itemView: View): HomeEventViewHolder<CategoryViewM
             Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.icon)
             holder.view.title.text = items.get(position).title
             holder.view.setOnClickListener {
-               // RouteManager.route(holder.view.context, items.get(position).applink)
+                // RouteManager.route(holder.view.context, items.get(position).applink)
+                EventHomePageTracking.getInstance().clickCategoryIcon(items.get(position), position + 1)
             }
         }
+
         override fun getItemCount() = items.size
     }
 }
