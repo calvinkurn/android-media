@@ -35,7 +35,6 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_success_create_shop"
         app:lottie_autoPlay="true"
-        app:lottie_rawRes="@raw/animation_success_create_shop"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="74dp"
         android:layout_width="289dp"
