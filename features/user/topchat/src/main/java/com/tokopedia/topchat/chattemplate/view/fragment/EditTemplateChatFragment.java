@@ -31,7 +31,7 @@ import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.util.Events;
 
@@ -263,7 +263,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s) {
+    public void onResult(EditTemplateUiModel editTemplateViewModel, int index, String s) {
         analytics.eventClickTemplate();
         Intent intent = new Intent();
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
@@ -274,7 +274,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onResult(EditTemplateViewModel editTemplateViewModel, int index) {
+    public void onResult(EditTemplateUiModel editTemplateViewModel, int index) {
         Intent intent = new Intent();
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
         intent.putExtra(TemplateChatFragment.MODE_RESULT, TemplateChatFragment.DELETE);

@@ -9,7 +9,7 @@ import java.util.List;
  * Created by stevenfredian on 11/27/17.
  */
 
-public class EditTemplateViewModel {
+public class EditTemplateUiModel {
     private List<Visitable> listTemplate;
 
     boolean isEnabled;
