@@ -18,6 +18,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.unifyprinciples.Typography
 import android.view.ViewStub
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 
 abstract class DynamicChannelViewHolder(itemView: View,
@@ -110,7 +112,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                             stubSeeAllView?.findViewById(R.id.see_all_button)
                         }
 
-                        seeAllButton?.visibility = View.VISIBLE
+                        seeAllButton?.show()
                         seeAllButton?.setOnClickListener {
                             listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                             HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
@@ -130,6 +132,9 @@ abstract class DynamicChannelViewHolder(itemView: View,
                             val stubSeeAllButtonView = stubSeeAllButtonUnify?.inflate()
                             stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
                         }
+
+                        seeAllButtonUnify?.show()
+                        seeAllButton?.hide()
                     }
 
                     /**
