@@ -34,6 +34,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
@@ -91,33 +92,34 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             tkpdProjectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1).toString()
             facePath = it.getString(ApplinkConstInternalGlobal.PARAM_FACE_PATH, "")
 
-            if(isFileExists(facePath)){
+            if (isFileExists(facePath)) {
                 loadingLayout?.visibility = View.VISIBLE
                 mainLayout?.visibility = View.GONE
-                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId?: "1")
+                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId
+                        ?: DEFAULT_ID)
             }
         }
     }
 
     private fun initObserver() {
         livenessDetectionViewModel.livenessResponseLiveData.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val intent = Intent()
-                    intent.putExtra("isSuccessRegister", it.data.isSuccessRegister)
+                    intent.putExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, it.data.isSuccessRegister)
                     if (!it.data.isSuccessRegister) {
-                        if(!it.data.listRetake.contains(FACE_RETAKE)){
+                        if (!it.data.listRetake.contains(FACE_RETAKE)) {
                             intent.putExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH, facePath)
                             FileUtils.deleteFileInTokopediaFolder(ktpPath)
-                        }else{
+                        } else {
                             FileUtils.deleteFileInTokopediaFolder(facePath)
                         }
-                        intent.putIntegerArrayListExtra("listRetake", it.data.listRetake)
-                        intent.putStringArrayListExtra("listMessage", it.data.listMessage)
-                        intent.putExtra("title", it.data.apps.title)
-                        intent.putExtra("subtitle", it.data.apps.subtitle)
-                        intent.putExtra("button", it.data.apps.button)
-                    }else{
+                        intent.putIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE, it.data.listRetake)
+                        intent.putStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE, it.data.listMessage)
+                        intent.putExtra(ApplinkConst.Liveness.EXTRA_TITLE, it.data.apps.title)
+                        intent.putExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE, it.data.apps.subtitle)
+                        intent.putExtra(ApplinkConst.Liveness.EXTRA_BUTTON, it.data.apps.button)
+                    } else {
                         FileUtils.deleteFileInTokopediaFolder(ktpPath)
                         FileUtils.deleteFileInTokopediaFolder(facePath)
                     }
@@ -125,9 +127,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     activity?.finish()
                 }
                 is Fail -> {
-                    when(it.throwable) {
-                        is SocketTimeoutException -> {setFailedResultData(Detector.DetectionFailedType.BADNETWORK)}
-                        else -> {setFailedResultData(Detector.DetectionFailedType.GENERAL)}
+                    when (it.throwable) {
+                        is SocketTimeoutException -> {
+                            setFailedResultData(Detector.DetectionFailedType.BADNETWORK)
+                        }
+                        else -> {
+                            setFailedResultData(Detector.DetectionFailedType.GENERAL)
+                        }
                     }
                 }
             }
@@ -135,7 +141,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun findViews() {
-        activity?.run{
+        activity?.run {
             livenessView = findViewById(R.id.liveness_view)
             tipLottieAnimationView = findViewById(R.id.tip_lottie_animation_view)
             tipTextView = findViewById(R.id.tip_text_view)
@@ -198,7 +204,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     livenessWarnState = null
                     showActionTipUIView()
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
     }
@@ -221,7 +228,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     analytics.eventViewBlinkDetection()
                     detectionNameId = R.string.liveness_blink
                 }
-                else -> {}
+                else -> {
+                }
             }
             changeTipTextView(detectionNameId)
             setLottieFile(getLottieFile(currentDetectionType))
@@ -292,7 +300,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 Detector.DetectionType.POS_YAW -> lottieFile = LivenessConstants.ANIMATION_YAW
                 Detector.DetectionType.MOUTH -> lottieFile = LivenessConstants.ANIMATION_MOUTH
                 Detector.DetectionType.BLINK -> lottieFile = LivenessConstants.ANIMATION_BLINK
-                else -> {}
+                else -> {
+                }
             }
         }
         return lottieFile
@@ -316,8 +325,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         onDetectionActionSuccess()
     }
 
-    private fun onDetectionActionSuccess(){
-        if(livenessActionState != null){
+    private fun onDetectionActionSuccess() {
+        if (livenessActionState != null) {
             when (livenessActionState) {
                 Detector.DetectionType.BLINK -> {
                     analytics.eventSuccessdBlinkDetection()
@@ -325,7 +334,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 Detector.DetectionType.MOUTH -> {
                     analytics.eventSuccessdMouthDetection()
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
     }
@@ -360,7 +370,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             val mImageBitmap = LivenessResult.livenessBitmap
             facePath = saveToFile(mImageBitmap)
             if (isFileExists(facePath) && isFileExists(ktpPath)) {
-                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId?: "1")
+                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId
+                        ?: DEFAULT_ID)
             } else {
                 setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
                 finish()
@@ -381,7 +392,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 Detector.DetectionFailedType.TIMEOUT -> {
                     intent.putExtra(ARG_FAILED_TYPE, LivenessConstants.FAILED_TIMEOUT)
                 }
-                else -> {}
+                else -> {
+                }
             }
             activity?.startActivityForResult(intent, RESULT_CANCELED)
         }
@@ -425,14 +437,15 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             when (failedType) {
                 Detector.DetectionFailedType.TIMEOUT -> setFailedResultData(Detector.DetectionFailedType.TIMEOUT)
                 Detector.DetectionFailedType.MUCHMOTION -> setFailedResultData(Detector.DetectionFailedType.MUCHMOTION)
-                else -> {}
+                else -> {
+                }
             }
         }
     }
 
     override fun trackOnBackPressed() {
-        if(livenessActionState != null){
-            when(livenessActionState){
+        if (livenessActionState != null) {
+            when (livenessActionState) {
                 Detector.DetectionType.MOUTH -> {
                     analytics.eventClickBackMouthDetection()
                 }
@@ -442,12 +455,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 Detector.DetectionType.POS_YAW -> {
                     analytics.eventClickBackHeadDetection()
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
 
-        if(livenessWarnState != null){
-            when(livenessWarnState){
+        if (livenessWarnState != null) {
+            when (livenessWarnState) {
                 Detector.WarnCode.FACESMALL -> {
                     analytics.eventClickBackCloserFaceToScreen()
                 }
@@ -457,7 +471,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 Detector.WarnCode.WARN_MULTIPLEFACES -> {
                     analytics.eventClickBackMultipleFaces()
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
     }
@@ -472,6 +487,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
 
         const val FACE_RETAKE = 2
         const val ARG_FAILED_TYPE = "failed_type"
+        const val DEFAULT_ID = "1"
     }
 
 

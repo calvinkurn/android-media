@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.imagepicker.common.util.FileUtils;
@@ -303,13 +304,13 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     private void getLivenessResult(Intent data){
-        boolean isSuccessRegister = data.getBooleanExtra("isSuccessRegister", false);
+        boolean isSuccessRegister = data.getBooleanExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, false);
         if(!isSuccessRegister){
-            stepperModel.setListRetake(data.getIntegerArrayListExtra("listRetake"));
-            stepperModel.setListMessage(data.getStringArrayListExtra("listMessage"));
-            stepperModel.setTitleText(data.getStringExtra("title"));
-            stepperModel.setSubtitleText(data.getStringExtra("subtitle"));
-            stepperModel.setButtonText(data.getStringExtra("button"));
+            stepperModel.setListRetake(data.getIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE));
+            stepperModel.setListMessage(data.getStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE));
+            stepperModel.setTitleText(data.getStringExtra(ApplinkConst.Liveness.EXTRA_TITLE));
+            stepperModel.setSubtitleText(data.getStringExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE));
+            stepperModel.setButtonText(data.getStringExtra(ApplinkConst.Liveness.EXTRA_BUTTON));
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.detach(this).attach(this).commit();
         }else{

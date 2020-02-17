@@ -411,7 +411,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             imagePath = cameraResultFile.getAbsolutePath();
             showImagePreview();
         } else {
-            Toast.makeText(getContext(), "Terjadi kesalahan, silahkan coba lagi", Toast
+            Toast.makeText(getContext(), getString(R.string.error_upload_image_kyc), Toast
                     .LENGTH_LONG).show();
         }
     }

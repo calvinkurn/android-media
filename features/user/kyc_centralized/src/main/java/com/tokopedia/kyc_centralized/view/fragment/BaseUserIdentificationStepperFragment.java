@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
@@ -113,18 +114,18 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     }
 
     private void getLivenessResult(Intent data){
-        boolean isSuccessRegister = data.getBooleanExtra("isSuccessRegister", false);
+        boolean isSuccessRegister = data.getBooleanExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, false);
         stepperModel.setFaceFile(data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH));
         if(isSuccessRegister){
             getActivity().setResult(Activity.RESULT_OK);
             stepperListener.finishPage();
         } else {
             stepperModel.setFaceFile(data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH));
-            stepperModel.setListRetake(data.getIntegerArrayListExtra("listRetake"));
-            stepperModel.setListMessage(data.getStringArrayListExtra("listMessage"));
-            stepperModel.setTitleText(data.getStringExtra("title"));
-            stepperModel.setSubtitleText(data.getStringExtra("subtitle"));
-            stepperModel.setButtonText(data.getStringExtra("button"));
+            stepperModel.setListRetake(data.getIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE));
+            stepperModel.setListMessage(data.getStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE));
+            stepperModel.setTitleText(data.getStringExtra(ApplinkConst.Liveness.EXTRA_TITLE));
+            stepperModel.setSubtitleText(data.getStringExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE));
+            stepperModel.setButtonText(data.getStringExtra(ApplinkConst.Liveness.EXTRA_BUTTON));
             stepperListener.goToNextPage(stepperModel);
         }
     }
