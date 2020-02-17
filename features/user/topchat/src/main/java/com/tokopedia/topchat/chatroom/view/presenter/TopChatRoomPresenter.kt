@@ -51,7 +51,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -254,8 +254,8 @@ class TopChatRoomPresenter @Inject constructor(
     fun getTemplate(isSeller: Boolean) {
         getTemplateChatRoomUseCase.execute(
                 GetTemplateChatRoomUseCase.generateParam(isSeller),
-                object : Subscriber<GetTemplateViewModel>() {
-                    override fun onNext(t: GetTemplateViewModel?) {
+                object : Subscriber<GetTemplateUiModel>() {
+                    override fun onNext(t: GetTemplateUiModel?) {
                         val templateList = arrayListOf<Visitable<Any>>()
                         t?.let {
                             if (t.isEnabled) {
