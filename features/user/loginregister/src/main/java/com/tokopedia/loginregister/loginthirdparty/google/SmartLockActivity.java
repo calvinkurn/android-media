@@ -17,6 +17,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.user.session.UserSession;
@@ -49,7 +50,8 @@ public class SmartLockActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UserSessionInterface userSessionInterface = new UserSession(this);
-        analytics = new LoginRegisterAnalytics(userSessionInterface);
+        IrisSession irisSession = new IrisSession(this);
+        analytics = new LoginRegisterAnalytics(userSessionInterface, irisSession);
 
         setContentView(R.layout.activity_smartlock);
 
