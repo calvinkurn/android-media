@@ -23,7 +23,6 @@ enum class ComponentNames(val componentName: String) {
     CpmTopAdsShopItem("cpm_topads_shop_item"),
     CpmTopAdsProductItem("cpm_topads_product_item"),
     Video("video"),
-    ChipsFilter("chips_filter"),
     HeaderDesktop("header_desktop"),
     Notifier("notifier"),
     TitleImage("title_image"),
