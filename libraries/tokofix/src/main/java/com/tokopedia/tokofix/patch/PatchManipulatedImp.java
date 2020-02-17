@@ -35,7 +35,7 @@ public class PatchManipulatedImp extends PatchManipulate {
         Log.w("robust", "robustApkHash :" + robustApkHash);
 
         Patch patch = new Patch();
-        patch.setName("123");
+        patch.setName("robust-patch");
         patch.setPatchesInfoImplClassFullName("com.meituan.robust.patch.PatchesInfoImpl");
         List patches = new ArrayList<Patch>();
         patch.setLocalPath(context.getDir("patch", Context.MODE_PRIVATE).getAbsolutePath() + File.separator + "patch");
