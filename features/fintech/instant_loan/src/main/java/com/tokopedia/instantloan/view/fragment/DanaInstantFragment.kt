@@ -22,7 +22,6 @@ import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_OTP
-import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter
 import com.tokopedia.instantloan.view.contractor.DanaInstanLoanContractor
 import com.tokopedia.instantloan.view.presenter.DanaInstanLoanPresenter
@@ -87,11 +86,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     override fun getAppContext(): Context? {
-        return getContext()?.applicationContext
-    }
-
-    override fun getActivityContext(): Context? {
-        return getContext()
+        return context?.applicationContext
     }
 
     override fun onSuccessLoanProfileStatus(data: UserProfileLoanEntity) {
@@ -161,8 +156,8 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
         val layouts = intArrayOf(com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_1, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_2, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_3)
 
         pager.adapter = InstantLoanIntroViewPagerAdapter(layouts, presenter)
-        pageIndicator.fillColor = ContextCompat.getColor(getContext()!!, com.tokopedia.design.R.color.tkpd_main_green)
-        pageIndicator.pageColor = ContextCompat.getColor(getContext()!!, com.tokopedia.design.R.color.black_54)
+        pageIndicator.fillColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
+        pageIndicator.pageColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.black_54)
         pageIndicator.setViewPager(pager, 0)
         btnNext.show()
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -232,7 +227,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     override fun showToastMessage(message: String, duration: Int) {
-        Toast.makeText(getContext(), message, duration).show()
+        Toast.makeText(context, message, duration).show()
     }
 
     override fun openWebView(url: String) {
@@ -335,7 +330,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
 
     companion object {
 
-        val LOGIN_REQUEST_CODE = 1005
+        const val LOGIN_REQUEST_CODE = 1005
 
         fun createInstance(): DanaInstantFragment {
             val args = Bundle()

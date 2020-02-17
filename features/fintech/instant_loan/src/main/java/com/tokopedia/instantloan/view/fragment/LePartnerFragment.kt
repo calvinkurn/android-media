@@ -55,7 +55,7 @@ class LePartnerFragment : TkpdBaseV4Fragment() {
 
     companion object {
 
-        val COLUMN_COUNT_FOR_LOAN_PARTNER = 3
+        const val COLUMN_COUNT_FOR_LOAN_PARTNER = 3
         private const val PARTNER_LIST = "partner_list"
 
         fun createInstance(partnerItemList: ArrayList<GqlLendingPartnerData>): LePartnerFragment {

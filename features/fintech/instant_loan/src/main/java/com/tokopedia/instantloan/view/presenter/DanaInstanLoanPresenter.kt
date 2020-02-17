@@ -62,7 +62,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
 
     override fun startDataCollection() {
         view.showLoaderIntroDialog()
-        DDCollectorManager.getsInstance().init(view.getActivityContext(), mPermissionRequestCallback)
+        DDCollectorManager.getsInstance().init(view.getContext(), mPermissionRequestCallback)
 
         DDCollectorManager.getsInstance().process(object : OnDeviceDataReady {
             override fun callback(data: Map<String, Any?>?) {

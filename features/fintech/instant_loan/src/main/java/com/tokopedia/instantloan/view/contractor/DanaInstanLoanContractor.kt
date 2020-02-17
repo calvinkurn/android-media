@@ -13,7 +13,7 @@ interface DanaInstanLoanContractor {
     interface View : CustomerView {
         fun getAppContext(): Context?
 
-        fun getActivityContext(): Context?
+        fun getContext(): Context?
 
         fun onSuccessLoanProfileStatus(status: UserProfileLoanEntity)
 
