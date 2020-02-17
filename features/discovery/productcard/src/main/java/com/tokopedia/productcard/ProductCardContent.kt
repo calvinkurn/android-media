@@ -52,9 +52,15 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
-    textViewPrice?.shouldShowWithAction(productCardModel.formattedPrice.isNotEmpty()) {
-        it.text = productCardModel.formattedPrice
+    val priceToRender = productCardModel.getPriceToRender()
+
+    textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
+        it.text = priceToRender
     }
+}
+
+private fun ProductCardModel.getPriceToRender(): String {
+    return if (priceRange.isNotEmpty()) priceRange else formattedPrice
 }
 
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {

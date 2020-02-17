@@ -23,15 +23,15 @@ internal class ProductCardListTest {
     fun testProductCardList() {
         val recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
         val additionalProductCardMatchers = mutableListOf<Map<Int, Matcher<View?>>>().also {
-            it.add(getProductCardMatchersPosition18())
+            it.add(getProductCardMatchersPosition19())
         }
 
         ProductCardTest(recyclerViewViewInteraction, additionalProductCardMatchers)
                 .startTest()
     }
 
-    private fun getProductCardMatchersPosition18(): Map<Int, Matcher<View?>> {
-        val position = 18
+    private fun getProductCardMatchersPosition19(): Map<Int, Matcher<View?>> {
+        val position = 19
         val productCardModel = productCardListTestData[position]
 
         val labelProductStatus = productCardModel.getLabelProductStatus() ?: throw Exception("Product Card Position $position has no label status")

@@ -220,6 +220,13 @@ internal val productCardGeneralTestData: List<ProductCardModel> = mutableListOf<
     ))
 
     it.add(ProductCardModel(
+            productName = "Product with price range",
+            productImageUrl = productImageUrl,
+            priceRange = "Rp25.999.000 - Rp28.499.000",
+            formattedPrice = "this string does not matter, should take price range"
+    ))
+
+    it.add(ProductCardModel(
             productName = "With Add to Cart Button",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",

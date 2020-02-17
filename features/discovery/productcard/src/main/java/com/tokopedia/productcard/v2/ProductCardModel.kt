@@ -17,6 +17,7 @@ data class ProductCardModel (
         val productName: String = "",
         val discountPercentage: String = "",
         val slashedPrice: String = "",
+        val priceRange: String = "",
         val formattedPrice: String = "",
         val shopBadgeList: List<ShopBadge> = listOf(),
         val shopLocation: String = "",
