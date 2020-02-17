@@ -5,7 +5,8 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-        <activity android:name=".features.one_click_checkout.preference.list.view.PreferenceListActivity"
+        <activity
+            android:name=".features.one_click_checkout.preference.edit.view.PreferenceEditActivity"
             android:label="@string/activity_title_checkout_variant"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -22,6 +23,23 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".features.one_click_checkout.preference.list.view.PreferenceListActivity"
+            android:label="@string/activity_title_checkout_variant"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_checkout_variant"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".features.express_checkout.view.variant.CheckoutVariantActivity"
             android:label="@string/activity_title_checkout_variant"
