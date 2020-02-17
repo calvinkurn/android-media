@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.lifecycle.Observer
@@ -19,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
@@ -33,8 +36,7 @@ import com.tokopedia.brandlist.brandlist_category.presentation.adapter.Brandlist
 import com.tokopedia.brandlist.brandlist_category.presentation.viewmodel.BrandlistCategoryViewModel
 import com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.searchbar.MainToolbar
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
@@ -61,13 +63,14 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     private var brandlistTracking: BrandlistTracking? = null
     private var rootView: View? = null
     private var statusBar: View? = null
-    private var mainToolbar: MainToolbar? = null
     private var tabLayout: BrandlistCategoryTabLayout? = null
     private var loadingLayout: View? = null
     private var viewPager: ViewPager? = null
     private var appbarCategory: AppBarLayout? = null
     private var currentCategoryName = ""
     private var targetCategoryName = ""
+    private var searchInputView: Button? = null
+    private var toolbar: Toolbar? = null
 
 
     private var keyCategorySlug = "0"
@@ -127,17 +130,15 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
     private fun init(view: View) {
         configStatusBar(view)
-        mainToolbar = view.findViewById(R.id.maintoolbar)
+        toolbar = view.findViewById(R.id.toolbar)
+        searchInputView = view.findViewById(R.id.btn_search)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
         appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
-
-        mainToolbar?.let {
-            configMainToolbar(it)
-        }
+        configMainToolbar()
     }
 
     private fun getSelectedCategory(brandListCategories: BrandlistCategories): Int {
@@ -247,25 +248,17 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         tabLayout?.visibility = View.VISIBLE
     }
 
-    private fun configMainToolbar(mainToolbar: MainToolbar) {
-
+    private fun configMainToolbar() {
+        toolbar?.setNavigationIcon(R.drawable.brandlist_icon_arrow_black)
         activity?.let {
-            (it as? AppCompatActivity)?.let {
-                it.setSupportActionBar(mainToolbar)
-                it.supportActionBar?.setDisplayShowTitleEnabled(false)
-                it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (it as? AppCompatActivity)?.let { appCompatActivity ->
+                appCompatActivity.setSupportActionBar(toolbar)
+                appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
+                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
-
-            mainToolbar.setNavigationIcon(R.drawable.brandlist_icon_arrow_black)
-            mainToolbar.searchApplink = ApplinkConstInternalMechant.BRANDLIST_SEARCH
-            mainToolbar.setQuerySearch(getString(R.string.brandlist_search_view_hint))
-            mainToolbar.btnWishlist?.hide()
-            mainToolbar.btnInbox?.hide()
-            mainToolbar.btnNotification?.hide()
-            mainToolbar.setOnClickListener {
-                val keywordSearch = ""
-                brandlistTracking?.clickSearchBox(targetCategoryName, keywordSearch, false)
-            }
+        }
+        searchInputView?.setOnClickListener {
+            RouteManager.route(this.context, ApplinkConstInternalMechant.BRANDLIST_SEARCH)
         }
     }
 }
