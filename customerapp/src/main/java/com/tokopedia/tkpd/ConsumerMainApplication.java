@@ -120,7 +120,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this));
+        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
