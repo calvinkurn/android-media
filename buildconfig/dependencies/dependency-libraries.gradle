@@ -49,6 +49,7 @@ ext {
             liveness_lib            : ":libraries:liveness_lib",
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
+            mediauploader           : ":libraries:mediauploader",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
             playCore                : ":libraries:play_core",

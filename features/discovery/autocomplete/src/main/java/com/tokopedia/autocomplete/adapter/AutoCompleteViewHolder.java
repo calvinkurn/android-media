@@ -68,14 +68,18 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
                         tabName
                 );
 
-                listener.onItemClicked(element.getApplink(), element.getUrl());
+                if (listener != null) {
+                    listener.onItemClicked(element.getApplink(), element.getUrl());
+                }
             }
         });
 
         iconCopyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.copyTextToSearchView(element.getKeyword());
+                if (listener != null) {
+                    listener.copyTextToSearchView(element.getKeyword());
+                }
             }
         });
     }

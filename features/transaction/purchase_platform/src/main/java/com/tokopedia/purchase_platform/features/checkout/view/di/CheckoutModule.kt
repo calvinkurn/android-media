@@ -33,6 +33,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterAct
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
+import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -121,7 +122,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
                                  codAnalytics: CodAnalytics,
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
-                                 getInsuranceCartUseCase: GetInsuranceCartUseCase): ShipmentContract.Presenter {
+                                 getInsuranceCartUseCase: GetInsuranceCartUseCase,
+                                 shipmentDataConverter: ShipmentDataConverter): ShipmentContract.Presenter {
         return ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
                 checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormUseCase,
@@ -131,7 +133,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 ratesUseCase, ratesApiUseCase,
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase)
+                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,shipmentDataConverter)
     }
 
     @Provides

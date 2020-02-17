@@ -23,6 +23,7 @@ import com.tokopedia.changepassword.view.presenter.ChangePasswordPresenter
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_change_password.*
 
 /**
@@ -34,7 +35,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     lateinit var newPasswordTextField : TextFieldUnify
     lateinit var confPasswordTextField : TextFieldUnify
 
-    private var userSession = UserSession(context)
+    private lateinit var userSession : UserSessionInterface
 
     override fun getScreenName(): String {
         return ChangePasswordAnalytics.SCREEN_NAME
@@ -53,6 +54,8 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        userSession = UserSession(context)
 
         oldPasswordTextField = view.findViewById(R.id.wrapper_old)
         newPasswordTextField = view.findViewById(R.id.wrapper_new)

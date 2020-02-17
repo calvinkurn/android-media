@@ -204,5 +204,9 @@ query GetSOMDetail($orderID: String!, $lang: String!){
       is_show_info
       info_text
     }
+    penalty_reject_info {
+      is_penalty_reject
+      penalty_reject_wording
+    }
   }
 }

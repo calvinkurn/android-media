@@ -12,6 +12,7 @@ public class AccountConstants {
     public static final String RC_LOCALSERVICE_ENABLE = "enable_local_service_transaction_history_entry";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     public static final String SALDO_QUERY = "saldo_query";
+    public static final String SHOP_LOCATION_QUERY = "query_shop_location";
     public static final String ACCOUNT_TAB = "ACCOUNT_TAB";
     public static final String ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER";
 

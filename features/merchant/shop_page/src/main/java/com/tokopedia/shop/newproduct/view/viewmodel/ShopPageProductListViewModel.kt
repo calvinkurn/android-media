@@ -230,7 +230,7 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     private fun getShopEtalaseData(shopId: String): List<ShopProductEtalaseChipItemViewModel> {
-        val params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isMyShop(shopId))
+        val params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, !isMyShop(shopId), false, isMyShop(shopId))
         val listShopEtalaseResponse = getShopEtalaseByShopUseCase.createObservable(params).toBlocking().first()
         return ShopPageProductListMapper.mapToShopProductEtalaseListDataModel(listShopEtalaseResponse)
     }

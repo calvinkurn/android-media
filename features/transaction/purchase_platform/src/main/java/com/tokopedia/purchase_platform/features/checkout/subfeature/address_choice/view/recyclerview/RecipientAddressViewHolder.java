@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -20,7 +21,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
     private static final int PRIME_ADDRESS = 2;
 
     private TextView mTvAddressName;
-    private Typography mTvAddressStatus;
+    private Label mTvAddressStatus;
     private Typography mTvRecipientName;
     private Typography mTvRecipientAddress;
     private Typography mTvRecipientPhone;

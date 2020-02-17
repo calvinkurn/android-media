@@ -7,10 +7,7 @@ import android.net.ConnectivityManager
 import android.os.Binder
 import android.os.IBinder
 import com.tokopedia.logger.LogManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import timber.log.Timber
+import com.tokopedia.logger.utils.globalScopeLaunch
 
 class ServerService : Service() {
     private val binder = ServerServiceBinder()
@@ -26,26 +23,15 @@ class ServerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        runBlocking {
-            launch(Dispatchers.IO){
-                when {
-                    // When there is network connection and there is data in DB then we send logs to server
-                    isNetworkAvailable(application) and (LogManager.getCount() > 0) -> {
-                        LogManager.deleteExpiredLogs()
-                        LogManager.sendLogToServer()
-                        stopSelf()
-                    }
-                    // When there is data in DB but no network connection, we check this data, if its old we delete it
-                    LogManager.loggerRepository.getCount() > 0 -> {
-                        LogManager.deleteExpiredLogs()
-                        stopSelf()
-                    }
-                    else -> {
-                        stopSelf()
-                    }
-                }
+        globalScopeLaunch({
+            LogManager.deleteExpiredLogs()
+            if(isNetworkAvailable(application) and (LogManager.getCount() > 0)) {
+                LogManager.sendLogToServer()
             }
-        }
+            stopSelf()
+        }, {
+            it.printStackTrace()
+        })
         return super.onStartCommand(intent, flags, startId)
     }
 
