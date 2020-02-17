@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.pinned
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
@@ -198,7 +199,7 @@ class PinnedComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class PinnedComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : PinnedComponent(container, bus, coroutineScope) {
+    class PinnedComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : PinnedComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): PinnedView {
             return mockk(relaxed = true)
         }

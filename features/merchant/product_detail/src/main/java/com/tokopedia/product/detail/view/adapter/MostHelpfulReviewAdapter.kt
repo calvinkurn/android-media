@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.review.ImageAttachment
 import com.tokopedia.product.detail.data.util.OnImageReviewClicked
 import kotlinx.android.synthetic.main.item_most_helpful_image.view.*
@@ -17,7 +18,8 @@ import kotlinx.android.synthetic.main.item_most_helpful_image.view.*
 class MostHelpfulReviewAdapter(private val imageList: List<ImageAttachment>,
                                private val reviewId: String,
                                private val moreItemCount: Int = 0,
-                               private val onImageHelpfulReviewClick: OnImageReviewClicked? = null) : RecyclerView.Adapter<MostHelpfulReviewAdapter.MostHelpfulReviewViewHolder>() {
+                               private val onImageHelpfulReviewClick: OnImageReviewClicked? = null,
+                               private val componentTrackDataModel: ComponentTrackDataModel? = null) : RecyclerView.Adapter<MostHelpfulReviewAdapter.MostHelpfulReviewViewHolder>() {
 
     companion object {
         const val VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 122
@@ -38,7 +40,7 @@ class MostHelpfulReviewAdapter(private val imageList: List<ImageAttachment>,
         }
 
         holder.itemView.setOnClickListener {
-            onImageHelpfulReviewClick?.invoke(imageList.map { it.imageUrl }, position, reviewId)
+            onImageHelpfulReviewClick?.invoke(imageList.map { it.imageUrl }, position, reviewId, componentTrackDataModel)
         }
 
         holder.bind(imageList[position], getItemViewType(position), moreItemCount)

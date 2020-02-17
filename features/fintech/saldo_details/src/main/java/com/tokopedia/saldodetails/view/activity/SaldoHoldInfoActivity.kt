@@ -64,6 +64,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         tabLayout = findViewById(R.id.tabs_saldo_info_type)
         viewPager = findViewById(R.id.view_pager_saldo_info_type)
         saldoInfoPresenter.attachView(this)
+        clearFrgmentManger()
         saldoInfoPresenter.getSaldoHoldInfo()
         top_bar_close_button.setOnClickListener {
             onBackPressed()
@@ -72,6 +73,13 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         btn_bantuan.setOnClickListener {
             initBottomSheet()
         }
+    }
+
+    private fun clearFrgmentManger() {
+         supportFragmentManager.fragments.forEach {
+            supportFragmentManager.beginTransaction().remove(it).commit()
+        }
+
     }
 
     override fun getComponent(): SaldoDetailsComponent {

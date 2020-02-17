@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.sendchat
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayRoomEvent
@@ -127,7 +128,7 @@ class SendChatComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class SendChatComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : SendChatComponent(container, bus, coroutineScope) {
+    class SendChatComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : SendChatComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): SendChatView {
             return mockk(relaxed = true)
         }
