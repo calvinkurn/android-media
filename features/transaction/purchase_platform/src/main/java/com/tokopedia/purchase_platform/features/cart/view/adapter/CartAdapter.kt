@@ -27,7 +27,6 @@ import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.min
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 /**
  * @author anggaprasetiyo on 18/01/18.
