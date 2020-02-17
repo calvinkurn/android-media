@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.NotificationOptions
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
 open class NotificationItemViewBean(
@@ -28,7 +29,8 @@ open class NotificationItemViewBean(
         var dataNotification: DataNotification = DataNotification(),
         var products: List<ProductData> = emptyList(),
         var isLongerContent: Boolean = false,
-        var options: NotificationOptions = NotificationOptions()
+        var options: NotificationOptions = NotificationOptions(),
+        var userInfo: UserInfo = UserInfo()
 ) : Parcelable, Visitable<BaseNotificationTypeFactory> {
 
     override fun type(typeFactory: BaseNotificationTypeFactory): Int {
@@ -48,6 +50,7 @@ open class NotificationItemViewBean(
         templateKey = `in`.readString()?: ""
         appLink = `in`.readString()?: ""
         hasShop = `in`.readInt() != 0
+        isLongerContent = `in`.readInt() != 0
         typeLink = `in`.readInt()
         totalProduct = `in`.readInt()
     }
@@ -65,6 +68,7 @@ open class NotificationItemViewBean(
         parcel.writeString(templateKey)
         parcel.writeString(appLink)
         parcel.writeInt(if (hasShop) 1 else 0)
+        parcel.writeInt(if (isLongerContent) 1 else 0)
         parcel.writeInt(typeLink)
         parcel.writeInt(totalProduct)
     }
