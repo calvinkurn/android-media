@@ -28,6 +28,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.caro
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.comingsoonview.ComingSoonViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.comingsoonview.ComingSoonViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -83,11 +87,13 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.Spacing, ::SpacingViewHolder, ::SpacingViewModel)
             initializeComponent(ComponentsList.Tabs, ::TabsViewHolder, ::TabsViewModel)
             initializeComponent(ComponentsList.TabsItem, ::TabsItemViewHolder, ::TabsItemViewModel)
+            initializeComponent(ComponentsList.ChipsFilter, ::ChipsFilterViewHolder, ::ChipsFilterViewModel)
+            initializeComponent(ComponentsList.ChipsFilterItem, ::ChipsFilterItemViewHolder, ::ChipsFilterItemViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>, componentViewModel: KFunction<T>) {
             componentIdMap[component.componentName] = component.ordinal
-            componentMapper[component.ordinal] = ComponentHelpersHolder(viewModel, componentViewModel);
+            componentMapper[component.ordinal] = ComponentHelpersHolder(viewModel, componentViewModel)
         }
 
         fun getComponentId(viewType: String?): Int? {
@@ -97,7 +103,7 @@ class DiscoveryHomeFactory {
 
         fun createViewHolder(parent: ViewGroup, viewType: Int, fragment: Fragment): AbstractViewHolder? {
             val itemView: View =
-                    LayoutInflater.from(parent.context).inflate(ComponentsList.values()[viewType].id, parent, false);
+                    LayoutInflater.from(parent.context).inflate(ComponentsList.values()[viewType].id, parent, false)
             return componentMapper[viewType]?.getViewHolder(itemView, fragment)
         }
 

@@ -5,6 +5,18 @@ import com.google.gson.annotations.SerializedName
 
 data class DataItem(
 
+        @SerializedName("chipSelectionType")
+        var chipSelectionType: String = "0",
+
+        @SerializedName("key")
+        val key: String? = "",
+
+        @SerializedName("target_component")
+        val targetComponent: String? = "",
+
+        @SerializedName("value")
+        val value: String? = "",
+
         @SerializedName("target_component_id")
         val targetComponentId: String? = "",
 

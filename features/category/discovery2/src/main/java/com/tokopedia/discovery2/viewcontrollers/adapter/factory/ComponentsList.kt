@@ -39,6 +39,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardRevamp(R.layout.coming_soon_view, ComponentNames.ProductCardRevamp.componentName),
     BreadCrumbs(R.layout.coming_soon_view, ComponentNames.Breadcrumbs.componentName),
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
+    ChipsFilter(R.layout.widget_recycler_view, ComponentNames.ChipsFilter.componentName),
+    ChipsFilterItem(R.layout.chips_filter_item_layout, ComponentNames.ChipsFilterItem.componentName),
     Tabs(R.layout.widget_recycler_view, ComponentNames.Tabs.componentName),
     TabsItem(R.layout.tabs_item_layout, ComponentNames.TabsItem.componentName)
 }
