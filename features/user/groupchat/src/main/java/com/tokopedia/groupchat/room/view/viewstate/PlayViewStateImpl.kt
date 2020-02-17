@@ -1422,7 +1422,7 @@ open class PlayViewStateImpl(
                     userSession.name,
                     userSession.profilePicture,
                     isInfluencer = false,
-                    isChatDisabled = chatPermitViewModel?.isChatDisabled?:false,
+                    isChatDisabled = !(chatPermitViewModel?.isChatDisabled?:false),
                     isQuickReply = isQuickReply)
             sendMessage(pendingChatViewModel)
         }
