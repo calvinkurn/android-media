@@ -329,7 +329,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
             isValidShopName = true
             txtInputShopName.setError(false)
             txtInputShopName.setMessage(hintMessage)
-            // btnShopRegistration.isEnabled = false
             validateButtonShopRegistration()
         }
     }
