@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.pushnotif.Constant.NotificationChannel;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.product.manage.item.BuildConfig;
@@ -60,6 +59,8 @@ public class UploadProductService extends Service implements AddProductServiceLi
     private static final String IS_ADD = "IS_ADD";
     private static final String IS_UPLOAD_PRODUCT_FROM_DRAFT = "IS_UPLOAD_PRODUCT_FROM_DRAFT";
     private static final String CACHE_MANAGER_ID = "CACHE_MANAGER_ID";
+    private static final String NOTIFICATION_CHANNEL_GENERAL = "ANDROID_GENERAL_CHANNEL";
+
     private ProductViewModel productViewModel = null;
     private SaveInstanceCacheManager cacheManager = null;
     private boolean isUploadProductFromDraft = true;
@@ -249,7 +250,7 @@ public class UploadProductService extends Service implements AddProductServiceLi
         if (!GlobalConfig.isSellerApp()) {
             largeIconRes = R.drawable.ic_stat_notify;
         }
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NotificationChannel.GENERAL)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_GENERAL)
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
