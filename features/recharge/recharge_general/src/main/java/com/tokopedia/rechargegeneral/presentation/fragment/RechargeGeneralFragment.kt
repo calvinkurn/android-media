@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -38,6 +37,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
@@ -767,24 +767,28 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         favoriteNumbers = data.favNumberList
     }
 
-    override fun showEnquiryError(t: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, t.message)
+    override fun onEnquiryError(error: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
-    override fun showMenuDetailError(t: Throwable) {
-        showGetListError(t)
+    override fun onMenuDetailError(error: Throwable) {
+        showGetListError(error)
     }
 
-    override fun showCatalogPluginDataError(t: Throwable) {
-
-    }
-
-    override fun showFavoriteNumbersError(t: Throwable) {
+    override fun onCatalogPluginDataError(error: Throwable) {
 
     }
 
-    override fun showExpressCheckoutError(t: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, t.message)
+    override fun onFavoriteNumbersError(error: Throwable) {
+
+    }
+
+    override fun onCheckVoucherError(error: Throwable) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onExpressCheckoutError(error: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {

@@ -10,8 +10,15 @@ import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressChec
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
+import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigitalData
+import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -19,12 +26,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
  * Created by resakemal on 28/08/19.
  */
 class TopupBillsViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                              private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
                                               val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
@@ -43,6 +52,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     private val _favNumberData = MutableLiveData<Result<TopupBillsFavNumber>>()
     val favNumberData : LiveData<Result<TopupBillsFavNumber>>
         get() = _favNumberData
+
+    private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
+    val checkVoucherData : LiveData<Result<PromoData>>
+        get() = _checkVoucherData
 
     private val _expressCheckoutData = MutableLiveData<Result<RechargeExpressCheckoutData>>()
     val expressCheckoutData : LiveData<Result<RechargeExpressCheckoutData>>
@@ -116,6 +129,42 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }) {
             _favNumberData.postValue(Fail(it))
         }
+    }
+
+    fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel) {
+        digitalCheckVoucherUseCase.execute(
+                digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), getCheckVoucherSubscriber()
+        )
+    }
+
+    private fun getCheckVoucherSubscriber(): Subscriber<GraphqlResponse> {
+        return object: Subscriber<GraphqlResponse>() {
+            override fun onNext(objects: GraphqlResponse) {
+                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+                _checkVoucherData.value = if (checkVoucherData.voucherData.success) {
+                    Success(mapVoucherData(checkVoucherData.voucherData))
+                } else {
+                    Fail(MessageErrorException(checkVoucherData.voucherData.message.text))
+                }
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+        }
+    }
+
+    private fun mapVoucherData(data: CheckVoucherDigitalData): PromoData {
+        return PromoData(data.isCoupon,
+                data.code,
+                data.message.text,
+                data.titleDescription,
+                state = data.message.state.mapToStatePromoCheckout())
     }
 
     fun processExpressCheckout(rawQuery: String, mapParam: Map<String, Any>) {

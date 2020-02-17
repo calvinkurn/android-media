@@ -176,7 +176,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                     override fun run() {
                         triggerListener(input)
                     }
-                }, DEFAULT_DELAY_TEXT_CHANGED_MILLIS)
+                }, delayTextChanged)
             }
 
             private fun triggerListener(input: String) {

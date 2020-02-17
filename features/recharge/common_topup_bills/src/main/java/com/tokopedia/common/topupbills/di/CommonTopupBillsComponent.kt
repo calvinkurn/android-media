@@ -6,6 +6,7 @@ import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,6 +28,8 @@ interface CommonTopupBillsComponent {
     fun graphqlRepository(): GraphqlRepository
 
     fun rechargeAnalytics(): RechargeAnalytics
+
+    fun digitalCheckVoucherUseCase(): DigitalCheckVoucherUseCase
 
     fun inject(baseTopupBillsFragment: BaseTopupBillsFragment)
 

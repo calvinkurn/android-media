@@ -85,6 +85,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             field = value
             productId = value?.id?.toIntOrNull() ?: 0
             price = value?.attributes?.pricePlain?.toLongOrNull()
+            checkVoucher()
         }
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
@@ -231,27 +232,31 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     }
 
-    override fun showEnquiryError(t: Throwable) {
+    override fun onEnquiryError(error: Throwable) {
         toggleEnquiryLoadingBar(false)
         isEnquired = false
         NetworkErrorHelper.createSnackbarRedWithAction(
-                activity, ErrorHandler.getErrorMessage(context, t)) { enquireFields() }.showRetrySnackbar()
+                activity, ErrorHandler.getErrorMessage(context, error)) { enquireFields() }.showRetrySnackbar()
     }
 
-    override fun showMenuDetailError(t: Throwable) {
-
-    }
-
-    override fun showCatalogPluginDataError(t: Throwable) {
+    override fun onMenuDetailError(error: Throwable) {
 
     }
 
-    override fun showFavoriteNumbersError(t: Throwable) {
+    override fun onCatalogPluginDataError(error: Throwable) {
 
     }
 
-    override fun showExpressCheckoutError(t: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, t.message)
+    override fun onFavoriteNumbersError(error: Throwable) {
+
+    }
+
+    override fun onCheckVoucherError(error: Throwable) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onExpressCheckoutError(error: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {

@@ -1,4 +1,4 @@
-query voucherGameProductDetail($menuID: Int!, $operator: String!){
+query rechargeCatalogProductInput($menuID: Int!, $operator: String!){
   rechargeCatalogProductInput(menuID: $menuID, platformID: 5, operator: $operator) {
     needEnquiry
     isShowingProduct
