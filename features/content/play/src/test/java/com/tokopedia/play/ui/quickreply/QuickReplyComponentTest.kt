@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.quickreply
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.QuickReplyUiModel
@@ -78,7 +79,7 @@ class QuickReplyComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class QuickReplyComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : QuickReplyComponent(container, bus, coroutineScope) {
+    class QuickReplyComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : QuickReplyComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): QuickReplyView {
             return mockk(relaxed = true)
         }

@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.endliveinfo
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponentTest
 import com.tokopedia.play.ui.chatlist.ChatListView
@@ -111,7 +112,7 @@ class EndLiveInfoComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class EndLiveInfoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : EndLiveInfoComponent(container, bus, coroutineScope) {
+    class EndLiveInfoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : EndLiveInfoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): EndLiveInfoView {
             return mockk(relaxed = true)
         }

@@ -65,6 +65,9 @@ public class AddressConstants {
     public static final String ANA_POSITIVE = "positive";
     public static final String ANA_NEGATIVE = "negative";
 
+    public static final String LOGISTIC_LABEL = "logistic";
+    public static final String NON_LOGISTIC_LABEL = "non-logistic";
+
     public static final int GPS_REQUEST = 108;
     public static final String SCREEN_NAME_USER_NEW = "/user/address/create";
 }

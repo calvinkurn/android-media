@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -110,6 +110,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     var isLeasing = true
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
+    var layoutName: String = ""
     @ProductAction
     var action: Int = ATC_AND_BUY
 
@@ -154,7 +155,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                            reference: String?,
                            customEventLabel: String?,
                            customEventAction: String?,
-                           tradeInParams: TradeInParams?): NormalCheckoutFragment {
+                           tradeInParams: TradeInParams?,
+                           layoutName: String? = ""): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
@@ -182,6 +184,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, customEventLabel)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, customEventAction)
+                    putString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, layoutName)
                 }
             }
             return fragment
@@ -411,7 +414,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun renderActionButton(productInfo: ProductInfo) {
-        if (GlobalConfig.isCustomerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
+        if (!GlobalConfig.isSellerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
                 productInfo.basic.isActive()) {
             button_buy_full.gone()
             rl_bottom_action_container.visible()
@@ -542,6 +545,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             tradeInParams = argument.getParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS)
             isOcs = argument.getBoolean(ApplinkConst.Transaction.EXTRA_OCS)
             isLeasing = argument.getBoolean(EXTRA_IS_LEASING)
+            layoutName = argument.getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, "")
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -578,10 +582,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     //do tracking
                     val intent = generateIntentLogin()
                     if (action == ATC_ONLY) {
-                        normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
+                        normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo, layoutName
+                                ?: "")
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_ATC)
                     } else if (action == ATC_AND_BUY) {
-                        normalCheckoutTracking.eventClickBuyInVariantNotLogin(productId)
+                        normalCheckoutTracking.eventClickBuyInVariantNotLogin(selectedProductInfo, layoutName
+                                ?: "")
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_BUY)
                     } else {
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_TRADE_IN)
@@ -610,7 +616,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             }
             if (!viewModel.isUserSessionActive()) {
                 //do tracking
-                normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
+                normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo, layoutName)
                 //do login
                 startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_ATC)
             } else {
@@ -812,7 +818,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         freeOngkir.isFreeOngkirActive,
                         getPageReference(),
                         getCustomEventLabel(),
-                        getCustomEventAction())
+                        getCustomEventAction(),
+                        layoutName)
             }
             activity?.run {
                 if (isOcs) {
@@ -847,7 +854,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         this, quantity,
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
-                        getString(R.string.trade_in_event_label_phone_type_phone_price_diagnostic_id, phoneType, phonePrice, deviceid))
+                        getString(R.string.trade_in_event_label_phone_type_phone_price_diagnostic_id, phoneType, phonePrice, deviceid),
+                        layoutName)
             }
             activity?.run {
                 val shipmentFormRequest = ShipmentFormRequest.BundleBuilder()
@@ -897,7 +905,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         getPageReference(),
                         freeOngkir.isFreeOngkirActive,
                         getCustomEventLabel(),
-                        getCustomEventAction()
+                        getCustomEventAction(),
+                        layoutName
                 )
             }
             onFinishAddToCart(message)
@@ -921,7 +930,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun getInsuranceTitle(): String {
-        return insuranceViewModel.cartShopsList.firstOrNull()?.shopItemsList?.firstOrNull()?.digitalProductList?.firstOrNull()?.productInfo?.title ?: ""
+        return insuranceViewModel.cartShopsList.firstOrNull()?.shopItemsList?.firstOrNull()?.digitalProductList?.firstOrNull()?.productInfo?.title
+                ?: ""
     }
 
     private fun isErrorInInsurance(): Boolean {
@@ -1163,9 +1173,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 }
                 if (viewModel.getSelectedOption() == selectedOptionViewModel.optionId) {
                     if (viewModel.isColorIdentifier) {
-                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName, productId)
+                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName, productId, selectedProductInfo, layoutName)
                     } else if (viewModel.isSizeIdentifier) {
-                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName, productId)
+                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName, productId, selectedProductInfo, layoutName)
                     }
                 }
                 variantSize++

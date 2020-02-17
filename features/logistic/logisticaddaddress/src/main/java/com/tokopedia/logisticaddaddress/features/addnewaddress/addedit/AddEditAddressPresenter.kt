@@ -5,11 +5,16 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.places.Places
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.usecase.RequestParams
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -42,11 +47,38 @@ class AddEditAddressPresenter
         }
     }
 
-    fun saveAddress(saveAddressDataModel: SaveAddressDataModel?, typeForm: String) {
-        saveAddressDataModel?.let {
-            addAddressUseCase.setParams(it)
-            addAddressUseCase.execute(RequestParams.create(), AddAddressSubscriber(view, addAddressMapper, it, typeForm))
-        }
+    fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
+        addAddressUseCase.setParams(model)
+        addAddressUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onNext(t: GraphqlResponse?) {
+                if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
+                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(eventLabel = LOGISTIC_LABEL)
+                } else {
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(eventLabel = LOGISTIC_LABEL)
+                }
+
+                val response = addAddressMapper.map(t)
+                if (response.data.isSuccess == 1) {
+                    model.id = response.data.addressId
+                    view.onSuccessAddAddress(model)
+                } else {
+                    view.showError(Throwable())
+                }
+            }
+
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable?) {
+                if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
+                    AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e?.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
+                } else {
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e?.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
+                }
+                e?.printStackTrace()
+            }
+        })
+
     }
 
     fun getZipCodes(districtId: String) {

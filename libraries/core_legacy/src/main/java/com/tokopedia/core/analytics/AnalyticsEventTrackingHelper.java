@@ -15,13 +15,6 @@ import java.util.Map;
 
 public class AnalyticsEventTrackingHelper {
 
-    public static void hamburgerIconClickCategory(Context context, String landingScreen, String optionName) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        map.put(FirebaseParams.Home.OPTION_NAME, landingScreen);
-
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, map);
-    }
     public static void hamburgerOptionClicked(Context context, String landingScreen, String optionName) {
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
@@ -38,18 +31,6 @@ public class AnalyticsEventTrackingHelper {
         sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, map);
     }
 
-    public static void hamburgerIconClickLogin(Context context, String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_ICON_CLICK_LOGIN, map);
-    }
-
-    public static void hamburgerIconClickSignup(Context context, String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_ICON_CLICK_SIGNUP, map);
-    }
-
     public static void hamburgerTokocashActivateClick(Context context) {
         Map<String, Object> map = new HashMap<>();
         sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_TOKOCASH_ACTIVATE, map);
@@ -61,28 +42,10 @@ public class AnalyticsEventTrackingHelper {
         sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_TOKOCASH, map);
     }
 
-    public static void hamburgerTokopointsClick(Context context, String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_TOKOPOINTS, map);
-    }
-
     public static void homepageSaldoClick(Context context, String landingScreen) {
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_SALDO, map);
-    }
-
-    public static void hambugerProfileClick(Context context, String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_PROFILE, map);
-    }
-
-    public static void hamburgerTokoCardClick(Context context, String landingScreen) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_TOKOCARD, map);
     }
 
     public static void sendEventToAnalytics(Context context, String eventName, Map<String, Object> data){

@@ -22,7 +22,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -632,7 +632,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
 
         val intent = RouteManager.getIntent(this,
-                if (GlobalConfig.isCustomerApp()) ApplinkConstInternalMarketplace.STORE_SETTING
+                if (!GlobalConfig.isSellerApp()) ApplinkConstInternalMarketplace.STORE_SETTING
                 else ApplinkConsInternalHome.MANAGE_SHOP_SELLERAPP_TEMP) ?: return
         startActivity(intent)
     }

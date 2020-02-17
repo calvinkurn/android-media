@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.thankyou.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.PurchaseTracking;
-import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
@@ -19,6 +18,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.PurchaseData;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.HashMap;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 

@@ -70,13 +70,21 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     public static void moveTo(Context context, String departmentId, String categoryName, boolean removeAnimation, String trackerAttribution) {
         if (context != null) {
-            Intent intent = new Intent(context, CategoryActivity.class);
-            intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-            intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
-            intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
-            MoEngageEventTracking.sendProductCategory(departmentId, categoryName);
-            if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            context.startActivity(intent);
+            if (CategoryNavActivity.isCategoryRevampEnabled(context)) {
+                Intent intent = new Intent(context, CategoryNavActivity.class);
+                intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, departmentId);
+                intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryName);
+                if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                context.startActivity(intent);
+            } else {
+                Intent intent = new Intent(context, CategoryActivity.class);
+                intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+                intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
+                intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
+                MoEngageEventTracking.sendProductCategory(departmentId, categoryName);
+                if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                context.startActivity(intent);
+            }
         }
     }
 
