@@ -57,6 +57,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private BackgroundViewModel backgroundViewModel;
     private FreezeViewModel freezeViewModel;
     private boolean isChatDisabled;
+    private String errorMessageChatDisabled;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -131,7 +132,8 @@ public class ChannelInfoViewModel implements Parcelable {
                                 SettingGroupChat settingGroupChat, OverlayViewModel overlayViewModel,
                                 BackgroundViewModel backgroundViewModel,
                                 FreezeViewModel freezeViewModel,
-                                boolean isChatDisabled) {
+                                boolean isChatDisabled,
+                                String errorMessageChatDisabled) {
         this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
@@ -165,6 +167,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.backgroundViewModel = backgroundViewModel;
         this.freezeViewModel = freezeViewModel;
         this.isChatDisabled = isChatDisabled;
+        this.errorMessageChatDisabled = errorMessageChatDisabled;
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -203,6 +206,7 @@ public class ChannelInfoViewModel implements Parcelable {
         exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
         quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
         isChatDisabled = in.readByte() != 0;
+        errorMessageChatDisabled = in.readString();
     }
 
     @Override
@@ -241,6 +245,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(exitMessage, flags);
         dest.writeTypedList(quickRepliesViewModel);
         dest.writeByte((byte) (isChatDisabled ? 1 : 0));
+        dest.writeString(errorMessageChatDisabled);
     }
 
     @Override
@@ -525,5 +530,9 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public void setChatDisabled(boolean chatDisabled) {
         isChatDisabled = chatDisabled;
+    }
+
+    public String getErrorMessageChatDisabled() {
+        return errorMessageChatDisabled;
     }
 }

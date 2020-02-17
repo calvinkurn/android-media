@@ -1249,7 +1249,7 @@ open class PlayViewStateImpl(
     override fun onChatDisabledError(message: String, action: String) {
         Toaster.make(
                 view,
-                message,
+                viewModel?.errorMessageChatDisabled?:message,
                 type = Toaster.TYPE_ERROR,
                 duration = Snackbar.LENGTH_LONG,
                 actionText = action,
