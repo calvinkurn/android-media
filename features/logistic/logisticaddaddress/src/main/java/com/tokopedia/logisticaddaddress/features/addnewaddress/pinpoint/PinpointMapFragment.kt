@@ -82,7 +82,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var continueWithLocation: Boolean? = false
-    private var isFullFlow: Boolean = true //
+    private var isFullFlow: Boolean = true
 
     private var composite = CompositeSubscription()
 
@@ -140,7 +140,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             isChangesRequested = it.getBoolean(EXTRA_IS_CHANGES_REQUESTED, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             districtId = saveAddressDataModel?.districtId
-            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true) //
+            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
         }
     }
 
@@ -373,7 +373,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         presenter.clearCacheGetDistrict()
         presenter.getDistrict(placeId)
     }
-    //start from here
+
     override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
         if (!isFullFlow) {
             if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0) {
@@ -384,7 +384,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             } else {
                 doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
             }
-            //this is normal flow
         } else doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
     }
 
