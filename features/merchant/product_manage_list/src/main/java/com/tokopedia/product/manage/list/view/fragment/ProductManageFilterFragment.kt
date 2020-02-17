@@ -15,7 +15,7 @@ import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
@@ -153,7 +153,7 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_PREORDER, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_preorder)))
         myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_ALL_SHOWCASE, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_all_showcase)))
         productManageFilterModel?.let {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.ETALASE_DYNAMIC_PICKER)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ETALASE_DYNAMIC_PICKER)
             intent.putExtra(SELECTED_ETALASE_ID, it.etalaseProductOption.toLong())
             intent.putParcelableArrayListExtra(ADDITIONAL_OPTION, myEtalaseItemViewModels)
             startActivityForResult(intent, ProductManageListConstant.REQUEST_CODE_ETALASE)
@@ -173,7 +173,7 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         val categoryViewModels = ArrayList<ProductManageCategoryViewModel>()
         categoryViewModels.add(ProductManageCategoryViewModel(getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_menu_category_all), ProductManageListConstant.FILTER_ALL_CATEGORY, false))
 
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CATEGORY_DYNAMIC_PICKER)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.CATEGORY_DYNAMIC_PICKER)
         intent.putExtra(CATEGORY_ID_INIT_SELECTED, categoryId)
         intent.putParcelableArrayListExtra(ADDITIONAL_OPTION, categoryViewModels)
         startActivityForResult(intent, ProductManageListConstant.REQUEST_CODE_CATEGORY)
