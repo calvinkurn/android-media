@@ -125,12 +125,6 @@ android {
         debug {
             storeFile file("debug.keystore")
         }
-        release {
-            storeFile file("keystore.jks")
-            storePassword "android"
-            keyAlias "key0"
-            keyPassword "android"
-        }
     }
 
 
@@ -144,7 +138,9 @@ android {
             ext.enableHansel=false
         }
         release {
-            signingConfig signingConfigs.release
+            if (devMode()) {
+                signingConfig signingConfigs.debug
+            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
