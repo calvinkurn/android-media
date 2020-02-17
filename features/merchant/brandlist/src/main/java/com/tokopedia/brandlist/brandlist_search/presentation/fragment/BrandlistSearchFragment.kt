@@ -211,12 +211,12 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                         viewModel.searchRecommendation(
                                 userId,
                                 categoryIds = "0")
-                        recyclerView?.clearOnScrollListeners()
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
                                         response, searchView?.searchText ?: "", this))
                     }
+                    recyclerView?.clearOnScrollListeners()
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
