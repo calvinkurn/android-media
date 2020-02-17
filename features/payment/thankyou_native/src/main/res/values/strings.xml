@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">ThankYou</string>
+    <string name="thank_instant_payment_successful">Selamat, pembayaranmu berhasil!</string>
+    <string name="thank_instant_payment_check_order">Pesanan akan diteruskan ke penjual. Silakan cek status pesananmu di Daftar Transaksi.</string>
+    <string name="thank_instant_payment_total_pay">Total Bayar</string>
+    <string name="thank_payment_method">Metode Pembayaran</string>
+    <string name="thank_see_transaction_list">Lihat Daftar Transaksi</string>
+    <string name="thank_activate_it">Aktifkan</string>
+    <string name="thank_next_time">Lain Kali</string>
+    <string name="thank_single_auth">Autentifikasi Tunggal</string>
+    <string name="thank_dont_ask_again_single_auth">Jangan tampilkan lagi untuk transaksi berikutnya</string>
+    <string name="thank_single_auth_cc_message">Aktifkan autentikasi tunggal untuk kemudahan transaksi kartu kredit berikutnya</string>
+</resources>

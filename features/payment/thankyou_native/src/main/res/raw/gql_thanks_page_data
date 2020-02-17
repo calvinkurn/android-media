@@ -1,0 +1,31 @@
+query ThanksPageData($paymentID : Int!,$merchant: String!){
+  thanksPageData(paymentID: $paymentID,$merchant: $merchant){
+    payment_status
+    gateway_name
+    gateway_image
+    expire_time_unix
+    expire_time_str
+    amount
+    amount_str
+    order_list{
+      store_name
+      item_list{
+        product_name
+        quantity
+        weight
+        thumbnail_product
+      }
+    }
+    additional_info{
+      account_number
+      account_dest
+      bank_name
+      payment_code
+      masked_number
+      installment_info
+      interest
+    }
+    how_to_pay
+  }
+}
+

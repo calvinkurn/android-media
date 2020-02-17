@@ -138,6 +138,7 @@ ext {
 
             commonPayment                   : ":features:payment:common_payment",
             payment                         : ":features:payment:payment",
+            thankYouNative                  : ":features:payment:thankyou_native",
 //            payment                         : ":features:payment:payment_no_op",
             paymentSetting                  : ":features:payment:payment_setting",
 //            paymentSetting                  : ":features:payment:payment_setting_no_op",
