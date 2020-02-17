@@ -918,10 +918,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onDiscussionClicked() {
         activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, viewModel.getDynamicProductInfoP1?.basic?.productID)
-            }
+            val intent = RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalGlobal.PRODUCT_TALK,
+                    viewModel.getDynamicProductInfoP1?.basic?.productID
+            )
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
         }
         viewModel.getDynamicProductInfoP1?.run {
