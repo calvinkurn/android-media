@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
@@ -48,6 +47,7 @@ import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContrac
 import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
@@ -372,17 +372,14 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetAccountList(accountList: AccountList) {
-        if (activity != null) {
-            this.viewModel.accountList = accountList
-            activity?.setResult(Activity.RESULT_OK)
+        this.viewModel.accountList = accountList
 
-            if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
-                val userDetail = accountList.userDetails[0]
-                loginToken(userDetail, accountList.msisdn)
-            } else {
-                dismissLoadingProgress()
-                adapter.setList(accountList.userDetails, accountList.msisdn)
-            }
+        if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
+            val userDetail = accountList.userDetails[0]
+            loginToken(userDetail, accountList.msisdn)
+        } else {
+            dismissLoadingProgress()
+            adapter.setList(accountList.userDetails, accountList.msisdn)
         }
     }
 

@@ -1,16 +1,13 @@
 package com.tokopedia.play.view.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -31,15 +28,16 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
  */
 class PlayViewModel @Inject constructor(
-        @ApplicationContext
-        private val applicationContext: Context,
         private val playManager: TokopediaPlayManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
@@ -81,7 +79,6 @@ class PlayViewModel @Inject constructor(
 
     private val _observableVOD = MutableLiveData<ExoPlayer>()
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
-    private val _observableChanelInfo = MutableLiveData<ChannelInfoUiModel>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
@@ -123,21 +120,43 @@ class PlayViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
-    val isLive: Boolean
-        get() = _observableChanelInfo.value?.isLive ?: false
-    val contentId: Int
-        get() = _observableChanelInfo.value?.contentId.toZeroIfNull()
-    val contentType: Int
-        get() = _observableChanelInfo.value?.contentType.toZeroIfNull()
-    val likeType: Int
-        get() = _observableChanelInfo.value?.likeType.toZeroIfNull()
+    val isLive: PlayChannelType get() {
+        val channelInfo = _observableGetChannelInfo.value
+        return if (channelInfo != null && channelInfo is Success) {
+            channelInfo.data.channelType
+        } else {
+            PlayChannelType.Unknown
+        }
+    }
+
+    val contentId: Int get() {
+        val channelInfo = _observableGetChannelInfo.value
+        return if (channelInfo != null && channelInfo is Success) {
+            channelInfo.data.contentId
+        } else {
+            0
+        }
+    }
+
+    val contentType: Int get() {
+        val channelInfo = _observableGetChannelInfo.value
+        return if (channelInfo != null && channelInfo is Success) {
+            channelInfo.data.contentType
+        } else {
+            0
+        }
+    }
+
+    val likeType: Int get() {
+        val channelInfo = _observableGetChannelInfo.value
+        return if (channelInfo != null && channelInfo is Success) {
+            channelInfo.data.likeType
+        } else {
+            0
+        }
+    }
 
     init {
-        //TODO(Remove, ONLY FOR TESTING)
-//        initMockChat()
-//        initMockFreeze()
-//        initMockBanned()
-
         _observableVOD.value = playManager.videoPlayer
         stateHandler.observeForever(stateHandlerObserver)
     }
@@ -167,21 +186,17 @@ class PlayViewModel @Inject constructor(
     }
 
     fun getChannelInfo(channelId: String) {
-        launchCatchError(block = {
+
+        var retryCount = 0
+
+        fun getChannelInfoResponse(channelId: String): Job = launchCatchError(block = {
             val channel = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
 
-            launch { getTotalLikes(channel.contentId, channel.contentType) }
+            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
-
-            // TODO("remove, for testing")
-//            channel.videoStream = VideoStream(
-//                    "vertical",
-//                    "live",
-//                    true,
-//                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             /**
              * If Live => start web socket
@@ -195,7 +210,6 @@ class PlayViewModel @Inject constructor(
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
-            _observableChanelInfo.value = completeInfoUiModel.channelInfo
             _observableTotalViews.value = completeInfoUiModel.totalView
             _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
             _observableQuickReply.value = completeInfoUiModel.quickReply
@@ -203,12 +217,15 @@ class PlayViewModel @Inject constructor(
             _observableEvent.value = mapEvent(channel)
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
-            if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
+            if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
+            else if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
+
+        getChannelInfoResponse(channelId)
     }
 
-    fun resume() {
-        checkIsFollowedShop()
+    fun resumeWithChannelId(channelId: String) {
+        getChannelInfo(channelId)
     }
 
     fun destroy() {
@@ -240,15 +257,15 @@ class PlayViewModel @Inject constructor(
             if (finalTotalLike < 0) finalTotalLike = 0
             _observableTotalLikes.value = TotalLikeUiModel(
                     finalTotalLike,
-                    finalTotalLike.toAmountString(amountStringStepArray)
+                    finalTotalLike.toAmountString(amountStringStepArray, separator = ".")
             )
         }
     }
 
-    private suspend fun getTotalLikes(contentId: Int, contentType: Int) {
+    private suspend fun getTotalLikes(contentId: Int, contentType: Int, likeType: Int) {
         try {
             val totalLike = withContext(dispatchers.io) {
-                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, likeType)
                 getTotalLikeUseCase.executeOnBackground()
             }
             _observableTotalLikes.value = mapTotalLikes(totalLike)
@@ -280,13 +297,6 @@ class PlayViewModel @Inject constructor(
             val shopInfo = getPartnerInfo(partnerId, partnerType)
             mapPartnerInfoFromShop(shopInfo)
         }
-    }
-
-    private fun checkIsFollowedShop() {
-        launchCatchError(block = {
-            val channel = _observableChanelInfo.value?.copy()
-            if (channel != null) _observablePartnerInfo.value = getPartnerInfo(channel)
-        }, onError = {})
     }
 
     private suspend fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = withContext(dispatchers.io) {
@@ -331,10 +341,9 @@ class PlayViewModel @Inject constructor(
                     }
                 }
             }
-        }, onReconnect = {
-            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
         }, onError = {
-            _observableSocketInfo.value = PlaySocketInfo.ERROR
+            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
+            startWebSocket(channelId, gcToken, settings)
         })
     }
 
@@ -361,7 +370,7 @@ class PlayViewModel @Inject constructor(
             id = channel.channelId,
             title = channel.title,
             description = channel.description,
-            isLive = channel.videoStream.isLive,
+            channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
             moderatorName = channel.moderatorName,
             partnerId = channel.partnerId,
             partnerType = channel.partnerType,
@@ -385,7 +394,7 @@ class PlayViewModel @Inject constructor(
             isActive = isActive
     )
 
-    private fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList)
+    private fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() } )
     private fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)
 
     private fun mapTotalLikes(totalLike: Int, totalLikeString: String) = TotalLikeUiModel(totalLike, totalLikeString)
@@ -440,37 +449,7 @@ class PlayViewModel @Inject constructor(
         playManager.setRepeatMode(false)
     }
 
-    //region mock
-    private fun initMockChat() {
-        launch(dispatchers.io) {
-
-            var index = 0
-            while (isActive) {
-                delay(3000)
-                _observableNewChat.postValue(
-                        mapPlayChat(
-                                PlayChat(
-                                        message = "test ${++index}",
-                                        user = PlayChat.UserData(name = "YoMamen")
-                                )
-                        )
-                )
-            }
-        }
+    companion object {
+        private const val MAX_RETRY_CHANNEL_INFO = 3
     }
-
-    private fun initMockFreeze() {
-        launch(dispatchers.main) {
-            delay(10000)
-            _observableEvent.value = EventUiModel(isBanned = false, isFreeze = true, freezeTitle = "Freeze title", freezeMessage = "freeze message", freezeButtonTitle = "Freeze Button", freezeButtonUrl = "tokopedia://play/2")
-        }
-    }
-
-    private fun initMockBanned() {
-        launch(dispatchers.main) {
-            delay(10000)
-            _observableEvent.value = EventUiModel(isBanned = true, isFreeze = false, bannedTitle = "You are banned", bannedMessage = "You are banned for spamming", bannedButtonTitle = "Back to Home")
-        }
-    }
-    //endregion
 }

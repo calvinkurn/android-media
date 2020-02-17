@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profile.R

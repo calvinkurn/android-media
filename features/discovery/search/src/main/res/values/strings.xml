@@ -87,4 +87,11 @@
     <string name="banned_products_empty_search_go_to_browser_button">Cari di Browser</string>
     <string name="banned_products_ticker_title">Hasil pencarian terbatas</string>
 
+    <string name="inspiration_carousel_title">Pilih sesuai budget-mu</string>
+    <string name="inspiration_carousel_option_title">Rp20,08 jt - Rp21,05 jt</string>
+    <string name="inspiration_carousel_option_view_all">Lihat semua</string>
+    <string name="inspiration_carousel_product_name">Xiaomi Note 8 4GB/64GB [4GB-64GB] Garansi TAM Original Quality</string>
+    <string name="inspiration_carousel_product_price">Rp50.000.000</string>
+    <string name="inspiration_carousel_review_count">(60)</string>
+
 </resources>

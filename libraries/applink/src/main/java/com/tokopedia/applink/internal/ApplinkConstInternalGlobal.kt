@@ -227,6 +227,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
 
+    // ChangePPasswordActivity
+    // tokopedia-android-internal://global/change-password
+    @JvmField
+    val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
+
     // ChangePinActivity
     // tokopedia-android-internal://global/change-pin
     @JvmField
@@ -365,8 +370,16 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    /**
+     * LogoutActivity
+     * @applink : tokopedia-android-internal://global/logout
+     * @param   : [PARAM_IS_RETURN_HOME]
+     * default is 'true', set 'false' if you wan get activity result
+     **/
     @JvmField
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
+    @JvmField
+    val PARAM_IS_RETURN_HOME = "return_to_home"
 
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting

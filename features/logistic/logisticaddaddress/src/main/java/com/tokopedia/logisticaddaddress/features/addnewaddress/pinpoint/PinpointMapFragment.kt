@@ -38,13 +38,13 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAd
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticaddaddress.utils.rxPinPoint
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
@@ -401,7 +401,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
     }
 
-    override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel, errMsg: String) {
+    override fun onSuccessAutofill(autofillDataUiModel: Data, errMsg: String) {
         if (!isFullFlow) {
             if (errMsg.isNotEmpty() || autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0) {
                 showNotFoundLocation(errMsg)
@@ -415,11 +415,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.VISIBLE
+        tv_address_getdistrict?.visibility = View.GONE
 
         var errorMessage = errMsg
         if (errorMessage.isEmpty()) errorMessage = getString(R.string.not_found_location)
         invalid_title?.text = errorMessage
-        invalid_desc?.visibility = View.GONE
+        invalid_desc?.text = getString(R.string.not_found_location_desc)
         invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
         invalid_button?.visibility = View.GONE
 
@@ -428,7 +429,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    private fun doAfterSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
+    private fun doAfterSuccessAutofill(autofillDataUiModel: Data) {
         if (isShowingAutocomplete) {
             handler.postDelayed({
                 updateAfterOnSuccessAutofill(autofillDataUiModel)
@@ -438,7 +439,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    private fun updateAfterOnSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
+    private fun updateAfterOnSuccessAutofill(autofillDataUiModel: Data) {
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE
@@ -553,6 +554,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
 
         tv_address_getdistrict?.apply {
+            visibility = View.VISIBLE
             text = saveAddressDataModel.formattedAddress
             setOnClickListener {
                 if(isFullFlow) AddNewAddressAnalytics.eventClickFieldCariLokasi(eventLabel = LOGISTIC_LABEL)
@@ -581,6 +583,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun setResultPinpoint() {
+        saveAddressDataModel?.editDetailAddress = et_detail_address?.text.toString()
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)

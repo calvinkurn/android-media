@@ -73,6 +73,18 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     override fun onStart() {
         super.onStart()
         shopCreationAnalytics.trackScreen(screenName)
+        textFieldName.textFieldInput.let {
+            it.isFocusableInTouchMode = true
+            it.isFocusable = true
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        textFieldName.textFieldInput.let {
+            it.isFocusableInTouchMode = false
+            it.isFocusable = false
+        }
     }
 
     override fun getToolbar(): Toolbar = toolbarShopCreation

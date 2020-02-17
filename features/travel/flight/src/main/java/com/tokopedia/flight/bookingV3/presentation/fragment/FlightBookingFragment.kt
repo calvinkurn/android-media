@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -931,7 +932,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToOtpPage() {
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.FLIGHT_PHONE_VERIFICATION), REQUEST_CODE_OTP)
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE), REQUEST_CODE_OTP)
     }
 
     private fun showLoadingDialog() {

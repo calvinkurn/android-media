@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorResponse;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 
 import dagger.Module;
 import dagger.Provides;

@@ -11,11 +11,8 @@ import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,7 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -39,15 +36,16 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingOldShopSearchProduct
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_LOCATION_PLACEHOLDER
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_NAME_PLACEHOLDER
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
@@ -118,12 +116,30 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var shopPageTrackingShopSearchProduct: ShopPageTrackingShopSearchProduct
+    lateinit var shopPageTrackingShopSearchProduct: ShopPageTrackingOldShopSearchProduct
 
     @Inject
-    lateinit var userSession : UserSessionInterface
+    lateinit var newShopPageTrackingShopSearchProduct: ShopPageTrackingShopSearchProduct
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val shopId: String
+        get() = shopInfo?.shopCore?.shopID ?: ""
+    private val isOfficial: Boolean
+        get() = shopInfo?.goldOS?.isOfficial == 1
+    private val isGold: Boolean
+        get() = shopInfo?.goldOS?.isGold == 1
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(shopId, isOfficial, isGold)
+    }
 
     private lateinit var viewModel: ShopSearchProductViewModel
+
+    private val isMyShop: Boolean
+        get() = if (::viewModel.isInitialized) {
+            shopInfo?.shopCore?.shopID?.let { viewModel.isMyShop(it) } ?: false
+        } else false
 
     private val remoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -204,11 +220,13 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onItemClicked(dataModel: ShopSearchProductDataModel) {
         when (dataModel.type) {
             ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
-                        SCREEN_SHOP_PAGE,
-                        searchQuery,
-                        String.format(SRP_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
-                )
+                if (!isNewShopPageEnabled()) {
+                    shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
+                            SCREEN_SHOP_PAGE,
+                            searchQuery,
+                            String.format(SRP_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
+                    )
+                }
                 redirectToSearchResultPage()
             }
             ShopSearchProductDataModel.Type.TYPE_PDP -> {
@@ -221,18 +239,20 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
-                        SCREEN_SHOP_PAGE,
-                        searchQuery,
-                        String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
-                )
+                if (!isNewShopPageEnabled()) {
+                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
+                            SCREEN_SHOP_PAGE,
+                            searchQuery,
+                            String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
+                    )
+                }
                 redirectToShopProductListPage()
             }
         }
         activity?.finish()
     }
 
-    private fun isNewShopPageEnabled(): Boolean{
+    private fun isNewShopPageEnabled(): Boolean {
         val shopPageConfig = ShopPageConfig(context)
         return shopPageConfig.isNewShopPageEnabled()
     }
@@ -297,9 +317,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 goToCart()
             }
             REQUEST_CODE_SORT -> {
-                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME)
-                sortName?.let {
-                    sortValue = sortName
+                val sortValue = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE)
+                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                sortValue?.let {
+                    newShopPageTrackingShopSearchProduct.clickSortBy(
+                            isMyShop,
+                            sortValue,
+                            customDimensionShopPage
+                    )
+                    this.sortValue = sortValue
                     searchQuery = editTextSearchProduct.text.toString()
                     redirectToShopProductListPage()
                     activity?.finish()
@@ -535,6 +561,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 get(ShopInfo.TAG, ShopInfo::class.java)
             }
         }
+        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
     }
 
     private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
@@ -585,6 +612,10 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun onClickSort() {
+        redirectToShopProductSortPage()
+    }
+
+    private fun redirectToShopProductSortPage() {
         val intent = ShopProductSortActivity.createIntent(activity, sortValue)
         startActivityForResult(intent, REQUEST_CODE_SORT)
     }

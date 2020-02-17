@@ -60,7 +60,6 @@ include 'features:discovery:similarsearch'
 include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
-include "features:discovery:home_page_banner"
 //include "features:discovery:home_no_op"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"

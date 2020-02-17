@@ -9,9 +9,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class ShopOpenRevampViewModel @Inject constructor(
         private val validateDomainShopNameUseCase: ShopOpenRevampValidateDomainShopNameUseCase,
@@ -61,10 +63,24 @@ class ShopOpenRevampViewModel @Inject constructor(
         get() = _checkShopNameResponse
 
 
+    private var currentShopName = ""
+    private var currentShopDomain = ""
+
     fun checkShopName(shopName: String) {
-        validateDomainShopNameUseCase.cancelJobs()
+        if (currentShopName == shopName) {
+            return
+        }
+
+        currentShopName = shopName
+
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
+                delay(700)
+
+                if (currentShopName != shopName) {
+                    return@withContext
+                }
+
                 validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
                 val validateShopNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopNameResult.let {
@@ -200,9 +216,20 @@ class ShopOpenRevampViewModel @Inject constructor(
     }
 
     fun checkDomainName(domain: String) {
-        validateDomainShopNameUseCase.cancelJobs()
+        if (currentShopDomain == domain) {
+            return
+        }
+
+        currentShopDomain = domain
+
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
+                delay(700)
+
+                if (currentShopDomain != domain) {
+                    return@withContext
+                }
+
                 validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domain)
                 val validateShopDomainNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopDomainNameResult.let {

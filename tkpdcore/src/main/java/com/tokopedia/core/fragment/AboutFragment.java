@@ -17,7 +17,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core2.R;
 
 /**

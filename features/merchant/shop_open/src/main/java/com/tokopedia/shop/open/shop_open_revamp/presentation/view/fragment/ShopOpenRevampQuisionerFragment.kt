@@ -2,13 +2,16 @@ package com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +35,7 @@ import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInter
 import com.tokopedia.shop.open.shop_open_revamp.listener.SurveyListener
 import com.tokopedia.shop.open.shop_open_revamp.presentation.adapter.ShopOpenRevampQuisionerAdapter
 import com.tokopedia.shop.open.shop_open_revamp.presentation.viewmodel.ShopOpenRevampViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -57,6 +61,15 @@ class ShopOpenRevampQuisionerFragment :
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: ShopOpenRevampQuisionerAdapter? = null
     private var isNeedLocation = false
+    private lateinit var loading: LoaderUnify
+    private lateinit var toolbar: Toolbar
+
+    private var shopId = 0
+    private var postCode = ""
+    private var courierOrigin = 0
+    private var addrStreet = ""
+    private var latitude = ""
+    private var longitude = ""
 
     companion object {
         const val THREE_FRAGMENT_TAG = "three"
@@ -72,6 +85,8 @@ class ShopOpenRevampQuisionerFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_quisioner, container, false)
+        toolbar = view.findViewById(R.id.toolbar)
+        loading = view.findViewById(R.id.loading)
         btnNext = view.findViewById(R.id.next_button_quisioner_page)
         btnBack = view.findViewById(R.id.btn_back_quisioner_page)
         btnSkip = view.findViewById(R.id.btn_skip_quisioner_page)
@@ -88,6 +103,7 @@ class ShopOpenRevampQuisionerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPreconditions()
+        showLoader()
         loadDataSurvey()
         observeSurveyData()
         observeSendSurveyResult()
@@ -102,8 +118,7 @@ class ShopOpenRevampQuisionerFragment :
         }
 
         btnNext.setOnClickListener {
-            val dataSurvey = questionsAndAnswersId
-            viewModel.sendInputSurveyData(dataSurvey)
+            viewModel.sendInputSurveyData(questionsAndAnswersId)
         }
     }
 
@@ -157,17 +172,25 @@ class ShopOpenRevampQuisionerFragment :
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        closeKeyboard()
+    }
+
     private fun observeSurveyData() {
         viewModel.getSurveyDataResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    hideLoader()
                     val questions = it.data.getSurveyData.result.questions
                     if (questions.size > 0) {
                         adapter?.updateDataQuestionsList(questions)
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable)
+                    showErrorNetwork(it.throwable) {
+                        loadDataSurvey()
+                    }
                 }
             }
         })
@@ -178,12 +201,18 @@ class ShopOpenRevampQuisionerFragment :
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.sendSurveyData.success
+                    val message = it.data.sendSurveyData.message
                     if (isSuccess) {
+                        showLoader()
                         gotoPickLocation()
+                    } else {
+                        showErrorResponse(message)
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable)
+                    showErrorNetwork(it.throwable) {
+                        viewModel.sendInputSurveyData(questionsAndAnswersId)
+                    }
                 }
             }
         })
@@ -195,11 +224,20 @@ class ShopOpenRevampQuisionerFragment :
                 is Success -> {
                     val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
                     if (isSuccess) {
+                        showLoader()
                         fragmentNavigationInterface.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
+                    } else {
+                        showLoader()
+                        gotoPickLocation()
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable)
+                    showErrorNetwork(it.throwable) {
+                        if (shopId != 0 && postCode != "" && courierOrigin != 0
+                                && addrStreet != "" && latitude != "" && longitude != "") {
+                            saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+                        }
+                    }
                 }
             }
         })
@@ -212,12 +250,22 @@ class ShopOpenRevampQuisionerFragment :
         startActivityForResult(intent, REQUEST_CODE_PINPOINT)
     }
 
-    private fun showErrorNetwork(t: Throwable) {
+    private fun showErrorResponse(message: String) {
         view?.let {
-            Toaster.showError(
+            Toaster.showError(it, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun showErrorNetwork(t: Throwable, retry: () -> Unit) {
+        view?.let {
+            Toaster.showErrorWithAction(
                     it,
                     ErrorHandler.getErrorMessage(context, t),
-                    Snackbar.LENGTH_LONG
+                    Snackbar.LENGTH_LONG,
+                    getString(R.string.open_shop_revamp_retry),
+                    View.OnClickListener {
+                        retry.invoke()
+                    }
             )
         }
     }
@@ -255,34 +303,62 @@ class ShopOpenRevampQuisionerFragment :
         }
 
         if (isNeedLocation) {
+            showLoader()
             gotoPickLocation()
+        }
+    }
+
+    private fun showLoader() {
+        toolbar.visibility =  View.INVISIBLE
+        recyclerView?.visibility = View.INVISIBLE
+        btnNext.visibility = View.INVISIBLE
+        loading.visibility = View.VISIBLE
+    }
+
+    private fun hideLoader() {
+        toolbar.visibility =  View.VISIBLE
+        recyclerView?.visibility = View.VISIBLE
+        btnNext.visibility = View.VISIBLE
+        loading.visibility = View.INVISIBLE
+    }
+
+    private fun saveShipmentLocation(shopId: Int, postalCode: String, courierOrigin: Int,
+                                     addrStreet: String, lat: String, long: String) {
+        viewModel.saveShippingLocation(shopId, postalCode, courierOrigin, addrStreet, lat, long)
+    }
+
+    private fun closeKeyboard() {
+        activity?.let {
+            val inputMethodManager = context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(it.currentFocus?.windowToken, 0)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         when (requestCode) {
             REQUEST_CODE_PINPOINT -> if (resultCode == Activity.RESULT_OK) {
+                showLoader()
                 data?.let {
                     val saveAddressDataModel = it.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
                     val latitudeString = saveAddressDataModel.latitude.toString()
                     val longitudeString = saveAddressDataModel.longitude.toString()
-                    val shopId = if (userSession.shopId.isNotEmpty()) userSession.shopId.toInt() else 0 // Get shopId from create Shop
+                    val _shopId = if (userSession.shopId.isNotEmpty()) userSession.shopId.toInt() else 0 // Get shopId from create Shop
 
-                    if (!shopId.equals(0) &&
+                    if (!_shopId.equals(0) &&
                             saveAddressDataModel.postalCode.isNotEmpty() &&
                             latitudeString.isNotEmpty() &&
                             longitudeString.isNotEmpty() &&
                             saveAddressDataModel.districtId != 0 &&
                             saveAddressDataModel.formattedAddress.isNotEmpty()) {
-                        viewModel.saveShippingLocation(
-                                shopId,
-                                saveAddressDataModel.postalCode,
-                                saveAddressDataModel.districtId.toInt(),
-                                saveAddressDataModel.formattedAddress,
-                                latitudeString,
-                                longitudeString)
+
+                        shopId = _shopId
+                        postCode = saveAddressDataModel.postalCode
+                        courierOrigin = saveAddressDataModel.districtId.toInt()
+                        addrStreet = saveAddressDataModel.formattedAddress
+                        latitude = latitudeString
+                        longitude = longitudeString
+                        saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {

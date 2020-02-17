@@ -24,7 +24,7 @@ import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
