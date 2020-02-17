@@ -113,7 +113,7 @@ class RecommendationMPAdapter(private val recommendationItems: List<Recommendati
         }
 
         fun renderSubtitle(element: RecommendationsItem) {
-            if (element.description.isNullOrEmpty()) {
+            if (element.clientNumber.isNullOrEmpty()) {
                 subtitle.hide()
             } else {
                 subtitle.show()
