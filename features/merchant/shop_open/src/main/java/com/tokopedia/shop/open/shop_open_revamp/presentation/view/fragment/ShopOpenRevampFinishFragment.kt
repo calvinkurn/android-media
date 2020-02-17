@@ -46,26 +46,27 @@ class ShopOpenRevampFinishFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupAnimation(view)
 
         val shopId = userSession.shopId
+        setupAnimation(view, shopId)
         val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, userSession.name)
         txt_greeting.text = greetingText
-
-        handler.postDelayed({
-            activity?.finish()
-            RouteManager.route(context, ApplinkConst.SHOP, shopId)
-        }, 3000)
     }
 
-    private fun setupAnimation(view: View) {
+    private fun setupAnimation(view: View, shopId: String) {
         context?.let {
             val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, LOTTIE_ANIMATION)
 
             lottieCompositionLottieTask.addListener { result ->
+                lottieAnimationView.setComposition(result)
                 lottieAnimationView.visibility = View.VISIBLE
                 lottieAnimationView.playAnimation()
                 lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+
+                handler.postDelayed({
+                    activity?.finish()
+                    RouteManager.route(context, ApplinkConst.SHOP, shopId)
+                }, 3000)
             }
         }
     }
