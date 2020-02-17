@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
@@ -51,6 +52,7 @@ object CartListPresenterRecentViewTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("get recent view test") {
@@ -63,7 +65,7 @@ object CartListPresenterRecentViewTest : Spek({
                     clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                     getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase,
-                    seamlessLoginUsecase, TestSchedulers
+                    seamlessLoginUsecase, updateCartCounterUseCase, TestSchedulers
             )
         }
 
