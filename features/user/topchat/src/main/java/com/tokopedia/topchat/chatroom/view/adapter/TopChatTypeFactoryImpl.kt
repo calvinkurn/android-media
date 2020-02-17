@@ -29,7 +29,7 @@ import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 open class TopChatTypeFactoryImpl(
         imageAnnouncementListener: ImageAnnouncementListener,
@@ -66,7 +66,7 @@ open class TopChatTypeFactoryImpl(
         return ImageDualAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(voucherViewModel: TopChatVoucherViewModel): Int {
+    override fun type(voucherViewModel: TopChatVoucherUiModel): Int {
         return TopChatVoucherViewHolder.LAYOUT
     }
 

@@ -8,7 +8,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 /**
  * Created by Steven on 18/03/19.
  */
-class TopChatVoucherViewModel
+class TopChatVoucherUiModel
 /**
  * Constructor for WebSocketResponse / API Response
  *

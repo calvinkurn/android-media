@@ -11,7 +11,7 @@ import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -48,7 +48,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherViewModel(
+        return TopChatVoucherUiModel(
                 item.msgId.toString(),
                 item.fromUid,
                 item.from,

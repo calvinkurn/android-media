@@ -14,7 +14,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -55,7 +55,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherViewModel(
+        return TopChatVoucherUiModel(
                 item.msgId.toString(),
                 item.senderId.toString(),
                 item.senderName,

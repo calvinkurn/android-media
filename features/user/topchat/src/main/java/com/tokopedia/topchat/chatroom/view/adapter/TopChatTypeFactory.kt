@@ -7,13 +7,13 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 interface TopChatTypeFactory {
 
     fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementViewModel): Int
 
-    fun type(voucherViewModel: TopChatVoucherViewModel): Int
+    fun type(voucherViewModel: TopChatVoucherUiModel): Int
 
     fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int
 
