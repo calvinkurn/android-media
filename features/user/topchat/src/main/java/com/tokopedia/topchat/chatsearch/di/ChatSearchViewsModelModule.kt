@@ -11,7 +11,7 @@ import dagger.multibindings.IntoMap
 
 @Module
 @ChatSearchScope
-abstract class ChatSearchViewModelModule {
+abstract class ChatSearchViewsModelModule {
 
     @Binds
     @IntoMap
