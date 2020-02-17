@@ -109,6 +109,8 @@ class LogManager(val application: Application) : CoroutineScope {
                     }
                 }, {
                     it.printStackTrace()
+                }, {
+                    return@globalScopeLaunch
                 })
             }
         }
