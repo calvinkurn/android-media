@@ -2,10 +2,9 @@
     <string name="liveness_app_name">liveness</string>
     <string name="liveness_title" translatable="false">Verifikasi Wajah</string>
     <string name="liveness_none"></string>
-    <string name="title_liveness_detection" translatable="false">Liveness Detection</string>
     <string name="liveness_blink">Silakan berkedip</string>
     <string name="liveness_mouse">Buka dan tutup mulut</string>
-    <string name="liveness_pos_raw">Tengok ke kanan atau ke kiri</string><!--yaw摇头-->
+    <string name="liveness_pos_raw">Tengok ke kanan atau ke kiri</string>
     <string name="liveness_hold_phone_vertical">Please hold the phone upright </string>
     <string name="liveness_weak_light">Find a brighter place</string>
     <string name="liveness_too_light">Find a darker place</string>

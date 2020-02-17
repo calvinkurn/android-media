@@ -232,8 +232,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         title.setText(R.string.kyc_verified_title);
         text.setText(R.string.kyc_verified_text);
         button.setText(R.string.kyc_verified_button);
-        button.setButtonVariant(UnifyButton.Variant.GHOST);
-        button.setButtonType(UnifyButton.Type.ALTERNATE);
+        button.setButtonVariant(UnifyButton.Variant.FILLED);
+        button.setButtonType(UnifyButton.Type.MAIN);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(onGoToTermsButton());
         analytics.eventViewSuccessPage();

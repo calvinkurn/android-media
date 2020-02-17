@@ -116,7 +116,7 @@ class DetectionFrame(private val yuvData: ByteArray, private val mCameraAngle: I
     }
 
     companion object {
-        private val EXPECT_SIZE = 300
+        private val EXPECT_SIZE = 1024
     }
 
 }

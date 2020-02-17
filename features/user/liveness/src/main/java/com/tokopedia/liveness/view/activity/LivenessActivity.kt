@@ -10,6 +10,7 @@ import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.liveness.view.fragment.LivenessFragment
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 
@@ -144,6 +146,11 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
                 onPermissionRefused()
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     override fun onBackPressed() {

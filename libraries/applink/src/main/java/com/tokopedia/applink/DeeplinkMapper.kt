@@ -190,7 +190,6 @@ object DeeplinkMapper {
             ApplinkConst.PRODUCT_TALK -> return ApplinkConstInternalGlobal.PRODUCT_TALK
             ApplinkConst.TALK_DETAIL -> return ApplinkConstInternalGlobal.DETAIL_TALK
             ApplinkConst.SHOP_TALK -> return ApplinkConstInternalGlobal.SHOP_TALK
-            ApplinkConst.LIVENESS_DETECTION -> return ApplinkConstInternalGlobal.LIVENESS_DETECTION
             else -> ""
         }
         if (mappedDeeplink.isNotEmpty()) {

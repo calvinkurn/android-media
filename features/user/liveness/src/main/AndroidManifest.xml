@@ -12,7 +12,6 @@
 
         <activity
             android:name="com.tokopedia.liveness.view.activity.LivenessActivity"
-            android:label="@string/title_liveness_detection"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
