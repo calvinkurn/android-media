@@ -6,7 +6,7 @@ import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -362,7 +362,7 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void invoiceAttachmentSent(@NotNull InvoicePreviewViewModel invoice) {
+    public void invoiceAttachmentSent(@NotNull InvoicePreviewUiModel invoice) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, Name.CHAT_DETAIL,

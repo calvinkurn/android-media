@@ -47,7 +47,7 @@ import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
@@ -573,14 +573,14 @@ class TopChatRoomPresenter @Inject constructor(
         val status = view.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
         val totalPriceAmount = view.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
 
-        val invoiceViewModel = InvoicePreviewViewModel(
-                id.toIntOrNull() ?: InvoicePreviewViewModel.INVALID_ID,
+        val invoiceViewModel = InvoicePreviewUiModel(
+                id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
                 invoiceCode,
                 productName,
                 date,
                 imageUrl,
                 invoiceUrl,
-                statusId.toIntOrNull() ?: InvoicePreviewViewModel.INVALID_ID,
+                statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
                 status,
                 totalPriceAmount
         )

@@ -65,7 +65,7 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
@@ -851,7 +851,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
-        if (attachment is InvoicePreviewViewModel) {
+        if (attachment is InvoicePreviewUiModel) {
             analytics.invoiceAttachmentSent(attachment)
         } else if (attachment is SendableProductPreview) {
             analytics.trackSendProductAttachment()
