@@ -7,7 +7,6 @@ import android.content.IntentSender
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.common.api.ApiException
@@ -48,7 +47,6 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         arguments?.let {
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
         }
-        Log.d("FLOWINI", isFullFlow.toString())
     }
 
     override fun state(): BottomSheetsState {
@@ -63,7 +61,6 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         bottomSheetView = view
         btnActivateLocation = view.findViewById(R.id.btn_activate_location)
         btnActivateLocation.setOnClickListener {
-            Log.d("FLOWINI2", isFullFlow.toString())
             if(isFullFlow) {
                 AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = LOGISTIC_LABEL)
             }
@@ -85,7 +82,6 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            Log.d("FLOWINI3", isFullFlow.toString())
             if(isFullFlow) {
                 AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = LOGISTIC_LABEL)
             }
