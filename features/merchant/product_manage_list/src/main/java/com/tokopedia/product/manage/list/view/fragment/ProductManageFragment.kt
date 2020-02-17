@@ -173,11 +173,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (GlobalConfig.isSellerApp()) {
-            inflater.inflate(R.menu.menu_product_manage, menu)
-        } else {
-            inflater.inflate(R.menu.menu_product_manage_dark, menu)
-        }
+        inflater.inflate(R.menu.menu_product_manage_dark, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
