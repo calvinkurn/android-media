@@ -9,11 +9,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.EventSeatLayoutResonse;
+import com.tokopedia.events.data.source.EventException;
 import com.tokopedia.events.domain.GetEventSeatLayoutUseCase;
 import com.tokopedia.events.domain.model.request.verify.ValidateShow;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
@@ -64,6 +66,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
     private List<LocationDateModel> locationDateModels;
     private EventBookTicketContract.EventBookTicketView mView;
     private EventsAnalytics eventsAnalytics;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
 
     public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase, EventsAnalytics eventsAnalytics) {
         this.getSeatLayoutUseCase = seatLayoutUseCase;
@@ -99,11 +102,10 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
     }
 
     private void getTicketDetails() {
-        dataModel = mView.
-                getActivity().
-                getIntent().
-                getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
-        hasSeatLayout = mView.getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
+        String id = mView.getActivity().getIntent().getStringExtra(EventsDetailsPresenter.EVENT_BOOK_TICKET_ID);
+        saveInstanceCacheManager = new SaveInstanceCacheManager(mView.getActivity(), id);
+        dataModel = saveInstanceCacheManager.get(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL, EventsDetailsViewModel.class);
+        hasSeatLayout = saveInstanceCacheManager.get(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, Integer.class);
         generateLocationDateModels();
         if (dataModel != null) {
             mView.renderFromDetails(dataModel);
@@ -129,26 +131,35 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
             @Override
             public void onError(Throwable throwable) {
                 Log.d("BookTicketPresenter", "onError");
+                if (throwable instanceof EventException) {
+                    mView.showSnackBar(throwable.getMessage(), false);
+
+                } else {
+
+                    NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                            mView.getRootView(), () -> validateSelection());
+                }
                 throwable.printStackTrace();
                 mView.hideProgressBar();
-                NetworkErrorHelper.showEmptyState(mView.getActivity(),
-                        mView.getRootView(), () -> validateSelection());
             }
 
             @Override
             public void onNext(ValidateResponse objectResponse) {
+                saveInstanceCacheManager = new SaveInstanceCacheManager(mView.getActivity(),true);
                 if (objectResponse.getStatus() != 400) {
                     if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null && seatLayoutViewModel.getLayoutDetail() != null && seatLayoutViewModel.getLayoutDetail().size() > 0) {
                         Intent reviewTicketIntent = new Intent(mView.getActivity(), SeatSelectionActivity.class);
-                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
-                        reviewTicketIntent.putExtra("event_detail", dataModel);
-                        reviewTicketIntent.putExtra("EventTitle", eventTitle);
+                        saveInstanceCacheManager.put(Utils.Constants.EXTRA_PACKAGEVIEWMODEL,selectedPackageViewModel,7);
+                        saveInstanceCacheManager.put(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL,seatLayoutViewModel,7);
+                        saveInstanceCacheManager.put("event_detail",dataModel,7);
+                        saveInstanceCacheManager.put("EventTitle", eventTitle,7);
+                        reviewTicketIntent.putExtra(Utils.Constants.SEAT_SELECT_ID, saveInstanceCacheManager.getId());
                         mView.navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     } else {
                         Intent reviewTicketIntent = new Intent(mView.getActivity(), ReviewTicketActivity.class);
-                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                        reviewTicketIntent.putExtra("event_detail", dataModel);
+                        saveInstanceCacheManager.put(Utils.Constants.EXTRA_PACKAGEVIEWMODEL,selectedPackageViewModel,7);
+                        saveInstanceCacheManager.put("event_detail",dataModel,7);
+                        reviewTicketIntent.putExtra(Utils.Constants.REVIEW_ACTIVITY_ID, saveInstanceCacheManager.getId());
                         mView.navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     }
                 } else {

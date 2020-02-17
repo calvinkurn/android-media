@@ -96,7 +96,6 @@ public interface CommonConstant {
         String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
         String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
         String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
-        String LEADERBOARD = WEB_DOMAIN_MOBILE + "tokopoints/leaderboard";
         String INFO_EXPIRED_POINTS = WEB_DOMAIN_MOBILE + "tokopoints/info/#expired-points";
         String DETAIL = WEB_DOMAIN_MOBILE + "tokopoints/detail/";
     }
@@ -120,5 +119,14 @@ public interface CommonConstant {
         String COLUMN_3_1_BY_1 = "3_column_1:1";
         String COLUMN_2_1_BY_1 = "2_column_1:1";
         String COLUMN_2_3_BY_4 = "2_column_3:4";
+    }
+
+    interface GQLQuery {
+        String TP_GQL_CURRENT_POINTS = "tp_gql_current_points";
+        String TP_GQL_HISTORY_POINTS = "tp_gql_point_history";
+        String TP_GQL_TOKOPOINT_APPLY_COUPON = "tp_gql_tokopoint_apply_coupon";
+        String TP_GQL_COUPON_DETAIL = "tp_gql_coupon_detail";
+        String TP_GQL_REFETCH_REAL_CODE = "tp_gql_refetch_real_code";
+        String TP_GQL_SWIPE_COUPON = "tp_gql_swipe_coupon";
     }
 }

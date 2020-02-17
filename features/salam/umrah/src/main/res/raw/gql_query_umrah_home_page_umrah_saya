@@ -1,0 +1,11 @@
+query umrahWidgetUmrahSayaList() {
+  umrahWidgetUmrahSayaList(){
+    subHeader
+    header
+    nextActionText
+    mainButton{
+      text
+      link
+    }
+  }
+}

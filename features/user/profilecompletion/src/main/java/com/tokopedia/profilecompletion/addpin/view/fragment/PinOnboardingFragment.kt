@@ -44,7 +44,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
 
-    private var isFromLogin: Boolean = false
+    private var isSkipOtp: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -98,9 +98,9 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     }
 
     private fun initVar() {
-        val isFromLogin = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, false)
-        if(isFromLogin != null)
-            this.isFromLogin = isFromLogin
+        val isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false)
+        if(isSkipOtp != null)
+            this.isSkipOtp = isSkipOtp
     }
 
     private fun onSuccessGetStatusPin(statusPinData: StatusPinData){
@@ -130,7 +130,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
     private fun goToAddPin(){
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, isFromLogin)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, isSkipOtp)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
         activity?.finish()

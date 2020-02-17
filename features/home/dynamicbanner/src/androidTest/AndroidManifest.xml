@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:compileSdkVersion="28" android:compileSdkVersionCodename="9" package="com.tokopedia.home.account.test">
+    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="28"/>
+    <instrumentation android:label="Tests for com.tokopedia.home.account.test" android:name="com.tokopedia.home.application.MyRunner" android:targetPackage="com.tokopedia.home.account.test" android:handleProfiling="false" android:functionalTest="false"/>
+    <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signature"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="com.tokopedia.home.account.test.permission.C2D_MESSAGE"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false"/>
+    <uses-feature android:name="android.hardware.telephony" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="22"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <permission android:name="com.tokopedia.home.account.test.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
+    <uses-feature android:name="android.hardware.microphone" android:required="false"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-feature android:glEsVersion="20000" android:required="true"/>
+    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE"/>
+    <application android:label="@string/app_name" android:debuggable="true" android:allowBackup="true" android:supportsRtl="true" android:appComponentFactory="androidx.core.app.CoreComponentFactory">
+        <uses-library android:name="android.test.runner"/>
+        <meta-data android:name="firebase_performance_collection_enabled" android:value="false"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/label_menu_setting" android:name="com.tokopedia.home.account.presentation.activity.GeneralSettingActivity" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/screentitle_account_setting" android:name="com.tokopedia.home.account.presentation.activity.AccountSettingActivity" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/screentitle_store_setting" android:name="com.tokopedia.home.account.presentation.activity.StoreSettingActivity" android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="@string/internal_scheme" android:host="@string/host_marketplace" android:path="@string/path_store_setting"/>
+            </intent-filter>
+        </activity>
+        <activity android:theme="@style/Theme.White" android:label="@string/title_app_advanced_setting" android:name="com.tokopedia.home.account.presentation.activity.AdvancedSettingActivity" android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="@string/internal_scheme" android:host="@string/host_global" android:path="@string/path_advanced_setting"/>
+            </intent-filter>
+        </activity>
+        <activity android:theme="@style/Theme.White" android:label="@string/screentitle_tkpd_pay_setting" android:name="com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/app_name" android:name="com.tokopedia.home.account.presentation.activity.SettingWebViewActivity" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/title_favorite_page" android:name="com.tokopedia.home.account.presentation.activity.FavoriteShopsActivity" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:name="com.tokopedia.home.account.presentation.activity.PushNotificationCheckerActivity" android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="@string/internal_scheme" android:host="@string/host_global" android:path="@string/path_push_notification_troubleshooter"/>
+            </intent-filter>
+        </activity>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"/>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <service android:name="com.tokopedia.core.gcm.intentservices.PushNotificationIntentService" android:exported="false"/>
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService"/>
+        <service android:name="com.tokopedia.core.gcm.BaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name="com.tokopedia.core.gcm.FCMInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <receiver android:name="com.tokopedia.core.share.ShareBroadcastReceiver"/>
+        <activity android:label="@string/app_name" android:name="com.google.android.gms.tagmanager.PreviewActivity" android:screenOrientation="portrait" android:noHistory="true">
+            <intent-filter>
+                <data android:scheme="tagmanager.c.com.tokopedia.tkpd"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
+        <activity android:theme="@style/Theme.AppCompat.Light.NoActionBar" android:label="Analytics Debugger" android:name="com.tokopedia.analytics.debugger.p003ui.activity.AnalyticsDebuggerActivity" android:exported="true" android:taskAffinity="com.tokopedia.analytics.task" android:launchMode="singleTask"/>
+        <activity android:theme="@style/Theme.Green" android:name="com.tokopedia.analytics.debugger.p003ui.activity.AnalyticsDebuggerDetailActivity"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/title_activity_forbidden" android:name="com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustUnspecified|stateUnchanged|stateHidden|stateAlwaysHidden|adjustPan"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/app_name" android:name="com.tokopedia.topads.common.TopAdsWebViewActivity"/>
+        <activity android:name="com.tokopedia.user_identification_common.view.activity.UserIdentificationCameraActivity" android:screenOrientation="portrait" android:configChanges="orientation"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/kyc_upload_title" android:name="com.tokopedia.user_identification_common.view.activity.UserIdentificationFormActivity">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="@string/internal_scheme" android:host="@string/host_global" android:pathPattern="@string/path_user_identification_form"/>
+            </intent-filter>
+        </activity>
+        <activity android:theme="@style/Theme.White" android:label="@string/tokopedia" android:name="com.tokopedia.webview.BaseSimpleWebViewActivity" android:screenOrientation="portrait" android:hardwareAccelerated="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="@string/internal_scheme" android:host="@string/host_global" android:pathPattern="@string/path_webview"/>
+            </intent-filter>
+        </activity>
+        <activity android:theme="@style/Theme.White" android:label="@string/tokopedia" android:name="com.tokopedia.webview.download.BaseDownloadAppLinkActivity" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/title_date_setting" android:name="com.tokopedia.datepicker.range.view.activity.DatePickerActivity" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/choose_image" android:name="com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity" android:launchMode="singleTop" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/choose_image" android:name="com.tokopedia.imagepicker.picker.main.view.VideoPickerActivity" android:launchMode="singleTop" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/album" android:name="com.tokopedia.imagepicker.picker.album.AlbumPickerActivity" android:launchMode="singleTop" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/edit_image" android:name="com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity" android:launchMode="singleTop" android:screenOrientation="portrait"/>
+        <activity android:theme="@style/Theme.White" android:label="@string/instagram_label_login" android:name="com.tokopedia.imagepicker.picker.instagram.view.activity.InstagramLoginActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name="com.google.android.play.core.missingsplits.PlayCoreMissingSplitsActivity" android:enabled="false" android:exported="false" android:process=":playcore_missing_splits_activity" android:stateNotNeeded="true" android:launchMode="singleInstance"/>
+        <activity android:theme="@style/Theme.PlayCore.Transparent" android:name="com.google.android.play.core.common.PlayCoreDialogWrapperActivity" android:enabled="false" android:exported="false" android:process=":playcore_dialog_wrapper_activity" android:stateNotNeeded="true"/>
+        <service android:name="com.tokopedia.iris.worker.IrisService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <receiver android:name="com.tokopedia.iris.worker.IrisBroadcastReceiver"/>
+        <service android:name="com.tokopedia.trackingoptimizer.SendTrackQueueService"/>
+        <service android:name="com.tokopedia.trackingoptimizer.SendTrackQueueJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
+        <provider android:name="com.readystatesoftware.chuck.internal.data.ChuckContentProvider" android:exported="false" android:authorities="com.tokopedia.home.account.test.chuck.provider"/>
+        <activity android:theme="@style/Chuck.Theme" android:label="@string/chuck_name" android:name="com.readystatesoftware.chuck.internal.p037ui.MainActivity" android:taskAffinity="com.readystatesoftware.chuck.task" android:launchMode="singleTask"/>
+        <activity android:theme="@style/Chuck.Theme" android:name="com.readystatesoftware.chuck.internal.p037ui.TransactionActivity" android:parentActivityName="com.readystatesoftware.chuck.internal.ui.MainActivity"/>
+        <service android:name="com.readystatesoftware.chuck.internal.support.ClearTransactionsService" android:exported="false"/>
+        <activity android:theme="@style/com_facebook_activity_theme" android:name="com.facebook.FacebookActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
+        <activity android:name="com.facebook.CustomTabMainActivity"/>
+        <provider android:name="com.facebook.internal.FacebookInitProvider" android:exported="false" android:authorities="com.tokopedia.home.account.test.FacebookInitProvider"/>
+        <activity android:theme="@style/Theme.Translucent.NoTitleBar" android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity" android:exported="false" android:excludeFromRecents="true"/>
+        <service android:name="com.google.android.gms.auth.api.signin.RevocationBoundService" android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION" android:exported="true"/>
+        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver" android:enabled="true" android:exported="false"/>
+        <service android:name="com.google.android.gms.analytics.AnalyticsService" android:enabled="true" android:exported="false"/>
+        <service android:name="com.google.android.gms.analytics.AnalyticsJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:enabled="true" android:exported="false"/>
+        <provider android:name="com.google.firebase.perf.provider.FirebasePerfProvider" android:exported="false" android:authorities="com.tokopedia.home.account.test.firebaseperfprovider" android:initOrder="101"/>
+        <service android:name="com.google.firebase.components.ComponentDiscoveryService" android:exported="false">
+            <meta-data android:name="com.google.firebase.components:com.google.firebase.perf.component.FirebasePerfRegistrar" android:value="com.google.firebase.components.ComponentRegistrar"/>
+            <meta-data android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar" android:value="com.google.firebase.components.ComponentRegistrar"/>
+            <meta-data android:name="com.google.firebase.components:com.google.firebase.iid.Registrar" android:value="com.google.firebase.components.ComponentRegistrar"/>
+        </service>
+        <service android:name="com.google.firebase.messaging.FirebaseMessagingService" android:exported="true">
+            <intent-filter android:priority="-500">
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <receiver android:name="com.google.android.gms.measurement.AppMeasurementReceiver" android:enabled="true" android:exported="false"/>
+        <receiver android:name="com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" android:permission="android.permission.INSTALL_PACKAGES" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER"/>
+            </intent-filter>
+        </receiver>
+        <service android:name="com.google.android.gms.measurement.AppMeasurementService" android:enabled="true" android:exported="false"/>
+        <service android:name="com.google.android.gms.measurement.AppMeasurementJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:enabled="true" android:exported="false"/>
+        <receiver android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:permission="com.google.android.c2dm.permission.SEND" android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+            </intent-filter>
+        </receiver>
+        <service android:name="com.google.firebase.iid.FirebaseInstanceIdService" android:exported="true">
+            <intent-filter android:priority="-500">
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <activity android:theme="@style/Theme.Translucent.NoTitleBar" android:name="com.google.android.gms.common.api.GoogleApiActivity" android:exported="false"/>
+        <provider android:name="com.google.firebase.provider.FirebaseInitProvider" android:exported="false" android:authorities="com.tokopedia.home.account.test.firebaseinitprovider" android:initOrder="100"/>
+        <provider android:name="androidx.lifecycle.ProcessLifecycleOwnerInitializer" android:exported="false" android:multiprocess="true" android:authorities="com.tokopedia.home.account.test.lifecycle-process"/>
+        <receiver android:name="p039io.hansel.diagnostics.DiagnosticsCommandReceiver" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="io.hansel.diagnostics.request" android:enabled="true"/>
+            </intent-filter>
+        </receiver>
+        <provider android:name="com.crashlytics.android.CrashlyticsInitProvider" android:exported="false" android:authorities="com.tokopedia.home.account.test.crashlyticsinitprovider" android:initOrder="90"/>
+        <service android:name="com.moe.pushlibrary.MoEWorker" android:exported="false"/>
+        <provider android:name="com.moe.pushlibrary.providers.MoEProvider" android:exported="false" android:authorities="com.tokopedia.home.account.test.moengage.provider"/>
+        <receiver android:name="com.moengage.core.MoEAlarmReceiver" android:enabled="true" android:exported="false"/>
+        <service android:name="com.moengage.core.DataSyncJob" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <activity android:theme="@style/Theme.Translucent.NoTitleBar.Fullscreen" android:name="com.moengage.pushbase.activities.PushTracker" android:configChanges="orientation|screenSize" android:noHistory="true">
+            <meta-data android:name="showInApp" android:value="false"/>
+        </activity>
+        <activity android:theme="@style/Theme.Translucent.NoTitleBar.Fullscreen" android:name="com.moengage.pushbase.activities.SnoozeTracker" android:taskAffinity=":NotificationDialog" android:excludeFromRecents="true" android:launchMode="singleTask" android:configChanges="orientation|screenSize">
+            <meta-data android:name="showInApp" android:value="false"/>
+        </activity>
+        <service android:name="com.moengage.pushbase.push.MoEPushWorker" android:exported="false"/>
+        <service android:name="com.moengage.locationlibrary.GeofenceIntentService" android:exported="false"/>
+        <receiver android:name="com.moengage.addon.messaging.MoEMessageSyncReceiver" android:enabled="true" android:exported="false"/>
+        <service android:name="com.moengage.addon.messaging.MoEMessageSyncIntentService" android:enabled="true" android:exported="false"/>
+        <service android:name="com.moengage.addon.messaging.MoEMessageSyncJob" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.moengage.addon.trigger.DTIntentService" android:exported="false"/>
+        <service android:name="com.moengage.addon.trigger.DTSyncJob" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <receiver android:name="com.moengage.addon.trigger.DTSyncAlarmReceiver" android:enabled="true" android:exported="false"/>
+        <activity android:name="com.moengage.integrationverifier.IntegrationVerificationActivity">
+            <meta-data android:name="showInApp" android:value="false"/>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="moengage" android:host="integration"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

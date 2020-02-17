@@ -35,7 +35,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
         super(itemView, checkableInteractionListener);
         this.context = itemView.getContext();
         ivLogo = (ImageView) itemView.findViewById(com.tokopedia.flight.R.id.iv_logo);
-        tvTitle = (TextView) itemView.findViewById(com.tokopedia.design.R.id.tv_title);
+        tvTitle = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
         tvDesc = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_desc);
         checkBox = (AppCompatCheckBox) itemView.findViewById(com.tokopedia.flight.R.id.checkbox);
     }

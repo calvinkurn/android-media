@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Action {
 
-    @SerializedName("__typename")
-    @Expose
-    private String typename;
     @SerializedName("text")
     @Expose
     private String text;
@@ -21,14 +18,6 @@ public class Action {
     @SerializedName("visibility")
     @Expose
     private String visibility;
-
-    public String getTypename() {
-        return typename;
-    }
-
-    public void setTypename(String typename) {
-        this.typename = typename;
-    }
 
     public String getText() {
         return text;

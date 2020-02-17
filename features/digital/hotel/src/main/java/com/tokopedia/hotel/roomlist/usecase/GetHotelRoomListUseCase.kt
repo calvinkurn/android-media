@@ -59,7 +59,8 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
     fun mappingObjects(hotelRoomData: HotelRoomData, hotelName: String): MutableList<HotelRoom> {
         val propertyInfo: HotelRoom.AdditionalPropertyInfo =
                 HotelRoom.AdditionalPropertyInfo(hotelRoomData.propertyId, hotelRoomData.isAddressRequired,
-                        hotelRoomData.isCvCRequired, hotelRoomData.isDirectPayment, hotelName)
+                        hotelRoomData.isCvCRequired, hotelRoomData.isDirectPayment, hotelRoomData.isEnabled,
+                        hotelName)
         for (room in hotelRoomData.rooms) {
             room.additionalPropertyInfo = propertyInfo
         }

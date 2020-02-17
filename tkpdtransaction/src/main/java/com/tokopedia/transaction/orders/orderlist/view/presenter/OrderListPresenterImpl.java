@@ -66,9 +66,12 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -261,6 +264,21 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     return;
                 getView().removeProgressBarView();
                 getView().displayLoadMore(false);
+                long elapsedDays = 0;
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                long secondsInMilli = 1000;
+                long time;
+                long daysInMilli = secondsInMilli * 60 * 60 * 24;
+                try {
+                    if (getView().getEndDate() != null && getView().getStartDate() != null) {
+                        Date date2 = format.parse(getView().getEndDate());
+                        Date date1 = format.parse(getView().getStartDate());
+                        time = date2.getTime() - date1.getTime();
+                        elapsedDays = time / daysInMilli;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 if (response != null) {
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {
@@ -272,7 +290,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                         }
                     } else {
                         getView().unregisterScrollListener();
-                        getView().renderEmptyList(typeRequest);
+                        getView().renderEmptyList(typeRequest,elapsedDays);
                     }
 
                     OrderFilter orderFilter = response.getData(OrderFilter.class);
@@ -281,7 +299,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     }
                 } else {
                     getView().unregisterScrollListener();
-                    getView().renderEmptyList(typeRequest);
+                    getView().renderEmptyList(typeRequest,elapsedDays);
                 }
 
             }

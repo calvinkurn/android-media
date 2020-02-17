@@ -1,14 +1,12 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.OrderStatusCode
@@ -47,16 +45,14 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
     }
 
     private fun alignBubbleRight() {
-        alignBubble(Gravity.END, R.drawable.attach_product_right_bubble)
+        alignBubble(Gravity.END)
     }
 
     private fun alignBubbleLeft() {
-        alignBubble(Gravity.START, R.drawable.attach_product_left_bubble)
+        alignBubble(Gravity.START)
     }
 
-    private fun alignBubble(gravity: Int, @DrawableRes background: Int) {
-        val bubbleBackground = ContextCompat.getDrawable(itemView.context, background)
-        chatBubble?.background = bubbleBackground
+    private fun alignBubble(gravity: Int) {
         container?.gravity = gravity
     }
 

@@ -20,7 +20,6 @@ data class ProductCardModel (
         val freeOngkir: FreeOngkir = FreeOngkir(),
         val isTopAds: Boolean = false
 ) {
-
     data class Label(
             val title: String = "",
             val type: String = ""

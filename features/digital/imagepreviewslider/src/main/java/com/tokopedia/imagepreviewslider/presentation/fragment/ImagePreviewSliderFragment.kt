@@ -16,6 +16,7 @@ import com.tokopedia.imagepreviewslider.R
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
 import com.tokopedia.imagepreviewslider.presentation.adapter.TouchImageListenerAdapter
+import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
 import kotlinx.android.synthetic.main.fragment_image_preview_slider.*
 
 /**
@@ -52,10 +53,6 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
-    }
-
-    interface ImagePreviewListener {
-        fun onImageClicked(position: Int)
     }
 
     fun initView() {
@@ -120,7 +117,7 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
         imageSliderLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rv_image_list.layoutManager = imageSliderLayoutManager
 
-        val imageSliderListener = object : ImagePreviewListener {
+        val imageSliderListener = object : ImageSliderListener {
             override fun onImageClicked(position: Int) {
                 view_pager.currentItem = position
                 updateImagePosition(position)

@@ -40,7 +40,7 @@ class AddToCartDoneRecommendationViewHolder(
             title_recom.text = element.recommendationWidget.title
             val products = element.recommendationWidget.recommendationItemList
             val parentPosition = adapterPosition
-            product_recom.initCarouselProductCardView(
+            product_recom.bindCarouselProductCardView(
                     isScrollable = true,
                     carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                         override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {

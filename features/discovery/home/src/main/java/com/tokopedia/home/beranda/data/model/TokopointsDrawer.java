@@ -19,9 +19,6 @@ public class TokopointsDrawer implements Parcelable {
     @SerializedName("sectionContent")
     private List<SectionContentItem> sectionContent;
 
-    @SerializedName("offFlag")
-    private boolean offFlag;
-
     @SerializedName("redirectAppLink")
     private String redirectAppLink;
 
@@ -31,7 +28,6 @@ public class TokopointsDrawer implements Parcelable {
     protected TokopointsDrawer(Parcel in) {
         redirectURL = in.readString();
         iconImageURL = in.readString();
-        offFlag = in.readByte() != 0;
         redirectAppLink = in.readString();
     }
 
@@ -71,14 +67,6 @@ public class TokopointsDrawer implements Parcelable {
         return sectionContent;
     }
 
-    public void setOffFlag(boolean offFlag) {
-        this.offFlag = offFlag;
-    }
-
-    public boolean isOffFlag() {
-        return offFlag;
-    }
-
     public void setRedirectAppLink(String redirectAppLink) {
         this.redirectAppLink = redirectAppLink;
     }
@@ -94,7 +82,6 @@ public class TokopointsDrawer implements Parcelable {
                         "redirectURL = '" + redirectURL + '\'' +
                         ",iconImageURL = '" + iconImageURL + '\'' +
                         ",sectionContent = '" + sectionContent + '\'' +
-                        ",offFlag = '" + offFlag + '\'' +
                         ",redirectAppLink = '" + redirectAppLink + '\'' +
                         "}";
     }
@@ -108,7 +95,6 @@ public class TokopointsDrawer implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(redirectURL);
         dest.writeString(iconImageURL);
-        dest.writeByte((byte) (offFlag ? 1 : 0));
         dest.writeString(redirectAppLink);
     }
 

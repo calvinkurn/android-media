@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.List;
 
@@ -70,7 +71,7 @@ public interface HomeContract {
 
         void updateListOnResume(List<Visitable> visitables);
 
-        void addImpressionToTrackingQueue(List<HomeVisitable> visitables);
+        void addImpressionToTrackingQueue(List<Visitable> visitables);
 
         void configureHomeFlag(HomeFlag homeFlag);
 
@@ -97,6 +98,8 @@ public interface HomeContract {
         void hideStickyLogin();
 
         void setPlayContentBanner(PlayCardHome playContentBanner, int adapterPosition);
+
+        TrackingQueue getTrackingQueue();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -130,8 +133,6 @@ public interface HomeContract {
         void onRefreshTokoCash();
 
         void onResume();
-
-        void onFirstLaunch();
 
         void onDestroy();
 
