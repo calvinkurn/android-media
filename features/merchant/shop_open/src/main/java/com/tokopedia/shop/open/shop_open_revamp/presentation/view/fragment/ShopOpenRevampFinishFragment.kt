@@ -49,16 +49,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
         setupAnimation(view)
 
         val shopId = userSession.shopId
-        val userName = userSession.name
-        var firstName =  ""
-
-        if (userName.contains(" ")) {
-            firstName = userName.substring(0, userName.indexOf(" "));
-        } else {
-            firstName = userName
-        }
-
-        val greetingText = "Selamat $firstName, \nTokomu sudah jadi!"
+        val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, userSession.name)
         txt_greeting.text = greetingText
 
         handler.postDelayed({
