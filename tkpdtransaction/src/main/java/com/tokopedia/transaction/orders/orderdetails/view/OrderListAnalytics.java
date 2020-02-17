@@ -1,7 +1,5 @@
 package com.tokopedia.transaction.orders.orderdetails.view;
 
-import android.widget.TextView;
-
 import javax.inject.Inject;
 
 import com.google.android.gms.tagmanager.DataLayer;
@@ -15,7 +13,7 @@ import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationsItem;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationMPPojo.RecommendationsItem;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
@@ -512,7 +510,7 @@ public class OrderListAnalytics {
                 EVENT, PRODUCT_VIEW,
                 EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
                 EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, "recommendation - " + recommendationsItem.getCategoryName() + " - " + (1 + position),
+                EVENT_LABEL, "historical - " + recommendationsItem.getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
