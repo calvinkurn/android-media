@@ -12,9 +12,14 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        clearClose(true)
-        setFullPage(false)
+        showCloseIcon = false
+        isFullpage = false
+        showKnob = true
         setTitle(getString(R.string.airline))
+        setAction(getString(R.string.reset)) {
+
+        }
+
     }
 
     companion object {
