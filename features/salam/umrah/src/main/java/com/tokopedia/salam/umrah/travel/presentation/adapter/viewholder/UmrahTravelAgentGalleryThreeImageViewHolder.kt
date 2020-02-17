@@ -23,7 +23,7 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View, val listener : Set
             if(element.medias.size >= 1 && element.medias[0].source.isNotEmpty()){
                 iw_umrah_gallery_three_image_first.loadImage(element.medias[0].source)
                 iw_umrah_gallery_three_image_first.setOnClickListener {
-                    listener.onClickThreeImage(adapterPosition,0)
+                    listener.onClickThreeImage(element,0)
                 }
             }
             else iw_umrah_gallery_three_image_first.invisible()
@@ -31,7 +31,7 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View, val listener : Set
             if(element.medias.size >= 2 && element.medias[1].source.isNotEmpty()){
                 iw_umrah_gallery_three_image_second.loadImage(element.medias[1].source)
                 iw_umrah_gallery_three_image_second.setOnClickListener {
-                    listener.onClickThreeImage(adapterPosition,1)
+                    listener.onClickThreeImage(element,1)
                 }
             }
             else iw_umrah_gallery_three_image_second.invisible()
@@ -39,7 +39,7 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View, val listener : Set
             if(element.medias.size >= 3 && element.medias[2].source.isNotEmpty()){
                 iw_umrah_gallery_three_image_third.loadImage(element.medias[2].source)
                 iw_umrah_gallery_three_image_third.setOnClickListener {
-                    listener.onClickThreeImage(adapterPosition,2)
+                    listener.onClickThreeImage(element,2)
                 }
             }
             else iw_umrah_gallery_three_image_third.invisible()
@@ -60,6 +60,6 @@ class UmrahTravelAgentGalleryThreeImageViewHolder(view: View, val listener : Set
     }
 
     interface SetOnClickListener{
-        fun onClickThreeImage(positionAdapter: Int, positionImage:Int)
+        fun onClickThreeImage(gallery: UmrahGallery, positionImage:Int)
     }
 }

@@ -197,19 +197,19 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
                 }
     }
 
-    override fun onClickThreeImage(positionAdapter: Int,positionImage:Int) {
-        umrahTrackingUtil.umrahTravelAgentGalleryClicked(galleries[positionAdapter], positionImage)
-        showImagePreview(positionAdapter,positionImage)
+    override fun onClickThreeImage(gallery: UmrahGallery,positionImage:Int) {
+        umrahTrackingUtil.umrahTravelAgentGalleryClicked(gallery, positionImage)
+        showImagePreview(gallery,positionImage)
     }
 
-    override fun onClickOneImage(positionAdapter: Int, positionImage:Int) {
-        umrahTrackingUtil.umrahTravelAgentGalleryClicked(galleries[positionAdapter], positionImage)
-        showImagePreview(positionAdapter,positionImage)
+    override fun onClickOneImage(gallery: UmrahGallery, positionImage:Int) {
+        umrahTrackingUtil.umrahTravelAgentGalleryClicked(gallery, positionImage)
+        showImagePreview(gallery,positionImage)
     }
 
-    private fun showImagePreview(positionAdapter: Int,positionImage:Int) {
-        val mappedSource = UmrahGalleryImageMapper.galleryImageSource(galleries[positionAdapter].medias)
-        val mappedThumbail = UmrahGalleryImageMapper.galleryImageThumbnail(galleries[positionAdapter].medias)
+    private fun showImagePreview(gallery: UmrahGallery,positionImage:Int) {
+        val mappedSource = UmrahGalleryImageMapper.galleryImageSource(gallery.medias)
+        val mappedThumbail = UmrahGalleryImageMapper.galleryImageThumbnail(gallery.medias)
         context?.run {
             startActivity(ImagePreviewSliderActivity.getCallingIntent(
                     this, getString(R.string.umrah_home_page_partner_label), mappedSource, mappedThumbail, positionImage
