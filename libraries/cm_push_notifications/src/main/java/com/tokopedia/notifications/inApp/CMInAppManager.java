@@ -27,7 +27,7 @@ import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.KEY_CM_INAPP_END_TIME_INTERVAL;
+import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 
 

@@ -7,7 +7,6 @@ import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.tokopedia.notifications.common.CMNotificationUtils
-import com.tokopedia.notifications.image.downloaderFactory.PARENT_DIR
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import java.io.File
 import java.io.FileOutputStream
@@ -18,6 +17,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 const val PNG_QUALITY = 95
+const val PARENT_DIR = "CM_RESOURCE"
 
 abstract class CMInAppImageDownloader(val cmInApp: CMInApp) {
 
