@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.attachproduct.data.model.mapper.TkpdResponseToAttachProductDomainModelMapper;
 import com.tokopedia.attachproduct.data.repository.AttachProductRepository;
 import com.tokopedia.attachproduct.data.repository.AttachProductRepositoryImpl;

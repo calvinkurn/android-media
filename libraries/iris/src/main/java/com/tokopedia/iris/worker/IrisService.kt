@@ -45,11 +45,14 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
     }
 
     fun startService(maxRow: Int) {
+        if (isRunning) {
+            return
+        }
         launch(coroutineContext) {
+            if (isRunning) {
+                return@launch
+            }
             try {
-                if (isRunning) {
-                    return@launch
-                }
                 isRunning = true
                 val cache = Cache(applicationContext)
                 if (cache.isEnabled()) {

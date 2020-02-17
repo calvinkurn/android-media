@@ -77,6 +77,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
 
+    // InboxReputationActivity
+    val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
+
+    // InboxReputationDetailActivity
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{reputation_id}/"
+
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
@@ -99,10 +105,13 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
 
+    //ReviewShopInfoActiviy
+    @JvmField
+    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
+
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
-
 
     @JvmField
     val CONTACT_US = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://customercare/{ticket_id}"
@@ -195,5 +204,8 @@ object ApplinkConstInternalMarketplace {
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
+
+    @JvmField
+    val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
 
 }

@@ -3,7 +3,6 @@ package com.tokopedia.tkpd;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,13 +13,14 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.chuckerteam.chucker.api.Chucker;
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
@@ -32,8 +32,6 @@ import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -46,7 +44,7 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogManager;
@@ -60,6 +58,8 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.tkpd.timber.UserIdChangeCallback;
+import com.tokopedia.tkpd.timber.UserIdSubscriber;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpd.utils.DeviceUtil;
@@ -118,6 +118,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
+        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -142,7 +143,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 openShakeDetectCampaignPage(isLongShake);
             }
         });
+        UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
+            @Override
+            public void onUserIdChanged() {
+                TimberWrapper.init(ConsumerMainApplication.this);
+            }
+        });
         registerActivityLifecycleCallbacks(shakeSubscriber);
+        registerActivityLifecycleCallbacks(userIdSubscriber);
     }
 
     private void createAndCallPreSeq(){

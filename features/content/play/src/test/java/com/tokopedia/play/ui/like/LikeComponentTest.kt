@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.like
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import io.mockk.confirmVerified
@@ -80,7 +81,7 @@ class LikeComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class LikeComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : LikeComponent(container, bus, coroutineScope) {
+    class LikeComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : LikeComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): LikeView {
             return mockk(relaxed = true)
         }
