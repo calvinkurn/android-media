@@ -33,11 +33,11 @@ class ServerService : Service() {
             if(isNetworkAvailable(application) and (LogManager.getCount() > 0)) {
                 LogManager.sendLogToServer()
             }
-            stopSelf()
         }, {
             it.printStackTrace()
         },{
             isRunning = false
+            stopSelf()
         })
         return super.onStartCommand(intent, flags, startId)
     }

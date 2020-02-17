@@ -24,11 +24,11 @@ class ServerJobService : JobService() {
             if(isNetworkAvailable(application) and (LogManager.getCount() > 0)) {
                 LogManager.sendLogToServer()
             }
-            jobFinished(params, false)
         }, {
             it.printStackTrace()
         }, {
             isRunning = false
+            jobFinished(params, false)
         })
         return false
     }
