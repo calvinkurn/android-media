@@ -29,7 +29,6 @@ public class DigitalProductActivity extends BaseSimpleActivity
 
     private static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
-    private static final String CATEGORY_ID_EMONEY = "34";
 
     private String titleToolbar;
     private DigitalCategoryDetailPassData passData;
@@ -90,12 +89,6 @@ public class DigitalProductActivity extends BaseSimpleActivity
     @Override
     public boolean isAllowShake() {
         return false;
-    }
-
-    @Override
-    public boolean isAllowNFC() {
-        return passData.getCategoryId().equals(CATEGORY_ID_EMONEY);
-
     }
 
     @Override

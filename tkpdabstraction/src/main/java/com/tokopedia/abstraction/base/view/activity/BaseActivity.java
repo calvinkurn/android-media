@@ -228,8 +228,4 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public boolean isAllowShake() {
         return true;
     }
-
-    public boolean isAllowNFC() {
-        return false;
-    }
 }

@@ -1081,9 +1081,4 @@ public class MainParentActivity extends BaseActivity implements
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
     }
-
-    @Override
-    public boolean isAllowNFC() {
-        return true;
-    }
 }

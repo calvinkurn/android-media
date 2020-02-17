@@ -112,7 +112,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                         .build()
 
                 if (intent != null && intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
-                    if (intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) === DigitalExtraParam.EXTRA_NFC) {
+                    if (intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) == DigitalExtraParam.EXTRA_NFC) {
                         navigatePageToDigitalProduct(passData)
                     } else {
                         val intentReturn = Intent()
@@ -144,26 +144,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
         brizziInstance.setNfcAdapter(this)
         handleIntent(intent)
-    }
-
-    override fun onBackPressed() {
-        val passData = DigitalCategoryDetailPassData.Builder()
-                .categoryId(ETOLL_CATEGORY_ID)
-                .operatorId(operatorIdSelected)
-                .clientNumber(eTollUpdateBalanceResultView.cardNumber)
-                .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
-                .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.cardLastUpdatedDate)
-                .additionalETollOperatorName(getOperatorName(issuerIdSelected))
-                .build()
-        if (intent != null && intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
-            if (intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) === DigitalExtraParam.EXTRA_NFC_FROM_PDP) {
-                val intentReturn = Intent()
-                intentReturn.putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
-                setResult(Activity.RESULT_OK, intentReturn)
-            }
-        }
-        finish()
-        super.onBackPressed()
     }
 
     override fun getLayoutRes(): Int {
@@ -493,10 +473,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                 }
             }
         }
-    }
-
-    override fun isAllowNFC(): Boolean {
-        return true
     }
 
     companion object {
