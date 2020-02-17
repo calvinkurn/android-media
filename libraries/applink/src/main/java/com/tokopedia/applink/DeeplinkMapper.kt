@@ -129,7 +129,7 @@ object DeeplinkMapper {
         val paths = uri.pathSegments ?: return deeplink
         if (paths.isEmpty() && uri.pathSegments.size >= 2) return deeplink
         val productId = uri.pathSegments[uri.pathSegments.size - 2]
-        return "${ApplinkConstInternalGlobal.PRODUCT_TALK}/$productId/"
+        return "${ApplinkConstInternalGlobal.PRODUCT_TALK_BASE}$productId/"
     }
 
     private fun getRegisteredNavigationTalk(deeplink: String): String {
