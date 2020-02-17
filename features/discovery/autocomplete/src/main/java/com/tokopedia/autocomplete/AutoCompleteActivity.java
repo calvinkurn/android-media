@@ -84,7 +84,7 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     protected void initView() {
-        searchBarView = findViewById(R.id.search_bar);
+        searchBarView = findViewById(R.id.autocompleteSearchBar);
         mSuggestionView = findViewById(R.id.search_suggestion_container);
         mInitialStateView = findViewById(R.id.search_initial_state_container);
         suggestionFragment = (SuggestionFragment) getSupportFragmentManager().findFragmentById(R.id.search_suggestion);

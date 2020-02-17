@@ -3,8 +3,8 @@ package com.tokopedia.logger.datasource.cloud
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.decrypt
-import com.tokopedia.logger.utils.launchCatchError
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
@@ -12,24 +12,24 @@ import java.net.URL
 import javax.crypto.SecretKey
 
 class LoggerCloudDatasource {
-    fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>, logger: Logger, key:SecretKey): Int{
-         val message = decrypt(logger.message , key)
-         val truncatedMessage: String
-         var errCode = 404
-         truncatedMessage = if (message.length > Constants.MAX_BUFFER) {
-             message.substring(0, Constants.MAX_BUFFER)
-         } else {
-             message
-         }
-         val token = TOKEN[serverSeverity - 1]
-         runBlocking {
-            launchCatchError(block = {
-                errCode = openURL(token,truncatedMessage)
-            }){
-                Timber.d("Error here")
+    suspend fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>, logger: Logger, key:SecretKey): Int{
+        val message = decrypt(logger.message, key)
+        val truncatedMessage: String
+        var errCode = 404
+        truncatedMessage = if (message.length > Constants.MAX_BUFFER) {
+            message.substring(0, Constants.MAX_BUFFER)
+        } else {
+            message
+        }
+        val token = TOKEN[serverSeverity - 1]
+        withContext(Dispatchers.IO) {
+            try {
+                errCode = openURL(token, truncatedMessage)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-         }
-         return errCode
+        }
+        return errCode
     }
 
     private fun openURL(token: String, message: String): Int{
