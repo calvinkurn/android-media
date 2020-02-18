@@ -73,32 +73,32 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideStickyLoginUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): StickyLoginUseCase {
-        return StickyLoginUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StickyLoginTickerPojo.TickerResponse>)
+    fun provideStickyLoginUseCase(graphqlRepository: GraphqlRepository): StickyLoginUseCase {
+        return StickyLoginUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @Provides
     @HomeScope
-    fun provideHomeReviewSuggestedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): GetHomeReviewSuggestedUseCase {
-        return GetHomeReviewSuggestedUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SuggestedProductReview>)
+    fun provideHomeReviewSuggestedUseCase(graphqlRepository: GraphqlRepository): GetHomeReviewSuggestedUseCase {
+        return GetHomeReviewSuggestedUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @Provides
     @HomeScope
-    fun provideDismissHomeReviewUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): DismissHomeReviewUseCase {
-        return DismissHomeReviewUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductrevDismissSuggestion>)
+    fun provideDismissHomeReviewUseCase(graphqlRepository: GraphqlRepository): DismissHomeReviewUseCase {
+        return DismissHomeReviewUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @Provides
     @HomeScope
-    fun provideHomeTokopointsDataUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): GetHomeTokopointsDataUseCase {
-        return GetHomeTokopointsDataUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerHomeData>)
+    fun provideHomeTokopointsDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsDataUseCase {
+        return GetHomeTokopointsDataUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @Provides
     @HomeScope
-    fun provideGetPlayLiveDynamicDataUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): GetPlayLiveDynamicUseCase {
-        return GetPlayLiveDynamicUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayLiveDynamicChannelEntity>)
+    fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): GetPlayLiveDynamicUseCase {
+        return GetPlayLiveDynamicUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @HomeScope
