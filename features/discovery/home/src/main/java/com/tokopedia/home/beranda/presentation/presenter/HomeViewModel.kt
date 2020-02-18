@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_wallet.balance.domain.coroutine.GetCoroutineWalletBalanceUseCase
-import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetPendingCashbackUseCase
+import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
@@ -60,7 +60,7 @@ class HomeViewModel @Inject constructor(
         private val getFeedTabUseCase: GetFeedTabUseCase,
         private val sendGeolocationInfoUseCase: SendGeolocationInfoUseCase,
         private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
-        private val getPendingCashbackUseCase: GetPendingCashbackUseCase,
+        private val getPendingCashbackUseCase: GetCoroutinePendingCashbackUseCase,
         private val getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase,
         private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
         private val stickyLoginUseCase: StickyLoginUseCase,

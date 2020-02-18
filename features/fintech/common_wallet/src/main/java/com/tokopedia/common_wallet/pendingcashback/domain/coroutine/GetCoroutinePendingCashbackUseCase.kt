@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class GetPendingCashbackUseCase @Inject constructor(
+class GetCoroutinePendingCashbackUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 )
     : UseCase<PendingCashback>() {
