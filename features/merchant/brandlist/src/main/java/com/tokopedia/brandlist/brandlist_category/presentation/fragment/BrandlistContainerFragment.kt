@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.lifecycle.Observer
@@ -62,6 +63,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModel: BrandlistCategoryViewModel
+    private var appBarLayout: AppBarLayout? = null
 
     private var brandlistTracking: BrandlistTracking? = null
     private var rootView: View? = null
@@ -134,6 +136,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
     private fun init(view: View) {
         configStatusBar(view)
+        appBarLayout = view.findViewById(R.id.appbarLayout)
         toolbar = view.findViewById(R.id.toolbar)
         searchInputView = view.findViewById(R.id.btn_search)
         tabLayout = view.findViewById(R.id.tablayout)
@@ -275,5 +278,10 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                 startActivity(intent)
             }
         }
+        appBarLayout?.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener{
+            override fun onOffsetChanged(appBarLayout: AppBarLayout, p1: Int) {
+                ViewCompat.setElevation(appBarLayout, resources.getDimension(R.dimen.dp_16))
+            }
+        })
     }
 }

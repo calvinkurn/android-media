@@ -32,7 +32,6 @@
                     app:contentInsetLeft="0dp"
                     app:contentInsetStart="0dp"
                     app:contentInsetStartWithNavigation="0dp"
-                    app:elevation="@dimen/layout_lvl1"
                     app:subtitleTextAppearance="?subtitleTextAppearance"
                     app:titleTextAppearance="?titleTextAppearance">
 
