@@ -26,7 +26,7 @@
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_17"
+        android:layout_marginTop="17dp"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         app:corners="16"
@@ -39,7 +39,7 @@
         android:id="@+id/line_1"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_17"
+        android:layout_marginTop="17dp"
         android:background="@drawable/line"
         app:layout_constraintBottom_toBottomOf="@+id/line_2"
         app:layout_constraintEnd_toStartOf="@+id/line_2"
@@ -50,7 +50,7 @@
         android:id="@+id/line_2"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_17"
+        android:layout_marginTop="17dp"
         android:background="@drawable/line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -71,8 +71,8 @@
             android:id="@+id/background_1"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginStart="@dimen/dp_17"
-            android:layout_marginLeft="@dimen/dp_17"
+            android:layout_marginStart="17dp"
+            android:layout_marginLeft="17dp"
             app:corners="35" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -183,7 +183,7 @@
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0_5"
+            android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
@@ -193,7 +193,7 @@
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_3"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0_5"
+            android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
@@ -203,7 +203,7 @@
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_4"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0_5"
+            android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
@@ -213,7 +213,7 @@
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_5"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0_5"
+            android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
@@ -223,7 +223,7 @@
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_6"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0_5"
+            android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
