@@ -74,7 +74,7 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
         isHideable = true
         setTitle(getString(R.string.airline))
         setAction(getString(R.string.reset)) {
-            // TODO: Add Function for reset button
+            resetAirlineFilter()
         }
 
         mChildView = View.inflate(requireContext(), R.layout.fragment_flight_filter_airline, null)
@@ -136,10 +136,19 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
         filterModel.airlineList = checkedAirlineList.map {
             it.airlineDB.id
         }.toList()
+        listener.onFilterModelChanged(filterModel)
 
         if (isAdded) {
             dismiss()
         }
+    }
+
+    private fun resetAirlineFilter() {
+        val filterModel = listener.flightFilterModel
+        filterModel.airlineList = arrayListOf()
+        adapter.resetCheckedItemSet()
+        adapter.notifyDataSetChanged()
+        listener.onFilterModelChanged(filterModel)
     }
 
     companion object {
