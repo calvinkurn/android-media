@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.domain.usecase.*
-import com.tokopedia.sellerhome.util.TimeFormat
+import com.tokopedia.sellerhome.common.utils.DateTimeUtil
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -40,12 +40,12 @@ class SellerHomeViewModel @Inject constructor(
     private val startDate: String by lazy {
         val cal = Calendar.getInstance(locale)
         cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).minus(7))
-        return@lazy TimeFormat.format(cal.timeInMillis, "dd-MM-yyyy", locale)
+        return@lazy DateTimeUtil.format(cal.timeInMillis, "dd-MM-yyyy", locale)
     }
     private val endDate: String by lazy {
         val cal = Calendar.getInstance(locale)
         cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).minus(1))
-        return@lazy TimeFormat.format(cal.timeInMillis, "dd-MM-yyyy", locale)
+        return@lazy DateTimeUtil.format(cal.timeInMillis, "dd-MM-yyyy", locale)
     }
 
     val homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
@@ -70,8 +70,7 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             widgetLayout.value = Success(withContext(Dispatchers.IO) {
                 getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
-                val widgets: List<BaseWidgetUiModel<*>> = getLayoutUseCase.executeOnBackground()
-                return@withContext widgets
+                return@withContext getLayoutUseCase.executeOnBackground()
             })
         }, onError = {
             widgetLayout.value = Fail(it)
@@ -82,8 +81,7 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             cardWidgetData.value = Success(withContext(Dispatchers.IO) {
                 getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
-                val widgetData: List<CardDataUiModel> = getCardDataUseCase.executeOnBackground()
-                return@withContext widgetData
+                return@withContext getCardDataUseCase.executeOnBackground()
             })
         }, onError = {
             cardWidgetData.value = Fail(it)
@@ -94,8 +92,7 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             lineGraphWidgetData.value = Success(withContext(Dispatchers.IO) {
                 getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-                val widgetData: List<LineGraphDataUiModel> = getLineGraphDataUseCase.executeOnBackground()
-                return@withContext widgetData
+                return@withContext getLineGraphDataUseCase.executeOnBackground()
             })
         }, onError = {
             lineGraphWidgetData.value = Fail(it)
@@ -105,9 +102,9 @@ class SellerHomeViewModel @Inject constructor(
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             progressWidgetData.value = Success(withContext(Dispatchers.IO) {
-                val today = TimeFormat.format(Date().time, "yyyy-MM-dd", locale)
+                val today = DateTimeUtil.format(Date().time, "yyyy-MM-dd", locale)
                 getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(userSession.shopId, today, dataKeys)
-                getProgressDataUseCase.executeOnBackground()
+                return@withContext getProgressDataUseCase.executeOnBackground()
             })
         }, onError = {
             progressWidgetData.value = Fail(it)

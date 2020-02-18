@@ -3,7 +3,7 @@ package com.tokopedia.sellerhome.view.model
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class CarouselDataUiModel (
-        val dataKey: String = "",
+        override val dataKey: String = "",
         val items: List<CarouselItemUiModel> = emptyList(),
         override var error: String = ""
 ): BaseDataUiModel

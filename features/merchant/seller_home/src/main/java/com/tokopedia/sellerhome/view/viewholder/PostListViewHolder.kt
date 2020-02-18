@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
-import com.tokopedia.sellerhome.util.dpToPx
-import com.tokopedia.sellerhome.util.parseAsHtml
+import com.tokopedia.sellerhome.common.utils.dpToPx
+import com.tokopedia.sellerhome.common.utils.parseAsHtml
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel

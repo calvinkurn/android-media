@@ -23,7 +23,8 @@ class ProgressMapper @Inject constructor() {
                     maxValue = it.maxValue.toZeroIfNull(),
                     colorState = mapState(it.state.orEmpty()),
                     error = it.errorMessage.orEmpty(),
-                    subtitle = it.subtitle.orEmpty()
+                    subtitle = it.subtitle.orEmpty(),
+                    dataKey = it.dataKey.orEmpty()
             )
         }
     }
