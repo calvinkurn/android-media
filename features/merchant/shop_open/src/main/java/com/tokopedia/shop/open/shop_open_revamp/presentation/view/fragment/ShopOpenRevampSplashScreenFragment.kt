@@ -50,7 +50,9 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupIconImage(view)
 
-        val greetingText = getString(R.string.open_shop_revamp_text_horay_name, userSession.name)
+        val fullName = userSession.name
+        val firstName = fullName.split(" ")[0]
+        val greetingText = getString(R.string.open_shop_revamp_text_horay_name, firstName)
         txt_greeting.text = greetingText
         handler.postDelayed({
             fragmentNavigationInterface

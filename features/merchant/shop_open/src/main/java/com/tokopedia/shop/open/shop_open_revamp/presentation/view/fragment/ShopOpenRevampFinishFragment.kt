@@ -52,8 +52,11 @@ class ShopOpenRevampFinishFragment : Fragment() {
 
         loading.visibility = View.VISIBLE
         val shopId = userSession.shopId
+        val fullName = userSession.name
+        val firstName = fullName.split(" ")[0]
+
         setupAnimation(view, shopId)
-        val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, userSession.name)
+        val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, firstName)
         txt_greeting.text = greetingText
     }
 
