@@ -1,7 +1,6 @@
-package com.tokopedia.sellerhome.util
+package com.tokopedia.sellerhome.common.utils
 
 import android.text.Html
-import com.tokopedia.sellerhome.util.DateUtil.getFormattedDate
 import java.util.*
 
 /**
@@ -24,8 +23,8 @@ fun String.parseAsHtml(): CharSequence {
 fun String.parseDateTemplate(): CharSequence {
 
     val regex = mapOf(
-            "{DATE_YESTERDAY_PAST_7D}" to { getFormattedDate(7, "dd MMM yy").asUpperCase() },
-            "{DATE_YESTERDAY}" to { getFormattedDate(1, "dd MMM yy").asUpperCase() }
+            "{DATE_YESTERDAY_PAST_7D}" to { DateTimeUtil.getFormattedDate(7, "dd MMM yy").asUpperCase() },
+            "{DATE_YESTERDAY}" to { DateTimeUtil.getFormattedDate(1, "dd MMM yy").asUpperCase() }
     )
 
     val pattern = "\\{([^}]*?)\\}".toRegex()

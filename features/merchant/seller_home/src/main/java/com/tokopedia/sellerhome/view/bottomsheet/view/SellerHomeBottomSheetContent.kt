@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.util.getResDrawable
+import com.tokopedia.sellerhome.common.utils.getResDrawable
 import com.tokopedia.sellerhome.view.bottomsheet.adapter.BottomSheetAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.model.BaseBottomSheetUiModel
 import com.tokopedia.sellerhome.view.bottomsheet.model.BottomSheetContentUiModel

@@ -3,8 +3,8 @@ package com.tokopedia.sellerhome.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.util.parseAsHtml
-import com.tokopedia.sellerhome.util.parseDateTemplate
+import com.tokopedia.sellerhome.common.utils.parseAsHtml
+import com.tokopedia.sellerhome.common.utils.parseDateTemplate
 import com.tokopedia.sellerhome.view.model.SectionWidgetUiModel
 import kotlinx.android.synthetic.main.sah_section_widget.view.*
 

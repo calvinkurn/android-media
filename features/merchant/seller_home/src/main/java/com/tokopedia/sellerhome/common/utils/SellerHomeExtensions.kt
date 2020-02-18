@@ -1,9 +1,9 @@
-package com.tokopedia.sellerhome.util
+package com.tokopedia.sellerhome.common.utils
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.util.TypedValue
-import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
@@ -45,3 +45,6 @@ inline fun <reified T> GraphqlResponse.getData(): T {
 val Any.toJson: JsonElement
     get() = Gson().toJsonTree(this)
 
+inline fun<reified T: Any> T.logD(s: String) {
+    Log.d(T::class.java.simpleName, s)
+}

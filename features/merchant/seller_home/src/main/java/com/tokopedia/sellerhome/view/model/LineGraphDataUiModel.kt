@@ -5,7 +5,7 @@ package com.tokopedia.sellerhome.view.model
  */
 
 data class LineGraphDataUiModel(
-        val dataKey: String = "",
+        override val dataKey: String = "",
         val description: String = "",
         override var error: String = "",
         val header: String = "",

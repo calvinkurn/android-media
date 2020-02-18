@@ -7,10 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhome.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhome.domain.model.GetLineGraphDataResponse
-import com.tokopedia.sellerhome.util.getData
+import com.tokopedia.sellerhome.common.utils.getData
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 
 /**
  * Created By @ilhamsuaib on 2020-01-27
@@ -19,13 +18,11 @@ import com.tokopedia.usecase.coroutines.UseCase
 class GetLineGraphDataUseCase(
         private val gqlRepository: GraphqlRepository,
         private val lineGraphMapper: LineGraphMapper
-) : UseCase<List<LineGraphDataUiModel>>() {
-
-    var params: RequestParams = RequestParams.EMPTY
+) : BaseGqlUseCase<List<LineGraphDataUiModel>>() {
 
     override suspend fun executeOnBackground(): List<LineGraphDataUiModel> {
-        val gqlRequest = GraphqlRequest(GET_LINE_GRAPH_DATA, GetLineGraphDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(QUERY, GetLineGraphDataResponse::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), getCacheStrategy())
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLineGraphDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -55,7 +52,7 @@ class GetLineGraphDataUseCase(
             putString(END_DATE, endDate)
         }
 
-        const val GET_LINE_GRAPH_DATA = "query getLineGraphData(\$shopID: String!, \$dataKey: [String!]!, \$startDate: String!, \$endDate: String!) {\n" +
+        const val QUERY = "query getLineGraphData(\$shopID: String!, \$dataKey: [String!]!, \$startDate: String!, \$endDate: String!) {\n" +
                 "  getLineGraphData(shopID: \$shopID, dataKey: \$dataKey, startDate: \$startDate, endDate: \$endDate) {\n" +
                 "    data {\n" +
                 "      dataKey\n" +

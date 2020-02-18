@@ -19,9 +19,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
-import com.tokopedia.sellerhome.util.getResColor
-import com.tokopedia.sellerhome.util.getResDrawable
-import com.tokopedia.sellerhome.util.parseAsHtml
+import com.tokopedia.sellerhome.common.utils.getResColor
+import com.tokopedia.sellerhome.common.utils.getResDrawable
+import com.tokopedia.sellerhome.common.utils.parseAsHtml
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.sah_line_graph_widget.view.*
@@ -187,7 +187,7 @@ class LineGraphViewHolder(
     class CustomTooltipConfiguration : TooltipConfiguration {
 
         companion object {
-            private const val DEFAULT_WIDTH = 72F
+            private const val DEFAULT_WIDTH = 68F
             private const val DEFAULT_HEIGHT = 32F
         }
 

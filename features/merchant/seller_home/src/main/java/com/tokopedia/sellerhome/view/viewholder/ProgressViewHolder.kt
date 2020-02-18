@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
+import com.tokopedia.sellerhome.common.utils.parseAsHtml
 import com.tokopedia.sellerhome.view.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
@@ -65,7 +66,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
         element.data?.run {
             with(element) {
                 itemView.tvProgressTitle.text = title
-                itemView.tvProgressDescription.text = data?.subtitle
+                itemView.tvProgressDescription.text = data?.subtitle?.parseAsHtml()
                 setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
                 setupDetails(this)
                 addImpressionTracker(this)

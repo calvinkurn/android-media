@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -17,8 +18,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
+import com.tokopedia.sellerhome.common.utils.getResColor
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
@@ -61,7 +62,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val tooltipBottomSheet by lazy { BottomSheetUnify() }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
 
-    private var isLoadFromCache = false
+    private var isFirstLoad = true
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
     private var hasLoadProgressData = false
@@ -96,6 +97,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         observeTickerLiveData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (isFirstLoad)
+            refreshWidget()
+    }
+
     private fun hideTooltipIfExist() {
         val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
         if (bottomSheet != null) {
@@ -119,7 +126,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         recyclerView.layoutManager = gridLayoutManager
 
         swipeRefreshLayout.setOnRefreshListener {
-            swipeRefreshLayout.isRefreshing = false
             refreshWidget()
         }
 
@@ -134,11 +140,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hasLoadProgressData = false
         hasLoadPostData = false
         hasLoadCarouselData = false
-        widgetHasMap.clear()
-        adapter.data.clear()
-        adapter.notifyDataSetChanged()
+        val isAdapterNotEmpty = adapter.data.isNotEmpty()
+        showGetWidgetProgress(!isAdapterNotEmpty)
+        swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
         sahGlobalError.gone()
-        showGetWidgetProgress(true)
         sellerHomeViewModel.getWidgetLayout()
     }
 
@@ -250,10 +255,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
-        isLoadFromCache = true
         view?.sahGlobalError?.gone()
         recyclerView.visible()
-        renderList(widgets)
+
+        adapter.data.clear()
+        widgetHasMap.clear()
+
+        adapter.data.addAll(widgets)
         widgets.forEach {
             if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
                 widgetHasMap[it.widgetType] = mutableListOf(it)
@@ -261,15 +269,46 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
             widgetHasMap[it.widgetType]?.add(it)
         }
+
+        renderListOrGetWidgetDataFirst(widgets)
+
         showGetWidgetProgress(false)
     }
 
+    /**
+     * If first load then directly render widget so it show widget shimmer
+     * Else it should get all widgets data then render the widget
+     * */
+    private fun renderListOrGetWidgetDataFirst(widgets: List<BaseWidgetUiModel<*>>) {
+        if (isFirstLoad)
+            renderList(widgets)
+        else
+            getWidgetsData(widgets)
+
+        isFirstLoad = false
+    }
+
+    private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.distinctBy { it.widgetType }
+                .forEach {
+                    when (it.widgetType) {
+                        WidgetType.CARD -> getCardData()
+                        WidgetType.LINE_GRAPH -> getLineGraphData()
+                        WidgetType.PROGRESS -> getProgressData()
+                        WidgetType.CAROUSEL -> getCarouselData()
+                        WidgetType.POST_LIST -> getPostData()
+                    }
+                }
+    }
+
     private fun setOnErrorGetLayout() = view?.run {
-        if (isLoadFromCache) {
+        if (adapter.data.isEmpty()) {
+            sahGlobalError.visible()
+        } else {
             Toaster.make(
                     this,
                     context.getString(R.string.sah_failed_to_get_information),
-                    Toaster.toasterLength,
+                    Snackbar.LENGTH_INDEFINITE,
                     Toaster.TYPE_ERROR,
                     context.getString(R.string.sah_reload),
                     View.OnClickListener {
@@ -277,9 +316,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                     }
             )
             sahGlobalError.gone()
-        } else {
-            sahGlobalError.visible()
         }
+        view?.swipeRefreshLayout?.isRefreshing = false
         showGetWidgetProgress(false)
     }
 
@@ -325,7 +363,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
         val widgetPosition = adapter.data.indexOf(widget)
-        adapter.notifyItemChanged(widgetPosition)
+        if (widgetPosition > -1) {
+            adapter.notifyItemChanged(widgetPosition)
+            view?.swipeRefreshLayout?.isRefreshing = false
+        }
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
