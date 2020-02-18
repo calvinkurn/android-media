@@ -31,8 +31,8 @@ class ChatSearchViewModel @Inject constructor(
     private var _searchResults = MutableLiveData<List<SearchResult>>()
     val searchResult: LiveData<List<SearchResult>> get() = _searchResults
 
-    var query: String = ""
-    var page: Int = 1
+    private var query: String = ""
+    private var page: Int = 1
 
     private var canRetry = false
 
@@ -42,11 +42,11 @@ class ChatSearchViewModel @Inject constructor(
         page = 1
         if (query.isEmpty()) {
             getSearchQueryUseCase.cancelRunningSearch()
-            _emptyQuery.postValue(true)
+            _emptyQuery.value = true
             return
         }
         if (getSearchQueryUseCase.isSearching) getSearchQueryUseCase.cancelRunningSearch()
-        _loadInitialData.postValue(true)
+        _loadInitialData.value = true
         doSearch()
     }
 
@@ -72,17 +72,17 @@ class ChatSearchViewModel @Inject constructor(
     }
 
     private fun doSearch() {
-        _triggerSearch.postValue(query)
+        _triggerSearch.value = query
         getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page)
     }
 
     private fun onSuccessDoSearch(response: GetChatSearchResponse) {
         canRetry = false
-        _searchResults.postValue(response.searchResults)
+        _searchResults.value = response.searchResults
     }
 
     private fun onErrorDoSearch(throwable: Throwable) {
         canRetry = true
-        _errorMessage.postValue(throwable)
+        _errorMessage.value = throwable
     }
 }
