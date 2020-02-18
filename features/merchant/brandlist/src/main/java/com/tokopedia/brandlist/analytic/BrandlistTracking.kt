@@ -110,7 +110,7 @@ class BrandlistTracking(context: Context) {
                 EVENT_ACTION, "$IMPRESSION - shop - brand of choice list - $statusLogin",
                 EVENT_LABEL, "shop impression",
                 ECOMMERCE, DataLayer.mapOf(
-                    PROMO_CLICK, DataLayer.mapOf(
+                    PROMO_VIEW, DataLayer.mapOf(
                             PROMOTIONS, DataLayer.listOf(
                                 DataLayer.mapOf(
                                         "id", shopId,
@@ -171,7 +171,7 @@ class BrandlistTracking(context: Context) {
                 EVENT_ACTION, "$IMPRESSION - shop - popular brand list - $statusLogin",
                 EVENT_LABEL, "shop impression",
                 ECOMMERCE, DataLayer.mapOf(
-                    PROMO_CLICK, DataLayer.mapOf(
+                    PROMO_VIEW, DataLayer.mapOf(
                         PROMOTIONS, DataLayer.listOf(
                             DataLayer.mapOf(
                                     "id", shopId,
@@ -221,7 +221,7 @@ class BrandlistTracking(context: Context) {
                 EVENT_ACTION, "$IMPRESSION - shop - new brand list - $statusLogin",
                 EVENT_LABEL, "shop impression",
                 ECOMMERCE, DataLayer.mapOf(
-                    PROMO_CLICK, DataLayer.mapOf(
+                    PROMO_VIEW, DataLayer.mapOf(
                         PROMOTIONS, DataLayer.listOf(
                             DataLayer.mapOf(
                                     "id", shopId,
@@ -275,7 +275,7 @@ class BrandlistTracking(context: Context) {
                 EVENT_ACTION, "$IMPRESSION - shop - all brand list - $statusLogin",
                 EVENT_LABEL, "$statusSearch - $keyword",
                 ECOMMERCE, DataLayer.mapOf(
-                    PROMO_CLICK, DataLayer.mapOf(
+                    PROMO_VIEW, DataLayer.mapOf(
                         PROMOTIONS, DataLayer.listOf(
                             DataLayer.mapOf(
                                     "id", shopId,
