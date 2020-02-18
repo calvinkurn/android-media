@@ -38,7 +38,7 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
         super.onCreate(savedInstanceState)
         initBottomSheet()
         initAdapter()
-        initRecyclerView()
+        initView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -56,11 +56,7 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     }
 
     override fun onItemChecked(airlineStat: AirlineStat, isChecked: Boolean) {
-//        val flightFilterModel = listener.flightFilterModel
-//        val airlineStatList = adapter.checkedDataList
-//        val airlineList = Observable.from(airlineStatList).map { airlineStat -> airlineStat.airlineDB.id }.toList().toBlocking().first()
-//        flightFilterModel.airlineList = airlineList
-//        listener.onFilterModelChanged(flightFilterModel)
+        // do nothing
     }
 
     private fun initBottomSheet() {
@@ -90,11 +86,15 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
         adapter = BaseListCheckableAdapter<AirlineStat, BaseListCheckableTypeFactory<AirlineStat>>(typeFactory, this)
     }
 
-    private fun initRecyclerView() {
+    private fun initView() {
         with(mChildView) {
-            recyclerView.setHasFixedSize(true)
-            recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            recyclerView.adapter = adapter
+            rvFlightFilterAirline.setHasFixedSize(true)
+            rvFlightFilterAirline.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            rvFlightFilterAirline.adapter = adapter
+
+            btnFlightFilterAirlineSave.setOnClickListener {
+                saveAirlineFilter()
+            }
         }
     }
 
@@ -127,6 +127,19 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
 
         adapter.setCheckedPositionList(checkedPositionList)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun saveAirlineFilter() {
+        val filterModel = listener.flightFilterModel
+        val checkedAirlineList = adapter.checkedDataList
+
+        filterModel.airlineList = checkedAirlineList.map {
+            it.airlineDB.id
+        }.toList()
+
+        if (isAdded) {
+            dismiss()
+        }
     }
 
     companion object {

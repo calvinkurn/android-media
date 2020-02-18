@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rvFlightFilterAirline"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
