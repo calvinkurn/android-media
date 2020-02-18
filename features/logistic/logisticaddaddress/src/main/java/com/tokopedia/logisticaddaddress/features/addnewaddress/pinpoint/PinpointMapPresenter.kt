@@ -76,14 +76,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         districtBoundaryUseCase.unsubscribe()
     }
 
-    fun clearCacheGetDistrict() {
-        getDistrictUseCase.clearCache()
-    }
-
-    fun clearCacheAutofill() {
-        revGeocodeUseCase.clearCache()
-    }
-
     fun loadAddEdit(isMismatchSolved: Boolean, isChangesRequested: Boolean) {
         if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
@@ -169,7 +161,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
     }
 
-    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
+    private fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
         if (permissionCheckerHelper != null) {
             this.permissionCheckerHelper = permissionCheckerHelper
         }
@@ -179,5 +171,13 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         return {
             view.showAutoComplete(it.latitude, it.longitude)
         }
+    }
+
+    private fun clearCacheGetDistrict() {
+        getDistrictUseCase.clearCache()
+    }
+
+    private fun clearCacheAutofill() {
+        revGeocodeUseCase.clearCache()
     }
 }
