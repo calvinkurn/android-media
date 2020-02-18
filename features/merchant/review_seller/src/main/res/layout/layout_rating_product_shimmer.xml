@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        app:srcCompat="@drawable/skeleton"
+        app:corners="16"
         app:layout_constraintBottom_toBottomOf="@+id/skeleton_2"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,29 +29,29 @@
         android:layout_marginTop="@dimen/dp_17"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        app:srcCompat="@drawable/skeleton"
+        app:corners="16"
         app:layout_constraintBottom_toTopOf="@+id/line_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.design.loading.LoadingStateView
         android:id="@+id/line_1"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_17"
-        app:srcCompat="@drawable/line"
+        android:background="@drawable/line"
         app:layout_constraintBottom_toBottomOf="@+id/line_2"
         app:layout_constraintEnd_toStartOf="@+id/line_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/skeleton_2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.design.loading.LoadingStateView
         android:id="@+id/line_2"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_17"
-        app:srcCompat="@drawable/line"
+        android:background="@drawable/line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/skeleton_2" />
@@ -69,35 +69,35 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/background_1"
-            android:layout_marginStart="@dimen/dp_17"
-            android:layout_marginLeft="@dimen/dp_17"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            app:srcCompat="@drawable/background_shimmer" />
+            android:layout_marginStart="@dimen/dp_17"
+            android:layout_marginLeft="@dimen/dp_17"
+            app:corners="35" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/background_2"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            app:srcCompat="@drawable/background_shimmer" />
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:corners="35" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/background_3"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            app:srcCompat="@drawable/background_shimmer" />
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:corners="35" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/background_4"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_32"
-            app:srcCompat="@drawable/background_shimmer" />
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:corners="35" />
 
     </LinearLayout>
 
@@ -127,7 +127,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_22"
                 android:layout_marginBottom="@dimen/dp_22"
-                app:srcCompat="@drawable/rectangle_1"
+                app:corners="22"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -141,7 +141,7 @@
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                app:srcCompat="@drawable/rectangle_2"
+                app:corners="16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/rectangle_1"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -156,7 +156,7 @@
                 android:layout_marginEnd="@dimen/dp_56"
                 android:layout_marginRight="@dimen/dp_56"
                 android:layout_marginBottom="@dimen/dp_20"
-                app:srcCompat="@drawable/rectangle_3"
+                app:corners="16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/rectangle_1"
@@ -188,8 +188,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
 
-        <include
-            layout="@layout/partial_shimmering_product_list" />
+        <include layout="@layout/partial_shimmering_product_list" />
 
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_3"
@@ -199,8 +198,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
 
-        <include
-            layout="@layout/partial_shimmering_product_list" />
+        <include layout="@layout/partial_shimmering_product_list" />
 
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_4"
@@ -210,8 +208,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
 
-        <include
-            layout="@layout/partial_shimmering_product_list" />
+        <include layout="@layout/partial_shimmering_product_list" />
 
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_5"
@@ -221,8 +218,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
 
-        <include
-            layout="@layout/partial_shimmering_product_list" />
+        <include layout="@layout/partial_shimmering_product_list" />
 
         <com.tokopedia.design.loading.LoadingStateView
             android:id="@+id/rectangle_8_6"
@@ -232,8 +228,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:background="@drawable/rectangle_8_2" />
 
-        <include
-            layout="@layout/partial_shimmering_product_list" />
+        <include layout="@layout/partial_shimmering_product_list" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
