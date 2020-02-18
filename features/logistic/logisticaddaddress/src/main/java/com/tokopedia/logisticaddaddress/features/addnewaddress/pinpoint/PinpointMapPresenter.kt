@@ -40,6 +40,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     fun getDistrict(placeId: String) {
+        getDistrictUseCase.clearCache()
         getDistrictUseCase.setParams(placeId)
         getDistrictUseCase.execute(RequestParams.create(), GetDistrictSubscriber(view, getDistrictMapper))
     }
@@ -52,6 +53,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
         val param = "$lat,$long"
         view.showLoading()
+        revGeocodeUseCase.clearCache()
         revGeocodeUseCase.execute(param)
                 .subscribe(
                         {
@@ -171,13 +173,5 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         return {
             view.showAutoComplete(it.latitude, it.longitude)
         }
-    }
-
-    fun clearCacheGetDistrict() {
-        getDistrictUseCase.clearCache()
-    }
-
-    fun clearCacheAutofill() {
-        revGeocodeUseCase.clearCache()
     }
 }
