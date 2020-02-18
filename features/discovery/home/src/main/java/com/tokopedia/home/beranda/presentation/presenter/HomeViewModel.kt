@@ -110,6 +110,10 @@ class HomeViewModel @Inject constructor(
         get() = _popupIntroOvoLiveData
     private val _popupIntroOvoLiveData = MutableLiveData<Event<String>>()
 
+    val sendLocationLiveData: LiveData<Event<Any>>
+        get() = _sendLocationLiveData
+    private val _sendLocationLiveData = MutableLiveData<Event<Any>>()
+
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
@@ -136,13 +140,14 @@ class HomeViewModel @Inject constructor(
     private var fetchFirstData = false
 
 
-    private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var subscription: Subscription? = Subscriptions.empty()
-
     private var hasGeoLocationPermission = false
+    private var isNeedShowGeoLocation = false
 
+
+    private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
     init {
         initHeaderViewModelData()
         initFlow()
@@ -154,7 +159,7 @@ class HomeViewModel @Inject constructor(
             refreshHomeData()
         }
         if (needSendGeolocationRequest && hasGeoLocationPermission) {
-//            detectAndSendLocation()
+            _sendLocationLiveData.postValue(Event(needSendGeolocationRequest))
         }
         getTokocashBalance()
         getTokopoint()
@@ -162,9 +167,6 @@ class HomeViewModel @Inject constructor(
         getStickyContent()
     }
 
-    /**
-     * Tokocash & Tokopoint
-     */
     fun hitBannerImpression(slidesModel: BannerSlidesModel) {
         if (!slidesModel.isImpressed
                 && slidesModel.topadsViewUrl != null && !slidesModel.topadsViewUrl.isEmpty()) {
@@ -273,7 +275,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getReviewData() {
-        if (viewNeedToShowGeolocationComponent()) {
+        if (isNeedShowGeoLocation) {
             removeSuggestedReview()
         } else {
             getSuggestedReview()
@@ -290,7 +292,7 @@ class HomeViewModel @Inject constructor(
 
             override fun onNext(suggestedProductReview: SuggestedProductReview?) {
                 suggestedProductReview?.let {
-                    if (!viewNeedToShowGeolocationComponent()) {
+                    if (!isNeedShowGeoLocation) {
                         insertSuggestedReview(it)
                     }
                 }
@@ -301,7 +303,7 @@ class HomeViewModel @Inject constructor(
     private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             var newHomeViewModel = homeDataModel
-            if(viewNeedToShowGeolocationComponent()) newHomeViewModel = removeSuggestedReview(it)
+            if(isNeedShowGeoLocation) newHomeViewModel = removeSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
@@ -312,7 +314,7 @@ class HomeViewModel @Inject constructor(
 
     private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
-            if (!viewNeedToShowGeolocationComponent()) {
+            if (!isNeedShowGeoLocation) {
                 val findGeolocationModel =
                         homeDataModel.list.find { visitable -> visitable is GeolocationPromptViewModel }
                 val currentList = homeDataModel.list.toMutableList()
@@ -369,12 +371,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun viewNeedToShowGeolocationComponent(): Boolean {
-//        if (isViewAttached) {
-//            return view?.needToShowGeolocationComponent()?:false
-//        }
-        return false
+    fun setNeedToShowGeolocationComponent(needToShowGeolocation: Boolean){
+        this.isNeedShowGeoLocation = needToShowGeolocation
     }
+
+    fun setGeolocationPermission(hasGeolocationPermission: Boolean){
+        this.hasGeoLocationPermission = hasGeolocationPermission
+    }
+
+    fun hasGeolocationPermission() = hasGeoLocationPermission
 
 // =================================================================================
 // ================================ View Controller ================================
@@ -451,6 +456,24 @@ class HomeViewModel @Inject constructor(
             currentList.remove(it)
             _homeLiveData.value = homeViewModel.copy(list = currentList)
         }
+    }
+
+    fun onRefreshTokoPoint() {
+        updateHeaderViewModel(
+                isTokoPointDataError = false,
+                tokopointsDrawer = null,
+                tokopointHomeDrawerData = null
+        )
+        getTokopoint()
+    }
+
+    fun onRefreshTokoCash() {
+        if (!userSession.isLoggedIn) return
+        updateHeaderViewModel(
+                isWalletDataError = false,
+                homeHeaderWalletAction = null
+        )
+        getTokocashBalance()
     }
 
 // =================================================================================
@@ -592,6 +615,18 @@ class HomeViewModel @Inject constructor(
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.setValue(Result.error(Throwable(), null))
         }
+    }
+
+    fun dismissReview() {
+        removeSuggestedReview()
+        dismissHomeReviewUseCase.execute(RequestParams.EMPTY, object: Subscriber<String>(){
+            override fun onNext(t: String?) {}
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) {}
+
+        })
     }
 
     @VisibleForTesting

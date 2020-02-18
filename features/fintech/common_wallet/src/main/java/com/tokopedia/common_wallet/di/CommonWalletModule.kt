@@ -17,19 +17,6 @@ import dagger.Provides
 class CommonWalletModule {
 
     @Provides
-    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
-        return FirebaseRemoteConfigImpl(context)
-    }
-
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @Provides
-    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @Provides
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler{
         return LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
     }

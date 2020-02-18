@@ -150,7 +150,6 @@ open class HomePresenter (
         super.attachView(view)
         view?.let {
             homeDataMapper = HomeDataMapper(it.context, HomeVisitableFactoryImpl(userSession), it.trackingQueue)
-//            homeUseCase.homeDataMapper = homeDataMapper
         }
     }
 

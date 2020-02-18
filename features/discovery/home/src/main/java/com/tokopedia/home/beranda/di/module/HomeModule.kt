@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
+import com.tokopedia.common_wallet.di.CommonWalletModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -32,9 +33,10 @@ import dagger.Provides
 @Module(includes = [
     HomeDataSourceModule::class,
     HomeDatabaseModule::class,
-    HomeFeedPresenter::class,
+    HomePresenterModule::class,
     HomeMapperModule::class,
     HomeUseCaseModule::class,
+    CommonWalletModule::class,
     TopAdsWishlistModule::class
 ])
 class HomeModule {

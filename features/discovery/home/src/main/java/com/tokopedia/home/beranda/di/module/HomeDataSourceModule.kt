@@ -5,10 +5,7 @@ import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
-import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
-import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.home.beranda.data.datasource.remote.KeywordSearchRemoteDataSource
-import com.tokopedia.home.beranda.data.datasource.remote.PlayRemoteDataSource
+import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.common.HomeAceApi
 import dagger.Module
@@ -27,8 +24,11 @@ class HomeDataSourceModule {
 
     @HomeScope
     @Provides
-    fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
+    fun provideTokopointRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = TokopointRemoteDataSource(graphqlRepository, dispatcher)
 
+    @HomeScope
+    @Provides
+    fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
 
     @HomeScope
     @Provides

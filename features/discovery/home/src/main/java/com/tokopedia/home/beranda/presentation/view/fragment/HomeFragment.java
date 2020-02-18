@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,7 +25,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
@@ -74,7 +74,6 @@ import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomeViewModel;
-import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
@@ -151,6 +150,7 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 /**
  * @author by errysuprayogi on 11/27/17.
  */
+@SuppressLint("SyntheticAccessor")
 public class HomeFragment extends BaseDaggerFragment implements
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
@@ -163,11 +163,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final int DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111;
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
-    public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
-    public static final String REVIEW_CLICK_AT = "rating";
-    public static final String UTM_SOURCE = "utm_source";
-    public static final String EXTRA_URL = "url";
-    public static final String EXTRA_TITLE = "core_web_view_extra_title";
+    private static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
+    private static final String REVIEW_CLICK_AT = "rating";
+    private static final String UTM_SOURCE = "utm_source";
+    private static final String EXTRA_URL = "url";
+    private static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     private static final String DEFAULT_UTM_SOURCE = "home_notif";
@@ -178,14 +178,10 @@ public class HomeFragment extends BaseDaggerFragment implements
     private MainParentStatusBarListener mainParentStatusBarListener;
     private ActivityStateListener activityStateListener;
 
-//    @Inject
-//    HomePresenter presenter;
-
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
-    ViewModelProvider viewModelProvider;
-    HomeViewModel viewModel;
+    private HomeViewModel viewModel;
 
     @Inject
     PermissionCheckerHelper permissionCheckerHelper;
@@ -233,6 +229,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
+    @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -242,7 +239,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mainParentStatusBarListener = (MainParentStatusBarListener)context;
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context);
@@ -270,8 +267,10 @@ public class HomeFragment extends BaseDaggerFragment implements
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
-        viewModelProvider = ViewModelProviders.of(this, viewModelFactory);
+        ViewModelProvider viewModelProvider = ViewModelProviders.of(this, viewModelFactory);
         viewModel = viewModelProvider.get(HomeViewModel.class);
+        setGeolocationPermission();
+        needToShowGeolocationComponent();
     }
 
     @Override
@@ -511,13 +510,10 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onDestroy() {
         super.onDestroy();
         adapter.onDestroy();
-//        presenter.onDestroy();
-//        presenter.detachView();
         homeRecyclerView.setAdapter(null);
         adapter = null;
         homeRecyclerView.setLayoutManager(null);
         layoutManager = null;
-//        presenter = null;
         unRegisterBroadcastReceiverTokoCash();
     }
 
@@ -537,6 +533,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeHomeData();
         observeUpdateNetworkStatusData();
         observePopupIntroOvo();
+        observeSendLocation();
         observeSearchHint();
         observeStickyLogin();
         observeTrackingData();
@@ -582,6 +579,10 @@ public class HomeFragment extends BaseDaggerFragment implements
         viewModel.getSearchHint().observe(getViewLifecycleOwner(), data -> {
             setHint(data);
         });
+    }
+
+    private void observeSendLocation(){
+        viewModel.getSendLocationLiveData().observe(getViewLifecycleOwner(), data -> detectAndSendLocation());
     }
 
     private void observePopupIntroOvo(){
@@ -946,7 +947,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onRefresh() {
-        //onrefresh most likely we already lay out many view, then we can reduce
+        //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
 
@@ -965,8 +966,8 @@ public class HomeFragment extends BaseDaggerFragment implements
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
 
-    public void onNetworkRetry() {
-        //onrefresh most likely we already lay out many view, then we can reduce
+    private void onNetworkRetry() {
+        //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
 
@@ -997,18 +998,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
     }
 
-    @Override
-    public boolean isLoading() {
-        return refreshLayout.isRefreshing();
-    }
-
-    @Override
-    public void showLoading() {
+    private void showLoading() {
         refreshLayout.setRefreshing(true);
     }
 
-    @Override
-    public void hideLoading() {
+    private void hideLoading() {
         refreshLayout.setRefreshing(false);
         homeRecyclerView.setEnabled(true);
     }
@@ -1027,11 +1021,12 @@ public class HomeFragment extends BaseDaggerFragment implements
                     }
                 });
     }
-    @Override
-    public boolean needToShowGeolocationComponent() {
+
+    private void needToShowGeolocationComponent() {
         boolean firebaseShowGeolocationComponent = remoteConfig.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true);
         if (!firebaseShowGeolocationComponent) {
-            return false;
+            viewModel.setNeedToShowGeolocationComponent(false);
+            return;
         }
 
         boolean needToShowGeolocationComponent = true;
@@ -1041,24 +1036,27 @@ public class HomeFragment extends BaseDaggerFragment implements
                     .shouldShowRequestPermissionRationale(getActivity(),
                             PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION);
             if (userHasDeniedPermissionBefore) {
-                return false;
+                viewModel.setNeedToShowGeolocationComponent(false);
+                return;
             }
         }
 
         if (getActivity() != null) {
-            if (hasGeolocationPermission()) {
+            if (viewModel.hasGeolocationPermission()) {
                 needToShowGeolocationComponent = false;
             }
         }
-        if(needToShowGeolocationComponent && HIDE_GEO) return false;
-        return needToShowGeolocationComponent;
+        if(needToShowGeolocationComponent && HIDE_GEO) {
+            viewModel.setNeedToShowGeolocationComponent(false);
+            return;
+        }
+        viewModel.setNeedToShowGeolocationComponent(needToShowGeolocationComponent);
     }
 
-    @Override
-    public boolean hasGeolocationPermission() {
-        if (getActivity() == null) return false;
-        return permissionCheckerHelper.hasPermission(getActivity(),
-                new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
+    private void setGeolocationPermission() {
+        if (getActivity() == null) viewModel.setGeolocationPermission(false);
+        else viewModel.setGeolocationPermission(permissionCheckerHelper.hasPermission(getActivity(),
+                new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION}));
     }
 
     private void promptGeolocationPermission() {
@@ -1087,8 +1085,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }, "");
     }
 
-    @Override
-    public void detectAndSendLocation() {
+    private void detectAndSendLocation() {
         LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
                 permissionCheckerHelper,
                 LocationServices.getFusedLocationProviderClient(getActivity()
@@ -1126,15 +1123,13 @@ public class HomeFragment extends BaseDaggerFragment implements
         permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
     }
 
-    @Override
-    public void setHint(SearchPlaceholder searchPlaceholder) {
+    private void setHint(SearchPlaceholder searchPlaceholder) {
         if (searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null) {
             homeMainToolbar.setHint(searchPlaceholder.getData().getPlaceholder(), searchPlaceholder.getData().getKeyword());
         }
     }
 
-    @Override
-    public void addImpressionToTrackingQueue(List<Visitable> visitables) {
+    private void addImpressionToTrackingQueue(List<Visitable> visitables) {
         if (visitables != null) {
             List<Object> combinedTracking = new ArrayList<>();
             for (Visitable visitable : visitables) {
@@ -1160,13 +1155,13 @@ public class HomeFragment extends BaseDaggerFragment implements
                 if (messageSnackbar == null) {
                     messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
                             getActivity(), getString(R.string.msg_network_error),
-                            () -> onNetworkRetry()
+                            this::onNetworkRetry
                     );
                 }
                 messageSnackbar.showRetrySnackbar();
             } else {
                 NetworkErrorHelper.showEmptyState(getActivity(), root, message,
-                        () -> onRefresh());
+                        this::onRefresh);
             }
         }
     }
@@ -1225,8 +1220,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
     }
 
-    @Override
-    public void removeNetworkError() {
+    private void removeNetworkError() {
         NetworkErrorHelper.removeEmptyState(root);
         if (messageSnackbar != null && messageSnackbar.isShown()) {
             messageSnackbar.hideRetrySnackbar();
@@ -1248,12 +1242,12 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onRefreshTokoPointButtonClicked() {
-//        viewModel.onRefreshTokoPoint();
+        viewModel.onRefreshTokoPoint();
     }
 
     @Override
     public void onRefreshTokoCashButtonClicked() {
-//        viewModel.onRefreshTokoCash();
+        viewModel.onRefreshTokoCash();
     }
 
     @Override
@@ -1624,12 +1618,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onCloseClick() {
-//        viewModel.dismissReview();
-    }
-
-    @Override
-    public void onSuccessDismissReview() {
-        viewModel.removeSuggestedReview();
+        viewModel.dismissReview();
     }
 
     private void updateEggBottomMargin(FloatingEggButtonFragment floatingEggButtonFragment) {
