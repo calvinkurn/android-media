@@ -27,7 +27,7 @@ class FlightSortBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setTitle(DIALOG_TITLE)
+        setTitle(getString(DIALOG_TITLE))
         isHideable = true
         showCloseIcon = false
         showKnob = true
@@ -87,7 +87,7 @@ class FlightSortBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val ARG_SELECTED_SORT_OPTION = "arg_selected_sort_option"
-        private const val DIALOG_TITLE = "Urutkan berdasarkan"
+        private val DIALOG_TITLE = R.string.flight_search_sort_dialog_title
 
         fun newInstance(selectedSortOption: Int): FlightSortBottomSheet =
                 FlightSortBottomSheet().also {
