@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
@@ -30,6 +29,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -121,8 +121,6 @@ public interface ShipmentContract {
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList, boolean isAnalyticsPurpose);
-
-        ShipmentDataConverter getShipmentDataConverter();
 
         Activity getActivityContext();
 
@@ -271,7 +269,8 @@ public interface ShipmentContract {
 
         void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
                              boolean isOneClickShipment, boolean isTradeIn,
-                             boolean isTradeInDropOff, String deviceId, String lesingId);
+                             boolean isTradeInDropOff, String deviceId,
+                             String cornerId, String leasingId);
 
         void checkPromoFinalStackShipment(Promo promo);
 
@@ -378,6 +377,8 @@ public interface ShipmentContract {
         CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, boolean hasInsurance, CheckPromoParam checkPromoParam, int isDonation, String leasingId);
 
         void getInsuranceTechCartOnCheckout();
+
+        ShipmentDataConverter getShipmentDataConverter();
     }
 
 }

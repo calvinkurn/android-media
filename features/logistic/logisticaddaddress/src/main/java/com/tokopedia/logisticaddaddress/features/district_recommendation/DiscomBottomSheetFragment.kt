@@ -1,18 +1,19 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.os.Handler
-import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -130,7 +131,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage()
+            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(eventLabel = LOGISTIC_LABEL)
             onCloseButtonClick()
         }
     }
@@ -182,7 +183,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     override fun onCityChipClicked(city: String) {
         etSearch.setText(city)
         etSearch.setSelection(city.length)
-        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative()
+        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
     }
 
     fun setActionListener(actionListener: ActionListener) {
@@ -224,7 +225,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         context?.let {
             districtModel.run {
                 actionListener.onGetDistrict(districtModel)
-                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative()
+                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
                 dismiss()
             }
         }

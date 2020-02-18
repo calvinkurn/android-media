@@ -17,6 +17,7 @@ import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -26,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -87,17 +89,19 @@ import javax.inject.Named
  */
 class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener {
 
-    lateinit var optionTitle: TextView
-    lateinit var separator: View
-    lateinit var partialRegisterInputView: PartialRegisterInputView
-    lateinit var registerButton: LoginTextView
-    lateinit var loginButton: TextView
-    lateinit var container: ScrollView
-    lateinit var progressBar: RelativeLayout
-    lateinit var tickerAnnouncement: Ticker
+    private lateinit var optionTitle: TextView
+    private lateinit var separator: View
+    private lateinit var partialRegisterInputView: PartialRegisterInputView
+    private lateinit var registerButton: LoginTextView
+    private lateinit var loginButton: TextView
+    private lateinit var container: ScrollView
+    private lateinit var progressBar: RelativeLayout
+    private lateinit var tickerAnnouncement: Ticker
+    private lateinit var bannerRegister: ImageView
     private lateinit var socmedButton: ButtonCompat
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var socmedButtonsContainer: LinearLayout
+
 
     private var phoneNumber: String? = ""
     private var source: String = ""
@@ -105,6 +109,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private var isSmartLogin: Boolean = false
     private var isPending: Boolean = false
     private var isShowTicker: Boolean = false
+    private var isShowBanner: Boolean = false
 
     @field:Named(SESSION_MODULE)
     @Inject
@@ -211,6 +216,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         container = view.findViewById(R.id.container)
         progressBar = view.findViewById(R.id.progress_bar)
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
+        bannerRegister = view.findViewById(R.id.banner_register)
         prepareView()
         setViewListener()
         if (isSmartLogin) {
@@ -265,6 +271,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
+            isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
         }
     }
 
@@ -274,7 +281,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         partialRegisterInputView.setListener(this)
 
         if (!GlobalConfig.isSellerApp()) {
-            if (isFromAtc() && isShowTicker) {
+            if (isShowBanner) {
+                context?.let {
+                    registerAnalytics.eventViewBanner()
+                    ImageHandler.LoadImage(bannerRegister, BANNER_REGISTER_URL)
+                    bannerRegister.visibility = View.VISIBLE
+                }
+            } else if (isFromAtc() && isShowTicker) {
                 tickerAnnouncement.visibility = View.VISIBLE
                 tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
                 tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
@@ -1265,6 +1278,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val FACEBOOK_LOGIN_TYPE = "fb"
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
+        private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
+
+        private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()

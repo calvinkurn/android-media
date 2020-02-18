@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -97,6 +98,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         const val ALL_ETALASE_ID = "etalase"
         const val SOLD_ETALASE_ID = "sold"
+        const val SHOP_INFO_CACHE_MANAGER_ID = "SHOP_INFO_CACHE_MANAGER_ID"
 
         @JvmStatic
         fun createInstance(shopAttribution: String?): ShopPageProductListFragment {
@@ -135,6 +137,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var isGoldMerchant: Boolean = false
     private var selectedEtalaseId = ""
     private var selectedEtalaseName = ""
+    private var recyclerViewTopPadding = 0
     private val customDimensionShopPage: CustomDimensionShopPage
         get() {
             return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
@@ -161,11 +164,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     CustomDimensionShopPage.create(shopId,
                             shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
         }
-        //this is to reset fling and initial load position
         if (recyclerView?.hasNestedScrollingParent(ViewCompat.TYPE_NON_TOUCH) != true) {
             recyclerView?.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH);
         }
-        recyclerView?.smoothScrollBy(0, 1)
+        //multiply with 2 to make first dy value on onScroll function greater than rv top padding
+        recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
         shopProductAdapter.refreshSticky()
         recyclerView?.post {
             gridLayoutManager.scrollToPositionWithOffset(
@@ -221,6 +224,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 animator.supportsChangeAnimations = false
             }
         }
+        recyclerViewTopPadding = recyclerView?.paddingTop ?: 0
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -535,7 +539,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun redirectToEtalasePicker() {
         activity?.let {
             val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo!!.shopCore.shopID,
-                    selectedEtalaseId, isShowDefault = true, isShowZeroProduct = false)
+                    selectedEtalaseId, isShowDefault = true, isShowZeroProduct = isOwner)
             startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
         }
     }
@@ -630,7 +634,22 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         outState.putString(SAVED_SHOP_ID, shopId)
         outState.putBoolean(SAVED_SHOP_IS_OFFICIAL, isOfficialStore)
         outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant)
+        shopInfo?.let {
+            outState.putString(
+                    SHOP_INFO_CACHE_MANAGER_ID,
+                    saveShopInfoModelToCacheManager(it)
+            )
+        }
     }
+
+    private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
+        return context?.run {
+            val cacheManager = SaveInstanceCacheManager(this, true)
+            cacheManager.put(ShopInfo.TAG, shopInfo)
+            cacheManager.id
+        }
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_new_shop_page_product_list, container, false)
@@ -641,8 +660,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             selectedEtalaseId = it.getString(SAVED_SELECTED_ETALASE_ID) ?: ""
             selectedEtalaseName = it.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
             shopId = it.getString(SAVED_SHOP_ID)
+            val shopInfoCacheManagerId = it.getString(SHOP_INFO_CACHE_MANAGER_ID, "")
             isGoldMerchant = it.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT)
             isOfficialStore = it.getBoolean(SAVED_SHOP_IS_OFFICIAL)
+            shopInfo = context?.run {
+                SaveInstanceCacheManager(this, shopInfoCacheManagerId).run {
+                    get(ShopInfo.TAG, ShopInfo::class.java)
+                }
+            }
         }
         initRecyclerView(view)
         super.onViewCreated(view, savedInstanceState)
