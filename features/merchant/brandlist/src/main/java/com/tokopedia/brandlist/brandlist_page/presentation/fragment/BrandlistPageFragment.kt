@@ -24,6 +24,7 @@ import com.tokopedia.brandlist.brandlist_page.di.DaggerBrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
@@ -298,7 +299,7 @@ class BrandlistPageFragment :
 
     private fun loadData(category: Category, userId: String, isRefresh: Boolean = false) {
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
-            if (!isLoadedOnce  || isRefresh) {
+            if (!isLoadedOnce || isRefresh) {
                 viewModel.loadInitialData(category, userId)
                 isLoadedOnce = true
 
@@ -326,7 +327,7 @@ class BrandlistPageFragment :
         brandlistTracking?.clickLihatSemua(isLogin, categoryName)
     }
 
-    override fun clickBrandBaruTokopedia(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String)  {
+    override fun clickBrandBaruTokopedia(shopId: String, shopName: String, imgUrl: String, shoplogoPosition: String) {
         val isLogin = userSession.isLoggedIn
         brandlistTracking?.clickBrandBaruTokopedia(
                 isLogin, shopId, categoryName,

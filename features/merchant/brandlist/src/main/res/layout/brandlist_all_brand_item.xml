@@ -2,19 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/brand_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_120"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_height="@dimen/dp_0"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="@dimen/dp_4"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -25,13 +24,14 @@
 
             <ImageView
                 android:id="@+id/iv_brand_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_33"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="2:1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -52,14 +52,15 @@
 
             <ImageView
                 android:id="@+id/iv_brand_image"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_66"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_11"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_brand_logo" />
@@ -71,14 +72,11 @@
         android:id="@+id/tv_brand_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_6"
         android:gravity="center"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="#f531353b"
-        android:textSize="12sp"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/brand_layout" />
