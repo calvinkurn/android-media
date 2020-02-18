@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import com.google.android.gms.analytics.Tracker
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
