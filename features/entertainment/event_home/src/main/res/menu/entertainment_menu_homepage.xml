@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <item
+<!--     <item
         android:id="@+id/action_favorite"
         android:icon="@drawable/ent_ic_wishlist_inactive"
         android:orderInCategory="100"
         android:title="Favorite"
-        app:showAsAction="always" />
+        app:showAsAction="always" /> -->
 
     <item
         android:id="@+id/action_more"

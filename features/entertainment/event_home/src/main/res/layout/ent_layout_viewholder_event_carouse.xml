@@ -28,6 +28,7 @@
         android:layout_marginRight="16dp"
         android:text="@string/lihat_semua"
         android:textColor="@color/ent_green"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/ent_title_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ent_title_card"
