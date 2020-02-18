@@ -86,6 +86,7 @@
     <string name="flight_search_sort_item_longest_duration">Durasi Terlama</string>
     <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
     <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
+    <string name="flight_search_sort_dialog_title">Urutkan berdasarkan</string>
     <string name="filter">Filter</string>
     <string name="reset">Reset</string>
     <string name="airline">Maskapai Penerbangan</string>
