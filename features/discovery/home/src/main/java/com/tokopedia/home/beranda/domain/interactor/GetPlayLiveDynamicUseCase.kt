@@ -28,6 +28,7 @@ class GetPlayLiveDynamicUseCase @Inject constructor(
 
     private val params = RequestParams.create()
     init {
+        graphqlUseCase.setTypeClass(PlayLiveDynamicChannelEntity::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         params.parameters.clear()
     }

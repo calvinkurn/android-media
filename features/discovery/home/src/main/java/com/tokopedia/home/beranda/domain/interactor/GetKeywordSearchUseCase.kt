@@ -14,6 +14,7 @@ class GetKeywordSearchUseCase @Inject constructor(
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        graphqlUseCase.setTypeClass(KeywordSearchData::class.java)
     }
 
     override suspend fun executeOnBackground(): KeywordSearchData {

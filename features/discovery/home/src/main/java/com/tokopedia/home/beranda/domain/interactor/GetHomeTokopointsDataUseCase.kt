@@ -13,6 +13,7 @@ class GetHomeTokopointsDataUseCase @Inject constructor(
 ): UseCase<TokopointsDrawerHomeData>(){
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        graphqlUseCase.setTypeClass(TokopointsDrawerHomeData::class.java)
     }
 
     override suspend fun executeOnBackground(): TokopointsDrawerHomeData {
