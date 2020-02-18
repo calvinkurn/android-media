@@ -223,7 +223,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         sellerDrawerHelper.notifyDataSetChanged()
         sellerDrawerHelper.setFooterData(drawerProfile)
 
-        val title = HELLO_STRING + drawerProfile.userName
+        val title = HELLO_STRING + drawerProfile.shopName
         setToolbarTitle(title)
     }
 
@@ -283,7 +283,6 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
 
     open fun Toolbar.initTitle() {
         toolbarTitle = layoutInflater.inflate(R.layout.custom_action_bar_title, null)
-        toolbarTitle.actionbar_title.text = title
         this.addView(toolbarTitle)
     }
 
