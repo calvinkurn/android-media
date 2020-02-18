@@ -170,6 +170,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
         }
 
+        if (FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.ENABLE_PREFERENCE_SETTINGS, true) || true) {
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_PREFERENCE_ID,
+                    getString(R.string.title_preference_setting), getString(R.string.subtitle_preference_setting)))
+        }
+
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -257,6 +262,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             SettingConstant.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+            }
+            SettingConstant.SETTING_PREFERENCE_ID -> {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
             }
             else -> {
             }
