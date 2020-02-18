@@ -118,4 +118,6 @@ interface ICartListView : CustomerView {
     fun getAdsId(): String?
 
     fun goToLite(url: String)
+
+    fun updateCartCounter(counter: Int)
 }
