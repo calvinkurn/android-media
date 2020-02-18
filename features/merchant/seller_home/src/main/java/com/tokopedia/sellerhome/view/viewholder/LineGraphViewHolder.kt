@@ -14,12 +14,14 @@ import com.db.williamchart.util.TooltipConfiguration
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.util.getResColor
-import com.tokopedia.sellerhome.util.getResDrawable
-import com.tokopedia.sellerhome.util.parseAsHtml
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
+import com.tokopedia.sellerhome.common.utils.getResColor
+import com.tokopedia.sellerhome.common.utils.getResDrawable
+import com.tokopedia.sellerhome.common.utils.parseAsHtml
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.sah_line_graph_widget.view.*
@@ -40,7 +42,6 @@ class LineGraphViewHolder(
     }
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
-
         observeState(element)
         listener.getLineGraphData()
 
@@ -57,9 +58,10 @@ class LineGraphViewHolder(
             setupTooltip(element)
     }
 
-    private fun openAppLink(appLink: String) {
-        if (appLink.isBlank()) return
-        RouteManager.route(itemView.context, appLink)
+    private fun openAppLink(appLink: String, dataKey: String, value: String) {
+        if (RouteManager.route(itemView.context, appLink)) {
+            SellerHomeTracking.sendClickLineGraphEvent(dataKey, value)
+        }
     }
 
     /**
@@ -133,21 +135,26 @@ class LineGraphViewHolder(
 
         if (isCtaVisible) {
             btnLineGraphMore.setOnClickListener {
-                openAppLink(element.appLink)
+                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
             }
             btnLineGraphNext.setOnClickListener {
-                openAppLink(element.appLink)
+                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
             }
         }
 
-        if (isShown)
+        if (isShown) {
             showLineGraph(element)
+            itemView.addOnImpressionListener(element.impressHolder) {
+                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header.orEmpty())
+            }
+        }
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
         val yValue: List<Int> = element.data?.list.orEmpty().map { it.yVal }
         val xLabel: List<String> = element.data?.list.orEmpty().map { it.xLabel }
-        val lineGraphModel: BaseWilliamChartModel = GMStatisticUtil.getChartModel(xLabel, yValue)
+        val customValues: List<String> = element.data?.list.orEmpty().map { it.yLabel }
+        val lineGraphModel: BaseWilliamChartModel = GMStatisticUtil.getChartModel(xLabel, yValue, customValues)
 
         val lineGraphConfig: BaseWilliamChartConfig = getLineGraphConfig(lineGraphModel)
         with(lineGraphConfig) {
@@ -180,7 +187,7 @@ class LineGraphViewHolder(
     class CustomTooltipConfiguration : TooltipConfiguration {
 
         companion object {
-            private const val DEFAULT_WIDTH = 72F
+            private const val DEFAULT_WIDTH = 68F
             private const val DEFAULT_HEIGHT = 32F
         }
 

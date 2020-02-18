@@ -1,18 +1,16 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerhome.common.utils.getData
 import com.tokopedia.sellerhome.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhome.domain.model.GetLayoutResponse
-import com.tokopedia.sellerhome.util.getData
 import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 
 /**
  * Created By @ilhamsuaib on 2020-01-15
@@ -21,13 +19,11 @@ import com.tokopedia.usecase.coroutines.UseCase
 class GetLayoutUseCase(
         private val gqlRepository: GraphqlRepository,
         private val mapper: LayoutMapper
-) : UseCase<List<BaseWidgetUiModel<*>>>() {
-
-    var params: RequestParams = RequestParams.EMPTY
+) : BaseGqlUseCase<List<BaseWidgetUiModel<*>>>() {
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), getCacheStrategy())
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {

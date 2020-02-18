@@ -1,8 +1,9 @@
-package com.tokopedia.sellerhome.util
+package com.tokopedia.sellerhome.common.utils
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.widget.Toast
+import android.util.Log
+import android.util.TypedValue
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
@@ -23,9 +24,17 @@ fun Context.getResDrawable(@DrawableRes drawable: Int): Drawable? {
     return ContextCompat.getDrawable(this, drawable)
 }
 
-fun Context.toast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-}
+fun Context.dpToPx(dp: Int): Float = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dp.toFloat(),
+        resources.displayMetrics
+)
+
+fun Context.pxToDp(px: Int): Float = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_PX,
+        px.toFloat(),
+        resources.displayMetrics
+)
 
 //GraphqlResponse extension
 inline fun <reified T> GraphqlResponse.getData(): T {
@@ -36,3 +45,6 @@ inline fun <reified T> GraphqlResponse.getData(): T {
 val Any.toJson: JsonElement
     get() = Gson().toJsonTree(this)
 
+inline fun<reified T: Any> T.logD(s: String) {
+    Log.d(T::class.java.simpleName, s)
+}

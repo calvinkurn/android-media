@@ -1,11 +1,15 @@
 package com.tokopedia.sellerhome.view.viewholder
 
+import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.util.parseAsHtml
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
+import com.tokopedia.sellerhome.common.utils.getResColor
+import com.tokopedia.sellerhome.common.utils.parseAsHtml
 import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
 import kotlinx.android.synthetic.main.sah_card_widget.view.*
 
@@ -62,13 +66,28 @@ class CardViewHolder(
         if (!isShown) return
 
         with(itemView) {
+            if (element.appLink.isNotBlank()) {
+                val selectableItemBg = TypedValue()
+                context.theme.resolveAttribute(android.R.attr.selectableItemBackground,
+                        selectableItemBg, true)
+                containerCard.setBackgroundResource(selectableItemBg.resourceId)
+            } else
+                containerCard.setBackgroundColor(context.getResColor(R.color.Neutral_N0))
+
             tvCardTitle.text = element.title
             tvCardValue.text = element.data?.value ?: "0"
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
+            addOnImpressionListener(element.impressHolder) {
+                SellerHomeTracking.sendImpressionCardEvent(element.dataKey,
+                        element.data?.state.orEmpty(), element.data?.value ?: "0")
+            }
 
             setOnClickListener {
                 if (element.appLink.isNotBlank()) {
-                    RouteManager.route(context, element.appLink)
+                    if (RouteManager.route(context, element.appLink)) {
+                        SellerHomeTracking.sendClickCardEvent(element.dataKey,
+                                element.data?.state.orEmpty(), element.data?.value ?: "0")
+                    }
                 }
             }
         }

@@ -5,7 +5,7 @@ package com.tokopedia.sellerhome.view.model
  */
 
 data class CardDataUiModel(
-        val dataKey: String = "",
+        override val dataKey: String = "",
         val description: String = "",
         val state: String = "",
         val value: String = "",

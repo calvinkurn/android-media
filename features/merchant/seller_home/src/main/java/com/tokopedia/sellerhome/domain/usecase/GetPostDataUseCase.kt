@@ -7,21 +7,18 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhome.domain.mapper.PostMapper
 import com.tokopedia.sellerhome.domain.model.GetPostDataResponse
-import com.tokopedia.sellerhome.util.getData
+import com.tokopedia.sellerhome.common.utils.getData
 import com.tokopedia.sellerhome.view.model.PostListDataUiModel
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 
 class GetPostDataUseCase(
         private val gqlRepository: GraphqlRepository,
         private val postMapper: PostMapper
-) : UseCase<List<PostListDataUiModel>>() {
-
-    var params: RequestParams = RequestParams.EMPTY
+) : BaseGqlUseCase<List<PostListDataUiModel>>() {
 
     override suspend fun executeOnBackground(): List<PostListDataUiModel> {
-        val gqlRequest = GraphqlRequest(GET_POST_DATA, GetPostDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(QUERY, GetPostDataResponse::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), getCacheStrategy())
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPostDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -51,7 +48,7 @@ class GetPostDataUseCase(
             putString(END_DATE, endDate)
         }
 
-        const val GET_POST_DATA = "query getPostWidgetData(\$dataKey: [String!]!, \$shopId: Int!, \$startDate: String!, \$endDate: String!) {\n" +
+        const val QUERY = "query getPostWidgetData(\$dataKey: [String!]!, \$shopId: Int!, \$startDate: String!, \$endDate: String!) {\n" +
                 "  getPostWidgetData(dataKey: \$dataKey, shopID: \$shopId, startDate: \$startDate, endDate: \$endDate) {\n" +
                 "    data {\n" +
                 "      datakey\n" +

@@ -1,13 +1,18 @@
 package com.tokopedia.sellerhome.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 data class CarouselDataUiModel (
-        val data: List<CarouselDataModel>,
-        override var error: String
+        override val dataKey: String = "",
+        val items: List<CarouselItemUiModel> = emptyList(),
+        override var error: String = ""
 ): BaseDataUiModel
 
-class CarouselDataModel (
+class CarouselItemUiModel (
         val id: String,
         val url: String,
         val appLink: String,
-        val featuredMediaURL: String
+        val creativeName: String,
+        val featuredMediaURL: String,
+        val impressHolder: ImpressHolder
 )

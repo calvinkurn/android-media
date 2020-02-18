@@ -23,17 +23,18 @@ class ProgressMapper @Inject constructor() {
                     maxValue = it.maxValue.toZeroIfNull(),
                     colorState = mapState(it.state.orEmpty()),
                     error = it.errorMessage.orEmpty(),
-                    subtitle = it.subtitle.orEmpty()
+                    subtitle = it.subtitle.orEmpty(),
+                    dataKey = it.dataKey.orEmpty()
             )
         }
     }
 
     private fun mapState(state: String?) : ShopScorePMWidget.State {
         return when(state) {
-            GOOD -> ShopScorePMWidget.State.GREEN
-            WARNING -> ShopScorePMWidget.State.YELLOW
-            DANGER -> ShopScorePMWidget.State.RED
-            else -> ShopScorePMWidget.State.GREEN
+            GOOD -> ShopScorePMWidget.State.GOOD
+            WARNING -> ShopScorePMWidget.State.WARNING
+            DANGER -> ShopScorePMWidget.State.DANGER
+            else -> ShopScorePMWidget.State.GOOD
         }
     }
 

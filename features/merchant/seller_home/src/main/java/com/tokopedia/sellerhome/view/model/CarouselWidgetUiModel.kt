@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 
 /**
@@ -15,7 +16,8 @@ class CarouselWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
-        override var data: CarouselDataUiModel?
+        override var data: CarouselDataUiModel?,
+        override val impressHolder: ImpressHolder = ImpressHolder()
 ) : BaseWidgetUiModel<CarouselDataUiModel> {
 
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {

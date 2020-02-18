@@ -67,4 +67,13 @@ class SellerHomeUseCaseModule {
     ): GetPostDataUseCase {
         return GetPostDataUseCase(gqlRepository, mapper)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetCarouselDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: CarouselMapper
+    ): GetCarouselDataUseCase {
+        return GetCarouselDataUseCase(gqlRepository, mapper)
+    }
 }

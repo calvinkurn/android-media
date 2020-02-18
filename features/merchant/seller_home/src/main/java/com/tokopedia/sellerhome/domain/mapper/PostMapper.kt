@@ -9,8 +9,8 @@ class PostMapper @Inject constructor() {
     fun mapRemoteDataModelToUiDataModel(widgetDataList: List<PostDataModel>): List<PostListDataUiModel> {
         return widgetDataList.map {
             PostListDataUiModel(
-                    it.dataKey.orEmpty(),
-                    it.list?.map { postItem ->
+                    dataKey = it.dataKey.orEmpty(),
+                    items = it.list?.map { postItem ->
                         PostUiModel(
                                 postItem.title.orEmpty(),
                                 postItem.appLink.orEmpty(),
@@ -19,7 +19,7 @@ class PostMapper @Inject constructor() {
                                 postItem.subtitle.orEmpty()
                         )
                     }.orEmpty(),
-                    it.error.orEmpty()
+                    error = it.error.orEmpty()
             )
         }
     }

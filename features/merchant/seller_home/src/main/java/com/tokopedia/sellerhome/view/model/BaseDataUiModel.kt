@@ -5,5 +5,6 @@ package com.tokopedia.sellerhome.view.model
  */
 
 interface BaseDataUiModel {
+    val dataKey: String
     var error: String
 }

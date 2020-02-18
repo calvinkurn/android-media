@@ -8,22 +8,18 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhome.domain.model.ProgressDataResponse
-import com.tokopedia.sellerhome.util.getData
+import com.tokopedia.sellerhome.common.utils.getData
 import com.tokopedia.sellerhome.view.model.ProgressDataUiModel
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
-import javax.inject.Inject
 
-class GetProgressDataUseCase @Inject constructor(
+class GetProgressDataUseCase constructor(
         private val graphqlRepository: GraphqlRepository,
         private val progressMapper: ProgressMapper
-) : UseCase<List<ProgressDataUiModel>>() {
-
-    var params: RequestParams = RequestParams.EMPTY
+) : BaseGqlUseCase<List<ProgressDataUiModel>>() {
 
     override suspend fun executeOnBackground(): List<ProgressDataUiModel> {
-        val gqlRequest = GraphqlRequest(GET_PROGRESS_DATA, ProgressDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(QUERY, ProgressDataResponse::class.java, params.parameters)
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), getCacheStrategy())
 
         val errors = gqlResponse.getError(ProgressDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -50,7 +46,7 @@ class GetProgressDataUseCase @Inject constructor(
             putObject(DATA_KEY, dataKey)
         }
 
-        const val GET_PROGRESS_DATA = "query getProgressData(\$shopID: Int!, \$dataKey: [String!]!, \$date: String!) {\n" +
+        const val QUERY = "query getProgressData(\$shopID: Int!, \$dataKey: [String!]!, \$date: String!) {\n" +
                 "getProgressBarData(shopID: \$shopID, dataKey: \$dataKey, date: \$date){\n" +
                 "    data {\n" +
                 "      dataKey\n" +

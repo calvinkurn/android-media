@@ -58,15 +58,15 @@ class ShopScorePMWidget : FrameLayout {
 
     fun setProgressColor(state: State) {
         val colors = when (state) {
-            State.GREEN -> {
+            State.GOOD -> {
                 tv_current_progress.setTextColor(ContextCompat.getColor(context,R.color.Green_G500))
                 intArrayOf(ContextCompat.getColor(context, R.color.Green_G400), ContextCompat.getColor(context, R.color.Green_G600))
             }
-            State.YELLOW -> {
+            State.WARNING -> {
                 tv_current_progress.setTextColor(ContextCompat.getColor(context,R.color.Yellow_Y400))
                 intArrayOf(ContextCompat.getColor(context, R.color.Yellow_Y300), ContextCompat.getColor(context, R.color.Yellow_Y400))
             }
-            State.RED -> {
+            State.DANGER -> {
                 tv_current_progress.setTextColor(ContextCompat.getColor(context,R.color.Red_R500))
                 intArrayOf(ContextCompat.getColor(context, R.color.Red_R400), ContextCompat.getColor(context, R.color.Red_R500))
             }
@@ -75,9 +75,9 @@ class ShopScorePMWidget : FrameLayout {
     }
 
     enum class State {
-        GREEN,
-        YELLOW,
-        RED
+        GOOD,
+        WARNING,
+        DANGER
     }
 }
 

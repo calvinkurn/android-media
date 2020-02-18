@@ -32,6 +32,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
+            android:ellipsize="end"
             android:lineSpacingExtra="6sp"
             android:maxLength="170"
             android:textColor="@color/sah_description_desc"

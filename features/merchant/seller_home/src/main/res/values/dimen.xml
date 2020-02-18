@@ -2,4 +2,6 @@
 <resources>
     <dimen name="sah_large_widget_height">320dp</dimen>
     <dimen name="sah_medium_widget_height">180dp</dimen>
+    <dimen name="sah_banner_image_height">210dp</dimen>
+    <dimen name="sah_dimen_12dp">12dp</dimen>
 </resources>

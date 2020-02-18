@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 
 /**
@@ -14,7 +15,8 @@ class ProgressWidgetUiModel(
         override val url: String,
         override val dataKey: String,
         override val ctaText: String,
-        override var data: ProgressDataUiModel?
+        override var data: ProgressDataUiModel?,
+        override val impressHolder: ImpressHolder = ImpressHolder()
 ) : BaseWidgetUiModel<ProgressDataUiModel> {
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
