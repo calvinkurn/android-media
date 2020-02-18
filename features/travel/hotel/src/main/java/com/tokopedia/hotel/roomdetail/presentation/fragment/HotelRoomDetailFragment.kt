@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
@@ -27,6 +28,7 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailViewModel
@@ -104,7 +106,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     }
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
+                        navigateToAddPhonePage()
+                    } else {
+                        NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    }
                 }
             }
             room_detail_button.isEnabled = true
@@ -343,12 +349,12 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 trackingHotelUtil.hotelChooseRoomDetails(hotelRoom, roomIndex, addToCartParam)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
-                goToLoginPage()
+                navigateToLoginPage()
             }
         }
     }
 
-    fun goToLoginPage() {
+    private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -362,6 +368,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
+    }
+
+    private fun navigateToAddPhonePage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
     companion object {

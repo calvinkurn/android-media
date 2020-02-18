@@ -90,12 +90,7 @@ object DFInstallerLogUtil {
 
             messageBuilder.append(";dl_times=$downloadTimes")
 
-            messageBuilder.append(";err=")
-            if (errorList.isNotEmpty()) {
-                messageBuilder.append(errorList.joinToString("|"))
-            } else {
-                messageBuilder.append("--")
-            }
+            messageBuilder.append(";err=${getError(errorList)}")
 
             messageBuilder.append(";mod_size=")
             if (moduleSize > 0) {
@@ -130,6 +125,7 @@ object DFInstallerLogUtil {
             messageBuilder.append(";play_str=${getPlayStoreVersionName(context)}")
             messageBuilder.append(";play_str_l=${getPlayStoreLongVersionCode(context)}")
             messageBuilder.append(";play_srv=${getPlayServiceLongVersionCode(context)}")
+            messageBuilder.append(";installer_pkg=${getInstallerPackageName(context)}")
 
             Timber.w("P1#$tag#$messageBuilder")
         }
@@ -137,6 +133,19 @@ object DFInstallerLogUtil {
 
     private fun getSizeInMB(size: Long) : String {
         return String.format("%.2f", size.toDouble() / MEGA_BYTE)
+    }
+
+    private fun getError(errorList: List<String>):String {
+        if (errorList.isEmpty()) {
+            return "0"
+        }
+        val errorFirst = errorList.first()
+        for (error in errorList) {
+            if (error != errorFirst) {
+                return errorList.joinToString("|")
+            }
+        }
+        return errorFirst
     }
 
     private fun getPlayStoreVersionName(context: Context):String {
@@ -170,6 +179,15 @@ object DFInstallerLogUtil {
             PackageInfoCompat.getLongVersionCode(pm.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0))
         } catch (e: Exception) {
             -1
+        }
+    }
+
+    private fun getInstallerPackageName(context: Context):String {
+        return try {
+            val pm: PackageManager = context.packageManager
+            pm.getInstallerPackageName(context.packageName)
+        } catch (e: Exception) {
+            "-"
         }
     }
 }

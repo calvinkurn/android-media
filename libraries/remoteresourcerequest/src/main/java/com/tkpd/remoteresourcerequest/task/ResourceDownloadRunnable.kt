@@ -6,6 +6,7 @@ import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.IllegalStateException
 
 
 class ResourceDownloadRunnable(
@@ -21,7 +22,7 @@ class ResourceDownloadRunnable(
         fun handleDownloadState(state: Int)
         fun getFileLocationFromDirectory(): File
         fun getDownloadUrl(): String
-        fun setByteBuffer(byteArray: ByteArray)
+        fun setByteBuffer(byteArray: ByteArray?)
     }
 
     @Throws(Exception::class)
@@ -95,8 +96,10 @@ class ResourceDownloadRunnable(
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
+            check(file.length() == byteArray.size.toLong()) { "Corrupt downloaded file!!" }
             out?.flush()
             out?.close()
+
         }
         return file.absolutePath
     }

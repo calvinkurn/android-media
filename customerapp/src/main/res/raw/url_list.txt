@@ -1,12 +1,12 @@
 {
   "multiDpi": [
-    "https://ecs7.tokopedia.net/android/res/cat_ic_banned_item.png",
-    "https://ecs7.tokopedia.net/android/res/ic_empty_cart.png"
+    "cat_ic_banned_item.png",
+    "ic_empty_cart.png"
   ],
   "pendingDownload": [
-    "https://ecs7.tokopedia.net/android/res/swd_no_saldo_copy.png",
-    "https://ecs7.tokopedia.net/android/res/ovo_premier_verifikasi_sukses.png",
-    "https://ecs7.tokopedia.net/android/res/kesalahan_teknis.png",
-    "https://ecs7.tokopedia.net/android/res/drawer_header_bg.png"
+    "swd_no_saldo_copy.png",
+    "ovo_premier_verifikasi_sukses.png",
+    "kesalahan_teknis.png",
+    "drawer_header_bg.png"
   ]
 }
