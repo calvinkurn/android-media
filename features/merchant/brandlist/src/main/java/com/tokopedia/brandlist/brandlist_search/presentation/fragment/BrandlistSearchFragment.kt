@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,26 +17,24 @@ import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
-import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment
 import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment.Companion.CATEGORY_INTENT
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
-import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment
-import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.KEY_CATEGORY
 import com.tokopedia.brandlist.brandlist_search.data.mapper.BrandlistSearchMapper
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchAllBrandLabelViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchHeaderViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchAllBrandLabelViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -118,7 +115,6 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
         recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapterBrandSearch as StickyHeaderInterface))
-        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
         return view
     }
 
