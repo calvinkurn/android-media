@@ -122,6 +122,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         viewModel.getTotalBrands()
         searchView = view.findViewById(R.id.search_input_view)
+        searchView?.requestFocus()
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
         initView(view)
         observeSearchResultData()
