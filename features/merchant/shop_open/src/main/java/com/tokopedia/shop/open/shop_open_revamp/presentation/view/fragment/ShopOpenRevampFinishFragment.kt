@@ -66,6 +66,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
         val firstName = fullName.split(" ")[0]
 
         setupAnimation(view, shopId)
+        shopOpenRevampTracking?.sendScreen()
         val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, firstName)
         txt_greeting.text = greetingText
     }
