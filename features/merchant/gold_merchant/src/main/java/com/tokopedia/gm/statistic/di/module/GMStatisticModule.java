@@ -57,6 +57,13 @@ import retrofit2.Retrofit;
 @Module
 public class GMStatisticModule {
 
+    @com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+    @GMStatisticScope
+    @Provides
+    Context provideApplicationContext(@ApplicationContext Context context) {
+        return context;
+    }
+
     @GMStatisticScope
     @Provides
     GMStatApi provideGmStatisticTransactionApi(@GoldMerchantQualifier Retrofit retrofit) {

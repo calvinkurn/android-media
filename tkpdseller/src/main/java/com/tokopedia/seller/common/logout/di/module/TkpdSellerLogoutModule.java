@@ -38,6 +38,13 @@ import retrofit2.Retrofit;
 @Module
 public class TkpdSellerLogoutModule {
 
+    @com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+    @TkpdSellerLogoutScope
+    @Provides
+    Context provideApplicationContext(@ApplicationContext Context context) {
+        return context;
+    }
+
     @TkpdSellerLogoutScope
     @Provides
     ClearAllDraftProductUseCase provideClearAllDraftProductUseCase(ProductDraftRepository productDraftRepository){

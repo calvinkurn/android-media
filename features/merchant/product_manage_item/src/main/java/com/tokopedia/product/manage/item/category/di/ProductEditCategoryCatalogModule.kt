@@ -34,6 +34,11 @@ import javax.inject.Named
 @Module
 class ProductEditCategoryCatalogModule{
 
+    @com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+    @ProductAddScope
+    @Provides
+    fun provideApplicationContext(@ApplicationContext context: Context) = context
+
     @ProductAddScope
     @Provides
     fun provideMerlinApi(@MerlinQualifier retrofit: Retrofit) = retrofit.create(MerlinApi::class.java)
