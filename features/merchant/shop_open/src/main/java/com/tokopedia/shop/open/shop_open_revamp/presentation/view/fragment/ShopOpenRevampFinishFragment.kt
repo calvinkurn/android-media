@@ -26,11 +26,9 @@ class ShopOpenRevampFinishFragment : Fragment() {
     private val handler = Handler()
     lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var lottieAnimationView: LottieAnimationView
-<<<<<<< HEAD
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
-=======
     private lateinit var loading: LoaderUnify
->>>>>>> ee1b904c61e91b97f6c565dd5d6ca79f31be698e
+
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
