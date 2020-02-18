@@ -1,6 +1,8 @@
 package com.tokopedia.flight.filter.presentation.bottomsheets
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -62,11 +64,18 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     }
 
     private fun initBottomSheet() {
+        try {
+            val displayMetrics = DisplayMetrics()
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+            customPeekHeight = displayMetrics.heightPixels
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
         showCloseIcon = false
         showKnob = true
         isDragable = true
         isHideable = true
-        isFullpage = true
         setTitle(getString(R.string.airline))
         setAction(getString(R.string.reset)) {
             // TODO: Add Function for reset button
