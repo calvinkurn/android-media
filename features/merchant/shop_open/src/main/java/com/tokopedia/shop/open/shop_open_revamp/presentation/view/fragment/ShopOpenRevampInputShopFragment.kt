@@ -112,14 +112,9 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         txtInputShopName.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 if (s.toString().length < MIN_SHOP_NAME_LENGTH) {
-                    isValidShopName = false
-                    txtInputShopName.setError(true)
-                    txtInputShopName.setMessage(getString(R.string.open_shop_revamp_error_shop_name_too_short))
                     shopNameValue = s.toString()
-                    btnShopRegistration.isEnabled = false
+                    validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
                 } else if (s.toString().length >= MIN_SHOP_NAME_LENGTH && s.isNotEmpty()) {
-                    txtInputShopName.setError(false)
-                    txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
                     shopNameValue = s.toString()
                     viewModel.checkShopName(shopNameValue)
                 }
@@ -133,10 +128,8 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 adapter?.selectedPosition = DEFAULT_SELECTED_POSITION
                 adapter?.notifyDataSetChanged()
                 if (domainInputStr.length < MIN_SHOP_NAME_LENGTH) {
-                    isValidDomainName = false
-                    txtInputDomainName.setError(true)
                     domainNameValue = domainInputStr.toString()
-                    txtInputDomainName.setMessage(getString(R.string.open_shop_revamp_error_domain_too_short))
+                    validateDomainName(true, getString(R.string.open_shop_revamp_error_domain_too_short))
                 } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MIN_SHOP_NAME_LENGTH) {
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
@@ -235,21 +228,37 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
                         val errorMesssage = it.data.validateDomainShopName.error.message
-                        isValidShopName = false
-                        txtInputShopName.setError(true)
-                        txtInputShopName.setMessage(errorMesssage)
-                        btnShopRegistration.isEnabled = false
+                        if (shopNameValue.length < MIN_SHOP_NAME_LENGTH) {
+                            validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
+                        } else {
+                            validateShopName(true, errorMesssage)
+                        }
                     } else {
-                        isValidShopName = true
+                        validateShopName(false, getString(R.string.open_shop_revamp_default_hint_input_shop))
                         viewModel.getDomainShopNameSuggestions(shopNameValue)
-                        txtInputShopName.setError(false)
-                        btnShopRegistration.isEnabled = true
-                        txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
                     }
                 }
                 is Fail -> {
-                    txtInputShopName.setError(true)
-                    txtInputShopName.setMessage((it as Success).data.validateDomainShopName.error.message)
+                    validateShopName(true, (it as Success).data.validateDomainShopName.error.message)
+                }
+            }
+        })
+    }
+
+    private fun observeDomainNameValidationData() {
+        viewModel.checkDomainNameResponse.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    if (!it.data.validateDomainShopName.isValid) {
+                        val errorMessage = it.data.validateDomainShopName.error.message
+                        validateDomainName(true, errorMessage)
+                    } else {
+                        isValidDomainName = true
+                        validateDomainName(false, "")
+                    }
+                }
+                is Fail -> {
+                    validateDomainName(true, (it as Success).data.validateDomainShopName.error.message)
                 }
             }
         })
@@ -284,29 +293,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         })
     }
 
-
-    private fun observeDomainNameValidationData() {
-        viewModel.checkDomainNameResponse.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    if (!it.data.validateDomainShopName.isValid) {
-                        val errorMessage = it.data.validateDomainShopName.error.message
-                        isValidDomainName = false
-                        txtInputDomainName.setError(true)
-                        txtInputDomainName.setMessage(errorMessage)
-                        btnShopRegistration.isEnabled = false
-                    } else {
-                        isValidDomainName = true
-                        btnShopRegistration.isEnabled = true
-                    }
-                }
-                is Fail -> {
-                    showErrorNetwork(it.throwable)
-                }
-            }
-        })
-    }
-
     private fun observeDomainShopNameSuggestions() {
         viewModel.domainShopNameSuggestionsResponse.observe(this, Observer {
             when (it) {
@@ -330,6 +316,46 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     ErrorHandler.getErrorMessage(context, t),
                     Snackbar.LENGTH_LONG
             )
+        }
+    }
+
+    private fun validateShopName(isError: Boolean, hintMessage: String) {
+        if (isError) {
+            isValidShopName = false
+            txtInputShopName.setError(true)
+            txtInputShopName.setMessage(hintMessage)
+            btnShopRegistration.isEnabled = false
+        } else {
+            isValidShopName = true
+            txtInputShopName.setError(false)
+            txtInputShopName.setMessage(hintMessage)
+            validateButtonShopRegistration()
+        }
+    }
+
+    private fun validateDomainName(isError: Boolean, hintMessage: String) {
+        if (isError) {
+            isValidDomainName = false
+            txtInputDomainName.setError(true)
+            txtInputDomainName.setMessage(hintMessage)
+            btnShopRegistration.isEnabled = false
+        } else {
+            isValidDomainName = true
+            txtInputDomainName.setError(false)
+            txtInputDomainName.setMessage("")
+            validateButtonShopRegistration()
+        }
+    }
+
+    private fun validateButtonShopRegistration() {
+        if (shopNameValue.isEmpty() || domainNameValue.isEmpty()) return
+        val shopNameLastCharacter = shopNameValue.get(shopNameValue.length - 1)
+        val domainNameLastCharacter = domainNameValue.get(domainNameValue.length - 1)
+        if (isValidShopName &&
+                isValidDomainName &&
+                !shopNameLastCharacter.equals(" ") &&
+                !domainNameLastCharacter.equals(" ")) {
+            btnShopRegistration.isEnabled = true
         }
     }
 
