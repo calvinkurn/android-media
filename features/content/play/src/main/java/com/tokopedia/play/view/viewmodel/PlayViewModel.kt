@@ -394,7 +394,7 @@ class PlayViewModel @Inject constructor(
             isActive = isActive
     )
 
-    private fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList)
+    private fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() } )
     private fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)
 
     private fun mapTotalLikes(totalLike: Int, totalLikeString: String) = TotalLikeUiModel(totalLike, totalLikeString)

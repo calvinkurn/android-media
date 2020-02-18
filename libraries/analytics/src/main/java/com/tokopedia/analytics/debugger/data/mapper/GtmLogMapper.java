@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.tokopedia.analytics.debugger.helper.FormatterHelperKt.formatDataExcerpt;
+
 /**
  * @author okasurya on 5/16/18.
  */
@@ -30,12 +32,7 @@ public class GtmLogMapper implements Func1<GtmLogDB, Observable<Visitable>> {
         viewModel.setName(gtmLogDB.getName());
         viewModel.setCategory(gtmLogDB.getCategory());
         viewModel.setData(gtmLogDB.getData());
-        if(gtmLogDB.getData().length() > 100) {
-            viewModel.setDataExcerpt(gtmLogDB.getData().replaceAll("\\s+", " ").substring(0,100) + "...");
-        } else {
-            viewModel.setDataExcerpt(gtmLogDB.getData().replaceAll("\\s+", " "));
-        }
-
+        viewModel.setDataExcerpt(formatDataExcerpt(gtmLogDB.getData()));
         viewModel.setTimestamp(dateFormat.format(new Date(gtmLogDB.getTimestamp())));
 
         return Observable.just((Visitable) viewModel);

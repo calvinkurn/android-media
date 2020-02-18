@@ -6,11 +6,16 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.di.GqlQueryModule
+import com.tokopedia.saldodetails.di.SaldoDetailsScope
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldResponse
 import java.util.HashMap
 import rx.Subscriber
+import javax.inject.Inject
+import javax.inject.Named
 
-class GetHoldInfoUsecase (val resources: Resources, val graphqlUseCase: GraphqlUseCase) {
+@SaldoDetailsScope
+class GetHoldInfoUsecase @Inject constructor(@Named(GqlQueryModule.QUERY_SALDO_HOLD_INFO) val query: String, val graphqlUseCase: GraphqlUseCase) {
 
     fun unsubscribe() {
         graphqlUseCase.unsubscribe()
@@ -21,7 +26,7 @@ class GetHoldInfoUsecase (val resources: Resources, val graphqlUseCase: GraphqlU
         val variables = HashMap<String, Any>()
 
         val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(resources, R.raw.query_saldo_hold_info),
+                query,
                 SaldoHoldResponse::class.java,
                 variables, false)
 

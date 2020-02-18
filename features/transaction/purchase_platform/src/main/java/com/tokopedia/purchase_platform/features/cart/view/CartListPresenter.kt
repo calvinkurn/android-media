@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
@@ -71,6 +72,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase?,
                                             private val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase?,
                                             private val seamlessLoginUsecase: SeamlessLoginUsecase,
+                                            private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                             private val schedulers: ExecutorSchedulers) : ICartListPresenter {
 
     private var view: ICartListView? = null
@@ -1250,4 +1252,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return promo
     }
 
+    override fun processUpdateCartCounter() {
+        compositeSubscription.add(
+                updateCartCounterUseCase.createObservable(RequestParams.create())
+                        .subscribeOn(schedulers.io)
+                        .unsubscribeOn(schedulers.io)
+                        .observeOn(schedulers.main)
+                        .subscribe(UpdateCartCounterSubscriber(view))
+        )
+    }
 }

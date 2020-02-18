@@ -46,9 +46,11 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import retrofit2.Response
 import rx.Observable
@@ -71,7 +73,6 @@ open class HomePresenter (
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
     protected var subscription: Subscription? = Subscriptions.empty()
     private val masterJob = SupervisorJob()
-
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -106,7 +107,7 @@ open class HomePresenter (
     @Inject
     lateinit var playCardHomeUseCase: PlayLiveDynamicUseCase
 
-    private val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData()
+    private val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData().flowOn(homeDispatcher.io())
 
     val homeLiveData: LiveData<HomeViewModel>
     get() = _homeLiveData
@@ -128,6 +129,10 @@ open class HomePresenter (
     private var currentCursor = ""
     private var fetchFirstData = false
 
+    private var getHomeDataJob: Job? = null
+    private var getTokocashPendingBalanceSubscription: Subscription? = null
+    private var getUniversePlaceholderSubscription: Subscription? = null
+    private var getTokopointsDrawerSubscription: Subscription? = null
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
@@ -209,10 +214,11 @@ open class HomePresenter (
     }
 
     override fun refreshHomeData() {
-        launchCatchError(coroutineContext, block = {
+        if (getHomeDataJob?.isActive == true) return
+        getHomeDataJob = launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
             _updateNetworkLiveData.value = resource
-        }){
+        }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
         }
@@ -370,30 +376,39 @@ open class HomePresenter (
         }
 
     fun getTokocashPendingBalance(){
-        compositeSubscription.add(getPendingCasbackUseCase.createObservable(RequestParams.EMPTY)
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(PendingCashbackHomeSubscriber(this)))
+        if (getTokocashPendingBalanceSubscription?.isUnsubscribed != false) {
+            getTokocashPendingBalanceSubscription = getPendingCasbackUseCase.createObservable(RequestParams.EMPTY)
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(PendingCashbackHomeSubscriber(this))
+            compositeSubscription.add(getTokocashPendingBalanceSubscription)
+        }
     }
 
     fun getTokopoint(){
         val graphqlResponseObservable = tokopointsObservable
         if (graphqlResponseObservable != null) {
-            compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(TokopointHomeSubscriber(this)))
+            if (getTokopointsDrawerSubscription?.isUnsubscribed != false) {
+                getTokopointsDrawerSubscription = graphqlResponseObservable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(TokopointHomeSubscriber(this))
+                compositeSubscription.add(getTokopointsDrawerSubscription)
+            }
         }
     }
 
     fun searchHint(){
             val graphqlResponseObservable = keywordSearchObservable
             if (graphqlResponseObservable != null) {
-                compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(KeywordSearchHomeSubscriber(this)))
+                if (getUniversePlaceholderSubscription?.isUnsubscribed != false) {
+                    getUniversePlaceholderSubscription = graphqlResponseObservable.subscribeOn(Schedulers.newThread())
+                            .unsubscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(KeywordSearchHomeSubscriber(this))
+                    compositeSubscription.add(getUniversePlaceholderSubscription)
+                }
             }
         }
 
@@ -699,19 +714,19 @@ open class HomePresenter (
     }
 
     private fun initFlow() {
-        launchCatchError(coroutineContext, block = {
+        launchCatchError(homeDispatcher.io(), block = {
             homeFlowData.collect {
                 var homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
                     homeData = evaluateAvailableComponent(homeData)
-                    _homeLiveData.value = homeData
+                    _homeLiveData.postValue(homeData)
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
 
-                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf<Visitable<*>>()))
+                    _trackingLiveData.postValue(Event(_homeLiveData.value?.list?: emptyList()))
                 } else {
-                    _homeLiveData.value = homeData
+                    _homeLiveData.postValue(homeData)
                     refreshHomeData()
                 }
             }

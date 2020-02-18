@@ -760,19 +760,21 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
-        if (loadingView.getVisibility() != View.VISIBLE) {
-            showBottomNavigation();
-        }
+        searchNavContainer.post(() -> {
+            if (loadingView.getVisibility() != View.VISIBLE) {
+                showBottomNavigation();
+            }
 
-        if (isSortEnabled) {
-            buttonSort.setVisibility(View.VISIBLE);
-            searchNavDivider.setVisibility(View.VISIBLE);
-        } else {
-            buttonSort.setVisibility(View.GONE);
-            searchNavDivider.setVisibility(View.GONE);
-        }
+            if (isSortEnabled) {
+                buttonSort.setVisibility(View.VISIBLE);
+                searchNavDivider.setVisibility(View.VISIBLE);
+            } else {
+                buttonSort.setVisibility(View.GONE);
+                searchNavDivider.setVisibility(View.GONE);
+            }
 
-        this.searchNavigationClickListener = clickListener;
+            this.searchNavigationClickListener = clickListener;
+        });
     }
 
     @Override

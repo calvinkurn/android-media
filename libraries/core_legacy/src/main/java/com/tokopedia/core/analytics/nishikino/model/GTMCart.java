@@ -16,8 +16,4 @@ public class GTMCart {
         cart.put(KEY_CURRENCY, currencyCode);
     }
 
-    public Map<String, Object> getCartMap() {
-        return cart;
-    }
-
 }

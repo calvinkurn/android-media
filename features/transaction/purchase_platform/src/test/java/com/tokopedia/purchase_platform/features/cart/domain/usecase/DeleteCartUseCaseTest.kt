@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -21,7 +22,8 @@ object DeleteCartUseCaseTest : Spek({
 
     val clearCacheAutoApplyStackUseCase = mockk<ClearCacheAutoApplyStackUseCase>()
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
-    val useCase by memoized { DeleteCartUseCase(clearCacheAutoApplyStackUseCase, graphqlUseCase, TestSchedulers) }
+    val updateCartCounterUseCase = mockk<UpdateCartCounterUseCase>()
+    val useCase by memoized { DeleteCartUseCase(clearCacheAutoApplyStackUseCase, updateCartCounterUseCase, graphqlUseCase, TestSchedulers) }
 
     val params = RequestParams().apply {
         putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, RemoveCartRequest())

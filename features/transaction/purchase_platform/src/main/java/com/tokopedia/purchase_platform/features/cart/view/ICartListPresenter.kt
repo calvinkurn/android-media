@@ -44,6 +44,8 @@ interface ICartListPresenter {
 
     fun processToUpdateAndReloadCartData(cartId: String)
 
+    fun processUpdateCartCounter()
+
     fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>)
 
     fun processCancelAutoApplyPromoStack(shopIndex: Int, promoCodeList: ArrayList<String>, ignoreAPIResponse: Boolean)

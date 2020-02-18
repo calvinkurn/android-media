@@ -208,8 +208,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Inject
     ShipmentContract.Presenter shipmentPresenter;
     @Inject
-    ShipmentDataConverter shipmentDataConverter;
-    @Inject
     RatesDataConverter ratesDataConverter;
     @Inject
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
@@ -1288,11 +1286,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         return requestData.getCheckoutRequestData();
     }
 
-    @Override
-    public ShipmentDataConverter getShipmentDataConverter() {
-        return shipmentDataConverter;
-    }
-
     private void updateAppliedPromoStack(PromoStackingData cartPromoStacking) {
         shipmentPresenter.setCouponStateChanged(true);
         shipmentAdapter.updateItemPromoGlobalStack(cartPromoStacking);
@@ -2027,7 +2020,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
                 shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),
-                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCheckoutLeasingId());
+                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
                 break;
             case REQUEST_CODE_COD:
                 shipmentPresenter.proceedCodCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),

@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.presenter;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by hangnadi on 9/26/17.

@@ -17,6 +17,30 @@ import com.tokopedia.kotlin.extensions.R
 
 object ImageUtils {
 
+    fun loadImage(imageView: ImageView, url: String, resPlaceholder: Int) {
+        if (imageView.context != null) {
+            Glide.with(imageView.context)
+                    .load(url)
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                            imageView.setImageDrawable(resource)
+                        }
+
+                        override fun onLoadStarted(placeholder: Drawable?) {
+                            imageView.setImageResource(resPlaceholder)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            imageView.setImageResource(resPlaceholder)
+                        }
+
+                        override fun onLoadFailed(errorDrawable: Drawable?) {
+                            imageView.setImageResource(resPlaceholder)
+                        }
+                    })
+        }
+    }
+
     fun loadImage2(imageview: ImageView, url: String?, resId: Int) {
         val error = AppCompatResources.getDrawable(imageview.context, resId)
         if (url != null && !TextUtils.isEmpty(url)) {
