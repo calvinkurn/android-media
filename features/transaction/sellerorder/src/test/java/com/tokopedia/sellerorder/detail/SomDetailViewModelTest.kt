@@ -30,17 +30,27 @@ object SomDetailViewModelTest: Spek({
     val queryOrderDetailPageList = "query_filter_page_list"
     val queryAcceptOrder = "query_accept_order"
     val queryRejectOrder = "query_reject_order"
+    val queryEditAwb = "query_edit_awb"
     val orderDetailPageSuccessJson = "response_order_detail_success"
     val acceptOrderSuccessJson = "response_accept_order_success"
     val rejectReasonsSuccessJson = "response_reject_reasons_success"
     val rejectOrderSuccessJson = "response_reject_order_success"
+    val editAwbSuccessJson = "response_edit_awb_success"
     val shopId = "1479278"
     val orderId = "397293266"
     val orderIdNewOrder = "437997831"
     val gson = Gson()
     val paramRejectReasons = SomReasonRejectParam()
     val paramRejectOrder = SomRejectRequest(
-
+        orderId = orderIdNewOrder,
+        reason = "lalala",
+        rCode = "2",
+        listPrd = "14263814~14263815",
+        closeEnd = "17/05/2017",
+        userId = "12345",
+        mobile = "1",
+        lang = "id",
+        ignorePenalty = "false"
     )
 
     Feature("SOM Detail Order Page") {
@@ -119,12 +129,33 @@ object SomDetailViewModelTest: Spek({
 
             When("Load file GQL-raw mutation RejectOrder") {
                 runBlocking {
-                    spy.doGetRejectReasons(queryRejectOrder, paramRejectReasons)
+                    spy.doRejectOrder(queryRejectOrder, paramRejectOrder)
                 }
             }
 
-            Then("Verify Func doGetRejectReasons works as expected!") {
-                coVerify { spy.doGetRejectReasons(queryAcceptOrder, paramRejectReasons) }
+            Then("Verify Func doRejectOrder works as expected!") {
+                coVerify { spy.doRejectOrder(queryRejectOrder, paramRejectOrder) }
+            }
+        }
+
+        Scenario("Edit AWB") {
+            Given("Return Success Data") {
+                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(editAwbSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
+                val response = gson.fromJson(jsonResponse, SomEditAwbResponse.Data::class.java)
+                val gqlResponseSuccess = GraphqlResponse(
+                        mapOf(SomEditAwbResponse.Data::class.java to response),
+                        mapOf(SomEditAwbResponse.Data::class.java to listOf()), false)
+                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+            }
+
+            When("Load file GQL-raw mutation Edit Awb") {
+                runBlocking {
+                    spy.doEditAwb(queryEditAwb)
+                }
+            }
+
+            Then("Verify Func doEditAwb works as expected!") {
+                coVerify { spy.doEditAwb(queryEditAwb) }
             }
         }
     }

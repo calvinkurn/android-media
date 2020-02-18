@@ -1,0 +1,5 @@
+mutation {
+  mpLogisticEditRefNum(input: {order_id: "438038615", shipping_ref:"qweqerwerkjjh"}) {
+    message
+  }
+}
