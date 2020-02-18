@@ -1,20 +1,20 @@
-package com.tokopedia.travelhomepage.homepage.data
+package com.tokopedia.travelhomepage.destination.model
 
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
+import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
 
 /**
  * @author by jessica on 2019-08-14
  */
 
-data class TravelHomepageSectionViewModel(
+data class TravelDestinationSectionModel(
         var title: String = "",
         var seeAllUrl: String = "",
         var list: List<Item> = listOf(),
         var type: Int = 0,
         var categoryType: String = ""
-): TravelHomepageItemModel() {
+): TravelDestinationItemModel() {
 
-    override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
+    override fun type(typeFactory: TravelDestinationAdapterTypeFactory): Int = typeFactory.type(this)
 
     data class Item(
             var title: String = "",
@@ -28,7 +28,7 @@ data class TravelHomepageSectionViewModel(
     )
 
     companion object {
-        val PREFIX_STYLE_STRIKETHROUGH = "strikethrough"
-        val PREFIX_STYLE_NORMAL = "normal"
+        const val PREFIX_STYLE_STRIKETHROUGH = "strikethrough"
+        const val PREFIX_STYLE_NORMAL = "normal"
     }
 }
