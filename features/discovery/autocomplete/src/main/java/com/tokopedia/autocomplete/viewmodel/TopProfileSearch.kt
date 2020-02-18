@@ -2,7 +2,6 @@ package com.tokopedia.autocomplete.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.adapter.SearchTypeFactory
-import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch
 
 class TopProfileSearch(
     var peopleId: String = "",

@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.initialstate.newfiles
+package com.tokopedia.autocomplete.initialstate
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

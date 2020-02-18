@@ -1,7 +1,8 @@
-package com.tokopedia.autocomplete;
+package com.tokopedia.autocomplete.initialstate;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateData;
+import com.tokopedia.autocomplete.HostAutoCompleteTypeFactory;
+import com.tokopedia.autocomplete.initialstate.InitialStateData;
 
 import java.util.ArrayList;
 import java.util.List;

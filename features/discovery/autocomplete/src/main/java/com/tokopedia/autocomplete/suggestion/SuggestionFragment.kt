@@ -185,10 +185,6 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
         (activity as AutoCompleteActivity).setSearchQuery("$text ")
     }
 
-    override fun onDeleteRecentSearchItem(keyword: String?) {}
-
-    override fun onDeleteAllRecentSearch() {}
-
     fun setSearchParameter(searchParameter: SearchParameter) {
         this.searchParameter = searchParameter
     }

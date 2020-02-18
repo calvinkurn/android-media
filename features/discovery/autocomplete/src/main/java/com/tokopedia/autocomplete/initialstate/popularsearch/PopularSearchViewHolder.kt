@@ -1,7 +1,6 @@
 package com.tokopedia.autocomplete.initialstate.popularsearch
 
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -10,17 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.adapter.ItemClickListener
 import com.tokopedia.autocomplete.adapter.decorater.SpacingItemDecoration
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
-import com.tokopedia.autocomplete.initialstate.newfiles.BaseItemInitialStateSearch
-import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import kotlinx.android.synthetic.main.layout_popular_item_autocomplete.view.*
 import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
 class PopularSearchViewHolder(
         itemView: View,
-        listener: ItemClickListener
+        listener: InitialStateItemClickListener
 ) : AbstractViewHolder<PopularSearchViewModel>(itemView) {
 
     companion object {
@@ -47,7 +45,7 @@ class PopularSearchViewHolder(
         adapter.setData(element.list)
     }
 
-    private inner class ItemAdapter(private val clickListener: ItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    private inner class ItemAdapter(private val clickListener: InitialStateItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
         private var data: List<BaseItemInitialStateSearch> = ArrayList()
 
         fun setData(data: List<BaseItemInitialStateSearch>) {
@@ -69,7 +67,7 @@ class PopularSearchViewHolder(
             return data.size
         }
 
-        inner class ItemViewHolder(itemView: View, private val clickListener: ItemClickListener) : RecyclerView.ViewHolder(itemView) {
+        inner class ItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
 
             fun bind(item: BaseItemInitialStateSearch) {
                 itemView.autocompleteRecentSearchItem?.chip_text?.text = item.title
@@ -85,18 +83,6 @@ class PopularSearchViewHolder(
                     )
                     clickListener.onItemClicked(item.applink, item.url)
                 }
-//                itemView.autocompleteRecentSearchItem?.setOnTouchListener { _ , event ->
-//                    when(event.action){
-//                        MotionEvent.ACTION_DOWN -> {
-//                            itemView.autocompleteRecentSearchItem?.chipType = ChipsUnify.TYPE_SELECTED
-//                        }
-//                        MotionEvent.ACTION_UP -> {
-//                            itemView.autocompleteRecentSearchItem?.chipType = ChipsUnify.TYPE_ALTERNATE
-//                        }
-//                        else ->{ }
-//                    }
-//                    true
-//                }
             }
         }
     }

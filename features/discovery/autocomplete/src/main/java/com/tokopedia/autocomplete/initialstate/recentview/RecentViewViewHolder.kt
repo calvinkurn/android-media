@@ -10,15 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.adapter.ItemClickListener
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
-import com.tokopedia.autocomplete.initialstate.newfiles.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import kotlinx.android.synthetic.main.layout_recent_view_item_autocomplete.view.*
 import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
 class RecentViewViewHolder(
         itemView: View,
-        listener: ItemClickListener
+        listener: InitialStateItemClickListener
 ) : AbstractViewHolder<RecentViewSearchViewModel>(itemView) {
 
     companion object {
@@ -41,7 +41,7 @@ class RecentViewViewHolder(
         adapter.setData(element.list)
     }
 
-    private inner class ItemAdapter(private val clickListener: ItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    private inner class ItemAdapter(private val clickListener: InitialStateItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
         private var data: List<BaseItemInitialStateSearch> = ArrayList()
 
         fun setData(data: List<BaseItemInitialStateSearch>) {
@@ -63,7 +63,7 @@ class RecentViewViewHolder(
             return data.size
         }
 
-        inner class ItemViewHolder(itemView: View, private val clickListener: ItemClickListener) : RecyclerView.ViewHolder(itemView) {
+        inner class ItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
             fun bind(item: BaseItemInitialStateSearch) {
                 ImageHandler.loadImageAndCache(
                         itemView.autocompleteRecentViewItem,

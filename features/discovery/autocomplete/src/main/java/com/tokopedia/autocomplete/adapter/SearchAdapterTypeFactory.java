@@ -9,10 +9,7 @@ import com.tokopedia.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.autocomplete.viewmodel.DigitalSearch;
 import com.tokopedia.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.autocomplete.viewmodel.InCategorySearch;
-import com.tokopedia.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.autocomplete.viewmodel.ProfileSearch;
-import com.tokopedia.autocomplete.viewmodel.RecentSearch;
-import com.tokopedia.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.autocomplete.viewmodel.TopProfileSearch;
@@ -58,16 +55,6 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
     }
 
     @Override
-    public int type(PopularSearch viewModel) {
-        return PopularViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(RecentSearch viewModel) {
-        return RecentViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(ShopSearch viewModel) {
         return ShopViewHolder.LAYOUT;
     }
@@ -75,11 +62,6 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
     @Override
     public int type(AutoCompleteSearch viewModel) {
         return AutoCompleteViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(RecentViewSearch viewModel) {
-        return RecentViewViewHolder.LAYOUT;
     }
 
     @Override
@@ -103,7 +85,7 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
         if(type == DigitalViewHolder.LAYOUT) {
             viewHolder = new DigitalViewHolder(parent, clickListener);
         } else if(type == TitleViewHolder.LAYOUT) {
-            viewHolder = new TitleViewHolder(parent, clickListener);
+            viewHolder = new TitleViewHolder(parent);
         } else if(type == CategoryViewHolder.LAYOUT) {
             viewHolder = new CategoryViewHolder(parent, clickListener);
         } else if(type == InCategoryViewHolder.LAYOUT) {
@@ -112,12 +94,6 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
             viewHolder = new ShopViewHolder(parent, clickListener, tabName);
         } else if(type == AutoCompleteViewHolder.LAYOUT) {
             viewHolder = new AutoCompleteViewHolder(parent, clickListener, tabName);
-        } else if(type == PopularViewHolder.LAYOUT) {
-            viewHolder = new PopularViewHolder(parent, clickListener);
-        } else if(type == RecentViewHolder.LAYOUT) {
-            viewHolder = new RecentViewHolder(parent, clickListener);
-        } else if(type == RecentViewViewHolder.LAYOUT) {
-            viewHolder = new RecentViewViewHolder(parent, clickListener);
         } else if(type == HotlistViewHolder.Companion.getLAYOUT()) {
             viewHolder = new HotlistViewHolder(parent, clickListener);
         } else if(type == ProfileViewHolder.Companion.getLAYOUT()) {

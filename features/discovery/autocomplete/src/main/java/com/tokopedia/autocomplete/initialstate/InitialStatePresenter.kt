@@ -2,8 +2,6 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.autocomplete.InitialStateViewModel
-import com.tokopedia.autocomplete.initialstate.newfiles.*
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
@@ -12,17 +10,16 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchT
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import rx.Subscriber
 import javax.inject.Inject
 
-class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
+class InitialStatePresenter @Inject constructor(
+        private val initialStateUseCase: InitialStateUseCase,
+        private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
+        private val popularSearchUseCase: PopularSearchUseCase,
+        private val userSession: UserSessionInterface
+) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
 
     companion object {
         const val RECENT_SEARCH = "recent_search"
@@ -31,24 +28,7 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
     }
 
     private var querySearch = ""
-
-
-    @Inject
-    lateinit var initialStateUseCaseFlow: InitialStateUseCaseFlow
-
-    @Inject
-    lateinit var initialStateUseCase: InitialStateUseCase
-//    lateinit var autoCompleteUseCase: AutoCompleteUseCase
-
-    @Inject
-    lateinit var deleteRecentSearchUseCase: DeleteRecentSearchUseCaseNew
-//    lateinit var deleteRecentSearchUseCase: DeleteRecentSearchUseCase
-
-    @Inject
-    lateinit var popularSearchUseCase: PopularSearchUseCase
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
+    private var initialStateViewModel = InitialStateViewModel()
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
@@ -58,7 +38,7 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
         }
 
         override fun onNext(list: List<InitialStateData>) {
-            val initialStateViewModel = InitialStateViewModel()
+            initialStateViewModel = InitialStateViewModel()
             initialStateViewModel.searchTerm = querySearch
 
             for (initialStateData in list) {
@@ -71,86 +51,33 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
                 }
             }
 
-            view.showInitialStateResult(initialStateViewModel)
+            view.showInitialStateResult(
+                    getInitialStateResult(initialStateViewModel.list)
+            )
         }
     }
 
-    override fun search(searchParameter: SearchParameter) {
-//        CoroutineScope(Dispatchers.IO).launchCatchError(block = {
-//            initialStateUseCaseFlow.getInitialStateDataFlow(
-//                    searchParameter.getSearchParameterHashMap(),
-//                    userSession.deviceId,
-//                    userSession.userId
-//            ).collect{
-//                val initialStateViewModel = InitialStateViewModel()
-//                initialStateViewModel.searchTerm = querySearch
-//
-//                for (initialStateData in it) {
-//                    if (initialStateData.items.isNotEmpty()) {
-//                        when (initialStateData.id) {
-//                            RECENT_SEARCH, RECENT_VIEW, POPULAR_SEARCH -> {
-//                                initialStateViewModel.addList(initialStateData)
-//                            }
-//                        }
-//                    }
-//                }
-//                view.showInitialStateResult(initialStateViewModel)
-//            }
-//        }) {
-//            it.printStackTrace()
-//        }
+    private fun getPopularSearchSubscriber(): Subscriber<List<InitialStateItem>> = object : Subscriber<List<InitialStateItem>>() {
+        override fun onCompleted() {}
 
-        initialStateUseCase.execute(
-                InitialStateUseCase.getParams(
-                        searchParameter.getSearchParameterMap(),
-                        userSession.deviceId,
-                        userSession.userId
-                ),
-                getInitialStateSubscriber()
-        )
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(list: List<InitialStateItem>) {
+
+            initialStateViewModel.list.find{ it.id == POPULAR_SEARCH }.let {
+                it?.items = list
+            }
+
+            view.refreshPopularSearch(
+                    getInitialStateResult(initialStateViewModel.list)
+            )
+        }
     }
 
-    override fun deleteRecentSearchItem(keyword: String) {
-        val params = DeleteRecentSearchUseCaseNew.getParams(
-                keyword,
-                userSession.deviceId,
-                userSession.userId
-        )
-        deleteRecentSearchUseCase.execute(
-                params,
-                getInitialStateSubscriber()
-        )
-    }
 
-    override fun deleteAllRecentSearch() {
-        val params = DeleteRecentSearchUseCaseNew.getParams(
-                userSession.deviceId,
-                userSession.userId
-        )
-        deleteRecentSearchUseCase.execute(
-                params,
-                getInitialStateSubscriber()
-        )
-    }
-
-    override fun refreshPopularSearch(searchParameter: SearchParameter) {
-        val params = PopularSearchUseCase.getParams(
-                searchParameter.getSearchParameterMap(),
-                userSession.deviceId,
-                userSession.userId
-        )
-    }
-
-    override fun detachView() {
-        super.detachView()
-        initialStateUseCase.unsubscribe()
-    }
-
-    override fun attachView(view: InitialStateContract.View) {
-        super.attachView(view)
-    }
-
-    override fun getInitialStateResult(list: MutableList<InitialStateData>, searchTerm: String): List<Visitable<*>> {
+    private fun getInitialStateResult(list: MutableList<InitialStateData>): List<Visitable<*>> {
         val data = mutableListOf<Visitable<*>>()
         for (initialStateData in list) {
             when (initialStateData.id) {
@@ -174,11 +101,6 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
         return data
     }
 
-    override fun getInitialStateData(searchParameter: Map<String, Any>) {
-
-
-    }
-
     private fun MutableList<Visitable<*>>.insertTitle(name: String): List<Visitable<*>> {
         val titleSearch = ReecentViewTitleViewModel()
         titleSearch.title = name
@@ -198,5 +120,59 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
         titleSearch.title = name
         this.add(0, titleSearch)
         return this
+    }
+
+    override fun getInitialStateData(searchParameter: SearchParameter) {
+        initialStateUseCase.execute(
+                InitialStateUseCase.getParams(
+                        searchParameter.getSearchParameterMap(),
+                        userSession.deviceId,
+                        userSession.userId
+                ),
+                getInitialStateSubscriber()
+        )
+    }
+
+    override fun deleteRecentSearchItem(keyword: String) {
+        val params = DeleteRecentSearchUseCase.getParams(
+                keyword,
+                userSession.deviceId,
+                userSession.userId
+        )
+        deleteRecentSearchUseCase.execute(
+                params,
+                getInitialStateSubscriber()
+        )
+    }
+
+    override fun deleteAllRecentSearch() {
+        val params = DeleteRecentSearchUseCase.getParams(
+                userSession.deviceId,
+                userSession.userId
+        )
+        deleteRecentSearchUseCase.execute(
+                params,
+                getInitialStateSubscriber()
+        )
+    }
+
+    override fun refreshPopularSearch() {
+        val params = PopularSearchUseCase.getParams(
+                userSession.deviceId,
+                userSession.userId
+        )
+        popularSearchUseCase.execute(
+                params,
+                getPopularSearchSubscriber()
+        )
+    }
+
+    override fun detachView() {
+        super.detachView()
+        initialStateUseCase.unsubscribe()
+    }
+
+    override fun attachView(view: InitialStateContract.View) {
+        super.attachView(view)
     }
 }

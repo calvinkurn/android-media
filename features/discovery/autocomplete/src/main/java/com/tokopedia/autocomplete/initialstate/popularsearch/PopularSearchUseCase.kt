@@ -2,8 +2,8 @@ package com.tokopedia.autocomplete.initialstate.popularsearch
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateItem
-import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateRepository
+import com.tokopedia.autocomplete.initialstate.InitialStateItem
+import com.tokopedia.autocomplete.initialstate.InitialStateRepository
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -27,7 +27,6 @@ class PopularSearchUseCase(
         private const val KEY_USER_ID = "user_id"
         private const val DEFAULT_DEVICE = "android"
         private const val DEFAULT_SOURCE = "searchbar"
-        private const val DEFAULT_COUNT = "5"
         private const val DEVICE_ID = "device_id"
 
         fun getParams(query: String, registrationId: String, userId: String): RequestParams {
@@ -36,14 +35,28 @@ class PopularSearchUseCase(
             return getParams(searchParameter, registrationId, userId)
         }
 
-        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String): RequestParams {
+        fun getParams(registrationId: String, userId: String): RequestParams {
+            val params = RequestParams.create()
+            params.putString(KEY_DEVICE, DEFAULT_DEVICE)
+            params.putString(KEY_SOURCE, DEFAULT_SOURCE)
+            var uniqueId = AuthHelper.getMD5Hash(registrationId)
+            if (!TextUtils.isEmpty(userId)) {
+                uniqueId = AuthHelper.getMD5Hash(userId)
+                params.putString(KEY_USER_ID, userId)
+            }
+            params.putString(KEY_UNIQUE_ID, uniqueId)
+            params.putString(DEVICE_ID, registrationId)
+
+            return params
+        }
+
+        private fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String): RequestParams {
             val params = RequestParams.create()
 
             params.putAll(searchParameter)
 
             params.putString(KEY_DEVICE, DEFAULT_DEVICE)
             params.putString(KEY_SOURCE, DEFAULT_SOURCE)
-            params.putString(KEY_COUNT, DEFAULT_COUNT)
             var uniqueId = AuthHelper.getMD5Hash(registrationId)
             if (!TextUtils.isEmpty(userId)) {
                 uniqueId = AuthHelper.getMD5Hash(userId)

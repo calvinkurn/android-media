@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateTypeFactory;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -58,5 +57,9 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
         int size = this.list.size();
         this.list.clear();
         notifyItemRangeRemoved(0, size);
+    }
+
+    public void refreshPopularSearch(){
+
     }
 }

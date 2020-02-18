@@ -1,9 +1,10 @@
-package com.tokopedia.autocomplete.initialstate.newfiles
+package com.tokopedia.autocomplete.initialstate.di
 
 import com.tokopedia.autocomplete.di.AutoCompleteScope
 import com.tokopedia.autocomplete.di.net.AutoCompleteOkHttpClientModule
 import com.tokopedia.autocomplete.di.qualifier.AutoCompleteQualifier
 import com.tokopedia.autocomplete.di.qualifier.NoAuth
+import com.tokopedia.autocomplete.initialstate.InitialStateApi
 import com.tokopedia.autocomplete.network.AutocompleteBaseURL
 import dagger.Module
 import dagger.Provides

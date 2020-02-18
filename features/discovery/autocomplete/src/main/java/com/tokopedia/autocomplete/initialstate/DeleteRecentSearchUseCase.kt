@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.initialstate.newfiles
+package com.tokopedia.autocomplete.initialstate
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
@@ -6,7 +6,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 
-class DeleteRecentSearchUseCaseNew(
+class DeleteRecentSearchUseCase(
         private val initialStateRepository: InitialStateRepository,
         private val initialStateUseCase: InitialStateUseCase
 ) : UseCase<List<InitialStateData>>() {

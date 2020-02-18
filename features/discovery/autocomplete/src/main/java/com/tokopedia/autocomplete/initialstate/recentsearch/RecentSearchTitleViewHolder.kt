@@ -4,10 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.adapter.ItemClickListener
+import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
 
-class RecentSearchTitleViewHolder(itemView: View, private val clickListener: ItemClickListener) : AbstractViewHolder<RecentSearchTitleViewModel>(itemView) {
+class RecentSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<RecentSearchTitleViewModel>(itemView) {
 
     override fun bind(element: RecentSearchTitleViewModel) {
         itemView.titleTextView?.text = element.title

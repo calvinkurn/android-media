@@ -1,10 +1,8 @@
-package com.tokopedia.autocomplete.initialstate.newfiles
+package com.tokopedia.autocomplete.initialstate
 
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchResponse
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchResponseMapper
 import com.tokopedia.autocomplete.network.AutocompleteCache
 import com.tokopedia.cachemanager.CacheManager
-import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import rx.Observable
 import java.util.concurrent.TimeUnit
@@ -33,9 +31,5 @@ class InitialStateDataSource(
         return initialStateApi.refreshPopularSearch(parameters)
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .map(popularSearchResponseMapper)
-    }
-
-    fun getInitialStateFlow(param: HashMap<String, Any>): InitialStateResponse {
-        return initialStateApi.getInitialStateFlow(param)
     }
 }

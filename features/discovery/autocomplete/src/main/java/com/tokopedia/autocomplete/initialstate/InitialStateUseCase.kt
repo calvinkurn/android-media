@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.initialstate.newfiles
+package com.tokopedia.autocomplete.initialstate
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper

@@ -1,8 +1,8 @@
 package com.tokopedia.autocomplete.initialstate.popularsearch
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocomplete.initialstate.newfiles.BaseItemInitialStateSearch
-import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateData
+import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.InitialStateData
 import java.util.ArrayList
 
 fun InitialStateData.convertPopularSearchToVisitableList(): MutableList<Visitable<*>> {

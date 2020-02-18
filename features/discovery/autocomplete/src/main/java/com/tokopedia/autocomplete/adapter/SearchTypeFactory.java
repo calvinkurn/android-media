@@ -8,10 +8,7 @@ import com.tokopedia.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.autocomplete.viewmodel.DigitalSearch;
 import com.tokopedia.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.autocomplete.viewmodel.InCategorySearch;
-import com.tokopedia.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.autocomplete.viewmodel.ProfileSearch;
-import com.tokopedia.autocomplete.viewmodel.RecentSearch;
-import com.tokopedia.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.autocomplete.viewmodel.TopProfileSearch;
@@ -30,15 +27,9 @@ public interface SearchTypeFactory {
 
     int type(InCategorySearch viewModel);
 
-    int type(PopularSearch viewModel);
-
-    int type(RecentSearch viewModel);
-
     int type(ShopSearch viewModel);
 
     int type(AutoCompleteSearch viewModel);
-
-    int type(RecentViewSearch viewModel);
 
     int type(HotlistSearch viewModel);
 

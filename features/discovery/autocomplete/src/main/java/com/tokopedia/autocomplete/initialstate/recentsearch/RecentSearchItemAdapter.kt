@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.adapter.ItemClickListener
-import com.tokopedia.autocomplete.initialstate.newfiles.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 
-class RecentSearchItemAdapter(private val listener: ItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecentSearchItemAdapter(private val listener: InitialStateItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object{
         private const val TEMPLATE_ONE_LINE = "list_single_line"

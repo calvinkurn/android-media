@@ -1,9 +1,8 @@
-package com.tokopedia.autocomplete.initialstate.newfiles
+package com.tokopedia.autocomplete.initialstate
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.autocomplete.adapter.ItemClickListener
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewHolder
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewHolder
@@ -12,12 +11,12 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleVie
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewHolder
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewHolder
-import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewHolder
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewHolder
+import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 
-class InitialStateAdapterTypeFactory(private val clickListener: ItemClickListener) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
+class InitialStateAdapterTypeFactory(private val clickListener: InitialStateItemClickListener) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
     override fun type(viewModel: PopularSearchTitleViewModel): Int {
         return PopularSearchTitleViewHolder.LAYOUT
     }
@@ -43,22 +42,14 @@ class InitialStateAdapterTypeFactory(private val clickListener: ItemClickListene
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
-        val viewHolder: AbstractViewHolder<*>
-        if (type == PopularSearchViewHolder.LAYOUT) {
-            viewHolder = PopularSearchViewHolder(parent, clickListener)
-        } else if (type == RecentSearchViewHolder.LAYOUT) {
-            viewHolder = RecentSearchViewHolder(parent, clickListener)
-        } else if (type == RecentViewViewHolder.LAYOUT) {
-            viewHolder = RecentViewViewHolder(parent, clickListener)
-        }else if(type == PopularSearchTitleViewHolder.LAYOUT) {
-            viewHolder = PopularSearchTitleViewHolder(parent, clickListener)
-        } else if(type == RecentSearchTitleViewHolder.LAYOUT) {
-            viewHolder = RecentSearchTitleViewHolder(parent, clickListener)
-        } else if(type == RecentViewTitleViewHolder.LAYOUT) {
-            viewHolder = RecentViewTitleViewHolder(parent)
-        } else {
-            viewHolder = super.createViewHolder(parent, type)
+        return when (type) {
+            PopularSearchViewHolder.LAYOUT -> PopularSearchViewHolder(parent, clickListener)
+            RecentSearchViewHolder.LAYOUT -> RecentSearchViewHolder(parent, clickListener)
+            RecentViewViewHolder.LAYOUT -> RecentViewViewHolder(parent, clickListener)
+            PopularSearchTitleViewHolder.LAYOUT -> PopularSearchTitleViewHolder(parent, clickListener)
+            RecentSearchTitleViewHolder.LAYOUT -> RecentSearchTitleViewHolder(parent, clickListener)
+            RecentViewTitleViewHolder.LAYOUT -> RecentViewTitleViewHolder(parent)
+            else -> super.createViewHolder(parent, type)
         }
-        return viewHolder
     }
 }

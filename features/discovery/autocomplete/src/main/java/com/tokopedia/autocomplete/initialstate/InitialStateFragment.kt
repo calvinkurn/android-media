@@ -11,18 +11,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.autocomplete.*
-import com.tokopedia.autocomplete.adapter.ItemClickListener
-import com.tokopedia.autocomplete.analytics.AppScreen
-import com.tokopedia.autocomplete.di.AutoCompleteComponent
-import com.tokopedia.autocomplete.di.DaggerAutoCompleteComponent
 import com.tokopedia.autocomplete.AutoCompleteActivity
-import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateAdapterTypeFactory
+import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
+import com.tokopedia.autocomplete.R
+import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
 
-class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, ItemClickListener {
+class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, InitialStateItemClickListener {
+
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
 
@@ -51,7 +49,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
     }
 
     override fun initInjector() {
-        val component: AutoCompleteComponent = DaggerAutoCompleteComponent.builder()
+        val component: InitialStateComponent = DaggerInitialStateComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
                 .build()
         component.inject(this)
@@ -84,8 +82,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         recyclerViewInitialState?.addOnScrollListener(OnScrollListenerAutocomplete(view.context, view))
     }
 
-    override fun setOnTabShop(onTabShop: Boolean) { }
-
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
@@ -95,21 +91,24 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         return AppScreen.SCREEN_UNIVERSEARCH
     }
 
-    override fun showInitialStateResult(initialStateViewModel: InitialStateViewModel) {
+    override fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>) {
         stopTracePerformanceMonitoring()
         adapter.clearData()
-        val data = presenter.getInitialStateResult(initialStateViewModel.list, initialStateViewModel.searchTerm)
-        adapter.addAll(data)
+        adapter.addAll(initialStateVisitableList)
 
         initialStateViewUpdateListener?.showInitialStateView()
     }
 
-    override fun setData(initialStateVisitableList: List<Visitable<*>>) {
-
-    }
-
     private fun stopTracePerformanceMonitoring() {
         performanceMonitoring?.stopTrace()
+    }
+
+    override fun refreshPopularSearch(list: List<Visitable<*>>) {
+        stopTracePerformanceMonitoring()
+        adapter.clearData()
+        adapter.addAll(list)
+
+        initialStateViewUpdateListener?.showInitialStateView()
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -117,7 +116,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
 
         if (savedInstanceState != null) {
             searchParameter = savedInstanceState.getParcelable(SEARCH_PARAMETER)
-            searchParameter?.let { presenter.search(it) }
+            searchParameter?.let { presenter.getInitialStateData(it) }
         }
     }
 
@@ -126,9 +125,9 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         outState.putParcelable(SEARCH_PARAMETER, searchParameter)
     }
 
-    fun search(searchParameter: SearchParameter) {
+    fun getInitialStateData(searchParameter: SearchParameter) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
-        presenter.search(searchParameter)
+        presenter.getInitialStateData(searchParameter)
     }
 
     fun deleteAllRecentSearch() {
@@ -139,7 +138,11 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         presenter.deleteRecentSearchItem(keyword)
     }
 
-    override fun onItemClicked(applink: String, webUrl: String?) {
+    fun refreshPopularSearch(){
+        presenter.refreshPopularSearch()
+    }
+
+    override fun onItemClicked(applink: String, webUrl: String) {
         dropKeyBoard()
         startActivityFromAutoComplete(applink)
     }
@@ -157,16 +160,16 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         activity?.finish()
     }
 
-    override fun copyTextToSearchView(text: String?) {
-        (activity as AutoCompleteActivity).setSearchQuery("$text ")
-    }
-
-    override fun onDeleteRecentSearchItem(keyword: String?) {
+    override fun onDeleteRecentSearchItem(keyword: String) {
         (activity as AutoCompleteActivity).deleteRecentSearch(keyword)
     }
 
     override fun onDeleteAllRecentSearch() {
         (activity as AutoCompleteActivity).deleteAllRecentSearch()
+    }
+
+    override fun onRefreshPopularSearch() {
+        (activity as AutoCompleteActivity).refreshPopularSearch()
     }
 
     fun setSearchParameter(searchParameter: SearchParameter) {

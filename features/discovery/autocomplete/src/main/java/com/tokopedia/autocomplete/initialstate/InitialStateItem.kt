@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.initialstate.newfiles
+package com.tokopedia.autocomplete.initialstate
 
 import com.google.gson.annotations.SerializedName
 
@@ -40,6 +40,9 @@ data class InitialStateItem(
         var itemId: String = "",
 
         @SerializedName("price")
-        var price: String = ""
+        var price: String = "",
+
+        @SerializedName("keyword")
+        var keyword: String = ""
 )
 

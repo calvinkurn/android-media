@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.initialstate.popularsearch
 
-import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateItem
+import com.tokopedia.autocomplete.initialstate.InitialStateItem
 import retrofit2.Response
 import rx.functions.Func1
 

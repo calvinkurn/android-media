@@ -178,7 +178,7 @@ public class AutoCompleteActivity extends BaseActivity
                 onShopQuerySubmit();
                 break;
             default:
-                throw new RuntimeException("Please handle this function if you have new tab of suggestion search view.");
+                throw new RuntimeException("Please handle this function if you have new tab of suggestion getInitialStateData view.");
         }
     }
 
@@ -226,7 +226,7 @@ public class AutoCompleteActivity extends BaseActivity
     public void onQueryTextChange(@NotNull SearchParameter searchParameter) {
         if (searchParameter.getSearchQuery().isEmpty()) {
             if (initialStateFragment != null) {
-                initialStateFragment.search(searchParameter);
+                initialStateFragment.getInitialStateData(searchParameter);
             }
         } else {
             if (suggestionFragment != null) {
@@ -276,5 +276,9 @@ public class AutoCompleteActivity extends BaseActivity
 
     public void deleteRecentSearch(String keyword) {
         initialStateFragment.deleteRecentSearch(keyword);
+    }
+
+    public void refreshPopularSearch(){
+        initialStateFragment.refreshPopularSearch();
     }
 }

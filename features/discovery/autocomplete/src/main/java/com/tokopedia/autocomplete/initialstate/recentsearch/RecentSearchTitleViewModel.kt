@@ -1,7 +1,7 @@
 package com.tokopedia.autocomplete.initialstate.recentsearch
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocomplete.initialstate.newfiles.InitialStateTypeFactory
+import com.tokopedia.autocomplete.initialstate.InitialStateTypeFactory
 
 class RecentSearchTitleViewModel(var isVisible: Boolean = false) : Visitable<InitialStateTypeFactory> {
 
