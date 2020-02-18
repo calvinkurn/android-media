@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16">
+    android:layout_marginTop="@dimen/dp_20">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_header"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,8 +41,10 @@
         android:layout_marginTop="@dimen/dp_8"
         android:clickable="true"
         android:focusable="true"
+        android:gravity="center"
         android:textColor="#7A08C9"
-        android:textSize="@dimen/sp_13"
+        android:textSize="@dimen/sp_12"
+        app:drawableRightCompat="@drawable/ic_expand_more_purple_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_featured_brand"
