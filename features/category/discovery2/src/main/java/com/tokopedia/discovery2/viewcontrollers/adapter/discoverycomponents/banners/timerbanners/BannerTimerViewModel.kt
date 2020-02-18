@@ -54,6 +54,6 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
     }
 
     override fun initDaggerInject() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 }

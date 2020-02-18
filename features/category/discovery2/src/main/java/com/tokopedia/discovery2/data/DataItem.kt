@@ -123,7 +123,25 @@ data class DataItem(
         var background: String? = "",
 
         @SerializedName("video_id")
-        val videoId: String? = ""
+        val videoId: String? = "",
+
+        @SerializedName("ongoing_campaign_start_time")
+        val ongoingCampaignStartTime: String? = "",
+
+        @SerializedName("ongoing_campaign_end_time")
+        val ongoingCampaignEndTime: String? = "",
+
+        @SerializedName("upcoming_campaign_start_time")
+        val upcomingCampaignStartTime: String? = "",
+
+        @SerializedName("upcoming_campaign_end_time")
+        val upcomingCampaignEndTime: String? = "",
+
+        @SerializedName("timer_font_color")
+        val timerFontColor: String? = "",
+
+        @SerializedName("timer_box_color")
+        val timerBoxColor: String? = ""
 
 ) {
     val leftMargin: Int

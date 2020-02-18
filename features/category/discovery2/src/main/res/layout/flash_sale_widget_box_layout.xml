@@ -8,30 +8,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/time_text_view"
-        android:layout_width="@dimen/dp_34"
-        android:layout_height="@dimen/dp_34"
-        android:background="@drawable/timer_text_border"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
+        android:background="@drawable/flash_sale_timer_box_border"
         android:gravity="center"
         android:text="@string/default_timer_value"
         android:maxLines="1"
-        android:textColor="@color/clr_ff8000"
+        android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/time_title_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/clr_ff8000"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/time_text_view"
-        app:layout_constraintStart_toStartOf="@+id/time_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/time_text_view"
-        tool:visibility="gone"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
