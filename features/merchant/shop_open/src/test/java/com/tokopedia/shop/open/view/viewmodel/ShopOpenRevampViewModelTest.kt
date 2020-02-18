@@ -87,16 +87,16 @@ class ShopOpenRevampViewModelTest  {
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
-        viewModel.checkDomainAndShopName(anyString(), anyString())
+        viewModel.checkDomainName(anyString())
         verify {
             ShopOpenRevampValidateDomainShopNameUseCase
-                    .createRequestParams(anyString(), anyString())
+                    .createRequestParam(anyString())
         }
         Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
         coVerify {
             validateDomainShopNameUseCase.executeOnBackground()
         }
-        Assert.assertTrue(viewModel.checkDomainAndShopNameResponse.value is Success)
+        Assert.assertTrue(viewModel.checkDomainNameResponse.value is Success)
     }
 
     @Test
