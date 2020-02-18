@@ -13,14 +13,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetPlayLiveDynamicUseCase @Inject constructor(
-        private val homeRepository: HomeRepository,
         private val graphqlUseCase: GraphqlUseCase<PlayLiveDynamicChannelEntity>
 ): UseCase<PlayData>() {
-    fun execute() = homeRepository.getPlayChannel().map {
-        val channels = it.playDynamicData.playData.playChannels
-        if(channels.isEmpty()) error("Empty Data")
-        channels
-    }
     companion object{
         private const val PARAM_PAGE = "page"
         private const val PARAM_SOURCE = "source"

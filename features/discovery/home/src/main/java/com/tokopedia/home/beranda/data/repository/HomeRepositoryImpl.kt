@@ -22,12 +22,8 @@ import javax.inject.Inject
 class HomeRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
-        private val playRemoteDataSource: PlayRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
-        private val geolocationRemoteDataSource: GeolocationRemoteDataSource,
-        private val keywordSearchRemoteDataSource: KeywordSearchRemoteDataSource,
-        private val tokopointRemoteDataSource: TokopointRemoteDataSource,
-        private val suggestedReviewRemoteDataSource: SuggestedReviewRemoteDataSource
+        private val geolocationRemoteDataSource: GeolocationRemoteDataSource
 ): HomeRepository {
 
     override fun getHomeData(): Flow<HomeData?> {
@@ -52,7 +48,4 @@ class HomeRepositoryImpl @Inject constructor(
 
     override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.sendGeolocationInfo()
 
-    override fun getPlayChannel(): Flow<PlayLiveDynamicChannelEntity> = flow {
-        emit(playRemoteDataSource.getPlayData(page = 1))
-    }
 }
