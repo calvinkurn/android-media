@@ -72,7 +72,8 @@ class FlightSortBottomSheet : BottomSheetUnify() {
     }
 
     private fun getSortItems(): List<Pair<Int, String>> {
-        return listOf(Pair(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price)),
+        return listOf(Pair(TravelSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price)),
+                Pair(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price)),
                 Pair(TravelSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure)),
                 Pair(TravelSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure)),
                 Pair(TravelSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration)),
