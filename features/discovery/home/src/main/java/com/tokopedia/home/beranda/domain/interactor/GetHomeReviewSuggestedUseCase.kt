@@ -13,6 +13,7 @@ class GetHomeReviewSuggestedUseCase @Inject constructor(
 ): UseCase<SuggestedProductReview>(){
     override suspend fun executeOnBackground(): SuggestedProductReview {
         graphqlUseCase.clearCache()
+        graphqlUseCase.setTypeClass(SuggestedProductReview::class.java)
         graphqlUseCase.setGraphqlQuery(SuggestedReviewQuery.suggestedReviewQuery)
         graphqlUseCase.setRequestParams(mapOf())
         return graphqlUseCase.executeOnBackground()

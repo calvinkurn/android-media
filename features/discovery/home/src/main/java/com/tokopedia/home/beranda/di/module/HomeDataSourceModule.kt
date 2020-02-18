@@ -13,24 +13,10 @@ import dagger.Provides
 
 @Module
 class HomeDataSourceModule {
-
     @HomeScope
     @Provides
     fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = HomeRemoteDataSource(graphqlRepository, dispatcher)
 
-    @HomeScope
-    @Provides
-    fun providePlayRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = PlayRemoteDataSource(graphqlRepository, dispatcher)
-
-    @HomeScope
-    @Provides
-    fun provideTokopointRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = TokopointRemoteDataSource(graphqlRepository, dispatcher)
-
-    @HomeScope
-    @Provides
-    fun provideSuggestedReviewRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = SuggestedReviewRemoteDataSource(graphqlRepository, dispatcher)
-
-    @HomeScope
     @Provides
     fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
 
@@ -41,8 +27,4 @@ class HomeDataSourceModule {
     @HomeScope
     @Provides
     fun provideGeolocationRemoteDataSource(homeAceApi: HomeAceApi) = GeolocationRemoteDataSource(homeAceApi)
-
-    @HomeScope
-    @Provides
-    fun provideKeywordSearchRemoteDataSource(graphqlRepository: GraphqlRepository, dispatchers: HomeDispatcherProvider) = KeywordSearchRemoteDataSource(graphqlRepository, dispatchers)
 }

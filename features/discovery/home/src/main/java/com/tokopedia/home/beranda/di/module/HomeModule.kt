@@ -6,18 +6,17 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.common_wallet.di.CommonWalletModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
-import com.tokopedia.home.beranda.data.datasource.remote.*
+import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
+import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -56,20 +55,12 @@ class HomeModule {
     fun homeRepository(geolocationRemoteDataSource: GeolocationRemoteDataSource,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
-                       homeDefaultDataSource: HomeDefaultDataSource,
-                       keywordSearchRemoteDataSource: KeywordSearchRemoteDataSource,
-                       playRemoteDataSource: PlayRemoteDataSource,
-                       suggestedReviewRemoteDataSource: SuggestedReviewRemoteDataSource,
-                       tokopointRemoteDataSource: TokopointRemoteDataSource
+                       homeDefaultDataSource: HomeDefaultDataSource
     ): HomeRepository = HomeRepositoryImpl(
             homeCachedDataSource,
             homeRemoteDataSource,
-            playRemoteDataSource,
             homeDefaultDataSource,
-            geolocationRemoteDataSource,
-            keywordSearchRemoteDataSource,
-            tokopointRemoteDataSource,
-            suggestedReviewRemoteDataSource)
+            geolocationRemoteDataSource)
 
     @HomeScope
     @Provides
@@ -78,10 +69,6 @@ class HomeModule {
 
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @Provides
-    @HomeScope
-    fun provideItemTabBusinessViewModel(graphqlUseCase: GraphqlUseCase?): ItemTabBusinessViewModel = ItemTabBusinessViewModel(graphqlUseCase!!)
 
     @Provides
     @HomeScope
