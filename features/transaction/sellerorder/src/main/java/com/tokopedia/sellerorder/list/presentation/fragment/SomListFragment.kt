@@ -531,7 +531,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             scrollListener.updateStateAfterGetData()
         }
         somListItemAdapter.notifyDataSetChanged()
-
     }
 
     private fun showCoachMarkProducts(){

@@ -1,0 +1,10 @@
+{
+  "data": {
+    "reject_order": {
+      "success": 1,
+      "message": [
+        "Anda telah berhasil membatalkan transaksi."
+      ]
+    }
+  }
+}

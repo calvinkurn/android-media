@@ -1,0 +1,10 @@
+{
+  "data": {
+    "accept_order": {
+      "success": 1,
+      "message": [
+        "Anda telah berhasil memproses transaksi."
+      ]
+    }
+  }
+}
