@@ -1,6 +1,6 @@
 package com.tokopedia.core.analytics.model;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.google.android.gms.tagmanager.DataLayer;
 
 import java.util.ArrayList;
 import java.util.List;

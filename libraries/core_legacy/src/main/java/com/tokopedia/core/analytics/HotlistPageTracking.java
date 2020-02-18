@@ -3,7 +3,7 @@ package com.tokopedia.core.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.track.TrackApp;

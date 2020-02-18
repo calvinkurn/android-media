@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.analytic_constant.DataLayer;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
