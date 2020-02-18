@@ -167,13 +167,11 @@ data class DataItem(
 ) {
     val leftMargin: Int
         get() {
-            if (leftMarginMobile != null && !leftMarginMobile.isEmpty()) leftMarginMobile.toInt()
-            return 0
+            return leftMarginMobile?.toIntOrNull() ?: 0
         }
 
     val rightMargin: Int
         get() {
-            if (rightMarginMobile != null && !rightMarginMobile.isEmpty()) rightMarginMobile.toInt()
-            return 0
+            return rightMarginMobile?.toIntOrNull() ?: 0
         }
 }
