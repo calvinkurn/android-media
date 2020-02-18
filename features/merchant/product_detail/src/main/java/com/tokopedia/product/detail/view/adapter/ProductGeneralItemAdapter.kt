@@ -10,10 +10,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_info_detail.view.*
 
-class ProductGeneralItemAdapter(var listOfData: List<Content>, val name: String, val listener: DynamicProductDetailListener) : RecyclerView.Adapter<ProductGeneralItemAdapter.ProductGeneralItemViewHolder>() {
+class ProductGeneralItemAdapter(var listOfData: List<Content>, val name: String, val listener: DynamicProductDetailListener,
+                                private val componentType: String, private val componentName: String, private val componentPosition: Int) : RecyclerView.Adapter<ProductGeneralItemAdapter.ProductGeneralItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductGeneralItemViewHolder {
         return ProductGeneralItemViewHolder(LayoutInflater.from(parent.context)
@@ -30,7 +32,7 @@ class ProductGeneralItemAdapter(var listOfData: List<Content>, val name: String,
 
         fun bind(data: Content) {
             view.setOnClickListener {
-                listener.onInfoClicked(name)
+                listener.onInfoClicked(name, ComponentTrackDataModel(componentType, componentName, componentPosition))
             }
             if (data.icon.isNotEmpty()) {
                 ImageHandler.loadImage(view.context, view.ic_info_item, data.icon, R.drawable.ic_loading_image)

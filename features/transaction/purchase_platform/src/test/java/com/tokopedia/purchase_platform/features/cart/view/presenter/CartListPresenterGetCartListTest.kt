@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
@@ -9,7 +10,9 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentView
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
@@ -54,6 +57,7 @@ object CartListPresenterGetCartListTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("get cart list") {
@@ -66,7 +70,7 @@ object CartListPresenterGetCartListTest : Spek({
                     clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                     getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase,
-                    seamlessLoginUsecase, TestSchedulers
+                    seamlessLoginUsecase, updateCartCounterUseCase, TestSchedulers
             )
         }
 
@@ -132,11 +136,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getRecentViewUseCase.createObservable(any(), any()) } answers {
-                    Observable.just(GraphqlResponse(
-                            mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
-                            .subscribe(secondArg() as Subscriber<GraphqlResponse>)
-                }
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
             }
 
             When("process initial get cart data") {
@@ -156,11 +156,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getRecentViewUseCase.createObservable(any(), any()) } answers {
-                    Observable.just(GraphqlResponse(
-                            mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
-                            .subscribe(secondArg() as Subscriber<GraphqlResponse>)
-                }
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
             }
 
             When("process initial get cart data") {

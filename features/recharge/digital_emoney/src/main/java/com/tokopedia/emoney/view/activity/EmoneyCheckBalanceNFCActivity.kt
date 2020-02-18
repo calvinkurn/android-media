@@ -405,8 +405,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     private fun navigatePageToDigitalProduct(passData: DigitalCategoryDetailPassData) {
         val bundle = Bundle()
         bundle.putParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
-        val applink = UriUtil.buildUri(ApplinkConsInternalDigital.DIGITAL_PRODUCT, passData.categoryId, passData.operatorId)
-        val intent = RouteManager.getIntent(this, applink)
+        val intent = RouteManager.getIntent(this, ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM)
         intent.putExtras(bundle)
         startActivity(intent)
     }
