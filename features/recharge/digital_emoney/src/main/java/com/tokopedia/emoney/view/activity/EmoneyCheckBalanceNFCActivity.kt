@@ -463,7 +463,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         data?.let {
-            if (requestCode == REQUEST_CODE_LOGIN) {
+            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
                 if (userSession.isLoggedIn) {
                     data?.let {
                         executeMandiri(data)
