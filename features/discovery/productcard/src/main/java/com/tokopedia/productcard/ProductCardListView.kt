@@ -3,7 +3,9 @@ package com.tokopedia.productcard
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -42,5 +44,13 @@ class ProductCardListView: BaseCustomView {
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+    }
+
+    fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
+
+    }
+
+    fun setAddToCartOnClickListener(onAddToCartClickListener: () -> Unit) {
+
     }
 }

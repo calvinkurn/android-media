@@ -7,7 +7,7 @@ import com.tokopedia.productcard.v2.ProductCardModel
 internal data class CarouselProductCardModel(
         val productCardModel: ProductCardModel,
         val carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
-        val blankSpaceConfig: BlankSpaceConfig
+        val blankSpaceConfig: BlankSpaceConfig = BlankSpaceConfig()
 ) {
     fun getOnItemClickListener() = carouselProductCardListenerInfo.onItemClickListener
     fun getOnItemAddToCartListener() = carouselProductCardListenerInfo.onItemAddToCartListener

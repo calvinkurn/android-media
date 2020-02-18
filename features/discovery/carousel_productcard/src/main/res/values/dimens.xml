@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="product_card_size">155dp</dimen>
+    <dimen name="carousel_product_card_width">155dp</dimen>
 </resources>

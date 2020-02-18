@@ -21,6 +21,8 @@ class CarouselProductCardView: BaseCustomView {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
+    private val carouselAdapter = CarouselProductCardAdapter()
+    private val snapHelper = StartSnapHelper()
 
     constructor(context: Context): super(context) {
         init()
@@ -40,9 +42,76 @@ class CarouselProductCardView: BaseCustomView {
     
     private fun init() {
         View.inflate(context, R.layout.carousel_product_card_layout, this)
+
+        addDefaultItemDecorator()
+    }
+
+    private fun addDefaultItemDecorator() {
         if (carouselProductCardRecyclerView.itemDecorationCount > 0)
             carouselProductCardRecyclerView.removeItemDecorationAt(0)
+
         carouselProductCardRecyclerView.addItemDecoration(defaultRecyclerViewDecorator)
+    }
+
+    fun bindCarouselProductCardViewGrid(
+            productCardModelList: List<ProductCardModel>,
+            isScrollable: Boolean = true,
+            carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
+            carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
+            carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
+            recyclerViewPool: RecyclerView.RecycledViewPool? = null,
+            scrollToPosition: Int = 0
+    ) {
+        if (productCardModelList.isEmpty()) return
+
+        val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
+            it.onItemClickListener = carouselProductCardOnItemClickListener
+            it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
+            it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+        }
+
+        initLayoutManager(isScrollable, productCardModelList.size, scrollToPosition)
+        initRecyclerView(recyclerViewPool)
+
+        submitList(productCardModelList, carouselProductCardListenerInfo)
+    }
+
+    private fun initLayoutManager(isScrollable: Boolean, productCardModelListSize: Int, scrollToPosition: Int) {
+        carouselLayoutManager = createProductCardCarouselLayoutManager(isScrollable, productCardModelListSize)
+        carouselLayoutManager.scrollToPositionWithOffset(scrollToPosition)
+    }
+
+    private fun createProductCardCarouselLayoutManager(isScrollable: Boolean, productCardModelListSize: Int): RecyclerView.LayoutManager {
+        return if (isScrollable) {
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        } else {
+            GridLayoutManager(context, productCardModelListSize, GridLayoutManager.VERTICAL, false)
+        }
+    }
+
+    private fun RecyclerView.LayoutManager?.scrollToPositionWithOffset(scrollToPosition: Int) {
+        if (this is LinearLayoutManager) {
+            scrollToPositionWithOffset(scrollToPosition, context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16))
+        }
+    }
+
+    private fun initRecyclerView(recyclerViewPool: RecyclerView.RecycledViewPool?) {
+        carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
+        carouselProductCardRecyclerView.itemAnimator = null
+        carouselProductCardRecyclerView.setHasFixedSize(true)
+        carouselProductCardRecyclerView?.adapter = carouselAdapter
+
+        recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
+
+        if (carouselProductCardRecyclerView?.onFlingListener == null) {
+            snapHelper.attachToRecyclerView(carouselProductCardRecyclerView)
+        }
+    }
+
+    private fun submitList(productCardModelList: List<ProductCardModel>, carouselProductCardListenerInfo: CarouselProductCardListenerInfo) {
+        carouselAdapter.submitList(productCardModelList.map {
+            CarouselProductCardModel(it, carouselProductCardListenerInfo)
+        })
     }
 
     /**
@@ -57,6 +126,7 @@ class CarouselProductCardView: BaseCustomView {
      * @param carouselModelId alternative if you want to share pool. Just pass any unique id
      * to differentiate your item in pool
      */
+    @Deprecated("use bindCarouselProductCardViewGrid")
     fun bindCarouselProductCardView(
             activity: Activity? = null,
             deviceWidth: Int = 0,
@@ -84,7 +154,7 @@ class CarouselProductCardView: BaseCustomView {
         }
 
 
-        carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
+        carouselLayoutManager = createProductCardCarouselLayoutManager(isScrollable, productCardModelList.size)
         carouselCardSavedStatePosition?.let { sparseIntArray ->
             carouselLayoutManager.run {
                 if (this is LinearLayoutManager) {
@@ -171,13 +241,5 @@ class CarouselProductCardView: BaseCustomView {
 
     fun setSnapHelper(snapHelper: SnapHelper){
         snapHelper.attachToRecyclerView(carouselProductCardRecyclerView)
-    }
-
-    private fun createProductcardCarouselLayoutManager(isScrollable: Boolean, productCardModelListSize: Int): RecyclerView.LayoutManager {
-        return if (isScrollable) {
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        } else {
-            GridLayoutManager(context, productCardModelListSize, GridLayoutManager.VERTICAL, false)
-        }
     }
 }
