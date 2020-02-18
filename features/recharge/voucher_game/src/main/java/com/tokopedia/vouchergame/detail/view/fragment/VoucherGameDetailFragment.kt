@@ -85,7 +85,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             field = value
             productId = value?.id?.toIntOrNull() ?: 0
             price = value?.attributes?.pricePlain?.toLongOrNull()
-            checkVoucher()
+            if (promoCode.isNotEmpty()) checkVoucher()
         }
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
@@ -252,7 +252,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onCheckVoucherError(error: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
