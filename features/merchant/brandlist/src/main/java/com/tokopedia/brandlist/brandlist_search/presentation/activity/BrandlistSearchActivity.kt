@@ -7,6 +7,11 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.brandlist.brandlist_category.data.model.Category
+import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment
+import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment.Companion.CATEGORY_INTENT
+import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment
+import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.KEY_CATEGORY
 import com.tokopedia.brandlist.brandlist_search.presentation.fragment.BrandlistSearchFragment
 
 class BrandlistSearchActivity: BaseSimpleActivity() {
@@ -18,7 +23,14 @@ class BrandlistSearchActivity: BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return BrandlistSearchFragment.createInstance()
+        var categoryData: Category? = Category()
+        val bundle = intent.extras
+
+        if (bundle != null) {
+            categoryData = bundle.getParcelable(CATEGORY_INTENT) as Category
+        }
+
+        return BrandlistSearchFragment.createInstance(categoryData)
     }
 
     private fun setupStatusbar() {

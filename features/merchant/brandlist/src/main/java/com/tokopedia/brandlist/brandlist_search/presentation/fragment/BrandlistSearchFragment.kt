@@ -17,8 +17,13 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
+import com.tokopedia.brandlist.brandlist_category.data.model.Category
+import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment
+import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment.Companion.CATEGORY_INTENT
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
+import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment
+import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment.Companion.KEY_CATEGORY
 import com.tokopedia.brandlist.brandlist_search.data.mapper.BrandlistSearchMapper
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
@@ -48,11 +53,9 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         const val BRANDLIST_SEARCH_GRID_SPAN_COUNT = 3
 
         @JvmStatic
-        fun createInstance(): Fragment {
-            return BrandlistSearchFragment().apply {
-                arguments = Bundle().apply {
-
-                }
+        fun createInstance(category: Category?) = BrandlistSearchFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(CATEGORY_INTENT, category)
             }
         }
     }
@@ -71,10 +74,11 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private var toolbar: Toolbar? = null
     private var keywordSearch = ""
     private var categoryName = ""
+    private var categoryData: Category? = null
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadMoreBrands()
+                viewModel.loadMoreBrands(categoryData?.categoryId.toIntOrZero())
                 if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultViewModel) {
                     adapterBrandSearch?.showLoading()
                 }
@@ -87,6 +91,9 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         context?.let {
             brandlistTracking = BrandlistTracking(it)
+        }
+        arguments?.let {
+            categoryData = it.getParcelable(CATEGORY_INTENT)
         }
     }
 
@@ -115,7 +122,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getTotalBrands()
+        viewModel.getTotalBrands(categoryData?.categoryId.toIntOrZero())
         searchView = view.findViewById(R.id.search_input_view)
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
         initView(view)
@@ -185,7 +192,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
             override fun onSearchTextChanged(text: String?) {
                 text?.let {
                     if (it.isNotEmpty()) {
-                        val categoryId = 0
+                        val categoryId = categoryData?.categoryId.toIntOrZero()
                         val offset = 0
                         val sortType = 1
                         val firstLetter = ""
@@ -210,13 +217,13 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     if(response.isEmpty()) {
                         viewModel.searchRecommendation(
                                 userId,
-                                categoryIds = "0")
-                        recyclerView?.clearOnScrollListeners()
+                                categoryData?.categories.toString())
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
                                         response, searchView?.searchText ?: "", this))
                     }
+                    recyclerView?.clearOnScrollListeners()
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
@@ -283,7 +290,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     private fun loadInitialData() {
         if (!isInitialDataLoaded) {
-            viewModel.loadInitialBrands()
+            viewModel.loadInitialBrands(categoryData?.categoryId.toIntOrZero())
             isInitialDataLoaded = true
         }
     }
