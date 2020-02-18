@@ -85,7 +85,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             field = value
             productId = value?.id?.toIntOrNull() ?: 0
             price = value?.attributes?.pricePlain?.toLongOrNull()
-            if (promoCode.isNotEmpty()) checkVoucher()
+            if (promoCode.isNotEmpty()) checkPromo()
         }
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam

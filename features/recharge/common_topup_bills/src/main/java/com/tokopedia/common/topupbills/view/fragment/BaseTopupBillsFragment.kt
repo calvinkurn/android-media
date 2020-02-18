@@ -21,6 +21,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
+import com.tokopedia.common.topupbills.utils.debounce
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
@@ -123,6 +124,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
         topupBillsViewModel.checkVoucherData.observe(this, Observer {
             it.run {
+                promoTicker?.hideLoading()
                 when (it) {
                     is Success -> setupPromoTicker(it.data)
                     is Fail -> onCheckVoucherError(it.throwable)
@@ -179,37 +181,45 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     fun getPromoListener(): TickerPromoStackingCheckoutView.ActionListener {
         return object: TickerPromoStackingCheckoutView.ActionListener {
             override fun onClickUsePromo() {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
-                intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
-                startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
+                if (checkVoucherJob?.isActive != true) {
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
+                    intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
+                    startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
+                }
             }
 
             override fun onResetPromoDiscount() {
-                resetPromoTicker()
+                if (checkVoucherJob?.isActive != true) {
+                    resetPromoTicker()
+                }
             }
 
             override fun onDisablePromoDiscount() {
-                resetPromoTicker()
+                if (checkVoucherJob?.isActive != true) {
+                    resetPromoTicker()
+                }
             }
 
             override fun onClickDetailPromo() {
-                val intent: Intent
-                if (promoCode.isNotEmpty()) {
-                    val requestCode: Int
-                    if (isCoupon) {
-                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
-                        intent.putExtra(EXTRA_IS_USE, true)
-                        intent.putExtra(EXTRA_COUPON_CODE, promoCode)
-                        intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
-                        requestCode = REQUEST_CODE_PROMO_DETAIL
-                    } else {
-                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
-                        intent.putExtra(EXTRA_PROMO_CODE, promoCode)
-                        intent.putExtra(EXTRA_COUPON_ACTIVE, true)
-                        intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
-                        requestCode = REQUEST_CODE_PROMO_LIST
+                if (checkVoucherJob?.isActive != true) {
+                    val intent: Intent
+                    if (promoCode.isNotEmpty()) {
+                        val requestCode: Int
+                        if (isCoupon) {
+                            intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
+                            intent.putExtra(EXTRA_IS_USE, true)
+                            intent.putExtra(EXTRA_COUPON_CODE, promoCode)
+                            intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
+                            requestCode = REQUEST_CODE_PROMO_DETAIL
+                        } else {
+                            intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                            intent.putExtra(EXTRA_PROMO_CODE, promoCode)
+                            intent.putExtra(EXTRA_COUPON_ACTIVE, true)
+                            intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
+                            requestCode = REQUEST_CODE_PROMO_LIST
+                        }
+                        startActivityForResult(intent, requestCode)
                     }
-                    startActivityForResult(intent, requestCode)
                 }
             }
         }
@@ -247,11 +257,12 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         }
     }
 
-    fun checkVoucher() {
+    fun checkPromo() {
         checkVoucherJob?.cancel()
         checkVoucherJob = CoroutineScope(Dispatchers.Main).launch{
             delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
-            topupBillsViewModel.checkVoucher(promoCode, PromoDigitalModel(categoryId, productId, price = price ?: 0))
+            promoTicker?.showLoading()
+            checkVoucher()
         }
     }
 
@@ -275,6 +286,10 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     fun getFavoriteNumbers(categoryId: Int) {
         topupBillsViewModel.getFavoriteNumbers(GraphqlHelper.loadRawString(resources, R.raw.query_fav_number_digital),
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
+    }
+
+    fun checkVoucher() {
+        topupBillsViewModel.checkVoucher(promoCode, PromoDigitalModel(categoryId, productId, price = price ?: 0))
     }
 
     fun processExpressCheckout(inputs: Map<String, String>) {
@@ -338,7 +353,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     }
 
     companion object {
-        const val CHECK_VOUCHER_DEBOUNCE_DELAY: Long = 1000
+        const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
         const val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"

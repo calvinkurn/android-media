@@ -232,6 +232,14 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         bg_button_coupon.imageAlpha = IMAGE_ALPHA_ENABLED
     }
 
+    fun showLoading() {
+        loading_view.visibility = View.VISIBLE
+    }
+
+    fun hideLoading() {
+        loading_view.visibility = View.GONE
+    }
+
     override fun onFinishInflate() {
         super.onFinishInflate()
         initView()
