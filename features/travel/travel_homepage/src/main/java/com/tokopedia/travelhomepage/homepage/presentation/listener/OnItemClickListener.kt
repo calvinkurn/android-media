@@ -1,9 +1,9 @@
 package com.tokopedia.travelhomepage.homepage.presentation.listener
 
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionViewModel
-import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
 
 /**
  * @author by jessica on 2019-08-12
@@ -17,7 +17,7 @@ interface OnItemClickListener {
 
     fun onTrackCategoryClick(category: TravelHomepageCategoryListModel.Category, position: Int)
 
-    fun onTrackDealsClick(deal: TravelHomepageSectionViewModel.Item, position: Int)
+    fun onTrackDealsClick(deal: TravelHomepageSectionModel.Item, position: Int)
 
     fun onTrackPopularDestinationClick(destination: TravelHomepageDestinationModel.Destination, position: Int)
 

@@ -32,7 +32,7 @@ public class EnhancedECommerceActionField {
 
     private static final String KEY_STEP = "step";
     private static final String KEY_OPTION = "option";
-    private static final String KEY_LIST = "list";
+    public static final String KEY_LIST = "list";
 
     private Map<String, String> actionFieldMap = new HashMap<>();
 
