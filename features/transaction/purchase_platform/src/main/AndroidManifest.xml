@@ -24,6 +24,7 @@
 
         <activity
             android:name=".features.one_click_checkout.preference.list.view.PreferenceListActivity"
+            android:label="@string/purchase_preference"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">

@@ -1,13 +1,11 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.tokopedia.purchase_platform.R
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
-class PreferenceListActivity : AppCompatActivity() {
+class PreferenceListActivity : BaseSimpleActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_preference_list)
+    override fun getNewFragment(): Fragment? {
+        return PreferenceListFragment()
     }
 }

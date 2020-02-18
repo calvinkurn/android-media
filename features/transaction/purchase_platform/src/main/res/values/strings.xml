@@ -260,4 +260,9 @@
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
 
+    <string name="purchase_preference">Preferensi Pembelanjaan</string>
+    <string name="preference_list_empty_header">Pakai Preferensi Pembelanjaan agar transaksimu lebih cepat</string>
+    <string name="preference_list_empty_subtitle">Kamu bisa mempercepat proses transaksi kamu dengan membuat 1 preference alamat, pengiriman, dan pembayaran.</string>
+    <string name="button_create_preference">Buat Preferensi</string>
+    <string name="button_add_preference">Tambah Preferensi</string>
 </resources>
