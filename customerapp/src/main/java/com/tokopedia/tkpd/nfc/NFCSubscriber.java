@@ -32,9 +32,8 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
         if (activity != null) {
-            pendingIntent = PendingIntent.getActivity(activity, 0,
-                    activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
             nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
+            if (nfcAdapter == null) return;
         }
     }
 
@@ -46,6 +45,8 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityResumed(Activity activity) {
         if (nfcAdapter != null) {
+            pendingIntent = PendingIntent.getActivity(activity, 0,
+                    activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
             nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
         }
     }
