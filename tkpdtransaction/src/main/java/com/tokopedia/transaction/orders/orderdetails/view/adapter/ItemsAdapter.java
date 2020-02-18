@@ -50,7 +50,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
     public static final String KEY_RETRY = "Cek Ulang";
-    private static final int DEALS_CATEGORY_ID = 35;
+    public static final int DEALS_CATEGORY_ID = 35;
     private static final int EVENTS_CATEGORY_ID_1 = 32;
     private static final int EVENTS_CATEGORY_ID_2 = 23;
     private static final int EVENTS_CATEGORY_INSURANCE = 61;
