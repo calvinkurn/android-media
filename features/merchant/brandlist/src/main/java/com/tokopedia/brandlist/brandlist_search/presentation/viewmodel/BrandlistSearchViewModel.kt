@@ -48,9 +48,9 @@ class BrandlistSearchViewModel @Inject constructor(
     var currentOffset = INITIAL_OFFSET
     var currentLetter = INITIAL_LETTER
 
-    fun loadInitialBrands() {
+    fun loadInitialBrands(categoryId: Int) {
         searchAllBrands(
-                categoryId = 0,
+                categoryId = categoryId,
                 offset = INITIAL_OFFSET,
                 query = ALL_BRANDS_QUERY,
                 brandSize = ALL_BRANDS_REQUEST_SIZE,
@@ -59,10 +59,10 @@ class BrandlistSearchViewModel @Inject constructor(
         )
     }
 
-    fun loadMoreBrands(){
+    fun loadMoreBrands(categoryId: Int){
         val requestSize = getRequestSize(totalBrandSize, currentOffset)
         searchAllBrands(
-                categoryId = 0,
+                categoryId = categoryId,
                 offset = currentOffset,
                 query = ALL_BRANDS_QUERY,
                 brandSize = requestSize,
@@ -126,7 +126,7 @@ class BrandlistSearchViewModel @Inject constructor(
                 getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
                         createParams(
                                 userId.toInt(),
-                                categoryIds,
+                                categoryIds.substring(0, categoryIds.length-1),
                                 GetBrandlistPopularBrandUseCase.POPULAR_WIDGET_NAME
                         )
                 val searchRecommendationResult = getBrandlistPopularBrandUseCase.executeOnBackground()
@@ -161,10 +161,10 @@ class BrandlistSearchViewModel @Inject constructor(
         }
     }
 
-    fun getTotalBrands() {
+    fun getTotalBrands(categoryId: Int) {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(0, INITIAL_OFFSET,
+                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(categoryId, INITIAL_OFFSET,
                         ALL_BRANDS_QUERY, 0, ALPHABETIC_ASC_SORT, "")
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
                 searchBrandResult.let {

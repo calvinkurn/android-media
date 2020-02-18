@@ -78,7 +78,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadMoreBrands()
+                viewModel.loadMoreBrands(categoryData?.categoryId.toIntOrZero())
                 if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultViewModel) {
                     adapterBrandSearch?.showLoading()
                 }
@@ -122,7 +122,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getTotalBrands()
+        viewModel.getTotalBrands(categoryData?.categoryId.toIntOrZero())
         searchView = view.findViewById(R.id.search_input_view)
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
         initView(view)
@@ -192,7 +192,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
             override fun onSearchTextChanged(text: String?) {
                 text?.let {
                     if (it.isNotEmpty()) {
-                        val categoryId = 0
+                        val categoryId = categoryData?.categoryId.toIntOrZero()
                         val offset = 0
                         val sortType = 1
                         val firstLetter = ""
@@ -217,7 +217,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     if(response.isEmpty()) {
                         viewModel.searchRecommendation(
                                 userId,
-                                categoryIds = "0")
+                                categoryData?.categories.toString())
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
@@ -290,7 +290,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     private fun loadInitialData() {
         if (!isInitialDataLoaded) {
-            viewModel.loadInitialBrands()
+            viewModel.loadInitialBrands(categoryData?.categoryId.toIntOrZero())
             isInitialDataLoaded = true
         }
     }
