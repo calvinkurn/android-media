@@ -25,7 +25,6 @@ class TokoFix private constructor(private val app: Application, val version: Str
     }
 
     private fun onSuccessGetPatch(data: DataResponse){
-        Log.d(TAG, "onSuccessGetPatch "+data.toString())
         val context = app.applicationContext
         repository.donwloadPatch(context, data.data.downloadUrl, PatchLogger(context))
     }
