@@ -89,6 +89,8 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     }
 
     private fun renderList(list: List<AirlineStat>) {
+        adapter.addElement(list)
+
         val flightFilterModel = listener.flightFilterModel
         val checkedPositionList = HashSet<Int>()
         if (flightFilterModel != null) {
