@@ -51,4 +51,10 @@ class ProductCardGridView: BaseCustomView {
     fun setAddToCartOnClickListener(onAddToCartClickListener: () -> Unit) {
 
     }
+
+    fun setCardHeight(height: Int) {
+        val layoutParams = cardViewProductCard?.layoutParams
+        layoutParams?.height = height
+        cardViewProductCard?.layoutParams = layoutParams
+    }
 }

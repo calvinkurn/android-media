@@ -1,11 +1,11 @@
-package com.tokopedia.carouselproductcard.helper
+package com.tokopedia.carouselproductcard
 
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.R
 
-class CarouselProductCardDefaultDecorator : RecyclerView.ItemDecoration() {
+internal class CarouselProductCardDefaultDecorator : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
                                 parent: RecyclerView,

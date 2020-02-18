@@ -3,7 +3,6 @@ package com.tokopedia.carouselproductcard
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.carouselproductcard.model.CarouselProductCardModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import kotlinx.android.synthetic.main.carousel_product_card_item_grid_layout.view.*
 
@@ -21,6 +20,10 @@ internal class CarouselProductCardViewHolder(
         val onItemClickListener = carouselProductCardModel.getOnItemClickListener()
         val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
         val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
+
+        if (carouselProductCardModel.forcedHeight != -1) {
+            itemView.carouselProductCardItem?.setCardHeight(carouselProductCardModel.forcedHeight)
+        }
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
 

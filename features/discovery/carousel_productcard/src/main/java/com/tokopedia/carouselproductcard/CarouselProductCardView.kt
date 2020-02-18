@@ -9,9 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
-import com.tokopedia.carouselproductcard.helper.CarouselProductCardDefaultDecorator
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
-import com.tokopedia.carouselproductcard.model.CarouselProductCardModel
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
