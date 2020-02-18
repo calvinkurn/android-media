@@ -12,6 +12,7 @@ import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.open.R
+import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInterface
 import com.tokopedia.user.session.UserSession
@@ -23,6 +24,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
     private val handler = Handler()
     lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var lottieAnimationView: LottieAnimationView
+    private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
@@ -35,6 +37,13 @@ class ShopOpenRevampFinishFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         fragmentNavigationInterface = context as FragmentNavigationInterface
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            shopOpenRevampTracking = ShopOpenRevampTracking(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -52,6 +61,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
         val firstName = userName.substring(0, userName.indexOf(" "))
         val greetingText = "Selamat $firstName, \nTokomu sudah jadi!"
         txt_greeting.text = greetingText
+        shopOpenRevampTracking?.sendScreen()
 
         handler.postDelayed({
             activity?.finish()

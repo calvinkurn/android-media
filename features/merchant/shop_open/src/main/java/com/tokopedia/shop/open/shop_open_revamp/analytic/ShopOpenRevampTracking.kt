@@ -16,6 +16,11 @@ class ShopOpenRevampTracking (context: Context) {
     private val EVENT_VALUE = "clickCreateShop"
     private val EVENT_CATEGORY_VALUE = "registration page"
 
+    fun sendScreen() {
+        val screenName = "/registration page - shop/congratulation"
+        tracker.sendScreenAuthenticated(screenName)
+    }
+
     fun clickCreateShop(isSuccess: Boolean, shopDomainName: String) {
         val status = if (isSuccess) "succes" else "failed"
         val eventLabelValue = "$status $shopDomainName"
