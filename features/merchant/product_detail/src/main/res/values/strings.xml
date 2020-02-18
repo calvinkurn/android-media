@@ -65,6 +65,7 @@
     <string name="product_shop_label">Penjual</string>
     <string name="label_chat_seller">Chat Penjual</string>
     <string name="label_favorite">Favoritkan</string>
+    <string name="label_follow">Follow</string>
     <string name="label_favorited">Followed</string>
     <string name="template_shop_last_login">\u2022 %s</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
@@ -166,7 +167,7 @@
     <string name="pdp_installment_desc">Lihat Semua Metode</string>
 
     <string name="pdp_etalase_applink_builder">https://www.tokopedia.com/%s/etalase</string>
-    <string name="pdp_category_applink">https://tokopedia.com/p/</string>
+    <string name="pdp_category_applink">https://www.tokopedia.com/p/</string>
 
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>

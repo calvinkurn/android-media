@@ -22,7 +22,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer;
 import com.tokopedia.shop.common.config.ShopPageConfig;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE;
 
 /**
  * Created by nathan on 2/15/18.
@@ -62,7 +62,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     private SearchInputView searchInputView;
     private ShopInfo shopInfo;
-    private ShopPageTrackingBuyer shopPageTracking;
+    private OldShopPageTrackingBuyer shopPageTracking;
     private RemoteConfig remoteConfig;
     private EditText editTextSearch;
     private View imageViewSortIcon;
@@ -128,7 +128,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
         } else {
             keyword = savedInstanceState.getString(SAVED_KEYWORD, "");
         }
-        shopPageTracking = new ShopPageTrackingBuyer(new TrackingQueue(this));
+        shopPageTracking = new OldShopPageTrackingBuyer(new TrackingQueue(this));
         super.onCreate(savedInstanceState);
         initSearchInputView();
         findViewById(R.id.mainLayout).requestFocus();

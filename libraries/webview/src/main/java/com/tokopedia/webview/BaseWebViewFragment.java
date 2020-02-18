@@ -30,6 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -64,6 +65,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public final static int ATTACH_FILE_REQUEST = 1;
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
+    private static final String LOGIN_APPLINK = "tokopedia://login";
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
@@ -477,12 +479,18 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         }
+        if (url.contains(LOGIN_APPLINK)) {
+            startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
+            return true;
+        }
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
             if (intent!= null) {
-                hasMoveToNativePage = true;
-                startActivity(intent);
+                try {
+                    hasMoveToNativePage = true;
+                    startActivity(intent);
+                } catch (Exception ignored) { }
                 return true;
             } else {
                 // logging here, url might return blank page

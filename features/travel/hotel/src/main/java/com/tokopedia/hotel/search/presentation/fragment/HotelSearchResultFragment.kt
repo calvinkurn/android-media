@@ -217,7 +217,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 trackingHotelUtil.hotelUserClickSort(sort.displayName)
 
                 searchResultviewModel.addSort(sort)
-                sortMenu.dismiss()
+                if (sortMenu.isAdded) {
+                    sortMenu.dismiss()
+                }
                 loadInitialData()
             }
         }

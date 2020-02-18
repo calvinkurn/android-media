@@ -67,6 +67,10 @@ public interface SearchEventTracking {
         String IMPRESSION_TOP_PROFILE_IN_NO_RESULT_PROFILE = "impression - top profile in no result profile";
         String CLICK_PROFILE_RESULT = "click - profile result";
         String CLICK_TOP_PROFILE_IN_NO_RESULT_PROFILE = "click - top profile in no result profile";
+        String IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT = "impression - inspiration carousel product";
+        String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
+        String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
+        String CLICK = "click";
     }
 
     interface Label {

@@ -1,22 +1,11 @@
 <resources>
-    <string name="app_name">onboarding</string>
-    <!-- BEGIN NEW ON BOARDING RELATED STRING RESOURCE -->
-    <string name="nonb_1_title">Beli ini itu tanpa ragu</string>
-    <string name="nonb_1_desc">Jutaan produk dari toko dan Official Store tepercaya menantimu.</string>
-    <string name="nonb_2_title">Bayar tagihan tanpa hambatan</string>
-    <string name="nonb_2_desc">Mau beli pulsa, bayar air, hingga listrik cukup lewat satu aplikasi.</string>
-    <string name="nonb_3_title">Liburan sana sini bebas worry</string>
-    <string name="nonb_3_desc">Beli tiket pesawat, tempat wisata, dan event seru, tanpa antre!</string>
-    <string name="nonb_4_title">Dijamin aman atur keuangan</string>
-    <string name="nonb_4_desc">Makin leluasa berinvestasi, beli asuransi, hingga ajukan kredit dan pinjaman online.</string>
-    <string name="nonb_5_title">Jual barang serba gampang</string>
-    <string name="nonb_5_desc">Buka toko gratis, buat iklan praktis, bisa bikin jualanmu laris manis.</string>
+    <string name="app_name">revamp_onboarding</string>
 
-    <string name="title_skip_2">Lewati</string>
-    <string name="title_activity_login">Masuk</string>
-    <string name="skip">Lewati</string>
-    <string name="register">Daftar</string>
-    <string name="login">Masuk</string>
+    <string name="nav_action_next">Selanjutnya</string>
+    <string name="nav_action_skip">Lewati</string>
+    <string name="nav_action_join">Gabung Sekarang</string>
 
-    <!-- END NEW ON BOARDING RELATED STRING RESOURCE -->
+    <string name="title_screen_item_page_1">Nikmati Bebas Ongkir\nsetiap hari</string>
+    <string name="title_screen_item_page_2">Satu aplikasi untuk segala kebutuhanmu</string>
+    <string name="title_screen_item_page_3">Dapatkan keuntungan lebih dengan promo spesial</string>
 </resources>

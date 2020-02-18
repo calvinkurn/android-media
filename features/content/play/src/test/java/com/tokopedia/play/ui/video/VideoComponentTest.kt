@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
@@ -55,15 +56,6 @@ class VideoComponentTest {
     }
 
     @Test
-    fun `test when keyboard state is changed`() = runBlockingTest(testDispatcher) {
-        val isKeyboardShown = true
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(isKeyboardShown))
-
-        verify { component.uiView.showCornerRadius(isKeyboardShown) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
     fun `test when channel is freeze`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = PlayRoomEvent.Freeze("", "", "", "")
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
@@ -75,7 +67,7 @@ class VideoComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class VideoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoComponent(container, bus, coroutineScope) {
+    class VideoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): VideoView {
             return mockk(relaxed = true)
         }

@@ -38,6 +38,8 @@ class BottomSheetExpandableItemViewHolder(itemView: View, private val filterView
     }
 
     private fun hasCustomOptions(filter: Filter): Boolean {
+        if (filter.isCategoryFilter) return true
+
         for (option in filter.options) {
             if (!option.isPopular) {
                 return true

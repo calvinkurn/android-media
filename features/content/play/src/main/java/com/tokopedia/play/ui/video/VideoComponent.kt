@@ -6,9 +6,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
@@ -20,20 +21,20 @@ import kotlinx.coroutines.launch
 open class VideoComponent(
         container: ViewGroup,
         bus: EventBusFactory,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
+        dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch {
+        launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
-                            is ScreenStateEvent.KeyboardStateChanged -> uiView.showCornerRadius(it.isShown)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
                                 uiView.hide()
                                 uiView.setPlayer(null)

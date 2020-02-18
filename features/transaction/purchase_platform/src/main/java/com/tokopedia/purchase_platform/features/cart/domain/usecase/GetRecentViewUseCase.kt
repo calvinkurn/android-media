@@ -1,45 +1,42 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
-import android.content.Context
-
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-
-import java.util.HashMap
-
-import rx.Subscriber
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.util.*
 import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 21/09/18.
  */
 
-class GetRecentViewUseCase @Inject constructor() {
+class GetRecentViewUseCase @Inject constructor(val schedulers: ExecutorSchedulers) : UseCase<GqlRecentViewResponse>() {
 
-    val graphqlUseCase = GraphqlUseCase()
-
-    fun createObservable(userId: Int, graphqlResponseSubscriber: Subscriber<GraphqlResponse>) {
-        graphqlUseCase.clearRequest()
+    override fun createObservable(params: RequestParams): Observable<GqlRecentViewResponse> {
         val variables = HashMap<String, Any>()
-        variables[USER_ID] = userId
+        variables[USER_ID] = params.getInt(PARAM_USER_ID, 0)
 
         val graphqlRequest = GraphqlRequest(QUERY, GqlRecentViewResponse::class.java, variables)
-
+        val graphqlUseCase = GraphqlUseCase()
+        graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(graphqlResponseSubscriber)
-    }
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map {
+                    it.getData<GqlRecentViewResponse>(GqlRecentViewResponse::class.java)
+                }
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
     }
 
     companion object {
         private val USER_ID = "userID"
+        val PARAM_USER_ID = "PARAM_USER_ID"
     }
 
     val QUERY = """

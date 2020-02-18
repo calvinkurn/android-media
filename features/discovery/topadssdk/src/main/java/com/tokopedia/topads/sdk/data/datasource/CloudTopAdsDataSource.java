@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.TKPDMapParam;
 import com.tokopedia.topads.sdk.domain.mapper.MerlinCategoryMapper;

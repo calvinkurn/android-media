@@ -7,8 +7,11 @@ import com.google.gson.Gson;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
+import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
 import com.tokopedia.seller.shopsettings.shipping.interactor.EditShippingInteractorImpl;
@@ -36,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import rx.Subscriber;
 import timber.log.Timber;
 
 /**
@@ -47,6 +51,8 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     private EditShippingViewListener view;
 
     private EditShippingRetrofitInteractor editShippingRetrofitInteractor;
+
+    private RevGeocodeUseCase revGeocodeUseCase;
 
     private ShopShipping shopInformation;
 
@@ -71,6 +77,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
         editShippingRetrofitInteractor = new EditShippingInteractorImpl();
+        revGeocodeUseCase = new RevGeocodeUseCase(view.getMainContext(), new GraphqlUseCase());
     }
 
     @Override
@@ -81,6 +88,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     public void onSuccess(EditShippingCouriers model) {
                         initiateDatas(model);
                         bindDataToView(model);
+                        getReverseGeocode();
                     }
 
                     @Override
@@ -99,6 +107,34 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     public void onNoConnection() {
                         view.finishStartingFragment();
                         view.onFragmentNoConnection();
+                    }
+                });
+    }
+
+    private void getReverseGeocode() {
+        if (shopInformation == null) return;
+        String latlng = String.format("%s,%s",
+                shopInformation.getShopLatitude(), shopInformation.getShopLongitude());
+        revGeocodeUseCase
+                .execute(latlng)
+                .subscribe(new Subscriber<KeroMapsAutofill>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.setGeoAddress(latlng);
+                    }
+
+                    @Override
+                    public void onNext(KeroMapsAutofill keroMapsAutofill) {
+                        if (!keroMapsAutofill.getData().getFormattedAddress().isEmpty()) {
+                            view.setGeoAddress(keroMapsAutofill.getData().getFormattedAddress());
+                        } else {
+                            view.setGeoAddress(latlng);
+                        }
                     }
                 });
     }
@@ -189,6 +225,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     public void onSuccess(OpenShopData model) {
                         initiateDatasOpenShop(model);
                         bindDataToViewOpenShop(model);
+                        getReverseGeocode();
                     }
 
                     @Override
@@ -511,6 +548,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             setCourierModel(model.getShipment());
             setLocationList(model.getProvincesCitiesDistricts());
         }
+
     }
 
     @Override
