@@ -13,7 +13,7 @@ import com.tokopedia.flight.filter.presentation.adapter.FlightFilterAirlineAdapt
 import com.tokopedia.flight.search.presentation.fragment.OnFlightFilterListener
 import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.fragment_flight_filter_general.*
+import kotlinx.android.synthetic.main.fragment_flight_filter_general.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -29,6 +29,8 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
 
     lateinit var adapter: BaseListCheckableAdapter<AirlineStat, BaseListCheckableTypeFactory<AirlineStat>>
     lateinit var listener: OnFlightFilterListener
+
+    lateinit var mChildView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +71,8 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
             // TODO: Add Function for reset button
         }
 
-        val view = View.inflate(requireContext(), R.layout.fragment_flight_filter_general, null)
-        setChild(view)
+        mChildView = View.inflate(requireContext(), R.layout.fragment_flight_filter_general, null)
+        setChild(mChildView)
     }
 
     private fun initAdapter() {
@@ -79,9 +81,11 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     }
 
     private fun initRecyclerView() {
-        recycler_view.setHasFixedSize(true)
-        recycler_view.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recycler_view.adapter = adapter
+        with(mChildView) {
+            recycler_view.setHasFixedSize(true)
+            recycler_view.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            recycler_view.adapter = adapter
+        }
     }
 
     private fun renderList(list: List<AirlineStat>) {
