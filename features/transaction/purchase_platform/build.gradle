@@ -60,7 +60,6 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.tagManager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
