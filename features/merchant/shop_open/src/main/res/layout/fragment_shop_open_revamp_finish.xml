@@ -32,6 +32,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loading"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_120"
+        android:visibility="gone" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_success_create_shop"
         app:lottie_autoPlay="true"

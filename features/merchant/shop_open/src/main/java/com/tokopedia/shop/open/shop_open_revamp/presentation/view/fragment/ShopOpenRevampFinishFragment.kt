@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInterface
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
@@ -24,6 +25,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
     private val handler = Handler()
     lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var lottieAnimationView: LottieAnimationView
+    private lateinit var loading: LoaderUnify
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
@@ -41,12 +43,14 @@ class ShopOpenRevampFinishFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_finish, container, false)
         lottieAnimationView = view.findViewById(R.id.lottie_success_create_shop)
+        loading = view.findViewById(R.id.loading)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loading.visibility = View.VISIBLE
         val shopId = userSession.shopId
         setupAnimation(view, shopId)
         val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, userSession.name)
@@ -59,6 +63,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
 
             lottieCompositionLottieTask.addListener { result ->
                 lottieAnimationView.setComposition(result)
+                loading.visibility = View.GONE
                 lottieAnimationView.visibility = View.VISIBLE
                 lottieAnimationView.playAnimation()
                 lottieAnimationView.repeatCount = LottieDrawable.INFINITE
