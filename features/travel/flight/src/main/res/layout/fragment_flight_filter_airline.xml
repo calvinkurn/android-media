@@ -2,8 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="-16dp"
-    android:layout_marginRight="-16dp"
     android:background="@android:color/white"
     android:orientation="vertical">
 
@@ -11,19 +9,13 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingLeft="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl0"
-        android:paddingRight="@dimen/layout_lvl0" />
+        android:layout_weight="1" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnFlightFilterAirlineSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:text="@string/flight_save" />
 
