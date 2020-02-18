@@ -195,21 +195,21 @@ open class HomePresenter (
     }
 
     override fun getSuggestedReview() {
-        getHomeReviewSuggestedUseCase.execute(RequestParams.EMPTY, object: Subscriber<SuggestedProductReview>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                removeSuggestedReview()
-            }
-
-            override fun onNext(suggestedProductReview: SuggestedProductReview?) {
-                suggestedProductReview?.let {
-                    if (!viewNeedToShowGeolocationComponent()) {
-                        insertSuggestedReview(it)
-                    }
-                }
-            }
-        })
+//        getHomeReviewSuggestedUseCase.execute(RequestParams.EMPTY, object: Subscriber<SuggestedProductReview>() {
+//            override fun onCompleted() {}
+//
+//            override fun onError(e: Throwable?) {
+//                removeSuggestedReview()
+//            }
+//
+//            override fun onNext(suggestedProductReview: SuggestedProductReview?) {
+//                suggestedProductReview?.let {
+//                    if (!viewNeedToShowGeolocationComponent()) {
+//                        insertSuggestedReview(it)
+//                    }
+//                }
+//            }
+//        })
     }
 
     override fun refreshHomeData() {

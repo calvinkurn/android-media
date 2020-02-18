@@ -73,6 +73,4 @@ class HomeUseCaseModule {
     fun getKeywordSearchUseCase(homeRepository: HomeRepository): GetKeywordSearchUseCase {
         return GetKeywordSearchUseCase(homeRepository)
     }
-
-
 }

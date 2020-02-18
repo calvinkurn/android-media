@@ -7,6 +7,5 @@ import javax.inject.Inject
 class GetKeywordSearchUseCase @Inject constructor(
         private val repository: HomeRepository
 ){
-
     fun execute() = repository.getKeywordSearch()
 }

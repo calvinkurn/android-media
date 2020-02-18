@@ -28,6 +28,10 @@ class HomeDataSourceModule {
 
     @HomeScope
     @Provides
+    fun provideSuggestedReviewRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = SuggestedReviewRemoteDataSource(graphqlRepository, dispatcher)
+
+    @HomeScope
+    @Provides
     fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
 
     @HomeScope

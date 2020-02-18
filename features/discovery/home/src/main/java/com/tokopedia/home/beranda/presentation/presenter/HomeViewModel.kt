@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common_wallet.balance.domain.coroutine.GetWalletBalanceUseCase
+import com.tokopedia.common_wallet.balance.domain.coroutine.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetPendingCashbackUseCase
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
@@ -46,11 +46,9 @@ import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
-import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import rx.subscriptions.Subscriptions
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -61,7 +59,7 @@ class HomeViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getFeedTabUseCase: GetFeedTabUseCase,
         private val sendGeolocationInfoUseCase: SendGeolocationInfoUseCase,
-        private val getWalletBalanceUseCase: GetWalletBalanceUseCase,
+        private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
         private val getPendingCashbackUseCase: GetPendingCashbackUseCase,
         private val getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase,
         private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
@@ -131,18 +129,16 @@ class HomeViewModel @Inject constructor(
     private var getPlayWidgetJob: Job? = null
     private var getTokopointJob: Job? = null
     private var getTokocashJob: Job? = null
-    private var getOvoJob: Job? = null
+    private var getSuggestedReviewJob: Job? = null
     private var getPendingCashBalanceJob: Job? = null
+    private var dismissReviewJob: Job? = null
 
+// ============================================================================================
+// ================================== Local variable ==========================================
+// ============================================================================================
 
-
-    private var currentCursor = ""
     private var fetchFirstData = false
-
-
-
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
-    private var subscription: Subscription? = Subscriptions.empty()
     private var hasGeoLocationPermission = false
     private var isNeedShowGeoLocation = false
 
@@ -168,8 +164,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun hitBannerImpression(slidesModel: BannerSlidesModel) {
-        if (!slidesModel.isImpressed
-                && slidesModel.topadsViewUrl != null && !slidesModel.topadsViewUrl.isEmpty()) {
+        if (!slidesModel.isImpressed && slidesModel.topadsViewUrl.isNotEmpty()) {
             compositeSubscription.add(Observable.just(ImpresionTask(object : ImpressionListener {
                 override fun onSuccess() {
                     slidesModel.isImpressed = true
@@ -268,7 +263,7 @@ class HomeViewModel @Inject constructor(
                     val newHomeViewModel = _homeLiveData.value?.copy(
                             list = it
                     )
-                    _homeLiveData.value = newHomeViewModel
+                    _homeLiveData.postValue(newHomeViewModel)
                 }
             }
         }
@@ -283,21 +278,16 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getSuggestedReview() {
-        getHomeReviewSuggestedUseCase.execute(RequestParams.EMPTY, object: Subscriber<SuggestedProductReview>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
+        if(getSuggestedReviewJob?.isActive == true) return
+        if (!isNeedShowGeoLocation) {
+            getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
+                getHomeReviewSuggestedUseCase.execute().collect {
+                    insertSuggestedReview(it)
+                }
+            }) {
                 removeSuggestedReview()
             }
-
-            override fun onNext(suggestedProductReview: SuggestedProductReview?) {
-                suggestedProductReview?.let {
-                    if (!isNeedShowGeoLocation) {
-                        insertSuggestedReview(it)
-                    }
-                }
-            }
-        })
+        }
     }
 
     private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
@@ -345,9 +335,9 @@ class HomeViewModel @Inject constructor(
         if(playIndex != -1 && newList[playIndex] is PlayCardViewModel){
             newList[playIndex] = playCardViewModel
         }
-        _homeLiveData.value = _homeLiveData.value?.copy(
+        _homeLiveData.postValue(_homeLiveData.value?.copy(
                 list = newList
-        )
+        ))
     }
 
     // play widget it will be removed when load image is failed (deal from PO)
@@ -359,9 +349,9 @@ class HomeViewModel @Inject constructor(
         val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
         if(playIndex != -1) {
             newList.removeAt(playIndex)
-            _homeLiveData.value = _homeLiveData.value?.copy(
+            _homeLiveData.postValue(_homeLiveData.value?.copy(
                     list = newList
-            )
+            ))
         }
     }
 
@@ -400,7 +390,7 @@ class HomeViewModel @Inject constructor(
                 val newHomeViewModel = _homeLiveData.value?.copy(
                         list = it
                 )
-                _homeLiveData.value = newHomeViewModel
+                _homeLiveData.postValue(newHomeViewModel)
             }
         }
     }
@@ -433,7 +423,7 @@ class HomeViewModel @Inject constructor(
                 val newHomeViewModel = _homeLiveData.value?.copy(
                         list = it
                 )
-                _homeLiveData.value = newHomeViewModel
+                _homeLiveData.postValue(newHomeViewModel)
             }
         }
     }
@@ -444,7 +434,7 @@ class HomeViewModel @Inject constructor(
         detectGeolocation?.let {
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
-            _homeLiveData.value = homeViewModel.copy(list = currentList)
+            _homeLiveData.postValue(homeViewModel.copy(list = currentList))
         }
     }
 
@@ -454,7 +444,7 @@ class HomeViewModel @Inject constructor(
         detectTicker?.let {
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
-            _homeLiveData.value = homeViewModel.copy(list = currentList)
+            _homeLiveData.postValue(homeViewModel.copy(list = currentList))
         }
     }
 
@@ -601,7 +591,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }) {
-            _updateNetworkLiveData.setValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
         }
     }
 
@@ -609,36 +599,33 @@ class HomeViewModel @Inject constructor(
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
             homeUseCase.updateHomeData().collect {
-                _updateNetworkLiveData.value = it
+                _updateNetworkLiveData.postValue(it)
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
-            _updateNetworkLiveData.setValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
         }
     }
 
     fun dismissReview() {
         removeSuggestedReview()
-        dismissHomeReviewUseCase.execute(RequestParams.EMPTY, object: Subscriber<String>(){
-            override fun onNext(t: String?) {}
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {}
-
-        })
+        if(dismissReviewJob?.isActive == true) return
+        dismissReviewJob = launchCatchError(coroutineContext, block = {
+            dismissHomeReviewUseCase.execute().collect{}
+        }){}
     }
 
     @VisibleForTesting
     fun loadPlayBannerFromNetwork(playBanner: PlayCardViewModel){
-        launchCatchError(coroutineContext, block = {
+        if(getPlayWidgetJob?.isActive == true) return
+        getPlayWidgetJob = launchCatchError(coroutineContext, block = {
             playCardHomeUseCase.execute().collect {
                 // If no data && no cover url don't show play widget
                 if (it.isEmpty() || it.first().coverUrl.isEmpty()) {
                     clearPlayBanner()
                     return@collect
                 }
-                _requestImageTestLiveData.value = Event(playBanner.copy(playCardHome = it.first()))
+                _requestImageTestLiveData.postValue(Event(playBanner.copy(playCardHome = it.first())))
             }
         }){
             clearPlayBanner()
@@ -754,7 +741,7 @@ class HomeViewModel @Inject constructor(
                 val newHomeViewModel = currentData?.copy(
                         list = visitableMutableList)
 
-                _homeLiveData.value = newHomeViewModel
+                _homeLiveData.postValue(newHomeViewModel)
             }
 
             override fun onCompleted() {
@@ -778,7 +765,7 @@ class HomeViewModel @Inject constructor(
                 val newHomeViewModel = currentData?.copy(
                         list = visitableMutableList)
 
-                _homeLiveData.value = newHomeViewModel
+                _homeLiveData.postValue(newHomeViewModel)
             }
 
         })

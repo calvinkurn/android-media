@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
-class GetWalletBalanceUseCase @Inject constructor(
+class GetCoroutineWalletBalanceUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val remoteConfig: RemoteConfig,
         private val userSession: UserSessionInterface,

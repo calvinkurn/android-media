@@ -17,7 +17,6 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -28,7 +27,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-
 
 @Module(includes = [
     HomeDataSourceModule::class,
@@ -58,9 +56,10 @@ class HomeModule {
     fun homeRepository(geolocationRemoteDataSource: GeolocationRemoteDataSource,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
-                       playRemoteDataSource: PlayRemoteDataSource,
                        homeDefaultDataSource: HomeDefaultDataSource,
                        keywordSearchRemoteDataSource: KeywordSearchRemoteDataSource,
+                       playRemoteDataSource: PlayRemoteDataSource,
+                       suggestedReviewRemoteDataSource: SuggestedReviewRemoteDataSource,
                        tokopointRemoteDataSource: TokopointRemoteDataSource
     ): HomeRepository = HomeRepositoryImpl(
             homeCachedDataSource,
@@ -69,7 +68,8 @@ class HomeModule {
             homeDefaultDataSource,
             geolocationRemoteDataSource,
             keywordSearchRemoteDataSource,
-            tokopointRemoteDataSource)
+            tokopointRemoteDataSource,
+            suggestedReviewRemoteDataSource)
 
     @HomeScope
     @Provides

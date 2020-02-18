@@ -8,7 +8,9 @@ import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.PlayLiveDynamicChannelEntity
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
+import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -24,7 +26,8 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeDefaultDataSource: HomeDefaultDataSource,
         private val geolocationRemoteDataSource: GeolocationRemoteDataSource,
         private val keywordSearchRemoteDataSource: KeywordSearchRemoteDataSource,
-        private val tokopointRemoteDataSource: TokopointRemoteDataSource
+        private val tokopointRemoteDataSource: TokopointRemoteDataSource,
+        private val suggestedReviewRemoteDataSource: SuggestedReviewRemoteDataSource
 ): HomeRepository {
 
     override fun getHomeData(): Flow<HomeData?> {
@@ -53,6 +56,14 @@ class HomeRepositoryImpl @Inject constructor(
 
     override fun getKeywordSearch(): Flow<KeywordSearchData> = flow {
         emit(keywordSearchRemoteDataSource.getSearchHint())
+    }
+
+    override fun getSuggestedReview(): Flow<SuggestedProductReview> = flow{
+        emit(suggestedReviewRemoteDataSource.getSuggestedReview())
+    }
+
+    override fun dismissSuggestedReview(): Flow<ProductrevDismissSuggestion> = flow{
+        emit(suggestedReviewRemoteDataSource.dismissSuggestedReview())
     }
 
     override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.sendGeolocationInfo()
