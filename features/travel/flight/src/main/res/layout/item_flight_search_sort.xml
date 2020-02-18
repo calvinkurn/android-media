@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Harga Terendah" />
 
-    <FrameLayout
+    <View
         android:id="@+id/seperator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
