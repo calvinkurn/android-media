@@ -38,8 +38,8 @@ class BrandlistSearchMapper {
                 visitables.add(
                         BrandlistSearchResultViewModel(
                                 brand.name,
-                                brand.defaultUrl,
                                 brand.logoUrl,
+                                brand.exclusiveLogoURL,
                                 searchQuery,
                                 brand.appsUrl,
                                 brand.id,
