@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
@@ -22,6 +20,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
@@ -30,13 +29,14 @@ import com.tokopedia.topupbills.telco.data.TelcoCustomData
 import com.tokopedia.topupbills.telco.data.TelcoCustomDataCollection
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
+
+//import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
 
 /**
  * Created by nabillasabbaha on 06/05/19.
@@ -69,13 +69,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun getScreenName(): String? {
         return null
-    }
-
-    override fun initInjector() {
-        activity?.let {
-            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

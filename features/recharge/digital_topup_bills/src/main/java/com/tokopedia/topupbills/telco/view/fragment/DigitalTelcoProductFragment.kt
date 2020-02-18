@@ -1,16 +1,16 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -19,7 +19,7 @@ import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoProductViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
@@ -71,10 +71,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        activity?.let {
-            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
-        }
+        getComponent(DigitalTopupComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

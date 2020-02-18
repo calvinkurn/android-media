@@ -1,23 +1,29 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.widget.NestedScrollView
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -25,17 +31,10 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
-import com.tokopedia.topupbills.telco.data.*
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
-import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -46,7 +45,7 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 23/05/19.
  */
-open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
+abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected lateinit var mainContainer: NestedScrollView
     protected lateinit var tickerView: Ticker
@@ -75,10 +74,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        activity?.let {
-            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
-        }
+        getComponent(DigitalTopupComponent::class.java).inject(this)
     }
 
     protected abstract fun onSuccessCustomData(telcoData: TelcoCustomComponentData)

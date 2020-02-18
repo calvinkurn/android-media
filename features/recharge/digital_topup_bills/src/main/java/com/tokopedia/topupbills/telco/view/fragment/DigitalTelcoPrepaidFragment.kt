@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
@@ -25,6 +23,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
 import com.tokopedia.showcase.ShowCaseBuilder
 import com.tokopedia.showcase.ShowCaseDialog
@@ -39,7 +38,6 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -78,13 +76,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun getScreenName(): String? {
         return null
-    }
-
-    override fun initInjector() {
-        activity?.let {
-            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
