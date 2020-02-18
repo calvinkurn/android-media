@@ -119,7 +119,7 @@ class BrandlistSearchViewModel @Inject constructor(
             userId: String,
             categoryIds: ArrayList<Int>? = arrayListOf(0)
     ) {
-        val categoryIdString = categoryIds.toString()
+        val categoryIdString = categoryIds.toString().replace(" ","")
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
