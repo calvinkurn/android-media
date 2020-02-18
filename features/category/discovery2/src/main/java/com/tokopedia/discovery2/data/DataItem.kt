@@ -116,7 +116,7 @@ data class DataItem(
         @SerializedName("title")
         val title: String? = "",
 
-        @SerializedName("thumbnail_url_mobile")
+        @SerializedName("thumbnail_url_mobile", alternate = ["imageURL"])
         val thumbnailUrlMobile: String? = "",
 
         @SerializedName("points_str")
@@ -140,7 +140,7 @@ data class DataItem(
         @field:SerializedName("price_format")
         var priceFormat: String? = "",
 
-        @field:SerializedName("image_click_url")
+        @field:SerializedName("image_click_url", alternate = ["url"])
         var imageClickUrl: String? = "",
 
         @SerializedName("size_mobile")
@@ -150,7 +150,19 @@ data class DataItem(
         var background: String? = "",
 
         @SerializedName("video_id")
-        val videoId: String? = ""
+        val videoId: String? = "",
+
+        @SerializedName("category_rows")
+        val categoryRows: List<DataItem>? = ArrayList(),
+
+        @SerializedName("type")
+        val type: String = "",
+
+        @SerializedName("categoryLabel")
+        val categoryLabel: String = "",
+
+        @SerializedName("ID")
+        val id: Int = 0
 
 ) {
     val leftMargin: Int

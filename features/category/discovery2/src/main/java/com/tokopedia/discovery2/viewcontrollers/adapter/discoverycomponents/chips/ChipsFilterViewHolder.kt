@@ -27,16 +27,12 @@ class ChipsFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun setUpObservers() {
-        if (!chipsFilterViewModel.getComponentLiveData().hasActiveObservers()) {
-            chipsFilterViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            })
-        }
+        chipsFilterViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+        })
 
-        if (!chipsFilterViewModel.getListDataLiveData().hasActiveObservers()) {
-            chipsFilterViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-                chipsFilterRecycleAdapter.setDataList(item)
-            })
-        }
+        chipsFilterViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            chipsFilterRecycleAdapter.setDataList(item)
+        })
     }
 
     private fun attachRecyclerView() {
