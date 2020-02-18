@@ -158,6 +158,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String screenName;
             int type = DeepLinkChecker.getDeepLinkType(context, uriData.toString());
             Timber.d("FCM wvlogin deeplink type " + type);
+            boolean keepActivityOn = false;
             switch (type) {
                 case DeepLinkChecker.HOME:
                     screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
@@ -197,6 +198,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_CONTACT_US;
                     break;
                 case DeepLinkChecker.PRODUCT:
+                    keepActivityOn = true;
                     if (linkSegment.size() >= 2
                             && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment))) {
                         openShopInfo(linkSegment, uriData, defaultBundle);
@@ -208,6 +210,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
+                    keepActivityOn = true;
                     openShopInfo(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
@@ -310,7 +313,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
             }
             sendCampaignGTM(activity, uriData.toString(), screenName);
-            context.finish();
+            if (keepActivityOn) {
+                context.finish();
+            }
         }
     }
 
@@ -555,6 +560,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 uriData.getQueryParameter(PARAM_NEED_LOGIN) != null &&
                         "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_NEED_LOGIN))
         );
+        context.finish();
     }
 
     private static boolean isPromo(List<String> linkSegment) {
