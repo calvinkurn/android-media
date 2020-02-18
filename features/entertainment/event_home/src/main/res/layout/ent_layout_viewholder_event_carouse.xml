@@ -15,6 +15,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/yang_seru_buat_kamu"
         android:textColor="@color/ent_black_text"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/ent_btn_see_more"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
