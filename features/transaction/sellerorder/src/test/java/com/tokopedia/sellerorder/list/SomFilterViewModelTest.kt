@@ -46,12 +46,12 @@ object SomFilterViewModelTest: Spek({
 
             When("Load file GQL-raw query filter") {
                 runBlocking {
-                    spy.getFilterList(queryFilterPageList)
+                    spy.loadSomFilterData(queryFilterPageList)
                 }
             }
 
             Then("Verify Func getFilterList works as expected!") {
-                coVerify { spy.getFilterList(queryFilterPageList) }
+                coVerify { spy.loadSomFilterData(queryFilterPageList) }
             }
         }
     }

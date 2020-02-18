@@ -40,7 +40,6 @@ object SomDetailViewModelTest: Spek({
     val orderId = "397293266"
     val orderIdNewOrder = "437997831"
     val gson = Gson()
-    val paramRejectReasons = SomReasonRejectParam()
     val paramRejectOrder = SomRejectRequest(
         orderId = orderIdNewOrder,
         reason = "lalala",
@@ -66,12 +65,12 @@ object SomDetailViewModelTest: Spek({
 
             When("Load file GQL-raw query GetSOMDetail") {
                 runBlocking {
-                    spy.getDetailOrder(queryOrderDetailPageList, orderId)
+                    spy.loadDetailOrder(queryOrderDetailPageList, orderId)
                 }
             }
 
             Then("Verify Func getDetailOrder works as expected!") {
-                coVerify { spy.getDetailOrder(queryOrderDetailPageList, orderId) }
+                coVerify { spy.loadDetailOrder(queryOrderDetailPageList, orderId) }
             }
         }
 
@@ -108,12 +107,12 @@ object SomDetailViewModelTest: Spek({
 
             When("Load file GQL-raw query SOMRejectReason") {
                 runBlocking {
-                    spy.doGetRejectReasons(queryAcceptOrder, paramRejectReasons)
+                    spy.getRejectReasons(queryAcceptOrder)
                 }
             }
 
             Then("Verify Func doGetRejectReasons works as expected!") {
-                coVerify { spy.doGetRejectReasons(queryAcceptOrder, paramRejectReasons) }
+                coVerify { spy.getRejectReasons(queryAcceptOrder) }
             }
         }
 
@@ -129,12 +128,12 @@ object SomDetailViewModelTest: Spek({
 
             When("Load file GQL-raw mutation RejectOrder") {
                 runBlocking {
-                    spy.doRejectOrder(queryRejectOrder, paramRejectOrder)
+                    spy.rejectOrder(queryRejectOrder, paramRejectOrder)
                 }
             }
 
             Then("Verify Func doRejectOrder works as expected!") {
-                coVerify { spy.doRejectOrder(queryRejectOrder, paramRejectOrder) }
+                coVerify { spy.rejectOrder(queryRejectOrder, paramRejectOrder) }
             }
         }
 
@@ -150,12 +149,12 @@ object SomDetailViewModelTest: Spek({
 
             When("Load file GQL-raw mutation Edit Awb") {
                 runBlocking {
-                    spy.doEditAwb(queryEditAwb)
+                    spy.editAwb(queryEditAwb)
                 }
             }
 
             Then("Verify Func doEditAwb works as expected!") {
-                coVerify { spy.doEditAwb(queryEditAwb) }
+                coVerify { spy.editAwb(queryEditAwb) }
             }
         }
     }

@@ -4,10 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerorder.InstantTaskExecutorRuleSpek
-import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
-import com.tokopedia.sellerorder.list.data.model.SomListFilter
-import com.tokopedia.sellerorder.list.data.model.SomListOrder
-import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
+import com.tokopedia.sellerorder.list.data.model.*
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -31,9 +28,11 @@ object SomListViewModelTest: Spek({
     val queryFilterList = "query_filter_list"
     val queryStatusList = "query_status_list"
     val queryOrderList = "query_order_list"
+    val queryTickerList = "query_ticker_list"
     val statusSuccessJson = "response_status_list_success"
     val filterSuccessJson = "response_filter_list_success"
     val orderListSuccessJson = "response_order_list_success"
+    val tickerListSuccessJson = "response_ticker_list_success"
     val gson = Gson()
     val paramOrder = SomListOrderParam(
             startDate = "\"15/11/2019\"",
@@ -53,12 +52,12 @@ object SomListViewModelTest: Spek({
 
             When("Load file GQLraw query filter") {
                 runBlocking {
-                    spy.getFilterList(queryFilterList)
+                    spy.loadFilterList(queryFilterList)
                 }
             }
 
-            Then("Verify Func getFilterList works as expected!") {
-                coVerify { spy.getFilterList(queryFilterList) }
+            Then("Verify Func loadFilterList works as expected!") {
+                coVerify { spy.loadFilterList(queryFilterList) }
             }
         }
 
@@ -74,12 +73,12 @@ object SomListViewModelTest: Spek({
 
             When("Load file GQL-raw query status_list") {
                 runBlocking {
-                    spy.getFilterStatusList(queryStatusList)
+                    spy.loadStatusList(queryStatusList)
                 }
             }
 
-            Then("Verify Func getStatusList works as expected!") {
-                coVerify { spy.getFilterStatusList(queryStatusList) }
+            Then("Verify Func loadStatusList works as expected!") {
+                coVerify { spy.loadStatusList(queryStatusList) }
             }
         }
 
@@ -95,12 +94,33 @@ object SomListViewModelTest: Spek({
 
             When("Load file GQL-raw query order_list") {
                 runBlocking {
-                    spy.getOrderList(queryOrderList, paramOrder)
+                    spy.loadOrderList(queryOrderList, paramOrder)
                 }
             }
 
-            Then("Verify Func getStatusList works as expected") {
-                coVerify { spy.getOrderList(queryOrderList, paramOrder) }
+            Then("Verify Func loadOrderList works as expected") {
+                coVerify { spy.loadOrderList(queryOrderList, paramOrder) }
+            }
+        }
+
+        Scenario("Load Ticker GQL") {
+            Given("Return Success Data") {
+                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(tickerListSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
+                val response = gson.fromJson(jsonResponse, SomListTicker.Data::class.java)
+                val gqlResponseSuccess = GraphqlResponse(
+                        mapOf(SomListTicker.Data::class.java to response),
+                        mapOf(SomListTicker.Data::class.java to listOf()), false)
+                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+            }
+
+            When("Load file GQL-raw query ticker_list") {
+                runBlocking {
+                    spy.loadTickerList(queryTickerList)
+                }
+            }
+
+            Then("Verify Func loadTickerList works as expected!") {
+                coVerify { spy.loadTickerList(queryTickerList) }
             }
         }
     }

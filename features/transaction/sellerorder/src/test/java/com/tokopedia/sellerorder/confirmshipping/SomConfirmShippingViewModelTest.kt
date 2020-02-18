@@ -50,12 +50,12 @@ object SomConfirmShippingViewModelTest: Spek({
 
             When("Load file GQL-raw mutation mpLogisticConfirmShipping") {
                 runBlocking {
-                    spy.doConfirmShipping(queryConfirmShipping)
+                    spy.confirmShipping(queryConfirmShipping)
                 }
             }
 
             Then("Verify Func doConfirmShipping works as expected!") {
-                coVerify { spy.doConfirmShipping(queryConfirmShipping) }
+                coVerify { spy.confirmShipping(queryConfirmShipping) }
             }
         }
 
@@ -92,12 +92,12 @@ object SomConfirmShippingViewModelTest: Spek({
 
             When("Load file GQL-raw mutation mpLogisticChangeCourier") {
                 runBlocking {
-                    spy.doChangeCourier(queryChangeCourier)
+                    spy.changeCourier(queryChangeCourier)
                 }
             }
 
             Then("Verify Func doChangeCourier works as expected!") {
-                coVerify { spy.doChangeCourier(queryChangeCourier) }
+                coVerify { spy.changeCourier(queryChangeCourier) }
             }
         }
     }
