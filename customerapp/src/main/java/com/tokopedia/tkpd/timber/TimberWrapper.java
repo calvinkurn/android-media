@@ -35,16 +35,21 @@ public class TimberWrapper {
 
     public static void initByConfig(@NonNull Application application, @NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
-        String logConfigString = "{\"enabled\":true,\"appVersionMin\":316000000,\"tags\":[\"P1#DFM#100#offline\",\"P1#DFM_DEFERRED#10#online\",\"P1#NULL_CHECKER#1#online\",\"P1#REQUEST_ERROR_GQL#1#online\",\"P1#IMAGE_UPLOADER#100#online\",\"P1#CACHE_API#10#online\",\"P2#FINGERPRINT#10#online\",\"P2#TOKEN_REFRESH#10#online\",\"P2#PLAY_SERVICE_ERROR#10#offline\",\"P2#IMAGE_TRACEROUTE#10#offline\",\"P2#PRODUCT_UPLOAD#1#online\",\"P1#PDP_CACHE#100#online\",\"P1#IRIS#100#online\",\"P1#IRIS_COLLECT#100#online\"],\"priority\":[false,false,false]}";
-        if (!TextUtils.isEmpty(logConfigString)) {
-            DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
-            if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
-                UserSession userSession = new UserSession(application);
-                TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
-                timberReportingTree.setUserId(userSession.getUserId());
-                timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
-                timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
-                Timber.plant(timberReportingTree);
+        boolean isDebug = GlobalConfig.DEBUG;
+        if (isDebug) {
+            Timber.plant(new TimberDebugTree());
+        } else {
+            String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
+            if (!TextUtils.isEmpty(logConfigString)) {
+                DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
+                if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
+                    UserSession userSession = new UserSession(application);
+                    TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
+                    timberReportingTree.setUserId(userSession.getUserId());
+                    timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
+                    timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
+                    Timber.plant(timberReportingTree);
+                }
             }
         }
     }

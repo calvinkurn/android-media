@@ -37,11 +37,15 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkDFMapper
+import com.tokopedia.applink.DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.dynamicfeatures.DFInstaller
+import com.tokopedia.dynamicfeatures.DFInstaller.Companion.isInstalled
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -66,6 +70,7 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
+import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
@@ -91,9 +96,10 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.fragment_login_with_phone.container
+import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
+import kotlinx.android.synthetic.main.fragment_login_with_phone.progress_bar
+import kotlinx.android.synthetic.main.fragment_login_with_phone.socmed_btn
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -617,19 +623,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
-
-            GlobalScope.launch {
-                for (i in 0..5000) {
-                    delay(1000)
-                    println("$i sending event")
-                    TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapOf(
-                        "event" to "clickTopNav",
-                        "eventCategory" to "top nav - /",
-                        "eventAction" to "click search box",
-                        "eventLabel" to ""
-                    ))
-                }
-            }
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
