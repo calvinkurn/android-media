@@ -5,6 +5,9 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchShimmeringViewHolder
 
 class MarginItemDecoration(private val marginSize: Int) : RecyclerView.ItemDecoration() {
 
@@ -24,7 +27,10 @@ class MarginItemDecoration(private val marginSize: Int) : RecyclerView.ItemDecor
             val viewType = it.getItemViewType(position)
 
             // All Brand
-            if (viewType == AllBrandViewHolder.LAYOUT) {
+            if (viewType == AllBrandViewHolder.LAYOUT ||
+                    viewType == BrandlistSearchRecommendationViewHolder.LAYOUT ||
+                    viewType == BrandlistSearchResultViewHolder.LAYOUT ||
+                    viewType == BrandlistSearchShimmeringViewHolder.LAYOUT) {
 
                 val layoutParams = view.layoutParams as GridLayoutManager.LayoutParams
 

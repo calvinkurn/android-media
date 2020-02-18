@@ -28,6 +28,8 @@ class BrandlistSearchViewModel @Inject constructor(
         private const val ALL_BRANDS_REQUEST_SIZE = 30
         private const val ALPHABETIC_ASC_SORT = 3
         private const val INITIAL_LETTER = 'a'
+        private const val POPULARITY_SORT = 2
+        private const val CATEGORY_ID = 0
     }
 
     private val _brandlistSearchResponse = MutableLiveData<Result<OfficialStoreAllBrands>>()
@@ -48,9 +50,8 @@ class BrandlistSearchViewModel @Inject constructor(
     var currentOffset = INITIAL_OFFSET
     var currentLetter = INITIAL_LETTER
 
-    fun loadInitialBrands(categoryId: Int) {
+    fun loadInitialBrands() {
         searchAllBrands(
-                categoryId = categoryId,
                 offset = INITIAL_OFFSET,
                 query = ALL_BRANDS_QUERY,
                 brandSize = ALL_BRANDS_REQUEST_SIZE,
@@ -59,10 +60,9 @@ class BrandlistSearchViewModel @Inject constructor(
         )
     }
 
-    fun loadMoreBrands(categoryId: Int){
+    fun loadMoreBrands(){
         val requestSize = getRequestSize(totalBrandSize, currentOffset)
         searchAllBrands(
-                categoryId = categoryId,
                 offset = currentOffset,
                 query = ALL_BRANDS_QUERY,
                 brandSize = requestSize,
@@ -96,17 +96,15 @@ class BrandlistSearchViewModel @Inject constructor(
     }
 
     fun searchBrand(
-            categoryId: Int,
             offset: Int,
             query: String,
             brandSize: Int,
-            sortType: Int,
             firstLetter: String
     ) {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(categoryId, offset,
-                        query, brandSize, sortType, firstLetter)
+                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, offset,
+                        query, brandSize, POPULARITY_SORT, firstLetter)
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
                 searchBrandResult.let {
                     _brandlistSearchResponse.postValue(Success(it))
@@ -119,14 +117,15 @@ class BrandlistSearchViewModel @Inject constructor(
 
     fun searchRecommendation(
             userId: String,
-            categoryIds: String
+            categoryIds: ArrayList<Int>? = arrayListOf(0)
     ) {
+        val categoryIdString = categoryIds.toString()
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
                         createParams(
                                 userId.toInt(),
-                                categoryIds.substring(0, categoryIds.length-1),
+                                categoryIdString.substring(1, categoryIdString.length-1),
                                 GetBrandlistPopularBrandUseCase.POPULAR_WIDGET_NAME
                         )
                 val searchRecommendationResult = getBrandlistPopularBrandUseCase.executeOnBackground()
@@ -140,7 +139,6 @@ class BrandlistSearchViewModel @Inject constructor(
     }
 
     fun searchAllBrands(
-            categoryId: Int,
             offset: Int,
             query: String,
             brandSize: Int,
@@ -149,7 +147,7 @@ class BrandlistSearchViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(categoryId, offset,
+                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, offset,
                         query, brandSize, sortType, firstLetter)
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
                 searchBrandResult.let {
@@ -161,10 +159,10 @@ class BrandlistSearchViewModel @Inject constructor(
         }
     }
 
-    fun getTotalBrands(categoryId: Int) {
+    fun getTotalBrands() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(categoryId, INITIAL_OFFSET,
+                getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, INITIAL_OFFSET,
                         ALL_BRANDS_QUERY, 0, ALPHABETIC_ASC_SORT, "")
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
                 searchBrandResult.let {

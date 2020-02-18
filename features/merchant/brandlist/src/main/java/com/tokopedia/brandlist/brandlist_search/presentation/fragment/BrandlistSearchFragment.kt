@@ -20,6 +20,7 @@ import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment
 import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment.Companion.CATEGORY_INTENT
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.fragment.BrandlistPageFragment
@@ -78,7 +79,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadMoreBrands(categoryData?.categoryId.toIntOrZero())
+                viewModel.loadMoreBrands()
                 if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultViewModel) {
                     adapterBrandSearch?.showLoading()
                 }
@@ -117,12 +118,13 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
         recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapterBrandSearch as StickyHeaderInterface))
+        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getTotalBrands(categoryData?.categoryId.toIntOrZero())
+        viewModel.getTotalBrands()
         searchView = view.findViewById(R.id.search_input_view)
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
         initView(view)
@@ -192,14 +194,12 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
             override fun onSearchTextChanged(text: String?) {
                 text?.let {
                     if (it.isNotEmpty()) {
-                        val categoryId = categoryData?.categoryId.toIntOrZero()
                         val offset = 0
-                        val sortType = 1
                         val firstLetter = ""
                         val brandSize = 10
                         keywordSearch = it
-                        viewModel.searchBrand(categoryId, offset, it,
-                                brandSize, sortType, firstLetter)
+                        viewModel.searchBrand(offset, it,
+                                brandSize, firstLetter)
                         adapterBrandSearch?.showShimmering()
                     }
                 }
@@ -217,7 +217,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
                     if(response.isEmpty()) {
                         viewModel.searchRecommendation(
                                 userId,
-                                categoryData?.categories.toString())
+                                categoryData?.categories)
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
@@ -290,7 +290,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     private fun loadInitialData() {
         if (!isInitialDataLoaded) {
-            viewModel.loadInitialBrands(categoryData?.categoryId.toIntOrZero())
+            viewModel.loadInitialBrands()
             isInitialDataLoaded = true
         }
     }
