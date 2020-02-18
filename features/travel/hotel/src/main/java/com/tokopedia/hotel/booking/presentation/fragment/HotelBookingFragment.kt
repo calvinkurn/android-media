@@ -190,7 +190,11 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
 
             REQUEST_CODE_ADD_EMAIL -> {
-                activity?.recreate()
+                if (resultCode == Activity.RESULT_OK) {
+                    activity?.recreate()
+                } else {
+                    activity?.finish()
+                }
             }
 
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> {
