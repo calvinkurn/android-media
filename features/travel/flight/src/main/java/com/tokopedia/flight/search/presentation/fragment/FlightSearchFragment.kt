@@ -30,6 +30,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.filter.presentation.bottomsheets.FlightSortBottomSheet
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.di.FlightSearchComponent
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
@@ -594,28 +595,16 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private fun setUpBottomAction() {
         bottom_action_filter_sort.setButton2OnClickListener {
-            val bottomSheetBuilder: BottomSheetBuilder = CheckedBottomSheetBuilder(activity)
-                    .setMode(BottomSheetBuilder.MODE_LIST)
-                    .addTitleItem(getString(R.string.flight_search_sort_title))
-
-            (bottomSheetBuilder as CheckedBottomSheetBuilder).addItem(TravelSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == TravelSortOption.CHEAPEST)
-            bottomSheetBuilder.addItem(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == TravelSortOption.MOST_EXPENSIVE)
-            bottomSheetBuilder.addItem(TravelSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == TravelSortOption.EARLIEST_DEPARTURE)
-            bottomSheetBuilder.addItem(TravelSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == TravelSortOption.LATEST_DEPARTURE)
-            bottomSheetBuilder.addItem(TravelSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == TravelSortOption.SHORTEST_DURATION)
-            bottomSheetBuilder.addItem(TravelSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == TravelSortOption.LONGEST_DURATION)
-            bottomSheetBuilder.addItem(TravelSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == TravelSortOption.EARLIEST_ARRIVAL)
-            bottomSheetBuilder.addItem(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == TravelSortOption.LATEST_ARRIVAL)
-
-            val bottomSheetDialog: BottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-                    .setItemClickListener { menuItem ->
-                        if (adapter.data != null) {
-                            selectedSortOption = menuItem.itemId
-                            flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
-                        }
-                    }
-                    .createDialog()
-            bottomSheetDialog.show()
+            val flightSortBottomSheet = FlightSortBottomSheet.newInstance(selectedSortOption)
+            flightSortBottomSheet.listener = object : FlightSortBottomSheet.ActionListener {
+                override fun onSortOptionClicked(selectedId: Int) {
+                    selectedSortOption = selectedId
+                    flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
+                }
+            }
+            fragmentManager?.let {
+                flightSortBottomSheet.show(it, "SORT")
+            }
         }
 
         setUIMarkSort()
