@@ -50,22 +50,6 @@ class HomeRepositoryImpl @Inject constructor(
         emit(Result.success(null))
     }
 
-    override fun getTokopoints(): Flow<TokopointsDrawerHomeData> = flow{
-        emit(tokopointRemoteDataSource.getTokopoint())
-    }
-
-    override fun getKeywordSearch(): Flow<KeywordSearchData> = flow {
-        emit(keywordSearchRemoteDataSource.getSearchHint())
-    }
-
-    override fun getSuggestedReview(): Flow<SuggestedProductReview> = flow{
-        emit(suggestedReviewRemoteDataSource.getSuggestedReview())
-    }
-
-    override fun dismissSuggestedReview(): Flow<ProductrevDismissSuggestion> = flow{
-        emit(suggestedReviewRemoteDataSource.dismissSuggestedReview())
-    }
-
     override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.sendGeolocationInfo()
 
     override fun getPlayChannel(): Flow<PlayLiveDynamicChannelEntity> = flow {

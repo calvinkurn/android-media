@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.data.usecase.PlayLiveDynamicUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -66,7 +66,7 @@ class HomeViewModel @Inject constructor(
         private val stickyLoginUseCase: StickyLoginUseCase,
         private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
-        private val playCardHomeUseCase: PlayLiveDynamicUseCase,
+        private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
         private val homeDataMapper: HomeDataMapper,
         homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
@@ -281,9 +281,8 @@ class HomeViewModel @Inject constructor(
         if(getSuggestedReviewJob?.isActive == true) return
         if (!isNeedShowGeoLocation) {
             getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
-                getHomeReviewSuggestedUseCase.execute().collect {
-                    insertSuggestedReview(it)
-                }
+                val data = getHomeReviewSuggestedUseCase.executeOnBackground()
+                insertSuggestedReview(data)
             }) {
                 removeSuggestedReview()
             }
@@ -611,7 +610,7 @@ class HomeViewModel @Inject constructor(
         removeSuggestedReview()
         if(dismissReviewJob?.isActive == true) return
         dismissReviewJob = launchCatchError(coroutineContext, block = {
-            dismissHomeReviewUseCase.execute().collect{}
+            dismissHomeReviewUseCase.executeOnBackground()
         }){}
     }
 
@@ -619,14 +618,12 @@ class HomeViewModel @Inject constructor(
     fun loadPlayBannerFromNetwork(playBanner: PlayCardViewModel){
         if(getPlayWidgetJob?.isActive == true) return
         getPlayWidgetJob = launchCatchError(coroutineContext, block = {
-            playCardHomeUseCase.execute().collect {
-                // If no data && no cover url don't show play widget
-                if (it.isEmpty() || it.first().coverUrl.isEmpty()) {
-                    clearPlayBanner()
-                    return@collect
-                }
-                _requestImageTestLiveData.postValue(Event(playBanner.copy(playCardHome = it.first())))
+            getPlayCardHomeUseCase.setParams()
+            val data = getPlayCardHomeUseCase.executeOnBackground()
+            if (data.playChannels.isEmpty() || data.playChannels.first().coverUrl.isEmpty()) {
+                clearPlayBanner()
             }
+            _requestImageTestLiveData.postValue(Event(playBanner.copy(playCardHome = data.playChannels.first())))
         }){
             clearPlayBanner()
         }
@@ -673,12 +670,11 @@ class HomeViewModel @Inject constructor(
         if(getTokopointJob?.isActive == true) return
 
         getTokopointJob = launchCatchError(coroutineContext, block={
-            getHomeTokopointsDataUseCase.execute().collect{
-                updateHeaderViewModel(
-                        isTokoPointDataError = false,
-                        tokopointsDrawer = it.tokopointsDrawer
-                )
-            }
+            val data = getHomeTokopointsDataUseCase.executeOnBackground()
+            updateHeaderViewModel(
+                    isTokoPointDataError = false,
+                    tokopointsDrawer = data.tokopointsDrawer
+            )
         }){
             updateHeaderViewModel(
                     isTokoPointDataError = true,
@@ -691,23 +687,25 @@ class HomeViewModel @Inject constructor(
     fun searchHint(){
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
-            getKeywordSearchUseCase.execute().collect{
-                _searchHint.postValue(it.searchData)
-            }
+            val data = getKeywordSearchUseCase.executeOnBackground()
+            _searchHint.postValue(data.searchData)
         }){}
     }
 
     fun getStickyContent() {
         if(getStickyLoginJob?.isActive == true) return
         getStickyLoginJob = launchCatchError(coroutineContext, block = {
-             stickyLoginUseCase.execute(StickyLoginConstant.Page.HOME.name).collect{ response ->
-                val data = response.response.tickers.find { it.layout == StickyLoginConstant.LAYOUT_FLOATING }
-                 if(data == null){
-                     _stickyLogin.postValue(Result.error(Exception()))
-                 } else {
-                     _stickyLogin.postValue(Result.success(data))
-                 }
-            }
+            stickyLoginUseCase.setParam(RequestParams.create().apply {
+                putString(StickyLoginConstant.PARAMS_PAGE, StickyLoginConstant.Page.HOME.name)
+            })
+            val response = stickyLoginUseCase.executeOnBackground()
+            val data = response.response.tickers.find { it.layout == StickyLoginConstant.LAYOUT_FLOATING }
+             if(data == null){
+                 _stickyLogin.postValue(Result.error(Exception()))
+             } else {
+                 _stickyLogin.postValue(Result.success(data))
+             }
+
         }){
             _stickyLogin.postValue(Result.error(it))
         }
