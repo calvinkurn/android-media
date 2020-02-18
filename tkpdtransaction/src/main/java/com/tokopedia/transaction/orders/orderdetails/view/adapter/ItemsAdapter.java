@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +24,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.ApplinkOMSConstant;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
-import com.tokopedia.transaction.orders.orderdetails.data.Body;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
-import com.tokopedia.transaction.orders.orderdetails.data.Header;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListwebViewActivity;
@@ -195,10 +192,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 }
             }
+            else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                setEventDetails.openShowQRFragment(actionButton, item);
+            }
         }
 
     }
-
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
@@ -531,19 +530,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         private boolean isDownloadable(ActionButton actionButton) {
-            Header header;
-
             if (!TextUtils.isEmpty(actionButton.getHeader())) {
-                Gson gson = new Gson();
-                header = gson.fromJson(actionButton.getHeader(), Header.class);
-                return header != null && header.getContentType() != null
-                        && header.getContentType().equalsIgnoreCase(CONTENT_TYPE);
+                return actionButton.getHeaderObject() != null && actionButton.getHeaderObject().getContentType() != null
+                        && actionButton.getHeaderObject().getContentType().equalsIgnoreCase(CONTENT_TYPE);
             }
             return false;
         }
 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
-
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
@@ -790,7 +784,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
-
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
