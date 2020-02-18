@@ -295,14 +295,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ResolutionRouter,
         ProductDetailRouter,
-        KYCRouter,
-        CustomerRouter.IrisInstallRouter {
-
-    private static final String EXTRA = "extra";
-    public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
-    public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
-    public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
-    public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
+        KYCRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1532,13 +1525,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
-    }
-
-    @Override
-    public void sendIrisInstallEvent() {
-        Map<String, Object> map = new HashMap<>();
-        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_INSTALL);
-        mIris.sendEvent(map);
     }
 
     @Override

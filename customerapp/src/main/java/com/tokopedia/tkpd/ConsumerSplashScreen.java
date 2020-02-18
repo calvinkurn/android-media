@@ -10,6 +10,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -67,6 +68,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
 
         trackIrisEventForAppOpen();
+        new InstallReferral().initilizeInstallReferral(this);
 
     }
 

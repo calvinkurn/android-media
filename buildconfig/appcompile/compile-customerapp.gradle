@@ -86,6 +86,8 @@ include "features:home:account-home"
 
 include "features:im:common_promo"
 include "features:im:referral"
+include "features:im:install_referral"
+
 include "features:kyc"
 include "features:scanner"
 
