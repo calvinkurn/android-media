@@ -8,6 +8,10 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.adapter.FlightSortAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.layout_flight_search_sort_bottom_sheet.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @author by jessica on 2020-02-17
@@ -15,7 +19,7 @@ import kotlinx.android.synthetic.main.layout_flight_search_sort_bottom_sheet.*
 
 class FlightSortBottomSheet : BottomSheetUnify() {
 
-    lateinit var listener: ActionListener
+    var listener: ActionListener? = null
     var selectedSortOption = TravelSortOption.EARLIEST_DEPARTURE
 
     lateinit var sortAdapter: FlightSortAdapter
@@ -57,7 +61,11 @@ class FlightSortBottomSheet : BottomSheetUnify() {
                 override fun onClickItemListener(selectedId: Int) {
                     sortAdapter.onClickItem(selectedId)
                     selectedSortOption = selectedId
-                    listener.onSortOptionClicked(selectedId)
+                    listener?.onSortOptionClicked(selectedId)
+                    GlobalScope.launch(Dispatchers.Main) {
+                        delay(300)
+                        dismiss()
+                    }
                 }
             }
         }
@@ -70,7 +78,8 @@ class FlightSortBottomSheet : BottomSheetUnify() {
                 Pair(TravelSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration)),
                 Pair(TravelSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration)),
                 Pair(TravelSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival)),
-                Pair(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival))) }
+                Pair(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival)))
+    }
 
     interface ActionListener {
         fun onSortOptionClicked(selectedSortOption: Int)

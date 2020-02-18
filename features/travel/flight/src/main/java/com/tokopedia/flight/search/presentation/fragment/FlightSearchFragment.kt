@@ -4,15 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
@@ -42,7 +40,6 @@ import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
-import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_filter_bottom_action_view.*
@@ -602,8 +599,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
                 }
             }
+            flightSortBottomSheet.setShowListener { flightSortBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
             fragmentManager?.let {
-                flightSortBottomSheet.show(it, "SORT")
+                flightSortBottomSheet.show(it, TAG_FLIGHT_SORT)
             }
         }
 
@@ -801,6 +799,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
         private val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
         private val MAX_DATE_ADDITION_YEAR = 1
+        private val TAG_FLIGHT_SORT = "tag_flight_sort"
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {
             val bundle = Bundle()
