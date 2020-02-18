@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import android.app.Activity
 import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
@@ -21,6 +22,7 @@ import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
+import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -42,7 +44,18 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     fun getDistrict(placeId: String) {
         getDistrictUseCase.clearCache()
         getDistrictUseCase.setParams(placeId)
-        getDistrictUseCase.execute(RequestParams.create(), GetDistrictSubscriber(view, getDistrictMapper))
+        getDistrictUseCase.execute(RequestParams.create(), object: Subscriber<GraphqlResponse>() {
+            override fun onNext(t: GraphqlResponse?) {
+                val getDistrictResponseUiModel = getDistrictMapper.map(t)
+                view.onSuccessPlaceGetDistrict(getDistrictResponseUiModel.data)
+            }
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) {
+               e?.printStackTrace()
+            }
+        })
     }
 
     fun autofill(lat: Double, long: Double, zoom: Float) {
