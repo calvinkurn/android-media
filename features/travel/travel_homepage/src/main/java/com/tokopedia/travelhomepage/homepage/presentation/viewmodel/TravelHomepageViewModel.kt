@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -16,8 +17,6 @@ import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyViewModelsUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -31,8 +30,8 @@ class TravelHomepageViewModel @Inject constructor(
         private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
-        dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+        private val dispatcherProvider: TravelDispatcherProvider)
+    : BaseViewModel(dispatcherProvider.io()) {
 
     val travelItemList = MutableLiveData<List<TravelHomepageItemModel>>()
     val isAllError = MutableLiveData<Boolean>()
@@ -73,7 +72,7 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getCategories(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageCategoryListModel.Response::class.java)
                 var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
@@ -100,7 +99,7 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getOrderList(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success")
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageOrderListModel.Response::class.java, param)
                 var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -150,7 +149,7 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getRecommendation(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val param = mapOf(PARAM_PRODUCT to "ALL")
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecommendationModel.Response::class.java, param)
                 var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -178,7 +177,7 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getDestination(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageDestinationModel.Response::class.java)
                 var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
