@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -15,6 +16,7 @@ import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInterface
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
@@ -24,14 +26,18 @@ class ShopOpenRevampFinishFragment : Fragment() {
     private val handler = Handler()
     lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var lottieAnimationView: LottieAnimationView
+<<<<<<< HEAD
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
+=======
+    private lateinit var loading: LoaderUnify
+>>>>>>> ee1b904c61e91b97f6c565dd5d6ca79f31be698e
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
     }
 
     companion object {
-        const val FOUR_FRAGMENT_TAG = "four"
+        const val LOTTIE_ANIMATION = "https://ecs7.tokopedia.net/android/lottie/merchant/others/REV_Merchant_Onboarding_lottie.json"
     }
 
     override fun onAttach(context: Context) {
@@ -49,30 +55,40 @@ class ShopOpenRevampFinishFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_finish, container, false)
         lottieAnimationView = view.findViewById(R.id.lottie_success_create_shop)
+        loading = view.findViewById(R.id.loading)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupAnimation(view)
 
+        loading.visibility = View.VISIBLE
         val shopId = userSession.shopId
-        val userName = userSession.name
-        val firstName = userName.substring(0, userName.indexOf(" "))
-        val greetingText = "Selamat $firstName, \nTokomu sudah jadi!"
-        txt_greeting.text = greetingText
-        shopOpenRevampTracking?.sendScreen()
+        val fullName = userSession.name
+        val firstName = fullName.split(" ")[0]
 
-        handler.postDelayed({
-            activity?.finish()
-            RouteManager.route(context, ApplinkConst.SHOP, shopId)
-        }, 3000)
+        setupAnimation(view, shopId)
+        val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, firstName)
+        txt_greeting.text = greetingText
     }
 
-    private fun setupAnimation(view: View) {
-        lottieAnimationView.visibility = View.VISIBLE
-        lottieAnimationView.playAnimation()
-        lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+    private fun setupAnimation(view: View, shopId: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, LOTTIE_ANIMATION)
+
+            lottieCompositionLottieTask.addListener { result ->
+                lottieAnimationView.setComposition(result)
+                loading.visibility = View.GONE
+                lottieAnimationView.visibility = View.VISIBLE
+                lottieAnimationView.playAnimation()
+                lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+
+                handler.postDelayed({
+                    activity?.finish()
+                    RouteManager.route(context, ApplinkConst.SHOP, shopId)
+                }, 3000)
+            }
+        }
     }
 
 }
