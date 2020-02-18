@@ -962,8 +962,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.doLikeUnlike(playViewModel.contentId,
                 playViewModel.contentType,
                 playViewModel.likeType,
-                shouldLike,
-                playViewModel.isLive)
+                shouldLike)
 
         sendEventLikeContent(shouldLike)
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)

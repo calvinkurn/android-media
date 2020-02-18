@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
@@ -54,12 +55,17 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         revGeocodeUseCase.execute(param)
                 .subscribe(
                         {
-                            if (it.messageError.isNotEmpty()
-                                    && it.messageError[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
+                            if (it.messageError.isNotEmpty() && it.messageError[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
                                 view.showOutOfReachDialog()
-                            } else view.onSuccessAutofill(it.data)
+                            } else {
+                                var errMsg = ""
+                                if (it.messageError.isNotEmpty()) errMsg = it.messageError[0]
+                                view?.onSuccessAutofill(it.data, errMsg)
+                            }
                         },
-                        { it?.printStackTrace() }, {}
+                        {
+                            it?.printStackTrace()
+                        }, {}
                 )
     }
 
@@ -82,8 +88,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
 
-            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess()
-            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed()
+            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed(eventLabel = LOGISTIC_LABEL)
         } else if (saveAddressDataModel.postalCode.isEmpty()) {
             view.goToAddEditActivity(true, isMismatchSolved, isUnnamedRoad = false, isZipCodeNull = true)
         } else {
@@ -93,8 +99,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 view.goToAddEditActivity(false, isMismatchSolved, false, false)
             }
 
-            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess()
-            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeSuccess()
+            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeSuccess(eventLabel = LOGISTIC_LABEL)
         }
     }
 

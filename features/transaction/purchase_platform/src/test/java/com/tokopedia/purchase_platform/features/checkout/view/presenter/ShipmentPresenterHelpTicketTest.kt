@@ -113,7 +113,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
             }
 
             When("process checkout") {
-                presenter.processCheckout(CheckPromoParam(), false, false, false, false, "", "")
+                presenter.processCheckout(CheckPromoParam(), false, false, false, false, "", "", "")
             }
 
             Then("should render error reporter dialog") {

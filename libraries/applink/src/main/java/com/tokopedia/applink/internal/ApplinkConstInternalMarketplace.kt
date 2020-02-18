@@ -205,4 +205,7 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
 
+    @JvmField
+    val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
+
 }
