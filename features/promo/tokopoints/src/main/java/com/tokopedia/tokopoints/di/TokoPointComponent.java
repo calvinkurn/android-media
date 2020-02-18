@@ -15,9 +15,9 @@ public interface TokoPointComponent {
 
     void inject(TokoPointsHomeFragmentNew fragment);
 
-    void inject(CatalogListingFragment fragment);
 
-    void inject(CatalogListItemFragment fragment);
+
+
 
 
 

@@ -17,9 +17,10 @@ import kotlinx.coroutines.withContext
 import rx.Subscriber
 import java.util.HashMap
 import javax.inject.Inject
+import javax.inject.Named
 
 @TokoPointScope
-class PointHistoryRepository @Inject constructor(private val repository: GraphqlRepository,private val queryMap: Map<String, String>) {
+class PointHistoryRepository @Inject constructor(private val repository: GraphqlRepository, private val queryMap: Map<String, String> , @Named(CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS) val tp_gql_current_Point : String) {
 
     private val cacheStrategy by lazy {
         GraphqlCacheStrategy
@@ -27,7 +28,7 @@ class PointHistoryRepository @Inject constructor(private val repository: Graphql
     }
     suspend fun getPointsDetail() = withContext(Dispatchers.IO) {
         val variables = HashMap<String, Any>()
-        val request = GraphqlRequest(queryMap[CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS],
+        val request = GraphqlRequest(tp_gql_current_Point,
                 TokoPointDetailEntity::class.java,
                 variables, false)
         repository.getReseponse(listOf(request), cacheStrategy)

@@ -10,12 +10,14 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -24,7 +26,9 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.di.BundleModule_GetBundleFactory
 import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
@@ -36,9 +40,7 @@ import com.tokopedia.tokopoints.view.model.CatalogFilterBase
 import com.tokopedia.tokopoints.view.model.CatalogFilterPointRange
 import com.tokopedia.tokopoints.view.model.CatalogSubCategory
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.TabUtil
+import com.tokopedia.tokopoints.view.util.*
 import java.util.*
 import javax.inject.Inject
 
@@ -58,9 +60,12 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     /*This section is exclusively for handling flash-sale timer*/
     var mFlashTimer: CountDownTimer? = null
     private var mAppBarHeader: AppBarLayout? = null
-    @JvmField
+
     @Inject
-    var mPresenter: CatalogListingPresenter? = null
+    lateinit var  factory: ViewModelFactory
+
+    private val mViewModel: CatalogListingViewModel by lazy { ViewModelProviders.of(this, factory).get(CatalogListingViewModel::class.java)}
+
     private var bottomViewMembership: LinearLayout? = null
     private var mContainerPointDetail: ConstraintLayout? = null
     private var appBarCollapseListener: onAppBarCollapseListener? = null
@@ -68,6 +73,10 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var filtersBottomSheet: FiltersBottomSheet? = null
     private var menuItemFilter: MenuItem? = null
     private var serverErrorView: ServerErrorView? = null
+
+
+
+
     override fun onErrorFilter(errorMessage: String, hasInternet: Boolean) {
         mContainerMain!!.displayedChild = CONTAINER_ERROR
         serverErrorView!!.showErrorUi(hasInternet)
@@ -104,7 +113,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mPresenter!!.attachView(this)
         mTvFlashTimer = view.findViewById(R.id.tv_flash_time)
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label)
         mTvFlashTimerLabel?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.ic_tp_flash_green), null, null, null)
@@ -113,10 +121,47 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         serverErrorView = view.findViewById(R.id.server_error_view)
         initListener()
         requestHomePageData()
+        initObserver()
     }
 
+    private fun initObserver() {
+        addBannerOberser()
+        addFlterObserver()
+        addPointObserver()
+    }
+
+    private fun addPointObserver() = mViewModel.pointLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+            when(it){
+                is ErrorMessage -> onErrorPoint(it.data)
+                is Success -> onSuccessPoints(it.data.points.rewardStr,
+                        it.data.points.reward,
+                        it.data.tier.nameDesc,
+                        it.data.tier.eggImageUrl)
+            }
+        }
+    })
+
+    private fun addFlterObserver()  = mViewModel.filterLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+            when(it){
+                is Loading -> showLoader()
+                is ErrorMessage -> onErrorFilter(it.data, NetworkDetector.isConnectedToInternet(context))
+                is Success -> onSuccessFilter(it.data)
+            }
+        }
+    })
+
+    private fun addBannerOberser() = mViewModel.bannerLiveDate.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+            when(it){
+                is Success -> onSuccessBanners(it.data.banners)
+                is ErrorMessage -> onErrorBanners(it.data)
+            }
+        }
+    })
+
     override fun onDestroy() {
-        mPresenter!!.destroyView()
         super.onDestroy()
         if (mFlashTimer != null) {
             mFlashTimer!!.cancel()
@@ -134,13 +179,10 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun refreshTab() {
-        val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment
-        if (fragment != null
-                && fragment.isAdded) {
-            if (fragment.presenter != null && fragment.presenter?.isViewAttached ?: false) {
-                fragment.presenter?.setPointRange(mPresenter!!.pointRangeId)
-                fragment.presenter?.getCatalog(mPresenter!!.currentCategoryId, mPresenter!!.currentSubCategoryId, true)
-            }
+        val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
+        if (fragment != null && fragment.isAdded) {
+                fragment.presenter.pointRange = mViewModel.pointRangeId
+                fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
         }
     }
 
@@ -155,7 +197,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             return
         }
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
-        pager.adapter = CatalogBannerPagerAdapter(context, banners, mPresenter!!)
+        pager.adapter = CatalogBannerPagerAdapter(context, banners,this)
         //adding bottom dots(Page Indicator)
         val pageIndicator: CirclePageIndicator = view!!.findViewById(R.id.page_indicator)
         pageIndicator.fillColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
@@ -175,6 +217,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun onErrorPoint(errorMessage: String) {}
+
     override fun onSuccessFilter(filters: CatalogFilterBase) {
         hideLoader()
         //Setting up filters
@@ -184,8 +227,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
             mViewPagerAdapter!!.setPointsAvailable(isPointsAvailable)
             //TODO please replace with
-            mPresenter!!.currentCategoryId = 0
-            mPresenter!!.currentSubCategoryId = 0
+            mViewModel.currentCategoryId = 0
+            mViewModel.currentSubCategoryId = 0
             mPagerSortType!!.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
             mTabSortType!!.visibility = View.GONE
         } else if (filters.categories[0] != null
@@ -200,8 +243,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             } else {
                 updateToolbarTitle(filters.categories[0].name)
             }
-            mPresenter!!.currentCategoryId = filters.categories[0].id
-            mPresenter!!.currentSubCategoryId = 0
+            mViewModel.currentCategoryId = filters.categories[0].id
+            mViewModel.currentSubCategoryId = 0
             mPagerSortType!!.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
         } else if (filters.categories[0] != null
                 && filters.categories[0].subCategory != null) {
@@ -219,15 +262,13 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                             "click " + filters.categories[0].subCategory[position].name,
                             "")
-                    val fragment = mViewPagerAdapter!!.getRegisteredFragment(position) as CatalogListItemFragment
+                    val fragment = mViewPagerAdapter!!.getRegisteredFragment(position) as CatalogListItemFragment?
                     if (fragment != null
                             && fragment.isAdded) {
-                        if (fragment.presenter != null && fragment.presenter?.isViewAttached ?: false ) {
-                            mPresenter!!.currentCategoryId = filters.categories[0].id
-                            mPresenter!!.currentSubCategoryId = filters.categories[0].subCategory[position].id
-                            fragment.presenter?.setPointRange(mPresenter!!.pointRangeId)
-                            fragment.presenter?.getCatalog(mPresenter!!.currentCategoryId, mPresenter!!.currentSubCategoryId, true)
-                        }
+                            mViewModel.currentCategoryId = filters.categories[0].id
+                            mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
+                            fragment.presenter.pointRange = mViewModel.pointRangeId
+                            fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
                     }
                     if (filters.categories[0].subCategory[position].timeRemainingSeconds > 0) {
                         startFlashTimer(filters.categories[0].subCategory[position])
@@ -246,8 +287,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             mPagerSortType!!.postDelayed({
                 val selectedTabIndex = getSelectedCategoryIndex(filters.categories[0].subCategory)
                 if (selectedTabIndex == 0) { // Special handling for zeroth index
-                    mPresenter!!.currentCategoryId = filters.categories[0].id
-                    mPresenter!!.currentSubCategoryId = filters.categories[0].subCategory[0].id
+                    mViewModel.currentCategoryId = filters.categories[0].id
+                    mViewModel.currentSubCategoryId = filters.categories[0].subCategory[0].id
                     refreshTab()
                     try {
                         if (filters.categories[0].subCategory[0].timeRemainingSeconds > 0) {
@@ -270,7 +311,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             if (menuItemFilter != null) menuItemFilter!!.isVisible = true
             filtersBottomSheet = FiltersBottomSheet()
             pointRanges[0].isSelected = true //set Default selected
-            mPresenter!!.pointRangeId = pointRanges[0].id //set Default Id
+            mViewModel!!.pointRangeId = pointRanges[0].id //set Default Id
             filtersBottomSheet!!.setData(pointRanges, this)
         } else {
             if (menuItemFilter != null) menuItemFilter!!.isVisible = false
@@ -304,7 +345,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun initInjector() {
-        getComponent(TokoPointComponent::class.java).inject(this)
+        getComponent(TokopointBundleComponent::class.java).inject(this)
     }
 
     override fun onClick(source: View) {
@@ -312,7 +353,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             gotoMyCoupons()
         } else if (source.id == R.id.text_failed_action) {
             requestHomePageData()
-            mPresenter!!.getPointData()
+            mViewModel!!.getPointData()
         } else if (source.id == R.id.text_membership_label
                 || source.id == R.id.bottom_view_membership) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership))
@@ -333,10 +374,10 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     private fun requestHomePageData() {
         if (isSeeAllPage) {
-            mPresenter!!.getHomePageData("", "", false)
+            mViewModel.getHomePageData("", "", false)
         } else {
-            mPresenter!!.getPointData()
-            mPresenter!!.getHomePageData(arguments!!.getString(CommonConstant.ARGS_SLUG_CATEGORY),
+            mViewModel.getPointData()
+            mViewModel.getHomePageData(arguments!!.getString(CommonConstant.ARGS_SLUG_CATEGORY),
                     arguments!!.getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true)
         }
     }
@@ -447,8 +488,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                     menuItemFilter!!.setIcon(R.drawable.ic_filter_button_selected)
                 }
             }
-            if (mPresenter!!.pointRangeId != filter.id) {
-                mPresenter!!.pointRangeId = filter.id
+            if (mViewModel.pointRangeId != filter.id) {
+                mViewModel.pointRangeId = filter.id
                 refreshTab()
             }
         }

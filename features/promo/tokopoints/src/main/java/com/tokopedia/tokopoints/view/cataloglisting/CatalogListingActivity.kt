@@ -12,12 +12,14 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
+import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.user.session.UserSession
 
-class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokoPointComponent?>, onAppBarCollapseListener {
-    private var tokoPointComponent: TokoPointComponent? = null
+class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
+    private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     private var mUserSession: UserSession? = null
     private var bundle: Bundle? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,13 +41,12 @@ class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokoPointCompo
         return CatalogListingFragment.newInstance(bundle)
     }
 
-    override fun getComponent(): TokoPointComponent {
-        if (tokoPointComponent == null) initInjector()
-        return tokoPointComponent!!
+    override fun getComponent(): TokopointBundleComponent {
+        return tokoPointComponent
     }
 
-    private fun initInjector() {
-        tokoPointComponent = DaggerTokoPointComponent.builder()
+    private fun initInjector() : TokopointBundleComponent {
+        return DaggerTokopointBundleComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
     }

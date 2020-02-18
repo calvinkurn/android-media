@@ -25,17 +25,18 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
+import com.tokopedia.tokopoints.view.catalogdetail.PreValidateError
+import com.tokopedia.tokopoints.view.catalogdetail.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.NetworkDetector
+import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig.Companion.instance
 import java.util.*
 import javax.inject.Inject
@@ -58,10 +59,11 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                 }
             }
         }
-        presenter!!.fetchLatestStatus(items)
+        presenter.fetchLatestStatus(items)
     }
+
     @Inject
-    var presenter: CatalogListItemPresenter? = null
+    lateinit var presenter: CatalogListItemPresenter
     private var mSwipeToRefresh: SwipeToRefresh? = null
     private var showFirstTimeLoader = true
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -82,22 +84,56 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter!!.attachView(this)
         view.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
         view.findViewById<View>(R.id.text_empty_action).setOnClickListener(this)
-        mSwipeToRefresh!!.setOnRefreshListener { presenter!!.getCatalog(currentCategoryId, currentSubCategoryId, false) }
+        mSwipeToRefresh!!.setOnRefreshListener { getCatalog(currentCategoryId, currentSubCategoryId, false) }
+        initObserver()
     }
+
+    private fun initObserver() {
+        addStartValidateObserver()
+        addStartSaveCouponObserver()
+        addRedeemCouponObserver()
+        addLatestStatusObserver()
+    }
+
+    private fun addLatestStatusObserver() = presenter.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let { refreshCatalog(it)}
+    })
+
+    private fun addRedeemCouponObserver() = presenter.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let { RouteManager.route(context,it) }
+    })
+
+    private fun addStartSaveCouponObserver() = presenter.startSaveCouponLiveData.observe(this , androidx.lifecycle.Observer {
+        it?.let {
+            when(it){
+                is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
+                is ValidationError<*,*> -> {
+                    if (it.data is ValidateMessageDialog){
+                     showValidationMessageDialog(it.data.item,it.data.title,it.data.desc,it.data.messageCode)
+                    }
+                }
+            }
+        }
+    })
+
+    private fun addStartValidateObserver() = presenter.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+            showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
+        }
+    })
 
     override fun onClick(view: View) {
         if (view.id == R.id.text_failed_action) {
-            presenter!!.getCatalog(currentCategoryId, currentSubCategoryId, true)
+            getCatalog(currentCategoryId, currentSubCategoryId, true)
         } else if (view.id == R.id.text_empty_action) {
             openWebView(CommonConstant.WebLink.INFO)
         }
     }
 
     override fun initInjector() {
-        getComponent(TokoPointComponent::class.java).inject(this)
+        getComponent(TokopointBundleComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String? {
@@ -171,7 +207,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
         val builder = adb.setPositiveButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
             //Call api to validate the coupon
-            presenter!!.redeemCoupon(code, cta)
+            presenter.redeemCoupon(code, cta)
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
@@ -287,7 +323,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    presenter!!.startSaveCoupon(item)
+                    presenter.startSaveCoupon(item)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
@@ -356,7 +392,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter!!.destroyView()
         if (mTimer != null) {
             mTimer!!.cancel()
             mTimer = null
@@ -385,7 +420,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
         val label = view.findViewById<TextView>(R.id.text_label_error)
         label.text = desc
-        view.findViewById<View>(R.id.text_failed_action).setOnClickListener { view1: View? -> presenter!!.startSaveCoupon(item) }
+        view.findViewById<View>(R.id.text_failed_action).setOnClickListener { view1: View? -> presenter.startSaveCoupon(item) }
         adb.setView(view)
         val dialog = adb.create()
         dialog.show()
@@ -455,6 +490,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
     }
 
+    fun getCatalog(categoryId: Int, subCategoryId: Int, showLoader: Boolean) {
+        populateCatalog(categoryId, subCategoryId, presenter.pointRange, showLoader)
+    }
     companion object {
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1

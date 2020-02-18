@@ -52,10 +52,8 @@ public interface CatalogListItemContract {
         void populateCatalog(int categoryId, int subCategoryId, int pointRange, boolean showLoader);
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
+    interface Presenter {
 
-        void getCatalog(int categoryId, int subCategoryId, boolean showLoader);
 
         void fetchLatestStatus(List<Integer> catalogsIds);
     }
