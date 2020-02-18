@@ -24,8 +24,8 @@ class EventGridViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
                         it.imageApp,
                         it.title,
                         it.location,
-                        it.salesPrice,
                         it.price,
+                        it.schedule,
                         it.isLiked,
                         it.appUrl
                 ))
