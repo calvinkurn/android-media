@@ -161,7 +161,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
     }
 
-    private fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
+    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
         if (permissionCheckerHelper != null) {
             this.permissionCheckerHelper = permissionCheckerHelper
         }
@@ -173,11 +173,11 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
     }
 
-    private fun clearCacheGetDistrict() {
+    fun clearCacheGetDistrict() {
         getDistrictUseCase.clearCache()
     }
 
-    private fun clearCacheAutofill() {
+    fun clearCacheAutofill() {
         revGeocodeUseCase.clearCache()
     }
 }
