@@ -129,6 +129,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return RetryViewHolder.LAYOUT
     }
 
+    override fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int {
+        return PopularKeywordViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -209,6 +213,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
+            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
