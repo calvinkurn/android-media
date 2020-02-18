@@ -1,4 +1,4 @@
-package com.tokopedia;
+package com.tokopedia.logisticcart;
 
 import java.io.IOException;
 import java.io.InputStream;
