@@ -4,13 +4,11 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -22,18 +20,16 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifyOrder
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-08.
+ * Created by Irfan Khoirul on 2020-01-31.
  */
 
-object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
+object CartListPresenterLocalDataChangeTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -56,7 +52,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("update cart list for promo merchant") {
+    Feature("Local data changes") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,67 +70,104 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success update cart") {
+        Scenario("Quantity changed") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-            val shopGroupAvailableData = ShopGroupAvailableData()
+            var result = false
 
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), shopGroupAvailableData)
+            val cartDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData(originalQty = 1)
+                    updatedData = CartItemData.UpdatedData(quantity = 2)
+                })
             }
 
-            Then("should render success and show promo merchant bottomsheet") {
-                verify {
-                    view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
-                }
+            Given("cart data") {
+                every { view.getAllCartDataList() } returns cartDataList
             }
+
+            When("check is data changed") {
+                result = cartListPresenter.dataHasChanged()
+            }
+
+            Then("data should be changed") {
+                Assert.assertTrue(result)
+            }
+
         }
 
-        Scenario("failed update cart") {
+        Scenario("Notes changed") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = false
-                message = "Error message"
+            var result = false
+
+            val cartDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData(originalRemark = "note")
+                    updatedData = CartItemData.UpdatedData(remark = "note note")
+                })
             }
 
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            Given("cart data") {
+                every { view.getAllCartDataList() } returns cartDataList
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
+            When("check is data changed") {
+                result = cartListPresenter.dataHasChanged()
             }
 
-            Then("should show error") {
-                verify {
-                    view.showToastMessageRed(updateCartData.message)
-                }
+            Then("data should be changed") {
+                Assert.assertTrue(result)
             }
+
         }
 
-        Scenario("failed update cart with exception") {
+        Scenario("Quantity and notes changed") {
 
-            val exception = CartResponseErrorException("Error message")
+            var result = false
 
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
+            val cartDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData(originalQty = 1, originalRemark = "note")
+                    updatedData = CartItemData.UpdatedData(quantity = 2, remark = "note note")
+                })
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
+            Given("cart data") {
+                every { view.getAllCartDataList() } returns cartDataList
             }
 
-            Then("should show error") {
-                verify {
-                    view.showToastMessageRed(exception)
-                }
+            When("check is data changed") {
+                result = cartListPresenter.dataHasChanged()
             }
+
+            Then("data should be changed") {
+                Assert.assertTrue(result)
+            }
+
+        }
+
+        Scenario("Quantity and notes did not changed") {
+
+            var result = false
+
+            val cartDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData(originalQty = 1, originalRemark = "note")
+                    updatedData = CartItemData.UpdatedData(quantity = 1, remark = "note")
+                })
+            }
+
+            Given("cart data") {
+                every { view.getAllCartDataList() } returns cartDataList
+            }
+
+            When("check is data changed") {
+                result = cartListPresenter.dataHasChanged()
+            }
+
+            Then("data should not be changed") {
+                Assert.assertFalse(result)
+            }
+
         }
 
     }

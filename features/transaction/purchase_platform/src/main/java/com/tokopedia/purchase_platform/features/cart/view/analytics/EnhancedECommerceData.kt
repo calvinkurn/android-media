@@ -6,7 +6,7 @@ import java.util.*
  * Created by Irfan Khoirul on 2019-09-03.
  */
 
-class EnhancedECommerceEmptyCartData {
+class EnhancedECommerceData {
     private val data = HashMap<String, Any>()
 
     init {

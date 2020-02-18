@@ -6,7 +6,7 @@ import java.util.HashMap
  * Created by Irfan Khoirul on 01/10/18.
  */
 
-class EnhancedECommerceEmptyCartActionFieldData {
+class EnhancedECommerceActionFieldData {
 
     private val data = HashMap<String, Any>()
 

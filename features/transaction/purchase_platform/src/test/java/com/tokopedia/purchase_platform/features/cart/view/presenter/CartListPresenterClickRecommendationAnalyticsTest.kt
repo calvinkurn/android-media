@@ -4,36 +4,35 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifyOrder
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-08.
+ * Created by Irfan Khoirul on 2020-01-31.
  */
 
-object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
+object CartListPresenterClickRecommendationAnalyticsTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -56,7 +55,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("update cart list for promo merchant") {
+    Feature("generate recommendation data click analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,67 +73,48 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success update cart") {
+        Scenario("1 item selected and cart is not empty") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-            val shopGroupAvailableData = ShopGroupAvailableData()
+            lateinit var result: Map<String, Any>
 
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            When("generate recommendation data click analytics") {
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(), false, 0)
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), shopGroupAvailableData)
+            Then("should be containing 1 product") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
-            Then("should render success and show promo merchant bottomsheet") {
-                verify {
-                    view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
-                }
+            Then("key `list` value should be `cart`") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
             }
+
         }
 
-        Scenario("failed update cart") {
+        Scenario("1 item selected and cart is empty") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = false
-                message = "Error message"
+            lateinit var result: Map<String, Any>
+
+            When("generate recommendation data click analytics") {
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(), true, 0)
             }
 
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            Then("should be containing 1 product") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                Assert.assertEquals(1, productList.size)
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
+            Then("key `list` value should be `empty cart`") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_ON_EMPTY_CART)
             }
 
-            Then("should show error") {
-                verify {
-                    view.showToastMessageRed(updateCartData.message)
-                }
-            }
-        }
-
-        Scenario("failed update cart with exception") {
-
-            val exception = CartResponseErrorException("Error message")
-
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
-            }
-
-            Then("should show error") {
-                verify {
-                    view.showToastMessageRed(exception)
-                }
-            }
         }
 
     }

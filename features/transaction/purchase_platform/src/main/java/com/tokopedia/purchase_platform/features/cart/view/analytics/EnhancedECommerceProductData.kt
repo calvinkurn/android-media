@@ -7,7 +7,7 @@ package com.tokopedia.purchase_platform.features.cart.view.analytics
 import android.text.TextUtils
 import java.util.*
 
-class EnhancedECommerceEmptyCartProductData {
+class EnhancedECommerceProductData {
     private val product = HashMap<String, Any>()
 
     fun setProductName(name: String) {

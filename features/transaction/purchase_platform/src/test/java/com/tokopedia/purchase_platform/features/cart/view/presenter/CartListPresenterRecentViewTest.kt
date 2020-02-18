@@ -4,13 +4,13 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentView
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -23,17 +23,16 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-08.
+ * Created by Irfan Khoirul on 2020-01-29.
  */
 
-object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
+object CartListPresenterRecentViewTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -56,7 +55,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("update cart list for promo merchant") {
+    Feature("get recent view test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,67 +73,99 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success update cart") {
+        Scenario("get recent view success") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-            val shopGroupAvailableData = ShopGroupAvailableData()
-
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), shopGroupAvailableData)
-            }
-
-            Then("should render success and show promo merchant bottomsheet") {
-                verify {
-                    view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
+            val response = GqlRecentViewResponse().apply {
+                gqlRecentView = GqlRecentView().apply {
+                    recentViewList = mutableListOf<RecentView>().apply {
+                        add(RecentView())
+                    }
                 }
             }
+
+            Given("success response") {
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
+            }
+
+            Given("user session") {
+                every { userSessionInterface.userId } returns "1"
+            }
+
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData()
+            }
+
+            Then("should render recent view") {
+                verify {
+                    view.renderRecentView(response.gqlRecentView?.recentViewList)
+                }
+            }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadRecentView()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
         }
 
-        Scenario("failed update cart") {
+        Scenario("get recent view empty") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = false
-                message = "Error message"
-            }
-
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
-            }
-
-            Then("should show error") {
-                verify {
-                    view.showToastMessageRed(updateCartData.message)
+            val response = GqlRecentViewResponse().apply {
+                gqlRecentView = GqlRecentView().apply {
+                    recentViewList = mutableListOf()
                 }
             }
+
+            Given("success response") {
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
+            }
+
+            Given("user session") {
+                every { userSessionInterface.userId } returns "1"
+            }
+
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData()
+            }
+
+            Then("should not render recent view") {
+                verify(inverse = true) {
+                    view.renderRecentView(response.gqlRecentView?.recentViewList)
+                }
+            }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadRecentView()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
         }
 
-        Scenario("failed update cart with exception") {
+        Scenario("get recent view error") {
 
-            val exception = CartResponseErrorException("Error message")
-
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("error response") {
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
+            Given("user session") {
+                every { userSessionInterface.userId } returns "1"
             }
 
-            Then("should show error") {
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData()
+            }
+
+            Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.showToastMessageRed(exception)
+                    view.setHasTriedToLoadRecentView()
+                    view.stopAllCartPerformanceTrace()
                 }
             }
+
         }
 
     }

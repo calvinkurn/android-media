@@ -1,21 +1,22 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -23,17 +24,16 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-08.
+ * Created by Irfan Khoirul on 2020-01-30.
  */
 
-object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
+object CartListPresenterRecommendationTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -56,7 +56,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("update cart list for promo merchant") {
+    Feature("get recommendation test") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -74,67 +74,114 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("success update cart") {
+        Scenario("get recommendation success") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
+            val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList": 
+                    [
+                        {
+                            "productId":0
+                        }
+                    ]
+                }
+            """.trimIndent()
+
+            val response = mutableListOf<RecommendationWidget>().apply {
+                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+                add(recommendationWidget)
             }
-            val shopGroupAvailableData = ShopGroupAvailableData()
 
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            Given("success response") {
+                every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), shopGroupAvailableData)
+            Given("request params") {
+                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            Then("should render success and show promo merchant bottomsheet") {
+            When("process get recommendation") {
+                cartListPresenter.processGetRecommendationData(1, emptyList())
+            }
+
+            Then("should render recommendation") {
                 verify {
-                    view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
+                    view.renderRecommendation(response[0])
                 }
             }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadRecommendation()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
         }
 
-        Scenario("failed update cart") {
+        Scenario("get recommendation empty") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = false
-                message = "Error message"
+            val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList": 
+                    [
+                    ]
+                }
+            """.trimIndent()
+
+            val response = mutableListOf<RecommendationWidget>().apply {
+                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+                add(recommendationWidget)
             }
 
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            Given("empty response") {
+                every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
+            Given("request params") {
+                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            Then("should show error") {
-                verify {
-                    view.showToastMessageRed(updateCartData.message)
+            When("process get recommendation") {
+                cartListPresenter.processGetRecommendationData(1, emptyList())
+            }
+
+            Then("should not render recommendation") {
+                verify(inverse = true) {
+                    view.renderRecommendation(response[0])
                 }
             }
+
+            Then("should try to stop firebase performance tracker") {
+                verify {
+                    view.setHasTriedToLoadRecommendation()
+                    view.stopAllCartPerformanceTrace()
+                }
+            }
+
         }
 
-        Scenario("failed update cart with exception") {
+        Scenario("get recommendation empty") {
 
-            val exception = CartResponseErrorException("Error message")
-
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
+            Given("error response") {
+                every { getRecommendationUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
+            Given("request params") {
+                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
-            Then("should show error") {
+            When("process get recommendation") {
+                cartListPresenter.processGetRecommendationData(1, emptyList())
+            }
+
+            Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.showToastMessageRed(exception)
+                    view.setHasTriedToLoadRecommendation()
+                    view.stopAllCartPerformanceTrace()
                 }
             }
+
         }
 
     }
