@@ -11,6 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.*
+import timber.log.Timber
 
 
 /**
@@ -43,7 +44,7 @@ class PatchRepository {
                         if(writtenToDisk){
                             PatchExecutor(context, PatchManipulatedImp(), robustCallBack).start()
                         }
-                        Log.d(TAG, "file download was a success? " + writtenToDisk);
+                        Timber.d(TAG, "file download was a success? " + writtenToDisk);
                     }
                 }
             }
