@@ -53,7 +53,6 @@ public class PatchManipulatedImp extends PatchManipulate {
     protected boolean verifyPatch(Context context, Patch patch) {
         //do your verification, put the real patch to patch
         patch.setTempPath(context.getCacheDir() + File.separator + "robust" + File.separator + "patch");
-        //in the sample we just copy the file
         try {
             copy(patch.getLocalPath(), patch.getTempPath());
         } catch (Exception e) {
