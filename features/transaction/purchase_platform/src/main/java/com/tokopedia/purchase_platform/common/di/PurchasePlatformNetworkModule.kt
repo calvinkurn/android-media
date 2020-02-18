@@ -113,7 +113,7 @@ class PurchasePlatformNetworkModule {
                     chain.proceed(newRequest.build())
                 }
                 .addInterceptor(cartApiInterceptor)
-        if (remoteConfig.getBoolean(AKAMAI_CART_ENABLE, false)) {
+        if (remoteConfig.getBoolean(AKAMAI_CART_ENABLE, true)) {
             builder.addInterceptor(AkamaiBotInterceptor())
         }
         if (GlobalConfig.isAllowDebuggingTools()) {
