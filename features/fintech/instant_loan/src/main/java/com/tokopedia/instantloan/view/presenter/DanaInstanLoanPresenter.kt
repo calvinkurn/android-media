@@ -27,7 +27,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
             private val mPostPhoneDataUseCase: PostPhoneDataUseCase) :
         BaseDaggerPresenter<DanaInstanLoanContractor.View>(), DanaInstanLoanContractor.Presenter {
 
-    private val danaInstanLoanProfileSubscriber = GetDanaInstanLoanProfileSubscriber(this)
+    private var danaInstanLoanProfileSubscriber = GetDanaInstanLoanProfileSubscriber(this)
     private val mPermissionRequestCallback = object : PermissionResultCallback {
 
         override fun permissionGranted(requestCode: Int) {
@@ -57,6 +57,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
 
     override fun getLoanProfileStatus() {
         view.showLoader()
+        danaInstanLoanProfileSubscriber = GetDanaInstanLoanProfileSubscriber(this)
         mGetLoanProfileStatusUseCase.execute(danaInstanLoanProfileSubscriber)
     }
 
