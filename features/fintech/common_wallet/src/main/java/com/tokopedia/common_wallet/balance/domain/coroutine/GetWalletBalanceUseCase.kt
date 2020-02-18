@@ -1,66 +1,48 @@
-package com.tokopedia.common_wallet.balance.domain
+package com.tokopedia.common_wallet.balance.domain.coroutine
 
-import android.content.Context
-import android.text.TextUtils
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.common_wallet.R
 import com.tokopedia.common_wallet.balance.data.CacheUtil
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceEntity
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.balance.domain.query.WalletBalance
 import com.tokopedia.common_wallet.balance.view.ActionBalanceModel
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
-import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Observable
-import rx.functions.Func1
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-/**
- * Created by nabillasabbaha on 9/10/19.
- */
-
-class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext private val context: Context,
-                                                  private val graphqlUseCase: GraphqlUseCase,
-                                                  private val remoteConfig: RemoteConfig,
-                                                  private val userSession: UserSessionInterface)
+class GetWalletBalanceUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository,
+        private val remoteConfig: RemoteConfig,
+        private val userSession: UserSessionInterface,
+        private val localCacheHandler: LocalCacheHandler
+)
     : UseCase<WalletBalanceModel>() {
-
-    //ovo cache 15 seconds as PM requirement
-    private val ovoCacheExpiredTime: Long = 15
-
-    override fun createObservable(requestParams: RequestParams): Observable<WalletBalanceModel> {
-        return Observable.just(requestParams)
-                .flatMap(Func1<RequestParams, Observable<GraphqlResponse>> {
-                    val query = WalletBalance.query
-                    if (!TextUtils.isEmpty(query)) {
-                        graphqlUseCase.clearRequest()
-                        graphqlUseCase.addRequest(GraphqlRequest(query, WalletBalanceResponse::class.java, false))
-                        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(TimeUnit.SECONDS.toMillis(ovoCacheExpiredTime)).build())
-                        return@Func1 graphqlUseCase.createObservable(null)
-                    }
-                    Observable.error(Exception("Query variable are empty"))
-                })
-                .map(Func1<GraphqlResponse, WalletBalanceResponse> { graphqlResponse ->
-                    graphqlResponse.getData(WalletBalanceResponse::class.java)
-                })
-                .map(Func1<WalletBalanceResponse, WalletBalanceModel> {
-                    return@Func1 mapper(it.wallet)
-                })
+    override suspend fun executeOnBackground(): WalletBalanceModel = withContext(Dispatchers.IO){
+        val cacheStrategy =
+                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        val gqlRecommendationRequest = GraphqlRequest(
+                WalletBalance.query,
+                WalletBalanceResponse::class.java,
+                mapOf()
+        )
+        val response = graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
+        val errors = response.getError(WalletBalanceResponse::class.java)
+        if(errors?.isNotEmpty() == true){
+            error(errors.first().message)
+        }
+        val wallet = response.getSuccessData<WalletBalanceResponse>().wallet
+        mapper(wallet)
     }
 
     private fun mapper(walletBalanceEntity: WalletBalanceEntity?): WalletBalanceModel {
@@ -70,7 +52,6 @@ class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext priv
 
             //create an object if tokocash is not activated
             if (!walletBalanceEntity.linked) {
-                val localCacheHandler = LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
                 var popupHasShown = true
                 if (userSession.isLoggedIn &&
                         walletBalanceEntity.walletType != null &&

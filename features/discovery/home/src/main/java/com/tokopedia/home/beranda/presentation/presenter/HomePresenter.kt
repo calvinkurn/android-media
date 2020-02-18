@@ -23,10 +23,10 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
-import com.tokopedia.home.beranda.helper.Resource
+import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.HomeContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
@@ -107,19 +107,19 @@ open class HomePresenter (
     @Inject
     lateinit var playCardHomeUseCase: PlayLiveDynamicUseCase
 
-    private val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData().flowOn(homeDispatcher.io())
+    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.getHomeData().flowOn(homeDispatcher.io())
 
-    val homeLiveData: LiveData<HomeViewModel>
+    val homeLiveData: LiveData<HomeDataModel>
     get() = _homeLiveData
-    private val _homeLiveData: MutableLiveData<HomeViewModel> = MutableLiveData()
+    private val _homeLiveData: MutableLiveData<HomeDataModel> = MutableLiveData()
 
 
     val trackingLiveData: LiveData<Event<List<Visitable<*>>>>
         get() = _trackingLiveData
     private val _trackingLiveData = MutableLiveData<Event<List<Visitable<*>>>>()
 
-    private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
-    val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
+    private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
+    val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
 
     private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardViewModel>>()
     val requestImageTestLiveData: LiveData<Event<PlayCardViewModel>> get() = _requestImageTestLiveData
@@ -150,7 +150,7 @@ open class HomePresenter (
         super.attachView(view)
         view?.let {
             homeDataMapper = HomeDataMapper(it.context, HomeVisitableFactoryImpl(userSession), it.trackingQueue)
-            homeUseCase.homeDataMapper = homeDataMapper
+//            homeUseCase.homeDataMapper = homeDataMapper
         }
     }
 
@@ -217,10 +217,10 @@ open class HomePresenter (
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
-            _updateNetworkLiveData.value = resource
+//            _updateNetworkLiveData.value = resource
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
-            _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
+            _updateNetworkLiveData.setValue(Result.error(Throwable(), null))
         }
     }
 
@@ -415,10 +415,10 @@ open class HomePresenter (
     private val tokopointsObservable: Observable<GraphqlResponse>?
         get() {
             if (getHomeTokopointsDataUseCaseLazy != null) {
-                val getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCaseLazy.get()
-                getHomeTokopointsDataUseCase.clearRequest()
-                getHomeTokopointsDataUseCase.addRequest(getHomeTokopointsDataUseCase.request)
-                return getHomeTokopointsDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+//                val getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCaseLazy.get()
+//                getHomeTokopointsDataUseCase.clearRequest()
+//                getHomeTokopointsDataUseCase.addRequest(getHomeTokopointsDataUseCase.request)
+//                return getHomeTokopointsDataUseCase.getExecuteObservable(RequestParams.EMPTY)
             }
             return null
         }
@@ -427,9 +427,9 @@ open class HomePresenter (
         get() {
             if (getKeywordSearchUseCaseLazy != null) {
                 val getKeywordSearchUseCase = getKeywordSearchUseCaseLazy?.get()
-                getKeywordSearchUseCase.clearRequest()
-                getKeywordSearchUseCase.addRequest(getKeywordSearchUseCase.getRequest())
-                return getKeywordSearchUseCase.getExecuteObservable(RequestParams.EMPTY)
+//                getKeywordSearchUseCase.clearRequest()
+//                getKeywordSearchUseCase.addRequest(getKeywordSearchUseCase.getRequest())
+//                return getKeywordSearchUseCase.getExecuteObservable(RequestParams.EMPTY)
             }
             return null
         }
@@ -577,8 +577,8 @@ open class HomePresenter (
         }
     }
 
-    private fun removeSuggestedReview(homeViewModel: HomeViewModel?): HomeViewModel? {
-        homeViewModel?.let { it->
+    private fun removeSuggestedReview(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { it->
             val findReviewViewModel =
                     it.list.find { visitable -> visitable is ReviewViewModel }
             val currentList = it.list.toMutableList()
@@ -591,7 +591,7 @@ open class HomePresenter (
                 }
             }
         }
-        return homeViewModel
+        return homeDataModel
     }
 
     fun removeSuggestedReview() {
@@ -618,32 +618,32 @@ open class HomePresenter (
         }
     }
 
-    private fun evaluateAvailableComponent(homeViewModel: HomeViewModel?): HomeViewModel? {
-        homeViewModel?.let {
-            var newHomeViewModel = homeViewModel
+    private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let {
+            var newHomeViewModel = homeDataModel
             if(viewNeedToShowGeolocationComponent()) newHomeViewModel = removeSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             return newHomeViewModel
         }
-        return homeViewModel
+        return homeDataModel
     }
 
-    private fun evaluateGeolocationComponent(homeViewModel: HomeViewModel?): HomeViewModel? {
-        homeViewModel?.let {
+    private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let {
             if (!viewNeedToShowGeolocationComponent()) {
                 val findGeolocationModel =
-                        homeViewModel.list.find { visitable -> visitable is GeolocationPromptViewModel }
-                val currentList = homeViewModel.list.toMutableList()
+                        homeDataModel.list.find { visitable -> visitable is GeolocationPromptViewModel }
+                val currentList = homeDataModel.list.toMutableList()
 
                 currentList.let {
                     it.remove(findGeolocationModel)
-                    return homeViewModel.copy(list = it)
+                    return homeDataModel.copy(list = it)
                 }
             }
         }
-        return homeViewModel
+        return homeDataModel
     }
 
     // Logic detect play banner should load data from API
@@ -731,12 +731,12 @@ open class HomePresenter (
                 }
             }
         }) {
-            _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
+            _updateNetworkLiveData.setValue(Result.error(Throwable(), null))
         }
     }
 
-    private fun evaluatePlayWidget(homeViewModel: HomeViewModel?): HomeViewModel? {
-        homeViewModel?.let { homeViewModel ->
+    private fun evaluatePlayWidget(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { homeViewModel ->
             // find the old data from current list
             val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCardViewModel}
             if(playWidget != null) {
@@ -752,11 +752,11 @@ open class HomePresenter (
             }
         }
 
-        return homeViewModel
+        return homeDataModel
     }
 
-    private fun evaluateBuWidgetData(homeViewModel: HomeViewModel?): HomeViewModel? {
-        homeViewModel?.let { homeViewModel ->
+    private fun evaluateBuWidgetData(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { homeViewModel ->
             val findBuWidgetViewModel =
                     _homeLiveData.value?.list?.find { visitable -> visitable is BusinessUnitViewModel }
             findBuWidgetViewModel?.let { findBu->
@@ -803,34 +803,34 @@ open class HomePresenter (
                 }
             }
         }
-        return homeViewModel
+        return homeDataModel
     }
 
-    private fun evaluateRecommendationSection(homeViewModel: HomeViewModel?): HomeViewModel? {
+    private fun evaluateRecommendationSection(homeDataModel: HomeDataModel?): HomeDataModel? {
         val detectHomeRecom = _homeLiveData.value?.list?.find { visitable -> visitable is HomeRecommendationFeedViewModel }
-        homeViewModel?.let {
+        homeDataModel?.let {
             if (detectHomeRecom != null) {
-                val currentList = homeViewModel.list.toMutableList()
+                val currentList = homeDataModel.list.toMutableList()
                 currentList.add(detectHomeRecom)
-                return homeViewModel.copy(list = currentList)
+                return homeDataModel.copy(list = currentList)
             } else {
-                val visitableMutableList: MutableList<Visitable<*>> = homeViewModel.list.toMutableList()
-                val findRetryModel = homeViewModel.list.find {
+                val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
+                val findRetryModel = homeDataModel.list.find {
                     visitable -> visitable is HomeRetryModel
                 }
-                val findLoadingModel = homeViewModel.list.find {
+                val findLoadingModel = homeDataModel.list.find {
                     visitable -> visitable is HomeLoadingMoreModel
                 }
                 visitableMutableList.remove(findLoadingModel)
                 visitableMutableList.remove(findRetryModel)
                 visitableMutableList.add(HomeLoadingMoreModel())
-                val newHomeViewModel = homeViewModel.copy(
+                val newHomeViewModel = homeDataModel.copy(
                         list = visitableMutableList)
                 getFeedTabData()
                 return newHomeViewModel
             }
         }
-        return homeViewModel
+        return homeDataModel
     }
 
     override fun onCloseGeolocation() {
