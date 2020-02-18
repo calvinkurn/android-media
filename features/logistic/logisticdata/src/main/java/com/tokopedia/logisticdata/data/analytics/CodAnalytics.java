@@ -1,6 +1,6 @@
 package com.tokopedia.logisticdata.data.analytics;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.logisticdata.data.analytics.ConstantLogisticAnalytics.EventAction;
 import com.tokopedia.logisticdata.data.analytics.ConstantLogisticAnalytics.EventCategory;
 import com.tokopedia.logisticdata.data.analytics.ConstantLogisticAnalytics.EventName;

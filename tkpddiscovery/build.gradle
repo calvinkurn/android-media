@@ -81,7 +81,7 @@ dependencies {
     }
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.parcelerApi

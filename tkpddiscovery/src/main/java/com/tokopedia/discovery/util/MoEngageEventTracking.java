@@ -2,7 +2,7 @@ package com.tokopedia.discovery.util;
 
 import android.content.Context;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.track.TrackApp;

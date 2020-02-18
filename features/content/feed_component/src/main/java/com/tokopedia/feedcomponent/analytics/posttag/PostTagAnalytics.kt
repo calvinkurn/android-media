@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.analytics.posttag
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analytic_constant.DataLayer
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Event.EVENT_CLICK_SOCIAL_COMMERCE
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Action.CLICK_PRODUCT
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem

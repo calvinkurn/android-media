@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.discovery.newdiscovery.constant.DiscoveryEventTracking;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;

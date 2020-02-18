@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.tagmanager.ContainerHolder;
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analytics.debugger.GtmLogger;

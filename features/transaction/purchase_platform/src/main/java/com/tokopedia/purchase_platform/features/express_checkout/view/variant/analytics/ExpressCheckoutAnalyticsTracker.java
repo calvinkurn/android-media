@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant.analytics;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 

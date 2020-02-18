@@ -84,7 +84,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     // Room components

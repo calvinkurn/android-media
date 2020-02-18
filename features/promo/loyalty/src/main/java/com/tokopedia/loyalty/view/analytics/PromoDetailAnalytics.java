@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.view.analytics;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 
 import java.util.ArrayList;
 import java.util.List;

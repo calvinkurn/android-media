@@ -1,6 +1,6 @@
 package com.tokopedia.home.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analytic_constant.DataLayer
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 object HomePageTrackingV2 {

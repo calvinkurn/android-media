@@ -3,7 +3,7 @@ package com.tokopedia.core.var;
 import android.os.Parcelable;
 import android.text.Spanned;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.entity.topads.TopAds;

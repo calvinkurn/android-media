@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;

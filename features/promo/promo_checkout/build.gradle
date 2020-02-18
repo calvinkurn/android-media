@@ -45,6 +45,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
 }
 

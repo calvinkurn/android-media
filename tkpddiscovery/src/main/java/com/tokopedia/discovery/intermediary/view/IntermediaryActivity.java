@@ -20,7 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.CategoryPageTracking;

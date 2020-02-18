@@ -1,6 +1,6 @@
 package com.tokopedia.home_wishlist.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analytic_constant.DataLayer
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp

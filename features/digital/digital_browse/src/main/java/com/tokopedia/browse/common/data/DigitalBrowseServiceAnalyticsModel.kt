@@ -1,6 +1,6 @@
 package com.tokopedia.browse.common.data
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analytic_constant.DataLayer
 
 /**
  * @author by furqan on 18/09/18.

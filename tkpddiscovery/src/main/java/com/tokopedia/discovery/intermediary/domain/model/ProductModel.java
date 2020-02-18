@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.intermediary.domain.model;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 
 import java.util.ArrayList;

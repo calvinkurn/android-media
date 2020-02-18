@@ -1,6 +1,6 @@
 package com.tokopedia.travelhomepage.destination.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analytic_constant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingActionConstant.BLOGSPOT_IMPRESSION
