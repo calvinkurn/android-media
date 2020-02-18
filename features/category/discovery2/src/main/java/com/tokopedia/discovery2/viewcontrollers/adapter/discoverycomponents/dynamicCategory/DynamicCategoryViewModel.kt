@@ -3,8 +3,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dyn
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,20 +16,9 @@ class DynamicCategoryViewModel(val application: Application, components: Compone
     private val componentData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     init {
-        componentData.value = convertToComponentList(components)
-    }
-
-    private fun convertToComponentList(components: ComponentsItem): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        components.data?.forEach {
-            val componentsItem = ComponentsItem()
-            componentsItem.name = "dynamic_category_item"
-            val dataItem = mutableListOf<DataItem>()
-            dataItem.add(it)
-            componentsItem.data = dataItem
-            list.add(componentsItem)
+        components.data?.let {
+            componentData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.DynamicCategoryItem.componentName)
         }
-        return list
     }
 
     fun getComponentLiveData(): LiveData<ArrayList<ComponentsItem>> {

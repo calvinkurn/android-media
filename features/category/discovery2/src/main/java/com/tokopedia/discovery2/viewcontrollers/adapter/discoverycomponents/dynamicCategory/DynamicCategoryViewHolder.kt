@@ -7,9 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -37,7 +37,7 @@ class DynamicCategoryViewHolder(itemView: View, private val fragment: Fragment) 
                 dynamicCategoryRowData?.title?.let {
                     dynamicCategoryHeader.text = it
                 }
-                val categoryRowItems = getCategoryRowItems(dynamicCategoryRowData?.categoryRows)
+                val categoryRowItems = dynamicCategoryRowData?.categoryRows?.let { DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.DynamicCategoryItem.componentName) }
                 dynamicCategoryRecyclerView.apply {
                     adapter = DiscoveryRecycleAdapter(fragment)
                     layoutManager = GridLayoutManager(fragment.context, 4)
@@ -48,20 +48,5 @@ class DynamicCategoryViewHolder(itemView: View, private val fragment: Fragment) 
         })
 
     }
-
-    private fun getCategoryRowItems(categoryRows: List<DataItem>?): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        categoryRows?.forEach {
-            val componentsItem = ComponentsItem()
-            componentsItem.name = "dynamic_category_item"
-            val dataItem = mutableListOf<DataItem>()
-            dataItem.add(it)
-            componentsItem.data = dataItem
-            list.add(componentsItem)
-        }
-        return list
-
-    }
-
 
 }

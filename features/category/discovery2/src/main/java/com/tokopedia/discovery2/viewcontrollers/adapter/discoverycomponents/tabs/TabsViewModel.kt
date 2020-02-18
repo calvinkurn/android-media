@@ -3,8 +3,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tab
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,24 +16,9 @@ class TabsViewModel(val application: Application, components: ComponentsItem) : 
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     init {
-        listData.value = convertToComponentList(components)
-    }
-
-    private fun convertToComponentList(components: ComponentsItem): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        components.data?.forEach {
-            it.name?.let { name ->
-                if (name.isNotEmpty()) {
-                    val componentsItem = ComponentsItem()
-                    componentsItem.name = "tabs_item"
-                    val dataItem = mutableListOf<DataItem>()
-                    dataItem.add(it)
-                    componentsItem.data = dataItem
-                    list.add(componentsItem)
-                }
-            }
+        components.data?.let {
+            listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.TabsItem.componentName)
         }
-        return list
     }
 
     fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> {

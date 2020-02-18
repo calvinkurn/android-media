@@ -2,8 +2,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bra
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,22 +22,10 @@ class BrandRecommendationViewModel(val application: Application, components: Com
 
     init {
         componentData.value = components
-        listData.value = convertToComponentList(components)
-    }
-
-    private fun convertToComponentList(components: ComponentsItem): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        components.data?.forEach {
-            val componentsItem = ComponentsItem()
-            componentsItem.name = "brand_recommendation_item"
-            val dataItem = mutableListOf<DataItem>()
-            dataItem.add(it)
-            componentsItem.data = dataItem
-            list.add(componentsItem)
+        components.data?.let {
+            listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BrandRecommendationItem.componentName)
         }
-        return list
     }
-
 
     override fun initDaggerInject() {
     }
