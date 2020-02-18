@@ -313,7 +313,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
             }
             sendCampaignGTM(activity, uriData.toString(), screenName);
-            if (!keepActivityOn) {
+            if (!keepActivityOn && context != null) {
                 context.finish();
             }
         }
