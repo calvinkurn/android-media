@@ -34,7 +34,7 @@
         android:layout="@layout/view_stub_iv_reload"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
-        app:layout_constraintRight_toLeftOf="+@id/tv_reload"/>
+        app:layout_constraintRight_toLeftOf="@+id/tv_reload"/>
 
     <ViewStub
         android:id="@+id/tv_reload"
