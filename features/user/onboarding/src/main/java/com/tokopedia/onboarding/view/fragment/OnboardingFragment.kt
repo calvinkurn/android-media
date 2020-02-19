@@ -74,8 +74,8 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        trackPreinstall()
         initAbTesting()
+        trackPreinstall()
         initView()
     }
 
