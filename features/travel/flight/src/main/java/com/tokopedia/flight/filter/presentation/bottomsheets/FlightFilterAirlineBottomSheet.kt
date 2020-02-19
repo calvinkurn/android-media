@@ -29,10 +29,10 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var adapter: BaseListCheckableAdapter<AirlineStat, BaseListCheckableTypeFactory<AirlineStat>>
     lateinit var listener: OnFlightFilterListener
 
-    lateinit var mChildView: View
+    private lateinit var mChildView: View
+    private lateinit var adapter: BaseListCheckableAdapter<AirlineStat, BaseListCheckableTypeFactory<AirlineStat>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
