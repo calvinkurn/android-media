@@ -113,9 +113,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     override fun setUserOnGoingLoanStatus(loanId: Int) {
-        if (activityInteractor != null) {
-            activityInteractor!!.setUserOnGoingLoanStatus(loanId)
-        }
+        activityInteractor?.setUserOnGoingLoanStatus(loanId)
     }
 
     override fun onErrorLoanProfileStatus(onErrorLoanProfileStatus: String) {
