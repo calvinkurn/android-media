@@ -1,9 +1,11 @@
 package com.tokopedia.graphql;
 
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * For generating hashcode primarily use as a key of cache object
