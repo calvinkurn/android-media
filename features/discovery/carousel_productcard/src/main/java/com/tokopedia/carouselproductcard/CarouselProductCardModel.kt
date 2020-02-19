@@ -1,6 +1,5 @@
 package com.tokopedia.carouselproductcard
 
-import com.tokopedia.carouselproductcard.CarouselProductCardListenerInfo
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 

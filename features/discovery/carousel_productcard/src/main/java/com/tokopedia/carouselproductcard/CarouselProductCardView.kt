@@ -53,7 +53,6 @@ class CarouselProductCardView: BaseCustomView {
 
     fun bindCarouselProductCardViewGrid(
             productCardModelList: List<ProductCardModel>,
-            isScrollable: Boolean = true,
             carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
@@ -68,23 +67,19 @@ class CarouselProductCardView: BaseCustomView {
             it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
         }
 
-        initLayoutManager(isScrollable, productCardModelList.size, scrollToPosition)
+        initLayoutManager(scrollToPosition)
         initRecyclerView(recyclerViewPool)
 
         submitList(productCardModelList, carouselProductCardListenerInfo)
     }
 
-    private fun initLayoutManager(isScrollable: Boolean, productCardModelListSize: Int, scrollToPosition: Int) {
-        carouselLayoutManager = createProductCardCarouselLayoutManager(isScrollable, productCardModelListSize)
+    private fun initLayoutManager(scrollToPosition: Int) {
+        carouselLayoutManager = createProductCardCarouselLayoutManager()
         carouselLayoutManager.scrollToPositionWithOffset(scrollToPosition)
     }
 
-    private fun createProductCardCarouselLayoutManager(isScrollable: Boolean, productCardModelListSize: Int): RecyclerView.LayoutManager {
-        return if (isScrollable) {
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        } else {
-            GridLayoutManager(context, productCardModelListSize, GridLayoutManager.VERTICAL, false)
-        }
+    private fun createProductCardCarouselLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun RecyclerView.LayoutManager?.scrollToPositionWithOffset(scrollToPosition: Int) {
@@ -152,7 +147,7 @@ class CarouselProductCardView: BaseCustomView {
         }
 
 
-        carouselLayoutManager = createProductCardCarouselLayoutManager(isScrollable, productCardModelList.size)
+        carouselLayoutManager = createProductCardCarouselLayoutManager()
         carouselCardSavedStatePosition?.let { sparseIntArray ->
             carouselLayoutManager.run {
                 if (this is LinearLayoutManager) {

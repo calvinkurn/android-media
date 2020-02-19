@@ -8,20 +8,23 @@ internal val carouselProductCardGridTestData = mutableListOf<List<ProductCardMod
 
 private fun createCarouselProductCardGrid(): List<ProductCardModel> {
     return mutableListOf<ProductCardModel>().also {
-        it.add(createProductCardMaxInfoAndLabel())
         it.add(createProductCardTwoLinesProductName())
         it.add(createProductCardWithSlashPrice())
         it.add(createProductCardOneLineProductName())
+        it.add(createProductCardMaxInfoAndLabel("1"))
+        it.add(createProductCardMaxInfoAndLabel("2"))
+        it.add(createProductCardMaxInfoAndLabel("3"))
+        it.add(createProductCardMaxInfoAndLabel("4"))
     }
 }
 
-private fun createProductCardMaxInfoAndLabel(): ProductCardModel {
+private fun createProductCardMaxInfoAndLabel(additionalName: String): ProductCardModel {
     val labelProductStatus = ProductCardModel.LabelGroup(position = "status", title = "Preorder", type = "darkGrey")
     val labelPrice = ProductCardModel.LabelGroup(position = "price", title = "Grosir", type = "lightGreen")
     val labelGimmick = ProductCardModel.LabelGroup(position = "gimmick", title = "Best Seller", type = "#FF8B00")
 
     return ProductCardModel(
-            productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productName = "$additionalName Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
