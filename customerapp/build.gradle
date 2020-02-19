@@ -207,7 +207,13 @@ android {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
-            minifyEnabled false
+
+            if(isFirebasePerformanceLogEnabled().toBoolean()){
+                minifyEnabled false
+            }else{
+                minifyEnabled true
+            }
+
             zipAlignEnabled true
             if (project.hasProperty("enable-shrinkresource")) {
                 shrinkResources true
