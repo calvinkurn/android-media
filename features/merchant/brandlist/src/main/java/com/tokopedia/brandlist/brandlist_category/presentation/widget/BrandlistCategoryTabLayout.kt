@@ -165,8 +165,8 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
     private fun expandTabIcon(tab: Tab?) {
         val iconView: ImageView? = tab?.customView?.findViewById(R.id.image_view_category_icon)
         val categoryTextView: Typography? = tab?.customView?.findViewById(R.id.text_view_category_title)
-        iconView?.animate()?.translationY(0f)?.duration = 100
-        categoryTextView?.animate()?.translationY(0f)?.duration = 200
+        iconView?.animate()?.translationY(0f)?.duration = 1000
+        categoryTextView?.animate()?.translationY(0f)?.duration = 1000
     }
 
     private fun collapseAllTabsIcon() {
@@ -178,8 +178,8 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
     private fun collapseTabIcon(tab: Tab?) {
         val iconView: ImageView? = tab?.customView?.findViewById(R.id.image_view_category_icon)
         val categoryTextView: Typography? = tab?.customView?.findViewById(R.id.text_view_category_title)
-        iconView?.animate()?.translationY(-50f)?.duration = 200
-        categoryTextView?.animate()?.translationY(-14.0f)?.duration = 200
+        iconView?.animate()?.translationY(-30f)?.duration = 1000
+        categoryTextView?.animate()?.translationY(-14.0f)?.duration = 1000
     }
 
     fun adjustTabCollapseOnScrolled(dy: Int) {

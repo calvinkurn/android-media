@@ -276,6 +276,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.BRANDLIST_SEARCH)
                 intent.putExtra(CATEGORY_INTENT, it)
                 startActivity(intent)
+                activity?.supportFragmentManager?.beginTransaction()?.setCustomAnimations(R.anim.slide_up,R.anim.no_change)?.commit()
             }
         }
         appBarLayout?.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener{
