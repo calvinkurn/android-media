@@ -41,7 +41,10 @@ class CarouselViewHolder(
         val data = element.data
         when {
             null == data -> setOnLoadingState()
-            data.error.isNotBlank() -> setOnErrorState()
+            data.error.isNotBlank() -> {
+                setOnErrorState()
+                listener.setOnErrorWidget(adapterPosition, element)
+            }
             else -> setOnSuccessState(element)
         }
     }

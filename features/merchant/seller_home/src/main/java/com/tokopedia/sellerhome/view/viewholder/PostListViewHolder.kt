@@ -45,7 +45,10 @@ class PostListViewHolder(
         val data = postListWidgetUiModel.data
         when {
             data == null -> onLoading()
-            data.error.isNotEmpty() -> onError(postListWidgetUiModel.title)
+            data.error.isNotEmpty() -> {
+                onError(postListWidgetUiModel.title)
+                listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel)
+            }
             else -> onSuccessLoadData(postListWidgetUiModel)
         }
     }

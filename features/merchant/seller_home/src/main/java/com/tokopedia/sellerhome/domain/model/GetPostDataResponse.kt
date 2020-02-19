@@ -16,7 +16,7 @@ data class GetPostDataModel(
 )
 
 data class PostDataModel(
-        @SerializedName("dataKey")
+        @SerializedName("datakey")
         @Expose
         val dataKey: String?,
         @SerializedName("list")
