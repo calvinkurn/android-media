@@ -88,6 +88,7 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
                 setIncrementalBrandList(incrementedBrandList)
                 setImpressionDataTracking(getInitialBrandList(incrementalBrandList), INCREMENTAL_INDEX_IMPRESSION)
                 adapter?.setFeaturedBrands(incrementedBrandList)
+                expandButtonView?.let { button -> hideExpandButton(featuredBrandList, incrementedBrandList, button) }
                 listener.clickLihatSemua()
             }
         }
@@ -113,5 +114,13 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
         val incrementalAmount = renderedBrands + INCREMENTAL_AMOUNT
         return if (incrementalAmount <= totalSize) incrementalAmount
         else totalSize
+    }
+
+    private fun hideExpandButton(featuredBrandList: List<Shop>,
+                                 incrementedBrandList: List<Shop>,
+                                 expandButton: AppCompatTextView) {
+        if (featuredBrandList.size == incrementedBrandList.size) {
+            expandButton.hide()
+        }
     }
 }
