@@ -26,7 +26,6 @@
     <color name="border_favorite">#e0e0e0</color>
     <color name="topads_gray_default_bg">#eeeeee</color>
     <color name="green_500">#259b24</color>
-    <color name="deals_qr_background">#00aa5b</color>
     <color name="bottom_label_color">#42b549</color> <!-- Use with white text -->
     <color name="white_solid">#ffffffff</color>
     <color name="gradient_solid_bu_widget">#ffe5f5ff</color>
