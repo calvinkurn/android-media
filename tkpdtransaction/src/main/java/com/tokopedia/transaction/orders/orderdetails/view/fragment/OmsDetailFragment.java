@@ -50,6 +50,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityPessenger;
+import com.tokopedia.transaction.orders.orderdetails.data.Header;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
@@ -646,14 +647,30 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         });
 
         ImageView qrCode = view.findViewById(R.id.qrCode);
-        Typography poweredBy = view.findViewById(R.id.redeem_dialog_shop_name);
         Typography voucherNo = view.findViewById(R.id.redeem_dialog_voucher_code);
+        Typography poweredBy = view.findViewById(R.id.redeem_dialog_shop_name);
+        Typography poweredByPrefix = view.findViewById(R.id.redeem_dialog_powered_by);
+
+        Header header = actionButton.getHeaderObject();
+
+        if(!header.getStatusLabel().isEmpty()){
+            Typography disableText = view.findViewById(R.id.redeem_dialog_expired_text);
+            View expiredOverlay = view.findViewById(R.id.redeem_dialog_expired_view);
+            expiredOverlay.setVisibility(View.VISIBLE);
+            disableText.setVisibility(View.VISIBLE);
+            disableText.setText(header.getStatusLabel());
+        }
 
         ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
 
         if(actionButton.getHeaderObject() != null){
-            poweredBy.setText(actionButton.getHeaderObject().getPoweredBy());
-            voucherNo.setText(actionButton.getHeaderObject().getVoucherCodes());
+            poweredBy.setText(header.getPoweredBy());
+            voucherNo.setText(header.getVoucherCodes());
+
+            if(header.getPoweredBy().isEmpty()){
+                poweredBy.setVisibility(View.GONE);
+                poweredByPrefix.setVisibility(View.GONE);
+            }
         }
         if(getActivity() != null) {
             bottomSheetUnify.setChild(view);
