@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -30,6 +31,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,7 +92,9 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -134,6 +139,9 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
+    private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
+    private static final String FPM_METRIC_JANKY_FRAMES = "janky_frames";
+    private static final float DEFAULT_WARNING_LEVEL_MS = 17f;
 
     @Inject
     UserSessionInterface userSession;
@@ -157,7 +165,11 @@ public class MainParentActivity extends BaseActivity implements
     private boolean isFirstNavigationImpression = false;
 
     private PerformanceMonitoring homePerformanceMonitoring;
+    Window.OnFrameMetricsAvailableListener onFrameMetricAvailableListener;
 
+
+    private int allFrames = 0;
+    private int jankyFrames = 0;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -1050,13 +1062,46 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void startHomePerformanceMonitoring() {
         homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
+        startFrameMetrics(this);
     }
 
     @Override
     public void stopHomePerformanceMonitoring() {
         if (homePerformanceMonitoring != null) {
+            stopFrameMetrics(this);
+            homePerformanceMonitoring.putMetric(FPM_METRIC_ALL_FRAMES, allFrames);
+            homePerformanceMonitoring.putMetric(FPM_METRIC_JANKY_FRAMES, jankyFrames);
             homePerformanceMonitoring.stopTrace();
             homePerformanceMonitoring = null;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public void startFrameMetrics(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            allFrames = 0;
+            jankyFrames = 0;
+            onFrameMetricAvailableListener = new Window.OnFrameMetricsAvailableListener() {
+                @Override
+                public void onFrameMetricsAvailable(Window window, FrameMetrics frameMetrics, int dropCountSinceLastInvocation) {
+                    FrameMetrics frameMetricsCopy = new FrameMetrics(frameMetrics);
+                    allFrames++;
+                    float totalDurationMs = (float) (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION));
+                    if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
+                        jankyFrames++;
+                    }
+                }
+            };
+            activity.getWindow().addOnFrameMetricsAvailableListener(onFrameMetricAvailableListener, new Handler());
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public void stopFrameMetrics(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (onFrameMetricAvailableListener != null) {
+                activity.getWindow().removeOnFrameMetricsAvailableListener(onFrameMetricAvailableListener);
+            }
         }
     }
          
