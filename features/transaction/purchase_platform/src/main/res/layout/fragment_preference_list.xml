@@ -60,6 +60,35 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_empty_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="iv_empty,tv_header_empty,tv_subtitle_empty" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_preference_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp_76"
+        android:clipToPadding="false"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_preference_list_action"
         android:layout_width="match_parent"
@@ -73,11 +102,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_empty_state"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="iv_empty,tv_header_empty,tv_subtitle_empty" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
