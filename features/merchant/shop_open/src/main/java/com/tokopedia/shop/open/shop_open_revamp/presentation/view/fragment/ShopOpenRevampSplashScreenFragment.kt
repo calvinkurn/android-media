@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.open.R
+import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.shop_open_revamp.common.ImageAssets.IMG_SHOP_OPEN_SPLASH_SCREEN
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInterface
@@ -26,6 +27,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
     private val handler = Handler()
     lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var imageViewShopCreated: ImageView
+    private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
@@ -38,6 +40,13 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         fragmentNavigationInterface = context as FragmentNavigationInterface
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            shopOpenRevampTracking = ShopOpenRevampTracking(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -54,6 +63,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         val firstName = fullName.split(" ")[0]
         val greetingText = getString(R.string.open_shop_revamp_text_horay_name, firstName)
         txt_greeting.text = greetingText
+        shopOpenRevampTracking?.sendScreenHooray()
         handler.postDelayed({
             fragmentNavigationInterface
                     .navigateToNextPage(PageNameConstant.QUISIONER_PAGE, SECOND_FRAGMENT_TAG)
