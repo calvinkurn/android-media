@@ -911,11 +911,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
-    public Intent getInboxChannelsIntent(Context context) {
-        // TODO: Impl inbox channel intent
-        return new Intent();
-    }
-
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
