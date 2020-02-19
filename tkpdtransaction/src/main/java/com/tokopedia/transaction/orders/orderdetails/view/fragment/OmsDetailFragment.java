@@ -661,48 +661,47 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         }
     }
 
-    @Override
-    public void openShowQRFragment(ActionButton actionButton, Items item) {
-        if(item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals) || item.getCategoryID() == ItemsAdapter.DEALS_CATEGORY_ID){
-            showDealsQR(actionButton);
-        }else {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.scan_qr_code_layout, mainView, false);
-            Dialog dialog = new Dialog(getContext());
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setContentView(view);
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(dialog.getWindow().getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            lp.gravity = Gravity.CENTER;
+    private void showEventQR(ActionButton actionButton, Items item){
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.scan_qr_code_layout, mainView, false);
+        Dialog dialog = new Dialog(getContext());
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(view);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        View v = dialog.getWindow().getDecorView();
+        v.setBackgroundResource(android.R.color.transparent);
 
-            dialog.getWindow().setAttributes(lp);
-            View v = dialog.getWindow().getDecorView();
-            v.setBackgroundResource(android.R.color.transparent);
+        ImageView qrCode = view.findViewById(R.id.qrCode);
+        LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_view);
+        TextView closeButton = view.findViewById(R.id.redeem_ticket);
+        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
 
-            ImageView qrCode = view.findViewById(R.id.qrCode);
-            LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_view);
-            TextView closeButton = view.findViewById(R.id.redeem_ticket);
-
-            ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
-
-            if (!TextUtils.isEmpty(item.getTrackingNumber())) {
-                String[] voucherCodes = item.getTrackingNumber().split(",");
-                int size = voucherCodes.length;
-                if (size > 0) {
-                    voucherCodeLayout.setVisibility(View.VISIBLE);
-                }
+        if (!TextUtils.isEmpty(item.getTrackingNumber())) {
+            String[] voucherCodes = item.getTrackingNumber().split(",");
+            int size = voucherCodes.length;
+            if (size > 0) {
+                voucherCodeLayout.setVisibility(View.VISIBLE);
                 for (int i = 0; i < size; i++) {
                     BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], i, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes.length);
                     bookingCodeView.setBackground(getContext().getResources().getDrawable(R.drawable.bg_search_input_text_area));
                     voucherCodeLayout.addView(bookingCodeView);
                 }
             }
+        }
+        closeButton.setOnClickListener(v1 -> dialog.dismiss());
+        dialog.show();
+    }
 
-            closeButton.setOnClickListener(v1 -> {
-                dialog.dismiss();
-            });
-            dialog.show();
+    @Override
+    public void openShowQRFragment(ActionButton actionButton, Items item) {
+        if(item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals) || item.getCategoryID() == ItemsAdapter.DEALS_CATEGORY_ID){
+            showDealsQR(actionButton);
+        }else {
+            showEventQR(actionButton, item);
         }
     }
 
