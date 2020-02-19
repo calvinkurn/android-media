@@ -26,6 +26,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -42,6 +43,8 @@ class MainSliceProvider : SliceProvider() {
     lateinit var repository: GraphqlRepository
 
     var recommendationModel: List<Recommendation>? = null
+
+    var loadString : String ? = "Loading..."
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         return when (sliceUri.path) {
@@ -74,13 +77,13 @@ class MainSliceProvider : SliceProvider() {
             return null
         } else {
             if (recommendationModel == null) {
-                getData(sliceUri)
-                return list(contextNonNull, sliceUri, INFINITY) {
-                    setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
-                    header {
-                        title = "Loading..."
+                    getData(sliceUri)
+                    return list(contextNonNull, sliceUri, INFINITY) {
+                        setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+                        header {
+                            title = loadString
+                        }
                     }
-                }
             } else {
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
@@ -273,10 +276,17 @@ class MainSliceProvider : SliceProvider() {
                 recommendationModel = data.rechargeFavoriteRecommendationList.recommendations
                 Log.d("SLICE_URI", recommendationModel!![0].appLink)
                 Log.d("SLICE_URI", "Applink")
-                contextNonNull.contentResolver.notifyChange(sliceUri, null)
+                updateSlice(sliceUri)
             } catch (e: Exception) {
+                if(e.message=="401 - UNAUTHORIZED")
+                loadString = "Anda Belum Login"
+                updateSlice(sliceUri)
             }
         }
+    }
+
+    private fun updateSlice(sliceUri: Uri){
+        contextNonNull.contentResolver.notifyChange(sliceUri, null)
     }
 
     private fun String.getBitmap(): Bitmap? {
