@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.presentation.adapter;
+package com.tokopedia.flight.filter.presentation.adapter;
 
 import android.view.View;
 
@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightFilterAirlineViewHolder;
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterAirlineViewHolder;
 import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat;
 
 /**
