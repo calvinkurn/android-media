@@ -97,6 +97,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                             tradeInParams.setUsedPrice(tradeInResponse.getUsedPrice());
                             tradeInParams.setRemainingPrice(tradeInResponse.getRemainingPrice());
                             tradeInParams.setUseKyc(tradeInResponse.isUseKyc() ? 1 : 0);
+                            tradeInParams.setWidgetString(tradeInResponse.getWidgetString());
                         } else {
                             broadcastDefaultResponse();
                         }
@@ -112,6 +113,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                 response.setRemainingPrice(tradeInParams.getRemainingPrice());
                 response.setUsedPrice(tradeInParams.getUsedPrice());
                 response.setUseKyc(tradeInParams.isUseKyc() != 0);
+                response.setWidgetString(tradeInParams.getWidgetString());
                 responseData.setValue(response);
             } else {
                 ValidateTradeInResponse response = new ValidateTradeInResponse();

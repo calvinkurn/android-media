@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
@@ -138,11 +139,13 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
-    fun updateDataTradein(tradeinResponse: ValidateTradeInPDP) {
+    fun updateDataTradein(tradeinResponse: ValidateTradeInResponse) {
         productTradeinMap?.run {
             snapShotMap.shouldShowTradein = true
             data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
                 context.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+            } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                tradeinResponse.widgetString
             } else {
                 context.getString(R.string.trade_in_exchange)
             }
