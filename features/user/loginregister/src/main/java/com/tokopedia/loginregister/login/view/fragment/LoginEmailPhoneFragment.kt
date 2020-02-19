@@ -841,25 +841,22 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
                 onErrorLogin(it.errorDescription)
             } else {
-                ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-                    override fun onForbidden() {
-                        onGoToForbiddenPage()
-                    }
+                val forbiddenMessage = context?.getString(
+                        com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+                val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                if (errorMessage == forbiddenMessage){
+                    onGoToForbiddenPage()
+                } else {
+                    onErrorLogin(errorMessage)
 
-                    override fun onError(errorMessage: String) {
-                        onErrorLogin(errorMessage)
-
-                        context?.run {
-                            if (!TextUtils.isEmpty(it.message)
-                                    && errorMessage.contains(this.getString(R.string
-                                            .default_request_error_unknown))) {
-                                analytics.logUnknownError(it)
-                            }
+                    context?.run {
+                        if (!TextUtils.isEmpty(it.message)
+                                && errorMessage.contains(this.getString(R.string
+                                        .default_request_error_unknown))) {
+                            analytics.logUnknownError(it)
                         }
-
-
                     }
-                }, it, context)
+                }
             }
         }
     }
