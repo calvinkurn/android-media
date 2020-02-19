@@ -196,6 +196,7 @@ include "features:user:seamless_login"
 
 include 'features:fcm_common'
 include 'features:user:campaign_shake_landing'
+include 'features:recharge_slice'
 
 include 'tkpdcore'
 include 'tkpdinbox'
