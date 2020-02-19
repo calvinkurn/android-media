@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.coroutines.UseCase
 
 class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
@@ -90,7 +91,12 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                     spotlightRequest,
                     subscriptionRequest))
 
-            val gqlResponse = useCase.executeOnBackground()
+            val gqlResponse: GraphqlResponse
+            try {
+                gqlResponse = useCase.executeOnBackground()
+            } catch (error: Throwable) {
+                return listOf()
+            }
             val sectionList = getEmptyList().toMutableList()
 
             val bannerOrder = sectionOrdering[BANNER_ORDER] ?: 0
