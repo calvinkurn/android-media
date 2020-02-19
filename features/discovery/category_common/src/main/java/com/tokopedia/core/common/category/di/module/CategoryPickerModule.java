@@ -18,9 +18,6 @@ import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.core.common.category.data.source.db.CategoryDB;
 import com.tokopedia.core.common.category.data.source.db.CategoryDao;
-import com.tokopedia.core.common.category.di.qualifier.CategoryPickerOkHttp;
-import com.tokopedia.core.common.category.di.qualifier.CategoryPickerRetrofit;
-import com.tokopedia.core.common.category.di.scope.CategoryPickerScope;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryFromSelectedUseCase;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryWithParentChildUseCase;
@@ -44,7 +41,6 @@ import retrofit2.Retrofit;
 /**
  * @author sebastianuskh on 4/3/17.
  */
-@CategoryPickerScope
 @Module
 public class CategoryPickerModule {
 
@@ -55,57 +51,49 @@ public class CategoryPickerModule {
     }
 
     @ApplicationContext
-    @CategoryPickerScope
     @Provides
     Context provideApplicationContext() {
         return this.context;
     }
 
-    @CategoryPickerScope
     @Provides
     CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource,
                                                  CategoryDataSource categoryDataSource,
-                                                 FetchCategoryDataSource fetchCategoryDataSource){
+                                                 FetchCategoryDataSource fetchCategoryDataSource) {
         return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
     }
 
-    @CategoryPickerScope
     @Provides
-    HadesCategoryApi provideHadesCategoryApi(@CategoryPickerRetrofit Retrofit retrofit){
+    HadesCategoryApi provideHadesCategoryApi(@Named(ConstantCategoryCommon.CATEGORY_PICKER_RETROFIT) Retrofit retrofit) {
         return retrofit.create(HadesCategoryApi.class);
     }
 
-
-    @CategoryPickerScope
     @Provides
     CategoryPickerPresenter provideCategoryPickerPresenter(
             FetchCategoryWithParentChildUseCase fetchCategoryChildUseCase,
             FetchCategoryFromSelectedUseCase fetchCategoryFromSelectedUseCase
-    ){
+    ) {
         return new CategoryPickerPresenterImpl(fetchCategoryChildUseCase, fetchCategoryFromSelectedUseCase);
     }
 
-    @CategoryPickerScope
     @Provides
-    CategoryDao provideCategoryDao(@ApplicationContext Context context){
+    CategoryDao provideCategoryDao(@ApplicationContext Context context) {
         return CategoryDB.getInstance(context).getCategoryDao();
     }
 
-    @CategoryPickerRetrofit
-    @CategoryPickerScope
+    @Named(ConstantCategoryCommon.CATEGORY_PICKER_RETROFIT)
     @Provides
-    Retrofit provideCategoryPickerRetrofit(@CategoryPickerOkHttp OkHttpClient okHttpClient,
+    Retrofit provideCategoryPickerRetrofit(@Named(ConstantCategoryCommon.CATEGORY_PICKER_OKHTTP) OkHttpClient okHttpClient,
                                            Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getHADES()).client(okHttpClient).build();
     }
 
-    @CategoryPickerOkHttp
-    @CategoryPickerScope
+    @Named(ConstantCategoryCommon.CATEGORY_PICKER_OKHTTP)
     @Provides
     OkHttpClient provideOkHttpClientNoAuth(TopAdsAuthInterceptor tkpdBearerWithAuthInterceptor,
                                            FingerprintInterceptor fingerprintInterceptor,
                                            TkpdBaseInterceptor tkpdBaseInterceptor,
-                                           ChuckInterceptor chuckInterceptor,
+                                           @Named(ConstantCategoryCommon.CATEGORY_PICKER_CHUCK) ChuckInterceptor chuckInterceptor,
                                            DebugInterceptor debugInterceptor,
                                            CacheApiInterceptor cacheApiInterceptor,
                                            @ApplicationContext Context context) {
@@ -119,37 +107,33 @@ public class CategoryPickerModule {
                 cacheApiInterceptor);
     }
 
-    @CategoryPickerScope
     @Provides
     AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context) {
         return (AbstractionRouter) context;
     }
 
-    @CategoryPickerScope
     @Provides
     TopAdsAuthInterceptor provideTopAdsAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter) {
         return new TopAdsAuthInterceptor(context, abstractionRouter);
     }
 
-    @CategoryPickerScope
     @Provides
     NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         return (NetworkRouter) context;
     }
 
-    @CategoryPickerScope
+    @Named(ConstantCategoryCommon.CATEGORY_PICKER_USER_SESION)
     @Provides
     UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
-    @CategoryPickerScope
     @Provides
-    FingerprintInterceptor provideFingerprintInterceptor(NetworkRouter networkRouter, UserSessionInterface userSession) {
+    FingerprintInterceptor provideFingerprintInterceptor(NetworkRouter networkRouter, @Named(ConstantCategoryCommon.CATEGORY_PICKER_USER_SESION) UserSessionInterface userSession) {
         return new FingerprintInterceptor(networkRouter, userSession);
     }
 
-    @CategoryPickerScope
+    @Named(ConstantCategoryCommon.CATEGORY_PICKER_CHUCK)
     @Provides
     ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context,
                                              @Named(ConstantCoreNetwork.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
@@ -157,20 +141,17 @@ public class CategoryPickerModule {
                 .showNotification(localCacheHandler.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false));
     }
 
-    @Named(ConstantCoreNetwork.CHUCK_ENABLED)
-    @CategoryPickerScope
+    @Named(ConstantCategoryCommon.CHUCK_ENABLED)
     @Provides
     public LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, ConstantCoreNetwork.CHUCK_ENABLED);
     }
 
-    @CategoryPickerScope
     @Provides
     DebugInterceptor provideDebugInterceptor() {
         return new DebugInterceptor();
     }
 
-    @CategoryPickerScope
     @Provides
     CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
         return new CacheApiInterceptor(context);
