@@ -163,12 +163,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
     private fun initInjector() {
 
-//        val component = DaggerSellerHomeDashboardComponent.builder()
-//                .sellerHomeDashboardModule(SellerHomeDashboardModule(this))
-//                .build()
-//        component.inject(this)
-
-        //Dagger injecting still fails, will do manual injection
+        //Dagger injecting still fails, will do manual instantiation
         val userSession: UserSessionInterface = UserSession(context)
         val graphqlUseCase = GraphqlUseCase()
         val getShopStatusUseCase = GetShopStatusUseCase(graphqlUseCase, GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status))
@@ -221,7 +216,6 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
     override fun Toolbar.initTitle() {
         toolbarTitle = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
-        toolbarTitle.findViewById<TextView>(R.id.actionbar_title).text = title
         this.addView(toolbarTitle)
     }
 
