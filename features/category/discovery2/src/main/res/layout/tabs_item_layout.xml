@@ -10,8 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_height="@dimen/dp_50">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/tab_image"
@@ -23,12 +22,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:layout_marginRight="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_10"
             android:gravity="center_vertical"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,21 +42,21 @@
                 android:id="@+id/selected_view"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="2dp"
+                android:padding="@dimen/dp_4"
                 android:visibility="visible"
                 tools:background="@color/black" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tab_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="center_vertical|start"
-                android:lineSpacingExtra="@dimen/dp_4"
                 android:maxLines="2"
                 android:textAlignment="textStart"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
-                tools:text="test string "
+                tools:text="test string kjhhdgfdghjhk"
                 tools:textColor="@color/black_70" />
         </LinearLayout>
 

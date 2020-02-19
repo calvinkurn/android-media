@@ -27,7 +27,7 @@ data class DataItem(
         val filter: String? = "",
 
         @SerializedName("filter_value")
-        val filterValue: Int? = 0,
+        val filterValue: String? = "",
 
         @SerializedName("isSelected")
         var isSelected: Boolean = false,
@@ -129,7 +129,7 @@ data class DataItem(
         val discountPercentageStr: String? = "",
 
         @SerializedName("points_slash")
-        val pointsSlash: Int? = 0,
+        val pointsSlash: String? = "",
 
         @SerializedName("slug")
         val slug: String? = "",
@@ -162,7 +162,7 @@ data class DataItem(
         val categoryLabel: String = "",
 
         @SerializedName("ID")
-        val id: Int = 0
+        val id: String? = ""
 
 ) {
     val leftMargin: Int
