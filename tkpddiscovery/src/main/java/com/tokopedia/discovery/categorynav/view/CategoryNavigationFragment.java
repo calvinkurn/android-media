@@ -18,7 +18,6 @@ import com.tokopedia.discovery.categorynav.domain.model.Category;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
 import com.tokopedia.discovery.categorynav.view.adapter.CategoryChildAdapter;
 import com.tokopedia.discovery.categorynav.view.adapter.CategoryParentAdapter;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.util.List;
@@ -217,7 +216,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void onChildClicked(Category category) {
-        if (category.getHasChild()) {
+      /*  if (category.getHasChild()) {
             if (category.getChildren() != null && category.getChildren().size() > 0) {
                 renderCategoryLevel3(category.getId(), (List<Category>) category.getChildren());
             } else {
@@ -233,7 +232,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             MoEngageEventTracking.sendProductCategory(category.getId(), category.getName());
             getActivity().setResult(CategoryNavigationActivity.DESTROY_BROWSE_PARENT);
             getActivity().finish();
-        }
+        }*/
     }
 
     @Override

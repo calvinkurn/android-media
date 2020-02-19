@@ -2,8 +2,6 @@ package com.tokopedia.discovery.newdiscovery.category.presentation;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 
 import java.util.HashMap;
 
@@ -15,8 +13,6 @@ public interface CategoryContract {
 
     interface View extends CustomerView {
 
-        void prepareFragment(ProductViewModel productViewModel);
-
         void showLoading();
 
         void hideLoading();
@@ -27,8 +23,6 @@ public interface CategoryContract {
     interface Presenter extends CustomerPresenter<CategoryContract.View> {
 
         void getCategoryHeader(String categoryId, HashMap<String,String> filterParam);
-
-        void getCategoryPage1(CategoryHeaderModel categoryHeaderModel);
 
     }
 }

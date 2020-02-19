@@ -2,7 +2,6 @@ package com.tokopedia.core.network.apiservices.hades.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.categories.Data;
-import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 
 import java.util.Map;
 
@@ -26,13 +25,6 @@ public interface HadesApi {
     String CATEGORY_ID_PARAM = "catId";
     String PAGE_PARAM = "perPage";
     String CURATED_PARAM = "total_curated";
-
-    @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES)
-    Observable<Response<CategoryHadesModel>> getCategories(@Header(DEVICE_PARAM) String device, @Path(CATEGORY_ID_PARAM) String categoryId,
-                                                           @QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES)
-    Observable<Response<CategoryHadesModel>> getCategories(@Header(DEVICE_PARAM) String device, @Path(CATEGORY_ID_PARAM) String categoryId);
 
     @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES_LAYOUT)
     Observable<Response<Data>> getNavigationCategories(@Path(CATEGORY_ID_PARAM) String categoryId);

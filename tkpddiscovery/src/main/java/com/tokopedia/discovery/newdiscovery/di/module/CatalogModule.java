@@ -14,7 +14,6 @@ import com.tokopedia.discovery.newdiscovery.data.repository.CatalogRepositoryImp
 import com.tokopedia.discovery.newdiscovery.data.source.CatalogDataSource;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogUseCase;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -65,10 +64,5 @@ public class CatalogModule {
                 postExecutionThread,
                 catalogRepository
         );
-    }
-
-    @Provides
-    CatalogPresenter catalogPresenter(@ApplicationContext Context context) {
-        return new CatalogPresenter(context);
     }
 }

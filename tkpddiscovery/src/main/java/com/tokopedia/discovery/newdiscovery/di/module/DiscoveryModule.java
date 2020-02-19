@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
