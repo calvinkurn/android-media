@@ -36,7 +36,7 @@
             android:paddingTop="@dimen/spacing_lvl3"
             android:paddingBottom="@dimen/spacing_lvl3"
             android:text="@string/minimal_char_template"
-            android:textColor="#d50000" />
+            android:textColor="@color/topchat_red_d5" />
 
         <TextView
             android:id="@+id/submit"
@@ -60,7 +60,7 @@
         android:background="@color/white"
         android:gravity="top"
         android:hint="@string/hint_template_chat"
-        android:textColorHint="#2e000000"
+        android:textColorHint="@color/topchat_black_2e"
         android:textSize="@dimen/fontSize_lvl4" />
 
 </RelativeLayout>
