@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
@@ -186,6 +187,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                         renderContactData()
                     }
                 }
+            }
+
+            REQUEST_CODE_ADD_EMAIL -> {
+                activity?.recreate()
             }
 
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> {
@@ -374,8 +379,13 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun setupContactDetail(cart: HotelCartData) {
+        // If user email in cart.contact is empty, force user to add email
+        if (cart.contact.email.isEmpty()) {
+            navigateToAddEmailPage()
+        }
+
         // Check if contact data is empty
-        if (hotelBookingPageModel.contactData.isEmpty()) {
+        if (hotelBookingPageModel.contactData.isEmpty() || hotelBookingPageModel.contactData.email.isEmpty()) {
             val initContactData = cart.contact
             hotelBookingPageModel.contactData = TravelContactData(
                     name = initContactData.name,
@@ -651,6 +661,10 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources,
             com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
 
+    private fun navigateToAddEmailPage() {
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL), REQUEST_CODE_ADD_EMAIL)
+    }
+
     companion object {
         const val ARG_CART_ID = "arg_cart_id"
         const val ARG_DESTINATION_TYPE = "arg_destination_type"
@@ -661,6 +675,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
         const val REQUEST_CODE_CONTACT_DATA = 104
         const val REQUEST_CODE_CHECKOUT = 105
+        const val REQUEST_CODE_ADD_EMAIL = 106
         const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
         const val TAG_HOTEL_IMPORTANT_NOTES = "hotel_important_notes"

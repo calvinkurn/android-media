@@ -41,7 +41,7 @@ public class BranchIOModule {
         return retrofitBuilder.client(new OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(CampaignErrorResponse.class))
-                .build()).build().create(BranchIOAPI.class);
+                .build()).baseUrl("https://www.tokopedia.com/").build().create(BranchIOAPI.class);
     }
 
 

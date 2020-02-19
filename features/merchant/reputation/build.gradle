@@ -45,7 +45,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
@@ -58,8 +57,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

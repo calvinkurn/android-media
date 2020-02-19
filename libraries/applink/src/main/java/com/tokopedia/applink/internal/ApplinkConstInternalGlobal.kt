@@ -103,6 +103,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
 
+    // LandingShopCreationActivity
+    // tokopedia-android-internal://global/landing-shop-creation
+    @JvmField
+    val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
+
+    // PhoneShopCreationActivity
+    // tokopedia-android-internal://global/phone-shop-creation
+    @JvmField
+    val PHONE_SHOP_CREATION = "$INTERNAL_GLOBAL/phone-shop-creation"
+
+    // NameShopCreationActivity
+    // tokopedia-android-internal://global/name-shop-creation
+    @JvmField
+    val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
+
     @JvmField
     val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 

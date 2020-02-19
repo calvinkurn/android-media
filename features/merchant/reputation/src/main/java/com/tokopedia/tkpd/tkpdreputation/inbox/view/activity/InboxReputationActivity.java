@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
@@ -15,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -66,14 +64,6 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
     @Override
     protected int getPageLimit() {
         return OFFSCREEN_PAGE_LIMIT;
-    }
-
-    @DeepLink(ApplinkConst.REPUTATION)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, InboxReputationActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
     }
 
     public static Intent getCallingIntent(Context context) {
