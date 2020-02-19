@@ -272,9 +272,9 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             }
         }
         searchInputView?.setOnClickListener {
-            context?.let {
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.BRANDLIST_SEARCH)
-                intent.putExtra(CATEGORY_INTENT, categoryData)
+            categoryData?.let{
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.BRANDLIST_SEARCH)
+                intent.putExtra(CATEGORY_INTENT, it)
                 startActivity(intent)
             }
         }
