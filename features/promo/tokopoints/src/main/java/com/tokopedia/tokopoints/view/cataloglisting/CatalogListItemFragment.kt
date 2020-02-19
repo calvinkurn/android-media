@@ -24,11 +24,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
-import com.tokopedia.tokopoints.view.catalogdetail.PreValidateError
 import com.tokopedia.tokopoints.view.catalogdetail.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -59,11 +57,11 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                 }
             }
         }
-        presenter.fetchLatestStatus(items)
+        viewModel.fetchLatestStatus(items)
     }
 
     @Inject
-    lateinit var presenter: CatalogListItemPresenter
+    lateinit var viewModel: CatalogListItemViewModel
     private var mSwipeToRefresh: SwipeToRefresh? = null
     private var showFirstTimeLoader = true
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -97,15 +95,15 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         addLatestStatusObserver()
     }
 
-    private fun addLatestStatusObserver() = presenter.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let { refreshCatalog(it)}
     })
 
-    private fun addRedeemCouponObserver() = presenter.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context,it) }
     })
 
-    private fun addStartSaveCouponObserver() = presenter.startSaveCouponLiveData.observe(this , androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this , androidx.lifecycle.Observer {
         it?.let {
             when(it){
                 is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
@@ -118,7 +116,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
     })
 
-    private fun addStartValidateObserver() = presenter.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartValidateObserver() = viewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
             showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
         }
@@ -207,7 +205,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
         val builder = adb.setPositiveButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
             //Call api to validate the coupon
-            presenter.redeemCoupon(code, cta)
+            viewModel.redeemCoupon(code, cta)
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
@@ -323,7 +321,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    presenter.startSaveCoupon(item)
+                    viewModel.startSaveCoupon(item)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
@@ -420,7 +418,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
         val label = view.findViewById<TextView>(R.id.text_label_error)
         label.text = desc
-        view.findViewById<View>(R.id.text_failed_action).setOnClickListener { view1: View? -> presenter.startSaveCoupon(item) }
+        view.findViewById<View>(R.id.text_failed_action).setOnClickListener { view1: View? -> viewModel.startSaveCoupon(item) }
         adb.setView(view)
         val dialog = adb.create()
         dialog.show()
@@ -450,7 +448,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun populateCatalog(categoryId: Int, subCategoryId: Int, pointRange: Int, showLoader: Boolean) {
         showFirstTimeLoader = showLoader
-        mAdapter = CatalogListAdapter(presenter, context, this, categoryId, subCategoryId, pointRange, false)
+        mAdapter = CatalogListAdapter(viewModel, context, this, categoryId, subCategoryId, pointRange, false)
         if (mRecyclerViewCatalog!!.itemDecorationCount == 0) {
             mRecyclerViewCatalog!!.addItemDecoration(SpacesItemDecoration(activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
                     activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14),
@@ -491,7 +489,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     fun getCatalog(categoryId: Int, subCategoryId: Int, showLoader: Boolean) {
-        populateCatalog(categoryId, subCategoryId, presenter.pointRange, showLoader)
+        populateCatalog(categoryId, subCategoryId, viewModel.pointRange, showLoader)
     }
     companion object {
         private const val CONTAINER_LOADER = 0

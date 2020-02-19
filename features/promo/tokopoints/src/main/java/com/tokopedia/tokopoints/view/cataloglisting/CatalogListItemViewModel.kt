@@ -26,7 +26,7 @@ import rx.Subscriber
 import java.util.*
 import javax.inject.Inject
 
-class CatalogListItemPresenter @Inject constructor(private val repository: CatalogListingRepository) : BaseViewModel(Dispatchers.Main), CatalogListItemContract.Presenter, CatalogPurchaseRedemptionPresenter {
+class CatalogListItemViewModel @Inject constructor(private val repository: CatalogListingRepository) : BaseViewModel(Dispatchers.Main), CatalogListItemContract.Presenter, CatalogPurchaseRedemptionPresenter {
 
     var pointRange = 0
     val startValidateCouponLiveData = MutableLiveData<ValidateMessageDialog>()

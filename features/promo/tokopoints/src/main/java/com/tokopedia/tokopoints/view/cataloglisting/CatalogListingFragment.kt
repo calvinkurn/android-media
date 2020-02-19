@@ -26,8 +26,6 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.BundleModule_GetBundleFactory
-import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -181,7 +179,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun refreshTab() {
         val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
         if (fragment != null && fragment.isAdded) {
-                fragment.presenter.pointRange = mViewModel.pointRangeId
+                fragment.viewModel.pointRange = mViewModel.pointRangeId
                 fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
         }
     }
@@ -267,7 +265,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                             && fragment.isAdded) {
                             mViewModel.currentCategoryId = filters.categories[0].id
                             mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
-                            fragment.presenter.pointRange = mViewModel.pointRangeId
+                            fragment.viewModel.pointRange = mViewModel.pointRangeId
                             fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
                     }
                     if (filters.categories[0].subCategory[position].timeRemainingSeconds > 0) {
@@ -377,8 +375,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             mViewModel.getHomePageData("", "", false)
         } else {
             mViewModel.getPointData()
-            mViewModel.getHomePageData(arguments!!.getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                    arguments!!.getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true)
+            mViewModel.getHomePageData(arguments?.getString(CommonConstant.ARGS_SLUG_CATEGORY),
+                    arguments?.getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true)
         }
     }
 

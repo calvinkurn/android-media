@@ -86,16 +86,16 @@ class CatalogListingViewModel @Inject constructor(private val repository : Catal
         return currentSubCategoryId
     }
 
-    fun getCategoryName(catalogCategories: List<CatalogSubCategory?>, selectedCategoryId: Int): String {
-        for (each in catalogCategories) {
-            if (each == null) {
-                continue
-            }
-            if (selectedCategoryId == each.id) {
-                return each.name
-            }
-        }
-        return ""
-    }
+//    fun getCategoryName(catalogCategories: List<CatalogSubCategory?>, selectedCategoryId: Int): String {
+//        for (each in catalogCategories) {
+//            if (each == null) {
+//                continue
+//            }
+//            if (selectedCategoryId == each.id) {
+//                return each.name
+//            }
+//        }
+//        return ""
+//    }
 
 }
