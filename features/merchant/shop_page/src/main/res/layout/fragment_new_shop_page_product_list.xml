@@ -20,6 +20,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:paddingBottom="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:clipToPadding="false"

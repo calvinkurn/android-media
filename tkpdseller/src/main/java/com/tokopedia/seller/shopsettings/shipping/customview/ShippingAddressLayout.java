@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
@@ -91,7 +90,10 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     @Override
     public void renderData(@NonNull ShopShipping data) {
         addressArea.setText(data.addrStreet);
-        setGoogleMapAddress(data.getShopLongitude(), data.getShopLatitude());
+    }
+
+    public void renderGeoAddress(String address) {
+        chooseLocation.setText(address);
     }
 
     @Override
@@ -102,20 +104,6 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     @Override
     public void setViewListener(EditShippingViewListener mainView) {
         this.mainView = mainView;
-    }
-
-    private void setGoogleMapAddress(String longitude, String latitude) {
-        try {
-            chooseLocation.setText(GeoLocationUtils.reverseGeoCode(getContext(), Double.parseDouble(latitude), Double.parseDouble(longitude)));
-        } catch (NumberFormatException e){
-            chooseLocation.setText("");
-            e.printStackTrace();
-        } catch (Exception e) {
-            chooseLocation.setText(getContext().getString(R.string.shop_coordinate)
-                    .replace("LAT", latitude)
-                    .replace("LONG", longitude));
-            e.printStackTrace();
-        }
     }
 
     public void setGoogleMapData(Intent data){

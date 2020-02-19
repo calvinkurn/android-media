@@ -434,11 +434,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseName,
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
-
-            activity?.let { activity ->
-                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(activity, it.shopCore.shopID, selectedEtalaseId,
+            context?.let {context ->
+                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(context, it.shopCore.shopID, selectedEtalaseId,
                         true, false)
-                activity.startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
+                startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
             }
         }
     }
@@ -503,10 +502,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun onErrorAddToWishList(e: Throwable) {
         if (!viewModel.isLogin) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            activity?.let {
-                it.startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
-                return
-            }
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
         }
         NetworkErrorHelper.showCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }

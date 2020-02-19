@@ -71,12 +71,14 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
             if (view.isEgoldChecked()) {
                 view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.run {
                     bodyCheckout.attributes?.apply {
+                        var title = info?.let { it.title ?: "" }
                         fintechProduct = listOf(FintechProductCheckout(
                                 transactionType = transactionType,
                                 tierId = tierId,
                                 userId = identifier?.userId?.toLongOrNull(),
                                 fintechAmount = fintechAmount,
-                                fintechPartnerAmount = fintechPartnerAmount
+                                fintechPartnerAmount = fintechPartnerAmount,
+                                productName = title
                         ))
                     }
                 }

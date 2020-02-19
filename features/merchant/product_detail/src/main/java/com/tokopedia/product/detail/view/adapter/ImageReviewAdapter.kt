@@ -1,14 +1,15 @@
 package com.tokopedia.product.detail.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.OnImageReviewClick
 import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import kotlinx.android.synthetic.main.item_image_review.view.*
@@ -16,7 +17,8 @@ import kotlinx.android.synthetic.main.item_image_review.view.*
 class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
                          private val showSeeAll: Boolean = true,
                          private val onOnImageReviewClick: OnImageReviewClick? = null,
-                         private val onOnSeeAllReviewClick: OnSeeAllReviewClick? = null) :
+                         private val onOnSeeAllReviewClick: OnSeeAllReviewClick? = null,
+                         private val componentTrackDataModel: ComponentTrackDataModel? = null) :
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -43,13 +45,13 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                     txt_see_all.text = item.imageCount
                     txt_see_all.visible()
                     setOnClickListener {
-                        onOnSeeAllReviewClick?.invoke()
+                        onOnSeeAllReviewClick?.invoke(componentTrackDataModel)
                     }
                 } else {
                     overlay_see_all.gone()
                     txt_see_all.gone()
                     setOnClickListener {
-                        onOnImageReviewClick?.invoke(listItem, adapterPosition)
+                        onOnImageReviewClick?.invoke(listItem, adapterPosition, componentTrackDataModel)
                     }
                 }
             }

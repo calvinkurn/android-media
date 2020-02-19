@@ -196,6 +196,7 @@ ext {
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
+            profileCommon                   : ":features:user:profilecommon",
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",

@@ -50,7 +50,7 @@ private fun createFlightSearchData(journeyId: String): FlightSearchData {
             "234", "2j", "layover", null, "JT123",
             true, null, 1, null, "Lion Air",
             "logo", "Cengkareng", "Jakarta",
-            "Denpasar", "Denpasar")
+            "Denpasar", "Denpasar", "Lion Air")
     val routes = arrayListOf<Route>()
     routes.add(route)
 

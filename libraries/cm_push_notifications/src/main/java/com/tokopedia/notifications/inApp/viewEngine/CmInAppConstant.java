@@ -16,6 +16,7 @@ public interface CmInAppConstant {
     String ORIENTATION_VERTICAL = "vertical";
     String ORIENTATION_HORIZONTAL = "horizontal";
     String TYPE_ALERT = "alert";
+    String TYPE_DROP = "drop";
 
 
     interface ViewAnimation {

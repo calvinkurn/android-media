@@ -11,6 +11,13 @@ import java.net.UnknownHostException
 class ErrorHandlerHotel {
 
     companion object {
+        private const val ERROR_VERIFIED_PHONE_MESSAGE = "PhoneNotVerified"
+        private const val ERROR_VERIFIED_PHONE_CODE = "68"
+
+        fun isPhoneNotVerfiedError(t: Throwable): Boolean {
+            return t.message?.isNotEmpty() ?: false && (t.message == ERROR_VERIFIED_PHONE_MESSAGE || t.message == ERROR_VERIFIED_PHONE_CODE)
+        }
+
         fun getErrorMessage(context: Context?, e: Throwable?): String {
             if (context == null || e == null) {
                 return "Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti."

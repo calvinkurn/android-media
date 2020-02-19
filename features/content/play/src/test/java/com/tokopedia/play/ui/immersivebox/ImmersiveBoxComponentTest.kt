@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.immersivebox
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import io.mockk.confirmVerified
@@ -70,7 +71,7 @@ open class ImmersiveBoxComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class ImmersiveBoxComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ImmersiveBoxComponent(container, bus, coroutineScope) {
+    class ImmersiveBoxComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ImmersiveBoxComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ImmersiveBoxView {
             return mockk(relaxed = true)
         }
