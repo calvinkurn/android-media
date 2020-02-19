@@ -34,7 +34,10 @@
         android:layout="@layout/view_stub_iv_reload"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
-        app:layout_constraintRight_toLeftOf="@+id/tv_reload"/>
+        android:layout_marginRight="@dimen/dp_4"
+        app:layout_constraintRight_toLeftOf="@+id/tv_reload"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ViewStub
         android:id="@+id/tv_reload"
