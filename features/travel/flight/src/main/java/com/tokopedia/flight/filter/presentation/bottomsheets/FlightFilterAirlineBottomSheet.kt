@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
@@ -17,7 +16,6 @@ import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineSt
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_flight_filter_airline.view.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * @author by furqan on 17/02/2020
@@ -25,9 +23,6 @@ import javax.inject.Inject
 class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
         BaseCheckableViewHolder.CheckableInteractionListener,
         BaseListCheckableAdapter.OnCheckableAdapterListener<AirlineStat> {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var listener: OnFlightFilterListener
 
