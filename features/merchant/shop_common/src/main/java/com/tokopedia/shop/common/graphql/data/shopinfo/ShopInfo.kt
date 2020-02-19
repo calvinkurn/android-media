@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopInfo(
@@ -66,6 +67,26 @@ data class ShopInfo(
         val addressData: AddressData = AddressData()
 
 ) {
+    fun mapToShopInfoData(): ShopInfoData {
+        val shipmentsData = shipments.map {
+            it.mapToShipmentData()
+        }
+
+        return ShopInfoData(
+                shopCore.shopID,
+                shopCore.name,
+                shopCore.description,
+                shopCore.url,
+                location,
+                shopAssets.cover,
+                shopCore.tagLine,
+                goldOS.isOfficial,
+                goldOS.isGold,
+                createdInfo.openSince,
+                shipmentsData
+        )
+    }
+
     companion object{
         @JvmField
         val TAG : String = ShopInfo::class.java.simpleName

@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.view.adapter.VideoPicturePagerAdapter
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
@@ -39,8 +40,9 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int) -> Unit) ,fragmentManager: FragmentManager,
-                   forceRefresh: Boolean = true) {
+    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int, ComponentTrackDataModel?) -> Unit), fragmentManager: FragmentManager,
+                   forceRefresh: Boolean = true, componentTrackData: ComponentTrackDataModel? = null, onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)? = null) {
+
         val mediaList = if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
@@ -53,14 +55,15 @@ class PictureScrollingView @JvmOverloads constructor(
             media.toMutableList()
 
         if (!::pagerAdapter.isInitialized || forceRefresh) {
-            pagerAdapter = VideoPicturePagerAdapter(context, mediaList, onPictureClickListener, fragmentManager)
+            pagerAdapter = VideoPicturePagerAdapter(context, mediaList, onPictureClickListener, fragmentManager, componentTrackData
+                    ?: ComponentTrackDataModel(), onPictureClickTrackListener)
             view_pager.adapter = pagerAdapter
 
             view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 var lastPosition = 0
                 override fun onPageSelected(position: Int) {
                     val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
-                    onSwipePictureListener.invoke(swipeDirection, position)
+                    onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
                     (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
                     (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
                     lastPosition = position

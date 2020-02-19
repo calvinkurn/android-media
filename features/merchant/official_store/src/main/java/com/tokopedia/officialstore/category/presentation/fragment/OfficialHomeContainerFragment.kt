@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.*
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
@@ -28,8 +30,10 @@ import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStore
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_official_home.*
 import java.util.*
 import javax.inject.Inject
 
@@ -50,7 +54,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
-    private var loadingLayout: View? = null
+    private var loadingCategoryLayout: View? = null
     private var viewPager: ViewPager? = null
     private var appbarCategory: AppBarLayout? = null
     private var badgeNumberNotification: Int = 0
@@ -132,11 +136,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG) {
-                        it.throwable.printStackTrace()
-                    }
-
-                    NetworkErrorHelper.showEmptyState(context, view) {
+                    removeLoading()
+                    NetworkErrorHelper.showEmptyState(context, coordinator_layout_fragment_os) {
                         viewModel.getOfficialStoreCategories()
                     }
                 }
@@ -203,7 +204,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
-        loadingLayout = view.findViewById(R.id.view_category_tab_loading)
+        loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
         appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
@@ -224,7 +225,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun removeLoading() {
-        loadingLayout?.visibility = View.GONE
+        loadingCategoryLayout?.visibility = View.GONE
         tabLayout?.visibility = View.VISIBLE
     }
 

@@ -5,12 +5,8 @@ import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
-import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase
+import com.tokopedia.user_identification_common.domain.usecase.GetUserProjectInfoUseCase
 import io.mockk.*
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Before
-import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -22,11 +18,17 @@ import rx.schedulers.Schedulers
 
 class PmSubscribePresenterTest : Spek( {
 
+    RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
+        override fun getMainThreadScheduler(): Scheduler {
+            return Schedulers.immediate()
+        }
+    })
+
     Feature("PmSubscribePresenter") {
 
         val getShopStatusUseCase: GetShopStatusUseCase = mockk()
 
-        val getApprovalStatusUseCase: GetApprovalStatusUseCase = mockk()
+        val getUserProjectInfoUseCase: GetUserProjectInfoUseCase = mockk()
 
         val getShopScoreUseCase: GetShopScoreUseCase = mockk()
 
@@ -34,17 +36,11 @@ class PmSubscribePresenterTest : Spek( {
 
         val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase = spyk(
                 GetPowerMerchantStatusUseCase(getShopStatusUseCase,
-                        getApprovalStatusUseCase,
+                        getUserProjectInfoUseCase,
                         getShopScoreUseCase))
 
         val pmSubscribePresenter = PmSubscribePresenter(getPowerMerchantStatusUseCase)
         pmSubscribePresenter.attachView(pmSubscribeView)
-
-        RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
-            override fun getMainThreadScheduler(): Scheduler {
-                return Schedulers.immediate()
-            }
-        })
 
         Scenario("GetPowerMerchantStatusUseCase is successful") {
             Given("Mock GetPowerMerchantStatusUseCase return as success") {

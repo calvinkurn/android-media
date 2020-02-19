@@ -26,6 +26,8 @@
     <string name="megerti">Mengerti</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="msg_remove_wishlist_failed">Gagal menghapus wishlist</string>
+    <string name="msg_add_wishlist_failed">Gagal menambah wishlist</string>
 
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
@@ -48,11 +50,23 @@
     <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
-    <string name="msg_empty_search_shop_title">Oops, toko tidak ditemukan :(</string>
+
+    <string name="msg_empty_search_shop_title">Oops, toko nggak ditemukan</string>
+    <string name="msg_empty_search_shop_content">Coba kata kunci lain untuk menemukan toko yang kamu inginkan.</string>
+    <string name="msg_empty_search_shop_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
+    <string name="msg_empty_search_shop_button">Ganti Kata Kunci</string>
+    <string name="empty_search_shop_recommendation_title">Toko rekomendasi</string>
+
     <string name="msg_empty_search_product_title">Oops, Produk Nggak Ditemukan</string>
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_product_button">Ganti Kata Kunci</string>
+
+    <string name="empty_search_profile_title">Oops, profil nggak ditemukan</string>
+    <string name="empty_search_profile_content">Coba kata kunci lain untuk menemukan profil yang kamu inginkan.</string>
+    <string name="empty_search_profile_button">Ganti Kata Kunci</string>
+    <string name="empty_search_profile_recommendation_title">Profil rekomendasi</string>
+
     <string name="post_count_value">%1$s post</string>
     <string name="btn_following_text">Following</string>
     <string name="btn_follow_text">Follow</string>
@@ -72,5 +86,12 @@
     <string name="banned_products_empty_search_title">Pencarian terbatas</string>
     <string name="banned_products_empty_search_go_to_browser_button">Cari di Browser</string>
     <string name="banned_products_ticker_title">Hasil pencarian terbatas</string>
+
+    <string name="inspiration_carousel_title">Pilih sesuai budget-mu</string>
+    <string name="inspiration_carousel_option_title">Rp20,08 jt - Rp21,05 jt</string>
+    <string name="inspiration_carousel_option_view_all">Lihat semua</string>
+    <string name="inspiration_carousel_product_name">Xiaomi Note 8 4GB/64GB [4GB-64GB] Garansi TAM Original Quality</string>
+    <string name="inspiration_carousel_product_price">Rp50.000.000</string>
+    <string name="inspiration_carousel_review_count">(60)</string>
 
 </resources>

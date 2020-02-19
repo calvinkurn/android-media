@@ -10,6 +10,10 @@ public interface SearchEventTracking {
         String CLICK_TOP_NAV = "clickTopNav";
         String VIEW_SEARCH_RESULT_IRIS = "viewSearchResultIris";
         String CLICK_SEARCH_RESULT_IRIS = "clickSearchResultIris";
+        String PROMO_VIEW = "promoView";
+        String PROMO_CLICK = "promoClick";
+        String PRODUCT_VIEW = "productView";
+        String PRODUCT_CLICK = "productClick";
     }
 
     interface Category {
@@ -23,6 +27,7 @@ public interface SearchEventTracking {
         String SORT = "Sort";
         String SORT_BY = "sort by";
         String TOP_NAV_SEARCH_RESULT_PAGE = "top nav - search result page";
+        String SEARCH_RESULT_PROFILE = "search result profile";
     }
 
     interface Action {
@@ -48,6 +53,24 @@ public interface SearchEventTracking {
         String CLICK_SORT_PRICE_MIN_TICKER = "click - sort terendah ticker";
         String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
         String GENERAL_SEARCH = "general search";
+        String CLICK_CHANGE_KEYWORD = "click ganti kata kunci";
+        String IMPRESSION_SHOP = "impression - shop";
+        String IMPRESSION_SHOP_ALTERNATIVE = "impression - shop - alternative";
+        String CLICK_SHOP = "click - shop";
+        String CLICK_SHOP_INACTIVE = "click - shop - inactive";
+        String CLICK_SHOP_ALTERNATIVE = "click - shop - alternative";
+        String IMPRESSION_PRODUCT_SHOP_TAB = "impression - product - shop tab";
+        String IMPRESSION_PRODUCT_SHOP_TAB_ALTERNATIVE = "impression - product - shop tab - alternative";
+        String CLICK_PRODUCT_SHOP_TAB = "click - product - shop tab";
+        String CLICK_PRODUCT_SHOP_TAB_ALTERNATIVE = "click - product - shop tab - alternative";
+        String IMPRESSION_PROFILE = "impression - profile";
+        String IMPRESSION_TOP_PROFILE_IN_NO_RESULT_PROFILE = "impression - top profile in no result profile";
+        String CLICK_PROFILE_RESULT = "click - profile result";
+        String CLICK_TOP_PROFILE_IN_NO_RESULT_PROFILE = "click - top profile in no result profile";
+        String IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT = "impression - inspiration carousel product";
+        String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
+        String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
+        String CLICK = "click";
     }
 
     interface Label {

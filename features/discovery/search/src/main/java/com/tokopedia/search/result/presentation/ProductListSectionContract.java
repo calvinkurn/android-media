@@ -9,6 +9,7 @@ import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 
 import org.json.JSONArray;
@@ -130,6 +131,20 @@ public interface ProductListSectionContract {
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
 
         void renderFailRequestDynamicFilter();
+
+        boolean isFirstActiveTab();
+
+        void setupSearchNavigation();
+
+        void trackScreenAuthenticated();
+
+        void reloadData();
+
+        void showBottomNavigation();
+
+        void hideBottomNavigation();
+
+        void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -154,9 +169,7 @@ public interface ProductListSectionContract {
 
         boolean isUserLoggedIn();
 
-        void setIsFirstTimeLoad(boolean isFirstTimeLoad);
-
-        void setIsTickerHasDismissed(boolean isTickerHasDismissed);
+        void onPriceFilterTickerDismissed();
 
         boolean getIsTickerHasDismissed();
 
@@ -167,5 +180,9 @@ public interface ProductListSectionContract {
         void setStartFrom(int startFrom);
 
         int getStartFrom();
+
+        void onViewCreated();
+
+        void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
     }
 }

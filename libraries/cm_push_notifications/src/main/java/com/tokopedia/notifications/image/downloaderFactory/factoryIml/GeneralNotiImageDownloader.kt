@@ -6,7 +6,13 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 
 class GeneralNotiImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
-    override suspend fun downloadImages(context: Context): BaseNotificationModel? {
+
+    override suspend fun verifyAndUpdate() {
+
+    }
+
+    override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
+        verifyAndUpdate()
         return baseNotificationModel
     }
 }

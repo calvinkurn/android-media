@@ -1,8 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.data.source;
 
 import com.tokopedia.network.data.model.response.DataResponse;
-import com.tokopedia.core.base.common.util.GetData;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.utils.GetData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +23,10 @@ public class ReviewProductGetListProductCloud {
     public static final String RATING = "rating";
     public static final String WITH_ATTACHMENT = "with_attachment";
 
-    private ReviewProductApi reputationReviewApi;
+    private ReviewProductService reviewProductService;
 
-    public ReviewProductGetListProductCloud(ReviewProductApi reputationReviewApi) {
-        this.reputationReviewApi = reputationReviewApi;
+    public ReviewProductGetListProductCloud(ReviewProductService reviewProductService) {
+        this.reviewProductService = reviewProductService;
     }
 
     public Observable<DataResponseReviewProduct> getReviewProductList(String productId,
@@ -34,7 +35,7 @@ public class ReviewProductGetListProductCloud {
                                                                       String rating,
                                                                       String withAttachment) {
 
-        return reputationReviewApi.getReviewProductList(generateMapParams(productId,
+        return reviewProductService.getApi().getReviewProductList(generateMapParams(productId,
                 page,
                 perPage,
                 rating,

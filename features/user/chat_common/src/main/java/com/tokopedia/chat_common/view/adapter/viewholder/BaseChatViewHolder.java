@@ -172,13 +172,18 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
                 imageResource = R.drawable.ic_chatcommon_check_rounded_grey;
             }
             Drawable drawable = MethodChecker.getDrawable(chatReadStatus.getContext(), imageResource);
-            if (useWhiteReadStatus()) {
+            if (useWhiteReadStatus() && !element.isRead()) {
                 drawable.mutate();
                 drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
             } else {
                 drawable.clearColorFilter();
             }
             chatReadStatus.setImageDrawable(drawable);
+        } else {
+            chatReadStatus.setVisibility(View.GONE);
+        }
+        if (element.isSender()) {
+            chatReadStatus.setVisibility(View.VISIBLE);
         } else {
             chatReadStatus.setVisibility(View.GONE);
         }

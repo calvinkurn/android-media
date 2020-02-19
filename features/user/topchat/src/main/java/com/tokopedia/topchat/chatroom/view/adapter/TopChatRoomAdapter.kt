@@ -29,4 +29,11 @@ class TopChatRoomAdapter(private val adapterTypeFactory: TopChatTypeFactoryImpl)
             notifyItemChanged(position)
         }
     }
+
+    fun addWidgetHeader(widgets: List<Visitable<TopChatTypeFactory>>) {
+        if (widgets.isEmpty()) return
+        val currentLastPosition = visitables.lastIndex
+        visitables.addAll(widgets)
+        notifyItemRangeInserted(currentLastPosition, widgets.size)
+    }
 }

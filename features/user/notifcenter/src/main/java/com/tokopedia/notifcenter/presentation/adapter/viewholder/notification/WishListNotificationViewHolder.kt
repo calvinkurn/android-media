@@ -22,6 +22,7 @@ class WishListNotificationViewHolder(
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.notifcenter_ic_add_to_cart)
+        listener.getAnalytic().saveProductCardImpression(element, adapterPosition)
 
         with(product) {
             btnCart.setImageDrawable(atcDrawable)

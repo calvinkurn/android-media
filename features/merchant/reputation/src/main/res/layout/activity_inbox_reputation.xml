@@ -20,7 +20,7 @@
         android:layout_height="@dimen/dp_4"
         android:background="@drawable/tab_shadow"/>
 
-    <com.tkpd.library.ui.widget.TouchViewPager
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

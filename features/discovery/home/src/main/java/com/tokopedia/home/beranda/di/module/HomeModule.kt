@@ -7,12 +7,15 @@ import com.tokopedia.dynamicbanner.di.PlayCardModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home.beranda.data.datasource.HomeCachedDataSource
+import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
+import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
+import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.datasource.remote.PlayRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
-import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
@@ -41,23 +44,14 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
 
 @Module(includes = [TopAdsWishlistModule::class, PlayCardModule::class])
 class HomeModule {
 
     @HomeScope
-    @Named("Main")
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @HomeScope
-    @Named("dispatchersIO")
-    @Provides
-    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+    fun provideHomeDispatcher(): HomeDispatcherProvider = HomeDispatcherProviderImpl()
 
     @HomeScope
     @Provides
@@ -75,7 +69,11 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, @Named("dispatchersIO") dispatcher: CoroutineDispatcher) = HomeRemoteDataSource(graphqlRepository, dispatcher)
+    fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = HomeRemoteDataSource(graphqlRepository, dispatcher)
+
+    @HomeScope
+    @Provides
+    fun providePlayRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider) = PlayRemoteDataSource(graphqlRepository, dispatcher)
 
     @HomeScope
     @Provides
@@ -89,10 +87,18 @@ class HomeModule {
 
     @HomeScope
     @Provides
+    fun provideHomeDafaultDataSource(): HomeDefaultDataSource {
+        return HomeDefaultDataSource()
+    }
+
+    @HomeScope
+    @Provides
     fun homeRepository(homeDataSource: HomeDataSource,
                        homeRemoteDataSource: HomeRemoteDataSource,
-                       homeCachedDataSource: HomeCachedDataSource): HomeRepository {
-        return HomeRepositoryImpl(homeDataSource, homeCachedDataSource, homeRemoteDataSource)
+                       homeCachedDataSource: HomeCachedDataSource,
+                       playRemoteDataSource: PlayRemoteDataSource,
+                       homeDefaultDataSource: HomeDefaultDataSource): HomeRepository {
+        return HomeRepositoryImpl(homeDataSource, homeCachedDataSource, homeRemoteDataSource, playRemoteDataSource, homeDefaultDataSource)
     }
 
     @HomeScope
@@ -191,10 +197,8 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun homePresenter(userSession: UserSessionInterface,
-                      @Named("Main") coroutineDispatcher: CoroutineDispatcher,
-                      homeUseCase: HomeUseCase): HomePresenter {
-        return HomePresenter(userSession, coroutineDispatcher, homeUseCase)
+    fun homePresenter(homeUseCase: HomeUseCase, homeDispatcher: HomeDispatcherProvider): HomePresenter {
+        return HomePresenter(homeUseCase, homeDispatcher)
     }
 
     @Provides

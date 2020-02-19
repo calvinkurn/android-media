@@ -55,14 +55,17 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
@@ -74,6 +77,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 /**
@@ -82,8 +86,8 @@ import javax.inject.Inject
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
-        HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
-        TopChatVoucherListener, InvoiceThumbnailListener {
+        HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
+        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -104,6 +108,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
+    private lateinit var adapter: TopChatRoomAdapter
     var indexFromInbox = -1
     var isMoveItemInboxToTop = false
 
@@ -212,6 +217,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             getViewState().onSetCustomMessage(customMessage)
             presenter.getTemplate(getUserSession().shopId == shopId.toString())
+            loadChatRoomSettings(it)
 
             fpm.stopTrace()
         }
@@ -262,7 +268,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return {
             renderList(it.listChat, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
+            loadChatRoomSettings(it)
         }
+    }
+
+    private fun loadChatRoomSettings(chatRoom: ChatroomViewModel) {
+        if (chatRoom.canLoadMore) return
+        presenter.loadChatRoomSettings(messageId, ::onSuccessLoadChatRoomSetting)
+    }
+
+    private fun onSuccessLoadChatRoomSetting(widgets: List<Visitable<TopChatTypeFactory>>) {
+        adapter.addWidgetHeader(widgets)
     }
 
     private fun checkShowLoading(canLoadMore: Boolean) {
@@ -418,7 +434,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
         }
         val typeFactory = adapterTypeFactory as TopChatTypeFactoryImpl
-        return TopChatRoomAdapter(typeFactory)
+        return TopChatRoomAdapter(typeFactory).also {
+            adapter = it
+        }
     }
 
     override fun addDummyMessage(visitable: Visitable<*>) {
@@ -762,12 +780,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun onGoToSecurityInfo(url: String) {
-        if (url.isNotEmpty()) {
-            onGoToWebView(url, "")
-        }
-    }
-
     override fun onBackPressed(): Boolean {
         if (presenter.isUploading()) {
             showDialogConfirmToAbortUpload()
@@ -911,4 +923,72 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun getSupportChildFragmentManager(): FragmentManager {
         return childFragmentManager
     }
+
+    override fun onClickAddToWishList(productId: String, success: () -> Unit) {
+        analytics.eventClickAddToWishList(productId)
+        presenter.addToWishList(productId, session.userId, object : WishListActionListener {
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+            override fun onSuccessRemoveWishlist(productId: String?) {}
+            override fun onSuccessAddWishlist(productId: String?) {
+                success()
+                view?.let {
+                    val successMessage = it.context.getString(R.string.title_topchat_success_atw)
+                    Toaster.make(
+                            it,
+                            successMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_NORMAL
+                    )
+                }
+            }
+
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                if (errorMessage == null) return
+                view?.let {
+                    Toaster.make(
+                            it,
+                            errorMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        })
+    }
+
+    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
+        analytics.eventClickRemoveFromWishList(productId)
+        presenter.removeFromWishList(productId, session.userId, object : WishListActionListener {
+            override fun onSuccessAddWishlist(productId: String?) { }
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) { }
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                success()
+                view?.let {
+                    val successMessage = it.context.getString(R.string.title_topchat_success_rfw)
+                    Toaster.make(
+                            it,
+                            successMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_NORMAL
+                    )
+                }
+            }
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                if (errorMessage == null) return
+                view?.let {
+                    Toaster.make(
+                            it,
+                            errorMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        })
+    }
+
+    override fun trackClickQuotation(msg: QuotationViewModel) {
+        analytics.eventClickQuotation(msg)
+    }
+
 }

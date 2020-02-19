@@ -9,6 +9,8 @@ public class TradeInParams implements Parcelable {
     public static final String TRADE_IN_PARAMS = TradeInParams.class.getSimpleName();
     public static final String PARAM_NEW_PRICE = "NEW PRICE";
     public static final String PARAM_DEVICE_ID = "DEVICE ID";
+    public static final String PARAM_PHONE_TYPE = "PHONE TYPE";
+    public static final String PARAM_PHONE_PRICE = "PHONE PRICE";
     public static final String PARAM_USER_ID = "USER ID";
     public static final String PARAM_PRODUCT_ID = "PRODUCT ID";
     public static final String PARAM_NEW_DEVICE_NAME = "NEW DEVICE NAME";

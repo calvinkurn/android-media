@@ -15,7 +15,13 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,17 +54,11 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        checkApkTempered();
-
         startWarmStart();
         startSplashTrace();
 
         super.onCreate(savedInstanceState);
-
-        if (isApkTempered) {
-            startActivity(new Intent(this, FallbackActivity.class));
-            finish();
-        }
+        createAndCallChkApk();
 
         finishWarmStart();
 
@@ -70,6 +70,18 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     }
 
+    private void createAndCallChkApk(){
+        WeaveInterface chkTmprApkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return checkApkTempered();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(chkTmprApkWeave,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
+    }
+
     private void trackIrisEventForAppOpen() {
         Iris instance = IrisAnalytics.Companion.getInstance(this);
         Map<String, Object> map = new HashMap<>();
@@ -77,13 +89,23 @@ public class ConsumerSplashScreen extends SplashScreen {
         instance.saveEvent(map);
     }
 
-    private void checkApkTempered() {
+    @NotNull
+    private Boolean checkApkTempered() {
         isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
         } catch (Exception e) {
             isApkTempered = true;
-            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+            runOnUiThread(() -> setTheme(R.style.Theme_Tokopedia3_PlainGreen));
+        }
+        checkExecTemperedFlow();
+        return true;
+    }
+
+    private void checkExecTemperedFlow(){
+        if (isApkTempered) {
+            startActivity(new Intent(this, FallbackActivity.class));
+            finish();
         }
     }
 

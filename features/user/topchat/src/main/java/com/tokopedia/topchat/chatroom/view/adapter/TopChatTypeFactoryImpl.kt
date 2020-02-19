@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
@@ -15,6 +16,8 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.FallbackMessageViewHolder
@@ -24,10 +27,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMes
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
-import com.tokopedia.topchat.chatroom.view.listener.SecurityInfoListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 
 open class TopChatTypeFactoryImpl(
@@ -36,9 +38,9 @@ open class TopChatTypeFactoryImpl(
         private val imageUploadListener: ImageUploadListener,
         productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
-        private val securityInfoListener: SecurityInfoListener,
         private val voucherListener: TopChatVoucherListener,
-        private val invoiceThumbnailListener: InvoiceThumbnailListener
+        private val invoiceThumbnailListener: InvoiceThumbnailListener,
+        private val quotationListener: QuotationViewHolder.QuotationListener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -61,10 +63,6 @@ open class TopChatTypeFactoryImpl(
         }
     }
 
-    override fun type(securityInfoViewModel: SecurityInfoViewModel): Int {
-        return SecurityInfoChatViewHolder.LAYOUT
-    }
-
     override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementViewModel): Int {
         return ImageDualAnnouncementViewHolder.LAYOUT
     }
@@ -79,6 +77,22 @@ open class TopChatTypeFactoryImpl(
 
     override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
         return TopchatImageUploadViewHolder.LAYOUT
+    }
+
+    override fun type(roomSettingBanner: RoomSettingBanner): Int {
+        return RoomSettingBannerViewHolder.LAYOUT
+    }
+
+    override fun type(roomSettingFraudAlert: RoomSettingFraudAlert): Int {
+        return RoomSettingFraudAlertViewHolder.LAYOUT
+    }
+
+    override fun type(quotationViewModel: QuotationViewModel): Int {
+        return QuotationViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: EmptyModel): Int {
+        return TopchatEmptyViewHolder.LAYOUT
     }
 
     // Check if chat bubble first, if not return default ViewHolder
@@ -96,12 +110,15 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)
+            QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener, quotationListener)
+            RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
+            RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent)
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
             LeftFallbackMessageViewHolder.LAYOUT -> LeftFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             RightFallbackMessageViewHolder.LAYOUT -> RightFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener)
-            SecurityInfoChatViewHolder.LAYOUT -> SecurityInfoChatViewHolder(parent, securityInfoListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
             TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)
             AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(parent, invoiceThumbnailListener)

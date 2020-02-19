@@ -50,8 +50,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp)
 
+    //Base
+    implementation project(rootProject.ext.features.onboarding)
     //Category
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
+    implementation project(rootProject.ext.features.tradeIn)
     //Content
     implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.profile)
@@ -64,10 +67,11 @@ dependencies {
     implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.digitalproduct)
     //Discovery
-    implementation project(rootProject.ext.features.imageSearch)
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.homeWishlist)
+    implementation project(rootProject.ext.features.productCardOptions)
     //Fintech
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
@@ -94,6 +98,7 @@ dependencies {
     implementation project(rootProject.ext.features.hotel)
     //User
     implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.features.settingbank)

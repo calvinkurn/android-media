@@ -8,7 +8,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -45,6 +45,7 @@ import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
@@ -56,6 +57,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -87,7 +91,10 @@ class TopChatRoomPresenter @Inject constructor(
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private var addToCartUseCase: AddToCartUseCase,
         private var compressImageUseCase: CompressImageUseCase,
-        private var seamlessLoginUsecase: SeamlessLoginUsecase)
+        private var seamlessLoginUsecase: SeamlessLoginUsecase,
+        private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
+        private var addWishListUseCase: AddWishListUseCase,
+        private var removeWishListUseCase: RemoveWishListUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     override fun clearText() {
@@ -146,7 +153,7 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "item")
                 }
-                val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
+                val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
                 if (pojo.msgId.toString() != messageId) return
                 mappingEvent(webSocketResponse, messageId)
             }
@@ -191,10 +198,10 @@ class TopChatRoomPresenter @Inject constructor(
 
 
     override fun mappingEvent(response: WebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo = Gson().fromJson(response.getData(), ChatSocketPojo::class.java)
+        val pojo: ChatSocketPojo = Gson().fromJson(response.jsonObject, ChatSocketPojo::class.java)
 
         if (pojo.msgId.toString() != messageId) return
-        when (response.getCode()) {
+        when (response.code) {
             EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
@@ -578,15 +585,11 @@ class TopChatRoomPresenter @Inject constructor(
                 totalPriceAmount
         )
 
-        if (attachmentsPreview.hasInvoicePreview()) {
-            attachmentsPreview.clear()
+        if (invoiceViewModel.enoughRequiredData()) {
+            clearAttachmentPreview()
+            attachmentsPreview.add(invoiceViewModel)
         }
 
-        attachmentsPreview.add(invoiceViewModel)
-
-        if (invoiceViewModel.notEnoughRequiredData()) {
-            attachmentsPreview.remove(invoiceViewModel)
-        }
     }
 
     override fun initAttachmentPreview() {
@@ -667,7 +670,7 @@ class TopChatRoomPresenter @Inject constructor(
 
         val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
         val sendableVoucher = SendableVoucherPreview(voucherPreview)
-        if (attachmentsPreview.isNotEmpty()) attachmentsPreview.clear()
+        if (attachmentsPreview.isNotEmpty()) clearAttachmentPreview()
         attachmentsPreview.add(sendableVoucher)
     }
 
@@ -688,12 +691,23 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-}
-
-private fun java.util.ArrayList<SendablePreview>.hasInvoicePreview(): Boolean {
-    if (isEmpty()) return false
-    for (item in this) {
-        if (item is InvoicePreviewViewModel) return true
+    override fun loadChatRoomSettings(
+            messageId: String,
+            onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
+    ) {
+        getChatRoomSettingUseCase.execute(messageId, onSuccess)
     }
-    return false
+
+    override fun addToWishList(
+            productId: String,
+            userId: String,
+            wishlistActionListener: WishListActionListener
+    ) {
+        addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
+    }
+
+    override fun removeFromWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
+        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
 }

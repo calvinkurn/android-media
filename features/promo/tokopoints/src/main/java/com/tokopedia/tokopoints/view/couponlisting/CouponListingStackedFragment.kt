@@ -64,13 +64,13 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     override fun showLoader() {
-        container.displayedChild = CONTAINER_LOADER
-        swipe_refresh_layout.isRefreshing = false
+        container?.displayedChild = CONTAINER_LOADER
+        swipe_refresh_layout?.isRefreshing = false
     }
 
     override fun hideLoader() {
-        container.displayedChild = CONTAINER_DATA
-        swipe_refresh_layout.isRefreshing = false
+        container?.displayedChild = CONTAINER_DATA
+        swipe_refresh_layout?.isRefreshing = false
     }
 
     override fun getActivityContext(): Context? {

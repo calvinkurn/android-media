@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -46,20 +47,20 @@ import javax.inject.Inject;
 public class ShippingDurationBottomsheet extends BottomSheets
         implements ShippingDurationContract.View, ShippingDurationAdapterListener {
 
-    public static final String ARGUMENT_SHIPPING_PARAM = "ARGUMENT_SHIPPING_PARAM";
-    public static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
-    public static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
-    public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
-    public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
-    public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
-    public static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
-    public static final String ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER";
-    public static final String ARGUMENT_IS_LEASING = "ARGUMENT_IS_LEASING";
-    public static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
-    public static final String ARGUMENT_PRODUCTS = "ARGUMENT_PRODUCTS";
-    public static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
-    public static final String ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS";
-    public static final String ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF";
+    private static final String ARGUMENT_SHIPPING_PARAM = "ARGUMENT_SHIPPING_PARAM";
+    private static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
+    private static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
+    private static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
+    private static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
+    private static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
+    private static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
+    private static final String ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER";
+    private static final String ARGUMENT_IS_LEASING = "ARGUMENT_IS_LEASING";
+    private static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
+    private static final String ARGUMENT_PRODUCTS = "ARGUMENT_PRODUCTS";
+    private static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
+    private static final String ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS";
+    private static final String ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -76,6 +77,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private boolean isDisableCourierPromo;
     private boolean isDisableOrderPrioritas;
     private int mCartPosition = -1;
+
+    private RecipientAddressModel mRecipientAddress;
 
     @Inject
     ShippingDurationContract.Presenter presenter;
@@ -127,18 +130,19 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     // Called from express checkout only
-    public void updateArguments(ShippingParam shippingParam, int selectedServiceId, int codHistory, boolean disableCourierPromo, List<ShopShipment> shopShipmentList) {
+    public void updateArguments(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPPING_PARAM, shippingParam);
         bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
         bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
-        bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
-        bundle.putBoolean(ARGUMENT_DISABLE_PROMO_COURIER, disableCourierPromo);
+        bundle.putBoolean(ARGUMENT_DISABLE_PROMO_COURIER, true);
         setArguments(bundle);
     }
 
     private void initializeInjector() {
+        BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
         ShippingDurationComponent component = DaggerShippingDurationComponent.builder()
+                .baseAppComponent(baseMainApplication.getBaseAppComponent())
                 .shippingDurationModule(new ShippingDurationModule())
                 .build();
 
@@ -171,13 +175,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
         initializeInjector();
         presenter.attachView(this);
         if (getArguments() != null) {
-            RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
-            presenter.setRecipientAddressModel(recipientAddressModel);
+            mRecipientAddress = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             mCartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
-            if (recipientAddressModel != null) {
-                mIsCorner = recipientAddressModel.isCornerAddress();
+            if (mRecipientAddress != null) {
+                mIsCorner = mRecipientAddress.isCornerAddress();
             }
             isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
             setupRecyclerView(mCartPosition);
@@ -193,10 +196,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
             if (shipmentDetailData != null) {
                 // Called from checkout
                 presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, recipientAddressModel);
+                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress);
             } else if (shippingParam != null) {
                 // Called from express checkout
-                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing);
+                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments);
             }
         }
     }
@@ -356,7 +359,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData,
+                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                     flagNeedToSetPinpoint, true, true);
             try {
                 dismiss();
@@ -400,7 +403,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
         shippingDurationBottomsheetListener.onLogisticPromoChosen(
                 serviceData.getShippingCourierViewModelList(), courierData,
-                presenter.getRecipientAddressModel(), mCartPosition,
+                mRecipientAddress, mCartPosition,
                 serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
         dismiss();
     }
@@ -432,7 +435,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             courierData.setLogPromoMsg(data.getDisableText());
             shippingDurationBottomsheetListener.onLogisticPromoChosen(
                     serviceData.getShippingCourierViewModelList(), courierData,
-                    presenter.getRecipientAddressModel(), mCartPosition,
+                    mRecipientAddress, mCartPosition,
                     serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
             tkpdDialog.dismiss();
             dismiss();

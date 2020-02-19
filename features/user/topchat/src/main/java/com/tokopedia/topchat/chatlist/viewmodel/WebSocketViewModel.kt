@@ -59,7 +59,7 @@ class WebSocketViewModel
             easyWS?.let {
                 for (response in it.textChannel) {
                     Timber.d(" Response: $response")
-                    when(response.getCode()) {
+                    when(response.code) {
                         EVENT_TOPCHAT_REPLY_MESSAGE ->  {
                             val chat = Success(mapToIncomingChat(response))
                             _itemChat.value = chat
@@ -79,7 +79,7 @@ class WebSocketViewModel
     }
 
     private fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
-        val json = response.getData()
+        val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData.msgId.toString()
         val message = responseData.message.censoredReply.trim().toEmptyStringIfNull()
@@ -98,7 +98,7 @@ class WebSocketViewModel
     }
 
     private fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
-        val json = response.getData()
+        val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData?.msgId.toString()
 

@@ -21,7 +21,7 @@
 
         <ImageView
             android:id="@+id/no_result_image"
-            android:layout_width="100dp"
+            android:layout_width="133dp"
             android:layout_height="100dp"
             android:scaleType="fitCenter"/>
 

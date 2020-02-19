@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -107,7 +108,6 @@ public class SearchActivity extends BaseActivity
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
     private ImageView buttonHome;
-    private ImageView buttonImageSearch;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -127,6 +127,8 @@ public class SearchActivity extends BaseActivity
 
     @Nullable
     SearchViewModel searchViewModel;
+    @Nullable
+    SearchShopViewModel searchShopViewModel;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -202,7 +204,6 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
-        buttonImageSearch = findViewById(R.id.search_image_search_button);
     }
 
     protected void prepareView() {
@@ -238,8 +239,6 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
         buttonCart.setOnClickListener(v -> onCartButtonClicked());
         buttonHome.setOnClickListener(v -> moveToHomeActivity());
-        buttonImageSearch.setOnClickListener(v -> onImageSearchButtonClicked());
-
     }
 
     private void onSearchBarClicked() {
@@ -271,10 +270,6 @@ public class SearchActivity extends BaseActivity
     private void moveToHomeActivity() {
         SearchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
         RouteManager.route(this, ApplinkConst.HOME);
-    }
-
-    private void onImageSearchButtonClicked(){
-            RouteManager.route(this, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT);
     }
 
     private void initViewPager() {
@@ -319,13 +314,10 @@ public class SearchActivity extends BaseActivity
             }
 
             @Override
-            public void onShow() {
-                hideBottomNavigation();
-            }
+            public void onShow() { }
 
             @Override
             public void onHide() {
-                showBottomNavigation();
                 sendBottomSheetHideEventForProductList();
             }
 
@@ -360,6 +352,7 @@ public class SearchActivity extends BaseActivity
         searchNavContainer.setVisibility(View.GONE);
     }
 
+    @Override
     public void showBottomNavigation() {
         searchNavContainer.setVisibility(View.VISIBLE);
     }
@@ -404,15 +397,15 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initViewModel() {
-        ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
-
         searchViewModel = ViewModelProviders.of(this, searchViewModelFactory).get(SearchViewModel.class);
+        searchShopViewModel = ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
     }
 
     private void observeViewModel() {
         observeAutoCompleteEvent();
         observeHideLoadingEvent();
         observeChildViewVisibilityChangedEvent();
+        observeBottomNavigationVisibility();
     }
 
     private void observeAutoCompleteEvent() {
@@ -456,6 +449,19 @@ public class SearchActivity extends BaseActivity
                             childViewVisibilityChangedModel.isSortEnabled()
                     );
                 }
+            }
+        });
+    }
+
+    private void observeBottomNavigationVisibility() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getBottomNavigationVisibilityLiveData().observe(this, isVisible -> {
+            if (isVisible) {
+                showBottomNavigation();
+            }
+            else {
+                hideBottomNavigation();
             }
         });
     }
@@ -513,7 +519,6 @@ public class SearchActivity extends BaseActivity
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
         availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
-        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -553,7 +558,6 @@ public class SearchActivity extends BaseActivity
         searchSectionItemList.add(productTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
-        searchSectionItemList.add(catalogTabTitle);
     }
 
     private void initTabLayout() {
@@ -725,25 +729,6 @@ public class SearchActivity extends BaseActivity
     public void removeSearchPageLoading() {
         showLoadingView(false);
         showContainer(true);
-        showBottomNavigationForActiveTab();
-    }
-
-    private void showBottomNavigationForActiveTab() {
-        if (isCurrentActiveTabIsNotProfile()) {
-            showBottomNavigation();
-        }
-    }
-
-    private boolean isCurrentActiveTabIsNotProfile() {
-        return !getCurrentActivePageTitle().equals(profileTabTitle);
-    }
-
-    private String getCurrentActivePageTitle() {
-        if (searchSectionPagerAdapter != null) {
-            return searchSectionPagerAdapter.getPageTitle(viewPager.getCurrentItem()).toString();
-        }
-
-        return "";
     }
 
     @Override
@@ -773,19 +758,21 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
-        if (loadingView.getVisibility() != View.VISIBLE) {
-            showBottomNavigation();
-        }
+        searchNavContainer.post(() -> {
+            if (loadingView.getVisibility() != View.VISIBLE) {
+                showBottomNavigation();
+            }
 
-        if (isSortEnabled) {
-            buttonSort.setVisibility(View.VISIBLE);
-            searchNavDivider.setVisibility(View.VISIBLE);
-        } else {
-            buttonSort.setVisibility(View.GONE);
-            searchNavDivider.setVisibility(View.GONE);
-        }
+            if (isSortEnabled) {
+                buttonSort.setVisibility(View.VISIBLE);
+                searchNavDivider.setVisibility(View.VISIBLE);
+            } else {
+                buttonSort.setVisibility(View.GONE);
+                searchNavDivider.setVisibility(View.GONE);
+            }
 
-        this.searchNavigationClickListener = clickListener;
+            this.searchNavigationClickListener = clickListener;
+        });
     }
 
     @Override
