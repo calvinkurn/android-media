@@ -25,6 +25,7 @@ query ThanksPageData($paymentID : Int!,$merchant: String!){
       installment_info
       interest
     }
+    whitelisted_rba
     how_to_pay
   }
 }

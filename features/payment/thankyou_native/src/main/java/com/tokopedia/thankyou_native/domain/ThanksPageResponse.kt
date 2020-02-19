@@ -21,8 +21,31 @@ data class ThanksPageData(
         @SerializedName("amount_str")
         val amountStr: String,
         @SerializedName("order_list")
-        val orderList: ArrayList<OrderList>
+        val orderList: ArrayList<OrderList>,
+        @SerializedName("additional_info")
+        val additionalInfo: AdditionalInfo,
+        @SerializedName("how_to_pay")
+        val howToPay: String,
+        @SerializedName("whitelisted_rba")
+        val whitelistedRBA: String
 
+)
+
+data class AdditionalInfo(
+        @SerializedName("account_number")
+        val accountNumber: String,
+        @SerializedName("account_dest")
+        val accountDest: String,
+        @SerializedName("bank_name")
+        val bankName: String,
+        @SerializedName("payment_code")
+        val paymentCode: String,
+        @SerializedName("masked_number")
+        val maskedNumber: String,
+        @SerializedName("installment_info")
+        val installmentInfo: String,
+        @SerializedName("interest")
+        val interest: Float
 )
 
 data class OrderList(
@@ -34,11 +57,11 @@ data class OrderList(
 
 data class PurchaseItem(
         @SerializedName("product_name")
-        val productName : String,
+        val productName: String,
         @SerializedName("quantity")
-        val quantity : Int,
+        val quantity: Int,
         @SerializedName("weight")
-        val weight : Double,
+        val weight: Double,
         @SerializedName("thumbnail_product")
-        val thumbnailProduct : String
+        val thumbnailProduct: String
 )
