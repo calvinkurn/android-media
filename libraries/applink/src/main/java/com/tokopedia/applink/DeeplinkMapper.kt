@@ -78,7 +78,7 @@ object DeeplinkMapper {
                     deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL) ->
                         getRegisteredNavigationPlay(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
-                        getRegisteredHotlist(context, deeplink)
+                        getRegisteredHotlist(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)
