@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -39,7 +40,7 @@ import com.tokopedia.common_tradein.utils.TradeInUtils;
 
 public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extends BaseViewModelActivity<T> implements ContextInterface {
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
-    public static final int LOGIN_REimplements ContextInterfaceQUEST = 514;
+    public static final int LOGIN_REQUEST = 514;
     public static final int TRADEIN_HOME_REQUEST = 22345;
     public static final int APP_SETTINGS = 9988;
     public static final int TRADEIN_OFFLINE = 0;
@@ -106,6 +107,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         TradeVM = ViewModelProviders.of(this, getVMFactory()).get(getViewModelType());
         Intent intent = getIntent();
         Uri uri = intent.getData();
@@ -117,8 +119,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
             if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE))
                 TRADEIN_TYPE = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_OFFLINE);
         }
-        super.onCreate(savedInstanceState);
-        ((BaseTradeInViewModel) bVM).setContextInterface(this);
+        ((BaseTradeInViewModel) TradeVM).setContextInterface(this);
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
             TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
@@ -127,7 +128,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
         }
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+            getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black);
         }
         TradeVM.getProgressBarVisibility().observe(this, (visibility) -> {
             if (visibility != null) {
@@ -264,7 +265,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     public void onBackPressed() {
         if (isTncShowing) {
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+                getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black);
                 getSupportActionBar().setTitle(getTitle());
             }
             isTncShowing = false;

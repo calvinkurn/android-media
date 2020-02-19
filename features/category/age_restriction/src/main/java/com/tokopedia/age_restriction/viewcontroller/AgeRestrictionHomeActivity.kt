@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.age_restriction.R
@@ -216,13 +215,13 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
 
     private fun showDialogFragment(titleText: String, bodyText: String, positiveButton: String, negativeButton: String?, layoutResId: Int = 0) {
         val fragmentManager = supportFragmentManager
-        val accessDialog = AccessRequestFragmentDialog.newInstance()
+        val accessDialog = AccessRequestDialogFragment.newInstance()
         accessDialog.setLayoutResId(layoutResId)
         accessDialog.setBodyText(bodyText)
         accessDialog.setTitle(titleText)
         accessDialog.setPositiveButton(positiveButton)
         accessDialog.setNegativeButton(negativeButton)
-        accessDialog.show(fragmentManager, AccessRequestFragmentDialog.TAG)
+        accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -247,6 +246,13 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         trackApp.gtm.sendGeneralEvent("clickPDP",
                 "product detail page",
                 "click - asking permission trade in",
+                label)
+    }
+
+    private fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(event,
+                category,
+                action,
                 label)
     }
 }

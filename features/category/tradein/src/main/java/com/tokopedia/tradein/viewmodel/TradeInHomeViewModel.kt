@@ -141,7 +141,7 @@ class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
         variables["params"] = tradeInParams
         launchCatchError(block = {
             val query = GraphqlHelper.loadRawString(getResource(), com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
-            val response = repository?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
+            val response = getMYRepository().getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
             checkIfElligible(response, jsonObject)
         }, onError = {
             it.printStackTrace()

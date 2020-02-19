@@ -28,6 +28,7 @@ import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
@@ -241,12 +242,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
     protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        AccessRequestFragmentDialog accessDialog = AccessRequestFragmentDialog.newInstance();
+        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.Companion.newInstance();
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);
         accessDialog.setPositiveButton(positiveButton);
         accessDialog.setNegativeButton(negativeButton);
-        accessDialog.show(fragmentManager, AccessRequestFragmentDialog.getTAG());
+        accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG);
     }
 
     private void sendGoToProductDetailGTM() {

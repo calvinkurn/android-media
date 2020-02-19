@@ -86,7 +86,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
 
 
 
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_icon_back_black)
+        supportActionBar?.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
         arVM.getProgressBarVisibility().observe(this, Observer<Boolean> { visibility ->
             if (visibility != null) {
                 if (visibility)
@@ -149,7 +149,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (isTncShowing) {
             if (supportActionBar != null) {
-                supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_icon_back_black)
+                supportActionBar!!.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
                 supportActionBar!!.title = title
             }
             isTncShowing = false
@@ -178,7 +178,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
     override fun onBackPressed() {
         if (isTncShowing) {
             if (supportActionBar != null) {
-                supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_icon_back_black)
+                supportActionBar!!.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
                 supportActionBar!!.setTitle(title)
             }
             isTncShowing = false

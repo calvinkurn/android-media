@@ -1,6 +1,5 @@
 package com.tokopedia.basemvvm.repository
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType

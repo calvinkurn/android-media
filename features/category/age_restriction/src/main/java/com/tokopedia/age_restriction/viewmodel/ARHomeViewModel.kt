@@ -2,18 +2,10 @@ package com.tokopedia.age_restriction.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.age_restriction.usecase.FetchUserDobUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
