@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
+import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import javax.inject.Inject
@@ -11,7 +13,10 @@ import javax.inject.Inject
 /**
  * @author by furqan on 19/02/2020
  */
-class FlightFilterViewModel @Inject constructor(private val dispatcherProvider: TravelDispatcherProvider)
+class FlightFilterViewModel @Inject constructor(
+        private val flightSearchCountUseCase: FlightSearchCountUseCase,
+        private val flightSearchStatisticUseCase: FlightSearchStatisticsUseCase,
+        private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
     private val mutableFilterModel = MutableLiveData<FlightFilterModel>()

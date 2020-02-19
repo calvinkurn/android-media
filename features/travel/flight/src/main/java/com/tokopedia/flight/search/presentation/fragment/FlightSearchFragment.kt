@@ -613,7 +613,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             addToolbarElevation()
 //            startActivityForResult(FlightSearchFilterActivity.createInstance(activity, isReturning(), flightFilterModel),
 //                    REQUEST_CODE_SEARCH_FILTER)
-            FlightFilterBottomSheet.getInstance().show(requireFragmentManager(), FlightFilterBottomSheet.TAG_FILTER)
+            FlightFilterBottomSheet.getInstance(flightFilterModel)
+                    .show(requireFragmentManager(), FlightFilterBottomSheet.TAG_FILTER)
         }
         bottom_action_filter_sort.visibility = View.GONE
     }
