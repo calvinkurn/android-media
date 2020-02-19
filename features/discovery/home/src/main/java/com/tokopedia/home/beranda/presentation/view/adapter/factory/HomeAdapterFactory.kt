@@ -177,6 +177,11 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> BannerImageViewHolder.LAYOUT
 
             /**
+             * refer to popular keyword layout com.tokopedia.home.R.layout#layout_popular_image
+             */
+            DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> PopularKeywordViewHolder.LAYOUT
+
+            /**
              * refer to gif banner layout com.tokopedia.home.R.layout#home_dc_default_error_prompt
              */
             DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> ErrorPromptViewHolder.LAYOUT
