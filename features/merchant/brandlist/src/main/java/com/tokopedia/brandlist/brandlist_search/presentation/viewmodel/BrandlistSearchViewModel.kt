@@ -174,6 +174,13 @@ class BrandlistSearchViewModel @Inject constructor(
         }
     }
 
+    fun resetParams() {
+        firstLetterChanged = false
+        totalBrandSize = 0
+        currentOffset = INITIAL_OFFSET
+        currentLetter = INITIAL_LETTER
+    }
+
     private fun getRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
         if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
         val remainingBrands = totalBrandSize - renderedBrands

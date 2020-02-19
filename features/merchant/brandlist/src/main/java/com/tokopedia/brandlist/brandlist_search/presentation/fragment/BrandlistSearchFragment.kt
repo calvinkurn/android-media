@@ -199,6 +199,11 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                         viewModel.searchBrand(offset, it,
                                 brandSize, firstLetter)
                         adapterBrandSearch?.showShimmering()
+                    } else {
+                        isInitialDataLoaded = false
+                        viewModel.resetParams()
+                        viewModel.getTotalBrands()
+                        recyclerView?.addOnScrollListener(endlessScrollListener)
                     }
                 }
             }

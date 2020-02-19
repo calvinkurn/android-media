@@ -21,6 +21,7 @@ class BrandlistSearchHeaderViewHolder(view: View) : AbstractViewHolder<Brandlist
                     element?.totalBrand)
                     .append(BrandlistSearchHeaderViewModel.TOTAL_BRANDS_DESCRIPTION)
                     .toString()
+            itemView.tv_total_brand.visibility = View.VISIBLE
         }
     }
 }
