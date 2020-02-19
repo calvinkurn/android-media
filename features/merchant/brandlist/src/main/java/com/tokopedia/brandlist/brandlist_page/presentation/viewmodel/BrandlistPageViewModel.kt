@@ -102,8 +102,8 @@ class BrandlistPageViewModel @Inject constructor(
         launchCatchError(block = {
 
             _getFeaturedBrandResult.postValue(Success(getFeaturedBrandsAsync(category?.categoryId).await()))
-            _getPopularBrandResult.postValue(Success(getPopularBrandsAsync(userId, category?.categoryId).await()))
-            _getNewBrandResult.postValue(Success(getNewBrandsAsync(userId, category?.categoryId).await()))
+            _getPopularBrandResult.postValue(Success(getPopularBrandsAsync(userId, category?.categories).await()))
+            _getNewBrandResult.postValue(Success(getNewBrandsAsync(userId, category?.categories).await()))
 
             _getAllBrandHeaderResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,
@@ -163,13 +163,14 @@ class BrandlistPageViewModel @Inject constructor(
         }
     }
 
-    private fun getPopularBrandsAsync(userId: String?, categoryId: String?): Deferred<OfficialStoreBrandsRecommendation> {
+    private fun getPopularBrandsAsync(userId: String?, categoryId: ArrayList<Int>?): Deferred<OfficialStoreBrandsRecommendation> {
         return async(Dispatchers.IO) {
             var popularBrand = OfficialStoreBrandsRecommendation()
+            val categories = categoryId.toString().replace(" ","")
             try {
                 getBrandListPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase
                         .createParams(userId?.toIntOrNull() ?: 0,
-                                categoryId ?: "0",
+                                categories.substring(1,categories.length-1),
                                 GetBrandlistPopularBrandUseCase.POPULAR_WIDGET_NAME
                         )
                 popularBrand = getBrandListPopularBrandUseCase.executeOnBackground()
@@ -180,14 +181,15 @@ class BrandlistPageViewModel @Inject constructor(
         }
     }
 
-    private fun getNewBrandsAsync(userId: String?, categoryId: String?): Deferred<OfficialStoreBrandsRecommendation> {
+    private fun getNewBrandsAsync(userId: String?, categoryId: ArrayList<Int>?): Deferred<OfficialStoreBrandsRecommendation> {
         return async(Dispatchers.IO) {
             var newBrand = OfficialStoreBrandsRecommendation()
+            val categories = categoryId.toString().replace(" ","")
             try {
                 getBrandListPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase
                         .createParams(
                                 userId?.toIntOrNull() ?: 0,
-                                categoryId ?: "0",
+                                categories.substring(1,categories.length-1),
                                 GetBrandlistPopularBrandUseCase.NEW_WIDGET_NAME
                         )
                 newBrand = getBrandListPopularBrandUseCase.executeOnBackground()

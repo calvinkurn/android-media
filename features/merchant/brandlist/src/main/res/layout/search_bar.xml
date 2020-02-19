@@ -16,6 +16,7 @@
         android:layout_height="match_parent"
         android:clickable="false"
         android:focusable="false"
-        app:siv_search_hint="@string/brandlist_search_view_hint" />
+        app:siv_search_hint="@string/brandlist_search_view_hint"
+        app:isEditable="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
