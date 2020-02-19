@@ -57,19 +57,6 @@ public abstract class BrowseSectionGeneralAdapter extends RecyclerView.Adapter<A
         }
     }
 
-    public int getIconTypeRecyclerView() {
-        switch (getTypeFactory().getRecyclerViewItem()) {
-            case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return R.drawable.ic_list;
-            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return R.drawable.ic_grid_default;
-            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
-                return R.drawable.ic_grid_box;
-            default:
-                return R.drawable.ic_grid_default;
-        }
-    }
-
     public BrowseProductRouter.GridType getCurrentLayoutType() {
         switch (getTypeFactory().getRecyclerViewItem()) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
