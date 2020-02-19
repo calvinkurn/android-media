@@ -699,7 +699,7 @@ object DynamicProductDetailTracking {
             val productId = productInfo?.basic?.productID ?: ""
             val listOfCategoryId = productInfo?.basic?.category?.detail
             val categoryName = productInfo?.basic?.category?.name.orEmpty()
-            val categoryString = "${listOfCategoryId?.get(0)?.id.orEmpty()} / ${listOfCategoryId?.get(1)?.id.orEmpty()} / ${listOfCategoryId?.get(2)?.id.orEmpty()} / $categoryName "
+            val categoryString = "${listOfCategoryId?.getOrNull(0)?.id.orEmpty()} / ${listOfCategoryId?.getOrNull(1)?.id.orEmpty()} / ${listOfCategoryId?.getOrNull(2)?.id.orEmpty()} / $categoryName "
 
             val mapEvent = DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",

@@ -1184,6 +1184,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            updateProductId()
             pdpHashMapUtil?.updateDataP1(productInfo, viewModel.imageHeight)
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.isLeasing = productInfo.basic.isLeasing
@@ -1202,8 +1203,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 viewModel.hitAffiliateTracker(affiliateString
                         ?: "", viewModel.deviceId)
             }
-
-            assignDefaultVariantId(productInfo)
 
             activity?.invalidateOptionsMenu()
             renderList(data)
