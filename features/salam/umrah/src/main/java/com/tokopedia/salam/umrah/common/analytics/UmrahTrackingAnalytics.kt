@@ -5,7 +5,6 @@ import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
-import com.tokopedia.salam.umrah.homepage.data.UmrahCategoriesFeatured
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.model.ParamFilter

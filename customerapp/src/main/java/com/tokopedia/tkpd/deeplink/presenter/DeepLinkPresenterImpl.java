@@ -292,9 +292,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = "";
                     break;
                 case DeepLinkChecker.ORDER_LIST:
-                    Bundle bundle =  new Bundle();
-                    bundle.putString("url",uriData.toString());
-                    RouteManager.route(context,bundle,ApplinkConst.ORDER_LIST_WEBVIEW);
+                    openOrderList(uriData);
                     screenName = "";
                     break;
                 case DeepLinkChecker.DEALS:
@@ -310,20 +308,42 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
+    private void openOrderList(Uri uriData) {
+        Bundle bundle = new Bundle();
+        bundle.putString("url", uriData.toString());
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.ORDER_LIST_WEBVIEW);
+        intent.putExtras(bundle);
+        viewListener.goToPage(intent);
+    }
+
     private void openReview(String uriData, Bundle defaultBundle) {
-        List<String> segments = Uri.parse(uriData).getPathSegments();
+        Uri uri = Uri.parse(uriData);
+        List<String> segments = uri.getPathSegments();
 
         if (segments.size() >= 4) {
             String reputationId = segments.get(segments.size() - 2);
             String productId = segments.get(segments.size() - 1);
 
+            String rating;
+            if (!TextUtils.isEmpty(uri.getQueryParameter("rating"))) {
+                rating = uri.getQueryParameter("rating");
+            } else {
+                rating = "5";
+            }
 
-            String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId);
+            int ratingNumber;
+            try {
+                ratingNumber = Integer.parseInt(rating != null ? rating : "5");
+            } catch (NumberFormatException e) {
+                ratingNumber = 5;
+            }
+
+            String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating);
             Intent intent = RouteManager.getIntent(
                     context,
                     uriReview);
             intent.putExtras(defaultBundle);
-            intent.putExtra(PARAM_EXTRA_REVIEW, 5);
+            intent.putExtra(PARAM_EXTRA_REVIEW, ratingNumber);
             viewListener.goToPage(intent);
         }
     }

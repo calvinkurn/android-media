@@ -278,7 +278,9 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     private fun showDialogAddVideoChosenFromUrl() {
         val dialog = ProductAddVideoDialogFragment()
-        dialog.show(fragmentManager, ProductAddVideoDialogFragment.TAG)
+        fragmentManager?.run {
+            dialog.show(this, ProductAddVideoDialogFragment.TAG)
+        }
     }
 
     private fun showDialogAddVideoChosenFromFeatured(videoViewModel: VideoViewModel) {

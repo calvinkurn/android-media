@@ -2,7 +2,7 @@ package com.tokopedia.hotel.booking.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.common.travel.presentation.model.TravelContactData
+import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 
 /**
  * @author by resakemal on 28/05/19

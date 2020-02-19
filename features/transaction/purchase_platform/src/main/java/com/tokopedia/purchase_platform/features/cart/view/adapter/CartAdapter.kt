@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.R

@@ -19,14 +19,11 @@ import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFra
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_home_page.*
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_home_page.view.*
 import kotlinx.android.synthetic.main.partial_umrah_home_page_main.view.*
 import kotlinx.android.synthetic.main.partial_umrah_home_page_search_spinner.view.*
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.partial_umrah_home_page_main.view.section_layout
-import kotlinx.android.synthetic.main.partial_umrah_home_page_main.view.shimmering
-import javax.inject.Inject
 
 /**
  * @author by firman on 23/10/19

@@ -155,7 +155,7 @@ public class AnalyticsLog {
 
     private static void log(Context context, String message) {
         try {
-            Timber.w(message);
+            Timber.d(message);
         } catch (Exception e) {
             e.printStackTrace();
         }

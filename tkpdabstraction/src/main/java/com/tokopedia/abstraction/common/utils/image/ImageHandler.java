@@ -59,6 +59,8 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 
@@ -293,12 +295,16 @@ public class ImageHandler {
     }
 
     public static void loadImageWithSignature(ImageView imageview, String url, ObjectKey signature) {
-        Glide.with(imageview.getContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .dontAnimate()
-                .signature(signature)
-                .into(imageview);
+        try {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .dontAnimate()
+                    .signature(signature)
+                    .into(imageview);
+        } catch (IllegalArgumentException e){
+            Timber.e("%s%s", url, e.getMessage());
+        }
     }
 
     public static void downloadOriginalSizeImageWithSignature(

@@ -18,7 +18,9 @@ import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.domain.interactor.DeleteNotificationCacheUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetChatNotificationUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.GetInfoPenjualNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -55,6 +57,8 @@ import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
+import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
@@ -64,13 +68,14 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 
 import static com.tokopedia.core.drawer2.domain.GqlQueryConstant.GET_CHAT_NOTIFICATION_QUERY;
+import static com.tokopedia.core.drawer2.domain.GqlQueryConstant.GET_INFO_PENJUAL_NOTIFICATION_QUERY;
 
 /**
  * @author sebastianuskh on 5/8/17.
  */
 
 @SellerDashboardScope
-@Module(includes = {SellerDashboardGMCommonModule.class, GmCommonModule.class})
+@Module(includes = {SellerDashboardGMCommonModule.class, GmCommonModule.class, ShopCommonModule.class})
 public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
@@ -188,9 +193,9 @@ public class SellerDashboardModule {
     @Provides
     GetChatNotificationUseCase provideTopChatNotificationUseCase(
             @Named(GET_CHAT_NOTIFICATION_QUERY) String queryString,
-            GraphqlUseCase graphqlUseCase,
-            LocalCacheHandler localCacheHandler) {
-        return new GetChatNotificationUseCase(queryString, graphqlUseCase, localCacheHandler);
+            GraphqlUseCase graphqlUseCase
+    ) {
+        return new GetChatNotificationUseCase(queryString, graphqlUseCase);
     }
 
     @SellerDashboardScope
@@ -202,14 +207,53 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
+    @Named(GET_INFO_PENJUAL_NOTIFICATION_QUERY)
+    String provideGET_INFO_PENJUAL_NOTIFICATION_QUERY(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_notification_center_total_unread);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_RATING)
+    public String provideGqlQueryShopRating(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_rating);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_SATISFACTION)
+    public String provideGqlQueryShopSatisfaction(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_satisfaction);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_TRANSACTION_STATISTIC)
+    public String provideGqlQueryGetShopTransactionStatistic(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_transaction_statistic);
+    }
+
+    @SellerDashboardScope
+    @Provides
     NewNotificationUseCase provideNewNotificationUseCase(ThreadExecutor threadExecutor,
                                                          PostExecutionThread postExecutionThread,
                                                          NotificationUseCase
                                                                  notificationUseCase,
+                                                         DeleteNotificationCacheUseCase
+                                                                 deleteNotificationCacheUseCase,
                                                          GetChatNotificationUseCase
-                                                                 getChatNotificationUseCase) {
-        return new NewNotificationUseCase(threadExecutor, postExecutionThread,
-                notificationUseCase, getChatNotificationUseCase);
+                                                                 getChatNotificationUseCase,
+                                                         GetInfoPenjualNotificationUseCase getInfoPenjualNotificationUseCase,
+                                                         LocalCacheHandler localCacheHandler) {
+        return new NewNotificationUseCase(
+                threadExecutor,
+                postExecutionThread,
+                notificationUseCase,
+                deleteNotificationCacheUseCase,
+                getChatNotificationUseCase,
+                getInfoPenjualNotificationUseCase,
+                localCacheHandler
+        );
     }
 
     @DeleteCacheScope
@@ -245,12 +289,6 @@ public class SellerDashboardModule {
         }else{
             return null;
         }
-    }
-
-    @SellerDashboardScope
-    @Provides
-    public UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
     }
 
     @SellerDashboardScope

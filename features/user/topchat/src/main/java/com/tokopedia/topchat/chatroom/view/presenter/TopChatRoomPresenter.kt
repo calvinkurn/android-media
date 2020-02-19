@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -50,7 +49,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
-import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -62,8 +60,6 @@ import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 import java.io.File
@@ -580,6 +576,10 @@ class TopChatRoomPresenter @Inject constructor(
                 totalPriceAmount
         )
 
+        if (attachmentsPreview.hasInvoicePreview()) {
+            attachmentsPreview.clear()
+        }
+
         attachmentsPreview.add(invoiceViewModel)
 
         if (invoiceViewModel.notEnoughRequiredData()) {
@@ -675,4 +675,12 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+}
+
+private fun java.util.ArrayList<SendablePreview>.hasInvoicePreview(): Boolean {
+    if (isEmpty()) return false
+    for (item in this) {
+        if (item is InvoicePreviewViewModel) return true
+    }
+    return false
 }

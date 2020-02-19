@@ -256,7 +256,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     private fun showLocationInfoBottomSheet() {
         val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
-        locationInfoBottomSheetFragment.show(fragmentManager, "")
+        fragmentManager?.run {
+            locationInfoBottomSheetFragment.show(this, "")
+        }
         dismiss()
     }
 

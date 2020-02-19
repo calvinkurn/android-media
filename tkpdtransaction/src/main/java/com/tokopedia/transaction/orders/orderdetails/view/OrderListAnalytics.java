@@ -99,9 +99,9 @@ public class OrderListAnalytics {
     private String recomTitle;
     public static String DIGITAL_EVENT = "digital - event";
 
-    private static final String PRODUCT_CLICK = "ProductClick";
+    private static final String PRODUCT_CLICK = "productClick";
     private static final String CLICK_ON_WIDGET_RECOMMENDATION = "click on widget recommendation";
-    private static final String PRODUCT_VIEW = "ProductView";
+    private static final String PRODUCT_VIEW = "productView";
     private static final String IMPRESSION_ON_WIDGET_RECOMMENDATION = "impression on widget recommendation";
     private static final String EVENT = "event";
     private static final String EVENT_CATEGORY = "eventCategory";
@@ -511,7 +511,7 @@ public class OrderListAnalytics {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, PRODUCT_EVENT_CATEGORY,
+                EVENT_CATEGORY, PRODUCT_EVENT_DETAIL,
                 EVENT_ACTION, "view product list",
                 EVENT_LABEL, order.status(),
                 ECOMMERCE, DataLayer.mapOf(
@@ -532,7 +532,7 @@ public class OrderListAnalytics {
     public void sendProductClickDetailsEvent(Items items, int position, String status) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
-                EVENT_CATEGORY, PRODUCT_EVENT_CATEGORY,
+                EVENT_CATEGORY, PRODUCT_EVENT_DETAIL,
                 EVENT_ACTION, PRODUCT_EVENT_ACTION,
                 EVENT_LABEL, status,
                 ECOMMERCE, DataLayer.mapOf(

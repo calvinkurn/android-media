@@ -87,6 +87,7 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         PhoneVerificationApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
+        AutoAdsLinkModule.class,
         FlashsaleDeeplinkModule.class,
         RNDevOptionsApplinkModule.class
 })
@@ -119,6 +120,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new PhoneVerificationApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
+                new AutoAdsLinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
                 new RNDevOptionsApplinkModuleLoader()
         );

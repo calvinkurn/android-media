@@ -44,6 +44,7 @@
                     android:layout_toStartOf="@+id/btn_wishlist"
                     android:layout_toLeftOf="@+id/btn_wishlist"
                     android:orientation="horizontal"
+                    android:visibility="visible"
                     android:padding="@dimen/dp_4">
 
                     <ImageView

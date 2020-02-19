@@ -266,7 +266,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         super.onDestroy()
         viewModel.mutateCheckPhoneResponse.removeObservers(this)
         viewModel.mutateAddPhoneResponse.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
     }
 
 }

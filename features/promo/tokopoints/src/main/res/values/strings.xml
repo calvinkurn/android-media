@@ -71,13 +71,12 @@
     <string name="title_bottomsheet_filters">Filter Kupon</string>
     <string name="bottomsheet_filter_subtitle">Kisaran Points</string>
     <string name="tp_history">Riwayat</string>
-    <string name="tp_leader">Leaderboard</string>
     <string name="moreCouponCount">99+</string>
     <string name="tp_btn_exp_help">Selengkapnya tentang Points dan Loyalty</string>
     <string name="tp_exp_info">Points dan Loyalty memiliki masa berlaku yang berbeda:</string>
-    <string name="tp_loyalty_info"><b>Loyalty</b> tidak dapat ditukarkan, tetapi dapat meningkatkan status Membership Anda. Semakin tinggi status Membership, semakin banyak keuntungan yang bisa Anda dapatkan.</string>
-    <string name="tp_point_info"><b>Points</b> dapat Anda tukarkan dengan berbagai Kupon di halaman TokoPoints.</string>
-    <string name="tp_history_header"><b>Points dan Loyalty</b> adalah hadiah yang Anda peroleh dari memecahkan Lucky Egg.</string>
+    <string name="tp_loyalty_info"><b>Loyalty</b> adalah hadiah yang Anda peroleh setelah bertransaksi di Tokopedia tanpa harus memecahkan Lucky Egg.</string>
+    <string name="tp_point_info"><b>Points</b> adalah hadiah yang Anda peroleh dari program menarik Tokopedia seperti bermain games di Tokopedia Seru dan program lainnya.</string>
+    <string name="tp_history_header">Tukarkan Points dengan Kupon menarik dan tingkatkan Loyalty untuk mendapatkan keuntungan yang lebih banyak.</string>
     <string name="tp_title_history_bottomshet">Beda Points dan Loyalty</string>
     <string name="tp_btn_history_bottomshet">Cek Info Points &amp; Loyalty</string>
     <string name="tp_ph_point">Points: </string>
@@ -92,7 +91,7 @@
     <string name="tnc_coupon_catalog"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="how_to_use_coupon_catalog">Cara Pakai</string>
     <string name="tp_gift_btn_text">Hadiahin</string>
-    <string name="tp_default_gift_text">Hadiahin kupon ini ke temanmu!</string>
+    <string name="tp_default_gift_text">Mau kirim kupon ini ke temanmu?</string>
     <string name="tp_title_kirim_coupon">Kirim Kupon</string>
     <string name="tp_coupon_name">Kupon Travel Cashback hingga Rp300.000</string>
     <string name="tp_pesan">Pesan:</string>

@@ -10,11 +10,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 open class ScanReleaseDateTask : DefaultTask() {
-    var latestReleaseDate: Date = Date()
     val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+    var moduleLatestLogMap = hashMapOf<String, Date>()
 
-    //@InputFile
-    val file = File("tools/version/release_date.txt")
+    val file = File("tools/version/module_latest_log.txt")
 
     companion object {
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
@@ -22,12 +21,15 @@ open class ScanReleaseDateTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        var latestReleaseDateString = ""
         file.forEachLine {
-            if (it.isNotEmpty()) {
-                latestReleaseDateString = it
+            if (it.isNotEmpty() && !it.startsWith("//")) {
+                val lineSplit = it.split("#")
+                if (lineSplit.size == 2) {
+                    val moduleName = lineSplit[0]
+                    val date = lineSplit[1]
+                    moduleLatestLogMap.put(moduleName, dateFormatter.parse(date))
+                }
             }
         }
-        latestReleaseDate = dateFormatter.parse(latestReleaseDateString)
     }
 }

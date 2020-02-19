@@ -23,7 +23,7 @@ class HotelClosedSortBottomSheets : BottomSheets() {
     fun setMenu(_menu: List<Sort>): HotelClosedSortBottomSheets = this.apply { menu = _menu }
     fun setSelecetedItem(_sort: Sort): HotelClosedSortBottomSheets = this.apply { selectedItem = _sort }
 
-    override fun getLayoutResourceId(): Int = com.tokopedia.abstraction.R.layout.fragment_base_list
+    override fun getLayoutResourceId(): Int = com.tokopedia.baselist.R.layout.fragment_base_list
 
     override fun initView(view: View?) {
         val recyclerView = view?.findViewById<RecyclerView>(com.tokopedia.abstraction.R.id.recycler_view)
@@ -37,13 +37,13 @@ class HotelClosedSortBottomSheets : BottomSheets() {
 
     override fun title(): String = title
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        val btnClose = getDialog().findViewById<AppCompatImageView>(com.tokopedia.design.R.id.btn_close)
-        btnClose.setOnClickListener { dismiss() }
+        val btnClose = getDialog()?.findViewById<AppCompatImageView>(com.tokopedia.design.R.id.btn_close)
+        btnClose?.setOnClickListener { dismiss() }
 
-        val title = getDialog().findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
-        title.typeface = Typeface.DEFAULT_BOLD
+        val title = getDialog()?.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
+        title?.typeface = Typeface.DEFAULT_BOLD
     }
 
     override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE

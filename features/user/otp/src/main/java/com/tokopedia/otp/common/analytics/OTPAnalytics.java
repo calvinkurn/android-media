@@ -68,7 +68,7 @@ public class OTPAnalytics {
     }
 
     public void sendScreen(Activity activity, String screenName) {
-        Timber.w("P2screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                 + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
                 + " | " + Build.TAGS);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);

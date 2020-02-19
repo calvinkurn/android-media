@@ -33,7 +33,7 @@ public interface TomeProductApi {
     Observable<Response<DataResponse<ProductSubmitResp>>> editProductSubmit(@Path(ProductUrl.PRODUCT_ID) String productId, @Body String productViewModel);
 
     @GET(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
-    Observable<Response<DataResponse<ProductViewModel>>> getProductDetail(@Path(ProductUrl.PRODUCT_ID) String productId, @Query("show_variant") int showVariant);
+    Observable<Response<DataResponse<ProductViewModel>>> getProductDetail(@Path(ProductUrl.PRODUCT_ID) String productId, @Query("show_variant") int showVariant, @Query("use_real_stock") boolean useRealStock);
 
     @GET(ProductUrl.GET_VARIANT_BY_CAT_PATH)
     Observable<Response<DataResponse<List<ProductVariantByCatModel>>>> getProductVariantByCat(@Query(ProductUrl.CAT_ID) long categoryId);

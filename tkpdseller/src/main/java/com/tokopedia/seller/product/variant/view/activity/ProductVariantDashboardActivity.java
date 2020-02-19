@@ -36,6 +36,7 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity
     public static final String EXTRA_HAS_ORIGINAL_VARIANT_LV1 = "EXTRA_HAS_ORI_VAR_LV1";
     public static final String EXTRA_HAS_ORIGINAL_VARIANT_LV2 = "EXTRA_HAS_ORI_VAR_LV2";
     public static final String EXTRA_HAS_WHOLESALE = "EXTRA_HAS_WHOLESALE";
+    public static final String EXTRA_IS_ADD = "EXTRA_IS_ADD";
     public static final String SAVED_VARIANT_CHANGE_FROM_RESULT = "sdv_var_chg";
 
     private boolean hasVariantChangedFromResult;
@@ -44,7 +45,7 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity
                                    ProductVariantViewModel productVariantViewModel, @CurrencyTypeDef int currencyType,
                                    double defaultPrice, @StockTypeDef int stockType, boolean isOfficialStore, String defaultSku,
                                    boolean needRetainImage, ProductPictureViewModel productSizeChart,
-                                   boolean hasOriVarLv1, boolean hasOriVarLv2, boolean hasWholesale) {
+                                   boolean hasOriVarLv1, boolean hasOriVarLv2, boolean hasWholesale,boolean isAddStatus) {
         Intent intent = new Intent(context, ProductVariantDashboardActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
         intent.putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
@@ -58,6 +59,7 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity
         intent.putExtra(EXTRA_HAS_ORIGINAL_VARIANT_LV1, hasOriVarLv1);
         intent.putExtra(EXTRA_HAS_ORIGINAL_VARIANT_LV2, hasOriVarLv2);
         intent.putExtra(EXTRA_HAS_WHOLESALE, hasWholesale);
+        intent.putExtra(EXTRA_IS_ADD, isAddStatus);
         return intent;
     }
 

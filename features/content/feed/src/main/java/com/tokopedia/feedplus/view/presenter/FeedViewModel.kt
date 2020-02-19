@@ -278,7 +278,6 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             }
             trackAffiliateResp.value = Success(results)
         }) {
-            trackAffiliateResp.value = Fail(it)
         }
     }
 

@@ -155,7 +155,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         return view
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (activity != null) {
             menu?.let {
                 it.add(Menu.NONE, MENU_ID_LOGOUT, 0, "")
@@ -174,7 +174,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         return drawable
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item?.itemId
         if (id == MENU_ID_LOGOUT) {
             goToLoginPage()
@@ -442,7 +442,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         chooseAccountViewModel.getUserInfoResponse.removeObservers(this)
         chooseAccountViewModel.goToActivationPage.removeObservers(this)
         chooseAccountViewModel.goToSecurityQuestion.removeObservers(this)
-        chooseAccountViewModel.clear()
+        chooseAccountViewModel.flush()
     }
 
     companion object {

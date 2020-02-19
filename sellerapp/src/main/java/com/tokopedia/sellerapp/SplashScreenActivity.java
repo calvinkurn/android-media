@@ -14,6 +14,9 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -45,6 +48,11 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(new Intent(this, FallbackActivity.class));
             finish();
         }
+        syncFcmToken();
+    }
+
+    private void syncFcmToken() {
+        SyncFcmTokenService.Companion.startService(this);
     }
 
     @Override
@@ -87,5 +95,20 @@ public class SplashScreenActivity extends SplashScreen {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
+    }
+
+    @Override
+    protected RemoteConfig.Listener getRemoteConfigListener() {
+        return new RemoteConfig.Listener() {
+            @Override
+            public void onComplete(RemoteConfig remoteConfig) {
+                TimberWrapper.initByConfig(getApplication(), remoteConfig);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        };
     }
 }

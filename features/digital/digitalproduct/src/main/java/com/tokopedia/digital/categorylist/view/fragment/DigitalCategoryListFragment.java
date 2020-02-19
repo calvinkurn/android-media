@@ -182,7 +182,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
         terminateAnnouncementTicker = view.findViewById(R.id.ticker_terminate_announcement);
         terminateAnnouncementLayout = view.findViewById(R.id.terminate_announcement_view);
 
-        refreshHandler = new RefreshHandler(getActivity(), view, this);
+        refreshHandler = new RefreshHandler(getActivity(), view.findViewById(R.id.swipe_refresh_layout), this);
 
         if (isCouponApplied == DEFAULT_COUPON_APPLIED) {
             showCouponAppliedTicker();

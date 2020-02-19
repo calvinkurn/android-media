@@ -50,6 +50,7 @@ import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Fail
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
@@ -156,6 +157,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
         }
+
+        if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
+            reviewClickAt = CreateReviewActivity.DEFAULT_PRODUCT_RATING
+        }
+
         createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)
     }
 

@@ -36,6 +36,7 @@
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
 /features/merchant/gold_merchant_subscribe/             @tokopedia/minion-stuart
+/features/merchant/power_merchant_subscribe/            @tokopedia/minion-stuart
 /features/merchant/product_detail/                      @tokopedia/minion-stuart
 /features/merchant/product_draft_database/              @tokopedia/minion-stuart
 /features/merchant/product_manage_item/                 @tokopedia/minion-stuart
@@ -51,7 +52,8 @@
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
-/features/top_ads/top_ads_autoads/                      @tokopedia/minion-dave
+/features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
+/features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-dave
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
@@ -66,13 +68,15 @@
 /features/digital/digital_homepage                      @tokopedia/minion-mark
 /libraries/travel_calendar                              @tokopedia/minion-mark
 /features/digital/travel_homepage                       @tokopedia/minion-mark
+/features/digital/travel_country_code                   @tokopedia/minion-mark
+/features/digital/travel_passenger                      @tokopedia/minion-mark
 /features/digital/voucher_game                          @tokopedia/minion-mark
 /features/digital/digital_emoney                        @tokopedia/minion-mark
 /features/digital/imagepreviewslider                    @tokopedia/minion-mark
 /features/salam/umrah                                   @tokopedia/minion-mark
 /features/digital/digital_topup_bills                   @tokopedia/minion-mark
 /features/digital/flight_orderlist                      @tokopedia/minion-mark
-/features/digital/rechargeocr                          @tokopedia/minion-mark
+/features/digital/rechargeocr                           @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -115,6 +119,7 @@
 /features/user/user_identification/             		@tokopedia/minion-kevin
 /features/user/user_identification_common/      		@tokopedia/minion-kevin
 /features/user/user_identification_no_op/       		@tokopedia/minion-kevin
+/features/fcm_common/                                   @tokopedia/minion-kevin
 /features/user/seamless_login/                          @tokopedia/minion-kevin
 /features/user/kyc_centralized/                         @tokopedia/minion-kevin
 /features/user/attachinvoice/                           @tokopedia/minion-kevin
@@ -143,6 +148,7 @@
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
 /libraries/base_adapter/								@tokopedia/core-team
+/libraries/base_list/							        @tokopedia/core-team
 /libraries/base_list_seller/							@tokopedia/core-team
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team

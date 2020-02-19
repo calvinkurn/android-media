@@ -755,7 +755,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         val districtRecommendationBottomSheetFragment =
                 DiscomBottomSheetFragment.newInstance()
         districtRecommendationBottomSheetFragment.setActionListener(this)
-        districtRecommendationBottomSheetFragment.show(fragmentManager, "")
+        fragmentManager?.run {
+            districtRecommendationBottomSheetFragment.show(this, "")
+        }
     }
 
     private fun showZipCodes() {

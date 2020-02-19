@@ -31,7 +31,7 @@ public class GlideErrorLogHelper {
         }
 
         if (!isNetworkAvailable(context)) {
-            Timber.w("P2#Load image error network not available");
+            Timber.w("P2#IMAGE_TRACEROUTE#network not available");
             return;
         }
 
@@ -40,7 +40,7 @@ public class GlideErrorLogHelper {
 
             @Override
             public void onSuccess(@NotNull TraceRouteResult traceRouteResult) {
-                Timber.w("P2#Load image error traceroute success: url= %s message= %s traceroute= %s",
+                Timber.w("P2#IMAGE_TRACEROUTE#success: url= %s message= %s traceroute= %s",
                         url,
                         e != null ? e.getMessage() : "",
                         traceResult);
@@ -54,7 +54,7 @@ public class GlideErrorLogHelper {
             @Override
             public void onFailed(int code, @NotNull String reason) {
                 traceResult += String.format("code: %d reason: %s", code, reason);
-                Timber.w("P2#Load image error traceroute failed: url= %s message= %s traceroute= %s",
+                Timber.w("P2#IMAGE_TRACEROUTE#failed: url= %s message= %s traceroute= %s",
                         url,
                         e != null ? e.getMessage() : "",
                         traceResult);

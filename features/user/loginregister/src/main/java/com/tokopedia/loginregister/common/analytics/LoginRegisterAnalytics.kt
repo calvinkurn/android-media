@@ -88,7 +88,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
     fun trackScreen(activity: Activity, screenName: String) {
-        Timber.w("P2screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                 + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
                 + " | " + Build.TAGS)
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)

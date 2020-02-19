@@ -254,11 +254,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".applink.AppLinkWebsiteActivity"
-            android:hardwareAccelerated="true"
-            android:label="@string/title_activity_deep_link"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -35,7 +35,7 @@
         android:layout_gravity="bottom"
         android:background="@color/tkpd_yellow_status"
         android:gravity="center"
-        android:text="@string/product_variant_stock_empty"
+        android:text="@string/product_variant_stock_nonactive"
         android:visibility="gone"
         tools:visibility="visible" />
 </FrameLayout>

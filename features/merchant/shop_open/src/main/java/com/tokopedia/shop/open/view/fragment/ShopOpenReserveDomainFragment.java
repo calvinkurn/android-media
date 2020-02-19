@@ -433,11 +433,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
         trackingOpenShop.eventShopCreatedSuccessfully(setUserData(shopId));
         if (getActivity() != null) {
-            if (!GlobalConfig.isSellerApp()) {
-                List<String> listToInstall = new ArrayList<>();
-                listToInstall.add(DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP);
-                new DFInstaller().installOnBackground(getActivity().getApplication(), listToInstall, null, null);
-            }
             Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity(), shopId);
             startActivity(intent);
             getActivity().finish();

@@ -2,9 +2,7 @@ package com.tokopedia.purchase_platform.features.cart.view
 
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
@@ -35,19 +33,9 @@ class UpdateCartIntentService : JobIntentService() {
     override fun onHandleWork(intent: Intent) {
         if (intent.hasExtra(EXTRA_CART_ITEM_DATA_LIST)) {
             val cartItemDataList = intent.getParcelableArrayListExtra<CartItemData>(EXTRA_CART_ITEM_DATA_LIST)
-            val updateCartRequestList = ArrayList<UpdateCartRequest>()
-            for ((originData, updatedData) in cartItemDataList) {
-                val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = originData?.cartId?.toString() ?: "0"
-                updateCartRequest.notes = updatedData?.remark
-                updateCartRequest.quantity = updatedData?.quantity ?: 0
-                updateCartRequestList.add(updateCartRequest)
-            }
-            val paramUpdate = TKPDMapParam<String, String>()
-            paramUpdate[UpdateCartUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
-
+            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, paramUpdate)
+            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
             updateCartUseCase.createObservable(requestParams)
                     .subscribe(object : Subscriber<UpdateCartData>() {
@@ -64,6 +52,18 @@ class UpdateCartIntentService : JobIntentService() {
                         }
                     })
         }
+    }
+
+    private fun getUpdateCartRequest(cartItemDataList: List<CartItemData>): ArrayList<UpdateCartRequest> {
+        val updateCartRequestList = ArrayList<UpdateCartRequest>()
+        for (cartItemData in cartItemDataList) {
+            val updateCartRequest = UpdateCartRequest()
+            updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
+            updateCartRequest.notes = cartItemData.updatedData?.remark
+            updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
+            updateCartRequestList.add(updateCartRequest)
+        }
+        return updateCartRequestList
     }
 
     private fun initInjector() {

@@ -432,7 +432,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onDestroy() {
-        sharedModel.clear()
+        sharedModel.flush()
         super.onDestroy()
     }
 

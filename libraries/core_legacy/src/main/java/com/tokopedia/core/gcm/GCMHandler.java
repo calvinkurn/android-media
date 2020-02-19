@@ -95,7 +95,7 @@ public class GCMHandler {
             if (googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog(activity, result,
                         PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
-                            Timber.w("P2User Have Problems with Google Play Service | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                            Timber.w("P2#PLAY_SERVICE_ERROR#User Have Problems with Google Play Service | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
                                     + " | "+Build.TAGS);
                         }).show();

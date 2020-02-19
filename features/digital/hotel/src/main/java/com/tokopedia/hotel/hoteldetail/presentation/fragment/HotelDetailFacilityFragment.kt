@@ -18,10 +18,10 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
     lateinit var connector: Connector
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list, container, false)
+        return inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
     }
 
-    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.abstraction.R.id.swipe_refresh_layout
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
     override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
 

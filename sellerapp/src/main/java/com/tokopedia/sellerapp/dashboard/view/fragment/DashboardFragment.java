@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -30,25 +31,24 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.core.ShopStatisticDetail;
+import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
+import com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetail;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.shopinfo.models.shopmodel.Info;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.component.ticker.TickerView;
@@ -64,17 +64,21 @@ import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.sellerapp.dashboard.view.listener.OnNotificationDataUpdatedListener;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.preference.PowerMerchantPopUpManager;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
+import com.tokopedia.sellerapp.dashboard.model.ShopInfoDashboardModel;
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge;
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -127,7 +131,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LinearLayout headerLabelLayout;
 
     private TextView reputationPointTextView;
-    private ShopReputationView shopReputationView;
+    private ImageView imageViewShopReputationBadge;
     private TextView transactionSuccessTextView;
     private LabelView newOrderLabelView;
     private LabelView deliveryConfirmationLabelView;
@@ -152,7 +156,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private View tickerContainer;
     private View buttonActivatePowerMerchant;
+    private OnNotificationDataUpdatedListener onNotificationDataUpdatedListener;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnNotificationDataUpdatedListener){
+            onNotificationDataUpdatedListener = (OnNotificationDataUpdatedListener)context;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -194,7 +206,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         verificationWarningTickerView = view.findViewById(R.id.verification_warning_ticker);
         reputationLabelLayout = view.findViewById(R.id.reputation_label_layout);
         reputationPointTextView = (TextView) view.findViewById(R.id.text_view_reputation_point);
-        shopReputationView = (ShopReputationView) view.findViewById(R.id.shop_reputation_view);
+        imageViewShopReputationBadge = view.findViewById(R.id.iv_shop_reputation_badge);
 
         transactionlabelLayout = view.findViewById(R.id.transaction_label_layout);
         transactionSuccessTextView = (TextView) view.findViewById(R.id.text_view_transaction_success);
@@ -350,7 +362,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onResume() {
         super.onResume();
         sellerDashboardPresenter.getShopInfoWithScore();
-        sellerDashboardPresenter.getNotification();
+        sellerDashboardPresenter.getNotification(false);
     }
 
     @Override
@@ -368,15 +380,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     @Override
-    public void onSuccessGetShopInfoAndScore(ShopModel shopModel,
+    public void onSuccessGetShopInfoAndScore(ShopInfoDashboardModel shopInfoDashboardModel,
                                              GoldGetPmOsStatus goldGetPmOsStatus,
                                              ShopScoreResult shopScoreResult) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
         ShopStatusModel shopStatusModel = goldGetPmOsStatus.getResult().getData();
-        updateShopInfo(shopModel, shopStatusModel);
-        updateReputation(shopModel);
-        updateTransaction(shopModel);
-        updateViewShopOpen(shopModel);
+        updateShopInfo(shopInfoDashboardModel.getShopInfo(), shopStatusModel);
+        updateReputation(shopInfoDashboardModel.getShopReputation());
+        updateTransaction(shopInfoDashboardModel);
+        updateViewShopOpen(shopInfoDashboardModel.getShopInfo());
         shopScoreWidget.setProgress(shopScoreResult.getData().getValue());
 
         swipeRefreshLayout.setRefreshing(false);
@@ -434,49 +446,46 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
 
 
-    private void updateReputation(final ShopModel shopModel) {
-        reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UnifyTracking.eventSellerHomeDashboardClick(getActivity(), AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
-                        AppEventTracking.EventLabel.DASHBOARD_ITEM_REPUTASI_TOKO);
-                startActivity(new Intent(getContext(), SellerReputationInfoActivity.class));
-            }
+    private void updateReputation(final ShopBadge shopBadge) {
+        reputationLabelLayout.setOnClickListener(v -> {
+            UnifyTracking.eventSellerHomeDashboardClick(getActivity(), AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                    AppEventTracking.EventLabel.DASHBOARD_ITEM_REPUTASI_TOKO);
+            startActivity(new Intent(getContext(), SellerReputationInfoActivity.class));
         });
-        shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
-                shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
-        reputationPointTextView.setText(getString(R.string.dashboard_x_points, shopModel.getStats().getShopReputationScore()));
+        ImageHandler.loadImage(
+                getContext(),
+                imageViewShopReputationBadge,
+                shopBadge.getBadgeHD(),
+                R.drawable.ic_loading_image
+        );
+        reputationPointTextView.setText(getString(R.string.dashboard_x_points, shopBadge.getScore()));
     }
 
-    private void updateTransaction(final ShopModel shopModel) {
-        transactionlabelLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UnifyTracking.eventSellerHomeDashboardClick(getActivity(), AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
-                        AppEventTracking.EventLabel.DASHBOARD_ITEM_TRANSAKSI_SUKSES);
-                String shopInfo = CacheUtil.convertModelToString(shopModel,
-                        new TypeToken<ShopModel>() {
-                        }.getType());
-                Intent intent = new Intent(getContext(), ShopStatisticDetail.class);
-                intent.putExtra(ShopStatisticDetail.EXTRA_SHOP_INFO, shopInfo);
-                getContext().startActivity(intent);
-            }
+    private void updateTransaction(final ShopInfoDashboardModel shopInfoDashboardModel) {
+        transactionlabelLayout.setOnClickListener(v -> {
+            UnifyTracking.eventSellerHomeDashboardClick(getActivity(), AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                    AppEventTracking.EventLabel.DASHBOARD_ITEM_TRANSAKSI_SUKSES);
+            String shopInfoDashboardModelString = CacheUtil.convertModelToString(shopInfoDashboardModel,
+                    new TypeToken<ShopInfoDashboardModel>() {
+                    }.getType());
+            Intent intent = new Intent(getContext(), ShopStatisticDetail.class);
+            intent.putExtra(ShopStatisticDetail.EXTRA_SHOP_INFO, shopInfoDashboardModelString);
+            getContext().startActivity(intent);
         });
-        if (shopModel.shopTxStats.shopTxHasTransaction1Month == 1) {
+        if (shopInfoDashboardModel.getShopInfoTxStats().getShopTxHasTransaction1Month() == 1) {
             transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
-                    String.valueOf(shopModel.shopTxStats.shopTxSuccessRate1Month)));
+                    shopInfoDashboardModel.getShopInfoTxStats().getShopTxSuccessRate1Month()));
         } else {
             transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
                     String.valueOf(0)));
         }
     }
 
-    private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
+    private void updateShopInfo(ShopInfo shopInfo, ShopStatusModel shopStatusModel) {
         userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchantOrPending());
         userSession.setIsPowerMerchantIdle(shopStatusModel.isPowerMerchantIdle());
 
-        Info shopModelInfo = shopModel.info;
-        String shopName = shopModelInfo.getShopName();
+        String shopName = shopInfo.getShopCore().getName();
         if (!TextUtils.isEmpty(shopName)) {
             shopName = MethodChecker.fromHtml(shopName).toString();
         }
@@ -518,8 +527,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             setTextViewClickSpan(tvTicker, MethodChecker.fromHtml(getString(R.string.power_merchant_ticker_with_tip)),
                     getString(R.string.tip_increase_score), onClickListener);
         }
-        if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
-            ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
+        String shopAvatar = shopInfo.getShopAssets().getAvatar();
+        if (!TextUtils.isEmpty(shopAvatar)) {
+            ImageHandler.LoadImage(shopIconImageView, shopAvatar);
         } else {
             shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
@@ -550,8 +560,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         textView.setText(new SpannableStringBuilder(previousText).append(" ").append(spannable));
     }
 
-    private void updateViewShopOpen(ShopModel shopModel) {
-        switch (shopModel.getInfo().getShopStatus()) {
+    private void updateViewShopOpen(ShopInfo shopModel) {
+        switch (shopModel.getStatusInfo().getShopStatus()) {
             case ShopStatusDef.CLOSED:
                 showShopClosed(shopModel);
                 break;
@@ -566,13 +576,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         }
     }
 
-    private void showShopClosed(ShopModel shopModel) {
+    private void showShopClosed(ShopInfo shopInfo) {
         String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
-                shopModel.closedInfo.until);
+                shopInfo.getClosedInfo().getCloseUntil());
         shopWarningTickerView.setIcon(R.drawable.ic_closed);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
-        shopWarningTickerView.setDescription(shopModel.closedInfo.note);
+        shopWarningTickerView.setDescription(shopInfo.getClosedInfo().getNote());
         shopWarningTickerView.setAction(getString(R.string.open_shop), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -583,10 +593,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
-    private void showShopModerated(ShopModel shopModel) {
+    private void showShopModerated(ShopInfo shopInfo) {
         shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
-        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason));
+        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopInfo.getClosedInfo().getReason()));
         shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.yellow_ticker));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
@@ -665,6 +675,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
+        onNotificationDataUpdatedListener.notificationDataUpdated();
 
     }
 

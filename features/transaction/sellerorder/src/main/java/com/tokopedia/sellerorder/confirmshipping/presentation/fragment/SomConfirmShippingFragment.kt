@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.zxing.integration.android.IntentIntegrator
+import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.sellerorder.R
@@ -116,7 +117,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private fun setupListeners() {
         // set onclick scan resi
         tf_no_resi?.getFirstIcon()?.setOnClickListener {
-            requestBarcodeScanner(activity as Activity, SomScanResiActivity::class.java)
+            requestBarcodeScanner(activity as Activity, CaptureActivity::class.java)
         }
 
         if (currIsChangeShipping) {

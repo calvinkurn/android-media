@@ -7,16 +7,16 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.util.SparseIntArray;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.product.manage.item.common.util.StockTypeDef;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ProductVariantViewModel implements Parcelable {
 
@@ -172,18 +172,8 @@ public class ProductVariantViewModel implements Parcelable {
             for (ProductVariantCombinationViewModel productVariantCombinationViewModel : productVariant) {
                 if (stockType == StockTypeDef.TYPE_WAREHOUSE) {
                     productVariantCombinationViewModel.setActive(false);
-                    productVariantCombinationViewModel.setStock(0);
                 } else {
-                    if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
-                        // if previous stock type is TYPE_EMPTY, change to 1
-                        if (prevStockType != StockTypeDef.TYPE_ACTIVE_LIMITED) {
-                            productVariantCombinationViewModel.setStock(1);
-                            productVariantCombinationViewModel.setActive(true);
-                        }
-                    } else {
-                        productVariantCombinationViewModel.setStock(0);
-                        productVariantCombinationViewModel.setActive(true);
-                    }
+                    productVariantCombinationViewModel.setActive(true);
                 }
             }
         }

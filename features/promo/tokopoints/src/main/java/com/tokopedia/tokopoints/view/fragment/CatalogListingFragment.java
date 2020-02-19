@@ -42,7 +42,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
-import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.CatalogSortTypePagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;

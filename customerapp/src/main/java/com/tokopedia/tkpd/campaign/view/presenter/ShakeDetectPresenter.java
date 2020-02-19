@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.campaign.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Vibrator;
 
 import com.google.android.gms.location.LocationServices;
@@ -10,6 +11,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkDelegate;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
@@ -190,8 +192,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                                     return;
                                 }
 
-                                ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-                                if (!deepLinkDelegate.supportsUri(campaign.getUrl())) {
+                                Intent intentFromRouter = RouteManager.getIntentNoFallback(context, campaign.getUrl());
+                                if(intentFromRouter == null){
                                     getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
                                     CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                                     return;

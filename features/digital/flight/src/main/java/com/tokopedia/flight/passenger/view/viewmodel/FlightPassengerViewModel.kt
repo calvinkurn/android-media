@@ -2,12 +2,12 @@ package com.tokopedia.flight.passenger.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
-import com.tokopedia.common.travel.domain.GetContactListUseCase
-import com.tokopedia.common.travel.domain.UpsertContactListUseCase
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeByIdUseCase
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
+import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
+import com.tokopedia.travel.passenger.domain.GetContactListUseCase
+import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

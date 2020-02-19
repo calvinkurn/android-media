@@ -9,7 +9,7 @@ import com.tokopedia.base.list.seller.common.util.ItemType;
 public class SellerInfoModel implements ItemType {
     public static final int TYPE = 1921912;
 
-    private long infoId;
+    private String infoId;
     private long status;
     private String title;
     private String content;
@@ -42,11 +42,11 @@ public class SellerInfoModel implements ItemType {
         return TYPE;
     }
 
-    public long getInfoId() {
+    public String getInfoId() {
         return infoId;
     }
 
-    public void setInfoId(long infoId) {
+    public void setInfoId(String infoId) {
         this.infoId = infoId;
     }
 
@@ -218,7 +218,7 @@ public class SellerInfoModel implements ItemType {
 
     @Override
     public int hashCode() {
-        int result = (int) (infoId ^ (infoId >>> 32));
+        int result = (infoId != null ? infoId.hashCode() : 0);
         result = 31 * result + (int) (status ^ (status >>> 32));
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (content != null ? content.hashCode() : 0);

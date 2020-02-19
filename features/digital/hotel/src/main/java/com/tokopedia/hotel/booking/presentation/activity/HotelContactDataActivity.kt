@@ -5,11 +5,11 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.booking.di.DaggerHotelBookingComponent
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.fragment.HotelContactDataFragment
+import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 
 class HotelContactDataActivity: BaseSimpleActivity(), HasComponent<HotelBookingComponent> {
 

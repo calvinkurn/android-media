@@ -83,6 +83,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpddesign)
