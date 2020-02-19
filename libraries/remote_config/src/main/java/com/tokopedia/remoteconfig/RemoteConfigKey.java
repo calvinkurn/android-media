@@ -143,6 +143,8 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
 
+    public static final String APP_ENABLE_OPEN_SHOP_REVAMP = "app_enable_open_shop_revamp";
+
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
 
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
@@ -151,8 +153,6 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
-
-    public static final String APP_HOTLIST_NAV_ENABLE = "app_hotlist_nav_enable";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
