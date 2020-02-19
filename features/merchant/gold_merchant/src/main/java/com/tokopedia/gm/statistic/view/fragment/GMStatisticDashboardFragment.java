@@ -89,7 +89,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         DaggerGMStatisticDashboardComponent
                 .builder()
                 .gMComponent(getComponent(GMComponent.class))
-                .categoryPickerModule(new CategoryPickerModule(requireActivity().getApplication()))
+                .categoryPickerModule(new CategoryPickerModule(requireActivity().getApplicationContext()))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
         gmDashboardPresenter.attachView(this);
