@@ -1,7 +1,5 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-
-
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -19,7 +17,7 @@ class GetProgressDataUseCase constructor(
 
     override suspend fun executeOnBackground(): List<ProgressDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, ProgressDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), getCacheStrategy())
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(ProgressDataResponse::class.java)
         if (errors.isNullOrEmpty()) {

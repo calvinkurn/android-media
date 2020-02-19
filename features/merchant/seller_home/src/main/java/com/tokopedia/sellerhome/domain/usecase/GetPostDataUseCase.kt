@@ -18,7 +18,7 @@ class GetPostDataUseCase(
 
     override suspend fun executeOnBackground(): List<PostListDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetPostDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), getCacheStrategy())
+        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPostDataResponse::class.java)
         if (errors.isNullOrEmpty()) {

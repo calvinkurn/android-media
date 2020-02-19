@@ -32,7 +32,8 @@ import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDash
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
+class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View,
+        SellerHomeFragment.PageRefreshListener {
 
     companion object {
         @JvmStatic
@@ -57,6 +58,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         sellerHomeDashboardDrawerPresenter.attachView(this)
         checkAppUpdate()
 
+        sellerHomeFragment.setOnPageRefreshedListener(this)
     }
 
     override fun getNewFragment(): Fragment? {
@@ -87,7 +89,9 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         sellerHomeDashboardDrawerPresenter.unsubscribe()
     }
 
-
+    override fun onRefreshPage() {
+        updateDrawerData()
+    }
 
     private fun checkAppUpdate() {
         val appUpdate: ApplicationUpdate = SellerFirebaseRemoteAppUpdate(this)

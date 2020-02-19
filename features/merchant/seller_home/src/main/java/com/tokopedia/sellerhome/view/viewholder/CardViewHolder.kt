@@ -44,6 +44,7 @@ class CardViewHolder(
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(true)
+                listener.setOnErrorWidget(adapterPosition, element)
             }
             else -> {
                 showOnError(false)
@@ -111,7 +112,7 @@ class CardViewHolder(
         }
     }
 
-    interface Listener {
+    interface Listener : BaseViewHolderListener {
         fun getCardData()
     }
 }

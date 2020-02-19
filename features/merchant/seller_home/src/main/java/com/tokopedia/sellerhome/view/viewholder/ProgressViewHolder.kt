@@ -35,7 +35,10 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
         val data = element.data
         when {
             null == data -> onLoading()
-            data.error.isNotBlank() -> onError(element)
+            data.error.isNotBlank() -> {
+                onError(element)
+                listener.setOnErrorWidget(adapterPosition, element)
+            }
             else -> onSuccessLoadData(element)
         }
     }
@@ -79,7 +82,8 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     private fun addImpressionTracker(progressWidgetUiModel: ProgressWidgetUiModel) {
         with(progressWidgetUiModel) {
             itemView.addOnImpressionListener(impressHolder) {
-                SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, data?.colorState.toString(), data?.value ?: 0)
+                SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, data?.colorState.toString(), data?.value
+                        ?: 0)
             }
         }
     }
@@ -87,7 +91,8 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     private fun goToDetails(element: ProgressWidgetUiModel) {
         with(element) {
             if (RouteManager.route(itemView.context, appLink)) {
-                SellerHomeTracking.sendClickProgressBarEvent(dataKey, data?.colorState.toString(), data?.value ?: 0)
+                SellerHomeTracking.sendClickProgressBarEvent(dataKey, data?.colorState.toString(), data?.value
+                        ?: 0)
             }
         }
     }
@@ -159,7 +164,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
         itemView.sahProgressOnErrorLayout.gone()
     }
 
-    interface Listener {
+    interface Listener : BaseViewHolderListener {
         fun getProgressData()
     }
 }
