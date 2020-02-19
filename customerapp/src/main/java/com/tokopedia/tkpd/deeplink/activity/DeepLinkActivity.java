@@ -42,8 +42,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         DeepLinkView,
         ICatalogActionFragment {
 
-    private TkpdProgressDialog progressDialog;
-
     private Uri uriData;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
@@ -136,16 +134,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void showLoading() {
-        showProgressService();
-    }
-
-    @Override
-    public void finishLoading() {
-        if (progressDialog != null && progressDialog.isProgress()) progressDialog.dismiss();
-    }
-
-    @Override
     public void inflateFragment(Fragment fragment, String tag) {
         getFragmentManager().beginTransaction().add(R.id.main_view, fragment, tag).commit();
     }
@@ -177,19 +165,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
             }
         }
-    }
-
-    private void showProgressService() {
-        if (isFinishing())
-            return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())
-            return;
-
-        if (progressDialog != null && progressDialog.isProgress()) return;
-
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        progressDialog.setCancelable(false);
-        progressDialog.showDialog();
     }
 
     @SuppressLint("MissingSuperCall")

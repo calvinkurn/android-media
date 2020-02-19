@@ -118,6 +118,7 @@ include "features:transaction:opportunity"
 include "features:top_ads:top_ads_widget"
 
 include "features:user:attachproduct"
+include "features:user:attachcommon"
 include "features:user:chat_common"
 include "features:user:chatbot"
 include "features:user:changepassword"

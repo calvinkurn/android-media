@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 
 interface TopChatTypeFactory {
@@ -21,5 +22,7 @@ interface TopChatTypeFactory {
     fun type(roomSettingFraudAlert: RoomSettingFraudAlert): Int
 
     fun type(roomSettingBanner: RoomSettingBanner): Int
+
+    fun type(quotationViewModel: QuotationViewModel): Int
 
 }

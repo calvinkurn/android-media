@@ -287,8 +287,7 @@
     <ImageView
         android:id="@+id/skeleton_imageFreeOngkirPromo"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_height="@dimen/dp_28"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_8"
         android:gravity="center"

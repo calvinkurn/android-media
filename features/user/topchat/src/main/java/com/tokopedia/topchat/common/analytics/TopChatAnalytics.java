@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -95,6 +96,7 @@ public class TopChatAnalytics {
         String CLICK_HEADER = "click header-shop icon";
         String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
         String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
+        String CLICK_QUOTATION_ATTACHMENT = "click bayar on quotation thumbnail";
     }
 
     public interface Label {
@@ -477,4 +479,15 @@ public class TopChatAnalytics {
                 productId
         );
     }
+
+    // #QT1
+    public void eventClickQuotation(@NotNull QuotationViewModel msg) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_QUOTATION_ATTACHMENT,
+                msg.getQuotationId()
+        );
+    }
+
 }

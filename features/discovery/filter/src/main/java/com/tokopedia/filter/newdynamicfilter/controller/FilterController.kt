@@ -9,6 +9,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import java.util.*
+import kotlin.collections.ArrayList
 
 open class FilterController {
 
@@ -219,14 +220,47 @@ open class FilterController {
     }
 
     private fun getPopularOptionList(filter: Filter): List<Option> {
-        val checkedOptions = ArrayList<Option>()
+        val checkedLevelOneOptions = ArrayList<Option>()
+        val checkedLevelTwoOptions = ArrayList<Option>()
+        val checkedLevelThreeOptions = ArrayList<Option>()
 
         for (option in filter.options) {
-            if (option.isPopular) {
-                checkedOptions.add(option)
+            addPopularOption(checkedLevelOneOptions, option)
+
+            for (levelTwoCategory in option.levelTwoCategoryList) {
+                addPopularOption(checkedLevelTwoOptions, levelTwoCategory.asOption())
+
+                for (levelThreeCategory in levelTwoCategory.levelThreeCategoryList) {
+                    addPopularOption(checkedLevelThreeOptions, levelThreeCategory.asOption())
+                }
             }
         }
-        return checkedOptions
+
+        return checkedLevelOneOptions + checkedLevelTwoOptions + checkedLevelThreeOptions
+    }
+
+    private fun addPopularOption(checkedOptions: ArrayList<Option>, option: Option) {
+        if (option.isPopular) {
+            checkedOptions.add(option)
+        }
+    }
+
+    private fun LevelTwoCategory.asOption(): Option {
+        val uniqueId = OptionHelper.constructUniqueId(this.key, this.value, this.name)
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        option.isPopular = this.isPopular
+
+        return option
+    }
+
+    private fun LevelThreeCategory.asOption(): Option {
+        val uniqueId = OptionHelper.constructUniqueId(this.key, this.value, this.name)
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        option.isPopular = this.isPopular
+
+        return option
     }
 
     private fun putSelectedOptionsToList(selectedOptionList: MutableList<Option>, filter: Filter, popularOptionList: List<Option>) {

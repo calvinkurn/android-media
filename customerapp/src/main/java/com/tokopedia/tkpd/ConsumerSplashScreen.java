@@ -18,6 +18,7 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
@@ -58,8 +59,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         startSplashTrace();
 
         super.onCreate(savedInstanceState);
-        Weaver.Companion.executeWeaveCoRoutine(this::checkApkTempered,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
+        createAndCallChkApk();
 
         finishWarmStart();
 
@@ -70,6 +70,18 @@ public class ConsumerSplashScreen extends SplashScreen {
         trackIrisEventForAppOpen();
         new InstallReferral().initilizeInstallReferral(this);
 
+    }
+
+    private void createAndCallChkApk(){
+        WeaveInterface chkTmprApkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return checkApkTempered();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(chkTmprApkWeave,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
     }
 
     private void trackIrisEventForAppOpen() {

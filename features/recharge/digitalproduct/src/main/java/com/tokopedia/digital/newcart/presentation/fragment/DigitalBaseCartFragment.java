@@ -502,20 +502,24 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void showPostPaidDialog(String title,
                                    String content,
                                    String confirmButtonTitle) {
-        DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
-                getActivity(),
-                Dialog.Type.RETORIC
-        );
-        dialog.setTitle(title);
-        dialog.setDesc(MethodChecker.fromHtml(content));
-        dialog.setBtnOk(confirmButtonTitle);
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        try {
+            Dialog dialog = new Dialog(
+                    getActivity(),
+                    Dialog.Type.RETORIC
+            );
+            dialog.setTitle(title);
+            dialog.setDesc(MethodChecker.fromHtml(content));
+            dialog.setBtnOk(confirmButtonTitle);
+            dialog.setOnOkClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        } catch (Throwable e) {
+
+        }
     }
 
     @Override

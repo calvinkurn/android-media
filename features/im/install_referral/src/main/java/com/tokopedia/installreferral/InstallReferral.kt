@@ -11,7 +11,8 @@ import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.gms.analytics.CampaignTrackingReceiver
 import com.tokopedia.track.TrackApp
 
-class InstallReferral {
+class InstallReferral
+{
 
     private lateinit var referrerClient: InstallReferrerClient
 

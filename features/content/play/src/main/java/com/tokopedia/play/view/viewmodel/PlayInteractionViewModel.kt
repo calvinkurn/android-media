@@ -46,10 +46,10 @@ class PlayInteractionViewModel @Inject constructor(
         )
     }
 
-    fun doLikeUnlike(contentId: Int, contentType: Int, likeType: Int, shouldLike: Boolean, isLive: Boolean) {
+    fun doLikeUnlike(contentId: Int, contentType: Int, likeType: Int, shouldLike: Boolean) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
-                postLikeUseCase.params = PostLikeUseCase.createParam(contentId, contentType, likeType, shouldLike, isLive)
+                postLikeUseCase.params = PostLikeUseCase.createParam(contentId, contentType, likeType, shouldLike)
                 postLikeUseCase.executeOnBackground()
             }
         }) {}

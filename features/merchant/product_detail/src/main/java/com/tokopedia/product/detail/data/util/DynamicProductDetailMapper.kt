@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.product.Etalase
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.datamodel.*
 
@@ -59,7 +60,7 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.PRODUCT_SNAPSHOT
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        return DynamicProductInfoP1(basic = data.basicInfo, data = componentData)
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = componentData)
     }
 
     fun mapProductInfoToDynamicProductInfo(newData: ProductInfo, oldData: DynamicProductInfoP1): DynamicProductInfoP1 {
@@ -73,7 +74,7 @@ object DynamicProductDetailMapper {
                 isMustInsurance = newData.basic.isMustInsurance,
                 maxOrder = newData.basic.maxOrder,
                 minOrder = newData.basic.minOrder,
-                menu = newData.menu,
+                menu = Etalase(newData.menu.id, newData.menu.name, newData.menu.url),
                 needPrescription = newData.basic.needPrescription,
                 productID = newData.basic.id.toString(),
                 shopID = newData.basic.shopID.toString(),
@@ -111,7 +112,7 @@ object DynamicProductDetailMapper {
                 name = newData.basic.name
         )
 
-        return DynamicProductInfoP1(basic,data)
+        return DynamicProductInfoP1(basic, data)
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {

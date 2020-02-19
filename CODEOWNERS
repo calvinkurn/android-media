@@ -8,6 +8,7 @@
 /features/content/kol_common/           				@tokopedia/minion-dave
 /features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-dave
+/features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
 /features/discovery/home_recom/                     	@tokopedia/minion-dave
@@ -111,7 +112,7 @@
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
-/features/logistic/tracking/                    		@tokopedia/minion-bob
+/features/logistic/logisticorder/                    	@tokopedia/minion-bob
 /features/promo/promo_checkout/                 		@tokopedia/minion-bob
 /features/promo/promo_checkout_common/          		@tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob
@@ -121,11 +122,10 @@
 /features/user/chat_common/                     		@tokopedia/minion-kevin
 /features/user/topchat/                         		@tokopedia/minion-kevin
 /features/user/topchat_no_op/                   		@tokopedia/minion-kevin
-/features/user/groupchat/                       		@tokopedia/minion-kevin
 /features/user/profilecompletion/                       @tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
 /features/user/otp/                             		@tokopedia/minion-kevin
-/features/user/settingbank/                     		@tokopedia/minion-kevin
+/features/user/settingbank/                     		@tokopedia/minion-yoda
 /features/user/settingnotif/                    		@tokopedia/minion-kevin
 /features/user/changepassword/                  		@tokopedia/minion-kevin
 /features/user/logout/                          		@tokopedia/minion-kevin
@@ -164,9 +164,19 @@
 /features/promo/gamification            				@tokopedia/minion-solo
 /features/payment/withdraw/             				@tokopedia/minion-solo
 /features/kyc                           				@tokopedia/minion-yoda
+/features/promo/merchant_voucher                        @tokopedia/minion-solo
+/features/promo/promo_gamification_common               @tokopedia/minion-solo
+/features/promo/loyalty                                 @tokopedia/minion-solo
+/features/promo/loyalty_common                          @tokopedia/minion-solo
+/features/fintech/merchant_lending_widget               @tokopedia/minion-solo
+
 
 /features/im/challenges                 				@tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
+/features/im/common_promo                               @tokopedia/minion-yoda
+/features/ovop2p                                        @tokopedia/minion-yoda
+/features/payment/common_payment                        @tokopedia/minion-yoda
+
 
 /libraries/adapter_delegate/							@tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
@@ -204,6 +214,7 @@
 /libraries/push_notification/							@tokopedia/core-team
 /libraries/react_native/								@tokopedia/core-team
 /libraries/remote_config/								@tokopedia/core-team
+/libraries/remoteresourcerequest/						@tokopedia/core-team
 /libraries/sharedata/									@tokopedia/core-team
 /libraries/track/										@nathaniel09
 /libraries/tracking_optimizer/							@nathaniel09

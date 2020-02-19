@@ -1,14 +1,14 @@
 package com.tokopedia.travelhomepage.destination.presentation.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.ActionListener
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.ORDER_LIST_ORDER
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.v
  * @author by jessica on 2019-08-09
  */
 
-class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSectionViewModel.Item>,
+class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSectionModel.Item>,
                                       private var type: Int,
                                       private var categoryType: String,
                                       private var actionListener: ActionListener) :
@@ -33,7 +33,7 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
         holder.bind(list[position], position, type, categoryType)
     }
 
-    fun updateList(newList: List<TravelDestinationSectionViewModel.Item>) {
+    fun updateList(newList: List<TravelDestinationSectionModel.Item>) {
         this.list = newList
         notifyDataSetChanged()
     }
@@ -49,7 +49,7 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
 
     class ViewHolder(itemView: View, private val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: TravelDestinationSectionViewModel.Item, position: Int, type: Int, categoryType: String) {
+        fun bind(item: TravelDestinationSectionModel.Item, position: Int, type: Int, categoryType: String) {
             with(itemView) {
                 image.loadImage(item.imageUrl)
                 title.text = item.title
@@ -64,8 +64,8 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
                 }
 
                 prefix.text = when (item.prefixStyling) {
-                    TravelDestinationSectionViewModel.PREFIX_STYLE_STRIKETHROUGH -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_strikethrough, item.prefix, item.value))
-                    TravelDestinationSectionViewModel.PREFIX_STYLE_NORMAL -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_normal, item.prefix, item.value))
+                    TravelDestinationSectionModel.PREFIX_STYLE_STRIKETHROUGH -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_strikethrough, item.prefix, item.value))
+                    TravelDestinationSectionModel.PREFIX_STYLE_NORMAL -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_normal, item.prefix, item.value))
                     else -> resources.getString(R.string.travel_prefix_nostyle, item.prefix, item.value)
                 }
             }

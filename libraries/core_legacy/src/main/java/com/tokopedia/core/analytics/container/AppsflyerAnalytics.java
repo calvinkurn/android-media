@@ -38,7 +38,6 @@ import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 public class AppsflyerAnalytics extends ContextAnalytics {
     private static final String TAG = AppsflyerAnalytics.class.getSimpleName();
     private static boolean isAppsflyerCallbackHandled = false;
-    public static final String APPSFLYER_KEY = "SdSopxGtYr9yK8QEjFVHXL";
     private static final String KEY_INSTALL_SOURCE = "install_source";
     public static final String GCM_PROJECT_NUMBER = "692092518182";
 
@@ -267,22 +266,6 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                         sharedPrefs.edit().putString(KEY_ADVERTISINGID, adID).apply();
                     }
                 })).toBlocking().single();
-    }
-
-
-    public String getAdsIdDirect() {
-
-        AdvertisingIdClient.Info adInfo;
-        try {
-            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());
-            return adInfo.getId();
-        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-            return "";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
     }
 
     public String getUniqueId() {

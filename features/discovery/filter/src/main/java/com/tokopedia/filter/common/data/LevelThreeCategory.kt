@@ -20,6 +20,10 @@ class LevelThreeCategory() : Parcelable {
     @Expose
     var value: String = ""
 
+    @SerializedName("isPopular")
+    @Expose
+    var isPopular: Boolean = false
+
     @SerializedName(value = "input_type", alternate = [ "inputType" ])
     @Expose
     private var inputType: String = ""

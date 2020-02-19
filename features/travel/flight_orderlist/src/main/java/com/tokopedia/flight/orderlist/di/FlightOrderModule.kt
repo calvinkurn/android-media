@@ -8,7 +8,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.flight.orderlist.data.FlightOrderApi
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource
 import com.tokopedia.flight.orderlist.di.qualifier.FlightOrderChuckQualifier

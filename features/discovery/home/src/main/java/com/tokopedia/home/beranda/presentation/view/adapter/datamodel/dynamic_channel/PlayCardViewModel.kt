@@ -79,7 +79,7 @@ data class PlayCardViewModel(
                     "event", "promoClick",
                     "eventCategory", "homepage-cmp",
                     "eventAction", "click on play dynamic banner",
-                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId}",
+                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
                     "ecommerce", DataLayer.mapOf(
                     "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(
@@ -98,7 +98,7 @@ data class PlayCardViewModel(
                     "event", "promoView",
                     "eventCategory", "homepage-cmp",
                     "eventAction", "impression on play dynamic banner",
-                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId}",
+                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
                     "ecommerce", DataLayer.mapOf(
                     "promoView", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(
@@ -107,6 +107,10 @@ data class PlayCardViewModel(
             )
             )
             )
+    }
+
+    private fun getLiveOrVod(isLive: Boolean?): String {
+        return if(isLive == true) "live" else "vod"
     }
 
     private fun convertPromoEnhancePlayBanner(playChannel: PlayChannel?): List<Any> {
