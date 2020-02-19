@@ -76,8 +76,9 @@
             app:layout_constraintTop_toTopOf="@id/security_textview"
             app:layout_constraintBottom_toBottomOf="@id/security_textview"
             app:layout_constraintRight_toLeftOf="@id/security_textview"
-            android:layout_marginRight="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
+            app:layout_constraintLeft_toLeftOf="@id/button"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
             app:srcCompat="@drawable/ic_shield" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -90,7 +91,7 @@
             app:layout_constraintTop_toBottomOf="@id/layout_info_bullet"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginBottom="@dimen/kyc_centralized_17dp"
-            android:drawablePadding="@dimen/spacing_lvl2"
+            android:drawablePadding="@dimen/spacing_lvl3"
             android:text="@string/kyc_data_security" />
 
         <com.tokopedia.unifycomponents.UnifyButton

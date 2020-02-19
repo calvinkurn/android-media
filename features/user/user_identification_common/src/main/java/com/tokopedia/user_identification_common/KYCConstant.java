@@ -44,5 +44,7 @@ public interface KYCConstant {
     int KTP_RETAKE = 1;
     int FACE_RETAKE = 2;
 
+    int USER_EXIT = -9;
+
     String KYC_OVERLAY_COLOR = "#ae000000";
 }

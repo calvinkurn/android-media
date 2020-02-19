@@ -95,7 +95,7 @@ class DetectionFrame(private val yuvData: ByteArray, private val mCameraAngle: I
         val scale = scaleSize / rotateBitmap.width.toFloat()
         matrix.setScale(scale, scale)
         val scaleBitmap = Bitmap.createBitmap(rotateBitmap, 0, 0, rotateBitmap.width, rotateBitmap.height, matrix, true)
-        // scaleBitmap must be 300px*300px
+        // scaleBitmap must be 600px*600px
         rotateBitmap.recycle()
         return scaleBitmap
     }
@@ -116,7 +116,7 @@ class DetectionFrame(private val yuvData: ByteArray, private val mCameraAngle: I
     }
 
     companion object {
-        private const val EXPECT_SIZE = 1024
+        private const val EXPECT_SIZE = 600
     }
 
 }

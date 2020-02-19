@@ -355,7 +355,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             getStatusInfo();
             NetworkErrorHelper.showGreenSnackbar(getActivity(), getString(R.string.text_notification_success_upload));
             analytics.eventViewSuccessSnackbarPendingPage();
-        }else if(requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_CANCELED) {
+        }else if(requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == KYCConstant.USER_EXIT) {
             Objects.requireNonNull(getActivity()).finish();
         }
         super.onActivityResult(requestCode, resultCode, data);

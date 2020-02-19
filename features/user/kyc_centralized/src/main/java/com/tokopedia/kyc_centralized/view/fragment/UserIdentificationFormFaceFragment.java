@@ -22,6 +22,7 @@ import com.tokopedia.kyc_centralized.view.di.DaggerUserIdentificationCommonCompo
 import com.tokopedia.kyc_centralized.view.di.UserIdentificationCommonComponent;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user_identification_common.KycUrl;
 
@@ -37,9 +38,6 @@ import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_
 public class UserIdentificationFormFaceFragment extends
         BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>
         implements UserIdentificationFormActivity.Listener {
-
-    @Inject
-    protected RemoteConfig remoteConfig;
 
     public static Fragment createInstance() {
         Fragment fragment = new UserIdentificationFormFaceFragment();
@@ -66,8 +64,7 @@ public class UserIdentificationFormFaceFragment extends
         button.setText(R.string.face_button);
         button.setOnClickListener(v -> {
             analytics.eventClickNextSelfiePage();
-            isKycSelfie = remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE, false);
-            if(isKycSelfie){
+            if(isKycSelfie()){
                 goToKycSelfie();
             } else {
                 goToKycLiveness();

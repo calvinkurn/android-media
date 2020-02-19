@@ -49,7 +49,7 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
 
         GuardianLivenessDetectionSDK.initOffLine(application)
         GuardianLivenessDetectionSDK.letSDKHandleCameraPermission()
-        GuardianLivenessDetectionSDK.setDeviceType(if (Build.CPU_ABI == "x86") GuardianLivenessDetectionSDK.DeviceType.Emulator else GuardianLivenessDetectionSDK.DeviceType.RealPhone)
+        GuardianLivenessDetectionSDK.setDeviceType(GuardianLivenessDetectionSDK.DeviceType.RealPhone)
 
         setContentView(R.layout.activity_liveness)
         ScreenUtil.init(this)

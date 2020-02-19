@@ -112,6 +112,25 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         }
     }
 
+    @Override
+    protected void setupFragment(Bundle savedinstancestate) {
+        if (getListFragment().size() >= currentPosition) {
+            Fragment fragment = getListFragment().get(currentPosition - 1);
+            Bundle fragmentArguments = fragment.getArguments();
+            Bundle bundle;
+            if( null == fragmentArguments){
+                bundle = new Bundle();
+            }else {
+                bundle = fragmentArguments;
+            }
+            bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
+            fragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(getParentView(), fragment, fragment.getClass().getSimpleName())
+                    .commit();
+        }
+    }
+
     public void showError(String error, NetworkErrorHelper.RetryClickedListener retryClickedListener) {
         snackbar = NetworkErrorHelper.createSnackbarWithAction(this, error, retryClickedListener);
         snackbar.showRetrySnackbar();
@@ -155,7 +174,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         dialog.setSecondaryCTAClickListener(() -> {
             analytics.eventClickDialogExit();
             dialog.dismiss();
-            setResult(RESULT_CANCELED);
+            setResult(KYCConstant.USER_EXIT);
             finish();
             return Unit.INSTANCE;
         });

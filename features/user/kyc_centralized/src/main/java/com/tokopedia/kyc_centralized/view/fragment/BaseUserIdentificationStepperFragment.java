@@ -20,8 +20,11 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
@@ -42,7 +45,9 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     protected TextView button;
     protected UserIdentificationCommonAnalytics analytics;
     protected int projectId;
-    protected boolean isKycSelfie;
+
+    @Inject
+    public RemoteConfigInstance remoteConfigInstance;
 
     protected T stepperModel;
 
@@ -92,7 +97,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == REQUEST_CODE_CAMERA_FACE) {
-                if(isKycSelfie){
+                if(isKycSelfie()){
                     String faceFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
                     stepperModel.setFaceFile(faceFile);
                     stepperListener.goToNextPage(stepperModel);
@@ -141,6 +146,10 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             default:
                 break;
         }
+    }
+
+    protected Boolean isKycSelfie(){
+        return !remoteConfigInstance.getABTestPlatform().getString("Liveness Detection 1").equals("Liveness Detection 1");
     }
 
     @Override

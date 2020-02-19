@@ -21,6 +21,7 @@ import android.app.Activity.RESULT_OK
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -161,7 +162,9 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun changeTipTextView(strResId: Int) {
-        tipTextView?.setText(strResId)
+        if(livenessActionState==null){
+            tipTextView?.setText(strResId)
+        }
     }
 
     private fun updateTipUIView(warnCode: Detector.WarnCode?) {
@@ -171,49 +174,41 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 Detector.WarnCode.FACEMISSING -> {
                     analytics.eventViewFaceInCenter()
                     changeTipTextView(R.string.liveness_no_people_face)
-                    livenessActionState = null
                 }
                 Detector.WarnCode.FACESMALL -> {
                     analytics.eventViewCloserFaceToScreen()
                     changeTipTextView(R.string.liveness_tip_move_closer)
-                    livenessActionState = null
                 }
                 Detector.WarnCode.FACELARGE -> {
                     changeTipTextView(R.string.liveness_tip_move_furthre)
-                    livenessActionState = null
                 }
                 Detector.WarnCode.FACENOTCENTER -> {
                     analytics.eventViewFaceInCenter()
                     changeTipTextView(R.string.liveness_move_face_center)
-                    livenessActionState = null
                 }
                 Detector.WarnCode.FACENOTFRONTAL -> {
                     changeTipTextView(R.string.liveness_frontal)
-                    livenessActionState = null
                 }
                 Detector.WarnCode.FACENOTSTILL, Detector.WarnCode.FACECAPTURE -> {
                     changeTipTextView(R.string.liveness_still)
-                    livenessActionState = null
                 }
                 Detector.WarnCode.WARN_MULTIPLEFACES -> {
                     analytics.eventViewMultipleFaces()
                     changeTipTextView(R.string.liveness_failed_reason_multipleface)
-                    livenessActionState = null
                 }
                 Detector.WarnCode.FACEINACTION -> {
                     livenessWarnState = null
                     showActionTipUIView()
                 }
-                else -> {
-                }
+                else -> {}
             }
         }
     }
 
     private fun showActionTipUIView() {
         val currentDetectionType = livenessView?.currentDetectionType
-        livenessActionState = currentDetectionType
-        if (currentDetectionType != null) {
+        if (currentDetectionType != null && livenessActionState != currentDetectionType) {
+            livenessActionState = currentDetectionType
             var detectionNameId = 0
             when (currentDetectionType) {
                 Detector.DetectionType.POS_YAW -> {
@@ -228,11 +223,12 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     analytics.eventViewBlinkDetection()
                     detectionNameId = R.string.liveness_blink
                 }
-                else -> {
-                }
+                else -> {}
             }
-            changeTipTextView(detectionNameId)
-            setLottieFile(getLottieFile(currentDetectionType))
+            tipTextView?.setText(detectionNameId)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setLottieFile(getLottieFile(currentDetectionType))
+            }
         }
     }
 
@@ -444,22 +440,6 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     override fun trackOnBackPressed() {
-        if (livenessActionState != null) {
-            when (livenessActionState) {
-                Detector.DetectionType.MOUTH -> {
-                    analytics.eventClickBackMouthDetection()
-                }
-                Detector.DetectionType.BLINK -> {
-                    analytics.eventClickBackBlinkDetection()
-                }
-                Detector.DetectionType.POS_YAW -> {
-                    analytics.eventClickBackHeadDetection()
-                }
-                else -> {
-                }
-            }
-        }
-
         if (livenessWarnState != null) {
             when (livenessWarnState) {
                 Detector.WarnCode.FACESMALL -> {
@@ -470,6 +450,20 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 }
                 Detector.WarnCode.WARN_MULTIPLEFACES -> {
                     analytics.eventClickBackMultipleFaces()
+                }
+                else -> {
+                }
+            }
+        } else if (livenessActionState != null) {
+            when (livenessActionState) {
+                Detector.DetectionType.MOUTH -> {
+                    analytics.eventClickBackMouthDetection()
+                }
+                Detector.DetectionType.BLINK -> {
+                    analytics.eventClickBackBlinkDetection()
+                }
+                Detector.DetectionType.POS_YAW -> {
+                    analytics.eventClickBackHeadDetection()
                 }
                 else -> {
                 }

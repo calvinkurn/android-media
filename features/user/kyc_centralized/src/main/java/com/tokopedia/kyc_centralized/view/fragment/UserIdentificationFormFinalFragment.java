@@ -41,8 +41,7 @@ import com.tokopedia.kyc_centralized.view.di.UserIdentificationCommonComponent;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.user_identification_common.KycUrl;
@@ -86,12 +85,11 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private UserIdentificationCommonAnalytics analytics;
 
     private ArrayList<Integer> listRetake;
-    private boolean isKycSelfie;
 
     private static int projectId;
 
     @Inject
-    public RemoteConfig remoteConfig;
+    public RemoteConfigInstance remoteConfigInstance;
 
     @Inject
     UserIdentificationUploadImage.Presenter presenter;
@@ -176,8 +174,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     private void setContentView() {
         loadingLayout.setVisibility(View.GONE);
-        isKycSelfie = remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE, false);
-        if(isKycSelfie){
+        if(isKycSelfie()){
             setKycSelfieView();
         } else {
             setKycLivenessView();
@@ -280,6 +277,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         }
     }
 
+    private Boolean isKycSelfie(){
+        return !remoteConfigInstance.getABTestPlatform().getString("Liveness Detection 1", "").equals("Liveness Detection 1");
+    }
+
     private void checkKtp(){
         showLoading();
         presenter.checkKtp(stepperModel.getKtpFile());
@@ -329,7 +330,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     private void retakeAction(int requestCode, Intent data){
-        if(!isKycSelfie){
+        if(!isKycSelfie()){
             switch (requestCode) {
                 case REQUEST_CODE_CAMERA_KTP:
                     stepperModel.setKtpFile(data.getStringExtra(EXTRA_STRING_IMAGE_RESULT));
@@ -439,7 +440,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     public void clickBackAction(){
-        if(!isKycSelfie){
+        if(!isKycSelfie()){
             if(listRetake.size() == 1){
                 switch (listRetake.get(0)){
                     case KYCConstant.KTP_RETAKE : {
