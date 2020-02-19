@@ -50,6 +50,7 @@ import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseChipItemVi
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseListViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
+import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.newproduct.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
@@ -71,7 +72,8 @@ import javax.inject.Inject
 
 class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
-        ShopProductEtalaseListViewHolder.ShopProductEtalaseChipListViewHolderListener {
+        ShopProductEtalaseListViewHolder.ShopProductEtalaseChipListViewHolderListener,
+        ShopProductImpressionListener {
 
     interface ShopPageProductListResultFragmentListener {
         fun onSortValueUpdated(sortValue: String)
@@ -144,6 +146,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopId?.let { viewModel.isMyShop(it) } ?: false
         } else false
 
+    private val isLogin: Boolean
+        get() = if (::viewModel.isInitialized) {
+            viewModel.isLogin
+        } else false
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.shopInfoResp.observe(this, Observer {
@@ -174,6 +181,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         return ShopProductAdapterTypeFactory(
                 null,
+                this,
                 this,
                 null,
                 this,
@@ -384,15 +392,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun renderProductList(productList: List<ShopProductViewModel>, hasNextPage: Boolean) {
         shopInfo?.let {
-            if (productList.isNotEmpty()) {
-                shopPageTracking?.impressionProductList(
-                        viewModel.isMyShop(it.shopCore.shopID),
-                        if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
-                        selectedEtalaseName, CustomDimensionShopPageAttribution.create(it.shopCore.shopID,
-                        it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution),
-                        productList, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name, it.freeOngkir.isActive
-                )
-            }
             if (!TextUtils.isEmpty(keyword) && prevAnalyticKeyword != keyword) {
                 shopPageTracking?.searchKeyword(viewModel.isMyShop(it.shopCore.shopID),
                         keyword,
@@ -434,7 +433,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseName,
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
-            context?.let {context ->
+            context?.let { context ->
                 val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(context, it.shopCore.shopID, selectedEtalaseId,
                         true, false)
                 startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
@@ -454,20 +453,46 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int,
                                   productPosition: Int) {
-        shopInfo?.let {
-            // shopTrackType is always from product
-//            shopPageTracking?.clickProduct(
-//                    viewModel.isMyShop(it.shopCore.shopID),
-//                    if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
-//                    selectedEtalaseName,
-//                    CustomDimensionShopPageAttribution.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-//                            it.goldOS.isGold == 1, shopProductViewModel.id, attribution),
-//                    shopProductViewModel, productPosition, shopId, it.shopCore.name, it.freeOngkir.isActive)
-        }
+        shopPageTracking?.clickProduct(
+                isMyShop,
+                isLogin,
+                selectedEtalaseName,
+                "",
+                CustomDimensionShopPageAttribution.create(
+                        shopInfo!!.shopCore.shopID,
+                        shopInfo!!.goldOS.isOfficial == 1,
+                        shopInfo!!.goldOS.isGold == 1,
+                        shopProductViewModel.id,
+                        attribution
+                ),
+                shopProductViewModel,
+                productPosition + 1,
+                shopId
 
+        )
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
                 shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, selectedEtalaseName)
                         ?: ""))
+    }
+
+    override fun onProductImpression(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
+        shopPageTracking?.impressionProductList(
+                isMyShop,
+                isLogin,
+                selectedEtalaseName,
+                "",
+                CustomDimensionShopPageAttribution.create(
+                        shopInfo!!.shopCore.shopID,
+                        shopInfo!!.goldOS.isOfficial == 1,
+                        shopInfo!!.goldOS.isGold == 1,
+                        shopProductViewModel.id,
+                        attribution
+                ),
+                shopProductViewModel,
+                productPosition + 1,
+                shopId
+
+        )
     }
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {

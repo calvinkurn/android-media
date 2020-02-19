@@ -101,7 +101,7 @@ public class ShopPageTrackingConstant {
     public static final String MVC_DETAIL = "mvc detail";
     public static final String USE_VOUCHER = "use voucher";
     public static final String CLICK_PRODUCT_PICTURE = "click product picture";
-    public static final String IMPRESSION_OF_PRODUCT_LIST = "impression of product list";
+    public static final String PRODUCT_LIST_IMPRESSION = "product list impression";
     public static final String CLICK_VIEW_ALL = "click view all";
     public static final String CLICK_ADD_PRODUCT_FROM_ZERO_PRODUCT = "click add product from zero product";
     public static final String IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT = "impression of add product from zero product";

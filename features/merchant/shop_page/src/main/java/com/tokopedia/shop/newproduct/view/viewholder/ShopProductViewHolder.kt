@@ -18,6 +18,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
+import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 
 import java.text.NumberFormat
 import java.text.ParseException
@@ -30,6 +31,7 @@ import java.util.ArrayList
 class ShopProductViewHolder(
         itemView: View,
         private val shopProductClickedListener: ShopProductClickedListener?,
+        private val shopProductImpressionListener: ShopProductImpressionListener?,
         private val isFixWidth: Boolean,
         private val deviceWidth: Int,
         @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef private val shopTrackType: Int,
@@ -107,6 +109,12 @@ class ShopProductViewHolder(
                 },
                 BlankSpaceConfig()
         )
+
+        productCard.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
+            override fun onViewHint() {
+                shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, adapterPosition)
+            }
+        })
 
         if (isFixWidth && deviceWidth > 0 && layoutType == ShopProductViewHolder.GRID_LAYOUT) {
             itemView.layoutParams.width = (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN).toInt()
