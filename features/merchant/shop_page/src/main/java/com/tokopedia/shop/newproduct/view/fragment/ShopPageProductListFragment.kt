@@ -89,7 +89,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_MERCHANT_VOUCHER = 207
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
-        private const val REQUEST_CODE_ADD_ETALASE = 111
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
@@ -238,13 +237,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onAddEtalaseChipClicked() {
+        shopPageTracking?.clickAddEtalase(customDimensionShopPage)
         redirectToAddEtalasePage()
     }
 
     private fun redirectToAddEtalasePage() {
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE_ADD)
-            startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE)
+            RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE_ADD)
         }
     }
 
@@ -438,11 +437,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
             REQUEST_CODE_MEMBERSHIP_STAMP -> {
                 loadMembership()
-            }
-            REQUEST_CODE_ADD_ETALASE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    shopPageTracking?.clickAddEtalase(customDimensionShopPage)
-                }
             }
             else -> {
             }

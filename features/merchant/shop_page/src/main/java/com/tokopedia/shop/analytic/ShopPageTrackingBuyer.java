@@ -301,7 +301,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 CLICK_SHOP_PAGE,
                 SHOP_PAGE_SELLER,
                 CLICK_ADD_ETALASE_BUTTON,
-                SUCCESS,
+                "",
                 customDimensionShopPage
         );
     }
