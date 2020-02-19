@@ -8,7 +8,7 @@
     android:layout_centerVertical="true"
     app:typographyType="heading_5"
     android:gravity="end"
-    android:text="@string/lihat_semua"
+    android:text="@string/text_reload"
     android:textColor="@color/g_500"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
