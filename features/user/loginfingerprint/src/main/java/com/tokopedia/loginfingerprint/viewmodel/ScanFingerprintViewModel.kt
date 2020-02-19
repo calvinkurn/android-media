@@ -41,17 +41,13 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
 
     fun validateFingerprint() {
         val signature = cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-        validateFingerprintUseCase.setRequestParams(validateFingerprintUseCase.createRequestParams(
-                preferenceHelper.getFingerprintUserId(),
-                "12",
-                signature
-        ))
-        validateFingerprintUseCase.executeUseCase(onSuccessValidateFP(), onErrorValidateFP())
+        val param = validateFingerprintUseCase.createRequestParams(preferenceHelper.getFingerprintUserId(), signature)
+        validateFingerprintUseCase.executeUseCase(param, onSuccessValidateFP(), onErrorValidateFP())
     }
 
     private fun loginToken(validateToken: String){
-        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
-                userSession, validateToken), LoginTokenSubscriber(userSession,
+        val param = LoginTokenUseCase.generateParamForFingerprint(validateToken, preferenceHelper.getFingerprintUserId())
+        loginTokenUseCase.executeLoginFingerprint(param, LoginTokenSubscriber(userSession,
                 { mutableLoginFingerprintResult.value = Success(it) },
                 onErrorValidateFP(), {}, {}))
     }

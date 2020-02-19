@@ -22,10 +22,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
 
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation rootProject.ext.miscDependencies.lottie
 
@@ -37,19 +34,17 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.supportV4
+
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
-
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     //test
     testImplementation rootProject.ext.testDependencies.junit

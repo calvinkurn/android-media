@@ -18,8 +18,9 @@ class ValidateFingerprintUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<ValidateFingerprintPojo>(graphqlRepository) {
 
-    fun executeUseCase(onSuccess: (ValidateFingerprintResult) -> Unit, onError: (Throwable) -> Unit){
+    fun executeUseCase(param: Map<String, String>, onSuccess: (ValidateFingerprintResult) -> Unit, onError: (Throwable) -> Unit){
         rawQueries[LoginFingerprintQueryConstant.QUERY_VALIDATE_FINGERPRINT]?.let { query ->
+            setRequestParams(param)
             setTypeClass(ValidateFingerprintPojo::class.java)
             setGraphqlQuery(query)
             execute({
@@ -28,11 +29,12 @@ class ValidateFingerprintUseCase @Inject constructor(
         }
     }
 
-    fun createRequestParams(userId: String, otpType: String, signature: FingerprintSignature): Map<String, String>{
+    fun createRequestParams(userId: String, signature: FingerprintSignature): Map<String, String>{
         return mapOf(
                 LoginFingerprintQueryConstant.PARAM_USER_ID to userId,
-                LoginFingerprintQueryConstant.PARAM_OTP_TYPE to otpType,
+                LoginFingerprintQueryConstant.PARAM_OTP_TYPE to LoginFingerprintQueryConstant.VALIDATE_OTP_TYPE,
                 LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
+                LoginFingerprintQueryConstant.PARAM_MODE to LoginFingerprintQueryConstant.VALIDATE_MODE,
                 LoginFingerprintQueryConstant.PARAM_TIME_UNIX to signature.datetime
         )
     }
