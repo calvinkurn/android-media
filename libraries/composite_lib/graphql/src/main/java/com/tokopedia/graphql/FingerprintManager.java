@@ -40,4 +40,36 @@ public class FingerprintManager {
         }
         return key.replace(" ", "");  //If exception caught then it will return plain string without spaces
     }
+
+    /**
+     * To generate list of hash for incoming request.
+     * @param requests
+     * @return
+     */
+    public static String getQueryDigest(List<GraphqlRequest> requests) {
+        if (requests == null) {
+            return "";
+        }
+
+        StringBuilder digestBuilder = new StringBuilder();
+        for (GraphqlRequest request : requests) {
+            if (request == null || request.isNoCache() || TextUtils.isEmpty(request.getQuery())) {
+                continue;
+            }
+
+            String oName;
+            if (TextUtils.isEmpty(request.getOperationName())) {
+                oName = CacheHelper.getQueryName(request.getQuery());
+            } else {
+                oName = request.getOperationName();
+            }
+
+            digestBuilder.append(oName)
+                    .append('-')
+                    .append(request.getMd5())
+                    .append(',');
+        }
+
+        return digestBuilder.toString();
+    }
 }
