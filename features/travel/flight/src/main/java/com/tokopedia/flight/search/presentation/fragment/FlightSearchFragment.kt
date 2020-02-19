@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -28,6 +28,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightSortBottomSheet
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.di.FlightSearchComponent
@@ -610,8 +611,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         bottom_action_filter_sort.setButton1OnClickListener {
             addToolbarElevation()
-            startActivityForResult(FlightSearchFilterActivity.createInstance(activity, isReturning(), flightFilterModel),
-                    REQUEST_CODE_SEARCH_FILTER)
+//            startActivityForResult(FlightSearchFilterActivity.createInstance(activity, isReturning(), flightFilterModel),
+//                    REQUEST_CODE_SEARCH_FILTER)
+            FlightFilterBottomSheet.getInstance().show(requireFragmentManager(), FlightFilterBottomSheet.TAG_FILTER)
         }
         bottom_action_filter_sort.visibility = View.GONE
     }

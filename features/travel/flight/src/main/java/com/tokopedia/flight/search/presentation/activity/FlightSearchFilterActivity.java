@@ -259,7 +259,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     public void onAirlineLabelClicked() {
 //        replaceFragment(FlightFilterAirlineFragment.newInstance(), FlightFilterAirlineFragment.TAG);
-        FlightFilterAirlineBottomSheet.Companion.getInstance().show(getSupportFragmentManager(), FlightFilterAirlineBottomSheet.TAG_FILTER_AIRLINE);
+        FlightFilterAirlineBottomSheet filterAirlineBottomSheet = FlightFilterAirlineBottomSheet.Companion.getInstance();
+        filterAirlineBottomSheet.setListener(this);
+        filterAirlineBottomSheet.show(getSupportFragmentManager(), FlightFilterAirlineBottomSheet.TAG_FILTER_AIRLINE);
     }
 
     @Override
