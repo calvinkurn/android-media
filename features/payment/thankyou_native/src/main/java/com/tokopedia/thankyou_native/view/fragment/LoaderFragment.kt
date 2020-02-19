@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,22 +9,27 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.ThanksPageData
 import com.tokopedia.thankyou_native.view.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.view.activity.ThankYouPageDataLoadCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.thank_fragment_loader.*
 import javax.inject.Inject
 
 class LoaderFragment : BaseDaggerFragment() {
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
+
+    var callback: ThankYouPageDataLoadCallback? = null
 
     override fun getScreenName(): String = ""
 
@@ -60,12 +66,35 @@ class LoaderFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
-        Toaster.make(view!!, "Loaded", Toaster.LENGTH_SHORT)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ThankYouPageDataLoadCallback)
+            callback = context
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        callback = null
+    }
+
+    private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
+        loading_layout.visibility = View.GONE
+        /*globalError.setOnClickListener {
+            thanksPageDataViewModel.getThanksPageData(654186, "tokopediatest")
+        }*/
+
+
+
+    }
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
-        Toaster.make(view!!, "Failed", Toaster.LENGTH_SHORT)
+        loading_layout.visibility = View.GONE
+        callback?.onThankYouPageDataLoaded(data)
+    }
+
+    companion object {
+        fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
+            arguments = bundle
+        }
     }
 
 }

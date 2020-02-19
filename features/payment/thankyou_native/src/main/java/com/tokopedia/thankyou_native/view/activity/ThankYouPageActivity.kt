@@ -1,19 +1,60 @@
 package com.tokopedia.thankyou_native.view.activity
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.thankyou_native.di.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
+import com.tokopedia.thankyou_native.domain.ThanksPageData
+import com.tokopedia.thankyou_native.view.fragment.InstantPaymentFragment
 import com.tokopedia.thankyou_native.view.fragment.LoaderFragment
 
 
-class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent> {
+class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
 
-    override fun getNewFragment(): Fragment? = LoaderFragment()
+
+    override fun getNewFragment(): Fragment? {
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        return LoaderFragment.getLoaderFragmentInstance(bundle)
+    }
+
+    override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
+        val fragment = getGetFragmentByPaymentMode(thanksPageData)
+        supportFragmentManager.beginTransaction()
+                .replace(parentViewResourceID, fragment, tagFragment)
+                .commit()
+    }
 
     override fun getComponent(): ThankYouPageComponent = DaggerThankYouPageComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication)
                     .baseAppComponent).build()
+
+    private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): Fragment {
+        return InstantPaymentFragment.getLoaderFragmentInstance(null)
+    }
+
+    companion object {
+
+        const val ARG_PAYMENT_ID = "paymentID"
+        const val ARG_MERCHANT = "merchant"
+        const val ARG_PLATFORM = "platform"
+
+        fun createIntent(context: Context, paymentID: String, merchant: String, platform: String) = Intent(context, ThankYouPageActivity::class.java).apply {
+            putExtra(ARG_MERCHANT, merchant)
+            putExtra(ARG_PAYMENT_ID, paymentID)
+            putExtra(ARG_PLATFORM, platform)
+
+        }
+    }
+}
+
+interface ThankYouPageDataLoadCallback {
+    fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData)
 }

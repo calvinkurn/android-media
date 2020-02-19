@@ -1,5 +1,5 @@
 query ThanksPageData($paymentID : Int!,$merchant: String!){
-  thanksPageData(paymentID: $paymentID,$merchant: $merchant){
+  thanksPageData(paymentID: $paymentID,merchant: $merchant){
     payment_status
     gateway_name
     gateway_image

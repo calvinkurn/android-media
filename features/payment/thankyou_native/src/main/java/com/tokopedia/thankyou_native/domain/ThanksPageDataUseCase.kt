@@ -35,6 +35,6 @@ class ThanksPageDataUseCase @Inject constructor(
 
     companion object {
         const val PARAM_PAYMENT_ID = "paymentID"
-        const val PARAM_MERCHANT = "paymentID"
+        const val PARAM_MERCHANT = "merchant"
     }
 }

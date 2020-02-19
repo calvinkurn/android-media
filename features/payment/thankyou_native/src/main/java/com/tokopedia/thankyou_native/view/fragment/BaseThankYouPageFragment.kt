@@ -13,7 +13,6 @@ abstract class BaseThankYouPageFragment : BaseDaggerFragment() {
 
     lateinit var rootView: View
 
-    private val viewCache = HashMap<Int, View?>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.thank_fragment_base, container, false)
@@ -25,14 +24,6 @@ abstract class BaseThankYouPageFragment : BaseDaggerFragment() {
     }
 
     abstract fun onCreateView(inflater: LayoutInflater): View?
-
-    fun <T : View> findViewById(@IdRes id: Int): T? {
-        if(viewCache.containsKey(id))
-            return viewCache[id] as T
-        val view = rootView.findViewById<View>(id)
-        viewCache[id] = view
-        return viewCache[id] as T
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
