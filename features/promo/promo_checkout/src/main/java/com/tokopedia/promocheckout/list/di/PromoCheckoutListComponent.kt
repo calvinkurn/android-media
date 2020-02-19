@@ -12,4 +12,5 @@ interface PromoCheckoutListComponent{
     fun inject(promoCheckoutListDigitalFragment: PromoCheckoutListDigitalFragment)
     fun inject(promoCheckoutListFlightFragment: PromoCheckoutListFlightFragment)
     fun inject(promoCheckoutListHotelFragment: PromoCheckoutListHotelFragment)
+    fun inject(promoCheckoutListUmrahFragment: PromoCheckoutListUmrahFragment)
 }

@@ -87,7 +87,7 @@ class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
             variables["params"] = deviceDiagInput
             val gqlDeviceDiagInput = GraphqlUseCase()
             gqlDeviceDiagInput.clearRequest()
-            gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(applicationContext.resources,
+            gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(getResource(),
                     R.raw.gql_insert_device_diag), DeviceDiagInputResponse::class.java, variables, false))
             gqlDeviceDiagInput.execute(object : Subscriber<GraphqlResponse>() {
                 override fun onCompleted() {
@@ -107,6 +107,9 @@ class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
                                 //                                finalPriceData.setValue(inData);
                                 val result = HomeResult()
                                 result.isSuccess = true
+                                if (homeResultData.value?.deviceDisplayName != null) {
+                                    result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+                                }
                                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
                                 homeResultData.setValue(result)
                             } else {
@@ -137,8 +140,8 @@ class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
         val variables = HashMap<String, Any>()
         variables["params"] = tradeInParams
         launchCatchError(block = {
-            val query = GraphqlHelper.loadRawString(applicationContext.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
-            val response = getMYRepository().getGQLData(query, ValidateTradePDP::class.java, variables)
+            val query = GraphqlHelper.loadRawString(getResource(), com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
+            val response = repository?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
             checkIfElligible(response, jsonObject)
         }, onError = {
             it.printStackTrace()
@@ -197,6 +200,8 @@ class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
         }
         val result = HomeResult()
         result.isSuccess = true
+        result.maxPrice = maxPrice
+        result.minPrice = minPrice
         if (diagnosedPrice > 0) {
             if (tradeInType != TRADEIN_MONEYIN) {
                 if (diagnosedPrice > tradeInParams.newPrice) {
@@ -209,13 +214,16 @@ class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
             }
             result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
-            result.displayMessage = String.format("%1\$s - %2\$s",
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+            result.displayMessage = String.format("%1\$s",
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true))
             result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
 
         }
-        result.deviceDisplayName = devicedisplayname
+        if (homeResultData.value?.deviceDisplayName != null) {
+            result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+        } else {
+            result.deviceDisplayName = devicedisplayname
+        }
         progBarVisibility.value = false
         homeResultData.value = result
     }

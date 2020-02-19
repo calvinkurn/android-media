@@ -27,66 +27,6 @@ import javax.inject.Inject
  */
 class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
-    companion object {
-
-        val SCREEN_LOGIN = "Login page"
-        val SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page"
-        val SCREEN_REGISTER_EMAIL = "Register with Email Page"
-
-        private val EVENT_CLICK_LOGIN = "clickLogin"
-        private val EVENT_REGISTER_LOGIN = "registerLogin"
-        private val EVENT_LOGIN_ERROR = "loginError"
-        private val EVENT_LOGIN_SUCCESS = "loginSuccess"
-        private val EVENT_LOGIN_CLICK = "clickLogin"
-        private val EVENT_SUCCESS_SMART_LOCK = "eventSuccessSmartLock"
-        private val EVENT_CLICK_BACK = "clickBack"
-        private val EVENT_CLICK_CONFIRM = "clickConfirm"
-        private val EVENT_CLICK_REGISTER = "clickRegister"
-        val EVENT_REGISTER_SUCCESS = "registerSuccess"
-        private val EVENT_CLICK_HOME_PAGE = "clickHomePage"
-        val EVENT_CLICK_USER_PROFILE = "clickUserProfile"
-
-        private val CATEGORY_LOGIN = "Login"
-        private val CATEGORY_SMART_LOCK = "Smart Lock"
-        private val CATEGORY_ACTIVATION_PAGE = "activation page"
-        val CATEGORY_REGISTER = "Register"
-        private val CATEGORY_REGISTER_PAGE = "register page"
-        private val CATEGORY_WELCOME_PAGE = "welcome page"
-        private val CATEGORY_LOGIN_PAGE = "login page"
-        private val CATEGORY_LOGIN_PAGE_SMART_LOCK = "login page smart lock"
-
-
-        private val ACTION_REGISTER = "Register"
-        private val ACTION_LOGIN_ERROR = "Login Error"
-        private val ACTION_LOGIN_SUCCESS = "Login Success"
-        private val ACTION_SUCCESS = "Success"
-        private val ACTION_CLICK_CHANNEL = "Click Channel"
-        val ACTION_REGISTER_SUCCESS = "Register Success"
-        private val ACTION_LOGIN_EMAIL = "click on button masuk"
-        private val ACTION_LOGIN_FACEBOOK = "click on button facebook"
-        private val ACTION_LOGIN_GOOGLE = "click on button google"
-        private val ACTION_TICKER_LOGIN = "click on ticker login"
-        private val ACTION_LINK_TICKER_LOGIN = "click ticker link"
-        private val ACTION_CLOSE_TICKER_LOGIN = "click on button close ticker"
-        private val ACTION_CLICK_ON_BUTTON_SOCMED = "click on button socmed"
-        private val ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED = "click on button close socmed"
-        private val ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN = "click on button popup smart login"
-
-        private val LABEL_REGISTER = "Register"
-        private val LABEL_PASSWORD = "Kata Sandi"
-        val LABEL_EMAIL = "Email"
-        val LABEL_GPLUS = "Google Plus"
-        val LABEL_FACEBOOK = "Facebook"
-        private val LABEL_SAVE_PASSWORD = "Save Password"
-        private val LABEL_NEVER_SAVE_PASSWORD = "Never"
-        val LABEL_GMAIL = "Gmail"
-        private val LABEL_YES = "yes - "
-        private val LABEL_NO = "no - "
-
-        val GOOGLE = "google"
-        val FACEBOOK = "facebook"
-    }
-
     fun trackScreen(activity: Activity, screenName: String) {
         Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                 + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
@@ -97,7 +37,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNext(inputText: String) {
 
-        val hashMap : Map<String,Any>
+        val hashMap: Map<String, Any>
 
         when {
             Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
@@ -128,7 +68,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNextFail(inputText: String, errorMessage: String) {
 
-        val hashMap : Map<String,Any>
+        val hashMap: Map<String, Any>
 
         when {
             Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
@@ -158,7 +98,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     //#3
     fun trackClickOnNextSuccess(inputText: String) {
 
-        val hashMap : Map<String,Any>
+        val hashMap: Map<String, Any>
 
         when {
             Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
@@ -658,14 +598,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     private fun onSuccessLoginWithEmail(registerAnalytics: RegisterAnalytics) {
         trackClickOnLoginButtonSuccess()
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                ACTION_LOGIN_EMAIL,
-                "success"
-        ))
-
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_LOGIN_SUCCESS,
                 CATEGORY_LOGIN,
@@ -759,7 +691,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventClickSocmedButton(){
+    fun eventClickSocmedButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -768,7 +700,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventClickCloseSocmedButton(){
+    fun eventClickCloseSocmedButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -777,7 +709,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventClickYesSmartLoginDialogButton(){
+    fun eventClickYesSmartLoginDialogButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -786,12 +718,21 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventClickNoSmartLoginDialogButton(){
+    fun eventClickNoSmartLoginDialogButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN,
                 LABEL_NO + "email"
+        ))
+    }
+
+    fun eventViewBanner() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_VIEW_LOGIN_IRIS,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_VIEW_BANNER,
+                LABEL_BEBAS_ONGKIR
         ))
     }
 
@@ -813,5 +754,68 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
             UserSessionInterface.LOGIN_METHOD_PHONE -> "Phone Number"
             else -> loginMethod
         }
+    }
+
+    companion object {
+
+        val SCREEN_LOGIN = "Login page"
+        val SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page"
+        val SCREEN_REGISTER_EMAIL = "Register with Email Page"
+
+        private val EVENT_CLICK_LOGIN = "clickLogin"
+        private val EVENT_REGISTER_LOGIN = "registerLogin"
+        private val EVENT_LOGIN_ERROR = "loginError"
+        private val EVENT_LOGIN_SUCCESS = "loginSuccess"
+        private val EVENT_LOGIN_CLICK = "clickLogin"
+        private val EVENT_SUCCESS_SMART_LOCK = "eventSuccessSmartLock"
+        private val EVENT_CLICK_BACK = "clickBack"
+        private val EVENT_CLICK_CONFIRM = "clickConfirm"
+        private val EVENT_CLICK_REGISTER = "clickRegister"
+        private val EVENT_REGISTER_SUCCESS = "registerSuccess"
+        private val EVENT_CLICK_HOME_PAGE = "clickHomePage"
+        private val EVENT_CLICK_USER_PROFILE = "clickUserProfile"
+        private val EVENT_VIEW_LOGIN_IRIS = "viewLoginIris"
+
+        private val CATEGORY_LOGIN = "Login"
+        private val CATEGORY_SMART_LOCK = "Smart Lock"
+        private val CATEGORY_ACTIVATION_PAGE = "activation page"
+        private val CATEGORY_REGISTER = "Register"
+        private val CATEGORY_REGISTER_PAGE = "register page"
+        private val CATEGORY_WELCOME_PAGE = "welcome page"
+        private val CATEGORY_LOGIN_PAGE = "login page"
+        private val CATEGORY_LOGIN_PAGE_SMART_LOCK = "login page smart lock"
+
+
+        private val ACTION_REGISTER = "Register"
+        private val ACTION_LOGIN_ERROR = "Login Error"
+        private val ACTION_LOGIN_SUCCESS = "Login Success"
+        private val ACTION_SUCCESS = "Success"
+        private val ACTION_CLICK_CHANNEL = "Click Channel"
+        private val ACTION_REGISTER_SUCCESS = "Register Success"
+        private val ACTION_LOGIN_EMAIL = "click on button masuk"
+        private val ACTION_LOGIN_FACEBOOK = "click on button facebook"
+        private val ACTION_LOGIN_GOOGLE = "click on button google"
+        private val ACTION_TICKER_LOGIN = "click on ticker login"
+        private val ACTION_LINK_TICKER_LOGIN = "click ticker link"
+        private val ACTION_CLOSE_TICKER_LOGIN = "click on button close ticker"
+        private val ACTION_CLICK_ON_BUTTON_SOCMED = "click on button socmed"
+        private val ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED = "click on button close socmed"
+        private val ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN = "click on button popup smart login"
+        private val ACTION_VIEW_BANNER = "view banner"
+
+        private val LABEL_REGISTER = "Register"
+        private val LABEL_PASSWORD = "Kata Sandi"
+        val LABEL_EMAIL = "Email"
+        private val LABEL_GPLUS = "Google Plus"
+        val LABEL_FACEBOOK = "Facebook"
+        private val LABEL_SAVE_PASSWORD = "Save Password"
+        private val LABEL_NEVER_SAVE_PASSWORD = "Never"
+        val LABEL_GMAIL = "Gmail"
+        private val LABEL_YES = "yes - "
+        private val LABEL_NO = "no - "
+        private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
+
+        val GOOGLE = "google"
+        val FACEBOOK = "facebook"
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.age_restriction.viewcontroller
 
 import android.app.Activity
 import android.content.Intent
+import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -11,7 +12,7 @@ import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.design.dialog.AccessRequestFragmentDialog
+import com.tokopedia.design.dialog.AccessRequestDialogFragment
 import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -40,6 +41,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     }
 
     override fun clickAccept() {
+        sendGeneralEvent(AccessRequestDialogFragment.STATUS_AGREE)
         when (selection) {
             notLogin -> {
                 navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST)
@@ -88,6 +90,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     }
 
     override fun clickDeny() {
+        sendGeneralEvent(AccessRequestDialogFragment.STATUS_DENY)
         when (selection) {
             notLogin -> {
                 sendGeneralEvent(eventClick,
@@ -211,13 +214,6 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
 
     private fun getResId() = R.layout.age_restriction_verifcation_dialog
 
-    private fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(event,
-                category,
-                action,
-                label)
-    }
-
     private fun showDialogFragment(titleText: String, bodyText: String, positiveButton: String, negativeButton: String?, layoutResId: Int = 0) {
         val fragmentManager = supportFragmentManager
         val accessDialog = AccessRequestFragmentDialog.newInstance()
@@ -244,5 +240,13 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                         .putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_age_not_adult)))
             }
         }
+    }
+
+    private fun sendGeneralEvent(label: String) {
+        val trackApp = TrackApp.getInstance()
+        trackApp.gtm.sendGeneralEvent("clickPDP",
+                "product detail page",
+                "click - asking permission trade in",
+                label)
     }
 }

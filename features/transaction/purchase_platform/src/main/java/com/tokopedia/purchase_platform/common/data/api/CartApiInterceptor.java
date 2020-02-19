@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.common.data.api;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
@@ -21,7 +21,7 @@ import okhttp3.Response;
 public class CartApiInterceptor extends TkpdAuthInterceptor {
 
     private static final String RESPONSE_STATUS_REQUEST_DENIED = "REQUEST_DENIED";
-    private static final String CART_ERROR_GLOBAL = "Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya";
+    public static final String CART_ERROR_GLOBAL = "Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya";
 
     @Inject
     public CartApiInterceptor(Context context,

@@ -15,6 +15,10 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.*
+import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import rx.Subscriber
 import java.util.*
 
@@ -39,13 +43,14 @@ class FinalPriceViewModel(val context: Application, val intent: Intent) : BaseTr
         val variables1 = HashMap<String, Any>()
         variables1["params"] = params
         val gqlDeviceDiagInput = GraphqlUseCase()
-        gqlDeviceDiagInput.clearRequest()
-        gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
+        gqlDeviceDiagInput.clearRequest()AccessRequestListener
+import com.tokopedia.common_tradein.model.TradeInParams
+        gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(getResource(),
                 R.raw.gql_get_device_diag), DeviceDiagGQL::class.java, variables1, false))
         if (tradeInParams!!.isUseKyc == 1) {
             val variables2 = HashMap<String, Any>()
             variables2["projectID"] = 4
-            gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
+            gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(getResource(),
                     R.raw.gql_get_kyc_status), KYCDetailGQL::class.java, variables2, false))
         }
 
@@ -89,8 +94,8 @@ class FinalPriceViewModel(val context: Application, val intent: Intent) : BaseTr
                     "page" to 1,
                     "show_corner" to false,
                     "show_address" to true)
-            val queryString = GraphqlHelper.loadRawString(context.resources, R.raw.tradein_address_corner)
-            val response = getMYRepository().getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request)
+            val queryString = GraphqlHelper.loadRawString(getResource(), R.raw.tradein_address_corner)
+            val response = repository?.getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request) as MoneyInKeroGetAddressResponse.ResponseData?
             progBarVisibility.value = false
             response?.let {
                 it.keroGetAddress.data?.let { listAddress ->

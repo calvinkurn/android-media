@@ -1,11 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
@@ -23,12 +21,8 @@ import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_hotlist_nav.*
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
 import java.util.*
 
 
@@ -41,12 +35,14 @@ class HotlistNavActivity : BaseActivity(),
 
     private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var searchNavContainer: SearchNavigationView? = null
-    private lateinit var hotListFragment: Fragment
     private lateinit var alias: String
     private lateinit var hotlistFragment: BaseCategorySectionFragment
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
 
+    private val EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL"
+    private val EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS"
+    private val EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER"
 
     private val STATE_GRID = 1
     private val STATE_LIST = 2
@@ -69,39 +65,6 @@ class HotlistNavActivity : BaseActivity(),
         initBottomSheetListener()
         initButtons()
 
-    }
-
-
-    companion object {
-
-        private val EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL"
-        private val EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY"
-        private val EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS"
-        private val EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER"
-
-        @JvmStatic
-        fun createInstanceUsingAlias(context: Context,
-                                     alias: String,
-                                     trackerAttribution: String): Intent {
-            val intent = Intent(context, HotlistNavActivity::class.java)
-            val extras = Bundle()
-            extras.putString(EXTRA_HOTLIST_PARAM_ALIAS, alias)
-            try {
-                extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, URLDecoder.decode(trackerAttribution, "UTF-8"))
-            } catch (e: UnsupportedEncodingException) {
-                extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, trackerAttribution.replace("%20".toRegex(), " "))
-            }
-
-            intent.putExtras(extras)
-            return intent
-        }
-
-
-        @JvmStatic
-        fun isHotlistNavEnabled(context: Context): Boolean {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            return remoteConfig.getBoolean(RemoteConfigKey.APP_HOTLIST_NAV_ENABLE, true)
-        }
     }
 
     private fun initButtons() {
@@ -210,7 +173,6 @@ class HotlistNavActivity : BaseActivity(),
 
     private fun attachFragment() {
         var trackerAttribution = ""
-        var searchQuery = ""
         intent.extras?.let {
             if (it.containsKey(EXTRA_HOTLIST_PARAM_URL)) {
                 val url = it.getString(EXTRA_HOTLIST_PARAM_URL, "")
@@ -219,7 +181,6 @@ class HotlistNavActivity : BaseActivity(),
                 } else {
                     generateAliasUsingURL(url)
                 }
-                searchQuery = it.getString(EXTRA_HOTLIST_PARAM_QUERY, "")
                 trackerAttribution = it.getString(EXTRA_HOTLIST_PARAM_TRACKER, "")
             } else {
                 alias = intent.data?.path?.replace("/", "") ?: ""
@@ -227,10 +188,10 @@ class HotlistNavActivity : BaseActivity(),
         } ?: run {
             alias = intent.data?.path?.replace("/", "") ?: ""
         }
-        val Fragment = HotlistNavFragment.createInstanceUsingAlias(alias, trackerAttribution)
-        hotlistFragment = Fragment as BaseCategorySectionFragment
+        val fragment = HotlistNavFragment.createInstanceUsingAlias(alias, trackerAttribution)
+        hotlistFragment = fragment as BaseCategorySectionFragment
         supportFragmentManager.beginTransaction().add(R.id.parent_view,
-                Fragment).commit()
+                fragment).commit()
         hotlistFragment.setSortListener(this)
         initToolbar(alias)
 
@@ -247,7 +208,7 @@ class HotlistNavActivity : BaseActivity(),
 
     private fun applyFilter(filterParameter: Map<String, String>?) {
 
-        if (filterParameter == null) return;
+        if (filterParameter == null) return
 
         val presentFilterList = hotlistFragment.getSelectedFilter()
         if (presentFilterList.size < filterParameter.size) {
@@ -267,7 +228,6 @@ class HotlistNavActivity : BaseActivity(),
         }
         hotlistFragment.applyFilterToSearchParameter(filterParameter)
         hotlistFragment.setSelectedFilter(HashMap(filterParameter))
-        hotlistFragment.clearDataFilterSort()
         hotlistFragment.reloadData()
     }
 

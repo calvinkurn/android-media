@@ -6,6 +6,7 @@ import com.tokopedia.age_restriction.usecase.UpdateUserDobUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 
+private const val minimumAdultAge = 21
 class VerifyDOBViewModel @Inject constructor(private val updateUserDobUseCase: UpdateUserDobUseCase) : BaseARViewModel() {
 
     val userIsAdult = MutableLiveData<Boolean>()
@@ -33,7 +34,7 @@ class VerifyDOBViewModel @Inject constructor(private val updateUserDobUseCase: U
 
         }
         if (userDOBUpdateResponse.userDobUpdateData.isDobVerified) {
-            if (userDOBUpdateResponse.userDobUpdateData.age > 18)
+            if (userDOBUpdateResponse.userDobUpdateData.age > minimumAdultAge)
                 userIsAdult.value = true
             else
                 userNotAdult.value = true

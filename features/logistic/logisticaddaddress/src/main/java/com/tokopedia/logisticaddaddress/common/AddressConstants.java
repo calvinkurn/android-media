@@ -49,10 +49,24 @@ public class AddressConstants {
     public static final String EXTRA_IS_CHANGES_REQUESTED = "EXTRA_IS_CHANGES_REQUESTED";
     public static final String EXTRA_IS_UNNAMED_ROAD = "EXTRA_UNNAMED_ROAD";
     public static final String EXTRA_IS_NULL_ZIPCODE = "EXTRA_IS_NULL_ZIPCODE";
-    public static final Double MONAS_LAT = -6.175794;
-    public static final Double MONAS_LONG = 106.826457;
+
+    private static final Double MONAS_LAT = -6.175794;
+    private static final Double MONAS_LONG = 106.826457;
+    private static final Double INDONESIA_CENTER_LAT = -5.002085;
+    private static final Double INDONESIA_CENTER_LONG = 111.865003;
+    public static final String EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW";
+    public static final String EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL";
+
+    public static final Double DEFAULT_LAT = MONAS_LAT;
+    public static final Double DEFAULT_LONG = MONAS_LONG;
+
+    public static final Float ZOOM_LEVEL_THRESHOLD = 14f;
+
     public static final String ANA_POSITIVE = "positive";
     public static final String ANA_NEGATIVE = "negative";
+
+    public static final String LOGISTIC_LABEL = "logistic";
+    public static final String NON_LOGISTIC_LABEL = "non-logistic";
 
     public static final int GPS_REQUEST = 108;
     public static final String SCREEN_NAME_USER_NEW = "/user/address/create";

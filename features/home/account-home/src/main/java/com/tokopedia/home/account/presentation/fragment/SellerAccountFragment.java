@@ -90,10 +90,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onResume() {
         super.onResume();
-        if (isOpenShop) {
-            getData();
-            isOpenShop = false;
-        }
+        isLoaded = false;
+        getData();
     }
 
     @Override
@@ -102,30 +100,34 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        if (getContext() != null) {
-            GraphqlClient.init(getContext());
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            isLoaded = false;
             getData();
-            swipeRefreshLayout.setOnRefreshListener(this::getData);
-        }
+        });
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            if (!isLoaded) {
-                getData();
-                isLoaded = !isLoaded;
-            }
+            getData();
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
         }
     }
 
     private void getData() {
-        String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                .new_query_saldo_balance);
-        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
-                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit), saldoQuery);
+        if (!isLoaded && getContext() != null) {
+            String saldoQuery = GraphqlHelper.loadRawString(
+                    getContext().getResources(),
+                    R.raw.new_query_saldo_balance);
+            presenter.getSellerData(
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit),
+                    saldoQuery,
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_shop_location)
+            );
+            isLoaded = !isLoaded;
+        }
     }
 
     @Override
@@ -209,9 +211,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == OPEN_SHOP_SUCCESS){
+        if (resultCode == OPEN_SHOP_SUCCESS) {
+            isLoaded = false;
             getData();
-        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION){
+        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION) {
             userSession.setIsMSISDNVerified(true);
             moveToCreateShop();
         }

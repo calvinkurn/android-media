@@ -11,8 +11,10 @@ import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
@@ -114,7 +116,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                     // When user does not enable location
                     showGpsDisabledNotification()
                     rlCurrentLocation.setOnClickListener {
-                        AddNewAddressUtils.hideKeyboard(etSearch, context)
                         showLocationInfoBottomSheet()
                     }
                 }
@@ -124,7 +125,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         etSearch.run {
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi()
+                AddNewAddressAnalytics.eventClickFieldCariLokasi(eventLabel = LOGISTIC_LABEL)
             }
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
@@ -156,7 +157,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
 
         rlCurrentLocation.setOnClickListener {
-            AddNewAddressUtils.hideKeyboard(etSearch, context)
             actionListener.useCurrentLocation()
             dismiss()
         }
@@ -181,9 +181,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress()
+            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(eventLabel = LOGISTIC_LABEL)
             onCloseButtonClick()
-            AddNewAddressUtils.hideKeyboard(etSearch, context)
         }
     }
 
@@ -245,17 +244,21 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
     }
 
+    override fun onPause() {
+        KeyboardHandler.hideSoftKeyboard(activity)
+        super.onPause()
+    }
+
     override fun onPoiListClicked(placeId: String) {
         placeId.run {
-            AddNewAddressUtils.hideKeyboard(etSearch, context)
             actionListener.onGetPlaceId(placeId)
             dismiss()
         }
-        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList()
+        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(eventLabel = LOGISTIC_LABEL)
     }
 
     private fun showLocationInfoBottomSheet() {
-        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow = true)
         fragmentManager?.run {
             locationInfoBottomSheetFragment.show(this, "")
         }

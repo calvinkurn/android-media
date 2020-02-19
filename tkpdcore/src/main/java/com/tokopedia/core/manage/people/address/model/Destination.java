@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.util.MethodChecker;
 
 /**
@@ -337,11 +336,6 @@ public class Destination implements Parcelable {
                 + ", " + postalCode
                 + "<br>" + provinceName
                 + "<br>" + receiverPhone;
-    }
-
-    public String getGeoLocation(Context context) {
-        this.geoLocation = GeoLocationUtils.reverseGeoCode(context, latitude, longitude);
-        return this.geoLocation;
     }
 
     public boolean isCompleted() {

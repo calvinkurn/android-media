@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">loginregister</string>
 
-
     <string name="title_resend_activation_email">Kirim Ulang</string>
     <string name="january">Januari</string>
     <string name="february">Februari</string>
@@ -193,6 +192,7 @@
     <string name="wrong_email_format">Format email salah</string>
     <string name="send_verif_to_email">Kami akan mengirimkan kode aktivasi melalui email</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
+    <string name="error_maximal_name">Nama terlalu panjang</string>
     <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimum 8 angka</string>
     <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 6 karakter</string>
     <string name="minimal_6_character">Minimum 6 karakter</string>
@@ -326,9 +326,26 @@
 
     <string name="socmed_account_as">sebagai</string>
 
+    <!-- SHOP CREATION -->
+    <string name="title_landing_shop_creation">Ciptakan Peluangmu!</string>
+    <string name="desc_landing_shop_creation">Raih 90 juta pembeli dimulai dari satu tempat! Buka usaha tanpa biaya dan dapatkan pengalaman mengelola usaha semudah update status</string>
+    <string name="free_open_shop">Buka Toko Gratis</string>
+    <string name="welcome_title">Selamat datang!</string>
+    <string name="your_phone_number">Nomor handphonemu</string>
+    <string name="your_fullname">Nama lengkapmu</string>
+    <string name="phone_id_idn">+62</string>
+    <string name="desc_phone_shop_creation">Pastikan nomor Kamu aktif agar proses pendaftaran lebih cepat</string>
+    <string name="desc_name_shop_creation">Kerahasiaan datamu akan kami jaga</string>
+    <string name="btn_continue_shop_creation">Lanjut</string>
+    <string name="please_fill_name">Harap isi Nama anda</string>
+
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_create_password">Cancel create password</string>
     <string name="error_login_user_cancel_activate_account">Cancel activate account</string>
     <string name="error_login_user_cancel_login_phone">Cancel login phone</string>
+
+    <!--  TICKER  -->
+    <string name="title_ticker_from_atc">Yuk, lanjutin belanjanya sekarang!</string>
+    <string name="desc_ticker_from_atc">Khusus pengguna baru, dapetin cashback 80% hingga Rp30.000.</string>
 
 </resources>

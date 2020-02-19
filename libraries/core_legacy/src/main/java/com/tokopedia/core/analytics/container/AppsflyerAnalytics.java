@@ -14,7 +14,6 @@ import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -26,13 +25,12 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
 import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
@@ -40,7 +38,6 @@ import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 public class AppsflyerAnalytics extends ContextAnalytics {
     private static final String TAG = AppsflyerAnalytics.class.getSimpleName();
     private static boolean isAppsflyerCallbackHandled = false;
-    public static final String APPSFLYER_KEY = "SdSopxGtYr9yK8QEjFVHXL";
     private static final String KEY_INSTALL_SOURCE = "install_source";
     public static final String GCM_PROJECT_NUMBER = "692092518182";
 
@@ -63,7 +60,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         final String userID = sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000";
 
 
-        CommonUtils.dumper("Appsflyer login userid " + userID);
+        Timber.d("Appsflyer login userid " + userID);
 
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
             @Override
@@ -114,7 +111,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            CommonUtils.dumper("Error key Appsflyer");
+            Timber.d("Error key Appsflyer");
             initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID, conversionListener);
         }
     }
@@ -270,22 +267,6 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 })).toBlocking().single();
     }
 
-
-    public String getAdsIdDirect() {
-
-        AdvertisingIdClient.Info adInfo;
-        try {
-            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());
-            return adInfo.getId();
-        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-            return "";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
     public String getUniqueId() {
         return AppsFlyerLib.getInstance().getAppsFlyerUID(getContext());
     }
@@ -296,7 +277,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 getContext().getPackageName()));
         AppsFlyerLib.getInstance().setCustomerUserId(userID);
         AppsFlyerLib.getInstance().setAdditionalData(addData);
-        CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
+        Timber.d(TAG + " appsflyer initiated with UID " + userID);
     }
 
     @Override

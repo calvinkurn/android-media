@@ -11,8 +11,6 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 
 public interface TkpdCoreRouter {
-    String CART_ACTIVITY_OLD
-            = "com.tokopedia.transaction.cart.activity.CartActivity";
 
     String CART_ACTIVITY_NEW
             = "com.tokopedia.purchase_platform.features.checkout.view.feature.cartlist.CartActivity";
@@ -22,9 +20,7 @@ public interface TkpdCoreRouter {
     String ACTIVITY_SIMPLE_HOME = "com.tokopedia.tkpd.home.SimpleHomeActivity";
 
     String FRAGMENT_TYPE = "FRAGMENT_TYPE";
-    int INVALID_FRAGMENT = 0;
     int WISHLIST_FRAGMENT = 1;
-    int PRODUCT_HISTORY_FRAGMENT = 2;
 
     String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     int RESO_ALL = 2;

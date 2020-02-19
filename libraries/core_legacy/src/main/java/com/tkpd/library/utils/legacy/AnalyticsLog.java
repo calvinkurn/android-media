@@ -3,7 +3,7 @@ package com.tkpd.library.utils.legacy;
 import android.content.Context;
 import android.os.Build;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -84,28 +84,6 @@ public class AnalyticsLog {
                 "get invalid token"
         );
     }
-
-
-    public static void logGroupChatWebSocketError(Context context, String url, String error) {
-        TkpdCoreRouter coreRouter = RouterUtils.getRouterFromContext(context);
-        SessionHandler sessionHandler = coreRouter.legacySessionHandler();
-        GCMHandler gcmHandler = coreRouter.legacyGCMHandler();
-        AnalyticsLog.log(context, "ErrorType=LogGroupChatWebSocketError!"
-                + " Error=" + error
-                + " UserID=" + (sessionHandler.getLoginID()
-                .equals("") ? "0" : sessionHandler.getLoginID())
-                + " Url=" + "'" + url + "'"
-                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
-                + " AppVersion=" + GlobalConfig.VERSION_NAME
-                + " AppCode=" + GlobalConfig.VERSION_CODE
-                + " OSVersion=" + Build.VERSION.RELEASE
-                + " DeviceModel=" + android.os.Build.MODEL
-                + " DeviceId=" + "'" + gcmHandler.getRegistrationId() + "'"
-                + " "
-
-        );
-    }
-
 
     public static void logNetworkError(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url, int errorCode) {
         String baseUrl = getBaseUrl(url);

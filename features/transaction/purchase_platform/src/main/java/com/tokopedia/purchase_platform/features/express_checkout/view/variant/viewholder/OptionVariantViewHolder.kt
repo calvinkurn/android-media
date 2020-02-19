@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.VariantChangeListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_SELECTED
 import kotlinx.android.synthetic.main.item_checkout_variant_option.view.*
 
 /**
@@ -26,23 +26,23 @@ class OptionVariantViewHolder(view: View, val listener: VariantChangeListener) :
         val LAYOUT = R.layout.item_checkout_variant_option
     }
 
-    fun bind(viewModel: OptionVariantViewModel?) {
-        if (viewModel != null) {
-            if (!viewModel.hasAvailableChild) viewModel.currentState = STATE_NOT_AVAILABLE
-            if (viewModel.currentState != STATE_NOT_AVAILABLE) {
+    fun bind(uiModel: OptionVariantUiModel?) {
+        if (uiModel != null) {
+            if (!uiModel.hasAvailableChild) uiModel.currentState = STATE_NOT_AVAILABLE
+            if (uiModel.currentState != STATE_NOT_AVAILABLE) {
                 itemView.setOnClickListener {
-                    listener.onSelectedVariantChanged(viewModel)
+                    listener.onSelectedVariantChanged(uiModel)
                 }
             }
             when {
-                viewModel.currentState == STATE_SELECTED -> renderSelectedVariant(viewModel)
-                viewModel.currentState == STATE_NOT_SELECTED -> {
-                    renderNotSelectedVariant(viewModel)
+                uiModel.currentState == STATE_SELECTED -> renderSelectedVariant(uiModel)
+                uiModel.currentState == STATE_NOT_SELECTED -> {
+                    renderNotSelectedVariant(uiModel)
                     itemView.ll_not_selected_variant_container.background =
                             ContextCompat.getDrawable(itemView.context, R.drawable.bg_variant_item_round_not_selected)
                 }
-                viewModel.currentState == STATE_NOT_AVAILABLE -> {
-                    renderNotSelectedVariant(viewModel)
+                uiModel.currentState == STATE_NOT_AVAILABLE -> {
+                    renderNotSelectedVariant(uiModel)
                     itemView.ll_not_selected_variant_container.background =
                             ContextCompat.getDrawable(itemView.context, R.drawable.bg_variant_item_round_disabled)
                 }
@@ -50,12 +50,12 @@ class OptionVariantViewHolder(view: View, val listener: VariantChangeListener) :
         }
     }
 
-    private fun renderSelectedVariant(viewModel: OptionVariantViewModel) {
+    private fun renderSelectedVariant(uiModel: OptionVariantUiModel) {
         itemView.ll_not_selected_variant_container.visibility = View.GONE
         itemView.cv_selected_variant_container.visibility = View.VISIBLE
-        if (viewModel.variantHex.isNotBlank()) {
+        if (uiModel.variantHex.isNotBlank()) {
             try {
-                val backgroundDrawable = getBackgroundDrawable(viewModel)
+                val backgroundDrawable = getBackgroundDrawable(uiModel)
                 itemView.v_variant_color_selected.background = backgroundDrawable
                 itemView.v_variant_color_selected.visibility = View.VISIBLE
             } catch (e: IllegalArgumentException) {
@@ -64,24 +64,24 @@ class OptionVariantViewHolder(view: View, val listener: VariantChangeListener) :
         } else {
             itemView.v_variant_color_selected.visibility = View.GONE
         }
-        itemView.tv_variant_value_selected.text = viewModel.variantName
+        itemView.tv_variant_value_selected.text = uiModel.variantName
     }
 
-    private fun getBackgroundDrawable(viewModel: OptionVariantViewModel): Drawable? {
-        if (viewModel.variantHex.equals("#ffffff") || viewModel.variantHex.equals("#fff")) {
+    private fun getBackgroundDrawable(uiModel: OptionVariantUiModel): Drawable? {
+        if (uiModel.variantHex.equals("#ffffff") || uiModel.variantHex.equals("#fff")) {
             return ContextCompat.getDrawable(itemView.context, R.drawable.circle_color_variant_indicator_white)
         }
         val backgroundDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.circle_color_variant_indicator)
-        backgroundDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(viewModel.variantHex), PorterDuff.Mode.SRC_ATOP)
+        backgroundDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(uiModel.variantHex), PorterDuff.Mode.SRC_ATOP)
         return backgroundDrawable
     }
 
-    private fun renderNotSelectedVariant(viewModel: OptionVariantViewModel) {
+    private fun renderNotSelectedVariant(uiModel: OptionVariantUiModel) {
         itemView.cv_selected_variant_container.visibility = View.GONE
         itemView.ll_not_selected_variant_container.visibility = View.VISIBLE
-        if (viewModel.variantHex.isNotBlank()) {
+        if (uiModel.variantHex.isNotBlank()) {
             try {
-                val backgroundDrawable = getBackgroundDrawable(viewModel)
+                val backgroundDrawable = getBackgroundDrawable(uiModel)
                 itemView.v_variant_color_not_selected.background = backgroundDrawable
                 itemView.v_variant_color_not_selected.visibility = View.VISIBLE
             } catch (e: IllegalArgumentException) {
@@ -90,7 +90,7 @@ class OptionVariantViewHolder(view: View, val listener: VariantChangeListener) :
         } else {
             itemView.v_variant_color_not_selected.visibility = View.GONE
         }
-        itemView.tv_variant_value_not_selected.text = viewModel.variantName
+        itemView.tv_variant_value_not_selected.text = uiModel.variantName
     }
 
 }

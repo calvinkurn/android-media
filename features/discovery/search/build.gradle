@@ -1,10 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "de.mannodermaus.android-junit5"
-
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
@@ -117,6 +114,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation "org.json:json:20140107"
 }
 
 project.ext {
@@ -124,6 +122,16 @@ project.ext {
     groupId = 'com.tokopedia.discovery'
     versionName = "0.0.1"
     artifactName ="search-release"
+    unitTestJavaIncludes = [
+            '**/UrlParamUtils.*'
+    ]
+    unitTestKotlinIncludes = [
+            '**/SearchShopViewModel.*',
+            '**/SearchViewModel.*',
+            '**/SearchKotlinExtKt.*',
+    ]
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

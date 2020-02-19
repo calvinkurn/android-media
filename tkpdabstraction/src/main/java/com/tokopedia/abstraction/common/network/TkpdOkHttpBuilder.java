@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.common.network;
 
-import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,20 +34,7 @@ public class TkpdOkHttpBuilder {
         return this;
     }
 
-    public TkpdOkHttpBuilder addNetworkInterceptor(Interceptor interceptor) {
-        builder.addNetworkInterceptor(interceptor);
-        return this;
-    }
-
     public TkpdOkHttpBuilder addDebugInterceptor() {
-//        if (GlobalConfig.isAllowDebuggingTools()) {
-//            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), DeveloperOptions.CHUCK_ENABLED);
-//            Boolean allowLogOnNotification = cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
-//            this.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
-//                    .showNotification(allowLogOnNotification));
-//            this.addInterceptor(new DebugInterceptor());
-//        }
-
         return this;
     }
 

@@ -95,7 +95,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     private var productNavListAdapter: ProductNavListAdapter? = null
 
     private var productList: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
-    private var CpmList: ArrayList<CpmItem> = ArrayList()
+    private var cpmList: ArrayList<CpmItem> = ArrayList()
     private lateinit var productTypeFactory: ProductTypeFactory
     private var quickFilterList = ArrayList<Filter>()
 
@@ -114,11 +114,11 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     private val HOTLIST_SCREEN_NAME = "hotlist"
 
-    var hotListAlias = ""
+    private var hotListAlias = ""
 
     companion object {
-        private val EXTRA_ALIAS = "extra_alias"
-        private val EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION"
+        private const val EXTRA_ALIAS = "extra_alias"
+        private const val EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION"
 
         fun createInstanceUsingAlias(alias: String, trackerAttribution: String): Fragment {
             val fragment = HotlistNavFragment()
@@ -228,7 +228,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
             when (it) {
                 is Success -> {
-                    LoadQuickFilters(it.data as ArrayList)
+                    loadQuickFilters(it.data as ArrayList)
                 }
             }
         })
@@ -239,7 +239,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 is Success -> {
                     if ((it.data as ArrayList<CpmItem>).size > 0) {
                         cpm_recyclerview.show()
-                        LoadCPM(it.data as ArrayList<CpmItem>)
+                        loadCPM(it.data as ArrayList<CpmItem>)
                         hotlistNavAnalytics.eventCpmTopAdsImpression(isUserLoggedIn(),
                                 hotlistDetail?.shareFilePath ?: "")
                     } else {
@@ -309,7 +309,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
         productNavListAdapter?.addShimmer()
 
-        cpmAdsAdapter = CpmAdsAdapter(CpmList, this)
+        cpmAdsAdapter = CpmAdsAdapter(cpmList, this)
         cpm_recyclerview.adapter = cpmAdsAdapter
         cpm_recyclerview.layoutManager = LinearLayoutManager(activity,
                 RecyclerView.HORIZONTAL, false)
@@ -368,9 +368,9 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     private fun attachScrollListener() {
         nested_recycler_view.setOnScrollChangeListener { v: NestedScrollView,
-                                                         scrollX: Int,
+                                                         _: Int,
                                                          scrollY: Int,
-                                                         oldScrollX: Int,
+                                                         _: Int,
                                                          oldScrollY: Int ->
 
             if (v.getChildAt(v.childCount - 1) != null) {
@@ -398,16 +398,16 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
 
-    private fun LoadQuickFilters(list: ArrayList<Filter>) {
+    private fun loadQuickFilters(list: ArrayList<Filter>) {
         quickFilterList.clear()
         quickFilterList.addAll(list)
         quickfilter_recyclerview.adapter?.notifyDataSetChanged()
 
     }
 
-    private fun LoadCPM(list: ArrayList<CpmItem>) {
-        CpmList.clear()
-        CpmList.addAll(list)
+    private fun loadCPM(list: ArrayList<CpmItem>) {
+        cpmList.clear()
+        cpmList.addAll(list)
         cpm_recyclerview.adapter?.notifyDataSetChanged()
     }
 
@@ -514,7 +514,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         if (userSession.isLoggedIn) {
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
-                removeWishlist(productItem.id.toString(), userSession.userId, position)
+                removeWishlist(productItem.id.toString(), userSession.userId)
                 hotlistNavAnalytics.eventWishistClicked(hotListAlias,
                         hotlistType,
                         isUserLoggedIn(),
@@ -522,7 +522,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                         productItem.id.toString(),
                         false)
             } else {
-                addWishlist(productItem.id.toString(), userSession.userId, position)
+                addWishlist(productItem.id.toString(), userSession.userId)
                 hotlistNavAnalytics.eventWishistClicked(hotListAlias,
                         hotlistType,
                         isUserLoggedIn(),
@@ -531,7 +531,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                         true)
             }
         } else {
-            launchLoginActivity(productItem.id.toString())
+            launchLoginActivity()
         }
     }
 
@@ -621,7 +621,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onSuccessAddWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+        productNavListAdapter?.updateWishlistStatus(parseStringToInt(productId), true)
         enableWishlistButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
     }
@@ -632,32 +632,32 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
+        productNavListAdapter?.updateWishlistStatus(parseStringToInt(productId), false)
         enableWishlistButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
     }
 
 
-    fun enableWishlistButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId?.toInt() ?: 0, true)
+    private fun enableWishlistButton(productId: String) {
+        productNavListAdapter?.setWishlistButtonEnabled(parseStringToInt(productId), true)
     }
 
-    fun disableWishlistButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId?.toInt() ?: 0, false)
+    private fun disableWishlistButton(productId: String) {
+        productNavListAdapter?.setWishlistButtonEnabled(parseStringToInt(productId), false)
     }
 
-    private fun removeWishlist(productId: String, userId: String, adapterPosition: Int) {
+    private fun removeWishlist(productId: String, userId: String) {
         removeWishlistActionUseCase.createObservable(productId,
                 userId, this)
     }
 
-    private fun addWishlist(productId: String, userId: String, adapterPosition: Int) {
+    private fun addWishlist(productId: String, userId: String) {
         addWishlistActionUseCase.createObservable(productId, userId,
                 this)
 
     }
 
-    private fun launchLoginActivity(productId: String) {
+    private fun launchLoginActivity() {
         RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
@@ -682,8 +682,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     override fun onShareButtonClicked() {
         hotlistNavAnalytics.eventShareClicked(isUserLoggedIn(),
-                hotlistDetail?.shareFilePath ?: "",
-                "")
+                hotlistDetail?.shareFilePath ?: "")
 
 
         val remoteConfig = FirebaseRemoteConfigImpl(activity)
@@ -720,5 +719,13 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         quickFilterAdapter = null
 
         super.onDestroyView()
+    }
+
+    private fun parseStringToInt(input: String): Int {
+        return try {
+            input.toInt()
+        } catch (e: NumberFormatException) {
+            0
+        }
     }
 }

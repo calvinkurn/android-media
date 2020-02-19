@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
+import android.webkit.URLUtil
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -48,6 +50,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
+import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
@@ -55,14 +58,15 @@ import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
@@ -86,16 +90,15 @@ open class PlayViewStateImpl(
         voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
         sprintSaleViewHolderListener: ChatroomContract.ChatItem.SprintSaleViewHolderListener,
         groupChatPointsViewHolderListener: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
-        sendMessage: (viewModel: PendingChatViewModel) -> Unit,
+        private val sendMessage: (viewModel: PendingChatViewModel) -> Unit,
         dynamicButtonClickListener: ChatroomContract.DynamicButtonItem.DynamicButtonListener,
         interactiveButtonClickListener: ChatroomContract.DynamicButtonItem.InteractiveButtonListener
 
 ) : PlayViewState {
 
     private var viewModel: ChannelInfoViewModel? = null
-    private var stickyComponentViewModel: StickyComponentViewModel? = null
+    private var chatPermitViewModel: ChatPermitViewModel? = null
     private var dynamicButtonsViewModel: DynamicButtonsViewModel? = null
-    private var videoStreamViewModel: VideoStreamViewModel? = null
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
@@ -127,9 +130,7 @@ open class PlayViewStateImpl(
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
     private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
-    private var videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
     private var gradientBackground = view.findViewById<View>(R.id.top_guideline)
-
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -143,7 +144,6 @@ open class PlayViewStateImpl(
     private var onPauseTime: Long = 0
     private var onEndTime: Long = 0
     private var onLeaveTime: Long = 0
-    private val onTrackingTime: Long = 0
 
     private var interactionAnimationHelper: InteractionAnimationHelper
     private var overflowMenuHelper: OverflowMenuHelper
@@ -202,11 +202,11 @@ open class PlayViewStateImpl(
                 .resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
-        var dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
+        val dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
                 dynamicButtonClickListener, interactiveButtonClickListener, interactionGuideline)
 
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        var buttonSpace = SpaceItemDecoration(activity.getResources()
+        val buttonSpace = SpaceItemDecoration(activity.getResources()
                 .getDimension(com.tokopedia.design.R.dimen.dp_8).toInt(), 2)
         dynamicButtonAdapter = DynamicButtonsAdapter(dynamicButtonTypeFactory)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
@@ -238,15 +238,7 @@ open class PlayViewStateImpl(
         }
 
         sendButton.setOnClickListener {
-            val emp = !TextUtils.isEmpty(replyEditText.text.toString().trim { it <= ' ' })
-            if (emp) {
-                val pendingChatViewModel = PendingChatViewModel(checkText(replyEditText.text.toString()),
-                        userSession.userId,
-                        userSession.name,
-                        userSession.profilePicture,
-                        false)
-                sendMessage(pendingChatViewModel)
-            }
+            shouldSendMessage(replyEditText.text.toString(), isQuickReply = false)
         }
         errorView.setOnClickListener {  }
 
@@ -393,13 +385,12 @@ open class PlayViewStateImpl(
         showBottomSheetFirstTime(it)
         backgroundHelper.setDefaultBackground()
         onSuccessGetInfo(it)
-
     }
 
     override fun onSuccessGetInfo(it: ChannelInfoViewModel) {
         loadingView.hide()
 
-        var needCueVideo = viewModel?.videoId != it.videoId
+        val needCueVideo = viewModel?.videoId != it.videoId
         viewModel = it
         viewModel?.infoUrl = it.infoUrl
 
@@ -431,6 +422,8 @@ open class PlayViewStateImpl(
         sponsorHelper.setSponsor()
         overflowMenuHelper.assignViewModel(it)
         stickyComponentHelper.assignViewModel(it)
+
+        chatPermitViewModel = it.chatPermitViewModel
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
@@ -585,15 +578,10 @@ open class PlayViewStateImpl(
     }
 
     override fun onQuickReplyClicked(message: String?) {
-        val text = replyEditText.text.toString()
-        val index = replyEditText.selectionStart
-        replyEditText.setText(MethodChecker.fromHtml(String.format(
-                "%s %s %s",
-                text.substring(0, index),
-                message,
-                text.substring(index)
-        )))
-        sendButton.performClick()
+        shouldSendMessage(
+                MethodChecker.fromHtml(message),
+                isQuickReply = true
+        )
 
         analytics.eventClickQuickReply(
                 String.format("%s - %s", viewModel?.channelId, message))
@@ -994,14 +982,18 @@ open class PlayViewStateImpl(
         if (url.isBlank())
             return
 
-        if (!::webviewDialog.isInitialized) {
-            webviewDialog = PlayWebviewDialogFragment.createInstance(url)
-        } else {
-            webviewDialog.setUrl(url)
-        }
+        if (URLUtil.isNetworkUrl(url)) {
+            if (!::webviewDialog.isInitialized) {
+                webviewDialog = PlayWebviewDialogFragment.createInstance(url)
+            } else {
+                webviewDialog.setUrl(url)
+            }
 
-        if (!webviewDialog.isAdded)
-            webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
+            if (!webviewDialog.isAdded)
+                webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
+        } else {
+            RouteManager.route(activity, url)
+        }
     }
 
     override fun onBackPressed(): Boolean {
@@ -1256,6 +1248,23 @@ open class PlayViewStateImpl(
         return false
     }
 
+    override fun setChatPermitDisabled(chatPermitViewModel: ChatPermitViewModel) {
+        this.chatPermitViewModel = chatPermitViewModel
+    }
+
+    override fun onChatDisabledError(message: String, action: String) {
+        Toaster.make(
+                view,
+                chatPermitViewModel?.errorMessage?:message,
+                type = Toaster.TYPE_ERROR,
+                duration = Snackbar.LENGTH_LONG,
+                actionText = action,
+                clickListener = View.OnClickListener {
+                    RouteManager.route(view.context, GroupChatUrl.FAQ_URL)
+                }
+        )
+    }
+
     private fun toggleHorizontalVideo(): (Boolean) -> Unit {
         return {
             if(it) {
@@ -1403,5 +1412,19 @@ open class PlayViewStateImpl(
 
     private fun getCurrentTime(): Long {
         return Date().time / 1000L
+    }
+
+    private fun shouldSendMessage(rawMessage: CharSequence, isQuickReply: Boolean) {
+        val emp = !TextUtils.isEmpty(rawMessage.trim { it <= ' ' })
+        if (emp) {
+            val pendingChatViewModel = PendingChatViewModel(checkText(rawMessage.toString()),
+                    userSession.userId,
+                    userSession.name,
+                    userSession.profilePicture,
+                    isInfluencer = false,
+                    isChatDisabled = !(chatPermitViewModel?.isChatDisabled?:false),
+                    isQuickReply = isQuickReply)
+            sendMessage(pendingChatViewModel)
+        }
     }
 }

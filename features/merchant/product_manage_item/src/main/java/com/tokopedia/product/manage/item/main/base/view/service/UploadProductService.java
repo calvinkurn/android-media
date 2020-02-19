@@ -13,19 +13,19 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.BuildConfig;
 import com.tokopedia.product.manage.item.R;
-import com.tokopedia.product.manage.item.common.util.AddProductException;
+import com.tokopedia.product.manage.item.common.util.UploadProductErrorHandler;
+import com.tokopedia.product.manage.item.common.util.UploadProductException;
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.main.base.di.component.DaggerAddProductServiceComponent;
@@ -42,11 +42,14 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 import static com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.PRODUCT_VIEW_MODEL;
 
@@ -61,11 +64,15 @@ public class UploadProductService extends BaseService implements AddProductServi
     private ProductViewModel productViewModel = null;
     private SaveInstanceCacheManager cacheManager = null;
     private boolean isUploadProductFromDraft = true;
+
     @Inject
     AddProductServicePresenter presenter;
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    Gson gson;
 
     private NotificationManager notificationManager;
     private HashMap<Integer, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
@@ -156,7 +163,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         result.putExtras(bundle);
         sendBroadcast(result);
 
-        logException(t);
+        logException(t, productSubmitNotificationListener.getProductViewModel());
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
@@ -181,27 +188,22 @@ public class UploadProductService extends BaseService implements AddProductServi
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
 
-    private void logException(Throwable t) {
+    private void logException(Throwable t, ProductViewModel productViewModel) {
         try {
             if (!BuildConfig.DEBUG) {
-                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s | %s",
+                String errorMessage = String.format(
+                        "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",\"%s\"",
                         userSession.getUserId(),
                         userSession.getEmail(),
-                        getExceptionMessage(t));
-                AddProductException exception = new AddProductException(errorMessage, t);
-                Crashlytics.logException(exception);
-            }
-        } catch (IllegalStateException ex) {
-            ex.printStackTrace();
-        }
-    }
+                        UploadProductErrorHandler.getExceptionMessage(t),
+                        URLEncoder.encode(gson.toJson(productViewModel), "UTF-8"));
+                UploadProductException exception = new UploadProductException(errorMessage, t);
+                UploadProductErrorHandler.logExceptionToCrashlytics(exception);
 
-    private String getExceptionMessage(Throwable t) {
-        if (t instanceof ResponseV4ErrorException
-                && ((ResponseV4ErrorException) t).getErrorList().size() > 0) {
-            return ((ResponseV4ErrorException) t).getErrorList().get(0);
-        } else {
-            return t.getLocalizedMessage();
+                Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

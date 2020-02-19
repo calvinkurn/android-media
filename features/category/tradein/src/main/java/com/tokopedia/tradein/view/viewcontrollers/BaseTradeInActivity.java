@@ -37,9 +37,9 @@ import org.jetbrains.annotations.NotNull;
 import com.tokopedia.common_tradein.utils.TradeInUtils;
 
 
-public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extends BaseViewModelActivity<T> {
+public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extends BaseViewModelActivity<T> implements ContextInterface {
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
-    public static final int LOGIN_REQUEST = 514;
+    public static final int LOGIN_REimplements ContextInterfaceQUEST = 514;
     public static final int TRADEIN_HOME_REQUEST = 22345;
     public static final int APP_SETTINGS = 9988;
     public static final int TRADEIN_OFFLINE = 0;
@@ -118,6 +118,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
                 TRADEIN_TYPE = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_OFFLINE);
         }
         super.onCreate(savedInstanceState);
+        ((BaseTradeInViewModel) bVM).setContextInterface(this);
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
             TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
@@ -271,4 +272,8 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
         super.onBackPressed();
     }
 
+    @Override
+    public Context getContextFromActivity() {
+        return this;
+    }
 }
