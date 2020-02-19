@@ -5,10 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.presentation.presenter.HomeViewModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.TabBusinessViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Module
 @HomeScope
@@ -21,4 +23,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TabBusinessViewModel::class)
     internal abstract fun tabBusinessViewModel(viewModel: TabBusinessViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeViewModel::class)
+    internal abstract fun homeViewModel(viewModel: HomeViewModel): ViewModel
 }

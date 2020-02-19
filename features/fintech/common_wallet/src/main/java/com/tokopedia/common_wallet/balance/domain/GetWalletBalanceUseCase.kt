@@ -9,6 +9,7 @@ import com.tokopedia.common_wallet.R
 import com.tokopedia.common_wallet.balance.data.CacheUtil
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceEntity
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
+import com.tokopedia.common_wallet.balance.domain.query.WalletBalance
 import com.tokopedia.common_wallet.balance.view.ActionBalanceModel
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.graphql.GraphqlConstant
@@ -32,6 +33,7 @@ import javax.inject.Inject
  * Created by nabillasabbaha on 9/10/19.
  */
 
+@Deprecated("Use GetCoroutineWalletBalanceUseCase coroutine")
 class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext private val context: Context,
                                                   private val graphqlUseCase: GraphqlUseCase,
                                                   private val remoteConfig: RemoteConfig,
@@ -44,7 +46,7 @@ class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext priv
     override fun createObservable(requestParams: RequestParams): Observable<WalletBalanceModel> {
         return Observable.just(requestParams)
                 .flatMap(Func1<RequestParams, Observable<GraphqlResponse>> {
-                    val query = GraphqlHelper.loadRawString(context.resources, R.raw.wallet_balance_query)
+                    val query = WalletBalance.query
                     if (!TextUtils.isEmpty(query)) {
                         graphqlUseCase.clearRequest()
                         graphqlUseCase.addRequest(GraphqlRequest(query, WalletBalanceResponse::class.java, false))

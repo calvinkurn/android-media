@@ -9,7 +9,7 @@ import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.helper.Resource
+import com.tokopedia.home.beranda.helper.Result
 import io.mockk.*
 import kotlinx.coroutines.*
 import org.junit.Before
@@ -24,7 +24,7 @@ class HomeRepositoryTest {
     private lateinit var repository: HomeRepository
     private val dao = mockk<HomeDao>(relaxed = true)
     private val service = mockk<HomeRemoteDataSource>()
-    private lateinit var observerHome: Observer<Resource<HomeData>>
+    private lateinit var observerHome: Observer<Result<HomeData>>
 
         @Rule
         @JvmField
@@ -50,9 +50,9 @@ class HomeRepositoryTest {
         }
 
         verifyOrder {
-            observerHome.onChanged(Resource.loading(null)) // Init loading with no value
-            observerHome.onChanged(Resource.loading(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
-            observerHome.onChanged(Resource.error(exception, mockHomeData)) // Retrofit 403 error
+            observerHome.onChanged(Result.loading(null)) // Init loading with no value
+            observerHome.onChanged(Result.loading(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
+            observerHome.onChanged(Result.error(exception, mockHomeData)) // Retrofit 403 error
         }
         confirmVerified(observerHome)
     }
@@ -74,9 +74,9 @@ class HomeRepositoryTest {
         }
 
         verifyOrder {
-            observerHome.onChanged(Resource.loading(null)) // Loading from remote source
-            observerHome.onChanged(Resource.loading(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
-            observerHome.onChanged(Resource.success(fakeHomeData)) // Success
+            observerHome.onChanged(Result.loading(null)) // Loading from remote source
+            observerHome.onChanged(Result.loading(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
+            observerHome.onChanged(Result.success(fakeHomeData)) // Success
         }
 
         coVerify(exactly = 1) {
@@ -101,9 +101,9 @@ class HomeRepositoryTest {
         }
 
         verifyOrder {
-            observerHome.onChanged(Resource.loading(null)) // Loading from remote source
-            observerHome.onChanged(Resource.loading(fakeHomeData)) // Loading from remote source
-            observerHome.onChanged(Resource.success(fakeHomeData)) // Success
+            observerHome.onChanged(Result.loading(null)) // Loading from remote source
+            observerHome.onChanged(Result.loading(fakeHomeData)) // Loading from remote source
+            observerHome.onChanged(Result.success(fakeHomeData)) // Success
         }
 
         confirmVerified(observerHome)
