@@ -36,11 +36,11 @@ buildscript {
         classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.9.0") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
-        if (!project.hasProperty("disable-performance-plugin")) {
-            classpath('com.google.firebase:firebase-plugins:1.1.1') {
-                exclude group: 'com.google.guava', module: 'guava-jdk5'
-            }
+
+        classpath('com.google.firebase:firebase-plugins:1.1.1') {
+            exclude group: 'com.google.guava', module: 'guava-jdk5'
         }
+
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61"
         classpath "com.google.gms:google-services:4.3.3"
         classpath "io.fabric.tools:gradle:1.27.1"
