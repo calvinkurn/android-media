@@ -96,7 +96,7 @@ def renameAPKFile(variant, density, versionCode) {
 }
 
 def isFirebasePerformanceLogEnabled() {
-    if (project.hasProperty('firebasePerformanceDebug') && firebasePerformanceDebug == "true") {
+    if (project.hasProperty('firebasePerformanceLogEnabled') && firebasePerformanceLogEnabled == "true") {
         return "true"
     }
     return "false"
@@ -199,7 +199,7 @@ android {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic HTTP/S network request monitoring
                 // for a specific build variant at compile time.
-                instrumentationEnabled isFirebasePerformanceLogEnabled().toBoolean()
+                instrumentationEnabled project.property("firebasePerformanceDebug").toBoolean()
             }
         }
         release {
@@ -249,7 +249,7 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
-        manifestPlaceholders = [firebasePerformanceDebugEnabled:isFirebasePerformanceLogEnabled()]
+        manifestPlaceholders = [firebasePerformanceLogEnabled:isFirebasePerformanceLogEnabled()]
     }
 
     dexOptions {
