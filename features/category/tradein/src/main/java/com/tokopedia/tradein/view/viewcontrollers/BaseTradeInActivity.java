@@ -130,7 +130,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black);
         }
-        TradeVM.getProgressBarVisibility().observe(this, (visibility) -> {
+        TradeVM.getProgBarVisibility().observe(this, (visibility) -> {
             if (visibility != null) {
                 if (visibility)
                     showProgressBar();
@@ -139,7 +139,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
             }
         });
 
-        TradeVM.getWarningmessage().observe(this, (message) -> {
+        TradeVM.getWarningMessage().observe(this, (message) -> {
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
@@ -151,7 +151,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
                 }
             }
         });
-        TradeVM.getErrormessage().observe(this, (message) -> {
+        TradeVM.getErrorMessage().observe(this, (message) -> {
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {

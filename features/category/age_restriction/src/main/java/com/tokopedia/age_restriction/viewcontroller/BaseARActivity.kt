@@ -22,8 +22,8 @@ import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() {
 
-    protected var isTncShowing = false
-    protected lateinit var arVM: T
+    private var isTncShowing = false
+    private lateinit var arVM: T
 
 
     companion object {
@@ -87,7 +87,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
 
 
         supportActionBar?.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
-        arVM.getProgressBarVisibility().observe(this, Observer<Boolean> { visibility ->
+        arVM.getProgBarVisibility().observe(this, Observer<Boolean> { visibility ->
             if (visibility != null) {
                 if (visibility)
                     showProgressBar()
@@ -96,7 +96,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
             }
         })
 
-        arVM.getWarningmessage().observe(this,Observer<String> { message ->
+        arVM.getWarningMessage().observe(this,Observer<String> { message ->
             hideProgressBar()
             if (!TextUtils.isEmpty(message)) {
                 try {
@@ -109,7 +109,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
 
             }
         })
-        arVM.getErrormessage().observe(this, Observer<String> { message ->
+        arVM.getErrorMessage().observe(this, Observer<String> { message ->
             hideProgressBar()
             if (!TextUtils.isEmpty(message)) {
                 try {

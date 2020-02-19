@@ -2,6 +2,7 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.content.res.Resources
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.tradein.TradeInRepository
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -13,16 +14,15 @@ open class BaseTradeInViewModel() : BaseViewModel() {
     protected var errorMessage = MutableLiveData<String>()
     private var contextInterface: ContextInterface? = null
 
-
-    fun getProgressBarVisibility(): MutableLiveData<Boolean> {
+    fun getProgBarVisibility(): LiveData<Boolean> {
         return progBarVisibility
     }
 
-    fun getWarningmessage(): MutableLiveData<String> {
+    fun getWarningMessage(): LiveData<String> {
         return warningMessage
     }
 
-    fun getErrormessage(): MutableLiveData<String> {
+    fun getErrorMessage(): LiveData<String> {
         return errorMessage
     }
 
