@@ -6,12 +6,18 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 /**
  * @author by furqan on 19/02/2020
  */
-class FlightFilterBottomSheet: BottomSheetUnify() {
+class FlightFilterBottomSheet : BottomSheetUnify() {
 
     override fun show(manager: FragmentManager, tag: String?) {
         super.show(manager, tag)
 
         FlightFilterAirlineBottomSheet.getInstance().show(manager, "NEW_TAG")
+    }
+
+    companion object {
+        const val TAG_FILTER = "TagFilterBottomSheet"
+
+        fun getInstance(): FlightFilterBottomSheet = FlightFilterBottomSheet()
     }
 
 }
