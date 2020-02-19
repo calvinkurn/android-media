@@ -351,7 +351,5 @@
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 
 # -- robust
--keeppackagenames
--ignorewarnings
 -dontwarn android.support.v4.**,**CompatHoneycomb,com.tenpay.android.**
 -optimizations !class/unboxing/enum,!code/simplification/arithmetic
