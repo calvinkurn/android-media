@@ -428,11 +428,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     tapActionLayoutDeals.setVisibility(View.VISIBLE);
                     tapActionLayoutDeals.removeAllViews();
                     int size = item.getTapActions().size();
+
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getTapActions().get(i);
-                        RedeemVoucherView redeemVoucherView;
-                        redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
-                        tapActionLayoutDeals.addView(redeemVoucherView);
+                        if(!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)){
+                            RedeemVoucherView redeemVoucherView;
+                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
+                            tapActionLayoutDeals.addView(redeemVoucherView);
+                        } else {
+                            String[] voucherCodes = actionButton.getHeaderObject().getVoucherCodes().split(",");
+                            for(int j=0;j<voucherCodes.length;j++){
+                                BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[j], j, actionButton.getHeaderObject().getItemLabel(), voucherCodes.length);
+                                tapActionLayoutDeals.addView(bookingCodeView);
+                            }
+                        }
                     }
                 }
 
