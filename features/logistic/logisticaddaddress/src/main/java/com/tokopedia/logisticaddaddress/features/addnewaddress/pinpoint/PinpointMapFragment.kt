@@ -280,7 +280,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             val latTarget = target?.latitude ?: 0.0
             val longTarget = target?.longitude ?: 0.0
 
-            presenter.clearCacheAutofill()
             presenter.autofill(latTarget, longTarget, zoomLevel)
         } else {
             whole_loading_container?.visibility = View.GONE
@@ -369,8 +368,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun onGetPlaceId(placeId: String) {
-
-        presenter.clearCacheGetDistrict()
         presenter.getDistrict(placeId)
     }
 
