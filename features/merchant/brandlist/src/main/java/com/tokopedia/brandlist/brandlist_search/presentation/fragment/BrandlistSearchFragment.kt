@@ -42,7 +42,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class BrandlistSearchFragment: BaseDaggerFragment(),
+class BrandlistSearchFragment : BaseDaggerFragment(),
         HasComponent<BrandlistSearchComponent>,
         BrandlistSearchTrackingListener,
         BrandlistSearchNotFoundViewHolder.Listener {
@@ -101,7 +101,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         layoutManager = GridLayoutManager(context, BRANDLIST_SEARCH_GRID_SPAN_COUNT).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return when(adapterBrandSearch?.getItemViewType(position)) {
+                    return when (adapterBrandSearch?.getItemViewType(position)) {
                         BrandlistSearchHeaderViewHolder.LAYOUT -> 3
                         BrandlistSearchNotFoundViewHolder.LAYOUT -> 3
                         BrandlistSearchAllBrandLabelViewHolder.LAYOUT -> 3
@@ -114,6 +114,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
+        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
         recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapterBrandSearch as StickyHeaderInterface))
         return view
     }
@@ -205,12 +206,12 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
     }
 
     private fun observeSearchResultData() {
-        val userId = if(userSession.userId.isEmpty()) "0" else userSession.userId
+        val userId = if (userSession.userId.isEmpty()) "0" else userSession.userId
         viewModel.brandlistSearchResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
                     val response = it.data.brands
-                    if(response.isEmpty()) {
+                    if (response.isEmpty()) {
                         viewModel.searchRecommendation(
                                 userId,
                                 categoryData?.categories)
@@ -230,7 +231,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     private fun observeSearchRecommendationResultData() {
         viewModel.brandlistSearchRecommendationResponse.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val response = it.data.shops
                     adapterBrandSearch?.updateSearchRecommendationData(
@@ -245,7 +246,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     private fun observeTotalBrands() {
         viewModel.brandlistAllBrandTotal.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     adapterBrandSearch?.updateAllBrandsValue(it.data)
                     loadInitialData()
@@ -259,7 +260,7 @@ class BrandlistSearchFragment: BaseDaggerFragment(),
 
     private fun observeAllBrands() {
         viewModel.brandlistAllBrandsSearchResponse.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     adapterBrandSearch?.hideLoading()
                     val response = it.data

@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class StickyHeaderItemDecoration(private val listener: StickyHeaderInterface) : RecyclerView.ItemDecoration() {
@@ -13,10 +14,9 @@ class StickyHeaderItemDecoration(private val listener: StickyHeaderInterface) : 
     override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(canvas, parent, state)
 
-        val topChild = parent.findChildViewUnder(parent.paddingLeft.toFloat(), parent.paddingTop.toFloat())
-                ?: return
+        val gridLayoutManager = parent.layoutManager as GridLayoutManager
 
-        val topChildPosition = parent.getChildAdapterPosition(topChild)
+        val topChildPosition = gridLayoutManager.findFirstVisibleItemPosition()
 
         if (topChildPosition == RecyclerView.NO_POSITION) return
 
