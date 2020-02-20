@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.stickylogin.R
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.query.StickyLoginQuery
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import javax.inject.Inject
 
