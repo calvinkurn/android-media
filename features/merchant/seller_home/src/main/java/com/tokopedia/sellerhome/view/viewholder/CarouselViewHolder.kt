@@ -94,7 +94,7 @@ class CarouselViewHolder(
         indicatorCarouselBanner.setIndicator(banners.size)
 
         val bannerAdapter = CarouselBannerAdapter(element.dataKey, banners)
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val linearLayoutManager = getLayoutManager()
 
         rvCarouselBanner.layoutManager = linearLayoutManager
         rvCarouselBanner.adapter = bannerAdapter
@@ -111,6 +111,12 @@ class CarouselViewHolder(
         if (!hasSetSnapHelper) {
             PagerSnapHelper().attachToRecyclerView(rvCarouselBanner)
             hasSetSnapHelper = !hasSetSnapHelper
+        }
+    }
+
+    private fun getLayoutManager(): LinearLayoutManager {
+        return object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+            override fun canScrollVertically(): Boolean = false
         }
     }
 
