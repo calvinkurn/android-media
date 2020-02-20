@@ -52,7 +52,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tgCountRating"
         app:layout_constraintStart_toEndOf="@id/cvItemProduct"
         app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
-        android:src="@drawable/app_rating_star" />
+        android:background="@drawable/ic_rating_star_item" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tgCountRating"

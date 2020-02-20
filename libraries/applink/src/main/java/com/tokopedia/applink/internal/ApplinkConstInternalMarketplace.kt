@@ -181,6 +181,6 @@ object ApplinkConstInternalMarketplace {
 
     //SellerReviewListActivity
     @JvmField
-    val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/review-page"
+    val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/seller-review-page"
 
 }
