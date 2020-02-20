@@ -33,9 +33,8 @@ import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.view.compoundview.ETollUpdateBalanceResultView
 import com.tokopedia.emoney.view.compoundview.NFCDisabledView
 import com.tokopedia.emoney.view.compoundview.TapETollCardView
-import com.tokopedia.emoney.view.electronicmoney.*
-import com.tokopedia.emoney.viewmodel.BrizziViewModel
-import com.tokopedia.emoney.viewmodel.EmoneyInquiryBalanceViewModel
+import com.tokopedia.emoney.viewmodel.BrizziBalanceViewModel
+import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.GraphqlHelper
@@ -52,18 +51,14 @@ import javax.inject.Inject
  * RouteManager.route(this, ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI)
  */
 
-class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListener, BrizziActionListener {
+class NfcCheckBalanceActivity : BaseSimpleActivity() {
 
     private lateinit var tapETollCardView: TapETollCardView
     private lateinit var nfcDisabledView: NFCDisabledView
     private lateinit var eTollUpdateBalanceResultView: ETollUpdateBalanceResultView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-    private lateinit var emoneyInquiryBalanceViewModel: EmoneyInquiryBalanceViewModel
-    private lateinit var brizziViewModel: BrizziViewModel
-    private lateinit var mandiriCheckBalance: ElectronicMoney
-    private lateinit var briBrizzi: ElectronicMoney
-
-    private var pendingIntent: PendingIntent ?= null
+    private lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
+    private lateinit var brizziBalanceViewModel: BrizziBalanceViewModel
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -88,14 +83,9 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         super.onCreate(savedInstanceState)
 
         initInjector()
-
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        emoneyInquiryBalanceViewModel = viewModelProvider.get(EmoneyInquiryBalanceViewModel::class.java)
-        brizziViewModel = viewModelProvider.get(BrizziViewModel::class.java)
-
-        eTollUpdateBalanceResultView = findViewById(R.id.view_update_balance_result)
-        nfcDisabledView = findViewById(R.id.view_nfc_disabled)
-        tapETollCardView = findViewById(R.id.view_tap_emoney_card)
+        initViewModel()
+        bindView()
+        processTagIntent(intent)
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
@@ -134,15 +124,15 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         nfcDisabledView.setListener(object : NFCDisabledView.OnActivateNFCClickListener {
             override fun onClick() {
                 emoneyAnalytics.onClickActivateNFC()
-                directToNFCSettingsPage()
+                navigateToNFCSettings()
             }
         })
+    }
 
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
-        brizziInstance.setNfcAdapter(this)
-        handleIntent(intent)
+    override fun onNewIntent(intent: Intent?) {
+        intent?.let {
+            processTagIntent(intent)
+        }
     }
 
     override fun getLayoutRes(): Int {
@@ -158,18 +148,22 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                 .baseAppComponent((this.application as BaseMainApplication).baseAppComponent)
                 .build()
         emoneyComponent.inject(this)
+        if (brizziInstance.nfcAdapter == null) brizziInstance.setNfcAdapter(this)
     }
 
-    /**
-     * this method will be executed first time after NFC card detected
-     * @param intent is needed to process data NFC card brizzi and emoney mandiri
-     */
-    public override fun onNewIntent(intent: Intent) {
-        handleIntent(intent)
+    private fun initViewModel() {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
+        brizziBalanceViewModel = viewModelProvider.get(BrizziBalanceViewModel::class.java)
     }
 
-    private fun handleIntent(intent: Intent) {
-        //process intent filter
+    private fun bindView() {
+        eTollUpdateBalanceResultView = findViewById(R.id.view_update_balance_result)
+        nfcDisabledView = findViewById(R.id.view_nfc_disabled)
+        tapETollCardView = findViewById(R.id.view_tap_emoney_card)
+    }
+
+    private fun processTagIntent(intent: Intent) {
         if (intent != null && !TextUtils.isEmpty(intent.action) &&
                 (intent.action == NfcAdapter.ACTION_TECH_DISCOVERED ||
                         intent.action == NfcAdapter.ACTION_TAG_DISCOVERED)) {
@@ -187,33 +181,89 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     private fun executeMandiri(intent: Intent) {
-        mandiriCheckBalance = MandiriCheckBalance(this)
-        mandiriCheckBalance.processTagIntent(intent)
+        emoneyBalanceViewModel.processEmoneyTagIntent(intent,
+                GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
+                0)
+
+        emoneyBalanceViewModel.emoneyInquiry.observe(this, Observer { emoneyInquiry ->
+            emoneyInquiry.attributesEmoneyInquiry?.let { attributes ->
+                when (attributes.status) {
+                    1 -> showCardLastBalance(emoneyInquiry)
+                    2 -> emoneyInquiry.error?.let { error ->
+                        showError(error.title)
+                    }
+                    else -> return@let
+                }
+            }
+        })
+
+        emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {
+            if (it is MessageErrorException) {
+                showError(it.message ?: "")
+            } else {
+                showError(getString(R.string.emoney_update_balance_failed))
+            }
+        })
+
+        emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
+            showError(it)
+        })
+
+        emoneyBalanceViewModel.issuerId.observe(this, Observer {
+            tapETollCardView.setIssuerId(it)
+        })
+
+        emoneyBalanceViewModel.cardIsEmoney.observe(this, Observer { cardIsEmoney ->
+            if (!cardIsEmoney) executeBrizzi(false, intent)
+        })
     }
 
-    override fun executeBrizzi(refresh: Boolean, intent: Intent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            var abiName = ""
-            val abis = mutableListOf<String>()
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                abiName = Build.CPU_ABI
-            } else {
-                abis.addAll(Build.SUPPORTED_ABIS)
-            }
+    private fun isSupportBrizzi(): Boolean {
+        var abiName = ""
+        val abis = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            abiName = Build.CPU_ABI
+        } else {
+            abis.addAll(Build.SUPPORTED_ABIS)
+        }
+        return abiName == ARCHITECTURE_ARM64 || abiName == ARCHITECTURE_ARM32 ||
+                abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)
+    }
 
-            if (abiName == ARCHITECTURE_ARM64 || abiName == ARCHITECTURE_ARM32 ||
-                    abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)) {
-                brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
-                brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
-                    brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
-                    brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+    private fun executeBrizzi(refresh: Boolean, intent: Intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && isSupportBrizzi()) {
+            brizziBalanceViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
 
-                    briBrizzi = BrizziCheckBalance(brizziInstance, this)
-                    briBrizzi.processTagIntent(intent)
-                })
-            } else {
-                showError(resources.getString(R.string.emoney_device_isnot_supported))
-            }
+            brizziBalanceViewModel.tokenBrizzi.observe(this, Observer { token ->
+                brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
+                brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+
+                brizziBalanceViewModel.processBrizziTagIntent(intent, GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
+                        brizziInstance)
+            })
+
+            brizziBalanceViewModel.emoneyInquiry.observe(this, Observer {
+                showCardLastBalance(it)
+            })
+
+            brizziBalanceViewModel.tokenNeedRefresh.observe(this, Observer {
+                brizziBalanceViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), true)
+            })
+
+            brizziBalanceViewModel.issuerId.observe(this, Observer {
+                tapETollCardView.setIssuerId(it)
+            })
+
+            brizziBalanceViewModel.errorCardMessage.observe(this, Observer {
+                showError(it)
+            })
+
+            brizziBalanceViewModel.cardIsBrizzi.observe(this, Observer { cardIsBrizzi ->
+                if (!cardIsBrizzi) {
+                    emoneyAnalytics.onErrorReadingCard()
+                    showError(resources.getString(R.string.emoney_card_isnot_supported))
+                }
+            })
         } else {
             showError(resources.getString(R.string.emoney_device_isnot_supported))
         }
@@ -224,105 +274,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
             return OPERATOR_NAME_BRIZZI
         }
         return OPERATOR_NAME_EMONEY
-    }
-
-    override fun setIssuerId(issuerIdEmoney: Int) {
-        tapETollCardView.setIssuerId(issuerIdEmoney)
-    }
-
-    override fun getInquiryBalanceMandiri(mapAttributes: HashMap<String, Any>) {
-        emoneyInquiryBalanceViewModel.getEmoneyInquiryBalance(
-                EmoneyInquiryBalanceViewModel.PARAM_INQUIRY,
-                GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
-                0,
-                mapAttributes,
-                this::onSuccessMandiriGetBalance,
-                this::onErrorMandiriGetBalance)
-    }
-
-    override fun onErrorCardNotFound(issuerIdEmoney: Int, intent: Intent) {
-        when (issuerIdEmoney) {
-            ISSUER_ID_EMONEY -> executeBrizzi(false, intent)
-            ISSUER_ID_BRIZZI -> {
-                emoneyAnalytics.onErrorReadingCard()
-                showError(resources.getString(R.string.emoney_card_isnot_supported))
-            }
-        }
-    }
-
-    override fun onErrorDefault(stringResource: Int) {
-        showError(resources.getString(stringResource))
-    }
-
-    private fun onSuccessMandiriGetBalance(mapAttributes: HashMap<String, Any>,
-                                           emoneyInquiry: EmoneyInquiry) {
-        emoneyInquiry.attributesEmoneyInquiry?.let { attributes ->
-            when {
-                attributes.status == 0 -> {
-                    mandiriCheckBalance.writeBalanceToCard(intent,
-                            emoneyInquiry.attributesEmoneyInquiry.payload,
-                            emoneyInquiry.id.toInt(),
-                            mapAttributes)
-                }
-                attributes.status == 1 -> {
-                    showCardLastBalance(emoneyInquiry)
-                }
-                attributes.status == 2 -> {
-                    emoneyInquiry.error?.let { error ->
-                        showError(error.title)
-                    }
-                }
-                else -> {
-                    return
-                }
-            }
-        }
-    }
-
-    override fun sendCommandMandiri(id: Int, mapAttributes: HashMap<String, Any>) {
-        emoneyInquiryBalanceViewModel.getEmoneyInquiryBalance(
-                EmoneyInquiryBalanceViewModel.PARAM_SEND_COMMAND,
-                GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
-                id,
-                mapAttributes,
-                this::onSuccessMandiriGetBalance,
-                this::onErrorMandiriGetBalance)
-    }
-
-    override fun logStatusBrizzi(firstLogInquiry: Boolean, emoneyInquiry: EmoneyInquiry) {
-        if (firstLogInquiry) {
-            emoneyInquiry.attributesEmoneyInquiry?.let {
-                logBrizzi(0, it.cardNumber, "success", it.lastBalance.toDouble())
-            }
-        } else {
-            brizziViewModel.inquiryIdBrizzi.observe(this, Observer {
-                if (it > -1) {
-                    emoneyInquiry.attributesEmoneyInquiry?.let { attributeInquiry ->
-                        logBrizzi(it, attributeInquiry.cardNumber, "success",
-                                attributeInquiry.lastBalance.toDouble())
-                    }
-                }
-            })
-        }
-    }
-
-    private fun logBrizzi(inquiryId: Int, cardNumber: String, status: String, lastBalance: Double) {
-        var mapParam = HashMap<String, Any>()
-        mapParam.put(BrizziViewModel.ISSUER_ID, BrizziCheckBalance.ISSUER_ID_BRIZZI)
-        mapParam.put(BrizziViewModel.INQUIRY_ID, inquiryId)
-        mapParam.put(BrizziViewModel.CARD_NUMBER, cardNumber)
-        mapParam.put(BrizziViewModel.RC, status)
-        mapParam.put(BrizziViewModel.LAST_BALANCE, lastBalance)
-        brizziViewModel.logDataBrizzi(GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
-                mapParam)
-    }
-
-    private fun onErrorMandiriGetBalance(throwable: Throwable) {
-        if (throwable is MessageErrorException) {
-            showError(throwable.message ?: "")
-        } else {
-            showError(getString(R.string.emoney_update_balance_failed))
-        }
     }
 
     private fun showError(errorMessage: String) {
@@ -341,7 +292,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         tapETollCardView.showErrorDeviceUnsupportedState(errorMessage)
     }
 
-    override fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
+    private fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
         emoneyInquiry.attributesEmoneyInquiry?.let {
             operatorIdSelected = it.operatorId
             issuerIdSelected = it.issuer_id
@@ -359,7 +310,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
     }
 
-    private fun directToNFCSettingsPage() {
+    private fun navigateToNFCSettings() {
         val intent = Intent(Settings.ACTION_NFC_SETTINGS)
         startActivity(intent)
     }
@@ -433,7 +384,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                     .setMessage(getString(R.string.emoney_please_activate_nfc_from_settings))
                     .setPositiveButton(getString(R.string.emoney_activate)) { p0, p1 ->
                         emoneyAnalytics.onActivateNFCFromSetting()
-                        directToNFCSettingsPage()
+                        navigateToNFCSettings()
                     }
                     .setNegativeButton(getString(R.string.emoney_cancel)) { p0, p1 ->
                         emoneyAnalytics.onCancelActivateNFCFromSetting()
@@ -441,6 +392,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                     }.show()
         } else {
             if (userSession.isLoggedIn) {
+                intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
                 brizziInstance.nfcAdapter.enableForegroundDispatch(this, pendingIntent,
                         arrayOf<IntentFilter>(), null)
                 nfcDisabledView.visibility = View.GONE
@@ -466,7 +419,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
             if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
                 if (userSession.isLoggedIn) {
                     data?.let {
-                        executeMandiri(data)
+                        processTagIntent(data)
                     }
                 }
             }

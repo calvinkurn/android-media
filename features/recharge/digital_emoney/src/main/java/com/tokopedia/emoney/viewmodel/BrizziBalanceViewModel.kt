@@ -1,0 +1,167 @@
+package com.tokopedia.emoney.viewmodel
+
+import android.content.Intent
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.emoney.NFCUtils
+import com.tokopedia.emoney.data.*
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import id.co.bri.sdk.Brizzi
+import id.co.bri.sdk.BrizziCardObject
+import id.co.bri.sdk.Callback
+import id.co.bri.sdk.exception.BrizziException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+
+class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                 val dispatcher: CoroutineDispatcher)
+    : BaseViewModel(dispatcher) {
+
+    var inquiryIdBrizzi: Int = 0
+
+    val tokenBrizzi = MutableLiveData<String>()
+    val issuerId = MutableLiveData<Int>()
+    val emoneyInquiry = MutableLiveData<EmoneyInquiry>()
+    val tokenNeedRefresh = MutableLiveData<Boolean>()
+    val cardIsBrizzi = MutableLiveData<Boolean>()
+    val errorCardMessage = MutableLiveData<String>()
+
+    fun processBrizziTagIntent(intent: Intent, logRawQuery: String, brizziInstance: Brizzi) {
+        issuerId.postValue(ISSUER_ID_BRIZZI)
+        brizziInstance.getBalanceInquiry(intent, object : Callback {
+            override fun OnFailure(brizziException: BrizziException?) {
+                brizziException?.let {
+                    handleError(it)
+                }
+            }
+
+            override fun OnSuccess(brizziCardObject: BrizziCardObject) {
+                val balanceInquiry = mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
+                balanceInquiry.attributesEmoneyInquiry?.let {
+                    logBrizzi(0, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
+                }
+
+                if (brizziCardObject.pendingBalance.toInt() == 0) {
+                    emoneyInquiry.postValue(balanceInquiry)
+                } else {
+                    writeBalanceToCard(intent, logRawQuery, brizziInstance, "", 0, hashMapOf())
+                }
+            }
+        })
+    }
+
+    private fun logBrizzi(inquiryId: Int, cardNumber: String, rawString: String, status: String, lastBalance: Double) {
+        var mapParam = HashMap<String, Any>()
+        mapParam.put(ISSUER_ID, ISSUER_ID_BRIZZI)
+        mapParam.put(INQUIRY_ID, inquiryId)
+        mapParam.put(CARD_NUMBER, cardNumber)
+        mapParam.put(RC, status)
+        mapParam.put(LAST_BALANCE, lastBalance)
+
+        launchCatchError(block = {
+            val mapParamLog = HashMap<String, kotlin.Any>()
+            mapParamLog.put(LOG_BRIZZI, mapParam)
+
+            val data = withContext(Dispatchers.IO) {
+                val graphqlRequest = GraphqlRequest(rawString, BrizziInquiryLogResponse::class.java, mapParamLog)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<BrizziInquiryLogResponse>()
+
+            data.emoneyInquiryLog?.let {
+                inquiryIdBrizzi = it.inquiryId
+            }
+        }) {
+            inquiryIdBrizzi = -1
+        }
+    }
+
+    private fun mapperBrizzi(brizziCardObject: BrizziCardObject, error: EmoneyInquiryError): EmoneyInquiry {
+        return EmoneyInquiry(
+                attributesEmoneyInquiry = AttributesEmoneyInquiry(
+                        "Topup Sekarang",
+                        brizziCardObject.cardNumber,
+                        "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
+                        brizziCardObject.balance.toInt(),
+                        "",
+                        1,
+                        NFCUtils.formatCardUID(brizziCardObject.cardNumber),
+                        ISSUER_ID_BRIZZI,
+                        ETOLL_BRIZZI_OPERATOR_ID
+                ),
+                error = error)
+    }
+
+    private fun handleError(brizziException: BrizziException) {
+        when {
+            brizziException.errorCode == BRIZZI_TOKEN_EXPIRED -> tokenNeedRefresh.postValue(true)
+            brizziException.errorCode == BRIZZI_CARD_NOT_FOUND -> cardIsBrizzi.postValue(false)
+            else -> errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+        }
+    }
+
+    private fun writeBalanceToCard(intent: Intent, logRawQuery: String, brizziInstance: Brizzi, payload: String, id: Int, mapAttributes: HashMap<String, Any>) {
+        brizziInstance.doUpdateBalance(intent, System.currentTimeMillis().toString(), object : Callback {
+            override fun OnFailure(brizziException: BrizziException?) {
+                brizziException?.let {
+                    handleError(it)
+                }
+            }
+
+            override fun OnSuccess(brizziCardObject: BrizziCardObject) {
+                val balanceInquiry = mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Informasi saldo berhasil diperbarui"))
+
+                if (inquiryIdBrizzi > -1) {
+                    balanceInquiry.attributesEmoneyInquiry?.let {
+                        logBrizzi(inquiryIdBrizzi, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
+                    }
+                }
+                emoneyInquiry.postValue(balanceInquiry)
+            }
+        })
+    }
+
+    //token on server will refresh automatically per 30 minutes
+    fun getTokenBrizzi(rawQuery: String, refresh: Boolean) {
+        launchCatchError(block = {
+            var mapParam = HashMap<String, kotlin.Any>()
+            mapParam.put(REFRESH_TOKEN, refresh)
+
+            val data = withContext(Dispatchers.IO) {
+                val graphqlRequest = GraphqlRequest(rawQuery, BrizziTokenResponse::class.java, mapParam)
+                if (refresh) {
+                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                } else {
+                    graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 30).build())
+                }
+            }.getSuccessData<BrizziTokenResponse>()
+
+            tokenBrizzi.value = data.tokenResponse.token
+        }) {
+            tokenBrizzi.value = ""
+        }
+    }
+
+    companion object {
+        const val REFRESH_TOKEN = "refresh"
+        const val ISSUER_ID = "issuer_id"
+        const val INQUIRY_ID = "inquiry_id"
+        const val CARD_NUMBER = "card_number"
+        const val RC = "rc"
+        const val LAST_BALANCE = "last_balance"
+        const val LOG_BRIZZI = "log"
+
+        const val ISSUER_ID_BRIZZI = 2
+        const val ETOLL_BRIZZI_OPERATOR_ID = "1015"
+        const val BRIZZI_TOKEN_EXPIRED = "61"
+        const val BRIZZI_CARD_NOT_FOUND = "21"
+    }
+}
