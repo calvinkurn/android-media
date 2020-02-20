@@ -125,7 +125,7 @@
 /features/user/profilecompletion/                       @tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
 /features/user/otp/                             		@tokopedia/minion-kevin
-/features/user/settingbank/                     		@tokopedia/minion-kevin
+/features/user/settingbank/                     		@tokopedia/minion-yoda
 /features/user/settingnotif/                    		@tokopedia/minion-kevin
 /features/user/changepassword/                  		@tokopedia/minion-kevin
 /features/user/logout/                          		@tokopedia/minion-kevin
@@ -214,6 +214,7 @@
 /libraries/push_notification/							@tokopedia/core-team
 /libraries/react_native/								@tokopedia/core-team
 /libraries/remote_config/								@tokopedia/core-team
+/libraries/remoteresourcerequest/						@tokopedia/core-team
 /libraries/sharedata/									@tokopedia/core-team
 /libraries/track/										@nathaniel09
 /libraries/tracking_optimizer/							@nathaniel09

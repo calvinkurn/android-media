@@ -765,7 +765,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
                                 boolean isOneClickShipment, boolean isTradeIn, boolean isTradeInDropOff,
-                                String deviceId, String leasingId) {
+                                String deviceId, String cornerId, String leasingId) {
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
@@ -788,7 +788,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId))
+                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, cornerId, leasingId))
             );
         } else {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -934,7 +934,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @NonNull
     private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest,
                                                                boolean isOneClickShipment,
-                                                               boolean isTradeIn, String deviceId) {
+                                                               boolean isTradeIn, String deviceId,
+                                                               String cornerId, String leasingId) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -950,7 +951,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
                 getView().showToastError(errorMessage);
-                processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
+                processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
             }
 
             @Override

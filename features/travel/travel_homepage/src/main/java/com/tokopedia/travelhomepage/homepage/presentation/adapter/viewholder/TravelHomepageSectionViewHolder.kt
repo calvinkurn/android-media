@@ -1,12 +1,12 @@
 package com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder
 
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionViewModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageSectionAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_DEALS
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_ORDER_LIST
@@ -23,11 +23,11 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_destination_list.vi
 class TravelHomepageSectionViewHolder(itemView: View,
                                       private val onItemBindListener: OnItemBindListener,
                                       private val onItemClickListener: OnItemClickListener)
-    : AbstractViewHolder<TravelHomepageSectionViewModel>(itemView) {
+    : AbstractViewHolder<TravelHomepageSectionModel>(itemView) {
 
     lateinit var orderAdapter: TravelHomepageSectionAdapter
 
-    override fun bind(element: TravelHomepageSectionViewModel) {
+    override fun bind(element: TravelHomepageSectionModel) {
         if (element.isLoaded) {
             if (element.list.isNotEmpty()) {
                 itemView.section_layout.visibility = View.VISIBLE

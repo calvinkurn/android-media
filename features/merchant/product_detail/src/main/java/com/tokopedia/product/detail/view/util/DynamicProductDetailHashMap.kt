@@ -23,8 +23,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val socialProofMap: ProductSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
 
-    val snapShotMap: ProductSnapshotDataModel
-        get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as ProductSnapshotDataModel
+    val snapShotMap: ProductSnapshotDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as? ProductSnapshotDataModel
 
     val shopInfoMap: ProductShopInfoDataModel?
         get() = mapOfData[ProductDetailConstant.SHOP_INFO] as? ProductShopInfoDataModel
@@ -81,10 +81,11 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1(dataP1: DynamicProductInfoP1?) {
+    fun updateDataP1(dataP1: DynamicProductInfoP1?, imageHeight: Int) {
         dataP1?.let {
-            snapShotMap.run {
+            snapShotMap?.run {
                 dynamicProductInfoP1 = it
+                screenHeight = imageHeight
                 media = it.data.media.map { media ->
                     ProductMediaDataModel(media.type, media.uRL300, media.uRLOriginal, media.uRLThumbnail, media.description, media.videoURLAndroid, media.isAutoplay)
                 }
@@ -140,7 +141,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
     fun updateDataTradein(tradeinResponse: ValidateTradeInPDP) {
         productTradeinMap?.run {
-            snapShotMap.shouldShowTradein = true
+            snapShotMap?.shouldShowTradein = true
             data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
                 context.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
             } else {
@@ -168,7 +169,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 data.first().subtitle = context.getString(R.string.multiorigin_desc)
             }
 
-            snapShotMap.run {
+            snapShotMap?.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
                 nearestWarehouse = it.nearestWarehouse
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
@@ -183,7 +184,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     }
 
     fun updateDataP2Login(it: ProductInfoP2Login) {
-        snapShotMap.apply {
+        snapShotMap?.apply {
             isWishlisted = it.isWishlisted
         }
     }

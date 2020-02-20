@@ -406,19 +406,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                         if (isTabSeller()) ChatListActivity.SELLER_ANALYTICS_LABEL
                         else ChatListActivity.BUYER_ANALYTICS_LABEL)
             }
-
-//            val intent = TopChatRoomActivity.getCallingIntent(
-//                    activity,
-//                    element.msgId,
-//                    element.attributes?.contact?.contactName,
-//                    element.attributes?.contact?.tag,
-//                    element.attributes?.contact?.contactId,
-//                    element.attributes?.contact?.role,
-//                    0,
-//                    "",
-//                    element.attributes?.contact?.thumbnail,
-//                    itemPosition
-//            )
             val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
