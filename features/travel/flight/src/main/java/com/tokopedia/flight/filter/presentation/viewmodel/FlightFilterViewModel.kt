@@ -12,8 +12,8 @@ import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -43,9 +43,7 @@ class FlightFilterViewModel @Inject constructor(
     val flightCount: LiveData<Int>
         get() = mutableFlightCount
 
-    private val mutableFilterViewData = MutableLiveData<List<BaseFilterSortModel>>()
-    val filterViewData: LiveData<List<BaseFilterSortModel>>
-        get() = mutableFilterViewData
+    val filterViewData = MutableLiveData<List<BaseFilterSortModel>>()
 
     fun init(selectedSort: Int, filterModel: FlightFilterModel, isReturn: Boolean) {
         mutableSelectedSort.postValue(selectedSort)
@@ -58,12 +56,12 @@ class FlightFilterViewModel @Inject constructor(
 
     private fun getStatistics() {
         launch(dispatcherProvider.ui()) {
-            mutableStatisticModel.postValue(withContext(dispatcherProvider.ui()) {
-                filterModel.value?.run {
-                    flightSearchStatisticUseCase.executeCoroutine(flightSearchStatisticUseCase
-                            .createRequestParams(filterModel.value!!))
-                }
-            })
+            filterModel.value?.let {
+                mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
+                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
+            }
+
+            delay(DELAY_VALUE)
 
             mapStatisticToModel(statisticModel.value)
         }
@@ -77,12 +75,10 @@ class FlightFilterViewModel @Inject constructor(
 
     fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
-            mutableFlightCount.postValue(withContext(dispatcherProvider.ui()) {
-                filterModel.value?.run {
-                    flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
-                            .createRequestParams(filterModel.value!!))
-                }
-            })
+            filterModel.value?.run {
+                mutableFlightCount.postValue(flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
+                        .createRequestParams(filterModel.value!!)))
+            }
         }
     }
 
@@ -93,7 +89,7 @@ class FlightFilterViewModel @Inject constructor(
     private fun mapStatisticToModel(statistic: FlightSearchStatisticModel?) {
         val items = arrayListOf<BaseFilterSortModel>()
 
-        statistic?.run {
+        statistic?.let {
             // Sort
             items.add(SORT_ORDER, FlightSortModel())
 
@@ -114,14 +110,14 @@ class FlightFilterViewModel @Inject constructor(
 
             // Price
             items.add(PRICE_ORDER, PriceRangeModel(
-                    initialStartValue = statistic.minPrice,
-                    initialEndValue = statistic.maxPrice,
-                    selectedStartValue = filterModel.value?.priceMin ?: statistic.minPrice,
-                    selectedEndValue = filterModel.value?.priceMax ?: statistic.maxPrice
+                    initialStartValue = it.minPrice,
+                    initialEndValue = it.maxPrice,
+                    selectedStartValue = filterModel.value?.priceMin ?: it.minPrice,
+                    selectedEndValue = filterModel.value?.priceMax ?: it.maxPrice
             ))
         }
 
-        mutableFilterViewData.postValue(items)
+        filterViewData.postValue(items)
     }
 
     companion object {
@@ -132,5 +128,7 @@ class FlightFilterViewModel @Inject constructor(
         const val AIRLINE_ORDER = 4
         const val FACILITY_ORDER = 5
         const val PRICE_ORDER = 6
+
+        const val DELAY_VALUE : Long = 2000
     }
 }

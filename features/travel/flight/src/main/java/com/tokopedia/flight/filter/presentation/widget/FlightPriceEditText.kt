@@ -2,6 +2,7 @@ package com.tokopedia.flight.filter.presentation.widget
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 
@@ -23,7 +24,7 @@ class FlightPriceEditText @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val mPaint = paint
+        val mPaint = Paint()
         mPaint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
         mPaint.typeface = com.tokopedia.unifyprinciples.getTypeface(context, "NunitoSansExtraBold.ttf")
         mPaint.textSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3).toFloat()
@@ -36,7 +37,7 @@ class FlightPriceEditText @JvmOverloads constructor(
             val prefix = tag as String
             val widths = FloatArray(prefix.length)
             paint.getTextWidths(prefix, widths)
-            var textWidth = 0f
+            var textWidth = 8f
             for (w in widths) {
                 textWidth += w
             }
