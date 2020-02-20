@@ -1,2 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.reviewseller" />
+    package="com.tokopedia.reviewseller">
+
+    <application>
+        <activity android:name=".feature.reviewlist.view.activity.SellerReviewListActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_review_page"
+                    android:scheme="@string/internal_scheme" />
+
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
