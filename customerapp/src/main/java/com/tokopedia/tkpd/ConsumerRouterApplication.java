@@ -208,9 +208,6 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
-import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
-import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -268,7 +265,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactNativeRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
-        TopChatRouter,
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
@@ -689,16 +685,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customMessage, source, avatar);
+        return RouteManager.getIntent(context
+                , ApplinkConst.TOPCHAT_ASKBUYER
+                , toUserId
+                , customMessage
+                , source
+                , customerName
+                , avatar);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String customMessage, String source, String avatar) {
-
-        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                customMessage, source, avatar);
+        return RouteManager.getIntent(context
+                , ApplinkConst.TOPCHAT_ASKSELLER
+                , toShopId
+                , customMessage
+                , source
+                , shopName
+                , avatar);
 
     }
 
@@ -715,7 +720,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        return InboxChatActivity.getCallingIntent(context);
+        return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
     }
 
     @Override
@@ -912,10 +917,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
-    public Intent getInboxChannelsIntent(Context context) {
-        return InboxChatActivity.getChannelCallingIntent(context);
-    }
-
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
@@ -932,7 +933,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     }
 
-    @Override
     public boolean isIndicatorVisible() {
         return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
     }

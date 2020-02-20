@@ -27,7 +27,6 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
-import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
@@ -194,9 +193,8 @@ class ChatModule {
     @Provides
     fun provideMessageFactory(
             chatApi: ChatApi,
-            getMessageMapper: GetMessageMapper,
             deleteMessageMapper: DeleteMessageMapper): MessageFactory {
-        return MessageFactory(chatApi, getMessageMapper, deleteMessageMapper)
+        return MessageFactory(chatApi, deleteMessageMapper)
     }
 
     @ChatScope
@@ -217,7 +215,7 @@ class ChatModule {
     @Provides
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
     @ChatScope

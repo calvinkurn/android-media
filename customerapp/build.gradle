@@ -352,7 +352,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticorder)
     implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
