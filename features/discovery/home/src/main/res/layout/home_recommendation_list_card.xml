@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/recommendation_list_product_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="96dp"
+            android:layout_height="96dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/recommendation_list_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            android:lines="2"
+            tools:text="Scooter idaman semua orang"
+            app:typographyType="body_3"
+            app:layout_constraintStart_toEndOf="@id/recommendation_list_product_image"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <com.tokopedia.unifycomponents.Label
+            android:layout_marginTop="@dimen/dp_8"
+            android:id="@+id/recommendation_list_label_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:visibility="gone"
+            android:gravity="center_vertical"
+            app:labelType="general_light_red"
+            app:layout_constraintStart_toStartOf="@id/recommendation_list_title"
+            app:layout_constraintTop_toBottomOf="@id/recommendation_list_title"
+            tools:text="100%"
+            tools:visibility="visible" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/recommendation_list_slashed_price"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_4"
+            android:gravity="center_vertical"
+            android:textColor="@color/product_card_slashed_price_text_color"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/recommendation_list_label_discount"
+            app:layout_constraintStart_toEndOf="@id/recommendation_list_label_discount"
+            app:typographyType="small"
+            android:ellipsize="end"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            app:layout_constraintBottom_toBottomOf="@id/recommendation_list_label_discount"
+            android:maxLines="1"
+            tools:text="Rp 99999999999999999999999999999999999999999999999999999999999999999999999999999999"
+            tools:visibility="visible" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/recommendation_list_product_price"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Rp7.999.000"
+            android:textStyle="bold"
+            app:typographyType="body_2"
+            app:layout_constraintTop_toBottomOf="@id/recommendation_list_label_discount"
+            app:layout_constraintStart_toStartOf="@id/recommendation_list_label_discount"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
