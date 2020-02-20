@@ -3,7 +3,6 @@ package com.tokopedia.flight.filter.presentation.bottomsheets
 import android.app.Application
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -72,7 +71,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         })
 
         flightFilterViewModel.filterViewData.observe(this, Observer {
-            Toast.makeText(context, "View: ${it.size}", Toast.LENGTH_SHORT).show()
             if (it.isNotEmpty()) {
                 renderList(it)
                 hideLoading()
