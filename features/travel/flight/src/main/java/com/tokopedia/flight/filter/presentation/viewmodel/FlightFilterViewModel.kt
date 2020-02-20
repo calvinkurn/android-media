@@ -58,7 +58,7 @@ class FlightFilterViewModel @Inject constructor(
                 }
             })
 
-
+            mapStatisticToModel(statisticModel.value)
         }
     }
 
@@ -77,21 +77,38 @@ class FlightFilterViewModel @Inject constructor(
         // TODO: Reset Filter Value
     }
 
-    private fun mapStatisticToModel(statistic: FlightSearchStatisticModel) {
+    private fun mapStatisticToModel(statistic: FlightSearchStatisticModel?) {
         val items = arrayListOf<BaseFilterSortModel>()
 
-        // Sort
-        items.add(SORT_ORDER, PriceRangeModel())
+        statistic?.run {
+            // Sort
+            items.add(SORT_ORDER, PriceRangeModel())
 
-        // Transit
+            // Transit
+            items.add(TRANSIT_ORDER, PriceRangeModel())
 
-        // Departure Time
+            // Departure Time
+            items.add(DEPARTURE_TIME_ORDER, PriceRangeModel())
 
-        // Arrival Time
+            // Arrival Time
+            items.add(ARRIVAL_TIME_ORDER, PriceRangeModel())
 
-        // Facility
+            // Airline
+            items.add(AIRLINE_ORDER, PriceRangeModel())
 
-        // Price
+            // Facility
+            items.add(FACILITY_ORDER, PriceRangeModel())
+
+            // Price
+            items.add(PRICE_ORDER, PriceRangeModel(
+                    initialStartValue = statistic.minPrice,
+                    initialEndValue = statistic.maxPrice,
+                    selectedStartValue = filterModel.value?.priceMin ?: statistic.minPrice,
+                    selectedEndValue = filterModel.value?.priceMax ?: statistic.maxPrice
+            ))
+        }
+
+        mutableFilterViewData.value = items
 
     }
 

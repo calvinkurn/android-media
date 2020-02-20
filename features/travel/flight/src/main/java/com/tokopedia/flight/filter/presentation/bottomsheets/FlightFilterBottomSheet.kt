@@ -15,6 +15,7 @@ import com.tokopedia.flight.filter.di.DaggerFlightFilterComponent
 import com.tokopedia.flight.filter.di.FlightFilterComponent
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
+import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
@@ -67,6 +68,11 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         flightFilterViewModel.flightCount.observe(this, Observer {
             renderFlightCount(it)
         })
+
+        flightFilterViewModel.filterViewData.observe(this, Observer {
+            renderList(it)
+        })
+
     }
 
     override fun getFlightSearchStaticticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value
@@ -118,6 +124,12 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
             btnFlightFilterSave.visibility = View.VISIBLE
             btnFlightFilterSave.text = getString(R.string.flight_there_has_x_flights, flightCount)
         }
+    }
+
+    private fun renderList(data: List<BaseFilterSortModel>) {
+        adapter?.clearAllElements()
+        adapter?.addElement(data)
+        adapter?.notifyDataSetChanged()
     }
 
     companion object {
