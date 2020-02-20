@@ -2,6 +2,7 @@ package com.tokopedia.graphql.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlConstant;
 
 import java.lang.reflect.Type;
@@ -29,13 +30,21 @@ public class GraphqlRequest {
     /*transient by nature hence it will not be part of request body*/
     private transient boolean shouldThrow = true; /*Optional parameter*/
 
+    @Expose(serialize = false, deserialize = false)
+    private transient boolean noCache;
+
+    @Expose(serialize = false, deserialize = false)
+    private String md5;
+
     public GraphqlRequest(String query, Type typeOfT) {
         this.query = query;
         this.typeOfT = typeOfT;
+        this.md5 = FingerprintManager.md5(query);
     }
 
     /**
      * Use constructor without param shouldThrow for null checker
+     *
      * @param query
      * @param typeOfT
      * @param shouldThrow
@@ -52,6 +61,7 @@ public class GraphqlRequest {
 
     /**
      * Use constructor without param shouldThrow for null checker
+     *
      * @param query
      * @param typeOfT
      * @param variables
@@ -72,6 +82,7 @@ public class GraphqlRequest {
 
     /**
      * Use constructor without param shouldThrow for null checker
+     *
      * @param query
      * @param typeOfT
      * @param variables
@@ -111,11 +122,24 @@ public class GraphqlRequest {
 
     /**
      * Should use nullCheker
+     *
      * @param shouldThrow
      */
     @Deprecated
     public void setShouldThrow(boolean shouldThrow) {
         this.shouldThrow = shouldThrow;
+    }
+
+    public boolean isNoCache() {
+        return noCache;
+    }
+
+    public void setNoCache(boolean noCache) {
+        this.noCache = noCache;
+    }
+
+    public String getMd5() {
+        return md5;
     }
 
     //Do not rewrite on remove it
@@ -128,5 +152,9 @@ public class GraphqlRequest {
                 ", typeOfT=" + typeOfT +
                 ", shouldThrow=" + shouldThrow +
                 '}';
+    }
+
+    public String cacheKey() {
+        return FingerprintManager.md5(query + variables);
     }
 }

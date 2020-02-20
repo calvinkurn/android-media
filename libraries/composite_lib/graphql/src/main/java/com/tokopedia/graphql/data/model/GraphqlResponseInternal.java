@@ -11,6 +11,7 @@ final public class GraphqlResponseInternal {
     private JsonArray originalResponse;
     private boolean isCached;
     private ArrayList<Integer> indexOfEmptyCached;
+    private String mBeCache;
 
     public GraphqlResponseInternal(JsonArray originalResponse, boolean isCached) {
         this.originalResponse = originalResponse;
@@ -20,6 +21,11 @@ final public class GraphqlResponseInternal {
     public GraphqlResponseInternal(JsonArray originalResponse, boolean isCached, ArrayList<Integer> indexOfEmptyCached) {
         this(originalResponse, isCached);
         this.indexOfEmptyCached = indexOfEmptyCached;
+    }
+
+    public GraphqlResponseInternal(JsonArray originalResponse, boolean isCached, String beCache) {
+        this(originalResponse, isCached);
+        this.mBeCache = beCache;
     }
 
     public ArrayList<Integer> getIndexOfEmptyCached() {
@@ -42,11 +48,21 @@ final public class GraphqlResponseInternal {
         this.isCached = isCached;
     }
 
+    public String getBeCache() {
+        return this.mBeCache;
+    }
+
+    public void setBeCache(String mBeCache) {
+        this.mBeCache = mBeCache;
+    }
+
     @Override
     public String toString() {
         return "GraphqlResponseInternal{" +
                 "originalResponse=" + originalResponse +
                 ", isCached=" + isCached +
+                ", indexOfEmptyCached=" + indexOfEmptyCached +
+                ", mBeCache='" + mBeCache + '\'' +
                 '}';
     }
 }

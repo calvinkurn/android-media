@@ -8,6 +8,7 @@ public interface GraphqlConstant {
 
     interface GqlApiKeys {
         String GRAPHQL_HEADER = "{\"Content-Type: application/json\"}";
+        String CACHE = "x-tkpd-clc";
         String QUERY = "query";
         String VARIABLES = "variables";
         String OPERATION_NAME = "operationName";

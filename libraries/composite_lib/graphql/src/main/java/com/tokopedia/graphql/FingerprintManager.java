@@ -1,5 +1,8 @@
 package com.tokopedia.graphql;
 
+import android.text.TextUtils;
+
+import com.tokopedia.graphql.util.CacheHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 
@@ -41,6 +44,22 @@ public class FingerprintManager {
             e.printStackTrace();
         }
         return key.replace(" ", "");  //If exception caught then it will return plain string without spaces
+    }
+
+    public static String md5(String s) {
+        try {
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte[] messageDigest = digest.digest();
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : messageDigest) {
+                hexString.append(String.format("%02x", b & 0xff));
+            }
+            return hexString.toString();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     /**

@@ -9,13 +9,22 @@ import java.util.Map;
  */
 public class GraphqlResponse {
     private Map<Type, Object> mResults;
+    private Map<Type, Boolean> mIsCachedData;
     private Map<Type, List<GraphqlError>> mErrors;
     private final boolean mIsCached;
+    private List<GraphqlRequest> mRefreshRequests;
 
     public GraphqlResponse(Map<Type, Object> results, Map<Type, List<GraphqlError>> errors, boolean isCached) {
         this.mResults = results;
         this.mErrors = errors;
         this.mIsCached = isCached;
+    }
+
+    public GraphqlResponse(Map<Type, Object> results, Map<Type, List<GraphqlError>> errors, Map<Type, Boolean> isCachedData) {
+        this.mResults = results;
+        this.mErrors = errors;
+        this.mIsCachedData = isCachedData;
+        this.mIsCached = false;
     }
 
     /**
@@ -26,9 +35,17 @@ public class GraphqlResponse {
     public final <T> T getData(Type type) {
         try {
             return (T) mResults.get(type);
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * @param type Class type (E.g. Xyx.class)
+     * @return Return true if data is serve from cache.
+     */
+    public final boolean isCached(Type type) {
+        return mIsCachedData.get(type) == null ? false : mIsCachedData.get(type);
     }
 
     public final List<GraphqlError> getError(Type type) {
@@ -37,5 +54,13 @@ public class GraphqlResponse {
 
     public boolean isCached() {
         return mIsCached;
+    }
+
+    public List<GraphqlRequest> getRefreshRequests() {
+        return this.mRefreshRequests;
+    }
+
+    public void setRefreshRequests(List<GraphqlRequest> mRefreshRequests) {
+        this.mRefreshRequests = mRefreshRequests;
     }
 }
