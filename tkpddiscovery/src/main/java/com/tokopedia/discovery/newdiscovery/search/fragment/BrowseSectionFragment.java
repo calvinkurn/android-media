@@ -13,7 +13,6 @@ import android.view.View;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -24,7 +23,6 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -261,12 +259,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
                 .build();
-
-        if(getActivity() instanceof HotlistActivity){
-            shareData.setType(LinkerData.HOTLIST_TYPE);
-        } else {
             DiscoveryTracking.eventSearchResultShare(getActivity(), getScreenName());
-        }
         new DefaultShare(getActivity(), shareData).show();
     }
 
@@ -303,12 +296,8 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
                                       List<Option> selectedOptions) {
         setSelectedFilter(new HashMap<>(selectedFilters));
         clearDataFilterSort();
-        if (getActivity() instanceof HotlistActivity) {
-            HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
-        } else {
             FilterTracking.eventApplyFilter(getFilterTrackingData(),
                     "category page - " + getCategoryId(), getSelectedFilter());
-        }
         showBottomBarNavigation(false);
         reloadData();
     }
