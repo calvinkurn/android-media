@@ -23,7 +23,7 @@ class GetPopularKeywordUseCase @Inject constructor(
     companion object {
 
         const val PARAM_COUNT = "count"
-        const val DEFAULT_COUNT = 10
+        const val DEFAULT_COUNT = 4
     }
 
     private var params: RequestParams = RequestParams.create()
@@ -56,8 +56,7 @@ class GetPopularKeywordUseCase @Inject constructor(
     }
 
     fun setParams(count: Int = DEFAULT_COUNT) {
-        params = RequestParams.create().apply {
-            putInt(PARAM_COUNT, count)
-        }
+        params.parameters.clear()
+        params.putInt(PARAM_COUNT, count)
     }
 }
