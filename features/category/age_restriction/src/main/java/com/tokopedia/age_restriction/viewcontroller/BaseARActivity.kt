@@ -148,9 +148,9 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (isTncShowing) {
-            if (supportActionBar != null) {
-                supportActionBar!!.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
-                supportActionBar!!.title = title
+            supportActionBar.let {
+                it?.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
+                it?.title = title
             }
             isTncShowing = false
         }
@@ -177,9 +177,9 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
 
     override fun onBackPressed() {
         if (isTncShowing) {
-            if (supportActionBar != null) {
-                supportActionBar!!.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
-                supportActionBar!!.setTitle(title)
+            supportActionBar.let {
+                it?.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
+                it?.title = title
             }
             isTncShowing = false
         }
