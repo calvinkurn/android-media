@@ -3,6 +3,7 @@ package com.tokopedia.flight.filter.presentation.bottomsheets
 import android.app.Application
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -17,7 +18,6 @@ import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_filter.view.*
 import javax.inject.Inject
 
@@ -58,11 +58,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         super.onActivityCreated(savedInstanceState)
 
         flightFilterViewModel.statisticModel.observe(this, Observer {
-            Toaster.make(view!!, it.maxDuration.toString(), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "OK", object : View.OnClickListener {
-                override fun onClick(view: View?) {
-                }
-
-            })
+            Toast.makeText(context, it.maxDuration.toString(), Toast.LENGTH_SHORT).show()
         })
     }
 
