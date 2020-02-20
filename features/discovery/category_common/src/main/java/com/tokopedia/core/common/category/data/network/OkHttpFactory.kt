@@ -38,7 +38,7 @@ class OkHttpFactory(val context: Context) {
 
     fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {
         var loggingLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.NONE
-        if (GlobalConfig.isAllowDebuggingTools()!!) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             loggingLevel = HttpLoggingInterceptor.Level.BODY
         }
         return HttpLoggingInterceptor().setLevel(loggingLevel)
@@ -59,7 +59,7 @@ class OkHttpFactory(val context: Context) {
                 .addInterceptor(cacheApiInterceptor)
                 .setOkHttpRetryPolicy()
 
-        if (GlobalConfig.isAllowDebuggingTools()!!) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdbBuilder.addInterceptor(debugInterceptor)
             tkpdbBuilder.addInterceptor(chuckInterceptor)
         }

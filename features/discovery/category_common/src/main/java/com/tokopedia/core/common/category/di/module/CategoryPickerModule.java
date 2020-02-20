@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
-import com.tokopedia.core.common.category.constant.ConstantCoreNetwork;
+import com.tokopedia.core.common.category.constant.ConstantCategoryCommon;
 import com.tokopedia.core.common.category.data.network.OkHttpFactory;
 import com.tokopedia.core.common.category.data.network.TopAdsAuthInterceptor;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
@@ -136,15 +136,15 @@ public class CategoryPickerModule {
     @Named(ConstantCategoryCommon.CATEGORY_PICKER_CHUCK)
     @Provides
     ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context,
-                                             @Named(ConstantCoreNetwork.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
+                                             @Named(ConstantCategoryCommon.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
         return new ChuckInterceptor(context)
-                .showNotification(localCacheHandler.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false));
+                .showNotification(localCacheHandler.getBoolean(ConstantCategoryCommon.IS_CHUCK_ENABLED, false));
     }
 
     @Named(ConstantCategoryCommon.CHUCK_ENABLED)
     @Provides
     public LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
-        return new LocalCacheHandler(context, ConstantCoreNetwork.CHUCK_ENABLED);
+        return new LocalCacheHandler(context, ConstantCategoryCommon.CHUCK_ENABLED);
     }
 
     @Provides

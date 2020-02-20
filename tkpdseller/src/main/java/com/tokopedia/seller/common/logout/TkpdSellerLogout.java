@@ -16,7 +16,7 @@ import rx.Subscriber;
  */
 
 public class TkpdSellerLogout {
-    public static void onLogOut(AppComponent appComponent) {
+    public static void onLogOut(AppComponent appComponent, Context context) {
         TkpdSellerLogoutComponent component = DaggerTkpdSellerLogoutComponent
                 .builder()
                 .appComponent(appComponent)

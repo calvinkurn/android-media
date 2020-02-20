@@ -58,7 +58,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         DaggerCategoryPickerComponent
                 .builder()
                 .productComponent(getComponent(ProductComponent.class))
-                .categoryPickerModule(new CategoryPickerModule(getActivity().getApplicationContext()))
+                .categoryPickerModule(new CategoryPickerModule(requireActivity().getApplicationContext()))
                 .build()
                 .inject(this);
     }
