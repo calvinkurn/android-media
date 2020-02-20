@@ -420,11 +420,31 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
         constructor(superState: Parcelable) : super(superState)
 
+        constructor(parcel: Parcel): super(parcel) {
+            query = parcel.readString()
+            isSearchOpen = parcel.readInt() == 1
+            hint = parcel.readString()
+        }
+
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
             out.writeString(query)
             out.writeInt(if (isSearchOpen) 1 else 0)
             out.writeString(hint)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+            override fun createFromParcel(parcel: Parcel): SavedState {
+                return SavedState(parcel)
+            }
+
+            override fun newArray(size: Int): Array<SavedState?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 

@@ -23,7 +23,7 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeDefaultDataSource: HomeDefaultDataSource
 ): HomeRepository {
 
-    override suspend fun getHomeData(): Flow<HomeData?> {
+    override fun getHomeData(): Flow<HomeData?> {
         return homeCachedDataSource.getCachedHomeData().map {
             it ?: homeDefaultDataSource.getDefaultHomeData()
         }

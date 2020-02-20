@@ -63,7 +63,6 @@ class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: 
             }
         } else{
             itemView.banner_shimmering.show()
-            onItemBindListener.onBannerItemDigitalBind(element?.isLoadFromCloud)
         }
     }
 

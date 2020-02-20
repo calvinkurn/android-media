@@ -22,7 +22,6 @@
         android:layout_width="@dimen/topchat_240dp"
         android:layout_height="@dimen/topchat_240dp"
         android:layout_below="@+id/llChatHeaderContainer"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         app:cardCornerRadius="@dimen/dp_20"
         app:cardElevation="0dp"

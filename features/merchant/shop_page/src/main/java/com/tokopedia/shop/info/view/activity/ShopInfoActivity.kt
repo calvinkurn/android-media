@@ -42,10 +42,6 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getNewFragment(): Fragment? = createShopInfoFragment()
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return false
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
         (fragment as? ShopInfoFragment)?.onBackPressed()

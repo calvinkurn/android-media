@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.onetap
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import io.mockk.confirmVerified
@@ -60,7 +61,7 @@ class OneTapComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class OneTapComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OneTapComponent(container, bus, coroutineScope) {
+    class OneTapComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OneTapComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): OneTapView {
             return mockk(relaxed = true)
         }

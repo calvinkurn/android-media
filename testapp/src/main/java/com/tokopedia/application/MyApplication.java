@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.tkpd.NFCSubscriber;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.ApplinkDelegate;
@@ -24,15 +25,14 @@ import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.tkpd.network.DataSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -308,6 +308,11 @@ public class MyApplication extends BaseMainApplication
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return false;
+    }
+
+    @Override
+    public void onNewIntent(Context context, Intent intent) {
+
     }
 
     @Override

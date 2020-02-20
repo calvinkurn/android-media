@@ -48,6 +48,7 @@ ext {
             linker                  : ":libraries:linker",
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
+            mediauploader           : ":libraries:mediauploader",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
             playCore                : ":libraries:play_core",

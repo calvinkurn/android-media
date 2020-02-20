@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.data.repository
 import com.tokopedia.flight.search.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.search.data.api.single.FlightSearchDataCloudSource
 import com.tokopedia.flight.search.data.api.single.response.Meta
+import com.tokopedia.flight.search.data.cache.FlightSearchDataCacheSource
 import com.tokopedia.flight.search.data.db.*
 import com.tokopedia.flight.search.data.repository.mapper.FlightSearchMapper
 import com.tokopedia.flight.search.data.repository.util.createCombine
@@ -42,6 +43,9 @@ class FlightSearchRepositoryTest {
     @Mock
     private lateinit var flightSearchDataCloudSource: FlightSearchDataCloudSource
 
+    @Mock
+    private lateinit var flightSearchDataCacheSource: FlightSearchDataCacheSource
+
     @Before
     fun setup() {
         flightSearchRepository = FlightSearchRepository(
@@ -49,11 +53,12 @@ class FlightSearchRepositoryTest {
                 flightSearchDataCloudSource,
                 flightSearchCombinedDataDbSource,
                 flightSearchSingleDataDbSource,
-                FlightSearchMapper())
+                FlightSearchMapper(),
+                flightSearchDataCacheSource)
     }
 
     @Test
-    fun `get search single`() {
+    fun get_search_single() {
         val journeyAndRoutes = JourneyAndRoutes()
         journeyAndRoutes.flightJourneyTable = FlightJourneyTable()
         journeyAndRoutes.routes = arrayListOf()
@@ -76,7 +81,7 @@ class FlightSearchRepositoryTest {
     }
 
     @Test
-    fun `get search onward combined`() {
+    fun get_search_onward_combined() {
         val flightDataResponse = createFlightDataResponse("1")
 
         `when`(flightSearchDataCloudSource.getData(Mockito.any()))
@@ -101,7 +106,7 @@ class FlightSearchRepositoryTest {
     // returnJourneys  = 2, 3
     // combo = {1, 2}
     @Test
-    fun `get search return combined`() {
+    fun get_search_return_combined() {
         val flightDataResponse = createFlightListSearchDataResponse("2", "3")
 
         `when`(flightSearchDataCloudSource.getData(Mockito.any()))
@@ -134,7 +139,7 @@ class FlightSearchRepositoryTest {
     }
 
     @Test
-    fun `get search combined`() {
+    fun get_search_combined() {
         val flightDataResponse = createCombine()
 
         `when`(flightSearchCombinedDataApiSource.getData(Mockito.any(FlightSearchCombinedApiRequestModel::class.java)))

@@ -129,6 +129,8 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     }
 
     private void setupRecyclerView() {
+        ((StaggeredGridLayoutManager) getRecyclerView(getView()).getLayoutManager())
+                .setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         getRecyclerView(getView()).addItemDecoration(
                 new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_4))
         );
