@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,19 +11,15 @@ import android.view.View;
 import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
@@ -39,8 +34,7 @@ import timber.log.Timber;
  * modified Alvarisi
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
-        DeepLinkView,
-        ICatalogActionFragment {
+        DeepLinkView{
 
     private Uri uriData;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
@@ -193,17 +187,5 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             return Uri.parse(uriData.toString().replaceFirst(AMP + "/", ""));
         }
         return uriData;
-    }
-
-    @Override
-    public void navigateToCatalogProductList(String catalogId) {
-        getFragmentManager().beginTransaction().replace(R.id.main_view,
-                DetailProductRouter.getCatalogDetailListFragment(this, catalogId))
-                .addToBackStack(null).commit();
-    }
-
-    @Override
-    public void deliverCatalogShareData(LinkerData shareData) {
-
     }
 }

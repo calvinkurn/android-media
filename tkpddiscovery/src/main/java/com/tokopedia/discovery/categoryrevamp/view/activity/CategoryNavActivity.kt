@@ -135,12 +135,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
         }
 
-       /* @JvmStatic
-        fun isCategoryRevampEnabled(context: Context): Boolean {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_CATEGORY_REVAMP, true)
-        }*/
-
         @JvmStatic
         fun getCategoryIntentWithFilter(context: Context,
                                         categoryUrl: String): Intent {
@@ -221,7 +215,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         return if (uri == null) SearchParameter() else SearchParameter(uri.toString())
     }
 
-    fun initInjector() {
+    private fun initInjector() {
         categoryNavComponent = DaggerCategoryNavComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication)
                         .baseAppComponent).build()
