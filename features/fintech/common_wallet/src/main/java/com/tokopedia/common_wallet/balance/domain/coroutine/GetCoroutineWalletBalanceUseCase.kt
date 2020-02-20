@@ -7,11 +7,9 @@ import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.balance.domain.query.WalletBalance
 import com.tokopedia.common_wallet.balance.view.ActionBalanceModel
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.UseCase
@@ -22,27 +20,22 @@ import java.util.*
 import javax.inject.Inject
 
 class GetCoroutineWalletBalanceUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
+        private val graphqlUseCase: GraphqlUseCase<WalletBalanceResponse>,
         private val remoteConfig: RemoteConfig,
         private val userSession: UserSessionInterface,
         private val localCacheHandler: LocalCacheHandler
 )
     : UseCase<WalletBalanceModel>() {
+
+    init {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        graphqlUseCase.setTypeClass(WalletBalanceResponse::class.java)
+    }
     override suspend fun executeOnBackground(): WalletBalanceModel = withContext(Dispatchers.IO){
-        val cacheStrategy =
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val gqlRecommendationRequest = GraphqlRequest(
-                WalletBalance.query,
-                WalletBalanceResponse::class.java,
-                mapOf()
-        )
-        val response = graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
-        val errors = response.getError(WalletBalanceResponse::class.java)
-        if(errors?.isNotEmpty() == true){
-            error(errors.first().message)
-        }
-        val wallet = response.getSuccessData<WalletBalanceResponse>().wallet
-        mapper(wallet)
+        graphqlUseCase.clearCache()
+        graphqlUseCase.setGraphqlQuery(WalletBalance.query)
+        graphqlUseCase.setRequestParams(mapOf())
+        mapper(graphqlUseCase.executeOnBackground().wallet)
     }
 
     private fun mapper(walletBalanceEntity: WalletBalanceEntity?): WalletBalanceModel {
@@ -54,7 +47,6 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
             if (!walletBalanceEntity.linked) {
                 var popupHasShown = true
                 if (userSession.isLoggedIn &&
-                        walletBalanceEntity.walletType != null &&
                         walletBalanceEntity.walletType.equals(OVO_TYPE, ignoreCase = true)) {
                     popupHasShown = localCacheHandler.getBoolean(CacheUtil.FIRST_TIME_POPUP, false)!!
                     if (!popupHasShown) {
@@ -128,10 +120,8 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
             //set ab tags
             val abTags = ArrayList<String>()
             if (walletBalanceEntity.abTags != null) {
-                var index = 0
-                for (abtag in walletBalanceEntity.abTags) {
-                    abTags.add(abtag.tag)
-                    index++
+                for (abTag in walletBalanceEntity.abTags) {
+                    abTags.add(abTag.tag)
                 }
             }
             balanceTokoCash.abTags = abTags
