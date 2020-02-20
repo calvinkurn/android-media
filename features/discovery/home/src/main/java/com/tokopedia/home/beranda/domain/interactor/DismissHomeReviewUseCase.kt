@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.domain.interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.home.beranda.data.query.SuggestedReviewQuery
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
