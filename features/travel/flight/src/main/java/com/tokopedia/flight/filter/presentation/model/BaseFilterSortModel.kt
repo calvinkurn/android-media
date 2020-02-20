@@ -1,4 +1,4 @@
-package com.tokopedia.flight.filter.presentation.data
+package com.tokopedia.flight.filter.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
@@ -8,5 +8,6 @@ import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterT
  */
 
 abstract class BaseFilterSortModel(
-        open var isSelected: Boolean
+        var title: String = "",
+        var isSelected: Boolean
 ): Visitable<FlightFilterSortAdapterTypeFactory>

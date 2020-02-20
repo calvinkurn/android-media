@@ -1,10 +1,10 @@
 package com.tokopedia.flight.filter.presentation.adapter
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.flight.filter.presentation.data.BaseFilterSortModel
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterSortViewHolder
+import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 
 /**
  * @author by jessica on 2020-02-20
@@ -13,20 +13,24 @@ import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterS
 class FlightFilterSortAdapter(val typeFactory: FlightFilterSortAdapterTypeFactory,
                               val items: MutableList<BaseFilterSortModel>,
                               val listener: ActionListener)
-    : BaseAdapter<FlightFilterSortAdapterTypeFactory>(typeFactory, items as List<Visitable<*>>) {
+    : RecyclerView.Adapter<FlightFilterSortViewHolder>() {
 
-    private var maxItemCount: Int = 5
+    var maxItemCount: Int = 5
     var isSelectOnlyOneChip: Boolean = false
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
+    override fun onBindViewHolder(holder: FlightFilterSortViewHolder, position: Int) {
         if (position < maxItemCount) {
-            super.onBindViewHolder(holder, position)
+            holder.bind(items[position])
             holder.itemView.setOnClickListener {
                 if (isSelectOnlyOneChip) resetAllSelectedChip()
-                (holder as FlightFilterSortViewHolder).clickChip()
+                holder.clickChip()
                 onChipStateChanged(position, holder.isSelected())
             }
         }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightFilterSortViewHolder {
+        return FlightFilterSortViewHolder(LayoutInflater.from(parent.context).inflate(FlightFilterSortViewHolder.LAYOUT, parent, false))
     }
 
     private fun onChipStateChanged(position: Int, isSelected: Boolean) {
@@ -45,7 +49,7 @@ class FlightFilterSortAdapter(val typeFactory: FlightFilterSortAdapterTypeFactor
 
     override fun getItemCount(): Int = if (items.size > maxItemCount) maxItemCount else items.size
 
-    interface ActionListener{
+    interface ActionListener {
         fun onResetChip()
         fun onChipStateChanged(items: List<BaseFilterSortModel>)
     }

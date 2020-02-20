@@ -2,10 +2,9 @@ package com.tokopedia.flight.filter.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
-import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
+import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.layout_flight_filter_sort_chip.view.*
 
@@ -13,8 +12,15 @@ import kotlinx.android.synthetic.main.layout_flight_filter_sort_chip.view.*
  * @author by jessica on 2020-02-19
  */
 
-abstract class FlightFilterSortViewHolder<T : Visitable<FlightFilterSortAdapterTypeFactory>>(itemView: View)
-    : AbstractViewHolder<T>(itemView) {
+class FlightFilterSortViewHolder(itemView: View)
+    : RecyclerView.ViewHolder(itemView) {
+
+    fun bind(element: BaseFilterSortModel) {
+        itemView.chips.chipText = element.title
+        itemView.chips.chipType = ChipsUnify.TYPE_NORMAL
+        itemView.chips.chipSize = ChipsUnify.SIZE_MEDIUM
+        if (element.isSelected) clickChip()
+    }
 
     fun clickChip() {
         with(itemView) {

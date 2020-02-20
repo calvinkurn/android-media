@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.adapter.FlightSortAdapter
-import com.tokopedia.flight.filter.presentation.data.BaseFilterSortModel
-import com.tokopedia.flight.filter.presentation.data.TestModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.layout_flight_search_sort_bottom_sheet.*
 import kotlinx.coroutines.Dispatchers
