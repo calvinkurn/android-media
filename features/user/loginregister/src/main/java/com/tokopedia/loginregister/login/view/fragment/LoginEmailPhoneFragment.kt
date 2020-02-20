@@ -58,6 +58,8 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.data.DynamicBannerConstant
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
@@ -272,32 +274,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             showSmartLock()
         }
 
-        if (!GlobalConfig.isSellerApp()) {
-            if (isShowBanner) {
-                context?.let {
-                    analytics.eventViewBanner()
-                    ImageHandler.LoadImage(bannerLogin, BANNER_LOGIN_URL)
-                    bannerLogin.visibility = View.VISIBLE
-                }
-            } else if (isFromAtcPage() && isShowTicker) {
-                tickerAnnouncement.visibility = View.VISIBLE
-                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
-                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
-                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                    override fun onDismiss() {
-                        analytics.eventClickCloseTicker()
-                    }
-                })
-                tickerAnnouncement.setOnClickListener {
-                    analytics.eventClickTicker()
-                }
-            } else {
-                presenter.getTickerInfo()
-            }
-        }
+        presenter.getDynamicBanner(DynamicBannerConstant.Page.LOGIN)
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
@@ -1352,6 +1329,39 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun logoutGoogleAccountIfExist() {
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
+    }
+
+    override fun onGetDynamicBannerSuccess(dynamicBannerDataModel: DynamicBannerDataModel) {
+        if (!GlobalConfig.isSellerApp()) {
+            if (isShowBanner && dynamicBannerDataModel.authBanner.isSuccess) {
+                context?.let {
+                    analytics.eventViewBanner()
+                    ImageHandler.LoadImage(bannerLogin, dynamicBannerDataModel.authBanner.imgUrl)
+                    bannerLogin.visibility = View.VISIBLE
+                }
+            } else if (isFromAtcPage() && isShowTicker) {
+                tickerAnnouncement.visibility = View.VISIBLE
+                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
+                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
+                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                    override fun onDismiss() {
+                        analytics.eventClickCloseTicker()
+                    }
+                })
+                tickerAnnouncement.setOnClickListener {
+                    analytics.eventClickTicker()
+                }
+            } else {
+                presenter.getTickerInfo()
+            }
+        }
+    }
+
+    override fun onGetDynamicBannerError(throwable: Throwable) {
+        bannerLogin.hide()
     }
 
     companion object {

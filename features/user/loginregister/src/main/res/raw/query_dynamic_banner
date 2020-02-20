@@ -1,0 +1,7 @@
+query getDynamicBanner(page: String!) {
+    GetAuthBanner(page: $page) {
+        banner_img_url
+        success
+        error_message
+    }
+}

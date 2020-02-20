@@ -45,6 +45,8 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.data.DynamicBannerConstant
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
@@ -278,34 +280,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private fun initData() {
         showLoadingDiscover()
         registerInitialViewModel.getProvider()
+        registerInitialViewModel.getDynamicBannerData(DynamicBannerConstant.Page.REGISTER)
         partialRegisterInputView.setListener(this)
-
-        if (!GlobalConfig.isSellerApp()) {
-            if (isShowBanner) {
-                context?.let {
-                    registerAnalytics.eventViewBanner()
-                    ImageHandler.LoadImage(bannerRegister, BANNER_REGISTER_URL)
-                    bannerRegister.visibility = View.VISIBLE
-                }
-            } else if (isFromAtc() && isShowTicker) {
-                tickerAnnouncement.visibility = View.VISIBLE
-                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
-                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
-                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                    override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
-                    }
-                })
-                tickerAnnouncement.setOnClickListener {
-                    registerAnalytics.trackClickTicker()
-                }
-            } else {
-                registerInitialViewModel.getTickerInfo()
-            }
-        }
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
@@ -458,6 +434,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(this, Observer {
             if (it != null) onGoToSecurityQuestionAfterRelogin()
+        })
+
+        registerInitialViewModel.dynamicBannerResponse.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    loadDynamicBannerData(it.data)
+                }
+                is Fail -> {
+                    bannerRegister.hide()
+                }
+            }
         })
     }
 
@@ -1226,6 +1213,35 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         return result
     }
 
+    private fun loadDynamicBannerData(dynamicBannerDataModel: DynamicBannerDataModel) {
+        if (!GlobalConfig.isSellerApp()) {
+            if (isShowBanner && dynamicBannerDataModel.authBanner.isSuccess) {
+                context?.let {
+                    registerAnalytics.eventViewBanner()
+                    ImageHandler.LoadImage(bannerRegister, dynamicBannerDataModel.authBanner.imgUrl)
+                    bannerRegister.visibility = View.VISIBLE
+                }
+            } else if (isFromAtc() && isShowTicker) {
+                tickerAnnouncement.visibility = View.VISIBLE
+                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
+                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
+                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+                })
+                tickerAnnouncement.setOnClickListener {
+                    registerAnalytics.trackClickTicker()
+                }
+            } else {
+                registerInitialViewModel.getTickerInfo()
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         registerInitialViewModel.getProviderResponse.removeObservers(this)
@@ -1242,6 +1258,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.goToSecurityQuestion.removeObservers(this)
         registerInitialViewModel.goToActivationPageAfterRelogin.removeObservers(this)
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.removeObservers(this)
+        registerInitialViewModel.dynamicBannerResponse.removeObservers(this)
         combineLoginTokenAndValidateToken.removeObservers(this)
         registerInitialViewModel.flush()
     }
