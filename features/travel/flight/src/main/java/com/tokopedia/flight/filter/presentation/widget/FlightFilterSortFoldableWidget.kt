@@ -7,9 +7,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.flight.R
-import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
+import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortWidgetAdapter
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterSortViewHolder
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterSortWidgetViewHolder
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.widget_flight_filter_sort_foldable.view.*
  */
 
 class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr), FlightFilterSortAdapter.ActionListener {
+    : BaseCustomView(context, attrs, defStyleAttr), FlightFilterSortWidgetAdapter.ActionListener {
 
     var titleText: String = ""
     var isFoldAble: Boolean = true
@@ -32,7 +32,7 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
     var isFlowLayout: Boolean = true
     var isSelectOnlyOneChip: Boolean = false
 
-    private lateinit var adapter: FlightFilterSortAdapter
+    private lateinit var widgetAdapter: FlightFilterSortWidgetAdapter
 
     init {
         View.inflate(context, R.layout.widget_flight_filter_sort_foldable, this)
@@ -66,10 +66,10 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
             }
         } else tv_show_more.hide()
 
-        if (!::adapter.isInitialized) {
-            adapter = FlightFilterSortAdapter(FlightFilterSortAdapterTypeFactory(), items.toMutableList(), this)
-            adapter.isSelectOnlyOneChip = isSelectOnlyOneChip
-            adapter.maxItemCount = maxItemCount
+        if (!::widgetAdapter.isInitialized) {
+            widgetAdapter = FlightFilterSortWidgetAdapter(FlightFilterSortAdapterTypeFactory(), items.toMutableList(), this)
+            widgetAdapter.isSelectOnlyOneChip = isSelectOnlyOneChip
+            widgetAdapter.maxItemCount = maxItemCount
 
             if (isFlowLayout) {
                 rv_flight_sort.layoutManager = ChipsLayoutManager.newBuilder(context)
@@ -80,13 +80,13 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
                 rv_flight_sort.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
 
-            rv_flight_sort.adapter = adapter
+            rv_flight_sort.adapter = widgetAdapter
         }
     }
 
     override fun onResetChip() {
-        for (i in 0 until adapter.itemCount) {
-            with(rv_flight_sort.findViewHolderForAdapterPosition(i) as FlightFilterSortViewHolder) {
+        for (i in 0 until widgetAdapter.itemCount) {
+            with(rv_flight_sort.findViewHolderForAdapterPosition(i) as FlightFilterSortWidgetViewHolder) {
                 this.unselectChip()
             }
         }
