@@ -404,7 +404,7 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, grid.getId(),
+                                                FIELD_ID, channel.getId() + "_" + grid.getId(),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
