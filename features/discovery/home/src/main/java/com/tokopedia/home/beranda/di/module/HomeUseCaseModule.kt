@@ -10,9 +10,11 @@ import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
@@ -93,8 +95,11 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideHomeTokopointsDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsDataUseCase {
-        return GetHomeTokopointsDataUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
+    fun provideHomeTokopointsDataUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetHomeTokopointsDataUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.home_gql_tokopoints_details)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerHomeData>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetHomeTokopointsDataUseCase(usecase)
     }
 
     @Provides
