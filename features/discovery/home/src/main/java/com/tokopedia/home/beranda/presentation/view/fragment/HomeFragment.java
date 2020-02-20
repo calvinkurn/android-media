@@ -1790,7 +1790,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         for (int i = 0; i < adapter.getItemCount(); i++) {
             if (adapter.getCurrentList().get(i) instanceof PopularKeywordListViewModel
                     && i == data.getPosition()) {
-                ((PopularKeywordListViewModel) adapter.getCurrentList().get(i)).setPopularKeywordList(data.getPopularKeywordList());
+                viewModel.onPopularKeywordDataInserted(i, data);
                 break;
             }
         }

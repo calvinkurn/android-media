@@ -435,6 +435,19 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onPopularKeywordDataInserted(position: Int, data: PopularKeywordListViewModel) {
+        val currentList = _homeLiveData.value?.list?.toMutableList()
+        currentList?.let {
+            if (currentList[position] is PopularKeywordListViewModel) {
+                currentList[position] = data
+                val newHomeViewModel = _homeLiveData.value?.copy(
+                        list = it
+                )
+                _homeLiveData.postValue(newHomeViewModel)
+            }
+        }
+    }
+
     fun onCloseGeolocation() {
         val homeViewModel = _homeLiveData.value
         val detectGeolocation = homeViewModel?.list?.find { visitable -> visitable is GeolocationPromptViewModel }
