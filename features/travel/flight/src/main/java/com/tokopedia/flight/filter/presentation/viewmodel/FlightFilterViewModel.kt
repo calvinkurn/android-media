@@ -108,8 +108,7 @@ class FlightFilterViewModel @Inject constructor(
             ))
         }
 
-        mutableFilterViewData.value = items
-
+        mutableFilterViewData.postValue(items)
     }
 
     companion object {
