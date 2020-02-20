@@ -86,7 +86,6 @@ import java.io.InputStreamReader
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
 
-    private val EMONEY = "emoney"
     private val DFM_EMONEY = "df_digital_emoney"
     @JvmField
     val DFM_BASE = "df_base"
@@ -121,7 +120,7 @@ object DeeplinkDFMapper {
 
             // Digital
             add(DFP({  it.startsWith(DIGITAL_RECHARGE) || it.startsWith(DIGITAL) }, DFM_BASE, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWith(EMONEY) }, DFM_EMONEY, R.string.title_digital_emoney))
+            add(DFP({ it.startsWith(DIGITAL_SMARTCARD) }, DFM_EMONEY, R.string.title_digital_emoney))
 
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_BASE, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_BASE, R.string.title_digital_deals))
