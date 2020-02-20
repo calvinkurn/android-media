@@ -1,9 +1,11 @@
 package com.tokopedia.vouchergame.list.view.activity
 
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.android.gms.actions.SearchIntents
 import com.google.firebase.appindexing.Action
 import com.google.firebase.appindexing.FirebaseUserActions
 import com.google.firebase.appindexing.builders.AssistActionBuilder
@@ -63,6 +65,7 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intent?.handleIntent()
         notifyActionStatus(Action.Builder.STATUS_TYPE_COMPLETED)
     }
 
@@ -98,5 +101,18 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
                 .setActionStatus(status)
                 .build()
         FirebaseUserActions.getInstance().end(action)
+    }
+
+    private fun Intent.handleIntent() {
+        when (action) {
+//            // When the action is triggered by a deep-link, Intent.Action_VIEW will be used
+//            Intent.ACTION_VIEW -> handleDeepLink(data)
+//            // When the action is triggered by the Google search action, the ACTION_SEARCH will be used
+//            SearchIntents.ACTION_SEARCH -> handleSearchIntent(
+//                    searchQuery = intent.getStringExtra(SearchManager.QUERY)
+//            )
+//            // Otherwise start the app as you would normally do.
+//            else -> showDefaultView()
+        }
     }
 }
