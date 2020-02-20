@@ -1,8 +1,6 @@
 package com.tokopedia.flight.filter.presentation.bottomsheets
 
-import android.app.Activity
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -55,14 +53,6 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     }
 
     private fun initBottomSheet() {
-        try {
-            val displayMetrics = DisplayMetrics()
-            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-            customPeekHeight = displayMetrics.heightPixels
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-
         showCloseIcon = false
         showKnob = true
         isDragable = true
