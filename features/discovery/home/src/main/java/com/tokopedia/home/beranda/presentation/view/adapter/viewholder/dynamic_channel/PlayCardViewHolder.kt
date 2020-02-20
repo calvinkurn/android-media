@@ -81,7 +81,7 @@ class PlayCardViewHolder(
             description.setValue("")
 
             thumbnailView.show()
-            thumbnailView.loadImage(playChannel.coverUrl, 350, 150, true)
+            thumbnailView.loadImage(playChannel.coverUrl, 350, 175, true)
 
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
