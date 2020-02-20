@@ -118,10 +118,6 @@ class HomeViewModel @Inject constructor(
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
-    val popularKeywordResp: LiveData<Result<PopularKeywordListViewModel>>
-        get() = _popularKeywordResp
-    private val _popularKeywordResp = MutableLiveData<Result<PopularKeywordListViewModel>>()
-
     // Test cover banner url play widget is valid or not
     private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardViewModel>>()
     val requestImageTestLiveData: LiveData<Event<PlayCardViewModel>> get() = _requestImageTestLiveData
@@ -809,13 +805,22 @@ class HomeViewModel @Inject constructor(
                 val resultList = convertPopularKeywordDataList(results.data.keywords)
                 val data = PopularKeywordListViewModel(popularKeywordList = resultList, header = header)
                 data.position = rowNumber
-                _popularKeywordResp.postValue(Result.success(data))
-            } else {
-                _popularKeywordResp.postValue(Result.error(Throwable(), data = PopularKeywordListViewModel(header = header)))
+                val currentList = _homeLiveData.value?.list?.toMutableList()
+                currentList?.let {
+                    for (i in 0 until it.size) {
+                        if (currentList[i] is PopularKeywordListViewModel) {
+                            currentList[i] = data
+                            val newHomeViewModel = _homeLiveData.value?.copy(
+                                    list = it
+                            )
+                            _homeLiveData.postValue(newHomeViewModel)
+                        }
+                        break
+                    }
+                }
+
             }
-        }){
-            _popularKeywordResp.postValue(Result.error(Throwable(), data = PopularKeywordListViewModel(header = header)))
-        }
+        }){}
     }
 
     private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordViewModel> {

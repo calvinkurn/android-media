@@ -539,7 +539,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
-        observePopularKeywordData();
     }
 
     private void observeHomeData(){
@@ -628,12 +627,6 @@ public class HomeFragment extends BaseDaggerFragment implements
                             viewModel.clearPlayBanner();
                         }
                     });
-        });
-    }
-
-    private void observePopularKeywordData() {
-        viewModel.getPopularKeywordResp().observe(this, result -> {
-            setPopularKeywordData(result.getData());
         });
     }
 
@@ -1786,13 +1779,4 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
     }
 
-    private void setPopularKeywordData(PopularKeywordListViewModel data) {
-        for (int i = 0; i < adapter.getItemCount(); i++) {
-            if (adapter.getCurrentList().get(i) instanceof PopularKeywordListViewModel
-                    && i == data.getPosition()) {
-                viewModel.onPopularKeywordDataInserted(i, data);
-                break;
-            }
-        }
-    }
 }
