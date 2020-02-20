@@ -8,5 +8,6 @@ import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterT
  */
 
 abstract class BaseFilterSortModel(
-        open var isSelected: Boolean
+        var title: String = "",
+        var isSelected: Boolean
 ): Visitable<FlightFilterSortAdapterTypeFactory>
