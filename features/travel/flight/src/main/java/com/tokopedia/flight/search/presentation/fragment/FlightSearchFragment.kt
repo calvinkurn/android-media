@@ -52,7 +52,7 @@ import javax.inject.Inject
  */
 open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, FlightSearchAdapterTypeFactory>(),
         FlightSearchContract.View, FlightSearchAdapterTypeFactory.OnFlightSearchListener,
-        ErrorNetworkModel.OnRetryListener {
+        ErrorNetworkModel.OnRetryListener, FlightFilterBottomSheet.FlightFilterBottomSheetListener {
 
     lateinit var flightSearchPresenter: FlightSearchPresenter
         @Inject set
@@ -548,6 +548,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         return emptyResultViewModel
     }
 
+    override fun onSaveFilter(flightFilterModel: FlightFilterModel?) {
+        if (flightFilterModel != null) {
+            this.flightFilterModel = flightFilterModel
+        }
+    }
+
     fun searchFlightData() {
         fetchFlightSearchData()
     }
@@ -611,9 +617,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         bottom_action_filter_sort.setButton1OnClickListener {
             addToolbarElevation()
-//            startActivityForResult(FlightSearchFilterActivity.createInstance(activity, isReturning(), flightFilterModel),
-//                    REQUEST_CODE_SEARCH_FILTER)
-            FlightFilterBottomSheet.getInstance().show(requireFragmentManager(), FlightFilterBottomSheet.TAG_FILTER)
+            val flightFilterBottomSheet = FlightFilterBottomSheet.getInstance(flightFilterModel)
+            flightFilterBottomSheet.listener = this
+            flightFilterBottomSheet.setShowListener { flightFilterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+            flightFilterBottomSheet.show(requireFragmentManager(), FlightFilterBottomSheet.TAG_FILTER)
         }
         bottom_action_filter_sort.visibility = View.GONE
     }

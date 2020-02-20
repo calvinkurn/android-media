@@ -48,6 +48,7 @@
     <string name="flight_search_filter_airplane">Maskapai Penerbangan</string>
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
+    <string name="flight_search_filter_ticket_price_label">Harga tiket</string>
     <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
     <string name="flight_labe_all_airport">Semua Bandara</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
@@ -75,7 +76,6 @@
     <string name="refundable">Refundable</string>
     <string name="non_refundable">Non-refundable</string>
     <string name="partial_refundable">Partial Refundable</string>
-    <string name="flight_search_filter_label">Filter</string>
     <string name="flight_search_sort_label">Urutkan</string>
     <string name="flight_search_sort_title">Urutkan</string>
     <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terpagi</string>
@@ -87,13 +87,13 @@
     <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
     <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
     <string name="flight_search_sort_dialog_title">Urutkan berdasarkan</string>
-    <string name="filter">Filter</string>
-    <string name="reset">Reset</string>
+    <string name="flight_filter_label">Filter</string>
+    <string name="flight_reset_label">Reset</string>
     <string name="airline">Maskapai Penerbangan</string>
     <string name="refundable_policy">Kebijakan Pengembalian</string>
     <string name="transit">Transit</string>
     <string name="start_from_x">Mulai dari %1$s</string>
-    <string name="flight_there_has_x_flights">Terdapat %1$d penerbangan</string>
+    <string name="flight_there_has_x_flights">Lihat %1$d Penerbangan</string>
     <string name="flight_save_x_flights">Simpan (%1$d penerbangan)</string>
     <string name="flight_save">Simpan</string>
     <string name="flight_label_choose_button">Pilih</string>
@@ -135,7 +135,6 @@
     <string name="flight_booking_transit_trip_card">Transit</string>
     <string name="flight_booking_directly_trip_card">Langsung</string>
     <string name="flight_booking_transit_with_value_trip_cart">%d Transit</string>
-    <string name="flight_title_menu_reset">Reset</string>
     <string name="flight_booking_phone_code_label">(+%1$s)</string>
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
@@ -490,4 +489,7 @@
     <string name="flight_min_date_label">Pergi</string>
     <string name="flight_max_date_label">Pulang</string>
     <string name="flight_calendar_lowest_fare_price_color">#42b549</string>
+    <string name="flight_rupiah_label">Rp</string>
+    <string name="flight_filter_lowest_price_label">Terendah</string>
+    <string name="flight_filter_highest_price_label">Tertinggi</string>
 </resources>

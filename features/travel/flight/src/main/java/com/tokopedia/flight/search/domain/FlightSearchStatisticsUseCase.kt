@@ -3,12 +3,12 @@ package com.tokopedia.flight.search.domain
 import android.text.TextUtils
 import android.util.SparseIntArray
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.resultstatistics.*
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.data.repository.FlightSearchRepository
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.resultstatistics.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -28,6 +28,12 @@ class FlightSearchStatisticsUseCase @Inject constructor(
 
         return flightSearchRepository.getSearchFilter(TravelSortOption.CHEAPEST, filterModel)
                 .map { mapToFlightSearchStatisticsModel(it.journeyAndRoutes) }
+    }
+
+    fun executeCoroutine(requestParams: RequestParams): FlightSearchStatisticModel {
+        val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
+        return mapToFlightSearchStatisticsModel(flightSearchRepository.getSearchFilterCoroutine(
+                TravelSortOption.CHEAPEST, filterModel).journeyAndRoutes)
     }
 
     private fun mapToFlightSearchStatisticsModel(journeyAndRoutesList: List<JourneyAndRoutes>):
