@@ -294,7 +294,7 @@ class SellerDrawerHelper(val context: Activity,
             SellerHomeState.DrawerPosition.PEOPLE ->
                 drawerCache.putBoolean(SellerDrawerAdapter.IS_PEOPLE_OPENED, isExpand)
             SellerHomeState.DrawerPosition.SHOP ->
-                drawerCache.putBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, isExpand)
+                drawerCache.putBoolean(SellerDrawerAdapter.IS_SHOP_OPENED, isExpand)
             SellerHomeState.DrawerPosition.SELLER_PRODUCT_EXTEND ->
                 drawerCache.putBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, isExpand)
             SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE ->

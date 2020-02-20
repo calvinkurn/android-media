@@ -10,5 +10,4 @@ import dagger.Component
 interface ServiceComponent {
 
     fun inject(sellerDrawerGetNotificationService: SellerDrawerGetNotificationService)
-    fun inject(sellerDrawerGetNotificationService: com.tokopedia.sellerhomedrawer.domain.SellerDrawerGetNotificationService)
 }
