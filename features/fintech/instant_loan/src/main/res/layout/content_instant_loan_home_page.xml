@@ -92,7 +92,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@color/white_four"
+        android:background="@color/il_white_four"
         app:layout_constraintEnd_toEndOf="@+id/text_form_description"
         app:layout_constraintStart_toStartOf="@+id/text_form_description"
         app:layout_constraintTop_toBottomOf="@+id/text_value_interest_rate" />

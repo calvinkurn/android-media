@@ -19,25 +19,22 @@ class InstantLoanLendingDataPresenterTest {
     var mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCase = mockk()
 
     var view: InstantLoanLendingDataContractor.View = mockk()
-    var getLendingDataSubscriber: GetLendingDataSubscriber= mockk()
-    var getLoanPrSubscriber: GetLoanProfileSubscriber = mockk()
+
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
         lendingDataPresenter = InstantLoanLendingDataPresenter(mGetLendingDataUseCase, mGetLoanProfileStatusUseCase)
-        lendingDataPresenter.getLoanProfileSubscriber = getLoanPrSubscriber
-        lendingDataPresenter.getLendingDataSubscriber = getLendingDataSubscriber
     }
 
     @Test
     fun test_attach_view_with_user_logged_in(){
         every {
-            mGetLendingDataUseCase.execute(getLendingDataSubscriber)
+            mGetLendingDataUseCase.execute(any())
         } returns mockk()
 
         every {
-            mGetLoanProfileStatusUseCase.execute(getLoanPrSubscriber)
+            mGetLoanProfileStatusUseCase.execute(any())
         } returns mockk()
 
         every {
@@ -47,18 +44,18 @@ class InstantLoanLendingDataPresenterTest {
 
         lendingDataPresenter.attachView(view)
         verify (exactly = 1) {
-            mGetLendingDataUseCase.execute(getLendingDataSubscriber)
+            mGetLendingDataUseCase.execute(any())
         }
 
         verify (exactly = 1) {
-            mGetLoanProfileStatusUseCase.execute(getLoanPrSubscriber)
+            mGetLoanProfileStatusUseCase.execute(any())
         }
     }
 
     @Test
     fun test_attach_view_without_user_logged_in(){
         every {
-            mGetLendingDataUseCase.execute(getLendingDataSubscriber)
+            mGetLendingDataUseCase.execute(any())
         } returns mockk()
 
         every {
@@ -67,11 +64,11 @@ class InstantLoanLendingDataPresenterTest {
 
         lendingDataPresenter.attachView(view)
         verify (exactly = 1) {
-            mGetLendingDataUseCase.execute(getLendingDataSubscriber)
+            mGetLendingDataUseCase.execute(any())
         }
 
         verify (exactly = 0) {
-            mGetLoanProfileStatusUseCase.execute(getLoanPrSubscriber)
+            mGetLoanProfileStatusUseCase.execute(any())
         }
     }
 }
