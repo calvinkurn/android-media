@@ -43,6 +43,17 @@ class FlightSortViewHolder(val view: View, val listener: FlightFilterSortListene
         }
     }
 
+    fun performClickOnSortId(selectedId: Int) {
+        itemView.flight_sort_widget.performClickOnChipWithPosition(getSortIdByPosition(selectedId))
+    }
+
+    fun getSortIdByPosition(selectedId: Int): Int {
+        for ((index, item) in getSortItem().withIndex()) {
+            if (item.selectedOption == selectedId) return index
+        }
+        return 0
+    }
+
     private fun getSortItem(): List<FlightSortModel> {
         return listOf(FlightSortModel(TravelSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), selectedId == TravelSortOption.CHEAPEST),
                 FlightSortModel(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), selectedId == TravelSortOption.MOST_EXPENSIVE),

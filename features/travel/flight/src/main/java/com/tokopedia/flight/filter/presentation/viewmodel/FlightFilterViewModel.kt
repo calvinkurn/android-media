@@ -68,6 +68,7 @@ class FlightFilterViewModel @Inject constructor(
             mapStatisticToModel(statisticModel.value)
         }
     }
+
     fun setSelectedSort(selectedId: Int) {
         mutableSelectedSort.postValue(selectedId)
     }

@@ -18,11 +18,13 @@ import com.tokopedia.flight.filter.di.FlightFilterComponent
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.fragment_flight_filter.*
 import kotlinx.android.synthetic.main.fragment_flight_filter.view.*
 import javax.inject.Inject
 
@@ -119,6 +121,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
             btnFlightFilterSave.setOnClickListener {
                 listener?.onSaveFilter(flightFilterViewModel.getSelectedSort(), flightFilterViewModel.filterModel.value)
+                dismiss()
             }
         }
     }
@@ -139,6 +142,9 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightSortBottomSheet.listener = object : FlightSortBottomSheet.ActionListener {
             override fun onSortOptionClicked(selectedSortOption: Int) {
                 flightFilterViewModel.setSelectedSort(selectedSortOption)
+                with(rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.SORT_ORDER) as FlightSortViewHolder) {
+                    this.performClickOnSortId(selectedSortOption)
+                }
             }
         }
         flightSortBottomSheet.setShowListener { flightSortBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }

@@ -47,6 +47,7 @@ class FlightFilterSortWidgetAdapter(val items: MutableList<BaseFilterSortModel>,
         for (item in items) {
             item.isSelected = false
         }
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = if (items.size > maxItemCount) maxItemCount else items.size
