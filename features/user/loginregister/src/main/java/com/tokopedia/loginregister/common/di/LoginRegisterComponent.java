@@ -26,7 +26,11 @@ import retrofit2.Retrofit;
  */
 @LoginRegisterScope
 @SessionCommonScope
-@Component(modules = {LoginRegisterModule.class, SessionModule.class}, dependencies = {BaseAppComponent.class})
+@Component(modules = {
+        LoginRegisterModule.class,
+        SessionModule.class,
+        GqlRawQueryModule.class
+}, dependencies = {BaseAppComponent.class})
 public interface LoginRegisterComponent {
 
     @ApplicationContext
