@@ -60,12 +60,14 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         initBottomSheet()
         initAdapter()
         initView()
+        showLoading()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         flightFilterViewModel.statisticModel.observe(this, Observer {
+            hideLoaading()
             renderList(flightFilterViewModel.filterViewData.value ?: arrayListOf())
         })
 
@@ -74,6 +76,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         })
 
         flightFilterViewModel.filterViewData.observe(this, Observer {
+            hideLoaading()
             renderList(it)
         })
 
@@ -151,6 +154,20 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         adapter?.clearAllElements()
         adapter?.addElement(data)
         adapter?.notifyDataSetChanged()
+    }
+
+    private fun showLoading() {
+        with(mChildView) {
+            containerLoading.visibility = View.VISIBLE
+            containerContent.visibility = View.GONE
+        }
+    }
+
+    private fun hideLoaading() {
+        with(mChildView) {
+            containerLoading.visibility = View.GONE
+            containerContent.visibility = View.VISIBLE
+        }
     }
 
     companion object {
