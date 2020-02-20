@@ -29,7 +29,7 @@ class ShopOpenRevampTracking (context: Context) {
                         EVENT_VALUE,
                         "$EVENT_CATEGORY_VALUE - shop",
                         "click register shop",
-                        eventLabelValue
+                        ""
                 )
         )
     }
