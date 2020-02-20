@@ -44,14 +44,14 @@ class DigitalHomePageViewModel @Inject constructor(
         launch(Dispatchers.IO) {
             val data = digitalHomePageUseCase.executeOnBackground()
             if (data.isEmpty() || checkError(data)) {
-                _isAllError.value = true
+                _isAllError.postValue(true)
             } else {
                 _digitalHomePageList.postValue(data)
             }
         }
     }
 
-    fun checkError(data: List<DigitalHomePageItemModel>): Boolean {
+    private fun checkError(data: List<DigitalHomePageItemModel>): Boolean {
         return data.all { !it.isSuccess }
     }
 

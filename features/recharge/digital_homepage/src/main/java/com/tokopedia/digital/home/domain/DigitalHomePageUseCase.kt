@@ -10,7 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.coroutines.UseCase
 
 class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
-                              var isFromCloud: Boolean = true): UseCase<List<DigitalHomePageItemModel>>() {
+                              var isFromCloud: Boolean = false): UseCase<List<DigitalHomePageItemModel>>() {
 
     var queryList: Map<String, String> = mapOf()
         set(value) {
