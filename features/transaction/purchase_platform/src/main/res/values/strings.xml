@@ -265,4 +265,21 @@
     <string name="preference_list_empty_subtitle">Kamu bisa mempercepat proses transaksi kamu dengan membuat 1 preference alamat, pengiriman, dan pembayaran.</string>
     <string name="button_create_preference">Buat Preferensi</string>
     <string name="button_add_preference">Tambah Preferensi</string>
+
+    <!--Choose Address-->
+    <string name="hint_find_address">Cari alamat</string>
+    <string name="label_button_save_address">Simpan Alamat</string>
+    <string name="text_detail_address">Tokopedia Tower Tokopedia Tower Tokopedia Tower Tokopedia Tower Tokopedia Tower Tokopedia Tower Tokopedia Tower Tokopedia Tower Tokopedia Tower Tokopedia Tower</string>
+    <string name="text_address_type">Kantor</string>
+    <string name="text_address_name">Tari</string>
+    <string name="text_address_number">081808180008</string>
+    <string name="title_empty_address">Masukkan Alamat Dulu, Ya</string>
+    <string name="text_empty_address">Tambahkan alamat pengiriman barang untuk mempermudah proses pembelian</string>
+    <string name="label_button_input_address">Masukkan alamat</string>
+    <string name="activity_title_choose_address">Pilih Alamat Pengiriman</string>
+
+    <!--Shipping Duration-->
+    <string name="label_button_choose_shipping_duration">Pilih Metode Pembayaran</string>
+    <string name="text_shipping_duration">Instan (3 jam)</string>
+
 </resources>
