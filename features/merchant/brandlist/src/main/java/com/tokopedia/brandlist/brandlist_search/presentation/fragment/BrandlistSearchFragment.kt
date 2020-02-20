@@ -37,6 +37,7 @@ import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
