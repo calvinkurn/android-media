@@ -1,10 +1,10 @@
-package com.tokopedia.seller.product.etalase.view.model;
+package com.tokopedia.product.manage.item.etalase.view.model;
 
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.item.R;
 
 /**
  * @author sebastianuskh on 4/5/17.

@@ -1,8 +1,6 @@
-package com.tokopedia.seller.product.draft.view.listener;
+package com.tokopedia.product.manage.list.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
-
-import java.util.List;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by User on 6/21/2017.
