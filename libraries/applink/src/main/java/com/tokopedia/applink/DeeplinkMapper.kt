@@ -79,7 +79,7 @@ object DeeplinkMapper {
                     deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL) ->
                         getRegisteredNavigationPlay(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
-                        getRegisteredHotlist(context, deeplink)
+                        getRegisteredHotlist(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)
@@ -182,7 +182,7 @@ object DeeplinkMapper {
             ApplinkConst.INSTANT_LOAN_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
             ApplinkConst.PINJAMAN_ONLINE_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
             ApplinkConst.NEW_WISHLIST -> ApplinkConsInternalHome.HOME_WISHLIST
-            ApplinkConst.CREATE_SHOP -> ApplinkConstInternalMarketplace.OPEN_SHOP
+            ApplinkConst.CREATE_SHOP -> ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
             ApplinkConst.CHAT_TEMPLATE -> ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER

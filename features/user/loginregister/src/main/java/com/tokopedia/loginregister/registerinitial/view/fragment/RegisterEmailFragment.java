@@ -53,7 +53,7 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestDa
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity;
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterUtil;
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel;
-import com.tokopedia.otp.common.network.ErrorMessageException;
+import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
@@ -277,13 +277,13 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             }else if(registerRequestDataResult instanceof Fail){
                 Throwable throwable = ((Fail) registerRequestDataResult).getThrowable();
                 dismissLoadingProgress();
-                if (throwable instanceof ErrorMessageException
-                        && throwable.getLocalizedMessage() != null
-                        && throwable.getLocalizedMessage().contains(ALREADY_REGISTERED)) {
+                if (throwable instanceof MessageErrorException
+                        && throwable.getMessage() != null
+                        && throwable.getMessage().contains(ALREADY_REGISTERED)) {
                     showInfo();
-                } else  if (throwable instanceof ErrorMessageException
-                        && throwable.getLocalizedMessage() != null) {
-                    onErrorRegister(throwable.getLocalizedMessage());
+                } else  if (throwable instanceof MessageErrorException
+                        && throwable.getMessage() != null) {
+                    onErrorRegister(throwable.getMessage());
                 }else {
                     ErrorHandlerSession.getErrorMessage(new ErrorHandlerSession.ErrorForbiddenListener() {
                         @Override

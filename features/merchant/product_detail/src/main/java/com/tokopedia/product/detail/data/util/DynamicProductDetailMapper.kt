@@ -60,7 +60,7 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.PRODUCT_SNAPSHOT
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        return DynamicProductInfoP1(basic = data.basicInfo, data = componentData)
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = componentData)
     }
 
     fun mapProductInfoToDynamicProductInfo(newData: ProductInfo, oldData: DynamicProductInfoP1): DynamicProductInfoP1 {
@@ -112,7 +112,7 @@ object DynamicProductDetailMapper {
                 name = newData.basic.name
         )
 
-        return DynamicProductInfoP1(basic,data)
+        return DynamicProductInfoP1(basic, data)
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {

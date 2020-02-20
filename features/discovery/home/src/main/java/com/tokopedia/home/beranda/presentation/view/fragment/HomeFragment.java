@@ -852,8 +852,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             else
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
-
-        HomePageTracking.sendTokopointTrackerClick();
     }
 
     @Override
@@ -1661,6 +1659,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         }
         impressionScrollListeners.clear();
+    }
+
+    @Override
+    public void refreshHomeData() {
+        refreshLayout.setRefreshing(true);
+        onNetworkRetry();
     }
 
     @Override

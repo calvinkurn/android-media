@@ -2,7 +2,7 @@ package com.tkpd.remoteresourcerequest.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import com.tkpd.remoteresourcerequest.R
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager
 
@@ -10,8 +10,8 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager
 /**
  * Initialize this class with mandatory field @param url
  */
-class DeferredImageView : ImageView {
-    private lateinit var mRemoteFileName: String
+class DeferredImageView : AppCompatImageView {
+    private var mRemoteFileName: String = ""
     private var mContext: Context
 
     /**
@@ -61,6 +61,10 @@ class DeferredImageView : ImageView {
         ResourceDownloadManager.getManager()
                 .stopDeferredImageViewRendering(mRemoteFileName, this)
 
+    }
+    fun loadRemoteImageDrawable(name : String){
+        mRemoteFileName = name
+        downloadAndSetResource()
     }
 }
 

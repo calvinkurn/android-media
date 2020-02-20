@@ -1,18 +1,48 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
 
+android{
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+            jacocoOptions {
+                html.enabled = true
+                xml.enabled = false
+                csv.enabled = false
+            }
+        }
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+}
 repositories {
     maven { url 'https://hansel.io/maven' }
+    jcenter()
     mavenCentral()
 }
 buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
+        jcenter()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -32,6 +62,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.profileCommon)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
@@ -63,6 +94,17 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.platformEngine
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 }
 
 project.ext {

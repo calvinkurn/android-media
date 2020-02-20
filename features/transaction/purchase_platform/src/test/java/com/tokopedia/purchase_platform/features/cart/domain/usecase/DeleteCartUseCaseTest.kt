@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -21,7 +22,8 @@ object DeleteCartUseCaseTest : Spek({
 
     val clearCacheAutoApplyStackUseCase = mockk<ClearCacheAutoApplyStackUseCase>()
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
-    val useCase by memoized { DeleteCartUseCase(clearCacheAutoApplyStackUseCase, graphqlUseCase, TestSchedulers) }
+    val updateCartCounterUseCase = mockk<UpdateCartCounterUseCase>()
+    val useCase by memoized { DeleteCartUseCase(clearCacheAutoApplyStackUseCase, updateCartCounterUseCase, graphqlUseCase, TestSchedulers) }
 
     val params = RequestParams().apply {
         putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, RemoveCartRequest())
@@ -38,6 +40,7 @@ object DeleteCartUseCaseTest : Spek({
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
                         DeleteCartDataResponse(status = "OK", data = Data(0))
                 )), null, false))
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
             When("create observable") {
@@ -58,6 +61,7 @@ object DeleteCartUseCaseTest : Spek({
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
                         DeleteCartDataResponse(status = "ERROR", errorMessage = arrayListOf(errorMessage, errorMessage2), data = Data(0))
                 )), null, false))
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
             When("create observable") {
@@ -75,6 +79,7 @@ object DeleteCartUseCaseTest : Spek({
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
                         DeleteCartDataResponse(status = "ERROR", data = Data(0))
                 )), null, false))
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
             When("create observable") {

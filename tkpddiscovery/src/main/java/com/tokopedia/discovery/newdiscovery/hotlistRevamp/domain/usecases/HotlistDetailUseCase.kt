@@ -16,7 +16,7 @@ class HotlistDetailUseCase @Inject constructor(private val context: Context) : U
 
         val graphqlUseCase = GraphqlUseCase()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.gql_hotlist_detail), HotListDetailResponse::class.java, requestParams?.parameters, false)
+                R.raw.gql_hotlist_detail), HotListDetailResponse::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
