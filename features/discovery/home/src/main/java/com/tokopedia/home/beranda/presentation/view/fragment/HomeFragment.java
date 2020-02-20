@@ -80,6 +80,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
@@ -538,6 +539,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
+        observePopularKeywordData();
     }
 
     private void observeHomeData(){
@@ -626,6 +628,12 @@ public class HomeFragment extends BaseDaggerFragment implements
                             viewModel.clearPlayBanner();
                         }
                     });
+        });
+    }
+
+    private void observePopularKeywordData() {
+        viewModel.getPopularKeywordResp().observe(this, result -> {
+            setPopularKeywordData(result.getData());
         });
     }
 
@@ -1775,6 +1783,16 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
             }
             index++;
+        }
+    }
+
+    private void setPopularKeywordData(PopularKeywordListViewModel data) {
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            if (adapter.getCurrentList().get(i) instanceof PopularKeywordListViewModel
+                    && i == data.getPosition()) {
+                ((PopularKeywordListViewModel) adapter.getCurrentList().get(i)).getPopularKeywordList().addAll(data.getPopularKeywordList());
+                break;
+            }
         }
     }
 }

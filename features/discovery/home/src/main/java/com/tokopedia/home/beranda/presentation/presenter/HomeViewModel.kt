@@ -10,11 +10,13 @@ import com.tokopedia.common_wallet.balance.domain.coroutine.GetCoroutineWalletBa
 import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -67,6 +69,7 @@ class HomeViewModel @Inject constructor(
         private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
+        private val popularKeywordUseCase: GetPopularKeywordUseCase,
         private val homeDataMapper: HomeDataMapper,
         homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
@@ -115,6 +118,10 @@ class HomeViewModel @Inject constructor(
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
+    val popularKeywordResp: LiveData<Result<PopularKeywordListViewModel>>
+        get() = _popularKeywordResp
+    private val _popularKeywordResp = MutableLiveData<Result<PopularKeywordListViewModel>>()
+
     // Test cover banner url play widget is valid or not
     private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardViewModel>>()
     val requestImageTestLiveData: LiveData<Event<PlayCardViewModel>> get() = _requestImageTestLiveData
@@ -132,6 +139,7 @@ class HomeViewModel @Inject constructor(
     private var getSuggestedReviewJob: Job? = null
     private var getPendingCashBalanceJob: Job? = null
     private var dismissReviewJob: Job? = null
+    private var getPopularKeywordJob: Job? = null
 
 // ============================================================================================
 // ================================== Local variable ==========================================
@@ -582,6 +590,7 @@ class HomeViewModel @Inject constructor(
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
+                    getPopularKeyword()
 
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
@@ -767,6 +776,41 @@ class HomeViewModel @Inject constructor(
             }
 
         })
+    }
+
+    private fun getPopularKeyword() {
+        _homeLiveData.value?.list?.forEachIndexed { index, element ->
+            if (element is PopularKeywordListViewModel) {
+                getPopularKeywordData(index, element.header)
+            }
+        }
+
+    }
+
+    fun getPopularKeywordData(rowNumber: Int, header: DynamicHomeChannel.Header) {
+        if(getPopularKeywordJob?.isActive == true) return
+        getPopularKeywordJob = launchCatchError(coroutineContext, {
+            popularKeywordUseCase.setParams()
+            val results = popularKeywordUseCase.executeOnBackground()
+            if (results.keywords.size != 0) {
+                val resultList = convertPopularKeywordDataList(results.keywords)
+                val data = PopularKeywordListViewModel(popularKeywordList = resultList, header = header)
+                data.position = rowNumber
+                _popularKeywordResp.postValue(Result.success(data))
+            } else {
+                _popularKeywordResp.postValue(Result.error(Throwable(), data = PopularKeywordListViewModel(header = header)))
+            }
+        }){
+            _popularKeywordResp.postValue(Result.error(Throwable(), data = PopularKeywordListViewModel(header = header)))
+        }
+    }
+
+    private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): List<PopularKeywordViewModel> {
+        val dataList: MutableList<PopularKeywordViewModel> = mutableListOf()
+        for (pojo in list) {
+            dataList.add(PopularKeywordViewModel(pojo.url, pojo.imageUrl, pojo.keyword, pojo.productCount))
+        }
+        return dataList
     }
 
 }

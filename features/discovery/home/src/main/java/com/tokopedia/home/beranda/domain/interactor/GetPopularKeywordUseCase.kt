@@ -1,11 +1,11 @@
 package com.tokopedia.home.beranda.domain.interactor
 
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
+import com.tokopedia.usecase.coroutines.UseCase
 import rx.Observable
 import javax.inject.Inject
 
@@ -14,20 +14,19 @@ import javax.inject.Inject
  */
 
 class GetPopularKeywordUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase)
-    : UseCase<GraphqlResponse>() {
-
+        private val graphqlUseCase: GraphqlUseCase<HomeWidget.PopularKeywordList>)
+    : UseCase<HomeWidget.PopularKeywordList>() {
+    init {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        graphqlUseCase.setTypeClass(HomeWidget.PopularKeywordList::class.java)
+    }
     companion object {
 
-        private const val PARAM_COUNT = "count"
-        private const val DEFAULT_COUNT = 10
-
-        fun getParam(count: Int): RequestParams {
-            return RequestParams.create().apply {
-                putInt(PARAM_COUNT, count)
-            }
-        }
+        const val PARAM_COUNT = "count"
+        const val DEFAULT_COUNT = 10
     }
+
+    private var params: RequestParams = RequestParams.create()
 
     //region query
     private val query by lazy {
@@ -49,11 +48,16 @@ class GetPopularKeywordUseCase @Inject constructor(
     }
     //endregion
 
-    override fun createObservable(params: RequestParams?): Observable<GraphqlResponse> {
-        graphqlUseCase.clearRequest()
-        val params = GraphqlRequest(query, HomeWidget.PopularKeywordList::class.java, getParam(DEFAULT_COUNT).parameters)
-        graphqlUseCase.addRequest(params)
-        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+    override suspend fun executeOnBackground(): HomeWidget.PopularKeywordList {
+        graphqlUseCase.clearCache()
+        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setRequestParams(params.parameters)
+        return graphqlUseCase.executeOnBackground()
+    }
 
+    fun setParams(count: Int = DEFAULT_COUNT) {
+        params = RequestParams.create().apply {
+            putInt(PARAM_COUNT, count)
+        }
     }
 }
