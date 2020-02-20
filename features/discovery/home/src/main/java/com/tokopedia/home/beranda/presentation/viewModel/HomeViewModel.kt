@@ -695,7 +695,7 @@ open class HomeViewModel @Inject constructor(
         if(getStickyLoginJob?.isActive == true) return
         getStickyLoginJob = launchCatchError(coroutineContext, block = {
             stickyLoginUseCase.setParam(RequestParams.create().apply {
-                putString(StickyLoginConstant.PARAMS_PAGE, StickyLoginConstant.Page.HOME.name)
+                putString(StickyLoginConstant.PARAMS_PAGE, StickyLoginConstant.Page.HOME.toString())
             })
             val response = stickyLoginUseCase.executeOnBackground()
             val data = response.response.tickers.find { it.layout == StickyLoginConstant.LAYOUT_FLOATING }
