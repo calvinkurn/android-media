@@ -37,7 +37,7 @@ data class ProgressDataModel(
         val maxValue: Int?,
 
         @Expose
-        @SerializedName("colorState")
+        @SerializedName("state")
         val state: String?,
 
         @Expose
