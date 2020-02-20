@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view
+package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

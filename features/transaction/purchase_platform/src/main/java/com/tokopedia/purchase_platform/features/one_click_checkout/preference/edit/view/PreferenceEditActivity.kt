@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address.AddressListFragment
 import kotlinx.android.synthetic.main.activity_preference_edit.*
 
 class PreferenceEditActivity : BaseActivity() {
@@ -22,7 +23,7 @@ class PreferenceEditActivity : BaseActivity() {
         }
         showStepper()
         setStepperValue(30, true)
-//        supportFragmentManager.beginTransaction().replace(R.id.container, CartFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment()).commit()
     }
 
     fun setTitle(title: String) {

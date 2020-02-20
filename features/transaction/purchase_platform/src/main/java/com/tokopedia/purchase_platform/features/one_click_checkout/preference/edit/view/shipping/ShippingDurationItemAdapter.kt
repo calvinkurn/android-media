@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view
+package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
