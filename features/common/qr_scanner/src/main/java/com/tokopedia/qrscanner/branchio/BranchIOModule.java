@@ -2,12 +2,8 @@ package com.tokopedia.qrscanner.branchio;
 
 
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
-import com.tokopedia.tkpd.deeplink.source.BranchIOData;
-import com.tokopedia.tkpd.deeplink.source.BranchIODataFactory;
-import com.tokopedia.tkpd.deeplink.source.BranchIODataRepository;
-import com.tokopedia.tkpd.deeplink.source.api.BranchIOAPI;
-import com.tokopedia.tkpd.deeplink.source.entity.CampaignErrorResponse;
+import com.tokopedia.qrscanner.branchio.api.BranchIOAPI;
+import com.tokopedia.qrscanner.branchio.entity.CampaignErrorResponse;
 
 import dagger.Module;
 import dagger.Provides;

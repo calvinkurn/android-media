@@ -1,26 +1,25 @@
 package com.tokopedia.qrscanner;
 
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
-public class QRTracking extends UnifyTracking {
+public class QRTracking {
 
     public static void eventQRButtonClick() {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 QREventTracking.Event.GenericCampaignHomeClickEvent,
                 QREventTracking.Category.EventTriggerHomeCategory,
                 QREventTracking.Action.EventClickTopNav,
                 QREventTracking.Label.LabelQRCodeIcon
-        ).getEvent());
+        ));
     }
 
     public static void eventScanQRCode(String status,String campaignId,String url) {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 QREventTracking.Event.GenericCampaignEvent,
                 QREventTracking.Category.EventTriggerBasedCampaign,
                 String.format(QREventTracking.Action.EventScanQRCode,status),
                 String.format(QREventTracking.Label.LabelQRCodeScan, campaignId,url)
-        ).getEvent());
+        ));
     }
 }

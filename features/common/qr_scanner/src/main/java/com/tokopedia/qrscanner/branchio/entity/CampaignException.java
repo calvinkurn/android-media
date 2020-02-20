@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.deeplink.source.entity;
+package com.tokopedia.qrscanner.branchio.entity;
 
 import java.io.IOException;
 

@@ -1,6 +1,6 @@
 package com.tokopedia.qrscanner.branchio;
 
-import com.tokopedia.tkpd.deeplink.source.api.BranchIOAPI;
+import com.tokopedia.qrscanner.branchio.api.BranchIOAPI;
 
 import javax.inject.Inject;
 

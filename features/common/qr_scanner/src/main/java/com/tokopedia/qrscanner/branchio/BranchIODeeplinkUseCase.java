@@ -1,7 +1,5 @@
 package com.tokopedia.qrscanner.branchio;
 
-import com.tokopedia.tkpd.deeplink.source.BranchIODataRepository;
-import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

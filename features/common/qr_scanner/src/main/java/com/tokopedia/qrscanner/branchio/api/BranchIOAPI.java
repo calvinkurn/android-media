@@ -1,7 +1,7 @@
 package com.tokopedia.qrscanner.branchio.api;
 
 import com.tokopedia.network.data.model.response.DataResponse;
-import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
+import com.tokopedia.qrscanner.branchio.BranchIOAndroidDeepLink;
 
 import java.util.Map;
 

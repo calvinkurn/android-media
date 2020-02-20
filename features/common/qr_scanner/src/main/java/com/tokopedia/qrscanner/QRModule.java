@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.graphql.coroutines.data.Interactor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.qrscanner.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

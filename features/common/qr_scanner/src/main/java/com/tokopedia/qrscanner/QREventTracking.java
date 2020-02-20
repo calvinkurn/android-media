@@ -1,12 +1,10 @@
 package com.tokopedia.qrscanner;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-
 /**
  * Created by sandeepgoyal on 03/01/18.
  */
 
-public class QREventTracking implements AppEventTracking {
+public class QREventTracking {
     interface Event {
         String GenericCampaignEvent = "campaignEvent";
         String GenericCampaignHomeClickEvent =  "clickHomePage";

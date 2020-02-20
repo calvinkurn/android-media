@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.deeplink.source.entity;
+package com.tokopedia.qrscanner.branchio.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,7 +1,5 @@
 package com.tokopedia.qrscanner.branchio;
 
-import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
-
 import java.util.HashMap;
 
 import javax.inject.Inject;
