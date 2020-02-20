@@ -97,16 +97,8 @@ class CatalogDetailPageActivity : BaseActivity(),
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         searchNavContainer = findViewById(R.id.search_nav_container)
         catalogId = intent.getStringExtra(EXTRA_CATALOG_ID)
-       // sendTo()
         prepareView()
     }
-
-   /* private fun sendTo() {
-        if(!isCatalogRevampEnabled(this)){
-            startActivity(CatalogDetailActivity.createIntent(this, catalogId))
-            finish()
-        }
-    }*/
 
     private fun prepareView() {
         setupToolbar()
