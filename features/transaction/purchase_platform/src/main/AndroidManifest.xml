@@ -24,8 +24,8 @@
         </activity>
 
         <activity
-            android:name=".features.one_click_checkout.preference.list.view.PreferenceListActivity"
-            android:label="@string/activity_title_checkout_variant"
+            android:name=".features.one_click_checkout.preference.edit.view.AddressListActivity"
+            android:label="@string/activity_title_choose_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
