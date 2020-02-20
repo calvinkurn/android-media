@@ -15,6 +15,8 @@ class FlightFilterPriceRangeViewHolder(val view: View): AbstractViewHolder<Price
     }
 
     override fun bind(element: PriceRangeModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        with(view) {
+
+        }
     }
 }
