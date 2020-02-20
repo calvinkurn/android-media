@@ -346,11 +346,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             }
             for (i in 0 until mAdapter!!.itemCount) {
                 val item = mAdapter!!.items[i]
-                if (each.catalogID == item.id) {
-                    item.isDisabled = each.isDisabled
-                    item.isDisabledButton = each.isDisabledButton
-                    item.upperTextDesc = each.upperTextDesc
-                    item.quota = each.quota
+                item?.let {
+                    if (each.catalogID == item.id) {
+                        item.isDisabled = each.isDisabled
+                        item.isDisabledButton = each.isDisabledButton
+                        item.upperTextDesc = each.upperTextDesc
+                        item.quota = each.quota
+                    }
                 }
             }
         }
