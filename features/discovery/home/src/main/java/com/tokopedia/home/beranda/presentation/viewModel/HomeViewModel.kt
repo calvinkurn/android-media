@@ -159,7 +159,6 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
         getTokopoint()
         searchHint()
-        getStickyContent()
     }
 
     fun hitBannerImpression(slidesModel: BannerSlidesModel) {

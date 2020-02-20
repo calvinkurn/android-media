@@ -956,7 +956,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (viewModel != null) {
             viewModel.searchHint();
             viewModel.refreshHomeData();
-            viewModel.getStickyContent();
+            getStickyContent();
         }
 
         if (getActivity() instanceof RefreshNotificationListener) {
@@ -975,9 +975,8 @@ public class HomeFragment extends BaseDaggerFragment implements
         removeNetworkError();
         homeRecyclerView.setEnabled(false);
         if (viewModel != null) {
-            viewModel.searchHint();
             viewModel.refresh();
-            viewModel.getStickyContent();
+            getStickyContent();
         }
 
         if (getActivity() instanceof RefreshNotificationListener) {
@@ -1000,6 +999,11 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void showLoading() {
         refreshLayout.setRefreshing(true);
+    }
+
+    private void getStickyContent(){
+        boolean isShowSticky = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
+        if(isShowSticky) viewModel.getStickyContent();
     }
 
     private void hideLoading() {
