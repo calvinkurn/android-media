@@ -16,7 +16,6 @@ class StickyLoginUseCase(
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(StickyLoginTickerPojo.TickerResponse::class.java)
-        graphqlUseCase.setGraphqlQuery(StickyLoginQuery.query)
     }
     override suspend fun executeOnBackground(): StickyLoginTickerPojo.TickerResponse {
         graphqlUseCase.clearCache()
