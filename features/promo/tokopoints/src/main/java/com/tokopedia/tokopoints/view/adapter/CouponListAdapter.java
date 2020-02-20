@@ -1,6 +1,5 @@
 package com.tokopedia.tokopoints.view.adapter;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import androidx.annotation.NonNull;
@@ -17,25 +16,20 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
+import com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<CouponValueEntity> mItems;
     private static final int VIEW_HEADER = 0;
     private static final int VIEW_DATA = 1;
+    private RecyclerView mRecyclerView;
 
     // Define a ViewHolder for Footer view
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -66,6 +60,13 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             progressTimer = view.findViewById(R.id.progress_timer);
+        }
+
+        public void onDetach() {
+            if (timer != null){
+                timer.cancel();
+                timer = null;
+            }
         }
     }
 
@@ -131,7 +132,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holder.imgBanner.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
-                holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+                holder.imgBanner.getContext().startActivity(CouponDetailActivity.Companion.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
             });
 
 
@@ -146,6 +147,9 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
                     holder.progressTimer.setVisibility(View.VISIBLE);
                     holder.value.setVisibility(View.VISIBLE);
+                    if (holder.timer != null){
+                        holder.timer.cancel();
+                    }
                     holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                         @Override
                         public void onTick(long l) {
@@ -228,5 +232,31 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         return VIEW_DATA;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onDetach();
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+    }
+
+    public void onDestroyView() {
+        if (mRecyclerView != null){
+            for (int i = 0 ;i < mRecyclerView.getChildCount();i++){
+                RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(mRecyclerView.getChildAt(i));
+                if (holder instanceof ViewHolder) {
+                    ((ViewHolder) holder).onDetach();
+                }
+            }
+        }
+
     }
 }

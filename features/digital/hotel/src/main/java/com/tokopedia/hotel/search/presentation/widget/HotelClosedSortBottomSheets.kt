@@ -23,7 +23,7 @@ class HotelClosedSortBottomSheets : BottomSheets() {
     fun setMenu(_menu: List<Sort>): HotelClosedSortBottomSheets = this.apply { menu = _menu }
     fun setSelecetedItem(_sort: Sort): HotelClosedSortBottomSheets = this.apply { selectedItem = _sort }
 
-    override fun getLayoutResourceId(): Int = com.tokopedia.abstraction.R.layout.fragment_base_list
+    override fun getLayoutResourceId(): Int = com.tokopedia.baselist.R.layout.fragment_base_list
 
     override fun initView(view: View?) {
         val recyclerView = view?.findViewById<RecyclerView>(com.tokopedia.abstraction.R.id.recycler_view)

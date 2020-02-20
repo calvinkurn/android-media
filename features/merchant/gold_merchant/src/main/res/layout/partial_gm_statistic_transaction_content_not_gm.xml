@@ -38,7 +38,7 @@
         android:layout_width="244dp"
         android:layout_height="52dp"
         android:layout_marginTop="9dp"
-        android:background="@drawable/rounded_corner">
+        android:background="@drawable/rounded_corner_sellerapp">
 
         <TextView
             android:id="@+id/market_insight_gmsubscribe_text"

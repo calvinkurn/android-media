@@ -142,7 +142,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                     getString(R.string.account_home_title_shop_setting), getString(R.string.account_home_subtitle_shop_setting)))
         }
 
-        val walletModel = walletPref.retrieveWallet()
+        val walletModel = try { walletPref.retrieveWallet() } catch (throwable: Throwable) { null }
         val walletName = if (walletModel != null) {
             walletModel.text + ", "
         } else {

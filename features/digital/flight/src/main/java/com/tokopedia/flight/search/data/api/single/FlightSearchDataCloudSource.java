@@ -3,7 +3,6 @@ package com.tokopedia.flight.search.data.api.single;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.base.data.source.cloud.DataCloudSource;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.search.data.api.single.request.Attributes;
@@ -25,7 +24,7 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class FlightSearchDataCloudSource extends DataCloudSource<FlightDataResponse<List<FlightSearchData>>> {
+public class FlightSearchDataCloudSource {
 
     private FlightApi flightApi;
     private Gson gsonWithDeserializer;
@@ -40,7 +39,6 @@ public class FlightSearchDataCloudSource extends DataCloudSource<FlightDataRespo
         this.flightSearchDataCacheSource = flightSearchDataCacheSource;
     }
 
-    @Override
     public Observable<FlightDataResponse<List<FlightSearchData>>> getData(HashMap<String, Object> params) {
         FlightSearchApiRequestModel flightSearchApiRequestModel = FlightSearchParamUtil.getInitialPassData(params);
 

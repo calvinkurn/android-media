@@ -19,13 +19,6 @@ public class NotificationsModel {
     @SerializedName("sellerInfo")
     @Expose
     private NotificationSellerInfoModel sellerInfo = new NotificationSellerInfoModel();
-    @SerializedName("userSatisfactionSurvey")
-    @Expose
-    private Integer userSatisfaction = 0;
-
-    @SerializedName("total_notif")
-    @Expose
-    private String totalNotification = "";
 
     @SerializedName("total_cart")
     @Expose
@@ -69,22 +62,6 @@ public class NotificationsModel {
 
     public void setSellerInfo(NotificationSellerInfoModel sellerInfo) {
         this.sellerInfo = sellerInfo;
-    }
-
-    public Integer getUserSatisfaction() {
-        return userSatisfaction;
-    }
-
-    public void setUserSatisfaction(Integer userSatisfaction) {
-        this.userSatisfaction = userSatisfaction;
-    }
-
-    public String getTotalNotification() {
-        return totalNotification;
-    }
-
-    public void setTotalNotification(String totalNotification) {
-        this.totalNotification = totalNotification;
     }
 
     public String getTotalCart() {

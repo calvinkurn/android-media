@@ -2,6 +2,8 @@ package com.tokopedia.travel.homepage.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.constant.TravelType
+import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -11,9 +13,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travel.homepage.data.*
 import com.tokopedia.travel.homepage.data.mapper.TravelHomepageMapper
 import com.tokopedia.travel.homepage.usecase.GetEmptyViewModelsUseCase
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,8 +26,9 @@ import javax.inject.Inject
  */
 
 class TravelHomepageViewModel @Inject constructor(
-        val graphqlRepository: GraphqlRepository,
+        private val graphqlRepository: GraphqlRepository,
         private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
+        private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
@@ -39,28 +44,27 @@ class TravelHomepageViewModel @Inject constructor(
     }
 
     fun getBanner(rawQuery: String, isFromCloud: Boolean) {
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageBannerModel.Response::class.java)
-                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<TravelHomepageBannerModel.Response>()
-
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[BANNER_ORDER] = data.response
-                updatedList[BANNER_ORDER].isLoaded = true
-                updatedList[BANNER_ORDER].isSuccess = true
-                travelItemList.value = updatedList
-            }
-        }) {
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[BANNER_ORDER].isLoaded = true
-                updatedList[BANNER_ORDER].isSuccess = false
-                travelItemList.value = updatedList
-                checkIfAllError()
+        launch {
+            val banners = getTravelCollectiveBannerUseCase.execute(rawQuery, TravelType.ALL, isFromCloud)
+            when (banners) {
+                is Success -> {
+                    travelItemList.value?.let {
+                        val updatedList = it.toMutableList()
+                        updatedList[BANNER_ORDER] = TravelHomepageBannerModel(banners.data)
+                        updatedList[BANNER_ORDER].isLoaded = true
+                        updatedList[BANNER_ORDER].isSuccess = true
+                        travelItemList.value = updatedList
+                    }
+                }
+                is Fail -> {
+                    travelItemList.value?.let {
+                        val updatedList = it.toMutableList()
+                        updatedList[BANNER_ORDER].isLoaded = true
+                        updatedList[BANNER_ORDER].isSuccess = false
+                        travelItemList.value = updatedList
+                        checkIfAllError()
+                    }
+                }
             }
         }
     }
@@ -215,16 +219,16 @@ class TravelHomepageViewModel @Inject constructor(
     }
 
     companion object {
-        val BANNER_ORDER = 0
-        val CATEGORIES_ORDER = 1
-        val ORDER_LIST_ORDER = 2
-        val RECENT_SEARCHES_ORDER = 3
-        val RECOMMENDATION_ORDER = 4
-        val DESTINATION_ORDER = 5
+        const val BANNER_ORDER = 0
+        const val CATEGORIES_ORDER = 1
+        const val ORDER_LIST_ORDER = 2
+        const val RECENT_SEARCHES_ORDER = 3
+        const val RECOMMENDATION_ORDER = 4
+        const val DESTINATION_ORDER = 5
 
-        val PARAM_PAGE = "page"
-        val PARAM_PER_PAGE = "perPage"
-        val PARAM_FILTER_STATUS = "filterStatus"
+        const val PARAM_PAGE = "page"
+        const val PARAM_PER_PAGE = "perPage"
+        const val PARAM_FILTER_STATUS = "filterStatus"
     }
 
 }

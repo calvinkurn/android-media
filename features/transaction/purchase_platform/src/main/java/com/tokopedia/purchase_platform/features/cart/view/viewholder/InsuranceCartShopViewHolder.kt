@@ -1,30 +1,30 @@
 package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
 import android.app.Activity
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.transaction.insurance.utils.*
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceProductApplicationDetails
+import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceProductApplicationDetails
+import com.tokopedia.purchase_platform.common.insurance.utils.*
 import java.util.*
 
 
-class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActionlistener: InsuranceItemActionListener) : RecyclerView.ViewHolder(itemView) {
+class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActionlistener: InsuranceItemActionListener?) : RecyclerView.ViewHolder(itemView) {
     private val tvInsuranceApplicationDetails: TextView
 
     private val cbSelectInsurance: CheckBox
@@ -257,11 +257,11 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 tvChangeInsuranceApplicationDetails.show()
                 cbSelectInsurance.show()
                 cbSelectInsurance.setOnCheckedChangeListener { buttonView, isChecked ->
+                    insuranceItemActionlistener?.sendEventChangeInsuranceState(isChecked, insuranceCartDigitalProduct.productInfo.title)
                     if (!onBind) {
                         insuranceCartShops.shopItemsList[0].digitalProductList[0].optIn = isChecked
-                        insuranceItemActionlistener.onInsuranceSelectStateChanges()
+                        insuranceItemActionlistener?.onInsuranceSelectStateChanges()
                     }
-
                 }
 
                 onBind = true
@@ -272,7 +272,8 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 ivDeleteInsurance.setOnClickListener {
                     val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
                     insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct)
-                    insuranceItemActionlistener.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true)
+                    insuranceItemActionlistener?.sendEventDeleteInsurance(insuranceCartDigitalProduct.productInfo.title)
+                    insuranceItemActionlistener?.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true)
                 }
             } else {
                 tvChangeInsuranceApplicationDetails.hide()
@@ -330,7 +331,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
     private fun setValidateListener() {
         btnValidate!!.setOnClickListener { v ->
             if (validateViews()) {
-                insuranceItemActionlistener.updateInsuranceProductData(insuranceCartShops!!, updateInsuranceProductApplicationDetailsArrayList)
+                insuranceItemActionlistener?.updateInsuranceProductData(insuranceCartShops!!, updateInsuranceProductApplicationDetailsArrayList)
                 closeableBottomSheetDialog.dismiss()
             }
         }
@@ -400,6 +401,10 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
         view1.tag = data
         typeValues.add(view1)
 
+    }
+
+    public fun getProductTitle(): String {
+        return tvProductTitle.text.toString()
     }
 
     companion object {

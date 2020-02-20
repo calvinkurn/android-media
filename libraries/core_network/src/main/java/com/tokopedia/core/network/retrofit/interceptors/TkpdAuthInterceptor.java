@@ -30,9 +30,7 @@ import okio.Buffer;
  */
 @Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
-    private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
-    private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private static final String BEARER = "Bearer";
     private static final String AUTHORIZATION = "authorization";
     private static final String TOKEN = "token";
@@ -285,18 +283,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected boolean isRequestDenied(String response) {
-        JSONObject json;
-        try {
-            json = new JSONObject(response);
-            String status = json.optString("status", "OK");
-            return status.equals("REQUEST_DENIED");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     @SuppressWarnings("unused")
     private boolean isInvalidRequest(String response) {
         JSONObject json;
@@ -359,10 +345,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             e.printStackTrace();
             return false;
         }
-    }
-
-    protected void doRelogin() {
-        doRelogin("");
     }
 
     protected void doRelogin(String newAccessToken) {
@@ -433,10 +415,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         newestRequestBuilder
                 .header(ACCOUNTS_AUTHORIZATION, BEARER + " " + freshAccessToken);
         return newestRequestBuilder.build();
-    }
-
-    private Boolean isOnBetaServer(Response response) {
-        return response.header("is_beta", "0").equals("1");
     }
 
 }

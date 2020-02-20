@@ -48,6 +48,7 @@ import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.OrderFilter;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurveyResponse;
@@ -64,9 +65,13 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -234,6 +239,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         getOrderListUseCase = new GraphqlUseCase();
         getOrderListUseCase.clearRequest();
         getOrderListUseCase.addRequest(graphqlRequest);
+        getOrderListUseCase.addRequest(getorderFiltergqlRequest());
 
         getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -258,6 +264,21 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     return;
                 getView().removeProgressBarView();
                 getView().displayLoadMore(false);
+                long elapsedDays = 0;
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                long secondsInMilli = 1000;
+                long time;
+                long daysInMilli = secondsInMilli * 60 * 60 * 24;
+                try {
+                    if (getView().getEndDate() != null && getView().getStartDate() != null) {
+                        Date date2 = format.parse(getView().getEndDate());
+                        Date date1 = format.parse(getView().getStartDate());
+                        time = date2.getTime() - date1.getTime();
+                        elapsedDays = time / daysInMilli;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 if (response != null) {
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {
@@ -269,15 +290,27 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                         }
                     } else {
                         getView().unregisterScrollListener();
-                        getView().renderEmptyList(typeRequest);
+                        getView().renderEmptyList(typeRequest,elapsedDays);
+                    }
+
+                    OrderFilter orderFilter = response.getData(OrderFilter.class);
+                    if (orderFilter != null && orderFilter != null) {
+                        getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
                     }
                 } else {
                     getView().unregisterScrollListener();
-                    getView().renderEmptyList(typeRequest);
+                    getView().renderEmptyList(typeRequest,elapsedDays);
                 }
 
             }
         });
+    }
+
+    private GraphqlRequest getorderFiltergqlRequest() {
+        GraphqlRequest orderfiltergqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.bomorderfilter), OrderFilter.class);
+        return orderfiltergqlRequest;
     }
 
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {

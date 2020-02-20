@@ -13,6 +13,7 @@ object RawQueryKeyConstant {
     const val QUERY_GET_VOUCHER = "voucher_list"
     const val QUERY_GET_RATE_ESTIMATION = "rate_estimation"
     const val QUERY_GET_IMAGE_REVIEW = "image_review"
+    const val QUERY_GET_TOP_ADS_MANAGE_PRODUCT = "top_ads_manage_product"
     const val QUERY_GET_MOST_HELPFUL_REVIEW = "helpful_review"
     const val QUERY_GET_LATEST_TALK = "latest_talk"
     const val QUERY_DISPLAY_ADS = "display_ads"

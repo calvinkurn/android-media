@@ -8,7 +8,6 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
-import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
 import com.tokopedia.tokopoints.view.model.CouponFilterItem;
 
 import java.util.List;

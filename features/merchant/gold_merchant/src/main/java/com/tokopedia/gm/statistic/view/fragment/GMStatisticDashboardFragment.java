@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
@@ -88,6 +89,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         DaggerGMStatisticDashboardComponent
                 .builder()
                 .gMComponent(getComponent(GMComponent.class))
+                .categoryPickerModule(new CategoryPickerModule(requireActivity().getApplicationContext()))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
         gmDashboardPresenter.attachView(this);

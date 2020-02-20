@@ -30,7 +30,7 @@
         android:src="@drawable/ic_app_rating_filled"
         android:visibility="gone" />
 
-    <com.tokopedia.design.color.ColorSampleView
+    <com.tokopedia.filter.widget.ColorSampleView
         android:id="@+id/color_icon"
         android:layout_marginRight="@dimen/dp_8"
         android:layout_width="@dimen/chip_color_item_icon_size"

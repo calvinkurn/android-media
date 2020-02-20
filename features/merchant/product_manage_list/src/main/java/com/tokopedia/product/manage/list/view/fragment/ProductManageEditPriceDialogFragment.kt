@@ -91,11 +91,11 @@ class ProductManageEditPriceDialogFragment : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_dialog_product_manage_edit_price, container, false)
+        val view = inflater.inflate(com.tokopedia.product.manage.list.R.layout.fragment_dialog_product_manage_edit_price, container, false)
         counterInputView = view.counter_input_view
         view.string_picker_dialog_confirm.setOnClickListener {
             if (isPriceValid() && listenerDialogEditPrice != null) {
-                ProductManageTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price)
+                ProductManageTracking.eventProductManageOverflowMenu(getString(com.tokopedia.product.manage.list.R.string.product_manage_menu_set_price)
                         + " - " + view.string_picker_dialog_confirm.text)
                 listenerDialogEditPrice?.onSubmitEditPrice(productId ?: "",
                         formatDecimal(counterInputView.doubleValue), CURRENCY_ID, CURRENCY_TEXT)
@@ -107,7 +107,7 @@ class ProductManageEditPriceDialogFragment : DialogFragment() {
 
         view.string_picker_dialog_cancel.setOnClickListener {
             dismiss()
-            ProductManageTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price)
+            ProductManageTracking.eventProductManageOverflowMenu(getString(com.tokopedia.product.manage.list.R.string.product_manage_menu_set_price)
                     + " - " + view.string_picker_dialog_confirm.text)
         }
 
@@ -129,7 +129,7 @@ class ProductManageEditPriceDialogFragment : DialogFragment() {
         val currencyType = CurrencyTypeDef.TYPE_IDR
         if (!ProductPriceRangeUtils.isPriceValid(priceValue, currencyType, isOfficialStore)) {
             counterInputView.setError(
-                    counterInputView.context.getString(R.string.product_error_product_price_not_valid,
+                    counterInputView.context.getString(com.tokopedia.product.manage.list.R.string.product_manage_error_product_price_not_valid,
                             ProductPriceRangeUtils.getMinPriceString(currencyType, isOfficialStore),
                             ProductPriceRangeUtils.getMaxPriceString(currencyType, isOfficialStore)))
             return false

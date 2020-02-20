@@ -51,7 +51,7 @@ public class Product implements Parcelable {
     private int productCatalogId;
     private PurchaseProtectionPlanData purchaseProtectionPlanData;
     private String productPreOrderInfo;
-    private TradeInInfo tradeInInfo;
+    private TradeInInfoData tradeInInfoData;
     private boolean freeShipping;
     private String freeShippingBadgeUrl;
 
@@ -361,12 +361,12 @@ public class Product implements Parcelable {
         return purchaseProtectionPlanData;
     }
 
-    public TradeInInfo getTradeInInfo() {
-        return tradeInInfo;
+    public TradeInInfoData getTradeInInfoData() {
+        return tradeInInfoData;
     }
 
-    public void setTradeInInfo(TradeInInfo tradeInInfo) {
-        this.tradeInInfo = tradeInInfo;
+    public void setTradeInInfoData(TradeInInfoData tradeInInfoData) {
+        this.tradeInInfoData = tradeInInfoData;
     }
 
     public boolean isFreeShipping() {
@@ -433,7 +433,7 @@ public class Product implements Parcelable {
         dest.writeParcelable(this.purchaseProtectionPlanData, flags);
         dest.writeString(this.productPreOrderInfo);
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
-        dest.writeParcelable(this.tradeInInfo, flags);
+        dest.writeParcelable(this.tradeInInfoData, flags);
         dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
         dest.writeString(this.freeShippingBadgeUrl);
     }
@@ -477,7 +477,7 @@ public class Product implements Parcelable {
         this.purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());
         this.productPreOrderInfo = in.readString();
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
-        this.tradeInInfo = in.readParcelable(TradeInInfo.class.getClassLoader());
+        this.tradeInInfoData = in.readParcelable(TradeInInfoData.class.getClassLoader());
         this.freeShipping = in.readByte() != 0;
         this.freeShippingBadgeUrl = in.readString();
     }

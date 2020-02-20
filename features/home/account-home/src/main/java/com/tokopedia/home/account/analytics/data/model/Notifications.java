@@ -15,15 +15,6 @@ public class Notifications {
     @SerializedName("purchase")
     @Expose
     private Purchase purchase = new Purchase();
-    @SerializedName("resolution_as")
-    @Expose
-    private ResolutionAs resolutionAs = new ResolutionAs();
-    @SerializedName("total_notif")
-    @Expose
-    private int totalNotif = 0;
-    @SerializedName("total_cart")
-    @Expose
-    private int totalCart = 0;
     @SerializedName("resolution")
     @Expose
     private int resolution = 0;
@@ -33,9 +24,6 @@ public class Notifications {
     @SerializedName("chat")
     @Expose
     private Chat chat = new Chat();
-    @SerializedName("incr_notif")
-    @Expose
-    private int incrNotif = 0;
 
     public Sales getSales() {
         return sales;
@@ -57,18 +45,6 @@ public class Notifications {
         this.purchase = purchase;
     }
 
-    public ResolutionAs getResolutionAs() {
-        return resolutionAs;
-    }
-
-    public int getTotalNotif() {
-        return totalNotif;
-    }
-
-    public int getTotalCart() {
-        return totalCart;
-    }
-
     public int getResolution() {
         return resolution;
     }
@@ -79,10 +55,6 @@ public class Notifications {
 
     public Chat getChat() {
         return chat;
-    }
-
-    public int getIncrNotif() {
-        return incrNotif;
     }
 
 }

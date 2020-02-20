@@ -4,9 +4,6 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.autocomplete.adapter.HotlistViewHolder;
-import com.tokopedia.discovery.autocomplete.adapter.ProfileViewHolder;
-import com.tokopedia.autocomplete.adapter.TopProfileViewHolder;
 import com.tokopedia.autocomplete.viewmodel.AutoCompleteSearch;
 import com.tokopedia.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.autocomplete.viewmodel.DigitalSearch;

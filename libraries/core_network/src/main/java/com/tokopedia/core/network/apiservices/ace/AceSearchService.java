@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class AceSearchService extends BaseService<SearchApi> {
-    private static final String TAG = AceSearchService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

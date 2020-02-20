@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view_umrah_search_package"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_umrah_search_package"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_umrah_image"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tg_umrah_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@color/light_blue_300" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_umrah_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            app:labelType="general_dark_orange"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="9 Hari" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_6"
+            tools:text="Umrah Silver 9 Hari Berangkat 20 November 2019" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_start_from_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/umrah_home_page_start_from"
+            android:textColor="@color/Neutral_N700_44"
+            app:layout_constraintStart_toStartOf="@+id/iv_umrah_plane"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_plane"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Yellow_Y500"
+            app:layout_constraintStart_toStartOf="@+id/tg_umrah_start_from_label"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_start_from_label"
+            app:typographyType="heading_5"
+            tools:text="Rp22.500.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pax_all_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_3"
+            android:text="@string/umrah_homepage_pax"
+            android:textColor="@color/Neutral_N700_44"
+            app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_price"
+            app:layout_constraintStart_toEndOf="@+id/tg_umrah_price"
+            app:typographyType="small"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_include_visa_and_equipment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_1"
+            android:layout_marginBottom="@dimen/dp_9"
+            android:text="@string/umrah_include_visa_and_equipments"
+            android:textColor="@color/g_500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tg_umrah_price"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_price"
+            app:typographyType="small"
+            app:typographyWeight="reguler" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_umrah_calendar"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:adjustViewBounds="true"
+            app:layout_constraintStart_toStartOf="@+id/tg_umrah_title"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_title"
+            app:srcCompat="@drawable/umrah_ic_calendar" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_calendar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_umrah_calendar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_calendar"
+            app:layout_constraintTop_toTopOf="@+id/iv_umrah_calendar"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="20 Nov - 29 Nov 2019" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_umrah_hotel"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_8"
+            android:adjustViewBounds="true"
+            app:layout_constraintStart_toStartOf="@+id/iv_umrah_calendar"
+            app:layout_constraintTop_toBottomOf="@+id/iv_umrah_calendar"
+            app:srcCompat="@drawable/umrah_ic_hotel" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_hotel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_umrah_hotel"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_hotel"
+            app:layout_constraintTop_toTopOf="@+id/iv_umrah_hotel"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Hotel Bintang 4" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_umrah_plane"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_8"
+            android:adjustViewBounds="true"
+            app:layout_constraintStart_toStartOf="@+id/iv_umrah_hotel"
+            app:layout_constraintTop_toBottomOf="@+id/iv_umrah_hotel"
+            app:srcCompat="@drawable/umrah_ic_plane" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_plane"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_umrah_plane"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_plane"
+            app:layout_constraintTop_toTopOf="@+id/iv_umrah_plane"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Garuda Indonesia" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

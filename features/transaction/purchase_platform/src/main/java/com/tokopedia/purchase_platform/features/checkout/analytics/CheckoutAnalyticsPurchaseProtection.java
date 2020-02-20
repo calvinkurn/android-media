@@ -49,4 +49,5 @@ public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
                 EventAction.IMPRESSION_PELAJARI,
                 EventLabel.APPEAR);
     }
+
 }

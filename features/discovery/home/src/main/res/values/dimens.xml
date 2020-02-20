@@ -50,4 +50,6 @@
     <dimen name="home_searchbar_transition_range">50dp</dimen>
     <dimen name="home_banner_mix_carousel_width">125dp</dimen>
     <dimen name="home_banner_mix_arrow_icon_size">50dp</dimen>
+
+    <dimen name="new_margin_sm">24dp</dimen>
 </resources>

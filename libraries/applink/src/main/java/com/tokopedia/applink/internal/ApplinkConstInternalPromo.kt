@@ -1,6 +1,5 @@
 package com.tokopedia.applink.internal
 
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalPromo {
@@ -14,6 +13,13 @@ object ApplinkConstInternalPromo {
 
     const val PROMO_LIST_FLIGHT = "${INTERNAL_PROMO}/list/flight"
     const val PROMO_DETAIL_FLIGHT = "${INTERNAL_PROMO}/detail/flight"
+
+    /**
+     * PromoCheckoutListHotelActivity
+     * PromoCheckoutDetailHotelActivity
+     */
+    const val PROMO_LIST_HOTEL = "$INTERNAL_PROMO/list/hotel"
+    const val PROMO_DETAIL_HOTEL = "$INTERNAL_PROMO/detail/hotel"
 
     const val PROMO_LIST_MARKETPLACE = "${INTERNAL_PROMO}/list/marketplace"
     const val PROMO_DETAIL_MARKETPLACE = "${INTERNAL_PROMO}/detail/marketplace"

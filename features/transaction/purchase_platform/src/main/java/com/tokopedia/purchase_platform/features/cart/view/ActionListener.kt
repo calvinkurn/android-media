@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 
 /**
@@ -24,17 +23,23 @@ interface ActionListener {
 
     fun onCartDataEnableToCheckout()
 
-    fun onCartDataDisableToCheckout(message: String)
-
-    fun onCartItemTickerErrorActionClicked(data: CartItemTickerErrorHolderData, position: Int)
+    fun onCartDataDisableToCheckout()
 
     fun onShowAllItem(appLink: String)
 
-    fun onAddToWishlist(productId: String)
+    fun onAddDisabledItemToWishlist(productId: String)
+
+    fun onAddLastSeenToWishlist(productId: String)
+
+    fun onAddWishlistToWishlist(productId: String)
 
     fun onAddRecommendationToWishlist(productId: String)
 
-    fun onRemoveFromWishlist(productId: String)
+    fun onRemoveDisabledItemFromWishlist(productId: String)
+
+    fun onRemoveLastSeenFromWishlist(productId: String)
+
+    fun onRemoveWishlistFromWishlist(productId: String)
 
     fun onRemoveRecommendationFromWishlist(productId: String)
 
@@ -58,5 +63,7 @@ interface ActionListener {
 
     fun onSeeErrorProductsClicked()
 
-    fun onTickerDescriptionUrlClicked(url: String)
+    fun onTobaccoLiteUrlClicked(url: String)
+
+    fun onShowTickerTobacco()
 }

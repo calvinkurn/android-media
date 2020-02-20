@@ -256,6 +256,12 @@ public class ImageSearchActivity extends BaseActivity
 
     private void loadThumbnailImage(String imagePath) {
         ImageHandler.loadImageCircle2(this, thumbnailImage, imagePath);
+        thumbnailImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(ImageSearchActivity.this, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT);
+            }
+        });
     }
 
     private void configureToolbarOnClickListener() {

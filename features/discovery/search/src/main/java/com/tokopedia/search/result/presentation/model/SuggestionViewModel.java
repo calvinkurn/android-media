@@ -3,11 +3,10 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by henrypriyono on 10/30/17.
- */
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-public class SuggestionViewModel implements Parcelable {
+public class SuggestionViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
     private String suggestionText;
     private String suggestionCurrentKeyword;
     private String suggestedQuery;
@@ -43,6 +42,11 @@ public class SuggestionViewModel implements Parcelable {
 
     public void setFormattedResultCount(String formattedResultCount) {
         this.formattedResultCount = formattedResultCount;
+    }
+
+    @Override
+    public int type(ProductListTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
     public SuggestionViewModel() {

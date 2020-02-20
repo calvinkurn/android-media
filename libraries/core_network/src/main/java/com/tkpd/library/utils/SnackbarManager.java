@@ -1,16 +1,18 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
-import androidx.annotation.ColorRes;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.content.ContextCompat;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tkpd.library.kirisame.Kirisame;
-import com.tokopedia.core.util.GeneralUtils;
+import androidx.annotation.ColorRes;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.core.network.R;
+import com.tokopedia.core.util.GeneralUtils;
+
+import timber.log.Timber;
 
 /**
  * Created by Tkpd_Eka on 12/23/2015.
@@ -24,9 +26,9 @@ public class SnackbarManager {
         tv.setMaxLines(5);
 
         if (snack.isShownOrQueued())
-            Kirisame.print("Shown " + text);
+            Timber.d("Shown %s", text);
         else
-            Kirisame.print("Queue " + text);
+            Timber.d("Queue %s",  text);
 
         Button snackBarAction = (Button) snack.getView().findViewById(com.google.android.material.R.id.snackbar_action);
         if (activity != null) {

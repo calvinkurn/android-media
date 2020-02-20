@@ -5,11 +5,10 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.design.item.DeletableItemView
+    <com.tokopedia.autocomplete.widget.AutocompleteDeletableItemView
         android:id="@+id/autocomplete_chips_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout="@layout/widget_deleteable_autocomplete"
         tools:text="superstar"
         />
 

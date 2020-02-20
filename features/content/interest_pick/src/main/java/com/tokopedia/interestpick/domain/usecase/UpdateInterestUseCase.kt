@@ -14,6 +14,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 10/09/18.
  */
+@Deprecated ("use SubmitInterestPickUseCase instead", ReplaceWith("SubmitInterestPickUseCase"))
 class UpdateInterestUseCase @Inject constructor(@ApplicationContext val context: Context,
                                              val graphqlUseCase: GraphqlUseCase) {
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>?) {

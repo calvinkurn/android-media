@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat.setTextAppearance
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
-import androidx.core.widget.TextViewCompat.setTextAppearance
 
 
 
@@ -56,16 +56,16 @@ class PartialButtonActionView private constructor(private val view: View,
         }
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, hasTopAdsActive: Boolean, preOrder: PreOrder?) {
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
-        this.hasTopAdsActive = hasTopAdsActive
         this.preOrder = preOrder
         renderButton()
     }
 
-    fun renderData(isExpressCheckout:Boolean) {
+    fun renderData(isExpressCheckout:Boolean, hasTopAdsActive: Boolean) {
         this.isExpressCheckout = isExpressCheckout
+        this.hasTopAdsActive = hasTopAdsActive
         renderButton()
     }
 
@@ -149,14 +149,14 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_topchat.visibility = View.GONE
             btn_buy_now.visibility = View.GONE
             btn_add_to_cart.visibility = View.GONE
-            if(hasTopAdsActive){
+            if (hasTopAdsActive) {
                 btn_promote_topads.setOnClickListener { rincianTopAdsClick?.invoke() }
-                btn_promote_topads.setText(context.getString(R.string.rincian_topads))
+                btn_promote_topads.text = context.getString(R.string.rincian_topads)
                 btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_grey_outline)
                 setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPRincian)
-            } else{
+            } else {
                 btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
-                btn_promote_topads.setText(context.getString(R.string.promote_topads))
+                btn_promote_topads.text = context.getString(R.string.promote_topads)
                 btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_green)
                 setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPIklankan)
             }

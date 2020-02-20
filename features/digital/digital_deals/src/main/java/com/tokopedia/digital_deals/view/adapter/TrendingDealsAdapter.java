@@ -335,7 +335,7 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements De
 
                 Utils.getSingletonInstance().shareDeal(getItems().get(getIndex()).getSeoUrl(),
                         context, getItems().get(getIndex()).getDisplayName(),
-                        getItems().get(getIndex()).getImageWeb(), getItems().get(getIndex()).getDesktopUrl());
+                        getItems().get(getIndex()).getImageWeb(), getItems().get(getIndex()).getWebUrl());
             } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_wish_list) {
                 ProductItem item = getItems().get(getIndex());
                 boolean isLoggedIn = mPresenter.setDealLike(item.getId(), item.isLiked(), getIndex(), item.getLikes());

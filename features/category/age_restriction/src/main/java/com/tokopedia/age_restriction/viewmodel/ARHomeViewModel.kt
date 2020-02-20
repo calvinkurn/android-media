@@ -52,7 +52,7 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val response = repository.getRestData(USER_DOB_PATH,
+                    val response = getRepo().getRestData(USER_DOB_PATH,
                             object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
                             RequestType.GET,
                             RequestParams.EMPTY.parameters)
@@ -66,6 +66,8 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
 
         )
     }
+
+    fun getRepo() = repository
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()

@@ -16,6 +16,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -53,7 +54,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +18,6 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
@@ -51,12 +50,6 @@ import java.util.concurrent.TimeUnit;
 
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
-
-    public static final int SELLER_APPLICATION = 2;
-
-    public static SellerMainApplication get(Context context) {
-        return (SellerMainApplication) context.getApplicationContext();
-    }
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -198,14 +191,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
     }
 
-    public void initDbFlow() {
-        try {
-            FlowManager.getConfig();
-        } catch (IllegalStateException e) {
-            FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
-        }
-    }
-
     private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
         new CacheApiWhiteListUseCase(this).executeSync(
@@ -226,4 +211,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
+    @Override
+    public void onActivityDestroyed(String screenName, Activity baseActivity) {
+
+    }
 }

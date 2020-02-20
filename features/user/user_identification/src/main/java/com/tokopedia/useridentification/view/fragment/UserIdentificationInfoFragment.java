@@ -17,9 +17,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.useridentification.KycUrl;
@@ -27,12 +30,13 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
-import com.tokopedia.useridentification.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -40,18 +44,18 @@ import javax.inject.Inject;
 
 public class UserIdentificationInfoFragment extends BaseDaggerFragment
         implements UserIdentificationInfo.View,
-        GetApprovalStatusSubscriber.GetApprovalStatusListener,
         GetUserProjectInfoSubcriber.GetUserProjectInfoListener,
         UserIdentificationInfoActivity.Listener {
 
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
 
+    private GlobalError globalErrorView;
     private ImageView image;
     private TextView title;
     private TextView text;
     private View progressBar;
     private View mainView;
-    private TextView button;
+    private UnifyButton button;
     private boolean isSourceSeller;
     private UserIdentificationAnalytics analytics;
     private int statusCode;
@@ -85,11 +89,14 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             isSourceSeller = getArguments().getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER);
             projectId = getArguments().getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
         }
+
         if (isSourceSeller) {
             goToFormActivity();
         }
+
         analytics = UserIdentificationAnalytics.createInstance(projectId);
     }
+
 
     @Override
     protected String getScreenName() {
@@ -110,6 +117,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private void initView(View parentView) {
+        globalErrorView = parentView.findViewById(R.id.fragment_user_identification_global_error);
         mainView = parentView.findViewById(R.id.main_view);
         image = parentView.findViewById(R.id.main_image);
         title = parentView.findViewById(R.id.title);
@@ -121,7 +129,13 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getStatusInfo();
+
+        if(projectId != KYCConstant.STATUS_DEFAULT) {
+            getStatusInfo();
+        }else {
+            toggleNotFoundView(true);
+        }
+
     }
 
     private void getStatusInfo() {
@@ -130,12 +144,38 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void isUserBlacklist(boolean isBlacklist) {
-        if (isBlacklist) {
-            hideLoading();
-            showStatusBlacklist();
-        } else {
-            presenter.getStatus(projectId);
+    public void onUserBlacklist() {
+        hideLoading();
+        showStatusBlacklist();
+    }
+
+    @Override
+    public void onSuccessGetUserProjectInfo(int status) {
+        hideLoading();
+        statusCode = status;
+        switch (status) {
+            case KYCConstant.STATUS_REJECTED:
+                showStatusRejected();
+                break;
+            case KYCConstant.STATUS_PENDING:
+                showStatusPending();
+                break;
+            case KYCConstant.STATUS_VERIFIED:
+                showStatusVerified();
+                break;
+            case KYCConstant.STATUS_EXPIRED:
+                showStatusNotVerified();
+                break;
+            case KYCConstant.STATUS_NOT_VERIFIED:
+                showStatusNotVerified();
+                break;
+            case KYCConstant.STATUS_DEFAULT:
+                toggleNotFoundView(true);
+                break;
+            default:
+                onErrorGetUserProjectInfo(new MessageErrorException(String.format("%s (%s)", getString(R.string
+                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN)));
+                break;
         }
     }
 
@@ -157,30 +197,20 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
-    public void onSuccessGetShopVerificationStatus(int status) {
-        hideLoading();
-        statusCode = status;
-        switch (status) {
-            case KYCConstant.STATUS_REJECTED:
-                showStatusRejected();
-                break;
-            case KYCConstant.STATUS_PENDING:
-                showStatusPending();
-                break;
-            case KYCConstant.STATUS_VERIFIED:
-                showStatusVerified();
-                break;
-            case KYCConstant.STATUS_EXPIRED:
-                showStatusNotVerified();
-                break;
-            case KYCConstant.STATUS_NOT_VERIFIED:
-                showStatusNotVerified();
-                break;
-            default:
-                onErrorGetShopVerificationStatus(new MessageErrorException(String.format("%s (%s)", getString(R.string
-                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN)));
-                break;
+    private void toggleNotFoundView(boolean isVisible) {
+        if(isVisible) {
+            mainView.setVisibility(View.GONE);
+            globalErrorView.setType(GlobalError.Companion.getPAGE_NOT_FOUND());
+            globalErrorView.setVisibility(View.VISIBLE);
+            globalErrorView.setActionClickListener(view -> {
+                if(getActivity() != null){
+                    RouteManager.route(getContext(), ApplinkConst.HOME);
+                }
+                return Unit.INSTANCE;
+            });
+        }else{
+            mainView.setVisibility(View.VISIBLE);
+            globalErrorView.setVisibility(View.GONE);
         }
     }
 
@@ -188,9 +218,9 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         ImageHandler.LoadImage(image, KycUrl.ICON_NOT_VERIFIED);
         title.setText(R.string.kyc_intro_title);
         text.setText(R.string.kyc_intro_text);
+
+        button.setEnabled(true);
         button.setText(R.string.kyc_intro_button);
-        button.setTextColor(getResources().getColor(R.color.white));
-        button.setBackgroundResource(R.drawable.green_button_rounded);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED));
         analytics.eventViewOnKYCOnBoarding();
@@ -201,8 +231,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         title.setText(R.string.kyc_verified_title);
         text.setText(R.string.kyc_verified_text);
         button.setText(R.string.kyc_verified_button);
-        button.setTextColor(getResources().getColor(R.color.black_38));
-        button.setBackgroundResource(R.drawable.white_button_rounded);
+        button.setButtonVariant(UnifyButton.Variant.GHOST);
+        button.setButtonType(UnifyButton.Type.ALTERNATE);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(onGoToTermsButton());
         analytics.eventViewSuccessPage();
@@ -221,8 +251,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         title.setText(R.string.kyc_failed_title);
         text.setText(R.string.kyc_failed_text);
         button.setText(R.string.kyc_failed_button);
-        button.setTextColor(getResources().getColor(R.color.white));
-        button.setBackgroundResource(R.drawable.green_button_rounded);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_REJECTED));
         analytics.eventViewRejectedPage();
@@ -233,29 +261,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         title.setText(R.string.kyc_failed_title);
         text.setText(R.string.kyc_blacklist_text);
         button.setText(R.string.kyc_blacklist_button);
-        button.setTextColor(getResources().getColor(R.color.white));
-        button.setBackgroundResource(R.drawable.green_button_rounded);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(v -> getActivity().onBackPressed());
-    }
-
-    @Override
-    public void onErrorGetShopVerificationStatus(Throwable errorMessage) {
-        if (getContext() != null) {
-            hideLoading();
-            String error = ErrorHandler.getErrorMessage(getContext(), errorMessage);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
-        }
-    }
-
-    @Override
-    public void onErrorGetShopVerificationStatusWithErrorCode(String errorCode) {
-        if (getContext() != null) {
-            hideLoading();
-            String error = String.format("%s (%s)", getContext().getString(R.string
-                    .default_request_error_unknown), errorCode);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
-        }
     }
 
     @Override
@@ -275,10 +282,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return this;
     }
 
-    @Override
-    public GetApprovalStatusSubscriber.GetApprovalStatusListener getApprovalStatusListener() {
-        return this;
-    }
 
     @Override
     public void onTrackBackPressed() {
@@ -304,21 +307,18 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener onGoToFormActivityButton(int status) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (status) {
-                    case KYCConstant.STATUS_NOT_VERIFIED:
-                        analytics.eventClickOnNextOnBoarding();
-                        break;
-                    case KYCConstant.STATUS_REJECTED:
-                        analytics.eventClickNextRejectedPage();
-                        break;
-                    default:
-                        break;
-                }
-                goToFormActivity();
+        return v -> {
+            switch (status) {
+                case KYCConstant.STATUS_NOT_VERIFIED:
+                    analytics.eventClickOnNextOnBoarding();
+                    break;
+                case KYCConstant.STATUS_REJECTED:
+                    analytics.eventClickNextRejectedPage();
+                    break;
+                default:
+                    break;
             }
+            goToFormActivity();
         };
     }
 
@@ -340,12 +340,9 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener onGoToTermsButton() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                analytics.eventClickTermsSuccessPage();
-                RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
-            }
+        return v -> {
+            analytics.eventClickTermsSuccessPage();
+            RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
         };
     }
 

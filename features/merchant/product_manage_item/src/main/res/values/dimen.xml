@@ -15,4 +15,6 @@
     <dimen name="image_video_width">108dp</dimen>
     <!-- Product -->
     <dimen name="product_inner_expandable_padding">7dp</dimen>
+
+    <dimen name="new_margin_med">16dp</dimen>
 </resources>

@@ -7,12 +7,9 @@
 
 package com.tokopedia.core.network.entity.discovery;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.discovery.interfaces.Convert;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.HotListBannerModel;
-import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.Badge;
@@ -22,7 +19,6 @@ import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,9 +29,6 @@ import java.util.List;
 public class BrowseProductModel {
     @SerializedName("data")
     public Result result;
-
-    @SerializedName("result")
-    public Result resultOld;
 
     @SerializedName("status")
     public String status;
@@ -69,12 +62,6 @@ public class BrowseProductModel {
         @SerializedName("department_id")
         public String departmentId;
 
-        @SerializedName("hashtag")
-        public List<Hashtag> hashtag;
-
-        @SerializedName("has_catalog")
-        public String hasCatalog;
-
         @SerializedName("search_url")
         public String searchUrl;
 
@@ -92,74 +79,6 @@ public class BrowseProductModel {
 
         @SerializedName("redirect_url")
         public String redirect_url;
-
-    }
-
-    public class Hashtag {
-
-        @SerializedName("name")
-        @Expose
-        private String name;
-        @SerializedName("url")
-        @Expose
-        private String url;
-        @SerializedName("department_id")
-        @Expose
-        private Integer departmentId;
-
-        /**
-         *
-         * @return
-         * The name
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         *
-         * @param name
-         * The name
-         */
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        /**
-         *
-         * @return
-         * The url
-         */
-        public String getUrl() {
-            return url;
-        }
-
-        /**
-         *
-         * @param url
-         * The url
-         */
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        /**
-         *
-         * @return
-         * The departmentId
-         */
-        public Integer getDepartmentId() {
-            return departmentId;
-        }
-
-        /**
-         *
-         * @param departmentId
-         * The department_id
-         */
-        public void setDepartmentId(Integer departmentId) {
-            this.departmentId = departmentId;
-        }
 
     }
 
@@ -255,36 +174,15 @@ public class BrowseProductModel {
             productItem.setReviewCount(data.productReviewCount);
             return productItem;
         }
-
-        public static List<ProductItem> toProductItemList(Products... datas) {
-            ArrayList<ProductItem> result = new ArrayList<>();
-            for (Products p :
-                    datas) {
-                result.add(p.from(p));
-            }
-            return result;
-        }
     }
 
-    public HotListBannerModel hotListBannerModel;
-
     public static class Config {
-        @SerializedName("backoff_multi")
-        String backoffMulti;
 
-        @SerializedName("timeout")
-        String timeout;
-
-        @SerializedName("max_retries")
-        String maxRetries;
     }
 
     public static class Header {
         @SerializedName("total_data")
         Long totalData = 0L;
-
-        @SerializedName("process_time")
-        String processTime;
 
         public Long getTotalData() {
             return totalData;
@@ -292,23 +190,6 @@ public class BrowseProductModel {
 
         public void setTotalData(Long totalData) {
             this.totalData = totalData;
-        }
-    }
-
-    /**
-     * use this for listener
-     */
-    public static final class BrowseProductContainer implements ObjContainer<BrowseProductModel> {
-
-        BrowseProductModel browseProductModel;
-
-        public BrowseProductContainer(BrowseProductModel browseProductModel) {
-            this.browseProductModel = browseProductModel;
-        }
-
-        @Override
-        public BrowseProductModel body() {
-            return browseProductModel;
         }
     }
 }

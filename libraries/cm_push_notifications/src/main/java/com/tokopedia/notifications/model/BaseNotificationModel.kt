@@ -1,59 +1,128 @@
 package com.tokopedia.notifications.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.annotation.NonNull
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.notifications.database.convertors.NotificationModeConverter
+import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
 import org.json.JSONObject
-import kotlin.collections.ArrayList
 
 /**
  *
 parcel.createTypedArrayList(Carousel.CREATOR),
  * Created by Ashwani Tyagi on 18/10/18.
  */
-data class BaseNotificationModel (
+@Entity(tableName = "BaseNotificationModel")
+data class BaseNotificationModel(
 
-    var notificationId: Int = 0,
-    var campaignId: Long = 0,
-    var priorityPreOreo: Int = 2,
-    var title: String? = null,
-    var detailMessage: String? = null,
-    var message: String? = null,
-    var icon: String? = null,
-    var soundFileName: String? = null,
+        @ColumnInfo(name = "notificationId")
+        var notificationId: Int = 0,
+        
+        @PrimaryKey
+        @ColumnInfo(name = "campaignId")
+        var campaignId: Long = 0,
 
-    var tribeKey: String? = null,
+        @ColumnInfo(name = "priority")
+        var priorityPreOreo: Int = 2,
 
-    var media: Media? = null,
+        @ColumnInfo(name = "title")
+        var title: String? = null,
 
-    var appLink: String? = null,
-    var actionButton: List<ActionButton> = ArrayList(),
+        @ColumnInfo(name = "detailMessage")
+        var detailMessage: String? = null,
 
-    var customValues: String? = null,
+        @ColumnInfo(name = "message")
+        var message: String? = null,
 
-    var type: String? = null,
+        @ColumnInfo(name = "icon")
+        var icon: String? = null,
 
-    var channelName: String? = null,
+        @ColumnInfo(name = "soundFileName")
+        var soundFileName: String? = null,
 
-    var persistentButtonList: List<PersistentButton>? = null,
+        @ColumnInfo(name = "tribeKey")
+        var tribeKey: String? = null,
 
-    var videoPushModel: JSONObject? = null,
+        @Embedded(prefix = "media_")
+        var media: Media? = null,
+
+        @ColumnInfo(name = "appLink")
+        var appLink: String? = null,
+
+        @ColumnInfo(name = "actionBtn")
+        var actionButton: ArrayList<ActionButton> = ArrayList(),
+
+        @ColumnInfo(name = "customValues")
+        var customValues: String? = null,
+
+        @ColumnInfo(name = "type")
+        var type: String? = null,
+
+        @ColumnInfo(name = "channelName")
+        var channelName: String? = null,
+
+        @Embedded(prefix = "persist")
+        var persistentButtonList: ArrayList<PersistentButton>? = null,
+
+        @ColumnInfo(name = "videoPush")
+        var videoPushModel: JSONObject? = null,
+
+        @ColumnInfo(name = "subText")
+        var subText: String? = null,
+
+        @ColumnInfo(name = "visualCollapsedImg")
+        var visualCollapsedImageUrl: String? = null,
+
+        @ColumnInfo(name = "visualExpandedImg")
+        var visualExpandedImageUrl: String? = null,
+
+        @ColumnInfo(name = "carouselIndex")
+        var carouselIndex: Int = 0,
+
+        @ColumnInfo(name = "isVibration")
+        var isVibration: Boolean = true,
+
+        @ColumnInfo(name = "isSound")
+        var isSound: Boolean = true,
+
+        @ColumnInfo(name = "isUpdatingExisting")
+        var isUpdateExisting: Boolean = false,
+
+        @ColumnInfo(name = "carousel")
+        var carouselList: ArrayList<Carousel> = ArrayList(),
+
+        @ColumnInfo(name = "grid")
+        var gridList: ArrayList<Grid> = ArrayList(),
+
+        @ColumnInfo(name = "productInfo")
+        var productInfoList: ArrayList<ProductInfo> = ArrayList(),
+
+        @ColumnInfo(name = "parentId")
+        var parentId: Long = 0,
+
+        @ColumnInfo(name = "campaignUserToken")
+        var campaignUserToken: String? = null,
 
 
-    var subText: String? = null,
+        //new Fields for offline
+        @ColumnInfo(name = "notificationStatus")
+        var status: NotificationStatus = NotificationStatus.PENDING,
 
-    var visualCollapsedImageUrl: String? = null,
-    var visualExpandedImageUrl: String? = null,
+        @ColumnInfo(name = "startTime")
+        var startTime: Long = 0,
 
-    var carouselIndex: Int = 0,
-    var isVibration: Boolean = true,
-    var isSound: Boolean = true,
-    var isUpdateExisting: Boolean = false,
+        @ColumnInfo(name = "endTime")
+        var endTime: Long = 0,
 
-    var carouselList: List<Carousel> = ArrayList(),
-    var gridList: List<Grid> = ArrayList(),
-    var productInfoList : List<ProductInfo> = ArrayList(),
-    var parentId: Long = 0,
-    var campaignUserToken: String? = null
+        @ColumnInfo(name = "notificationMode")
+        var notificationMode: NotificationMode = NotificationMode.OFFLINE
+        //new Fields for offline ends
+
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -85,7 +154,11 @@ data class BaseNotificationModel (
             parcel.createTypedArrayList(Grid),
             parcel.createTypedArrayList(ProductInfo),
             parcel.readLong(),
-            parcel.readString())
+            parcel.readString(),
+            NotificationStatusConverter.instances.toStatus(parcel.readInt()),
+            parcel.readLong(),
+            parcel.readLong(),
+            NotificationModeConverter.instances.toMode(parcel.readInt()))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(notificationId)
@@ -116,6 +189,10 @@ data class BaseNotificationModel (
         parcel.writeTypedList(productInfoList)
         parcel.writeLong(parentId)
         parcel.writeString(campaignUserToken)
+        parcel.writeInt(status.statusInt)
+        parcel.writeLong(startTime)
+        parcel.writeLong(endTime)
+        parcel.writeInt(status.statusInt)
     }
 
     override fun describeContents(): Int {

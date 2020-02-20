@@ -12,9 +12,7 @@ import com.tokopedia.track.TrackAppUtils;
  */
 public class SearchBarAnalytics {
 
-    SearchBarAnalytics(Context context) {
-
-    }
+    SearchBarAnalytics(Context context) { }
 
     public void eventTrackingSqanQr() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
@@ -41,6 +39,19 @@ public class SearchBarAnalytics {
                         SearchBarConstant.TOP_NAV,
                         String.format("%s %s", SearchBarConstant.CLICK,
                                 SearchBarConstant.NOTIFICATION)));
+    }
+
+    public void eventTrackingNotifCenter() {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataNotifCenter());
+    }
+
+    private Map<String, Object> dataNotifCenter() {
+        Map<String, Object> trackerMap = new HashMap<>();
+        trackerMap.put(SearchBarConstant.EVENT, SearchBarConstant.CLICK_NOTIF_CENTER);
+        trackerMap.put(SearchBarConstant.EVENT_CATEGORY, SearchBarConstant.NOTIF_CENTER);
+        trackerMap.put(SearchBarConstant.EVENT_ACTION, SearchBarConstant.NOTIF_CENTER_ACTION);
+        trackerMap.put(SearchBarConstant.EVENT_LABEL, "");
+        return trackerMap;
     }
 
     private Map<String, Object> getDataEvent(String screenName, String event,

@@ -16,4 +16,16 @@ object DigitalExtraParam {
 
     @JvmField
     val EXTRA_PARAM_VOUCHER_GAME = "EXTRA_PARAM_VOUCHER_GAME"
+
+    @JvmField
+    val EXTRA_CATEGORY_PASS_DATA = "EXTRA_CATEGORY_PASS_DATA"
+
+    @JvmField
+    val EXTRA_NFC_FROM_PDP = "calling_from_pdp"
+
+    @JvmField
+    val EXTRA_NFC = "calling_from_nfc"
+
+    @JvmField
+    val EXTRA_NUMBER_FROM_CAMERA_OCR = "EXTRA_NUMBER_FROM_CAMERA_OCR"
 }

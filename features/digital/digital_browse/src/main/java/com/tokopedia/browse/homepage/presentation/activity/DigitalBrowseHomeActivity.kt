@@ -141,7 +141,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getScreenName(): String =
-            if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+            if (intent.hasExtra(EXTRA_TYPE) && Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
                 LAYANAN_SCREEN
             } else {
                 DEFAULT_SCREEN

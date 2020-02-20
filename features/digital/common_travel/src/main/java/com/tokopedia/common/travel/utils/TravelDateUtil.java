@@ -24,6 +24,8 @@ public class TravelDateUtil {
     public static final String YYYYMMDD = "yyyyMMdd";
     public static final String YYYY = "yyyy";
     public static final String MM = "MM";
+    public static final String HH_MM = "HH:mm";
+    public static final String EEE_DD_MMM_YY = "EEE, dd MMM yy";
 
     public static Date stringToDate(String format, String input) {
         DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);

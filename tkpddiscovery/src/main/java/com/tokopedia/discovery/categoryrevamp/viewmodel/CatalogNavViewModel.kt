@@ -56,7 +56,8 @@ class CatalogNavViewModel
         })
     }
 
-    fun onDetach() {
+    override fun onCleared() {
+        super.onCleared()
         catalogUseCase.unsubscribe()
         dynamicFilterUseCase.unsubscribe()
     }

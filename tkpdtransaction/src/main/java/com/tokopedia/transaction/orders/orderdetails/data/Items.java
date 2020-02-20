@@ -10,6 +10,18 @@ public class Items {
     @Expose
     private int categoryID;
 
+    @SerializedName("categoryL1")
+    @Expose
+    private int categoryL1;
+    @SerializedName("categoryL2")
+    @Expose
+    private int categoryL2;
+
+    @SerializedName("categoryL3")
+    @Expose
+    private int categoryL3;
+
+
     @SerializedName("id")
     @Expose
     private int id;
@@ -185,6 +197,18 @@ public class Items {
 
     public void setActionButtonLoaded(boolean actionButtonLoaded) {
         isActionButtonLoaded = actionButtonLoaded;
+    }
+
+    public int getCategoryL1() {
+        return categoryL1;
+    }
+
+    public int getCategoryL2() {
+        return categoryL2;
+    }
+
+    public int getCategoryL3() {
+        return categoryL3;
     }
 
     public String getDescription() {

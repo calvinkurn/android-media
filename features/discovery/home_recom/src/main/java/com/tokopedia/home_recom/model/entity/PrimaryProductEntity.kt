@@ -9,118 +9,120 @@ import com.google.gson.annotations.SerializedName
 
 data class ProductRecommendationProductDetail(
         @SerializedName("data")
-        val `data`: List<Data>
+        val `data`: List<Data> = listOf()
 )
 
 data class PrimaryProductEntity(
         @SerializedName("productRecommendationProductDetail")
-        val productRecommendationProductDetail: ProductRecommendationProductDetail
+        val productRecommendationProductDetail: ProductRecommendationProductDetail = ProductRecommendationProductDetail()
 )
 
 data class Data(
         @SerializedName("foreignTitle")
-        val foreignTitle: String,
+        val foreignTitle: String = "",
         @SerializedName("recommendation")
-        val recommendation: List<ProductDetailData>,
+        val recommendation: List<ProductDetailData> = listOf(),
         @SerializedName("source")
-        val source: String,
+        val source: String = "",
         @SerializedName("tID")
-        val tID: String,
+        val tID: String = "",
         @SerializedName("title")
-        val title: String,
+        val title: String = "",
         @SerializedName("widgetUrl")
-        val widgetUrl: String
+        val widgetUrl: String = ""
 )
 
 data class ProductDetailData(
         @SerializedName("appUrl")
-        val appUrl: String,
+        val appUrl: String = "",
         @SerializedName("badges")
-        val badges: List<Badge>,
+        val badges: List<Badge> = listOf(),
         @SerializedName("categoryBreadcrumbs")
-        val categoryBreadcrumbs: String,
+        val categoryBreadcrumbs: String = "",
         @SerializedName("clickUrl")
-        val clickUrl: String,
+        val clickUrl: String = "",
         @SerializedName("countReview")
-        val countReview: Int,
+        val countReview: Int = -1,
         @SerializedName("countReviewFloat")
-        val countReviewFloat: Int,
+        val countReviewFloat: Int = -1,
         @SerializedName("departmentId")
-        val departmentId: Int,
+        val departmentId: Int = -1,
         @SerializedName("id")
-        val id: Int,
+        val id: Int = -1,
+        @SerializedName("status")
+        val status: Int = 1,
         @SerializedName("imageUrl")
-        val imageUrl: String,
+        val imageUrl: String = "",
         @SerializedName("isTopads")
-        val isTopads: Boolean,
+        val isTopads: Boolean = false,
         @SerializedName("IsWishlist")
-        val isWishlist: Boolean,
+        val isWishlist: Boolean = false,
         @SerializedName("labels")
-        val labels: List<Any>,
+        val labels: List<Any> = listOf(),
         @SerializedName("name")
-        val name: String,
+        val name: String = "",
         @SerializedName("price")
-        val price: String,
+        val price: String = "",
         @SerializedName("priceInt")
-        val priceInt: Int,
+        val priceInt: Int = -1,
         @SerializedName("rating")
-        val rating: Int,
+        val rating: Int = -1,
         @SerializedName("recommendationType")
-        val recommendationType: String,
+        val recommendationType: String = "",
         @SerializedName("shop")
-        val shop: Shop,
+        val shop: Shop = Shop(),
         @SerializedName("slashedPrice")
-        val slashedPrice: String,
+        val slashedPrice: String = "",
         @SerializedName("slashedPriceInt")
-        val slashedPriceInt: Int,
+        val slashedPriceInt: Int = 0,
         @SerializedName("discountPercentage")
-        val discountPercentage: Int,
+        val discountPercentage: Int = 0,
         @SerializedName("stock")
-        val stock: Int,
+        val stock: Int = 0,
         @SerializedName("minOrder")
-        val minOrder: Int,
+        val minOrder: Int = 0,
         @SerializedName("trackerImageUrl")
-        val trackerImageUrl: String,
+        val trackerImageUrl: String = "",
         @SerializedName("url")
-        val url: String,
+        val url: String = "",
         @SerializedName("wholesalePrice")
-        val wholesalePrice: List<Any>,
+        val wholesalePrice: List<Any> = listOf(),
         @SerializedName("wishlistUrl")
-        val wishlistUrl: String,
+        val wishlistUrl: String = "",
         @SerializedName("productKey")
-        val productKey: String,
+        val productKey: String = "",
         @SerializedName("shopDomain")
-        val shopDomain: String,
+        val shopDomain: String = "",
         @SerializedName("urlPath")
-        val urlPath: String
+        val urlPath: String = ""
         )
 
 data class Shop(
         @SerializedName("id")
-        val id: Int,
+        val id: Int = -1,
         @SerializedName("name")
-        val name: String,
+        val name: String = "",
         @SerializedName("url")
-        val url: String,
+        val url: String = "",
         @SerializedName("appUrl")
-        val appUrl: String,
+        val appUrl: String = "",
         @SerializedName("isGold")
-        val isGold: Boolean,
+        val isGold: Boolean = false,
         @SerializedName("location")
-        val location: String,
+        val location: String = "",
         @SerializedName("city")
-        val city: String,
+        val city: String = "",
         @SerializedName("reputation")
-        val reputation: String,
+        val reputation: String = "",
         @SerializedName("clover")
-        val clover: String,
+        val clover: String = "",
         @SerializedName("shopImage")
-        val shopImage: String
+        val shopImage: String = ""
 )
 
 data class Badge(
         @SerializedName("imageUrl")
-        val imageUrl: String,
+        val imageUrl: String = "",
         @SerializedName("title")
-        val title: String
+        val title: String = ""
 )

@@ -28,6 +28,8 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.widget.WarningTickerView;
@@ -44,7 +46,6 @@ import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPres
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -181,7 +182,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
         terminateAnnouncementTicker = view.findViewById(R.id.ticker_terminate_announcement);
         terminateAnnouncementLayout = view.findViewById(R.id.terminate_announcement_view);
 
-        refreshHandler = new RefreshHandler(getActivity(), view, this);
+        refreshHandler = new RefreshHandler(getActivity(), view.findViewById(R.id.swipe_refresh_layout), this);
 
         if (isCouponApplied == DEFAULT_COUPON_APPLIED) {
             showCouponAppliedTicker();
@@ -416,7 +417,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
                                 .url(itemData.getRedirectValue())
                                 .build();
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                bundle.putParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData);
                 bundle.putBoolean(EXTRA_APPLINK_FROM_INTERNAL, true);
                 ApplinkRouter applinkRouter = (ApplinkRouter) getActivity().getApplicationContext();
                 applinkRouter.goToApplinkActivity(getActivity(), itemData.getAppLinks(), bundle);

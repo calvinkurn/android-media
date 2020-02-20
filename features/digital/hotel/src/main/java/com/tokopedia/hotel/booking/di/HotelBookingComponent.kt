@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.booking.di
 
-import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.booking.presentation.fragment.HotelContactDataFragment
 import com.tokopedia.hotel.common.di.component.HotelComponent

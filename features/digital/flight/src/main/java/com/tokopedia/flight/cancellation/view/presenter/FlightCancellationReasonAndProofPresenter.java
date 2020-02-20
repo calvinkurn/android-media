@@ -2,11 +2,12 @@ package com.tokopedia.flight.cancellation.view.presenter;
 
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
+import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;

@@ -12,6 +12,9 @@
     <string name="path_promo_list_flight" translatable="false">/list/flight</string>
     <string name="path_promo_detail_flight" translatable="false">/detail/flight</string>
 
+    <string name="path_promo_list_hotel" translatable="false">/list/hotel</string>
+    <string name="path_promo_detail_hotel" translatable="false">/detail/hotel</string>
+
     <string name="path_promo_list_marketplace" translatable="false">/list/marketplace</string>
     <string name="path_promo_detail_marketplace" translatable="false">/detail/marketplace</string>
 

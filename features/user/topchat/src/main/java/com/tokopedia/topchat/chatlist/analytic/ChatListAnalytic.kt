@@ -10,7 +10,7 @@ import javax.inject.Inject
  */
 
 
-class ChatListAnalytic @Inject constructor(){
+class ChatListAnalytic @Inject constructor() {
     interface Event {
         companion object {
             const val CLICK_INBOX_CHAT = "clickInboxChat"
@@ -40,7 +40,7 @@ class ChatListAnalytic @Inject constructor(){
     }
 
 
-//    #CL2
+    //    #CL2
     fun eventClickFilterChat() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_INBOX_CHAT,
@@ -50,7 +50,7 @@ class ChatListAnalytic @Inject constructor(){
         ))
     }
 
-//    #CL3
+    //    #CL3
     fun eventClickListFilterChat(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_INBOX_CHAT,
@@ -59,7 +59,8 @@ class ChatListAnalytic @Inject constructor(){
                 label
         ))
     }
-//    #CL5
+
+    //    #CL5
     fun eventClickTabChat(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_INBOX_CHAT,
@@ -69,7 +70,7 @@ class ChatListAnalytic @Inject constructor(){
         ))
     }
 
-//    #CL6
+    //    #CL6
     fun eventClickChatList(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_INBOX_CHAT,
@@ -82,10 +83,10 @@ class ChatListAnalytic @Inject constructor(){
     fun eventClickBroadcastButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
-                    Event.CLICK_INBOX_CHAT,
-                    Category.CATEGORY_INBOX_CHAT,
-                    Action.ACTION_CLICK_BROADCAST_WIZARD,
-                    ""
+                        Event.CLICK_INBOX_CHAT,
+                        Category.CATEGORY_INBOX_CHAT,
+                        Action.ACTION_CLICK_BROADCAST_WIZARD,
+                        ""
                 )
         )
     }

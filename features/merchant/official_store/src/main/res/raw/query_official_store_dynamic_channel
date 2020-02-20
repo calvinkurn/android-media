@@ -5,6 +5,7 @@ query dynamicHomeChannel($type: String) {
             name
             layout
             type
+            campaignID
             header {
                 id
                 name

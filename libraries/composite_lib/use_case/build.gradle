@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 project.ext {
     artifactId = 'usecase'
     groupId = 'com.tokopedia.usecase'
-    versionName = "1.0.2"
+    versionName = "1.0.3"
     artifactName ="use_case"
 }
 

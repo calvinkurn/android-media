@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.OrderStatusCode
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.unifycomponents.Label
@@ -17,25 +18,23 @@ class InvoicePreviewViewHolder(
     private val thumbnail: ImageView? = itemView.findViewById(R.id.iv_thumbnail)
     private val status: Label? = itemView.findViewById(R.id.tv_status)
     private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
-    private val price: TextView? = itemView.findViewById(R.id.tv_price)
 
     override fun getButtonView(itemView: View): ImageView? {
         return itemView.findViewById(R.id.iv_close)
     }
 
-    override fun bind(model: InvoicePreviewViewModel, position: Int) {
-        super.bind(model, position)
+    override fun bind(model: InvoicePreviewViewModel) {
         bindViewWithModel(model)
+        super.bind(model)
     }
 
     private fun bindViewWithModel(model: InvoicePreviewViewModel) {
-        val labelType = getLabelType(model.statusId.toInt())
+        val labelType = getLabelType(model.statusId)
 
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, model.imageUrl)
+        ImageHandler.loadImageRounded2(itemView.context, thumbnail, model.imageUrl, 8f.toPx())
         status?.text = model.status
         status?.setLabelType(labelType)
         invoiceId?.text = model.invoiceCode
-        price?.text = model.totalPriceAmount
     }
 
     private fun getLabelType(statusId: Int?): Int {

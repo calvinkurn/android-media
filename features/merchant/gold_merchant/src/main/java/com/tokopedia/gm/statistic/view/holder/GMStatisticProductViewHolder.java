@@ -1,23 +1,21 @@
 package com.tokopedia.gm.statistic.view.holder;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.ReviewForm;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.RouteManager;
-import android.content.Context;
-import android.content.Intent;
 
 /**
  * Created by normansyahputa on 11/9/16.

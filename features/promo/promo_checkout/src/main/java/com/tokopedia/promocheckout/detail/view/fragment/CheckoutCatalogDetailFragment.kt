@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
 import android.os.Bundle
@@ -19,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics.Companion.promoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
@@ -36,8 +36,8 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     var mTimer: CountDownTimer? = null
     lateinit var progressBar: ProgressBar
     var slug: String? = null
-    var catalog_id: Int = 0
-    lateinit var promo: Promo
+    var catalogId: Int = 0
+    var promo: Promo? = null
     val textColorIndex = 1
     private val couponRedemptionCode_LOW_POINT = 42020
     private val couponRedemptionCode_QUOTA_LIMIT_REACHED = 42022
@@ -52,7 +52,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     override fun onCreate(savedInstanceState: Bundle?) {
         arguments?.let {
             slug = it.getString(SLUG)
-            catalog_id = it.getInt(CATALOG_ID)
+            catalogId = it.getInt(CATALOG_ID)
             promo = it.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
         }
         super.onCreate(savedInstanceState)
@@ -77,7 +77,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             return
         }
 
-        slug?.let { mPresenter.getCatalogDetail(it, catalog_id) }
+        slug?.let { mPresenter.getCatalogDetail(it, catalogId) }
     }
 
     override fun onDestroy() {
@@ -172,7 +172,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             dialog.show()
         }
 
-        buttonDismiss.setOnClickListener { view -> dialog?.dismiss() }
+        buttonDismiss.setOnClickListener {
+            dialog?.dismiss()
+            promoCheckoutAnalytics.clickBatalPopUp(slug ?: "")
+        }
         button.setOnClickListener { v ->
             dialog?.dismiss()
             when (resCode) {
@@ -183,6 +186,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
                     //   startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
                 }
             }
+            promoCheckoutAnalytics.clickTukarPopUp(slug)
         }
     }
 
@@ -275,7 +279,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
 
         btnAction2?.setOnClickListener { v ->
             mPresenter.startValidateCoupon(data)
-
+            promoCheckoutAnalytics.clickTukarButton(slug ?: " ")
         }
     }
 
@@ -298,12 +302,12 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
         val REQUEST_CODE_DETAIL_PROMO = 231
-        fun newInstance(slug: String, catalog_id: Int, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
-                        promo: Promo): CheckoutCatalogDetailFragment {
+        fun newInstance(slug: String?, catalogId: Int?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
+                        promo: Promo?): CheckoutCatalogDetailFragment {
             val checkoutcatalogfragment = CheckoutCatalogDetailFragment()
             val bundle = Bundle()
             bundle.putString(SLUG, slug)
-            bundle.putInt(CATALOG_ID, catalog_id)
+            catalogId?.let { bundle.putInt(CATALOG_ID, it) }
             bundle.putString(PROMOCODE, promoCode)
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)

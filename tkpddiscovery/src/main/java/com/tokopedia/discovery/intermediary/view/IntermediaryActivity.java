@@ -29,6 +29,8 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
+import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.io.UnsupportedEncodingException;
@@ -78,6 +80,9 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Uri uri = getIntent().getData();
+
+        checkAndOpenCategoryPage(uri);
+
         if (uri != null) {
             List<String> paths = UriUtil.destructureUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, uri);
             if (!paths.isEmpty()) {
@@ -100,6 +105,13 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
             moveTaskToBack(true);
         }
         trackMoEngageCategory();
+    }
+
+    private void checkAndOpenCategoryPage(Uri uri) {
+        if (uri.getQuery() != null && !uri.getQuery().isEmpty() && uri.toString().contains(CategoryNavActivity.EXTRA_CATEGORY_NAME)) {
+            CategoryActivity.moveTo(this, uri.toString(), null);
+            finish();
+        }
     }
 
     private void trackMoEngageCategory() {

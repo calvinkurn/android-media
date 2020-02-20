@@ -1,43 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-   	<string-array name="shop_status">  
-        <item>@string/shop_open</item>  
-        <item>@string/shop_closed</item>  
-    </string-array>  
-    
-   	<string-array name="shop_moderated">  
-        <item>@string/shop_moderated</item>  
-    </string-array> 
     
    	<string-array name="currency_type">
    	    <item>@string/title_rupiah</item>
    	    <item>@string/title_dollar</item>
-   	    </string-array>
-    
-   	<string-array name="filter_catalog">
-   	    <item>@string/item_wwo_catalog</item>
-   	    <item>@string/item_w_catalog</item>
-   	    <item>@string/item_wo_catalog</item>
-   	</string-array>
-   	
-   	<string-array name="filter_image">
-   	    <item>@string/item_wwo_image</item>
-   	    <item>@string/item_w_image</item>
-   	    <item>@string/item_wo_image</item>
-   	</string-array>
-   	
-   	<string-array name="filter_condition">
-   	    <item>@string/item_all_cond</item>
-   	    <item>@string/item_new_cond</item>
-   	    <item>@string/item_used_cond</item>	    
-   	</string-array>
-   	
-   	<string-array name="address_sort_type">
-   	    <item>@string/title_sort_by</item>
-   	    <item>@string/item_address_latest</item>
-   	    <item>@string/item_address_name</item>
-   	    <item>@string/item_address_receiver</item>
-   	</string-array>
+    </string-array>
    	
    	<string-array name="transaction_filter_type">
    	    <item>@string/item_all_stats_unfinish</item>
@@ -48,32 +15,6 @@
    	    <item>@string/item_finished</item>
    	    <item>@string/item_cancel</item>
    	</string-array>
-
-    <string-array name="inbox_filter">
-        <item>@string/item_all</item>
-        <item>@string/item_unread</item>
-    </string-array>
-
-    <string-array name="transaction_filter_type_ppl">
-        <item>@string/item_all_stats</item>
-        <item>@string/item_payment_confirmation</item>
-        <item>@string/item_payment_verification</item>
-        <item>@string/item_on_process</item>
-        <item>@string/item_on_shipping</item>
-        <item>@string/item_delivered</item>
-        <item>@string/item_finished</item>
-        <item>@string/item_cancel</item>
-    </string-array>
-
-    <string-array name="transaction_filter_type_ppl_value">
-        <item></item>
-        <item>9</item>
-        <item>1</item>
-        <item>2</item>
-        <item>7</item>
-        <item>3</item>
-        <item>4</item>
-    </string-array>
     <string-array name="response_deadline">
         <item>@string/item_choose_time_end</item>
         <item>@string/item_2_days</item>
@@ -106,90 +47,5 @@
         <item>@string/shipping_ninja</item>
         <item>@string/shipping_grab</item>
         <item>@string/shipping_jnt</item>
-    </string-array>
-
-    <string-array name="payment_method">
-        <item>@string/title_saldo_tokopedia</item>
-        <item>@string/title_transfer</item>
-        <item>@string/title_mandiri_clickpay</item>
-        <item>@string/title_mandiri_ecash</item>
-        <item>@string/title_bca_klikpay</item>
-    </string-array>
-
-    <string-array name="cc_months">
-        <item>@string/title_month</item>
-        <item>"1"</item>
-        <item>"2"</item>
-        <item>"3"</item>
-        <item>"4"</item>
-        <item>"5"</item>
-        <item>"6"</item>
-        <item>"7"</item>
-        <item>"8"</item>
-        <item>"9"</item>
-        <item>"10"</item>
-        <item>"11"</item>
-        <item>"12"</item>
-    </string-array>
-    <string-array name="shipping_option">
-        <item>Dukungan Pengiriman</item>
-        <item>SiCepat</item>
-        <item>JNE</item>
-        <item>TIKI</item>
-        <item>RPX</item>
-        <item>Wahana</item>
-        <item>First</item>
-        <item>Post Indonesia</item>
-        <item>Cahaya</item>
-        <item>Pandu</item>
-        <item>GO-JEK</item>
-        <item>Ninja Xpres</item>
-    </string-array>
-    <string-array name="shipping_option_value">
-        <item>0</item>
-        <item>11</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>6</item>
-        <item>9</item>
-        <item>4</item>
-        <item>7</item>
-        <item>8</item>
-        <item>10</item>
-        <item>12</item>
-    </string-array>
-    <string-array name="alasan_penolakan">
-        <item>Stok produk kosong/rusak</item>
-        <item>Varian tidak tersedia</item>
-        <item>Salah harga/berat</item>
-        <item>Toko sedang tutup</item>
-        <item>Kendala kurir</item>
-        <item>Permintaan Pembeli</item>
-    </string-array>
-    <string-array name="priceList">
-        <item>@string/title_rupiah</item>
-        <item>@string/title_dollar</item>
-    </string-array>
-    <string-array name="priceListNonGm">
-        <item>@string/title_rupiah</item>
-    </string-array>
-
-    <string-array name="message_follow">
-        <item>@string/message_success_unfollow</item>
-        <item>@string/message_success_follow</item>
-    </string-array>
-    <string-array name="official_store_tab_title">
-        <item>@string/title_home</item>
-        <item>@string/title_product</item>
-        <item>@string/title_talk_only</item>
-        <item>@string/title_review</item>
-        <item>@string/title_notes_menu</item>
-    </string-array>
-    <string-array name="regular_store_tab_title">
-        <item>@string/title_product</item>
-        <item>@string/title_talk_only</item>
-        <item>@string/title_review</item>
-        <item>@string/title_notes_menu</item>
     </string-array>
 </resources>

@@ -1,20 +1,20 @@
 package com.tokopedia.product.manage.list.view.activity;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.constant.TkpdState;
+import com.google.android.play.core.splitcompat.SplitCompat;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.product.manage.list.constant.AppScreen;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity;
@@ -26,21 +26,25 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class ProductManageActivity extends BaseSellerReceiverDrawerActivity implements HasComponent<ProductComponent> {
 
-    public static final String TAG = ProductManageActivity.class.getSimpleName();
     public UserSessionInterface userSession;
-
-    @DeepLink(ApplinkConst.PRODUCT_MANAGE)
-    public static Intent getApplinkIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ProductManageActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
+        setupLayout(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    protected Fragment getNewFragment() {
+        return new ProductManageSellerFragment();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.installActivity(this);
     }
 
     @Override
@@ -49,10 +53,10 @@ public class ProductManageActivity extends BaseSellerReceiverDrawerActivity impl
         checkLogin();
     }
 
-    @Nullable
     @Override
-    protected Fragment getNewFragment() {
-        return new ProductManageSellerFragment();
+    public void onBackPressed() {
+        goToSellerAppDashboard();
+        super.onBackPressed();
     }
 
     private void checkLogin() {
@@ -110,8 +114,9 @@ public class ProductManageActivity extends BaseSellerReceiverDrawerActivity impl
         return AppScreen.SCREEN_MANAGE_PROD;
     }
 
-    @Override
-    public ProductComponent getComponent() {
-        return ProductEditItemComponentInstance.getComponent(getApplication());
+    private void goToSellerAppDashboard() {
+        if(GlobalConfig.isSellerApp()) {
+            RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD);
+        }
     }
 }

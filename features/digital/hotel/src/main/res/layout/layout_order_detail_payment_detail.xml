@@ -23,7 +23,7 @@
             android:id="@+id/payment_info_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Informasi Pembayaran"
+            android:text="@string/hotel_order_detail_information"
             app:fontSize="small"
             app:textViewTheme="lightPrimary"
             app:weight="medium"

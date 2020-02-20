@@ -34,8 +34,9 @@ public class AddWishListUseCase {
         graphqlUseCase.clearRequest();
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
-        variables.put(PARAM_USER_ID, Integer.parseInt(userId));
+        variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId.isEmpty() ? "-1" : productId));
+
+        variables.put(PARAM_USER_ID, Integer.parseInt( userId.isEmpty() ? "-1" : userId ));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_add_wishlist),

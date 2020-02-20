@@ -105,9 +105,6 @@
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
         <meta-data
-            android:name="GTM_RESOURCE"
-            android:resource="@raw/gtm_seller" />
-        <meta-data
             android:name="GTM_ID"
             android:value="@string/key_gtm" />
         <meta-data
@@ -259,7 +256,7 @@
         <activity
             android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_header_saldo_intro"
+            android:label="@string/saldo_detail_title_header_saldo_intro"
             android:theme="@style/Theme.White.PopupTransparent"
             tools:replace="android:label"
             android:launchMode="singleTask"/>

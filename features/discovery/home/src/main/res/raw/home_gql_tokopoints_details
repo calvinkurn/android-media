@@ -1,6 +1,5 @@
 {
     tokopointsDrawer{
-        offFlag
         iconImageURL
         redirectURL
         redirectAppLink

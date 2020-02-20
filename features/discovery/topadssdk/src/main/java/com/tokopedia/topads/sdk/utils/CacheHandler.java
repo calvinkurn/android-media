@@ -20,11 +20,6 @@ public class CacheHandler {
     private SharedPreferences.Editor editor;
     private SharedPreferences sharedPrefs;
 
-    public CacheHandler(SharedPreferences sharedPreferences) {
-        sharedPrefs = sharedPreferences;
-        editor = sharedPrefs.edit();
-    }
-
     public CacheHandler(Context context, String name) {
         sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
         editor = sharedPrefs.edit();
@@ -38,10 +33,6 @@ public class CacheHandler {
         editor.putInt(key, value);
     }
 
-    public void putFloat(String key, float value) {
-        editor.putFloat(key, value);
-    }
-
     public void putBoolean(String key, Boolean value) {
         editor.putBoolean(key, value);
     }
@@ -50,34 +41,12 @@ public class CacheHandler {
         editor.putLong(key, value);
     }
 
-    public void putArrayListString(String key, ArrayList<String> value) {
-        for (int i = 0; i < value.size(); i++) {
-            editor.putString(key + i, value.get(i));
-        }
-        editor.putInt(key + SUFFIC_TOTAL, value.size());
-    }
-
-    public void putArrayListBoolean(String key, ArrayList<Boolean> value) {
-        for (int i = 0; i < value.size(); i++) {
-            editor.putBoolean(key + i, value.get(i));
-        }
-        editor.putInt(key + SUFFIC_TOTAL, value.size());
-    }
-
     public void putArrayListInteger(String key, ArrayList<Integer> value) {
         for (int i = 0; i < value.size(); i++) {
             editor.putInt(key + i, value.get(i));
         }
         editor.putInt(key + SUFFIC_TOTAL, value.size());
     }
-
-    public void putArrayListLong(String key, ArrayList<Long> value) {
-        for (int i = 0; i < value.size(); i++) {
-            editor.putLong(key + i, value.get(i));
-        }
-        editor.putInt(key + SUFFIC_TOTAL, value.size());
-    }
-
 
     public void applyEditor() {
         editor.apply();
@@ -95,28 +64,12 @@ public class CacheHandler {
         return sharedPrefs.getLong(key, 0);
     }
 
-    public Long getLong(String key, Long defVal) {
-        return sharedPrefs.getLong(key, defVal);
-    }
-
-    public Long getLong(String key, int defVal) {
-        return sharedPrefs.getLong(key, defVal);
-    }
-
     public Integer getInt(String key) {
         return sharedPrefs.getInt(key, -1);
     }
 
     public Integer getInt(String key, int defVal) {
         return sharedPrefs.getInt(key, defVal);
-    }
-
-    public float getFloat(String key) {
-        return sharedPrefs.getFloat(key, 0f);
-    }
-
-    public float getFloat(String key, float defVal) {
-        return sharedPrefs.getFloat(key, defVal);
     }
 
     public Boolean getBoolean(String key) {
@@ -127,15 +80,6 @@ public class CacheHandler {
         return sharedPrefs.getBoolean(key, defValue);
     }
 
-    public ArrayList<String> getArrayListString(String key) {
-        int total = sharedPrefs.getInt(key + SUFFIC_TOTAL, 0);
-        ArrayList<String> value = new ArrayList<>();
-        for (int i = 0; i < total; i++) {
-            value.add(getString(key + i));
-        }
-        return value;
-    }
-
     public ArrayList<Integer> getArrayListInteger(String key) {
         int total = sharedPrefs.getInt(key + SUFFIC_TOTAL, 0);
         ArrayList<Integer> value = new ArrayList<>();
@@ -144,25 +88,6 @@ public class CacheHandler {
         }
         return value;
     }
-
-    public ArrayList<Boolean> getArrayListBoolean(String key) {
-        int total = sharedPrefs.getInt(key + SUFFIC_TOTAL, 0);
-        ArrayList<Boolean> value = new ArrayList<>();
-        for (int i = 0; i < total; i++) {
-            value.add(getBoolean(key + i));
-        }
-        return value;
-    }
-
-    public ArrayList<Long> getArrayListLong(String key) {
-        int total = sharedPrefs.getInt(key + SUFFIC_TOTAL, 0);
-        ArrayList<Long> value = new ArrayList<>();
-        for (int i = 0; i < total; i++) {
-            value.add(getLong(key + i));
-        }
-        return value;
-    }
-
 
     public void setExpire(int time) {
         putInt(KEY_EXPIRE_TIME, time);
@@ -177,22 +102,8 @@ public class CacheHandler {
         Long curr_time = System.currentTimeMillis() / 1000;
         return (curr_time - time) > interval;
     }
-
-    public int getRemainingTime() {
-        int interval = getInt(KEY_EXPIRE_TIME);
-        Long time = getLong(KEY_TIMESTAMP);
-        Long curr_time = System.currentTimeMillis() / 1000;
-        return (int) (interval - (curr_time - time));
-    }
-
     public static void clearCache(Context context, String name) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
         sharedPrefs.edit().clear().apply();
     }
-
-    public static void clearSingleCacheKey(Context context, String prefName, String keyName) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        sharedPrefs.edit().remove(keyName).apply();
-    }
-
 }

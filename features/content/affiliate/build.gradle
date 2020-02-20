@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -22,13 +20,12 @@ dependencies {
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.feedComponent)
-    implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.kolCommon)
 
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -37,6 +34,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.twitterShare)
     implementation project(rootProject.ext.libraries.videoUploader)
@@ -46,6 +44,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -67,8 +66,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

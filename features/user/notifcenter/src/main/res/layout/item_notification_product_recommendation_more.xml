@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.notifcenter.widget.RoundedFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/item_notification_product_recommendation" />
+
+    <TextView
+        android:id="@+id/tvMoreCount"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/clr_ae31353b"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="bold"
+        tools:text="+99" />
+</com.tokopedia.notifcenter.widget.RoundedFrameLayout>

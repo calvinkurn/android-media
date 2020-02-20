@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_30"
+    android:id="@+id/view_tap_card"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lottie_animation_view"
+            app:lottie_fileName="emoney_animation.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/emoney_ic_nfc_need_activation"
+            android:id="@+id/imageview_error" />
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:id="@+id/text_title"
+        android:text="@string/emoney_tap_card_instruction_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/text_label"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/emoney_tap_card_instruction_message"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:id="@+id/button_try_again"
+        android:visibility="gone"
+        android:text="@string/emoney_nfc_tap_card_button_label_error"
+        style="@style/Button.Submit.Green" />
+
+</LinearLayout>

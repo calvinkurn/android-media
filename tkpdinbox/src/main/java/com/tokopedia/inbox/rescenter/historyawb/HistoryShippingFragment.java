@@ -16,8 +16,6 @@ import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
 import com.tokopedia.inbox.rescenter.historyawb.di.module.HistoryAwbModule;
-import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.historyawb.di.DaggerHistoryAwbComponent;
 import com.tokopedia.inbox.rescenter.historyawb.di.HistoryAwbComponent;
 import com.tokopedia.inbox.rescenter.historyawb.view.customadapter.HistoryShippingAdapter;

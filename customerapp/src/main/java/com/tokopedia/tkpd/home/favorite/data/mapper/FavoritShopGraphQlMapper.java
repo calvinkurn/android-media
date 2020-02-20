@@ -1,23 +1,16 @@
 package com.tokopedia.tkpd.home.favorite.data.mapper;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.network.entity.home.FavShopItemData;
-import com.tokopedia.core.network.entity.home.FavoritShopData;
 import com.tokopedia.core.network.entity.home.FavoritShopResponseData;
-import com.tokopedia.core.network.entity.home.ShopItemData;
-import com.tokopedia.core.network.entity.home.TopAdsData;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.FavShopsItem;
-import com.tokopedia.core.var.ShopItem;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShopItem;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 
 import java.util.ArrayList;
 import java.util.List;

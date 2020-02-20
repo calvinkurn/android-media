@@ -13,7 +13,7 @@ class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,
 
     override fun onError(e: Throwable?) {
         view.hideProgressLoading()
-        view.showToastMessageRed(ErrorHandler.getErrorMessage(view.activity, e))
+        view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivityObject(), e))
     }
 
     override fun onCompleted() {
@@ -27,7 +27,7 @@ class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,
 
             if (removeInsuranceProductGqlResponse?.response?.removeTransactional?.status!!) {
                 if (showToaster) {
-                    view.showToastMessageGreen(view.activity.resources.getString(R.string.remove_macro_insurance_success))
+                    view.showToastMessageGreen(view.getActivityObject()?.resources?.getString(R.string.remove_macro_insurance_success) ?: "")
                 }
                 view.removeInsuranceProductItem(productId)
             } else {

@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/dynamic_filter_color_item_vertical_padding"
     android:paddingBottom="@dimen/dynamic_filter_color_item_vertical_padding">
 
-    <com.tokopedia.design.color.ColorSampleView
+    <com.tokopedia.filter.widget.ColorSampleView
         android:id="@+id/color_icon"
         android:layout_width="@dimen/color_item_icon_size"
         android:layout_height="@dimen/color_item_icon_size"

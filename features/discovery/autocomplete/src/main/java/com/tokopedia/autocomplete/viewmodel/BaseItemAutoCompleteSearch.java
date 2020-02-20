@@ -6,19 +6,19 @@ import java.util.HashMap;
 
 public class BaseItemAutoCompleteSearch {
 
-    private String keyword;
-    private String url;
-    private String recom;
-    private String applink;
-    private String categoryId;
-    private String imageUrl;
-    private String eventId;
-    private String eventName;
-    private String searchTerm;
-    private String productId;
-    private String productPrice;
-    private boolean isOfficial;
-    private int positionOfType;
+    private String keyword = "";
+    private String url = "";
+    private String recom = "";
+    private String applink = "";
+    private String categoryId = "";
+    private String imageUrl = "";
+    private String eventId = "";
+    private String eventName = "";
+    private String searchTerm = "";
+    private String productId = "";
+    private String productPrice = "";
+    private boolean isOfficial = false;
+    private int positionOfType = 0;
 
     public String getProductId() {
         return productId;

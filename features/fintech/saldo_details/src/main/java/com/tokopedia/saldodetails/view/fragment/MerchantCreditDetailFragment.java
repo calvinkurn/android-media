@@ -36,6 +36,7 @@ import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 
 import javax.inject.Inject;
 

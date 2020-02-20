@@ -69,7 +69,7 @@ class KolCommentCardView : LinearLayout {
             btnReply = findViewById(R.id.btn_reply)
         }
         orientation = VERTICAL
-        setBackgroundColor(MethodChecker.getColor(context, R.color.white))
+        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.white))
     }
 
     override fun getLayoutParams(): ViewGroup.LayoutParams {
@@ -179,7 +179,7 @@ class KolCommentCardView : LinearLayout {
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = true
-                ds.color = MethodChecker.getColor(context, R.color.tkpd_main_green)
+                ds.color = MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green)
             }
         }
     }

@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.model.ConfirmData;
 import com.tokopedia.ovo.model.WalletData;
 
@@ -35,7 +34,7 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
     public void fetchWalletDetails() {
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(mContext.getResources(), R.raw.oqr_wallet_detail),
+                GraphqlHelper.loadRawString(mContext.getResources(), com.tokopedia.ovo.R.raw.oqr_wallet_detail),
                 WalletData.class);
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -75,7 +74,7 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
         variables.put(FEE, fees);
         variables.put(USE_POINT, showUsePointToggle);
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(mContext.getResources(), R.raw.oqr_confirm_imei),
+                GraphqlHelper.loadRawString(mContext.getResources(), com.tokopedia.ovo.R.raw.oqr_confirm_imei),
                 ConfirmData.class,
                 variables);
         graphqlUseCase.addRequest(graphqlRequest);

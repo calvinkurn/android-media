@@ -4,10 +4,11 @@ package com.tokopedia.core.network.entity.categories;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Deprecated
 public class Category implements Parcelable {
@@ -82,10 +83,6 @@ public class Category implements Parcelable {
 
     public String getIconImageUrl() {
         return iconImageUrl;
-    }
-
-    public void setIconImageUrl(String iconImageUrl) {
-        this.iconImageUrl = iconImageUrl;
     }
 
     public String getUrl() {

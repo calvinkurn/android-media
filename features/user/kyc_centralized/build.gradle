@@ -1,0 +1,66 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
+
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.permissionchecker)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.components
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.ucrop){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    
+    //TEST
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.kotlinMockito
+    testImplementation rootProject.ext.testDependencies.spekApi
+    testImplementation rootProject.ext.testDependencies.platformEngine
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+
+}
+
+project.ext {
+    artifactId = 'kyc_centralized'
+    groupId = 'com.tokopedia.user'
+    versionName = "0.0.1"
+    artifactName = "kyc_centralized-release"
+}
+
+apply from: '../../../publish_local.gradle'

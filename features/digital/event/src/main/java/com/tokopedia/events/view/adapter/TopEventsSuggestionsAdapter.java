@@ -370,7 +370,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                                 + " - " + like);
             } else if (v.getId() == R.id.tv_event_share) {
                 CategoryItemsViewModel item = categoryItems.get(getAdapterPosition());
-                Utils.getSingletonInstance().shareEvent(mContext, item.getTitle(), item.getSeoUrl(), item.getImageWeb());
+                Utils.getSingletonInstance().shareEvent(mContext, item.getTitle(), item.getSeoUrl(), item.getImageWeb(),item.getWebUrl());
                 eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
                         categoryItems.get(getAdapterPosition()).getTitle()
                                 + " - " + String.valueOf(getAdapterPosition()));

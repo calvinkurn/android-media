@@ -7,13 +7,12 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.graphics.drawable.DrawableCompat
 import android.util.DisplayMetrics
 import android.util.Rational
 import android.view.View
 import android.view.WindowManager
-import com.airbnb.deeplinkdispatch.DeepLink
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -69,21 +68,25 @@ open class PlayActivity : BaseSimpleActivity() {
     }
 
     override fun getScreenName(): String {
-        return if (intent != null && intent.extras != null) {
-            val roomName = intent.extras!!.getString(EXTRA_CHANNEL_UUID, "")
+        return if (getRoomChannelId() != null) {
+            val roomName = getRoomChannelId()?: ""
             GroupChatAnalytics.SCREEN_CHAT_ROOM + roomName
         } else {
             GroupChatAnalytics.SCREEN_CHAT_ROOM
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        channelId = when {
+    fun getRoomChannelId(): String? {
+        return when {
             intent.data != null -> Uri.parse(intent?.data?.toString()).lastPathSegment
             intent.extras != null -> intent?.extras?.getString(EXTRA_CHANNEL_UUID)
             else -> intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        channelId = getRoomChannelId()?: ""
         initInjector()
         initView()
     }
@@ -238,48 +241,6 @@ open class PlayActivity : BaseSimpleActivity() {
             return intent
         }
 
-        /**
-         * @param channelId can also be substitued by channelUrl
-         * @return Intent
-         */
-        @JvmStatic
-        fun getCallingIntent(context: Context, channelId: String): Intent {
-            val intent = Intent(context, PlayActivity::class.java)
-            val bundle = Bundle()
-            bundle.putString(EXTRA_CHANNEL_UUID, channelId)
-            bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, true)
-            intent.putExtras(bundle)
-            return intent
-        }
-
-        /**
-         * @param channelId can also be substitued by channelUrl
-         * @param applinkData if applink contains tab id for access chat/vote/info fragment
-         * @return Intent
-         */
-
-        @JvmStatic
-        fun getCallingIntent(context: Context, channelId: String, useGCP: Boolean): Intent {
-            val intent = Intent(context, PlayActivity::class.java)
-            val bundle = Bundle()
-            bundle.putString(EXTRA_CHANNEL_UUID, channelId)
-            bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, true)
-            bundle.putBoolean(EXTRA_USE_GCP, useGCP)
-            intent.putExtras(bundle)
-            return intent
-        }
-
         val KICK_THRESHOLD_TIME = TimeUnit.MINUTES.toMillis(5)
-    }
-
-    object DeepLickIntents {
-
-        @JvmStatic
-        @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
-        fun getCallingTaskStack(context: Context, extras: Bundle): Intent {
-            val id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID, "")
-            val useGcp : String = extras.getString(ApplinkConstant.PARAM_GCP, "false")
-            return getCallingIntent(context, id, useGcp.toBoolean())
-        }
     }
 }

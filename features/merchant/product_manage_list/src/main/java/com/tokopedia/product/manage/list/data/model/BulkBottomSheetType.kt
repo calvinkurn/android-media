@@ -18,11 +18,11 @@ abstract class BulkBottomSheetType(
 
     data class EtalaseType(var etalaseValue: String = "",
                            var etalaseId: Int = ETALASE_DEFAULT) : BulkBottomSheetType(
-            R.string.product_bs_etalase_title, etalaseValue, false
+            com.tokopedia.product.manage.list.R.string.product_bs_etalase_title, etalaseValue, false
     )
 
     data class StockType(var stockStatus: Int = STOCK_DEFAULT) : BulkBottomSheetType(
-            R.string.product_bs_stock_title, "", false
+            com.tokopedia.product.manage.list.R.string.product_bs_stock_title, "", false
     ) {
         fun getStockStatusProductView(): String {
             return when (stockStatus) {
@@ -34,7 +34,7 @@ abstract class BulkBottomSheetType(
     }
 
     class DeleteType : BulkBottomSheetType(
-            R.string.product_bs_delete_title, "", true
+            com.tokopedia.product.manage.list.R.string.product_bs_delete_title, "", true
     )
 
 }

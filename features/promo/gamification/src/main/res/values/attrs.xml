@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FloatingEggButtonFragment">
-        <attr name="draggable" format="boolean"/>
-        <attr name="margin_right" format="dimension"/>
-        <attr name="margin_bottom" format="dimension"/>
+        <attr name="draggable" format="boolean" />
+        <attr name="margin_right" format="dimension" />
+        <attr name="margin_bottom" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="GradientButton">
+        <attr name="gbTitle" format="string" />
+        <attr name="gbTextColor" format="color" />
+        <attr name="gbOuterStartColor" format="color" />
+        <attr name="gbOuterEndColor" format="color" />
+        <attr name="gbInnerStartColor" format="color" />
+        <attr name="gbInnerEndColor" format="color" />
+        <attr name="gbShade" format="enum">
+            <enum name="EMPTY" value="0"/>
+            <enum name="BLUE" value="1"/>
+            <enum name="GREEN" value="2"/>
+        </attr>
     </declare-styleable>
 </resources>

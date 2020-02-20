@@ -31,12 +31,10 @@
     <string name="go_to_product_details">Kembali Ke Detail Produk</string>
     <string name="tradein_return">Kembali</string>
     <string name="text_price_holder">Harga Hp kamu %1$s</string>
-    <string name="trade_in_exchange">Beli HP baru dengan tukar HP kamu.</string>
     <string name="text_check_functionality">Mulai Cek Fungsi</string>
     <string name="noclick">Action-No-Click</string>
     <string name="tradein_permission_setting">Izinkan akses di Pengaturan Aplikasi-> Izin ->Camera, Telephone,Storage</string>
     <string name="tradein_setting">Pengaturan</string>
-    <string name="tukar_tambah_sekarang_juga">Tukar tambah sekarang juga!</string>
     <string name="tradein_text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
         \n• Menyalakan WiFi
         \n• Akses accelero meter</string>

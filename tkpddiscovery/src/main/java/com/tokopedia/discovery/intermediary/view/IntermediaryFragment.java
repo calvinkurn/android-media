@@ -7,14 +7,6 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.core.widget.NestedScrollView;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -27,6 +19,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
@@ -46,7 +47,6 @@ import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.TopPicksWebView;
@@ -163,8 +163,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private String parentCategory;
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryBrandsAdapter brandsAdapter;
-    private IntermediaryCategoryAdapter.CategoryListener categoryListener;
-    private IntermediaryBrandsAdapter.BrandListener brandListener;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     private List<BannerModel> bannerModelList;
     private boolean isUsedUnactiveChildren = false;
@@ -290,7 +288,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
-        titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core2.R.color.checkbox_text);
+        titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
         headerContainer.setVisibility(View.VISIBLE);
         bannerContainer.setVisibility(View.GONE);

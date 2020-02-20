@@ -29,11 +29,6 @@ public class TkpdV4ResponseError extends BaseResponseError {
     private String status;
 
     @Override
-    public String getErrorKey() {
-        return PARAM_MESSAGE_ERROR;
-    }
-
-    @Override
     public boolean isResponseErrorValid() {
         if (TextUtils.isEmpty(status)) {
             return false;

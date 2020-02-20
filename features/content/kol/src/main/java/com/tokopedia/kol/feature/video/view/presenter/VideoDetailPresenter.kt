@@ -1,9 +1,9 @@
 package com.tokopedia.kol.feature.video.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.video.domain.usecase.GetVideoDetailUseCase
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kol.feature.video.view.subscriber.FollowSubscriber
@@ -31,14 +31,6 @@ class VideoDetailPresenter
         getVideoDetailUseCase.unsubscribe()
     }
 
-    override fun checkViewAttached() {
-        super.checkViewAttached()
-    }
-
-    override fun getView(): VideoDetailContract.View {
-        return super.getView()
-    }
-
     override fun getFeedDetail(detailId: String) {
         getVideoDetailUseCase.execute(GetVideoDetailUseCase.createRequestParams(getUserId(), detailId),
                 VideoDetailSubscriber(view))
@@ -60,23 +52,23 @@ class VideoDetailPresenter
         followKolPostGqlUseCase.execute(FollowSubscriber(view))
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-                LikeSubscriber(likeListener, rowNumber)
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
+                LikeSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                LikeSubscriber(likeListener, rowNumber)
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
+                LikeSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
         )
     }
     private fun getUserId(): String {
         var userId = "0"
-        if (view.getUserSession().userId.isNotEmpty()) {
-            userId = view.getUserSession().userId
+        if (view.userSession.userId.isNotEmpty()) {
+            userId = view.userSession.userId
         }
 
         return userId

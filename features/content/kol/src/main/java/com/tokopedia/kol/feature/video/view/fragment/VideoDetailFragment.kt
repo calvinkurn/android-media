@@ -32,11 +32,13 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 import javax.inject.Inject
@@ -48,15 +50,21 @@ import javax.inject.Inject
 class VideoDetailFragment:
         BaseDaggerFragment(),
         VideoDetailContract.View,
-        KolPostListener.View.Like,
+        KolPostLikeListener,
         MediaPlayer.OnPreparedListener {
 
-
+    override val androidContext: Context
+        get() = requireContext()
+    
     @Inject
     lateinit var presenter: VideoDetailContract.Presenter
 
     lateinit var dynamicPostViewModel: DynamicPostViewModel
+
     lateinit var videoViewModel: VideoViewModel
+
+    @Inject
+    override lateinit var userSession: UserSessionInterface
 
     private var id: String = ""
     companion object {
@@ -143,11 +151,7 @@ class VideoDetailFragment:
     override fun onErrorFollowKol(error: String) {
     }
 
-    override fun getContext(): Context {
-        return activity!!
-    }
-
-    override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
+    override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
 
         val like = dynamicPostViewModel.footer.like
         like.isChecked = !like.isChecked
@@ -171,8 +175,8 @@ class VideoDetailFragment:
         bindLike(like)
     }
 
-    override fun onLikeKolError(message: String?) {
-        showError(message!!, null)
+    override fun onLikeKolError(message: String) {
+        showError(message, null)
     }
 
     override fun onErrorGetVideoDetail(error: String) {
@@ -190,8 +194,6 @@ class VideoDetailFragment:
         initPlayer(videoViewModel.url)
 
     }
-
-    override fun getUserSession(): UserSession = UserSession(context)
 
     override fun showLoading() {
 
@@ -226,17 +228,17 @@ class VideoDetailFragment:
 
             when(p1) {
                 MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
-                    Toast.makeText(context, getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(com.tokopedia.videoplayer.R.string.error_unknown), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }
                 MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
-                    Toast.makeText(context, getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }
                 else -> {
-                    Toast.makeText(context, getString(R.string.default_request_error_timeout), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(com.tokopedia.abstraction.R.string.default_request_error_timeout), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }
@@ -259,7 +261,7 @@ class VideoDetailFragment:
 
     private fun onLikeSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
-            if (getUserSession().isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 presenter.likeKol(id.toInt(), 0, this)
             } else{
                 goToLogin()
@@ -269,7 +271,7 @@ class VideoDetailFragment:
 
     private fun onCommentSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
-            if (getUserSession().isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 startActivityForResult(KolCommentActivity.getCallingIntent(activity!!, id.toInt(), 0), INTENT_COMMENT)
             } else{
                 goToLogin()
@@ -284,16 +286,16 @@ class VideoDetailFragment:
                 authorImage.loadImageCircle(it.avatar)
             } else {
                 authorImage.setImageDrawable(
-                        MethodChecker.getDrawable(activity!!, R.drawable.error_drawable)
+                        MethodChecker.getDrawable(activity!!, com.tokopedia.design.R.drawable.error_drawable)
                 )
             }
             if (it.avatarBadgeImage.isNotBlank()) {
                 authorBadge.show()
                 authorBadge.loadImage(it.avatarBadgeImage)
-                authorTitle.setMargin(authorTitle.getDimens(R.dimen.dp_4), 0, authorTitle.getDimens(R.dimen.dp_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_4), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
             } else {
                 authorBadge.hide()
-                authorTitle.setMargin(authorTitle.getDimens(R.dimen.dp_8), 0, authorTitle.getDimens(R.dimen.dp_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
             }
 
             authorTitle.text = it.avatarTitle
@@ -362,31 +364,31 @@ class VideoDetailFragment:
     private fun bindLike(like: Like) {
         when {
             like.isChecked -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
+                likeIcon.loadImageWithoutPlaceholder(com.tokopedia.feedcomponent.R.drawable.ic_thumb_green)
                 likeText.text = like.fmt
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeText.context, R.color.tkpd_main_green)
+                        MethodChecker.getColor(likeText.context, com.tokopedia.design.R.color.tkpd_main_green)
                 )
             }
             like.value > 0 -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.text = like.fmt
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeText.context, R.color.white)
+                        MethodChecker.getColor(likeText.context, com.tokopedia.design.R.color.white)
                 )
             }
             else -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
-                likeText.setText(R.string.kol_action_like)
+                likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeIcon.context, R.color.white)
+                        MethodChecker.getColor(likeIcon.context, com.tokopedia.design.R.color.white)
                 )
             }
         }
     }
     private fun bindComment(comment: Comment) {
         commentText.text =
-                if (comment.value == 0) getString(R.string.kol_action_comment)
+                if (comment.value == 0) getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
                 else comment.fmt
     }
 
@@ -408,7 +410,7 @@ class VideoDetailFragment:
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
+                .setAction(com.tokopedia.abstraction.R.string.title_try_again, listener)
                 .show()
     }
 

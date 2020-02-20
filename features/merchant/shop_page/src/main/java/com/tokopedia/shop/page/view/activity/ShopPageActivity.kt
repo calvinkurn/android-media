@@ -79,14 +79,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_shop_page.*
-import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import kotlinx.android.synthetic.main.partial_shop_page_header.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     ShopPageHeaderViewHolder.ShopPageHeaderListener, ShopProductListFragment.OnShopProductListFragmentListener {
-
 
     var shopId: String? = null
     var shopDomain: String? = null
@@ -104,7 +102,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
-    lateinit var tabItemFeed: View
     lateinit var stickyLoginView: StickyLoginView
     private lateinit var titles: Array<String>
 
@@ -272,9 +269,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         viewPager.offscreenPageLimit = PAGE_LIMIT
 
         tabLayout.setupWithViewPager(viewPager)
-        tabItemFeed = LayoutInflater
-            .from(this)
-            .inflate(R.layout.item_tablayout_new_badge, tabLayout, false)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
 
@@ -290,21 +284,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(tab.position)
                     if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
                         shopInfoFragment.updateShopInfo(it)
-                    }
-                }
-
-                isShowFeed.let {
-                    val tabNameColor: Int = if (tab.position == if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
-                        R.color.tkpd_main_green else
-                        R.color.font_black_disabled_38
-                    tabItemFeed.tabName.setTextColor(
-                        MethodChecker.getColor(this@ShopPageActivity, tabNameColor)
-                    )
-                    (shopViewModel.shopInfoResp.value as? Success)?.data?.run {
-                        val feedShopFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
-                        if (feedShopFragment != null && feedShopFragment is FeedShopFragment) {
-                            feedShopFragment.updateShopInfo(this)
-                        }
                     }
                 }
             }
@@ -579,9 +558,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopPageViewPagerAdapter.titles = titles
         shopPageViewPagerAdapter.notifyDataSetChanged()
 
-        val tabCustomView: View? = if (isShowFeed) tabItemFeed else null
-        tabLayout.getTabAt(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)?.customView = tabCustomView
-
         if (isOfficialStore && tabPosition == 0) {
             tabPosition = 1
         } else if (isOfficialStore && tabPosition == TAB_POSITION_OS_HOME) {
@@ -658,7 +634,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
         val feedfragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
         if (feedfragment != null && feedfragment is FeedShopFragment) {
-            feedfragment.setRefresh()
+            feedfragment.clearCache()
         }
 
         getShopInfo(true)

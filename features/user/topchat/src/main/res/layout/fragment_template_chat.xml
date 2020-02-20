@@ -43,7 +43,7 @@
                     android:id="@+id/title_template"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Template Pesan"
+                    android:text="@string/title_template_chat"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif"
                     android:textStyle="bold"

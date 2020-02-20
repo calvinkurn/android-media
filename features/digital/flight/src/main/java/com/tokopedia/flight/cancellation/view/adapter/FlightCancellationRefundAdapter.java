@@ -48,7 +48,7 @@ public class FlightCancellationRefundAdapter extends RecyclerView.Adapter<Flight
 
         public ViewHolder(View itemView) {
             super(itemView);
-            descriptionTextView = itemView.findViewById(com.tokopedia.design.R.id.tv_description);
+            descriptionTextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_description);
         }
 
         public void bind(FlightCancellationRefund description) {

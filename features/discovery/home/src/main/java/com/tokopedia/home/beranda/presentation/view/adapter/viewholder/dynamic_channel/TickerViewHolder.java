@@ -44,6 +44,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
 
     private View view;
     private String tickerId = "";
+    private TimerTask tickerTimerTask;
 
     public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -65,8 +66,17 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
         ));
         StripedUnderlineUtil.stripUnderlines(textMessage);
         ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
-        if (!hasStarted)
-            timer.scheduleAtFixedRate(new SwitchTicker(element.getTickers()), 0, SLIDE_DELAY);
+        if (!hasStarted) {
+            tickerTimerTask = new SwitchTicker(element.getTickers());
+            timer.scheduleAtFixedRate(tickerTimerTask, 0, SLIDE_DELAY);
+        }
+    }
+
+    @Override
+    public void onViewRecycled() {
+        super.onViewRecycled();
+        tickerTimerTask.cancel();
+        hasStarted = false;
     }
 
     private class SwitchTicker extends TimerTask {

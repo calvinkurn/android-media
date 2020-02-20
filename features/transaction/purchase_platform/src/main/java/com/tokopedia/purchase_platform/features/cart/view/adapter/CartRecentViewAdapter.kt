@@ -12,7 +12,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentVi
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartRecentViewAdapter(val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CartRecentViewAdapter(val actionListener: ActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var recentViewItemHoldeDataList: List<CartRecentViewItemHolderData> = arrayListOf()
 

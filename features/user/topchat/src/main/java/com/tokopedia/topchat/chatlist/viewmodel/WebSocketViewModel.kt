@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.chat_common.network.ChatUrl
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -22,8 +21,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -53,11 +54,11 @@ class WebSocketViewModel
                                      .addInterceptor(fingerprintInterceptor) }
             easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
 
-            debug(TAG," Open: ${easyWS?.response}")
+            Timber.d(" Open: ${easyWS?.response}")
 
             easyWS?.let {
                 for (response in it.textChannel) {
-                    debug(TAG," Response: $response")
+                    Timber.d(" Response: $response")
                     when(response.getCode()) {
                         EVENT_TOPCHAT_REPLY_MESSAGE ->  {
                             val chat = Success(mapToIncomingChat(response))
@@ -117,7 +118,7 @@ class WebSocketViewModel
     override fun onCleared() {
         super.onCleared()
         easyWS?.webSocket?.close(1000, "Bye!")
-        debug(TAG," OnCleared")
+        Timber.d(" OnCleared")
     }
 
     companion object {

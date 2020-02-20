@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.MotionEvent;
@@ -162,18 +164,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected boolean getOptionsMenuEnable() {
         return true;
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
     }
 
     @Override
@@ -245,15 +237,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    protected void setViewListener() {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         if (getActivity() != null) {
             mInputMethodManager = (InputMethodManager) getActivity()
                     .getSystemService(Context.INPUT_METHOD_SERVICE);
         }
-    }
 
-    @Override
-    protected void initialVar() {
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mAdapter);
         if (!mAdapter.isHavingCornerAddress()) {
@@ -263,10 +253,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             }
         }
         if (isDisableCorner) mAdapter.hideCornerOption();
-    }
 
-    @Override
-    protected void setActionVar() {
         initSearchView();
         onSearchReset();
     }
@@ -558,26 +545,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
             openSoftKeyboard();
         };
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
     }
 
     private boolean isAddNewAddressEnabled() {

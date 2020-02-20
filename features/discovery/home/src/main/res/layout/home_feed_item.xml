@@ -5,5 +5,4 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:background="?attr/selectableItemBackground"
     xmlns:android="http://schemas.android.com/apk/res/android"/>

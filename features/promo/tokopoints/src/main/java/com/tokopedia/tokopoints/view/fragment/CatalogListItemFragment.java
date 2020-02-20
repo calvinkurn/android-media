@@ -30,7 +30,7 @@ import com.tokopedia.library.baseadapter.BaseItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
@@ -184,14 +184,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     }
 
     @Override
-    public void populateCatalog(List<CatalogsValueEntity> items) {
-        if (items == null || items.isEmpty()) {
-            onEmptyCatalog();
-            return;
-        }
-    }
-
-    @Override
     public Context getActivityContext() {
         return getActivity();
     }
@@ -199,15 +191,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Override
     public Context getAppContext() {
         return getContext();
-    }
-
-    @Override
-    public int getCurrentSortType() {
-        if (getArguments() != null) {
-            return getArguments().getInt(ARGS_SORT_TYPE);
-        }
-
-        return CommonConstant.DEFAULT_SORT_TYPE; // default sort id
     }
 
     @Override
@@ -283,7 +266,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         });
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-            startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
+            startActivity(CouponListingStackedActivity.getCallingIntent(getActivityContext()));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,

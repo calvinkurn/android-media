@@ -1,7 +1,9 @@
 package com.tokopedia.imagesearch.network.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -184,6 +186,10 @@ public class SearchProductResponse {
             private String categoryName;
             @SerializedName("category_breadcrumb")
             private String categoryBreadcrumb;
+            @SerializedName("label_groups")
+            private List<LabelGroup> labelGroups = new ArrayList<>();
+            @SerializedName("free_ongkir")
+            private FreeOngkir freeOngkir = new FreeOngkir();
 
             public String getId() {
                 return id;
@@ -382,6 +388,22 @@ public class SearchProductResponse {
                 return categoryBreadcrumb;
             }
 
+            public List<LabelGroup> getLabelGroups() {
+                return labelGroups;
+            }
+
+            public void setLabelGroups(List<LabelGroup> labelGroups) {
+                this.labelGroups = labelGroups;
+            }
+
+            public FreeOngkir getFreeOngkir() {
+                return freeOngkir;
+            }
+
+            public void setFreeOngkir(FreeOngkir freeOngkir) {
+                this.freeOngkir = freeOngkir;
+            }
+
             public static class Shop {
                 @SerializedName("id")
                 private String id;
@@ -562,6 +584,50 @@ public class SearchProductResponse {
 
                 public void setShown(boolean shown) {
                     isShown = shown;
+                }
+            }
+
+            public static class FreeOngkir {
+                @SerializedName("is_active")
+                @Expose
+                private boolean isActive;
+
+                @SerializedName("img_url")
+                @Expose
+                private String imageUrl;
+
+                public boolean isActive() {
+                    return isActive;
+                }
+
+                public String getImageUrl() {
+                    return imageUrl;
+                }
+            }
+
+            public static class LabelGroup {
+                @SerializedName("position")
+                @Expose
+                private String position;
+
+                public String getPosition() {
+                    return position;
+                }
+
+                @SerializedName("type")
+                @Expose
+                private String type;
+
+                public String getType() {
+                    return type;
+                }
+
+                @SerializedName("title")
+                @Expose
+                private String title;
+
+                public String getTitle() {
+                    return title;
                 }
             }
         }

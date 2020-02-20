@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -68,6 +69,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
+    private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
 
@@ -120,11 +122,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (args == null || !args.containsKey(KEY_URL)) {
             return;
         }
-        url = UrlEncoderExtKt.decode(args.getString(KEY_URL, TokopediaUrl.Companion.getInstance().getWEB()));
+        url = getUrlFromArguments(args);
         needLogin = args.getBoolean(KEY_NEED_LOGIN, false);
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         String host = Uri.parse(url).getHost();
         isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
+    }
+
+    private String getUrlFromArguments(Bundle args) {
+        String defaultUrl = TokopediaUrl.Companion.getInstance().getWEB();
+        String url = UrlEncoderExtKt.decode(args.getString(KEY_URL, defaultUrl));
+
+        if (!url.startsWith("http")) {
+            return defaultUrl;
+        }
+        return url;
     }
 
     @Nullable
@@ -159,6 +171,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.setWebViewClient(new MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings.setMediaPlaybackRequiresUserGesture(false);
+        }
+
+        if(GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
     }
@@ -396,11 +412,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
                 && getActivity()!= null) {
             if (getActivity().isTaskRoot()) {
-                getActivity().finish();
-            } else {
                 RouteManager.route(getContext(), ApplinkConst.HOME);
+            } else {
+                getActivity().finish();
             }
             return true;
+        } else if (url.contains(PLAY_GOOGLE_URL)) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
         }
         if (!allowOverride) {
             return false;

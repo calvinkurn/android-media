@@ -140,7 +140,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         collapsingToolbarLayout.setTitle(" ");
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
-        dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.BRAND_PAGE, this, !isShortLayout, true);
+        dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.BRAND_PAGE, this, getArguments().getString("fromApplink"),!isShortLayout, true);
         dealsAdapter.setDealType(DealsAnalytics.BRAND_DEALS);
         recyclerViewDeals.setAdapter(dealsAdapter);
 

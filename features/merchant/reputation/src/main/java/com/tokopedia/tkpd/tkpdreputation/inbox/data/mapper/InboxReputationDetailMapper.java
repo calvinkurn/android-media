@@ -81,7 +81,8 @@ public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>
                 convertToUserDataDomain(data.getUserData()),
                 convertToShopDataDomain(data.getShopData()),
                 data.getInvoiceRefNum(),
-                data.getInvoiceTime());
+                data.getInvoiceTime(),
+                data.getOrderId());
     }
 
     private ShopDataDomain convertToShopDataDomain(ShopData shopData) {

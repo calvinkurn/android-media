@@ -13,13 +13,13 @@ import com.tokopedia.kol.feature.comment.view.subscriber.DeleteKolCommentSubscri
 import com.tokopedia.kol.feature.comment.view.subscriber.GetKolCommentFirstTimeSubscriber;
 import com.tokopedia.kol.feature.comment.view.subscriber.GetKolCommentSubscriber;
 import com.tokopedia.kol.feature.comment.view.subscriber.SendKolCommentSubscriber;
-import com.tokopedia.kotlin.extensions.view.UtilExtKt;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author by nisie on 10/31/17.
@@ -56,17 +56,17 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void getCommentFirstTime(int id) {
+    public void getCommentFirstTime(int postId) {
         getView().showLoading();
         getKolCommentsUseCase.execute(
-                GetKolCommentsUseCase.getFirstTimeParam(id),
+                GetKolCommentsUseCase.getFirstTimeParam(postId),
                 new GetKolCommentFirstTimeSubscriber(getView()));
     }
 
     @Override
-    public void loadMoreComments(int id) {
+    public void loadMoreComments(int postId) {
         getKolCommentsUseCase.execute(
-                GetKolCommentsUseCase.getParam(id, cursor),
+                GetKolCommentsUseCase.getParam(postId, cursor),
                 new GetKolCommentSubscriber(getView()));
     }
 
@@ -108,7 +108,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
 
                         @Override
                         public void onError(Throwable e) {
-                            UtilExtKt.debugTrace(e);
+                            Timber.d(e);
                         }
 
                         @Override

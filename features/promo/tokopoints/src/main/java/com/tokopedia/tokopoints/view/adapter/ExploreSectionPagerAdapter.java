@@ -29,6 +29,7 @@ import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +42,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
     private TokoPointsHomePresenterNew mPresenter;
     private SwipeToRefresh swipeToRefresh[] = new SwipeToRefresh[2];
     private CountDownView countDownView;
+    private ArrayList<CouponListAdapter> mCouponListAdapterList = new ArrayList<>();
 
     public ExploreSectionPagerAdapter(Context context, TokoPointsHomePresenterNew presenter, List<SectionContent> sections) {
         this.mLayoutInflater = LayoutInflater.from(context);
@@ -785,6 +787,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             CouponListAdapter adapter = new CouponListAdapter(content.getLayoutCouponAttr().getCouponList());
             rvCarousel.setAdapter(adapter);
+            mCouponListAdapterList.add(adapter);
         }
 
         return view;
@@ -848,6 +851,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             view.setVisibility(View.VISIBLE);
         } else {
             view.setVisibility(View.GONE);
+        }
+    }
+
+    public void onDestroyView(){
+        if (mCouponListAdapterList != null){
+            for (CouponListAdapter adapter : mCouponListAdapterList){
+                adapter.onDestroyView();
+            }
         }
     }
 }

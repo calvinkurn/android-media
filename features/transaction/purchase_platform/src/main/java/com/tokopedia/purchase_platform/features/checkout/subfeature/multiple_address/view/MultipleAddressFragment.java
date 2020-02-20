@@ -1,10 +1,10 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
@@ -64,7 +64,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private MultipleAddressAdapter multipleAddressAdapter;
     private RecyclerView rvOrderAddressList;
     private LinearLayout llNetworkErrorView;
-    private ProgressDialog progressDialogNormal;
+    private AlertDialog progressDialogNormal;
     private SwipeToRefresh swipeToRefresh;
 
     public static MultipleAddressFragment newInstance(RecipientAddressModel recipientModel, String cartIds) {
@@ -82,21 +82,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
     protected void initInjector() {
         if (getActivity() != null) {
             BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
@@ -111,11 +96,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
     }
 
     private List<MultipleAddressAdapterData> initiateAdapterData(CartListData cartListData) {
@@ -372,16 +352,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.multiple_address_fragment;
     }
@@ -418,9 +388,10 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     protected void initView(View view) {
-        progressDialogNormal = new ProgressDialog(getActivity());
-        progressDialogNormal.setMessage(getString(R.string.title_loading));
-        progressDialogNormal.setCancelable(false);
+        progressDialogNormal = new AlertDialog.Builder(getActivity())
+                .setView(R.layout.purchase_platform_progress_dialog_view)
+                .setCancelable(false)
+                .create();
 
         rvOrderAddressList = view.findViewById(R.id.order_address_list);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
@@ -437,21 +408,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         if (itemPosition != 0) {
             rvOrderAddressList.scrollToPosition(itemPosition);
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     public void backPressed() {

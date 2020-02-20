@@ -13,10 +13,6 @@ public class TokoPointStatusTierEntity {
     private String eggImageUrl;
 
     @Expose
-    @SerializedName("imageURL")
-    private String imageUrl;
-
-    @Expose
     @SerializedName("name")
     private String name;
 
@@ -27,9 +23,6 @@ public class TokoPointStatusTierEntity {
     @SerializedName("eggImageHomepageURL")
     private String eggImageHomepageURL;
 
-    @SerializedName("backgroundImgURL")
-    private String backgroundImgURL;
-
     @SerializedName("backgroundImgURLMobile")
     private String backgroundImgURLMobile;
 
@@ -39,14 +32,6 @@ public class TokoPointStatusTierEntity {
 
     public void setEggImageHomepageURL(String eggImageHomepageURL) {
         this.eggImageHomepageURL = eggImageHomepageURL;
-    }
-
-    public String getBackgroundImgURL() {
-        return backgroundImgURL;
-    }
-
-    public void setBackgroundImgURL(String backgroundImgURL) {
-        this.backgroundImgURL = backgroundImgURL;
     }
 
     public String getBackgroundImgURLMobile() {
@@ -73,14 +58,6 @@ public class TokoPointStatusTierEntity {
         this.eggImageUrl = eggImageUrl;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public String getName() {
         return name;
     }
@@ -102,7 +79,6 @@ public class TokoPointStatusTierEntity {
         return "TokoPointStatusTierEntity{" +
                 "id=" + id +
                 ", eggImageUrl='" + eggImageUrl + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
                 ", name='" + name + '\'' +
                 ", nameDesc='" + nameDesc + '\'' +
                 '}';

@@ -1,17 +1,16 @@
 package com.tokopedia.core.app;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Configuration;
 import android.os.Build;
+
 import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.stetho.Stetho;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -23,8 +22,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.service.HUDIntent;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
@@ -39,8 +36,6 @@ public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
     private static final String TAG = "MainApplication";
-    public static HUDIntent hudIntent;
-    public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
     private static Boolean isResetNotification = false;
@@ -49,6 +44,7 @@ public abstract class MainApplication extends MainRouterApplication{
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
+    private UserSession userSession;
 
     public static MainApplication getInstance() {
         return instance;
@@ -60,29 +56,8 @@ public abstract class MainApplication extends MainRouterApplication{
         MultiDex.install(MainApplication.this);
     }
 
-    public static Boolean resetNotificationStatus(Boolean status) {
-        isResetNotification = status;
-        return isResetNotification;
-    }
-
     public static Boolean resetCartStatus(Boolean status) {
         isResetCart = status;
-        return isResetCart;
-    }
-
-    public static Boolean getIsResetTickerState() {
-        return isResetTickerState;
-    }
-
-    public static void setIsResetTickerState(Boolean isResetTickerState) {
-        MainApplication.isResetTickerState = isResetTickerState;
-    }
-
-    public static Boolean getNotificationStatus() {
-        return isResetNotification;
-    }
-
-    public static Boolean getCartStatus() {
         return isResetCart;
     }
 
@@ -97,49 +72,17 @@ public abstract class MainApplication extends MainRouterApplication{
         return 0;
     }
 
-    public static int getOrientation(Activity context) {
-        return context.getResources().getConfiguration().orientation;
-    }
-
-    public static boolean isLandscape(Activity context) {
-        return getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE;
-    }
-
-    public static int getOrientation(Context context) {
-        return context.getResources().getConfiguration().orientation;
-    }
-
-    public static boolean isLandscape(Context context) {
-        return getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE;
-    }
-
     public static boolean isDebug() {
         return BuildConfig.DEBUG;
-    }
-
-    public static void bindHudService() {
-        HUDIntent.bindService(context, new HUDIntent.HUDInterface() {
-            @Override
-            public void onServiceConnected(HUDIntent service, ServiceConnection connection) {
-                hudIntent = service;
-                hudConnection = connection;
-                hudIntent.printMessage("Binded on MainApplication");
-            }
-
-            @Override
-            public void onServiceDisconnected() {
-
-            }
-        });
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
+        userSession = new UserSession(this);
         init();
         initCrashlytics();
-        initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -158,19 +101,12 @@ public abstract class MainApplication extends MainRouterApplication{
 
     private void upgradeSecurityProvider() {
         try {
-            ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
-                @Override
-                public void onProviderInstalled() {
-                    // Do nothing
-                }
-
-                @Override
-                public void onProviderInstallFailed(int i, Intent intent) {
-                    // Do nothing
-                }
-            });
+            ProviderInstaller.installIfNeeded(this);
+        } catch (GooglePlayServicesRepairableException e) {
+            GoogleApiAvailability.getInstance().showErrorNotification(this, e.getConnectionStatusCode());
         } catch (Throwable t) {
             // Do nothing
+            t.printStackTrace();
         }
     }
 
@@ -190,7 +126,9 @@ public abstract class MainApplication extends MainRouterApplication{
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier("");
+            Crashlytics.setUserIdentifier(userSession.getUserId());
+            Crashlytics.setUserEmail(userSession.getEmail());
+            Crashlytics.setUserName(userSession.getName());
         }
     }
 
@@ -209,13 +147,8 @@ public abstract class MainApplication extends MainRouterApplication{
         this.appComponent = appComponent;
     }
 
-    public void initStetho() {
-        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
-    }
-
     private void initBranch() {
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
-        UserSession userSession = new UserSession(this);
 
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
@@ -265,7 +198,4 @@ public abstract class MainApplication extends MainRouterApplication{
     public Intent getInboxTalkCallingIntent(Context mContext){
         return null;
     }
-
-
-
 }

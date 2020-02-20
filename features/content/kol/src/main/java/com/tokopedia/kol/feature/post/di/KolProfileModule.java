@@ -5,17 +5,11 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
+import com.tokopedia.feedcomponent.di.CoroutineDispatcherModule;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.kol.R;
-import com.tokopedia.kol.common.data.source.api.KolApi;
-import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
-import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
-import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase;
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
-import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
-import com.tokopedia.kol.feature.post.view.presenter.KolPostShopPresenter;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.network.CommonNetwork;
@@ -35,19 +29,8 @@ import retrofit2.Retrofit;
  * @author by milhamj on 12/02/18.
  */
 
-@Module(includes = {VoteModule.class, FeedComponentModule.class})
+@Module(includes = {VoteModule.class, FeedComponentModule.class, CoroutineDispatcherModule.class})
 public class KolProfileModule {
-    @KolProfileScope
-    @Provides
-    KolPostListener.Presenter providesPresenter(KolPostPresenter presenter) {
-        return presenter;
-    }
-
-    @KolProfileScope
-    @Provides
-    LikeKolPostSourceCloud provideLikeKolPostSourceCloud(@ApplicationContext Context context, KolApi kolApi, LikeKolPostMapper likeKolPostMapper) {
-        return new LikeKolPostSourceCloud(context, kolApi, likeKolPostMapper);
-    }
 
     @KolProfileScope
     @Provides
@@ -89,17 +72,16 @@ public class KolProfileModule {
         return retrofit.create(TopAdsApi.class);
     }
 
-    @KolProfileScope
-    @Provides
-    KolPostShopContract.Presenter
-    provideKolPostShopPresenter(GetContentListUseCase getContentListUseCase) {
-        return new KolPostShopPresenter(getContentListUseCase);
-    }
-
     @Provides
     @KolProfileScope
     @Named("atcMutation")
     String provideAddToCartMutation(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
+    }
+
+    @KolProfileScope
+    @Provides
+    GraphqlRepository provideGraphqlRepository() {
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
     }
 }

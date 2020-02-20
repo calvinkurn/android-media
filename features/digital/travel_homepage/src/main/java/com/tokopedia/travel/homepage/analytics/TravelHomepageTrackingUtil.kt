@@ -1,6 +1,7 @@
 package com.tokopedia.travel.homepage.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingActionConstant.BANNER_CLICK
@@ -34,7 +35,6 @@ import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingEventNameCo
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingEventNameConstant.PROMO_CLICK
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingEventNameConstant.PROMO_VIEW
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingLabelConstant.CLICK
-import com.tokopedia.travel.homepage.data.TravelHomepageBannerModel
 import com.tokopedia.travel.homepage.data.TravelHomepageCategoryListModel
 import com.tokopedia.travel.homepage.data.TravelHomepageDestinationModel
 import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
@@ -44,7 +44,7 @@ import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
  */
 class TravelHomepageTrackingUtil {
 
-    fun travelHomepageImpressionBanner(item: TravelHomepageBannerModel.Banner, position: Int) {
+    fun travelHomepageImpressionBanner(item: TravelCollectiveBannerModel.Banner, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
                 NAME, "${item.attribute.promoCode} - slider banner",
@@ -64,7 +64,7 @@ class TravelHomepageTrackingUtil {
                 ))
     }
 
-    fun travelHomepageClickBanner(item: TravelHomepageBannerModel.Banner, position: Int) {
+    fun travelHomepageClickBanner(item: TravelCollectiveBannerModel.Banner, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
                 NAME, "${item.attribute.promoCode} - slider banner",

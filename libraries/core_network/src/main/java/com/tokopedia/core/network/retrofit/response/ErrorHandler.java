@@ -1,13 +1,14 @@
 package com.tokopedia.core.network.retrofit.response;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.core.network.R;
+import androidx.annotation.NonNull;
+
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.R;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 
 import org.json.JSONArray;
@@ -41,31 +42,6 @@ public class ErrorHandler {
                 Log.d(TAG, getErrorInfo(code, TIMEOUT_INFO));
                 listener.onTimeout();
                 break;
-            /*case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                Log.d(TAG, getErrorInfo(code, TIMEOUT_INFO);
-                listener.onTimeout(;
-                break;
-            case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
-                Log.d(TAG, getErrorInfo(code, SERVER_INFO);
-                listener.onServerError(;
-
-                break;
-            case ResponseStatus.SC_FORBIDDEN:
-                Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO);
-                listener.onForbidden(;
-                break;
-            case ResponseStatus.SC_BAD_GATEWAY:
-                Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO);
-                listener.onBadRequest(;
-                break;
-            case ResponseStatus.SC_BAD_REQUEST:
-                Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO);
-                listener.onBadRequest(;
-                break;
-            default:
-                Log.d(TAG, getErrorInfo(code, UNKNOWN_INFO);
-                listener.onUnknown(;
-                break;*/
             case ResponseStatus.SC_FORBIDDEN:
                 Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO));
                 listener.onForbidden();
@@ -184,33 +160,5 @@ public class ErrorHandler {
             e.printStackTrace();
             return "";
         }
-    }
-
-    public static String getDefaultErrorCodeMessage(int errorCode) {
-        return CoreNetworkApplication.getAppContext().getString(R.string.default_request_error_unknown)
-                + " (" + errorCode + ")";
-    }
-
-    public static String getErrorMessageTokoCash(Response<TkpdDigitalResponse> response) {
-        try {
-            JSONObject jsonObject = new JSONObject(response.errorBody().string());
-
-            if (hasErrorMessageTokoCash(jsonObject)) {
-                JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE_TOKOCASH);
-                return getErrorMessageJoined(jsonArray);
-            } else {
-                return "";
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    private static boolean hasErrorMessageTokoCash(JSONObject jsonObject) {
-        return jsonObject.has(ERROR_MESSAGE_TOKOCASH);
     }
 }

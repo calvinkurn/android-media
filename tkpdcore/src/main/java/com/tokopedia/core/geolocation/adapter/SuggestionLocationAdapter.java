@@ -3,8 +3,6 @@ package com.tokopedia.core.geolocation.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.Html;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
@@ -16,6 +14,8 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
@@ -25,28 +25,22 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tkpd.library.utils.ToastNetworkHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.geolocation.domain.IMapsRepository;
-import com.tokopedia.core.geolocation.domain.MapsRepository;
-import com.tokopedia.core.geolocation.model.autocomplete.Data;
-import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
 import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core2.R;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

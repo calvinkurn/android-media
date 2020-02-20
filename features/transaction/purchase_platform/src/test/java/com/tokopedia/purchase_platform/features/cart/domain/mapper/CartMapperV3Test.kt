@@ -6,7 +6,7 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.apiResponseAllShopWithWholeSaleJson
 import com.tokopedia.purchase_platform.apiResponseAvailableShopJson
 import com.tokopedia.purchase_platform.apiResponseShopErrorJson
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
@@ -20,7 +20,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 class CartMapperV3Test : Spek({
 
     val context = mockk<Context>(relaxed = true)
-    val cartMapperV3 by memoized { CartMapperV3(context) }
+    val cartMapperV3 by memoized { CartSimplifiedMapper(context) }
 
     every { context.getString(R.string.cart_error_message) } returns "Ada %d barang yang tidak dapat dibeli"
     every { context.getString(R.string.cart_error_action) } returns "Hapus Produk Bermasalah"
@@ -72,12 +72,11 @@ class CartMapperV3Test : Spek({
             }
 
             Then("should contains ticker error data with 1 error count") {
-                assertEquals(CartTickerErrorData
-                        .Builder()
-                        .errorCount(1)
-                        .errorInfo(String.format(context.getString(R.string.cart_error_message), 1))
-                        .actionInfo(context.getString(R.string.cart_error_action))
-                        .build(), result.cartTickerErrorData)
+                val cartTickerErrorData = CartTickerErrorData()
+                cartTickerErrorData.errorCount = 1
+                cartTickerErrorData.errorInfo = String.format(context.getString(R.string.cart_error_message), 1)
+                cartTickerErrorData.actionInfo = context.getString(R.string.cart_error_action)
+                assertEquals(cartTickerErrorData, result.cartTickerErrorData)
             }
 
             Then("should contains 0 available shop") {
@@ -104,12 +103,11 @@ class CartMapperV3Test : Spek({
             }
 
             Then("should contains ticker error data with 1 error count") {
-                assertEquals(CartTickerErrorData
-                        .Builder()
-                        .errorCount(1)
-                        .errorInfo(String.format(context.getString(R.string.cart_error_message), 1))
-                        .actionInfo(context.getString(R.string.cart_error_action))
-                        .build(), result.cartTickerErrorData)
+                val cartTickerErrorData = CartTickerErrorData()
+                cartTickerErrorData.errorCount = 1
+                cartTickerErrorData.errorInfo = String.format(context.getString(R.string.cart_error_message), 1)
+                cartTickerErrorData.actionInfo = context.getString(R.string.cart_error_action)
+                assertEquals(cartTickerErrorData, result.cartTickerErrorData)
             }
 
             Then("should contains 2 available shops") {

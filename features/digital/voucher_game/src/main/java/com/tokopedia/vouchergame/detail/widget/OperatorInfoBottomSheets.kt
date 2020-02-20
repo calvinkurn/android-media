@@ -1,13 +1,13 @@
 package com.tokopedia.vouchergame.detail.widget
 
-import androidx.cardview.widget.CardView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.vouchergame.R
-import kotlinx.android.synthetic.main.bottom_sheets_voucher_game_operator.*
 
 /**
  * @author by resakemal on 22/08/19
@@ -46,7 +46,7 @@ class OperatorInfoBottomSheets: BottomSheets() {
         } else {
             infoTitle.text = title
         }
-        infoDescription.text = description
+        infoDescription.text = MethodChecker.fromHtml(description)
     }
 
     override fun title(): String = ""

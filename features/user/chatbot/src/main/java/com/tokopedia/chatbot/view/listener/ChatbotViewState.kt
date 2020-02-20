@@ -7,7 +7,9 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
@@ -20,6 +22,10 @@ interface ChatbotViewState : BaseChatViewState {
     fun onCheckToHideQuickReply(visitable: Visitable<*>)
 
     fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel)
+
+    fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleViewModel)
+
+    fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel)
 
     fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel)
 
@@ -35,5 +41,9 @@ interface ChatbotViewState : BaseChatViewState {
     fun scrollToBottom()
 
     fun showDividerViewOnConnection(connectionDividerViewModel: ConnectionDividerViewModel)
+
+    fun hideEmptyMessage(visitable: Visitable<*>)
+
+    fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>)
 
 }

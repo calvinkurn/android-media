@@ -19,6 +19,7 @@ public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFa
     private String shareLinkURL;
     private String shareLinkDescription;
     private String actionText;
+    private String activityId;
 
     @Override
     public int type(FeedPlusDetailTypeFactory typeFactory) {
@@ -34,7 +35,8 @@ public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFa
                                      String shopUrl,
                                      String shareLinkURL,
                                      String shareLinkDescription,
-                                     String actionText) {
+                                     String actionText,
+                                     String activityId) {
         this.shopId = shopId;
         this.shopName = shopName;
         this.shopAvatar = shopAvatar;
@@ -45,6 +47,7 @@ public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFa
         this.shareLinkURL = shareLinkURL;
         this.shareLinkDescription = shareLinkDescription;
         this.actionText = actionText;
+        this.activityId = activityId;
     }
 
     public String getShopName() {
@@ -125,5 +128,13 @@ public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFa
 
     public void setActionText(String actionText) {
         this.actionText = actionText;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
     }
 }

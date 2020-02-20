@@ -88,7 +88,7 @@
                 android:layout_marginLeft="@dimen/dp_50"
                 android:layout_marginRight="@dimen/dp_50"
                 android:layout_marginTop="@dimen/dp_10"
-                app:srcCompat="@drawable/img_empty" />
+                app:srcCompat="@drawable/ss_img_empty" />
 
             <TextView
                 android:layout_width="wrap_content"

@@ -6,12 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import android.util.Log;
-
 import com.crashlytics.android.Crashlytics;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * {@link android.app.Application.ActivityLifecycleCallbacks} implementation that logs information
@@ -25,7 +21,7 @@ public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
     @Nullable
     private final FragmentSavedStateLogger fragmentLogger;
     @NonNull
-    private final Map<Activity, Bundle> savedStates = new HashMap<>();
+    private final WeakHashMap<Activity, Bundle> savedStates = new WeakHashMap<>();
 
     public ActivitySavedStateLogger(int priority, @NonNull String tag, boolean logFragments) {
         this.priority = priority;

@@ -78,9 +78,9 @@ public interface KolComment {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getCommentFirstTime(int id);
+        void getCommentFirstTime(int postId);
 
-        void loadMoreComments(int id);
+        void loadMoreComments(int postId);
 
         void updateCursor(String lastcursor);
 

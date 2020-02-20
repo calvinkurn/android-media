@@ -18,4 +18,6 @@
     <string name="applink_saldo_deposit_title">Saldo</string>
     <string name="applink_saldo_intro_title">Saldo Intro</string>
     <string name="applink_wallet_title">Ovo</string>
+    <string name="ovo_pay_with_qr_title">Ovo Pay with QR</string>
+
 </resources>

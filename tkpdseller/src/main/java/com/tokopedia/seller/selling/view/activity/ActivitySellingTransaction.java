@@ -28,6 +28,8 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
@@ -47,10 +49,13 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
 import com.tokopedia.design.component.Tabs;
-import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.view.fragment.FragmentOpportunity;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
@@ -76,6 +81,13 @@ public class ActivitySellingTransaction extends TkpdActivity
     public final static int TAB_POSITION_SELLING_CONFIRM_SHIPPING = 3;
     public final static int TAB_POSITION_SELLING_SHIPPING_STATUS = 4;
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
+
+    public static final String EXTRA_TAB_ACTIVE = "tab_active";
+    public static final String EXTRA_KEY_NEW_ORDER = "new_order";
+    public static final String EXTRA_KEY_CONFIRM_SHIPPING = "confirm_shipping";
+    public static final String EXTRA_KEY_IN_SHIPPING = "in_shipping";
+    public static final String EXTRA_KEY_DONE = "done";
+    public static final String EXTRA_KEY_ALL_ORDER = "all_order";
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
@@ -107,7 +119,17 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentNewOrder(context, extras);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+
+            if (enable) {
+                return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
+                        .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_NEW_ORDER);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentNewOrder(context, extras);
+            }
+
         }
     }
 
@@ -120,7 +142,16 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_CONFIRM_SHIPPING)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentReadyToShip(context, extras);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+            if (enable) {
+                return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
+                        .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentReadyToShip(context, extras);
+            }
+
         }
     }
 
@@ -133,7 +164,16 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_SHIPPING_STATUS)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentShipped(context, extras);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+            if (enable) {
+                return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
+                        .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentShipped(context, extras);
+            }
+
         }
     }
 
@@ -146,7 +186,15 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+            if (enable) {
+                return RouteManager.getIntent(context, ApplinkConstInternalOrder.HISTORY)
+                        .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_ALL_ORDER);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+            }
         }
     }
 
@@ -345,7 +393,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         if (getIntent().hasExtra(EXTRA_QUERY)) {
             query = getIntent().getStringExtra(EXTRA_QUERY);
         }
-        fragmentList.add(OpportunityListFragment.newInstance(query));
+        fragmentList.add(FragmentOpportunity.newInstance());
         fragmentList.add(FragmentSellingNewOrder.createInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingStatus.newInstance());
@@ -494,10 +542,10 @@ public class ActivitySellingTransaction extends TkpdActivity
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.findItem(R.id.action_cart)
-                        .setIcon(MethodChecker.getDrawable(this,R.drawable.ic_cart_white_new_active));
+                        .setIcon(MethodChecker.getDrawable(this, R.drawable.ic_cart_white_new_active));
             } else {
                 menu.findItem(R.id.action_cart)
-                        .setIcon(MethodChecker.getDrawable(this,R.drawable.ic_cart_white_new));
+                        .setIcon(MethodChecker.getDrawable(this, R.drawable.ic_cart_white_new));
             }
             return true;
         } else {

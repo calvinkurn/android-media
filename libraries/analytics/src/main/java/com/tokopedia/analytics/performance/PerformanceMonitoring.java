@@ -38,4 +38,10 @@ public class PerformanceMonitoring {
             trace.incrementCounter(counterName, l);
         }
     }
+
+    public void putMetric(String parameter, long value) {
+        if (trace != null) {
+            trace.putMetric(parameter, value);
+        }
+    }
 }

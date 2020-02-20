@@ -3,16 +3,16 @@ package com.tokopedia.topchat.chatlist.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -22,9 +22,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.goToFirst
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -50,13 +52,17 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
+import com.tokopedia.topchat.chatlist.widget.FilterMenu
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -89,6 +95,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
 
+    private var filterMenu = FilterMenu()
+
     private lateinit var broadCastButton: FloatingActionButton
 
     @Inject
@@ -113,18 +121,20 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-//            R.id.menu_chat_search -> {
-//                RouteManager.route(activity, ApplinkConstInternalMarketplace.CHAT_SEARCH)
-//                true
-//            }
             R.id.menu_chat_filter -> {
                 chatListAnalytics.eventClickFilterChat()
                 showFilterDialog()
                 true
             }
-//            R.id.menu_chat_setting -> {
-//                true
-//            }
+            R.id.menu_chat_setting -> {
+                val intent = ChatSettingActivity.getIntent(context, isTabSeller())
+                startActivity(intent)
+                true
+            }
+            R.id.menu_chat_search -> {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SEARCH)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -134,7 +144,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        debug(TAG, "$sightTag onViewCreated")
+        Timber.d("$sightTag onViewCreated")
         mViewCreated = true
         tryViewCreatedFirstSight()
         super.onViewCreated(view, savedInstanceState)
@@ -200,7 +210,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> adapter?.deleteItem(itemPositionLongClicked)
-                is Fail -> view?.showErrorToaster(getString(R.string.delete_chat_default_error_message))
+                is Fail -> view?.let {
+                    Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
             }
         })
     }
@@ -354,6 +366,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private fun showFilterDialog() {
         activity?.let {
+            if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<Menus.ItemMenus>()
             val arrayFilterString = arrayListOf(
                     it.getString(R.string.filter_chat_all),
@@ -366,18 +379,17 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 else itemMenus.add(Menus.ItemMenus(title, false))
             }
 
-            Menus(it, R.style.BottomFilterDialogTheme).apply {
-                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                setTitle(getString(R.string.label_filter))
-                itemMenuList = itemMenus
-                setOnItemMenuClickListener { menus, pos ->
-                    chatListAnalytics.eventClickListFilterChat(menus.title.toLowerCase())
-                    filterChecked = pos - 1
+            val title = getString(R.string.label_filter)
+            filterMenu.apply {
+                setTitle(title)
+                setItemMenuList(itemMenus)
+                setOnItemMenuClickListener { menu, pos ->
+                    chatListAnalytics.eventClickListFilterChat(menu.title.toLowerCase())
+                    filterChecked = pos
                     loadInitialData()
                     dismiss()
                 }
-                show()
-            }
+            }.show(childFragmentManager, FilterMenu.TAG)
         }
     }
 
@@ -454,7 +466,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         val moveToTop = extras.getBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP)
-                        if(moveToTop) {
+                        if (moveToTop) {
                             val lastItem = extras.getParcelable<ReplyParcelableModel>(TopChatInternalRouter.Companion.RESULT_LAST_ITEM)
                             lastItem?.let {
                                 val replyTimeStamp = chatItemListViewModel.getReplyTimeStampFrom(lastItem)
@@ -496,18 +508,18 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun onViewCreatedFirstSight(view: View?) {
-        debug(TAG, "$sightTag onViewCreatedFirstSight")
+        Timber.d("$sightTag onViewCreatedFirstSight")
         (activity as ChatListContract.Activity).notifyViewCreated()
         loadInitialData()
     }
 
     private fun onUserFirstSight() {
-        debug(TAG, "$sightTag onUserFirstSight")
+        Timber.d("$sightTag onUserFirstSight")
     }
 
 
     private fun onUserVisibleChanged(visible: Boolean) {
-        debug(TAG, "$sightTag onUserVisibleChanged $visible")
+        Timber.d("$sightTag onUserVisibleChanged $visible")
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -560,8 +572,12 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatListAnalytics.trackDeleteChat(element)
     }
 
-    private fun isTabSeller(): Boolean {
+    override fun isTabSeller(): Boolean {
         return sightTag == PARAM_TAB_SELLER
+    }
+
+    override fun getSupportChildFragmentManager(): FragmentManager {
+        return childFragmentManager
     }
 
     companion object {

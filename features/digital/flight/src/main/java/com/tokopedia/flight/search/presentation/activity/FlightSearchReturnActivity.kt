@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
+import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
@@ -22,6 +22,7 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
         FlightSearchFragment.OnFlightSearchFragmentListener {
 
     private var selectedDepartureID: String = ""
+    private var selectedDepartureTerm: String = ""
     private lateinit var remoteConfig: RemoteConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +40,7 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
     override fun initializeToolbarData() {
         selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
+        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
 
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
@@ -66,7 +68,7 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
     override fun getArrivalAirport(): FlightAirportViewModel = passDataViewModel.departureAirport
 
-    override fun selectFlight(selectedFlightID: String, flightPriceViewModel: FlightPriceViewModel,
+    override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceViewModel: FlightPriceViewModel,
                               isBestPairing: Boolean, isCombineDone: Boolean) {
 
         if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
@@ -74,22 +76,25 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                     .getCallingIntent(this,
                             passDataViewModel,
                             selectedDepartureID,
+                            selectedDepartureTerm,
                             flightPriceViewModel,
-                            selectedFlightID),
+                            selectedFlightID,
+                            selectedFlightTerm),
                     REQUEST_CODE_BOOKING)
         } else {
-            startActivityForResult(com.tokopedia.flight.booking.view.activity.FlightBookingActivity
+            startActivityForResult(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
                     .getCallingIntent(this,
                             passDataViewModel,
                             selectedDepartureID,
-                            selectedFlightID,
-                            flightPriceViewModel),
+                            flightPriceViewModel,
+                            selectedFlightID),
                     REQUEST_CODE_BOOKING)
         }
     }
 
     companion object {
         val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
+        val EXTRA_DEPARTURE_TERM = "EXTRA_DEPARTURE_TERM"
         val EXTRA_IS_BEST_PAIRING = "EXTRA_IS_BEST_PAIRING"
         val EXTRA_PRICE_VIEW_MODEL = "EXTRA_PRICE_VIEW_MODEL"
         val EXTRA_IS_COMBINE_DONE = "EXTRA_IS_COMBINE_DONE"
@@ -99,12 +104,14 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
         fun getCallingIntent(context: Context,
                              passDataViewModel: FlightSearchPassDataViewModel,
                              selectedDepartureID: String,
+                             selectedDepartureTerm: String,
                              isBestPairing: Boolean,
                              priceViewModel: FlightPriceViewModel,
                              isCombineDone: Boolean): Intent {
             val intent = Intent(context, FlightSearchReturnActivity::class.java)
             intent.putExtra(EXTRA_PASS_DATA, passDataViewModel)
             intent.putExtra(EXTRA_DEPARTURE_ID, selectedDepartureID)
+            intent.putExtra(EXTRA_DEPARTURE_TERM, selectedDepartureTerm)
             intent.putExtra(EXTRA_IS_BEST_PAIRING, isBestPairing)
             intent.putExtra(EXTRA_PRICE_VIEW_MODEL, priceViewModel)
             intent.putExtra(EXTRA_IS_COMBINE_DONE, isCombineDone)

@@ -1,38 +1,14 @@
 package com.tokopedia.core.util;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 
 @Deprecated
 public class GeneralUtils {
-
-    public static Double parsePriceToDouble(String price, String currency) {
-        price = price.replace(",", "");
-        if (!currency.equals("US$")) {
-            // remove cent
-            price = price.replace(".", "");
-        }
-        return Double.parseDouble(price);
-    }
-
-    public static List<String> checkNullMessageError(List<String> messageError) {
-        boolean isNull = false;
-        if (messageError == null && messageError.size() <= 0)
-            return new ArrayList<String>();
-
-        for (String msg : messageError) {
-            if (!checkNullForZeroJson(msg))
-                return new ArrayList<String>();
-        }
-        return messageError;
-    }
 
     public static boolean checkNullForZeroJson(String input) {
         if (input == null || input.equals("0") || input.equals(""))

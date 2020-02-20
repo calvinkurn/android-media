@@ -1,21 +1,18 @@
 package com.tokopedia.autocomplete.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.autocomplete.DefaultAutoCompleteViewModel;
@@ -31,7 +28,6 @@ import com.tokopedia.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.autocomplete.presentation.SearchContract;
 import com.tokopedia.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.autocomplete.presentation.presenter.SearchPresenter;
-import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
 
 import javax.inject.Inject;
@@ -225,9 +221,7 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
     private void startActivityFromAutoComplete(String applink) {
         if(getActivity() == null) return;
 
-        Intent intent = RouteManager.getIntent(getActivity(), applink);
-
-        getActivity().startActivity(intent);
+        RouteManager.route(getActivity(), applink);
         getActivity().finish();
     }
 

@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_cart_recommendation.view.*
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartRecommendationViewHolder(view: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(view) {
+class CartRecommendationViewHolder(view: View, val actionListener: ActionListener?) : RecyclerView.ViewHolder(view) {
 
     companion object {
         @JvmStatic
@@ -49,18 +49,18 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
             )
             setAddToCartVisible(true)
             setAddToCartOnClickListener {
-                actionListener.onButtonAddToCartClicked(element)
+                actionListener?.onButtonAddToCartClicked(element)
             }
             setButtonWishlistOnClickListener {
                 if (element.recommendationItem.isWishlist) {
-                    actionListener.onRemoveRecommendationFromWishlist(element.recommendationItem.productId.toString())
+                    actionListener?.onRemoveRecommendationFromWishlist(element.recommendationItem.productId.toString())
                 } else {
-                    actionListener.onAddRecommendationToWishlist(element.recommendationItem.productId.toString())
+                    actionListener?.onAddRecommendationToWishlist(element.recommendationItem.productId.toString())
                 }
             }
         }
         itemView.setOnClickListener {
-            actionListener.onRecommendationProductClicked(element.recommendationItem.productId.toString())
+            actionListener?.onRecommendationProductClicked(element.recommendationItem.productId.toString())
         }
     }
 

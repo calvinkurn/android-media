@@ -257,8 +257,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public void showFailureMessageProductExpired() {
-        Utils.getSingletonInstance().showSnackBarDeals(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.product_expired)
+    public void showFailureMessage(String error) {
+        Utils.getSingletonInstance().showSnackBarDeals(error
                 , getContext(), mainContent, false);
     }
 

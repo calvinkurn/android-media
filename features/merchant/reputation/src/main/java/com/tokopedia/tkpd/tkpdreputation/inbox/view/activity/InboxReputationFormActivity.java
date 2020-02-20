@@ -41,6 +41,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     public static final String ARGS_PRODUCT_NAME = "ARGS_PRODUCT_NAME";
     public static final String ARGS_PRODUCT_STATUS = "ARGS_PRODUCT_STATUS";
     public static final String ARGS_PRODUCT_URL = "ARGS_PRODUCT_URL";
+    public static final String ARGS_ORDER_ID = "ARGS_ORDER_ID";
 
     public static final String ARGS_IS_EDIT = "ARGS_IS_EDIT";
     public static final String ARGS_RATING = "ARGS_RATING";
@@ -152,7 +153,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
                                              ArrayList<ImageAttachmentViewModel> reviewAttachment,
                                              String productAvatar, String productName,
                                              String productUrl, boolean isAnonymous,
-                                             String revieweeName, int productStatus) {
+                                             String revieweeName, int productStatus, String orderId) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
@@ -169,6 +170,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_ANONYMOUS, isAnonymous);
         intent.putExtra(ARGS_REVIEWEE_NAME, revieweeName);
         intent.putExtra(ARGS_PRODUCT_STATUS, productStatus);
+        intent.putExtra(ARGS_ORDER_ID, orderId);
         return intent;
     }
 

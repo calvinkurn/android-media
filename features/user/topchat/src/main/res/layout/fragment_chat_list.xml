@@ -27,15 +27,17 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_broadcast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_24"
         android:visibility="gone"
         app:backgroundTint="@color/Yellow_Y400"
+        app:fabCustomSize="@dimen/dp_56"
         app:layout_anchorGravity="bottom|center"
+        app:maxImageSize="33dp"
         app:srcCompat="@drawable/ic_broadcast_white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

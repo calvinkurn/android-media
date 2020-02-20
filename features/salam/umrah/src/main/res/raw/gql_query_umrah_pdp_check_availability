@@ -1,0 +1,5 @@
+query UmrahProduct($slugName: String!){
+  umrahProduct(slugName: $slugName ){
+    availableSeat
+  }
+}

@@ -39,6 +39,7 @@ public class AccountConstants {
         public static final String ACCOUNT = "account";
         public static final String PAYMENT_METHOD = "payment method";
         public static final String NOTIFICATION = "notification";
+        public static final String INBOX = "inbox";
         public static final String SHAKE_SHAKE = "shake - shake";
         public static final String TERM_CONDITION = "terms & condition";
         public static final String PRIVACY_POLICY = "privacy policy";
@@ -158,6 +159,10 @@ public class AccountConstants {
         public static final String PROMOTION_CLICK = "promoClick";
 
         public static final String VALUE_ACCOUNT_PROMOTION_NAME = "/account_profile_buyer/promotion";
+
+        public static final String CLICK_NOTIF_CENTER = "clickNotifCenter";
+        public static final String NOTIF_CENTER = "notif center";
+        public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
     }
 
     public interface VccStatus {

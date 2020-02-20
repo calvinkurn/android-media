@@ -31,7 +31,7 @@ public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel> {
         super(itemView);
         image = itemView.findViewById(R.id.product_image);
         profile = itemView.findViewById(R.id.prof_pict);
-        title = itemView.findViewById(com.tokopedia.design.R.id.title);
+        title = itemView.findViewById(R.id.title);
         subtitle = itemView.findViewById(R.id.subtitle);
         name = itemView.findViewById(R.id.name);
         participant = itemView.findViewById(R.id.participant);

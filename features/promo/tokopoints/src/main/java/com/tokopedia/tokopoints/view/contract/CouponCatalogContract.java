@@ -18,7 +18,6 @@ public interface CouponCatalogContract {
 
         void showError(boolean hasInternet);
 
-        void onEmptyCatalog();
 
         void openWebView(String url);
 
@@ -38,7 +37,6 @@ public interface CouponCatalogContract {
 
         void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode);
 
-        void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
 
         void onSuccessPoints(String point);
 

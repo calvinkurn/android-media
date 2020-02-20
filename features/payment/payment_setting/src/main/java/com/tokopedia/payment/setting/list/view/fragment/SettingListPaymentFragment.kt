@@ -13,7 +13,6 @@ import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import com.tokopedia.payment.setting.util.PaymentSettingRouter
 import javax.inject.Inject
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -40,7 +39,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     @Inject
     lateinit var settingListPaymentPresenter : SettingListPaymentPresenter
-    var paymentSettingRouter: PaymentSettingRouter? = null
     val progressDialog : ProgressDialog by lazy { ProgressDialog(context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +46,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             GraphqlClient.init(this)
         }
         super.onCreate(savedInstanceState)
-        paymentSettingRouter = activity?.application as PaymentSettingRouter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,7 +55,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progressDialog.setMessage(getString(R.string.title_loading))
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         context?.let {
             val dividerItemDecoration = DividerItemDecoration(it, DividerItemDecoration.VERTICAL)
             ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
@@ -77,7 +74,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun getAdapterTypeFactory(): SettingListPaymentAdapterTypeFactory {
-        return SettingListPaymentAdapterTypeFactory(context?.applicationContext as PaymentSettingRouter, this)
+        return SettingListPaymentAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: SettingListPaymentModel?) {
@@ -187,6 +184,8 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         dividerListPayment?.visibility = View.VISIBLE
         authenticateCreditCard?.visibility = View.VISIBLE
     }
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
         val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213

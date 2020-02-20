@@ -11,12 +11,6 @@ import com.tokopedia.core.util.RouterUtils;
 
 public class CustomerRouter {
 
-    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
-
-    public static Class<?> getDeeplinkClass() {
-        return RouterUtils.getDefaultRouter().getDeepLinkClass();
-    }
-
     public static Intent getSplashScreenIntent(Context context) {
         return RouterUtils.getRouterFromContext(context).getSplashScreenIntent(context);
     }

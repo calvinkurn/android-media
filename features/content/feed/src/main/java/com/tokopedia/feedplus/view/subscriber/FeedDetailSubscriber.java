@@ -67,7 +67,8 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
         FeedDetailHeaderViewModel headerViewModel = createHeaderViewModel(
                 feedDetail.getCreateTime(),
                 feedDetail.getSource().getShop(),
-                feedDetail.getContent().getStatusActivity());
+                feedDetail.getContent().getStatusActivity(),
+                feedDetail.getId());
         viewListener.onSuccessGetFeedDetail(
                 headerViewModel,
                 convertToViewModel(feedDetail),
@@ -131,7 +132,8 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
 
     private FeedDetailHeaderViewModel createHeaderViewModel(String create_time,
                                                             ShopDetail shop,
-                                                            String status_activity) {
+                                                            String status_activity,
+                                                            String activityId) {
         return new FeedDetailHeaderViewModel(shop.getId(),
                 shop.getName(),
                 shop.getAvatar(),
@@ -141,7 +143,8 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
                 shop.getShopLink(),
                 shop.getShareLinkURL(),
                 shop.getShareLinkDescription(),
-                status_activity
+                status_activity,
+                activityId
         );
     }
 }

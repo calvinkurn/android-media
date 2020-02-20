@@ -54,14 +54,6 @@ public class ShopModel extends RecyclerViewItem {
         return shopName;
     }
 
-    public String getTotalTransaction() {
-        return totalTransaction;
-    }
-
-    public String getNumberOfFavorite() {
-        return numberOfFavorite;
-    }
-
     public String getShopId() {
         return shopId;
     }
@@ -70,24 +62,12 @@ public class ShopModel extends RecyclerViewItem {
         return isGold;
     }
 
-    public String getLuckyImage() {
-        return luckyImage;
-    }
-
     public String getLocation() {
         return location;
     }
 
-    public String getReputationImageUrl() {
-        return reputationImageUrl;
-    }
-
     public String getShopDomain() {
         return shopDomain;
-    }
-
-    public List<String> getProductImages() {
-        return productImages;
     }
 
     public boolean isOfficial() {

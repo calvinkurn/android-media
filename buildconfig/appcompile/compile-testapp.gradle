@@ -44,7 +44,6 @@ include "libraries:user_session"
 //include "libraries:sharecontent"
 include "libraries:track"
 //include "libraries:graph_view"
-include 'libraries:cpm'
 //include "libraries:linker"
 //include "libraries:webview"
 //include "libraries:collapsing_tab_layout"
@@ -53,6 +52,7 @@ include 'libraries:cpm'
 
 //include "libraries:unify:unify_compositions:banner"
 include 'libraries:promotions_target'
+include 'libraries:inappupdate'
 
 include 'tkpddesign'
 include 'tkpdabstraction'
@@ -63,5 +63,5 @@ include "features:common:resources_common"
 // digital home
 //include ":features:digital:digital_homepage"
 
-
+include 'libraries:play_core'
 include 'testapp'

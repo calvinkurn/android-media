@@ -34,7 +34,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
+
     lateinit var categoryLevelTwoViewModel: CategoryLevelTwoViewModel
 
     private lateinit var categoryLevelTwoAdapter: CategoryLevelTwoAdapter
@@ -135,7 +135,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun setUpObserver() {
-        categoryLevelTwoViewModel.getCategoryChildren().observe(this, Observer {
+        categoryLevelTwoViewModel.getCategoryChildren().observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -156,7 +156,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
         })
 
-        categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<MutableList<ListItem>> {
+        categoryLevelTwoViewModel.getCategoryHotlist().observe(viewLifecycleOwner, Observer<MutableList<ListItem>> {
             categoryHotlist.clear()
             categoryHotlist.addAll(it as List<ListItem>)
             hotlist.adapter?.notifyDataSetChanged()
@@ -200,11 +200,8 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun initViewModel() {
-
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
+         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             categoryLevelTwoViewModel = viewModelProvider.get(CategoryLevelTwoViewModel::class.java)
-        }
     }
 
     fun startShimmer(isStarted: Boolean) {

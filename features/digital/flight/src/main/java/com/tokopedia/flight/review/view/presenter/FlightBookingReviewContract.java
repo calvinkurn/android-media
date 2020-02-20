@@ -1,13 +1,13 @@
 package com.tokopedia.flight.review.view.presenter;
 
 import android.content.Context;
+
 import androidx.annotation.StringRes;
 
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
-import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.BaseCartData;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;

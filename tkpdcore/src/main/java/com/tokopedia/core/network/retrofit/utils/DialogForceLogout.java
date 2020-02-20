@@ -3,14 +3,14 @@ package com.tokopedia.core.network.retrofit.utils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+
 import androidx.annotation.Nullable;
 
-import com.drew.lang.annotations.NotNull;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
 
 /**
@@ -28,7 +28,7 @@ public class DialogForceLogout {
     }
 
     public static AlertDialog create(final Context context,
-                                     @NotNull final ActionListener listener, String screenName) {
+                                     final ActionListener listener, String screenName) {
         FacebookSdk.sdkInitialize(context);
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setMessage(R.string.title_session_expired);

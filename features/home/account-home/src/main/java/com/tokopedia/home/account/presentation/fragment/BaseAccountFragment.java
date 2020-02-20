@@ -57,6 +57,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_KUPON_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_TOKO_MEMBER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_AKUN_PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
@@ -269,7 +270,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onTokopediaPayLeftItemClicked(String label, String applink, TokopediaPayBSModel bsData,
                                               boolean isLinked, String walletType) {
-        sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
+
+        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay ovo","");
 
         if (walletType.equals(OVO) && !isLinked) {
             sendTrackingOvoActivation();
@@ -285,9 +287,25 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
+    public void onTokopediaPayCentreItemClicked(@NotNull String label, @NotNull String applink,
+                                                @NotNull TokopediaPayBSModel bsData, boolean isLinked,
+                                                @NotNull String walletType) {
+
+        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay ovo paylater","");
+
+        if (applink != null && applink.startsWith("http")) {
+            openApplink(String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    applink));
+        } else if (applink != null && applink.startsWith("tokopedia")) {
+            openApplink(applink);
+        }
+    }
+
+    @Override
     public void onTokopediaPayRightItemClicked(boolean isRightSaldo, String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
 
-        sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
+        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay saldo","");
         if (bsData != null) {
             sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
                     AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
@@ -430,6 +448,21 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     private void sendTracking(String title, String section, String item) {
         sendTracking(title, section, item, false);
+    }
+
+    private void sendTracking(String event, String category, String action, String label) {
+        if (accountAnalytics == null)
+            return;
+
+        if (event == null || category == null || action == null || label == null)
+            return;
+
+        accountAnalytics.eventTokopediaPayClick(
+                event.toLowerCase(),
+                category.toLowerCase(),
+                action.toLowerCase(),
+                label
+        );
     }
 
     private void sendTracking(String title, String section, String item, boolean withUserId) {

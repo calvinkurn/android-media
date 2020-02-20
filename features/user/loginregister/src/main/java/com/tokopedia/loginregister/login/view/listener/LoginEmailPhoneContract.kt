@@ -12,6 +12,7 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.ArrayList
 
@@ -55,11 +56,17 @@ interface LoginEmailPhoneContract {
 
         fun onErrorLoginFacebook(email: String): Function1<Throwable, Unit>
 
+        fun onSuccessLoginFacebookPhone(): Function1<LoginTokenPojo, Unit>
+
+        fun onErrorLoginFacebookPhone(): Function1<Throwable, Unit>
+
         fun onErrorLoginGoogle(email: String?): Function1<Throwable, Unit>
 
         fun onSuccessGetUserInfo(): Function1<ProfilePojo, Unit>
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
+
+        fun onSuccessGetUserInfoAddPin(): Function1<ProfilePojo, Unit>
 
         fun onGoToCreatePassword(): Function2<String, String, Unit>
 
@@ -103,9 +110,13 @@ interface LoginEmailPhoneContract {
 
         fun getUserInfo()
 
+        fun getUserInfoAddPin()
+
         fun discoverLogin(context: Context)
 
         fun loginFacebook(context: Context, accessToken: AccessToken, email: String)
+
+        fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String)
 
         fun reloginAfterSQ(validateToken: String)
 

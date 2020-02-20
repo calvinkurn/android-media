@@ -41,9 +41,5 @@ public interface AccountHomeRouter {
 
     void goToCreateMerchantRedirect(Context context);
 
-    void setPromoPushPreference(Boolean newValue);
-
     boolean isEnableInterestPick();
-  
-    void setNewsletterEmailPref(Boolean newValue);
 }

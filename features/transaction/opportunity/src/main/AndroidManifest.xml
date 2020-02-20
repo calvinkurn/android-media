@@ -1,0 +1,49 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.opportunity">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/opportunity_name">
+        <activity
+            android:name=".activity.OpportunitySortActivity"
+            android:label="@string/title_sort_opportunity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OpportunityFilterActivity"
+            android:label="@string/title_filter_opportunity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.OpportunityDetailActivity"
+            android:label="@string/title_opportunity_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OpportunityTncActivity"
+            android:label="@string/title_take_opportunity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".snapshot.SnapShotProduct"
+            android:label="@string/title_activity_snapshot_opportunity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OpportunityListActivity"
+            android:label="@string/title_opportunity_detail"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_seller"
+                    android:path="@string/path_opportunity"
+                    android:scheme="@string/internal_scheme" />
+
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

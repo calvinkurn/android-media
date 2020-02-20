@@ -231,11 +231,6 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     }
 
     @Override
-    public void navigateToWebView(String url) {
-        getView().openWebView(url);
-    }
-
-    @Override
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
     }

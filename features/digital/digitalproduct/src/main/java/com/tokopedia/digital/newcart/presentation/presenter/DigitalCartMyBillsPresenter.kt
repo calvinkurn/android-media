@@ -54,16 +54,14 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
             val isSubscribed = view.digitalSubscriptionParams.isSubscribed
             view.renderMyBillsSusbcriptionView(bodyTitle, description, isChecked, isSubscribed)
         }
-        view.cartInfoData.attributes?.fintechProduct?.get(0)?.run {
-            view.renderMyBillsEgoldView(info?.title, info?.subtitle, checkBoxDisabled)
-        }
+        view.renderMyBillsEgoldView(view.cartInfoData.attributes?.fintechProduct?.getOrNull(0))
     }
 
     override fun onEgoldCheckedListener(checked: Boolean) {
         view.cartInfoData.attributes?.pricePlain?.let { pricePlain ->
             var totalPrice = pricePlain
             if (checked) {
-                val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.get(0)?.fintechAmount ?: 0
+                val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0
                 totalPrice += egoldPrice
             }
             view.renderCheckoutView(totalPrice)
@@ -75,7 +73,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         if (view.cartInfoData.crossSellingType == DigitalCartCrossSellingType.MYBILLS) {
             bodyCheckout.attributes!!.subscribe = view.isSubscriptionChecked()
             if (view.isEgoldChecked()) {
-                view.cartInfoData.attributes?.fintechProduct?.get(0)?.run {
+                view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.run {
                     bodyCheckout.attributes?.apply {
                         fintechProduct = listOf(FintechProductCheckout(
                                 transactionType = transactionType,
@@ -101,7 +99,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
     }
 
     override fun onEgoldMoreInfoClicked() {
-        view.cartInfoData.attributes?.fintechProduct?.get(0)?.info?.run {
+        view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.info?.run {
             view.renderEgoldMoreInfo(title, tooltipText, urlLink)
         }
     }

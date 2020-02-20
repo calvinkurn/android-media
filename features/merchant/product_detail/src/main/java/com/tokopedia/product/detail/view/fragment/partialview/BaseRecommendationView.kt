@@ -64,7 +64,7 @@ abstract class BaseRecommendationView(context: Context,
             getView().base_recom_4 -> PDP_4
             else -> ""
         }
-        getRecyclerView().initCarouselProductCardView(
+        getRecyclerView().bindCarouselProductCardView(
                 activity = activity,
                 parentView = getView(),
                 isScrollable = true,

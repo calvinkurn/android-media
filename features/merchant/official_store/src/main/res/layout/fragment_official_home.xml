@@ -1,48 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_width="match_parent" >
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <View
+        android:visibility="invisible"
+        app:layout_collapseMode="pin"
+        android:id="@+id/statusbar"
         android:background="@color/white"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl5"/>
 
-        <View
-            android:visibility="invisible"
-            app:layout_collapseMode="pin"
-            android:id="@+id/statusbar"
-            android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_lvl5"/>
+    <com.tokopedia.searchbar.MainToolbar
+        android:id="@+id/maintoolbar"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp" />
 
-        <com.tokopedia.searchbar.MainToolbar
-            android:id="@+id/maintoolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:layout_anchor="@+id/statusbar"
-            app:layout_scrollFlags="scroll|enterAlways"/>
-
-        <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
-            android:id="@+id/tablayout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl7"
-            android:background="@color/white"
-            app:tabMode="scrollable"
-            app:tabIndicatorColor="@color/Purple_P600" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewpager"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:background="@color/white">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:animateLayoutChanges="true"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed"
+                android:id="@+id/collapsing_toolbar"
+                android:minHeight="@dimen/dp_40"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
+                    android:id="@+id/tablayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_lvl7"
+                    android:background="@color/white"
+                    app:tabMode="scrollable"
+                    app:layout_collapseMode="pin"
+                    app:tabIndicatorColor="@color/Purple_P600" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

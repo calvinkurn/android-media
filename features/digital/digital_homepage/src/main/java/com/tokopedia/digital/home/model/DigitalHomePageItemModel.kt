@@ -5,6 +5,7 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactor
 
 abstract class DigitalHomePageItemModel(var isLoaded: Boolean = false,
                                         var isSuccess: Boolean = false,
+                                        var isEmpty: Boolean = false,
                                         var isLoadFromCloud : Boolean = true): Visitable<DigitalHomePageTypeFactory> {
     abstract override fun type(typeFactory: DigitalHomePageTypeFactory): Int
 }

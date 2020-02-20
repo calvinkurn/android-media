@@ -143,8 +143,12 @@ public class SelectQuantityPresenter
                     if (verifyCartResponse.getStatus().getResult().equalsIgnoreCase("failure")) {
 
                         for (JsonElement jsonElement : verifyCartResponse.getCart().get("cart_items").getAsJsonArray()) {
-                            if (!TextUtils.isEmpty(jsonElement.getAsJsonObject().get("error").getAsString())) {
+                            if (jsonElement.getAsJsonObject().get("error")!=null && !TextUtils.isEmpty(jsonElement.getAsJsonObject().get("error").getAsString())) {
                                 getView().showFailureMessage(jsonElement.getAsJsonObject().get("error").getAsString());
+                            }
+                            else{
+                                getView().showFailureMessage(verifyCartResponse.getCart().get("error").getAsString());
+
                             }
                         }
                     } else {

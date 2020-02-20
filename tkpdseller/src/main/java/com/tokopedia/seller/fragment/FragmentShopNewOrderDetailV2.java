@@ -453,10 +453,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         }
     }
 
-    private void loadViewHolder() {
-        holder = (ViewHolder) rootView.getTag();
-    }
-
     private void setListener() {
         if (!isProcessed) holder.AcceptButton.setOnClickListener(onAcceptClick());
         holder.RejectButton.setOnClickListener(onRejectListener());
@@ -870,14 +866,4 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         }
         return list;
     }
-
-    private ProductPass getProductDataToPass(int position) {
-        return ProductPass.Builder.aProductPass()
-                .setProductPrice(order.getOrderProducts().get(position).getProductPrice())
-                .setProductId(order.getOrderProducts().get(position).getProductId())
-                .setProductName(order.getOrderProducts().get(position).getProductName())
-                .setProductImage(order.getOrderProducts().get(position).getProductPicture())
-                .build();
-    }
-
 }

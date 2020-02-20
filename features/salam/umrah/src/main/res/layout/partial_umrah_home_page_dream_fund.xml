@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/section_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <include
+            android:clickable="true"
+            android:focusable="true"
+            layout="@layout/widget_umrah_dream_fund"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:id="@+id/dream_fund_umrah_home_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_16" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/shimmering"
+        layout="@layout/partial_umrah_home_page_dream_fund_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_16"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/section_my_umrah"
+        layout="@layout/partial_umrah_home_page_my_umrah"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:visibility="gone" />
+
+</FrameLayout>

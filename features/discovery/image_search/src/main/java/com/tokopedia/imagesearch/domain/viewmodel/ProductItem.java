@@ -42,6 +42,8 @@ public class ProductItem extends ImpressHolder implements Visitable<ImageProduct
     private String categoryName;
     private String categoryBreadcrumb;
     private boolean isTopAds;
+    private List<LabelGroup> labelGroupList;
+    private FreeOngkir freeOngkir;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -233,6 +235,22 @@ public class ProductItem extends ImpressHolder implements Visitable<ImageProduct
 
     public void setTopAds(boolean topAds) {
         isTopAds = topAds;
+    }
+
+    public List<LabelGroup> getLabelGroupList() {
+        return labelGroupList;
+    }
+
+    public void setLabelGroupList(List<LabelGroup> labelGroupList) {
+        this.labelGroupList = labelGroupList;
+    }
+
+    public FreeOngkir getFreeOngkir() {
+        return freeOngkir;
+    }
+
+    public void setFreeOngkir(FreeOngkir freeOngkir) {
+        this.freeOngkir = freeOngkir;
     }
 
     @Override

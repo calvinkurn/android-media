@@ -10,9 +10,6 @@ public class List {
     @SerializedName("hot_product_id")
     @Expose
     private String hotProductId;
-    @SerializedName("price_start_from")
-    @Expose
-    private String priceStartFrom;
     @SerializedName("img")
     @Expose
     private Img img;
@@ -42,18 +39,6 @@ public class List {
         return hotProductId;
     }
 
-    public void setHotProductId(String hotProductId) {
-        this.hotProductId = hotProductId;
-    }
-
-    public String getPriceStartFrom() {
-        return priceStartFrom;
-    }
-
-    public void setPriceStartFrom(String priceStartFrom) {
-        this.priceStartFrom = priceStartFrom;
-    }
-
     public Img getImg() {
         return img;
     }
@@ -66,32 +51,12 @@ public class List {
         return imgShare;
     }
 
-    public void setImgShare(String imgShare) {
-        this.imgShare = imgShare;
-    }
-
-    public String getImgPromo() {
-        return imgPromo;
-    }
-
-    public void setImgPromo(String imgPromo) {
-        this.imgPromo = imgPromo;
-    }
-
     public ImgSquare getImgSquare() {
         return imgSquare;
     }
 
-    public void setImgSquare(ImgSquare imgSquare) {
-        this.imgSquare = imgSquare;
-    }
-
     public ImgPortrait getImgPortrait() {
         return imgPortrait;
-    }
-
-    public void setImgPortrait(ImgPortrait imgPortrait) {
-        this.imgPortrait = imgPortrait;
     }
 
     public String getUrl() {
@@ -109,13 +74,4 @@ public class List {
     public void setTitle(String title) {
         this.title = title;
     }
-
-    public String getAlk() {
-        return alk;
-    }
-
-    public void setAlk(String alk) {
-        this.alk = alk;
-    }
-
 }

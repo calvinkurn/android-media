@@ -20,13 +20,6 @@ public interface Base {
     String getMessageTAG();
 
     /**
-     *
-     * @param className
-     * @return for logging purpose
-     */
-    String getMessageTAG(Class<?> className);
-
-    /**
      * this one is called from {@link Fragment#onResume()}
      * or {@link AppCompatActivity#onResume()}
      * @param context
@@ -75,19 +68,6 @@ public interface Base {
      * @param context
      */
     void initDataInstance(Context context);
-
-    /**
-     * this is called within {@link Base#initDataInstance(Context)}
-     * @return
-     */
-    boolean isAfterRotate();
-
-    /**
-     * this is called directly from {@link Fragment#onCreate}, rarely used
-     * @param savedInstanceState
-     * @return
-     */
-    boolean isAfterRotate(Bundle savedInstanceState);
 
     /**
      * this is subscribe for retrofit

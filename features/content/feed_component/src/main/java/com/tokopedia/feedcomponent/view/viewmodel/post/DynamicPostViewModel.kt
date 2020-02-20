@@ -22,6 +22,7 @@ data class DynamicPostViewModel(
         val trackingPostModel: TrackingPostModel = TrackingPostModel(),
         val tracking: MutableList<TrackingViewModel> = ArrayList(),
         val feedType: String = "",
+        val activityName: String = "",
         val impressHolder: ImpressHolder = ImpressHolder()
 
 ) : Visitable<DynamicFeedTypeFactory> {

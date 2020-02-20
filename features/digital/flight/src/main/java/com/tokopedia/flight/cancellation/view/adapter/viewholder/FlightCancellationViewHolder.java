@@ -22,9 +22,9 @@ import com.tokopedia.unifyprinciples.Typography;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.ADULT;
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.CHILDREN;
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFANT;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.ADULT;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.CHILDREN;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.INFANT;
 
 /**
  * @author by furqan on 21/03/18.

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/dp_5"
+    app:cardElevation="@dimen/dp_5"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/image_issuer"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:padding="@dimen/dp_6"
+                tools:src="@drawable/digital_ic_emoney" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_16">
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:id="@+id/text_label_card_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    android:text="@string/emoney_card_info_label_card_number"
+                    android:textSize="@dimen/sp_12"
+                    app:corners="16"
+                    app:width_weight="0.5" />
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:id="@+id/text_card_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold"
+                    app:corners="16"
+                    app:width_weight="1.0"
+                    tools:text="1234 - 1234 - 1234 - 1234" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/grey_300" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
+        <LinearLayout
+            android:id="@+id/view_remaining_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0.1dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/text_label_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_6"
+                android:gravity="center"
+                android:text="@string/emoney_card_info_label_card_balance"
+                app:corners="16"
+                app:height_weight="1"
+                app:width_weight="1" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/text_remaining_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:gravity="center"
+                android:textColor="@color/green_400"
+                android:textSize="@dimen/sp_32"
+                app:corners="16"
+                app:height_weight="1"
+                app:width_weight="1"
+                tools:text="Rp 800.000" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/text_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:corners="16"
+                tools:text="12 Mei 2018, 06:50" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -191,6 +191,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         setFilterCategory(selectedCategoryId);
         getView().renderDynamicFilter(model.getDynamicFilterModel());
         getView().setTotalSearchResultCount(model.getTotalDataText());
+        getView().setQueryKey(model.getQuery());
         getView().reloadData();
     }
 

@@ -2,12 +2,12 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.view.View
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.glide.loadGif
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 
 /**
@@ -28,7 +28,7 @@ class BannerImageViewHolder(itemView: View,
     private val bannerImageView: ImageView by lazy { itemView.findViewById<ImageView>(R.id.banner_image_view)}
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
-        ImageHandler.loadGifFromUrl(bannerImageView, channel.banner.imageUrl, R.drawable.bannerview_image_placeholder)
+        bannerImageView.loadGif(channel.banner.imageUrl)
         bannerImageView.setOnClickListener {
             RouteManager.route(it.context, channel.banner.applink)
             HomePageTracking.eventEnhanceClickBannerGif(itemView.context, channel)

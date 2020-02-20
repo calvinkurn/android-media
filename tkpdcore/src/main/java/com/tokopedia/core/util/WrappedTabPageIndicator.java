@@ -17,9 +17,6 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +24,13 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.viewpagerindicator.*;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
+
+import com.tkpd.library.viewpagerindicator.IconPagerAdapter;
+import com.tkpd.library.viewpagerindicator.IcsLinearLayout;
+import com.tkpd.library.viewpagerindicator.PageIndicator;
 import com.tokopedia.core2.R;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -87,10 +90,6 @@ public class WrappedTabPageIndicator extends HorizontalScrollView implements Pag
 
         mTabLayout = new IcsLinearLayout(context, R.attr.vpiTabPageIndicatorStyle);
         addView(mTabLayout, new ViewGroup.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
-    }
-
-    public void setOnTabReselectedListener(OnTabReselectedListener listener) {
-        mTabReselectedListener = listener;
     }
 
     @Override

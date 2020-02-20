@@ -106,7 +106,6 @@ public class AnalyticsTrackerUtil {
         String CLICK_OK_ON_FAILED = "click ok on failed";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String VIEW_REDEEM_SUCCESS = "view redeem success";
-        String CLICK_LEADERBOARD = "click leaderboard";
         String CLICK_COUNTER_KUPON_SAYA = "click counter kupon saya";
         String CLICK_TICKER = "click ticker";
         String CLICK_SEE_ALL_EXPLORE_CATALOG = "click lihat semua coupon catalog";

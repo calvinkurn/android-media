@@ -16,6 +16,8 @@
     <string name="dowload_on_process">Download lagi diproses</string>
     <string name="download_error_general_title">Ada gangguan di rumah Toped</string>
     <string name="download_error_general_subtitle">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti</string>
+    <string name="download_error_playservice_title">Versi Google Play Service harus diperbarui</string>
+    <string name="download_error_playservice_subtitle">Silakan update Google Play Service yang terbaru untuk melanjutkan</string>
     <string name="download_error_insuficient_memory_title">Memori HP tidak cukup</string>
     <string name="download_error_insuficient_memory_subtitle">Fitur ini butuh memori sebesar %.2f KB. Pastikan memorimu cukup dengan atur penyimpanan di Pengaturan HP</string>
     <string name="download_error_connection_title">Nggak ada koneksi internet</string>

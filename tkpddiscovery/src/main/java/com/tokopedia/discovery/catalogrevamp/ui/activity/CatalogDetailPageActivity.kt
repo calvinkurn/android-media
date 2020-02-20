@@ -133,8 +133,8 @@ class CatalogDetailPageActivity : BaseActivity(),
 
     private fun initBottomSheetListener() {
         bottomSheetFilterView?.setCallback(object : BottomSheetFilterView.Callback {
-            override fun onApplyFilter(filterParameter: Map<String, String>) {
-                applyFilter(filterParameter)
+            override fun onApplyFilter(filterParameter: Map<String, String>?) {
+                applyFilter(filterParameter ?: mapOf())
             }
 
             override fun onShow() {
@@ -289,8 +289,8 @@ class CatalogDetailPageActivity : BaseActivity(),
         searchNavContainer?.hide()
     }
 
-    override fun loadFilterItems(filters: ArrayList<Filter>, searchParameter: MutableMap<String, String>?) {
-        this.filters.addAll(filters)
+    override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: Map<String, String>?) {
+        this.filters.addAll(filters ?: listOf())
         bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
     }
 

@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.features.manage;
 
 import android.content.DialogInterface;
 
-import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressViewModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 

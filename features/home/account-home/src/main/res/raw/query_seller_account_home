@@ -6,7 +6,6 @@ query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
       shop_name
       shop_avatar
       shop_id
-      shop_domain
       shop_is_official
     }
     owner {

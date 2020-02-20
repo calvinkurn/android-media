@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.design.component.Dialog
 
@@ -15,7 +15,7 @@ import com.tokopedia.design.component.Dialog
  * @author by yfsx on 08/05/18.
  */
 
-class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewModel = QuickReplyListViewModel(),
+class QuickReplyAdapter(private var quickReplyList: List<QuickReplyViewModel>,
                         private val listener: QuickReplyListener) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
 
     private val END_CHAT = "end chat"
@@ -26,7 +26,7 @@ class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewM
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val model = quickReplyListViewModel.quickReplies[position]
+        val model = quickReplyList[position]
         holder.text.text = model.text
         holder.text.setOnClickListener {
             if(model.text.equals(END_CHAT,true)){
@@ -37,7 +37,7 @@ class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewM
                 dialog.setBtnOk(mContext.getString(R.string.cb_bot_yes_end_text))
                 dialog.setBtnCancel(mContext.getString(R.string.cb_bot_cancel_text))
                 dialog.setOnOkClickListener{
-                    listener.onQuickReplyClicked(quickReplyListViewModel, model)
+                    listener.onQuickReplyClicked(model)
                     dialog.dismiss()
                 }
                 dialog.setOnCancelClickListener{
@@ -46,22 +46,22 @@ class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewM
                 dialog.setCancelable(true)
                 dialog.show()
             }else{
-                listener.onQuickReplyClicked(quickReplyListViewModel, model)
+                listener.onQuickReplyClicked( model)
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return quickReplyListViewModel.quickReplies.size
+        return quickReplyList.size
     }
 
     fun clearData() {
-        quickReplyListViewModel = quickReplyListViewModel.EMPTY()
+        quickReplyList = ArrayList()
         notifyDataSetChanged()
     }
 
-    fun setList(quickReplyListViewModel: QuickReplyListViewModel) {
-        this.quickReplyListViewModel = quickReplyListViewModel
+    fun setList(quickReplylist: List<QuickReplyViewModel>) {
+        this.quickReplyList = quickReplylist
     }
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {

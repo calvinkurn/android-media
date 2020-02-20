@@ -3,11 +3,11 @@ package com.tokopedia.product.detail.view.widget
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import androidx.fragment.app.FragmentManager
-import androidx.viewpager.widget.ViewPager
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.fragment.app.FragmentManager
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -40,7 +40,7 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(media: List<Media>?, onPictureClickListener: ((Int) -> Unit)?, fragmentManager: FragmentManager) {
+    fun renderData(media: List<Media>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String) -> Unit), fragmentManager: FragmentManager) {
         val mediaList = if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
@@ -58,6 +58,8 @@ class PictureScrollingView @JvmOverloads constructor(
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
+                val swipeDirection = if(lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
+                onSwipePictureListener.invoke(swipeDirection)
                 (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
                 (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
                 lastPosition = position
@@ -94,6 +96,8 @@ class PictureScrollingView @JvmOverloads constructor(
 
     companion object {
         private const val SHOP_STATUS_ACTIVE = 1
+        private const val SWIPE_RIGHT_DIRECTION = "right"
+        private const val SWIPE_LEFT_DIRECTION = "left"
     }
 
 }

@@ -22,6 +22,8 @@ public class CheckoutData implements Parcelable {
     private ErrorReporter errorReporter;
     private String jsonResponse;
 
+    private PriceValidationData priceValidationData;
+
     public boolean isError() {
         return isError;
     }
@@ -102,6 +104,14 @@ public class CheckoutData implements Parcelable {
         this.jsonResponse = jsonResponse;
     }
 
+    public PriceValidationData getPriceValidationData() {
+        return priceValidationData;
+    }
+
+    public void setPriceValidationData(PriceValidationData priceValidationData) {
+        this.priceValidationData = priceValidationData;
+    }
+
     public CheckoutData() {
     }
 
@@ -122,6 +132,7 @@ public class CheckoutData implements Parcelable {
         dest.writeString(this.transactionId);
         dest.writeParcelable(errorReporter, flags);
         dest.writeString(this.jsonResponse);
+        dest.writeParcelable(priceValidationData, flags);
     }
 
     protected CheckoutData(Parcel in) {
@@ -135,6 +146,7 @@ public class CheckoutData implements Parcelable {
         this.transactionId = in.readString();
         this.errorReporter = in.readParcelable(ErrorReporter.class.getClassLoader());
         this.jsonResponse = in.readString();
+        this.priceValidationData = in.readParcelable(PriceValidationData.class.getClassLoader());
     }
 
     public static final Creator<CheckoutData> CREATOR = new Creator<CheckoutData>() {

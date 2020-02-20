@@ -1,7 +1,6 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
-import androidx.fragment.app.FragmentActivity;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 
@@ -10,10 +9,6 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
  */
 
 public class NonScrollLinearLayoutManager extends LinearLayoutManager {
-
-    public NonScrollLinearLayoutManager(Context context) {
-        super(context);
-    }
 
     public NonScrollLinearLayoutManager(Context context, int vertical, boolean b) {
         super(context, vertical, b);

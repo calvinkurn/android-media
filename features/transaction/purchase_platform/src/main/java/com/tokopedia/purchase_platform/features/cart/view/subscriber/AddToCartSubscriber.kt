@@ -25,9 +25,9 @@ class AddToCartSubscriber(val view: ICartListView?,
             view.hideProgressLoading()
             var errorMessage = e.message
             if (e !is CartResponseErrorException) {
-                errorMessage = ErrorHandler.getErrorMessage(view.activity, e)
+                errorMessage = ErrorHandler.getErrorMessage(view.getActivityObject(), e)
             }
-            view.showToastMessageRed(errorMessage)
+            view.showToastMessageRed(errorMessage ?: "")
         }
     }
 

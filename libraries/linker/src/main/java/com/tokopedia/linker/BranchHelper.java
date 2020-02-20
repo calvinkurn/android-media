@@ -144,4 +144,16 @@ public class BranchHelper {
                 .logEvent(context);
     }
 
+    public static void sendFlightPurchaseEvent(Context context, LinkerData linkerData){
+        new BranchEvent(LinkerConstants.EVENT_FLIGHT_PURCHASE)
+                .addCustomDataProperty(LinkerConstants.PRODUCT_CATEGORY, linkerData.getProductCategory())
+                .addCustomDataProperty(LinkerConstants.PRODUCT_NAME, linkerData.getProductName())
+                .addCustomDataProperty(LinkerConstants.JOURNEY_ID, linkerData.getJourneyId())
+                .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
+                .addCustomDataProperty(LinkerConstants.INVOICE_ID, linkerData.getInvoiceId())
+                .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, linkerData.getPaymentId())
+                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
+                .logEvent(context);
+    }
+
 }

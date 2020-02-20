@@ -68,6 +68,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean stateDropshipperHasError;
     private boolean stateLoadingCourierState;
     private boolean stateHasLoadCourierState;
+    private boolean stateHasLoadCourierTradeInDropOffState;
     private boolean stateHasExtraMarginTop;
 
     // Address Model for multiple address shipment, null if single address shipment
@@ -96,6 +97,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     private boolean isDropshipperDisable;
     private boolean isOrderPrioritasDisable;
+
+    private boolean hasSetDropOffLocation;
 
     public ShipmentCartItemModel() {
     }
@@ -139,6 +142,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         stateDropshipperHasError = in.readByte() != 0;
         stateLoadingCourierState = in.readByte() != 0;
         stateHasLoadCourierState = in.readByte() != 0;
+        stateHasLoadCourierTradeInDropOffState = in.readByte() != 0;
         stateHasExtraMarginTop = in.readByte() != 0;
         recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
@@ -154,6 +158,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
         isLeasingProduct = in.readByte() != 0;
         bookingFee = in.readInt();
+        hasSetDropOffLocation = in.readByte() != 0;
     }
 
     @Override
@@ -196,6 +201,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
+        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1: 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
         dest.writeParcelable(recipientAddressModel, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
@@ -211,6 +217,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
         dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
         dest.writeInt(bookingFee);
+        dest.writeByte((byte) (hasSetDropOffLocation ? 1 : 0));
     }
 
     @Override
@@ -594,6 +601,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.stateHasLoadCourierState = stateHasLoadCourierState;
     }
 
+    public boolean isStateHasLoadCourierTradeInDropOffState() {
+        return stateHasLoadCourierTradeInDropOffState;
+    }
+
+    public void setStateHasLoadCourierTradeInDropOffState(boolean stateHasLoadCourierTradeInDropOffState) {
+        this.stateHasLoadCourierTradeInDropOffState = stateHasLoadCourierTradeInDropOffState;
+    }
+
     public boolean isStateHasExtraMarginTop() {
         return stateHasExtraMarginTop;
     }
@@ -706,6 +721,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setOrderPrioritasDisable(boolean orderPrioritasDisable) {
         isOrderPrioritasDisable = orderPrioritasDisable;
+    }
+
+    public boolean isHasSetDropOffLocation() {
+        return hasSetDropOffLocation;
+    }
+
+    public void setHasSetDropOffLocation(boolean hasSetDropOffLocation) {
+        this.hasSetDropOffLocation = hasSetDropOffLocation;
     }
 
     @Override

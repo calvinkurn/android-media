@@ -259,4 +259,9 @@
     <string name="welcome_button_continue">Lanjut</string>
     <string name="welcome_button_complete">Lengkapi Profil</string>
 
+    <string name="error_illegal_character">Hanya dapat menggunakan huruf</string>
+    <string name="error_max_35_character">Maksimal 35 karakter</string>
+    <string name="error_field_required">Harus diisi</string>
+    <string name="error_invalid_email">Email ini tidak valid.</string>
+
 </resources>

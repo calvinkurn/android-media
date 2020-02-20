@@ -336,6 +336,11 @@
         <key>app_enable_category_revamp</key>
         <value>true</value>
     </entry>
+
+    <entry>
+        <key>app_enable_banned_navigation</key>
+        <value>true</value>
+    </entry>
     <entry>
         <key>app_enable_catalog_revamp</key>
         <value>true</value>
@@ -350,6 +355,10 @@
     </entry>
     <entry>
         <key>app_hotlist_nav_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enabled_umrah</key>
         <value>true</value>
     </entry>
 </defaultsMap>

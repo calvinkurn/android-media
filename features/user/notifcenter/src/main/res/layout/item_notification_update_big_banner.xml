@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_16">
+
+    <include
+        android:id="@+id/parent_layout"
+        layout="@layout/item_notification_update_parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:maxLines="2"
+        android:textColor="@color/charcoal_grey_88"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/parent_layout"
+        tools:text="Hari Terakhir Promo Cashback untuk Dapat Ekstra Lebih" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/body"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:textColor="@color/charcoal_grey_40"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@+id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        tools:text="Spesial untuk Anda! Ekstra cashback 25% Rp 250.000" />
+
+    <com.tokopedia.notifcenter.widget.RoundedImageView
+        android:id="@+id/image_banner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:maxWidth="@dimen/dp_288"
+        android:maxHeight="@dimen/dp_145"
+        app:borderRadius="@dimen/dp_4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="2:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/body"
+        tools:src="@tools:sample/avatars" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

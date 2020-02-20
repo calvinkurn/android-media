@@ -76,7 +76,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.tokopedia.design.widget.ObservableNestedScrollView
+        <com.tokopedia.product.detail.view.widget.ObservableNestedScrollView
             android:id="@+id/nested_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -124,7 +124,7 @@
 
                 <include layout="@layout/partial_product_detail_wholesale"/>
 
-                <com.tokopedia.tradein.view.customview.TradeInTextView
+                <com.tokopedia.common_tradein.customviews.TradeInTextView
                     android:id="@+id/tv_trade_in"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
 
             </LinearLayout>
 
-        </com.tokopedia.design.widget.ObservableNestedScrollView>
+        </com.tokopedia.product.detail.view.widget.ObservableNestedScrollView>
 
         <RelativeLayout
             android:id="@+id/base_btn_affiliate"

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f8f8f8"
-    android:fillViewport="true"
-    tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingFragment">
+    android:fillViewport="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -134,7 +133,7 @@
                         android:layout_marginTop="@dimen/dp_8"
                         />
 
-                    <com.tokopedia.common.travel.widget.TravellerInfoWidget
+                    <com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
                         android:id="@+id/widget_partial_traveller_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

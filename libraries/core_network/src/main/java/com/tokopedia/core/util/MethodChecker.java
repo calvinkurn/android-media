@@ -1,30 +1,21 @@
 package com.tokopedia.core.util;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Telephony;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.view.ViewCompat;
-import androidx.appcompat.content.res.AppCompatResources;
-import android.telephony.SmsMessage;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
-import android.webkit.WebSettings;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tkpd.library.utils.ImageHandler;
 
 import java.io.File;
 
@@ -44,14 +35,6 @@ public class MethodChecker {
             view.setBackground(drawable);
         } else {
             view.setBackgroundDrawable(drawable);
-        }
-    }
-
-    public static void setBackgroundTintList(View view, ColorStateList tint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            view.setBackgroundTintList(tint);
-        } else {
-            ViewCompat.setBackgroundTintList(view, tint);
         }
     }
 
@@ -109,22 +92,6 @@ public class MethodChecker {
         return fromHtml(lineBreakHtmlResult);
     }
 
-    public static SmsMessage createSmsFromPdu(Intent intent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-            return msgs[0];
-        } else {
-            final Object[] pdusObj = (Object[]) intent.getExtras().get("pdus");
-
-            return SmsMessage.createFromPdu((byte[]) (pdusObj != null ? pdusObj[0] : ""));
-        }
-    }
-
-    public static void setAllowMixedContent(WebSettings webSettings) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-    }
-
     public static Drawable getDrawable(Context context, int resId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
@@ -141,38 +108,6 @@ public class MethodChecker {
             return android.provider.Settings.System.getInt(
                     CoreNetworkApplication.getAppContext().getContentResolver(),
                     android.provider.Settings.System.AUTO_TIME, 0) == 0;
-        }
-    }
-
-    public static Intent getSmsIntent(Activity activity, String shareText) {
-        Intent smsIntent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(activity);
-            smsIntent = new Intent(Intent.ACTION_SEND);
-            smsIntent.setType("text/plain");
-            smsIntent.putExtra(Intent.EXTRA_TEXT, shareText);
-            if (defaultSmsPackageName != null) {
-                smsIntent.setPackage(defaultSmsPackageName);
-
-            }
-
-        } else {
-            smsIntent = new Intent(Intent.ACTION_VIEW);
-            smsIntent.setType("vnd.android-dir/mms-sms");
-            smsIntent.putExtra("sms_body", shareText);
-        }
-        return smsIntent;
-    }
-
-    public static void loadImageFitCenter(ImageView imageView, String url) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ImageHandler.loadImageFitCenter(imageView.getContext(), imageView, url);
-        } else {
-            Glide.with(imageView.getContext())
-                    .load(url)
-                    .fitCenter()
-                    .into(imageView);
         }
     }
 }

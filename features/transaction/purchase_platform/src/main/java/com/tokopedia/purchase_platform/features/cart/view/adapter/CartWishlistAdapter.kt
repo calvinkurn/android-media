@@ -12,7 +12,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlist
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartWishlistAdapter(val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var wishlistItemHoldeDataList: List<CartWishlistItemHolderData> = arrayListOf()
 

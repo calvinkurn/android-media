@@ -1,16 +1,10 @@
 package com.tokopedia.shop.open.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.shop.open.di.component.DaggerShopOpenDomainComponent;
@@ -23,21 +17,6 @@ import com.tokopedia.shop.open.view.fragment.ShopOpenRoutingFragment;
  * For navigating: use ApplinkConstInternalMarketplace.OPEN_SHOP
  */
 public class ShopOpenRoutingActivity extends BaseSimpleActivity implements HasComponent<ShopOpenDomainComponent> {
-
-    public static Intent getIntent(Context context) {
-        Intent intent = new Intent(context, ShopOpenRoutingActivity.class);
-        return intent;
-    }
-
-    @DeepLink(Constants.Applinks.CREATE_SHOP)
-    public static Intent getCallingApplinkCreateShopIntent(Context context, Bundle extras) {
-        if (SessionHandler.isV4Login(context) && !SessionHandler.isUserHasShop(context)) {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            return ShopOpenRoutingActivity.getIntent(context).setData(uri.build());
-        } else {
-            return HomeRouter.getHomeActivityInterfaceRouter(context);
-        }
-    }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {

@@ -80,4 +80,11 @@
 
     <string name="title_header_saldo_intro">Info Detail Saldo</string>
     <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
+
+    <string name="payment_label_credit_card_verification">Verifikasi Kartu Kredit</string>
+    <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
+    <string name="payment_label_credit_card">Kartu Kredit</string>
+    <string name="payment_label_button_add_card">Tambah Kartu</string>
+
+    <string name="title_product_manage">Daftar Produk</string>
 </resources>

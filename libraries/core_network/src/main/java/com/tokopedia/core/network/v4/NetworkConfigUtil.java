@@ -41,9 +41,6 @@ public class NetworkConfigUtil {
         return "";
     }
 
-    static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
-
-
     public static String generateHMACSignature(String auth) {
         String hmacSignature = "";
         try {

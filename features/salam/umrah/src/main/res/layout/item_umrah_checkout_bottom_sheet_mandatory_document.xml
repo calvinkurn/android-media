@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_title_mandatory_document"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        android:textColor="@color/Neutral_N700"
+        tools:text="Keamanan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_desc_mandatory_document"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_18"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Neutral_N700"
+        tools:text="Keamanan" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_18"/>
+
+</LinearLayout>

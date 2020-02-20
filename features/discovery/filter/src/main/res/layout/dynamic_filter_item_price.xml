@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/dynamic_filter_item_padding"
     android:paddingBottom="@dimen/dynamic_filter_item_padding">
 
-    <com.tokopedia.design.price.PriceRangeInputView
+    <com.tokopedia.design.text.DecimalRangeInputView
         android:id="@+id/price_range_input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

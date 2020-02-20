@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent

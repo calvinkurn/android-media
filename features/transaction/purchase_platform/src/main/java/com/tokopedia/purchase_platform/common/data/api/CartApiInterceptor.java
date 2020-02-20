@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.common.data.api;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
@@ -52,6 +51,8 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
                 contentTypeHeader != null ? contentTypeHeader : "application/x-www-form-urlencoded",
                 authKey,
                 "EEE, dd MMM yyyy HH:mm:ss ZZZ", userSession.getUserId());
+
+        mapHeader.remove("User-Agent");
 
         mapHeader.put("X-APP-VERSION", GlobalConfig.VERSION_NAME);
         mapHeader.put("Tkpd-UserId", userSession.getUserId());

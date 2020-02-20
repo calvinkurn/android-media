@@ -5,7 +5,8 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 
 /**
@@ -41,6 +42,9 @@ interface ProfileContract {
 
         fun onAddToCartFailed(pdpAppLink: String)
 
+        fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel)
+
+        fun onErrorGetPostStatistic(error: Throwable, activityId: String, productIds: List<String>)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -54,9 +58,9 @@ interface ProfileContract {
 
         fun unfollowKol(id: Int)
 
-        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
         fun deletePost(id: Int, rowNumber: Int)
 
@@ -70,5 +74,7 @@ interface ProfileContract {
 
         fun getRelatedProfile(onErrorGetRelatedProfile: ((throwable: Throwable?) -> Unit)?,
                               onSuccessGetRelatedProfile: ((feedPostRelated: FeedPostRelated?) -> Unit)?)
+
+        fun getPostStatistic(activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
     }
 }

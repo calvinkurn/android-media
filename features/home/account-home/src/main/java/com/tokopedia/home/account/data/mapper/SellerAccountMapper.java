@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
@@ -192,7 +193,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_opportunity));
         menuList.setMenuDescription(context.getString(R.string.label_menu_opportunity));
-        menuList.setApplink(ApplinkConst.SELLER_OPPORTUNITY);
+        menuList.setApplink(ApplinkConstInternalOrder.OPPORTUNITY);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);

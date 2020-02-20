@@ -260,7 +260,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                             template,
                             trackingPostModel,
                             mapTrackingData(feed.content.cardpost.tracking),
-                            feedType
+                            feedType,
+                            feed.activity
                     )
             )
         }

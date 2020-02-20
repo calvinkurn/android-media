@@ -1,14 +1,15 @@
 package com.tokopedia.core.network.retrofit.utils;
 
 import android.content.Context;
-import androidx.collection.ArrayMap;
 import android.util.Base64;
+
+import androidx.collection.ArrayMap;
 
 import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.user.session.UserSession;
 
@@ -52,11 +53,8 @@ public class AuthUtil {
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
-    private static final String HEADER_X_TKPD_PATH = "X-Tkpd-Path";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
-    private static final String HEADER_PATH = "x-tkpd-path";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
-    private static final String HEADER_X_MSISDN = "x-msisdn";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -70,14 +68,12 @@ public class AuthUtil {
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
     public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source";
     public static final String WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version";
-    public static final String WEBVIEW_FLAG_PARAM_OS_VERSION = "os_version";
 
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
     public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
-    private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
 
     /**
      * default key is KEY_WSV$
@@ -86,17 +82,13 @@ public class AuthUtil {
         private static final int[] RAW_KEY_WSV4 = new int[]{65, 107, 102, 105, 101, 119, 56, 51, 52, 50, 57, 56, 80, 79, 105, 110, 118};
         private static final int[] RAW_SCROOGE_KEY = new int[]{49, 50, 69, 56, 77, 105, 69, 55, 89, 69, 54, 86, 122, 115, 69, 80, 66, 80, 101, 77};
         private static final int[] RAW_ZEUS_KEY = new int[]{102, 100, 100, 98, 100, 56, 49, 101, 101, 52, 49, 49, 54, 98, 56, 99, 98, 55, 97, 52, 48, 56, 100, 55, 102, 98, 102, 98, 57, 99, 49, 55};
-        private static final int[] RAW_NOTP_KEY = new int[]{110, 117, 108, 97, 121, 117, 107, 97, 119, 111, 106, 117};
         private static final int[] RAW_BRANCHIO_KEY_ID = new int[]{107, 101, 121, 95, 108, 105, 118, 101, 95, 97, 98, 104, 72, 103, 73, 104, 49, 68, 81, 105, 117, 80, 120, 100, 66, 78, 103, 57, 69, 88, 101, 112, 100, 68, 117, 103, 119, 119, 107, 72, 114};
 
         public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
-        public static final String KEY_KEROPPI = "Keroppi";
-        public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
         public static String KEY_CREDIT_CARD_VAULT = convert(RAW_SCROOGE_KEY);
         public static String ZEUS_WHITELIST = convert(RAW_ZEUS_KEY);
-        public static String KEY_NOTP = convert(RAW_NOTP_KEY);
         public static String KEY_BRANCHIO = convert(RAW_BRANCHIO_KEY_ID);
     }
 
@@ -130,43 +122,6 @@ public class AuthUtil {
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        headerMap.put(HEADER_USER_ID, userId);
-        headerMap.put(HEADER_X_TKPD_USER_ID, userId);
-        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
-        return headerMap;
-    }
-
-    public static Map<String, String> generateHeadersWithXUserIdXMsisdn(
-            String path, String method, String authKey, String contentType,
-            String msisdn
-    ) {
-        String date = generateDate(DATE_FORMAT);
-        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
-        String userId = userSession.getUserId();
-
-        String authString = method
-                + "\n" + ""
-                + "\n" + ""
-                + "\n" + date
-                + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
-                + "\n" + HEADER_X_MSISDN + ":" + msisdn
-                + "\n" + path;
-        String signature = calculateRFC2104HMAC(authString, authKey);
-
-        Map<String, String> headerMap = new ArrayMap<>();
-        headerMap.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
-        headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
-        headerMap.put(HEADER_X_METHOD, method);
-        headerMap.put(HEADER_REQUEST_METHOD, method);
-        headerMap.put(HEADER_DATE, date);
-        headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
-        headerMap.remove(HEADER_ACCOUNTS_AUTHORIZATION);
-        headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION,String.format("%s %s", "Bearer",
-                userSession.getAccessToken()));
-        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
-        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        headerMap.put(HEADER_X_MSISDN, msisdn);
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_X_TKPD_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);

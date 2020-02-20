@@ -81,9 +81,16 @@ public class EventDetailsViewModelMapper {
                         && item.getGroups().get(0) != null
                         && item.getGroups().get(0).getPackages() != null
                         ) {
-                    int numOfPkgs = item.getGroups().get(0).getPackages().size();
+                    int _size = item.getGroups().size();
+                    List<Package> packages = new ArrayList<>();
+                    List<Package> pack;
+                    for (int i = 0; i < _size; i++) {
+                        pack = item.getGroups().get(i).getPackages();
+                        packages.addAll(pack);
+                        pack.clear();
+                    }
+                    int numOfPkgs = packages.size();
                     List<PackageViewModel> packageViewModels = new ArrayList<>(numOfPkgs);
-                    List<Package> packages = item.getGroups().get(0).getPackages();
                     for (int j = 0; j < packages.size(); j++) {
                         PackageViewModel packageViewModel = new PackageViewModel();
                         Package aPackage = packages.get(j);

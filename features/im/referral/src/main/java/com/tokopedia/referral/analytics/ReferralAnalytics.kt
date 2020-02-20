@@ -24,14 +24,15 @@ class ReferralAnalytics {
         TrackApp.getInstance().moEngage.sendTrackEvent(value, REFERRAL_SCREEN_LAUNCHED)
     }
 
-    fun sendAnalyticsEventToGtm(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                PRODUCT_DETAIL_PAGE,
-                PRODUCT_DETAIL,
-                CLICK,
-                SHARE_TO + label
-        ))
+    fun sendAnalyticsShareEventToGtm(label: String) {
+        var gtmMap : HashMap<String,Any>  = TrackAppUtils.gtmData(
+                CLICK_APP_SHARE_REFERRAL,
+                REFERRAL,
+                SELECT_CHANNEL,
+                "Android") as HashMap<String, Any>
+        gtmMap.put("channel",label)
+        gtmMap.put("source","referral")
+        TrackApp.getInstance().gtm.sendGeneralEvent(gtmMap)
     }
 
     companion object {
@@ -39,8 +40,7 @@ class ReferralAnalytics {
         const val REFERRAL = "Referral"
         const val SCREEN_NAME = "screen_name"
         const val REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched"
-        val PRODUCT_DETAIL_PAGE = "clickPDP"
-        val PRODUCT_DETAIL = "Product Detail Page"
+        const val SELECT_CHANNEL="select channel"
         val CLICK = "Click"
         val SHARE_TO = "Share - "
     }

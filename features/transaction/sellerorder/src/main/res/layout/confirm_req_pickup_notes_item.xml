@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="@dimen/dp_10"
+    android:layout_marginLeft="@dimen/dp_10"
+    android:layout_marginEnd="@dimen/dp_10"
+    android:layout_marginRight="@dimen/dp_10"
+    android:layout_marginTop="@dimen/dp_20">
+
+    <RelativeLayout
+        android:id="@+id/rl_index_notes"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:background="@drawable/green_circle_background"
+        android:layout_centerVertical="true">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        android:text="@string/courier_notes_example"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_toRightOf="@id/rl_index_notes"
+        android:layout_toEndOf="@id/rl_index_notes"
+        android:layout_centerVertical="true"/>
+
+</RelativeLayout>

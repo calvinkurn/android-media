@@ -8,16 +8,15 @@ import android.text.style.RelativeSizeSpan;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAmenityType;
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
@@ -138,14 +137,18 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
             @Override
             public void onError(Throwable e) {
-                getView().hideCrossSellingItems();
+                if (isViewAttached()) {
+                    getView().hideCrossSellingItems();
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-                TravelCrossSelling.Response crossSellingResponse = response.getData(TravelCrossSelling.Response.class);
-                if (crossSellingResponse.getResponse().getItems().isEmpty()) getView().hideCrossSellingItems();
-                else getView().showCrossSellingItems(crossSellingResponse.getResponse());
+                if (isViewAttached()) {
+                    TravelCrossSelling.Response crossSellingResponse = response.getData(TravelCrossSelling.Response.class);
+                    if (crossSellingResponse.getResponse().getItems().isEmpty()) getView().hideCrossSellingItems();
+                    else getView().showCrossSellingItems(crossSellingResponse.getResponse());
+                }
             }
         };
     }

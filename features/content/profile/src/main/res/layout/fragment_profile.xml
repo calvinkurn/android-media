@@ -279,7 +279,7 @@
                                             android:paddingEnd="@dimen/dp_4"
                                             android:paddingRight="@dimen/dp_4"
                                             android:visibility="gone"
-                                            app:srcCompat="@drawable/ic_kol_badge"
+                                            app:srcCompat="@drawable/ic_verified_badge"
                                             tools:ignore="RtlSymmetry"
                                             tools:visibility="visible" />
 

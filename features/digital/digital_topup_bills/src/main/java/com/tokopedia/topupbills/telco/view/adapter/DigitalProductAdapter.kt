@@ -99,10 +99,10 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
         }
 
         protected fun setItemSelected(viewGrup: ViewGroup) {
-            var drawable = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_round)
+            var drawable = AppCompatResources.getDrawable(context, com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round)
             if (productItem.product.attributes.selected) {
                 listener.onClickItemProduct(productItem, adapterPosition)
-                drawable = AppCompatResources.getDrawable(context, R.drawable.digital_bg_green_light_rounded)
+                drawable = AppCompatResources.getDrawable(context, com.tokopedia.common.topupbills.R.drawable.common_topup_bg_green_light_rounded)
             }
             viewGrup.background = drawable
         }

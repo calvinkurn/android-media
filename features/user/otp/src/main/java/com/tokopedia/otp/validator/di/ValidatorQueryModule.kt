@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-10-20.
@@ -18,18 +19,20 @@ import dagger.multibindings.StringKey
 @Module
 class ValidatorQueryModule{
 
+    @ValidatorScope
     @Provides
-    @IntoMap
-    @StringKey(ValidatorQueryConstant.QUERY_OTP_MODE_LIST)
+    @Named(ValidatorQueryConstant.QUERY_OTP_MODE_LIST)
     fun provideRawQueryOtpModeList(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_otp_mode_list)
 
+    @ValidatorScope
     @Provides
     @IntoMap
     @StringKey(ValidatorQueryConstant.QUERY_OTP_VALIDATE)
     fun provideRawQueryOtpValidate(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_otp_validate)
 
+    @ValidatorScope
     @Provides
     @IntoMap
     @StringKey(ValidatorQueryConstant.QUERY_OTP_REQUEST)

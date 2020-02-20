@@ -2,6 +2,7 @@
 package com.tokopedia.gamification.taptap.data.entiity;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -9,10 +10,13 @@ import java.util.List;
 public class GamiPlayWithPoints {
 
     @Expose
+    @SerializedName("code")
     private String code;
     @Expose
+    @SerializedName("message")
     private List<String> message;
     @Expose
+    @SerializedName("status")
     private String status;
 
     public String getCode() {

@@ -17,6 +17,7 @@ class ClientNumber() : Parcelable {
     var _default: String? = null
     var validation: List<Validation> = ArrayList()
     var additionalButton: AdditionalButton? = null
+    var isEmoney: Boolean? = false
 
     constructor(name: String, type: String, text: String, placeholder: String, _default: String,
                 validation: List<Validation>): this() {
@@ -28,36 +29,39 @@ class ClientNumber() : Parcelable {
         this.validation = validation
     }
 
+    constructor(parcel: Parcel) : this() {
+        name = parcel.readString()
+        type = parcel.readString()
+        text = parcel.readString()
+        placeholder = parcel.readString()
+        _default = parcel.readString()
+        validation = parcel.createTypedArrayList(Validation)
+        isEmoney = parcel.readValue(Boolean::class.java.classLoader) as? Boolean
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeString(type)
+        parcel.writeString(text)
+        parcel.writeString(placeholder)
+        parcel.writeString(_default)
+        parcel.writeTypedList(validation)
+        parcel.writeValue(isEmoney)
+    }
+
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.name)
-        dest.writeString(this.type)
-        dest.writeString(this.text)
-        dest.writeString(this.placeholder)
-        dest.writeString(this._default)
-        dest.writeList(this.validation)
-    }
-
-    protected constructor(`in`: Parcel): this() {
-        this.name = `in`.readString()
-        this.type = `in`.readString()
-        this.text = `in`.readString()
-        this.placeholder = `in`.readString()
-        this._default = `in`.readString()
-        this.validation = ArrayList()
-        `in`.readList(this.validation, Validation::class.java.classLoader)
-    }
-
     companion object CREATOR : Parcelable.Creator<ClientNumber> {
-        override fun createFromParcel(source: Parcel): ClientNumber {
-            return ClientNumber(source)
+        override fun createFromParcel(parcel: Parcel): ClientNumber {
+            return ClientNumber(parcel)
         }
 
         override fun newArray(size: Int): Array<ClientNumber?> {
             return arrayOfNulls(size)
         }
     }
+
+
 }

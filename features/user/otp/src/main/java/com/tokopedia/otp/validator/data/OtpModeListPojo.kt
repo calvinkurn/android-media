@@ -1,7 +1,9 @@
 package com.tokopedia.otp.validator.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by Ade Fulki on 2019-10-21.
@@ -29,6 +31,7 @@ data class OtpModeListData(
         var modeList: ArrayList<ModeListData> = arrayListOf()
 )
 
+@Parcelize
 data class ModeListData(
         @SerializedName("modeCode")
         @Expose
@@ -59,5 +62,8 @@ data class ModeListData(
         var popUpBody: String = "",
         @SerializedName("countdown")
         @Expose
-        var countdown: Boolean = false
-)
+        var countdown: Boolean = false,
+        @SerializedName("otpDigit")
+        @Expose
+        var otpDigit: Int = 6  // default otp length 6 digits
+): Parcelable

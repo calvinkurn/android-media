@@ -28,7 +28,7 @@ class GetVideoDetailUseCase
             val requestParams = GetDynamicFeedUseCase.createRequestParams(
                     userId = userId,
                     cursor = "",
-                    source = GetDynamicFeedUseCase.SOURCE_DETAIL
+                    source = GetDynamicFeedUseCase.FeedV2Source.Detail
             )
             requestParams.putString(DETAIL_ID, detailId)
             return requestParams

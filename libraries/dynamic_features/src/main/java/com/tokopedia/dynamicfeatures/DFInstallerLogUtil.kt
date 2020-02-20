@@ -93,7 +93,7 @@ object DFInstallerLogUtil {
             if (phoneSize > 0) {
                 messageStringBuilder.append("phone:{")
                 val phoneSizeInMB = String.format("%.2fMB", phoneSize.toDouble() / MEGA_BYTE)
-                messageStringBuilder.append("$phoneSizeInMB}")
+                messageStringBuilder.append("$phoneSizeInMB};")
             }
             messageStringBuilder.append("free:{")
             if (previousFreeSpace > 0) {
@@ -104,11 +104,11 @@ object DFInstallerLogUtil {
             }
             try {
                 val freeSpaceBytes = getFreeSpaceBytes(context)
-                val totalFreeSpaceSizeInMB = String.format("%.2fMB", freeSpaceBytes / MEGA_BYTE)
+                val totalFreeSpaceSizeInMB = String.format("%.2fMB", freeSpaceBytes.toDouble() / MEGA_BYTE)
                 messageStringBuilder.append("|$totalFreeSpaceSizeInMB")
             } catch (ignored: Exception) {
             }
-            messageStringBuilder.append("}")
+            messageStringBuilder.append("};")
 
             if (moduleSize > 0) {
                 val moduleSizeInMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)

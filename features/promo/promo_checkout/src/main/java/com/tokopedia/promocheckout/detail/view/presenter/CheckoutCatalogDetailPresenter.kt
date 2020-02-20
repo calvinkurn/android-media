@@ -111,11 +111,11 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
         })
     }
 
-    override fun getCatalogDetail(uniqueCatalogCode: String, catalog_id: Int) {
+    override fun getCatalogDetail(uniqueCatalogCode: String, catalogId: Int) {
         view.showLoader()
         val variables = HashMap<String, Any>()
         variables["slug"] = uniqueCatalogCode
-        variables["catalog_id"] = catalog_id
+        variables["catalog_id"] = catalogId
 
         val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources,
                 R.raw.promo_checkout_catalog_detail),

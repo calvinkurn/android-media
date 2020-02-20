@@ -202,6 +202,11 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public boolean isLightThemeStatusBar() {
+        return false;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == OPEN_SHOP_SUCCESS){

@@ -52,7 +52,7 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
     }
 
     private fun setDialogShowListener() {
-        dialog.setOnShowListener {
+        dialog?.setOnShowListener {
             bottomSheetInternal = view?.parent as FrameLayout
             context?.let {c ->
                 bottomSheetInternal?.let { b ->
@@ -81,12 +81,12 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
         }
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         closableCallBack?.onCloseClick(this)
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         closableCallBack?.onCloseClick(this)
     }
@@ -95,7 +95,7 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
 
 companion object {
     @JvmOverloads
-    fun newInstance(fragment: Fragment, isCloseable: Boolean, title: String = "", closableCallBack: ClosableCallback? = null,@CloseableBottomSheetState state : Int) = CloseableBottomSheetFragment(fragment, isCloseable, title=title, closableCallBack = closableCallBack,mState = state)
+    fun newInstance(fragment: Fragment, isCloseable: Boolean, title: String = "", @CloseableBottomSheetState state : Int, closableCallBack: ClosableCallback? = null) = CloseableBottomSheetFragment(fragment, isCloseable, title=title, closableCallBack = closableCallBack,mState = state)
     const val STATE_FULL = 1
     const val STATE_PARTIAL = 2
     const val STATE_FIT =3

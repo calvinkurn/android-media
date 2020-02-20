@@ -27,7 +27,7 @@ class FlightCurrencyFormatUtil {
             kursIndonesia.decimalFormatSymbols = formatRp
             val result = kursIndonesia.format(price.toLong())
 
-            return result.replace(",", "")
+            return result.replace(",", ".")
         }
     }
 

@@ -81,6 +81,8 @@ public abstract class ContextAnalytics implements Analytics {
 
     public String getClientIDString(){return null;}
 
+    public String getCachedClientIDString(){return "";}
+
     public void pushUserId(String userId){}
 
     public void eventOnline(String uid) {}
@@ -96,5 +98,6 @@ public abstract class ContextAnalytics implements Analytics {
     public void sendGTMGeneralEvent(String event, String category, String action, String label,
                                     String shopId, String shopType, String userId,
                                     @Nullable Map<String, Object> customDimension) { }
+    public String getDefferedDeeplinkPathIfExists(){return null;}
 
 }

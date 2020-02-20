@@ -2,8 +2,9 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
@@ -18,8 +19,6 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
-import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.network.entity.wishlist.WishlistPaging;
@@ -37,25 +36,19 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
-import com.tokopedia.tkpd.home.service.FavoritePart1Service;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomTitleViewModel;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.tkpd.home.wishlist.mapper.WishlistProductMapper;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
+
 import org.parceler.Parcels;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -64,6 +57,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -90,15 +89,9 @@ public class WishListImpl implements WishList {
 
     WishlistPaging mPaging;
 
-    FavoritePart1Service wishlist;
-
     CompositeSubscription compositeSubscription;
 
     CacheHomeInteractor cache;
-
-    MojitoService mojitoService;
-
-    MojitoAuthService mojitoAuthService;
 
     List<Wishlist> dataWishlist = new ArrayList<>();
     RequestParams params = RequestParams.create();
@@ -115,11 +108,8 @@ public class WishListImpl implements WishList {
     public WishListImpl(Context context, WishListView wishListView) {
         this.wishListView = wishListView;
         mPaging = new WishlistPaging();
-        wishlist = new FavoritePart1Service();
         cache = new CacheHomeInteractorImpl();
-        mojitoService = new MojitoService();
         compositeSubscription = new CompositeSubscription();
-        mojitoAuthService = new MojitoAuthService();
         removeWishListUseCase = new RemoveWishListUseCase(context);
         this.context = context;
         userSession = new UserSession(context);
@@ -376,19 +366,6 @@ public class WishListImpl implements WishList {
 
     }
 
-    @NonNull
-    private Map<String, String> getTopAdsParameterMap() {
-        Map<String, String> adsParam = new HashMap<>();
-        adsParam.put(TopAdsParams.KEY_PAGE, String.valueOf(mPaging.getPage()));
-        adsParam.put(TopAdsParams.KEY_ITEM, TOPADS_ITEM);
-        adsParam.put(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
-        adsParam.put(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
-        adsParam.put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
-        adsParam.put(TopAdsParams.KEY_SRC, TOPADS_SRC);
-        return adsParam;
-    }
-
-
     private void getWishListData(Context context, Subscriber subscriber) {
 
         Map<String, Object> variables = new HashMap<>();
@@ -397,7 +374,7 @@ public class WishListImpl implements WishList {
         variables.put(ITEM_COUNT, 10);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_wishlist),
                 GqlWishListDataResponse.class,
                 variables, false);
 

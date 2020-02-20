@@ -45,6 +45,12 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
+    fun getRoomWithoutHotelData(roomListQuery: String, searchParam: HotelHomepageModel) {
+        launch {
+            getRoomList(roomListQuery, searchParam)
+        }
+    }
+
     private suspend fun getHotelInfo(rawQuery: String, propertyId: Int) {
 
         val requestDetailParams = PropertyDataParam(propertyId)

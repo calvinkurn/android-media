@@ -1,8 +1,5 @@
 package com.tokopedia.inbox.rescenter.discussion.data.mapper;
 
-import android.util.Log;
-
-import com.tkpd.library.utils.Logger;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.replysubmit.Attachments;
@@ -17,6 +14,7 @@ import java.util.List;
 
 import retrofit2.Response;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 /**
  * Created by hangnadi on 7/5/17.
@@ -29,7 +27,7 @@ public class ReplyResolutionSubmitMapper implements Func1<Response<TkpdResponse>
 
     @Override
     public NewReplyDiscussionModel call(Response<TkpdResponse> response) {
-        Logger.i("hangnadi", response.body().getStrResponse());
+        Timber.d(response.body().getStrResponse());
         NewReplyDiscussionModel domainData = new NewReplyDiscussionModel();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {

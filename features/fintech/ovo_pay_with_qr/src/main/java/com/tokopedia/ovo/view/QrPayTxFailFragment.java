@@ -13,8 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
-import com.tokopedia.ovo.R;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.GoalQRThanks;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailContract;
@@ -67,29 +67,29 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.oqr_qr_pay_tx_detail_fail, container, false);
-        failDescription = view.findViewById(R.id.fail_description);
-        callSection = view.findViewById(R.id.call_section);
-        backToMain = view.findViewById(R.id.back_to_main);
-        tryAgain = view.findViewById(R.id.try_again);
+        View view = inflater.inflate(com.tokopedia.ovo.R.layout.oqr_qr_pay_tx_detail_fail, container, false);
+        failDescription = view.findViewById(com.tokopedia.ovo.R.id.fail_description);
+        callSection = view.findViewById(com.tokopedia.ovo.R.id.call_section);
+        backToMain = view.findViewById(com.tokopedia.ovo.R.id.back_to_main);
+        tryAgain = view.findViewById(com.tokopedia.ovo.R.id.try_again);
         callSection.setOnClickListener(view1 -> {
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickButuhBantuan,
                     OvoPayByQrTrackerUtil.LABEL.defaultLabel);
-            startActivity(OvoWebViewActivity.getWebViewIntent(getActivity(), HELP_URL, getString(R.string.oqr_contact_us)));
+            startActivity(OvoWebViewActivity.getWebViewIntent(getActivity(), HELP_URL, getString(com.tokopedia.ovo.R.string.oqr_contact_us)));
         });
         backToMain.setOnClickListener(view1 -> {
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickKembaliTidakBerhasil,
                     OvoPayByQrTrackerUtil.LABEL.defaultLabel);
-            startActivity(((OvoPayWithQrRouter)getActivity().getApplicationContext()).getHomeIntent(getActivity()));
+            startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.HOME));
         });
         tryAgain.setOnClickListener(view1 -> {
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.cobaLagi,
@@ -109,7 +109,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     @Override
     public void setFailThankYouData(GoalQRThanks data) {
         failDescription.setText(data.getMessage());
-        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+        OvoPayByQrTrackerUtil.sendEvent(
                 OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
                 OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                 OvoPayByQrTrackerUtil.ACTION.viewPageTransaksi,
@@ -124,6 +124,6 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
 
     @Override
     public String getErrorMessage() {
-        return getString(R.string.oqr_error_message);
+        return getString(com.tokopedia.ovo.R.string.oqr_error_message);
     }
 }

@@ -1,8 +1,6 @@
 package com.tokopedia.kotlin.util
 
-import android.util.Log
 import com.google.gson.GsonBuilder
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import timber.log.Timber
 
 /**
@@ -29,7 +27,7 @@ private const val NULL_PATTERN = """\n\s*"\S+":\s*null"""
 @JvmOverloads
 fun isContainNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }): Boolean {
     val whenNull = { errorMessage: String ->
-        printDebug(errorMessage)
+        Timber.d(errorMessage)
         actionWhenNull(errorMessage)
     }
 
@@ -87,11 +85,5 @@ fun logIfNull(`object`: Any?, clazz: Class<*>?, rawMessage: String? = null, acti
 fun throwExceptionWhenNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }) {
     if (isContainNull(`object`, actionWhenNull)) {
         throw ContainNullException()
-    }
-}
-
-private fun printDebug(errorMessage: String) {
-    if (GlobalConfig.isAllowDebuggingTools()) {
-        Log.e("NullChecker", errorMessage)
     }
 }

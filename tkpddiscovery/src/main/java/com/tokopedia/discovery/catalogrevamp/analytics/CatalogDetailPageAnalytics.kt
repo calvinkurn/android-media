@@ -1,6 +1,9 @@
 package com.tokopedia.discovery.catalogrevamp.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -54,14 +57,29 @@ class CatalogDetailPageAnalytics {
 
         //3
         @JvmStatic
-        fun eventProductListImpression(product_name: String,
-                                       product_id: String,
-                                       price: Int,
-                                       position: Int,
-                                       pathList: String,
-                                       categoryPath: String,
-                                       isTopAds: Boolean) {
+        fun eventProductListImpression(
+                pathList: String,
+                elements: List<Visitable<Any>>,
+                isTopAds: Boolean) {
             val tracker = TrackApp.getInstance().gtm
+
+
+            val list = ArrayList<Map<String, Any>>()
+            for (element in elements) {
+                val item = element as ProductsItem
+                val map = HashMap<String, Any>()
+                map["name"] = item.name
+                map["id"] = item.id.toString()
+                map["price"] = CurrencyFormatHelper.convertRupiahToInt(item.price)
+                map["brand"] = ""
+                map["category"] = item.categoryBreadcrumb ?: ""
+                map["variant"] = ""
+                map["list"] = pathList
+                map["position"] = item.adapter_position
+                list.add(map)
+            }
+
+
             val map = DataLayer.mapOf(
                     KEY_EVENT, PRODUCT_VIEW,
                     KEY_EVENT_CATEGORY, CATALOG_PAGE,
@@ -69,15 +87,7 @@ class CatalogDetailPageAnalytics {
                     KEY_EVENT_LABEL, if (isTopAds) "" else "catalog product list",
                     KEY_ECOMMERCE, DataLayer.mapOf(
                     "currencyCode", "IDR",
-                    "impressions", DataLayer.listOf(DataLayer.mapOf(
-                    "name", product_name,
-                    "id", product_id,
-                    "price", price,
-                    "brand", "",
-                    "category", categoryPath,
-                    "variant", "",
-                    "list", pathList,
-                    "position", position))
+                    "impressions", DataLayer.listOf(list)
             ))
             tracker.sendEnhanceEcommerceEvent(map)
         }

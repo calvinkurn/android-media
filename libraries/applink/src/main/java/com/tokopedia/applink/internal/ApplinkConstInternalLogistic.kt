@@ -42,4 +42,7 @@ object ApplinkConstInternalLogistic {
     @JvmField
     val ADD_ADDRESS_V2 = "$INTERNAL_LOGISTIC/addaddress/v2/"
 
+    @JvmField
+    val DROPOFF_PICKER = "$INTERNAL_LOGISTIC/dropoff/"
+
 }

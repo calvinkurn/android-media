@@ -50,17 +50,21 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
     private fun convertToChatRating(pojo: ChatSocketPojo): Visitable<*> {
+        val quickReplyPojo = GsonBuilder().create()
+                .fromJson<QuickReplyAttachmentAttributes>(pojo.attachment?.attributes,
+                        QuickReplyAttachmentAttributes::class.java)
         return ChatRatingViewModel(
                 pojo.msgId.toString(),
                 pojo.fromUid,
                 pojo.from,
                 pojo.fromRole,
                 pojo.message.censoredReply,
-                "",
+                pojo.attachment?.id ?: "",
                 TYPE_CHAT_RATING,
                 pojo.message.timeStampUnixNano,
                 pojo.ratingStatus,
-                pojo.message.timeStampUnixNano.toLong()
+                pojo.message.timeStampUnixNano.toLong(),
+                convertToQuickReplyList(quickReplyPojo)
         )
     }
 
@@ -109,6 +113,9 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
 
     private fun convertToChatActionSelectionBubbleModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): ChatActionSelectionBubbleViewModel {
         val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes::class.java)
+        val quickReplyPojo = GsonBuilder().create()
+                .fromJson<QuickReplyAttachmentAttributes>(jsonAttribute,
+                        QuickReplyAttachmentAttributes::class.java)
         return ChatActionSelectionBubbleViewModel(
                 pojo.msgId.toString(),
                 pojo.fromUid,
@@ -118,7 +125,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.attachment!!.type,
                 pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
-                convertToChatActionBubbleViewModelList(pojoAttribute)
+                convertToChatActionBubbleViewModelList(pojoAttribute),
+                convertToQuickReplyList(quickReplyPojo)
         )
     }
 

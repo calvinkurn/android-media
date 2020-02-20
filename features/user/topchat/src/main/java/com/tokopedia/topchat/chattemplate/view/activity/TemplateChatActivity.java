@@ -24,7 +24,7 @@ public class TemplateChatActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.setTitle(getString(R.string.drawer_title_setting));
+        toolbar.setTitle(getString(R.string.title_template_chat));
     }
 
     @Override

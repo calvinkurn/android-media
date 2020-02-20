@@ -3,11 +3,11 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory
 import android.view.View
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.AttachmentPreviewViewHolder
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 
 interface AttachmentPreviewFactory {
 
-    fun type(productPreviewViewModel: ProductPreviewViewModel): Int
+    fun type(sendableProductPreview: SendableProductPreview): Int
 
     fun type(productPreviewViewModel: InvoicePreviewViewModel): Int
 

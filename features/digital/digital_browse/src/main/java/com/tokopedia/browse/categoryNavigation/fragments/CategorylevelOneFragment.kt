@@ -31,7 +31,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
+
     lateinit var categoryBrowseViewModel: CategoryLevelOneViewModel
     private val categoryList = ArrayList<CategoriesItem>()
 
@@ -80,15 +80,13 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         val categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, listener, activityStateListener?.getActivityTrackingQueue())
         master_list.adapter = categoryLevelOneAdapter
 
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             categoryBrowseViewModel = viewModelProvider.get(CategoryLevelOneViewModel::class.java)
             categoryBrowseViewModel.bound()
-        }
     }
 
     private fun setUpObserver() {
-        categoryBrowseViewModel.getCategoryList().observe(this, Observer {
+        categoryBrowseViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {

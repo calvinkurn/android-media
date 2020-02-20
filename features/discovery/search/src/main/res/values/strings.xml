@@ -1,5 +1,5 @@
 <resources>
-    <string name="title_search_result" >Hasil Pencarian</string>
+    <string name="title_search_result" >Pencarian</string>
     <string name="search_result_app_name">search</string>
     <string name="app_name">Search</string>
     <string name="search_result_page">Search Result Page</string>
@@ -68,4 +68,9 @@
 
     <string name="free_ongkir_promo_show_case_title">Bebas Ongkir</string>
     <string name="free_ongkir_promo_show_case_description">Semua barang berlogo Bebas Ongkir, biaya kirimnya berpotensi GRATIS!</string>
+
+    <string name="banned_products_empty_search_title">Pencarian terbatas</string>
+    <string name="banned_products_empty_search_go_to_browser_button">Cari di Browser</string>
+    <string name="banned_products_ticker_title">Hasil pencarian terbatas</string>
+
 </resources>

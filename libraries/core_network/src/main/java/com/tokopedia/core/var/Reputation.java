@@ -9,14 +9,6 @@ public class Reputation{
 	private String tooltip;
 	private int minBadgeScore;
 
-	public void setBadgeLevel(int badgeLevel){
-		this.badgeLevel = badgeLevel;
-	}
-
-	public int getBadgeLevel(){
-		return badgeLevel;
-	}
-
 	public void setBadge(String badge){
 		this.badge = badge;
 	}

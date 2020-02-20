@@ -4,7 +4,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Update
 import com.tokopedia.trackingoptimizer.db.model.TrackingDbModel
-import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 
 interface TrackingDatabaseDao<T : TrackingDbModel> {
 
@@ -19,8 +18,6 @@ interface TrackingDatabaseDao<T : TrackingDbModel> {
 
     fun deleteByKey(key: String)
     fun deleteTable()
-    fun deleteByKeyList(keyList: List<String>)
     fun getTrackingModel(key: String): T?
     fun getTrackingModelList(): Array<T>?
-    fun getTrackingModelList(limit: Int): Array<T>?
 }

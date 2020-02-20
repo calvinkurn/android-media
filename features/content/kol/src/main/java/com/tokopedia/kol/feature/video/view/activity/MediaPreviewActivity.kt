@@ -13,6 +13,7 @@ import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.kol.feature.video.view.fragment.MediaHolderFragment
 import com.tokopedia.kol.feature.video.view.fragment.MediaPreviewFragment
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 class MediaPreviewActivity : BaseSimpleActivity(), HasComponent<KolComponent>, MediaHolderFragment.OnControllerTouch {
 
@@ -25,12 +26,20 @@ class MediaPreviewActivity : BaseSimpleActivity(), HasComponent<KolComponent>, M
         toolbar.hide()
     }
 
-    override fun getNewFragment(): Fragment = MediaPreviewFragment
-            .createInstance(intent.extras?.getString(MediaPreviewFragment.ARG_POST_ID) ?: "0",
-                    intent.extras?.getInt(MediaPreviewFragment.ARG_MEDIA_INDEX, 0) ?: 0)
+    override fun getNewFragment(): Fragment {
+        val data = intent.data
+        val postId: String = data?.lastPathSegment ?: 0.toString()
+        val mediaIndex = data?.getQueryParameter(MediaPreviewFragment.ARG_MEDIA_INDEX)?.toIntOrZero() ?: 0
+
+        return MediaPreviewFragment.createInstance(
+                postId = postId,
+                index = mediaIndex
+        )
+    }
 
     companion object{
 
+        @Deprecated("Use ApplinkConstInternalContent")
         @JvmStatic
         fun createIntent(context: Context, postId: String, index: Int = 0): Intent =
                 Intent(context, MediaPreviewActivity::class.java)

@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
 import androidx.core.graphics.drawable.DrawableCompat
@@ -14,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
@@ -24,7 +27,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
@@ -43,6 +45,7 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -95,11 +98,19 @@ class ChatListActivity : BaseTabActivity()
         initInjector()
         initTabList()
         super.onCreate(savedInstanceState)
+        useLightNotificationBar()
         setupViewModel()
         initTabLayout()
         setObserver()
         initData()
         initOnBoarding()
+    }
+
+    private fun useLightNotificationBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = Color.WHITE
+        }
     }
 
     private fun initTabList() {
@@ -256,7 +267,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
-        debug(TAG, incomingChatWebSocketModel.toString())
+        Timber.d(incomingChatWebSocketModel.toString())
         val contactId = incomingChatWebSocketModel.getContactId()
         val tag = incomingChatWebSocketModel.getTag()
         val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
@@ -265,7 +276,7 @@ class ChatListActivity : BaseTabActivity()
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
-        debug(TAG, incomingTypingWebSocketModel.toString())
+        Timber.d(incomingTypingWebSocketModel.toString())
         val contactId = incomingTypingWebSocketModel.getContactId()
         val tag = incomingTypingWebSocketModel.getTag()
         val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
@@ -330,7 +341,10 @@ class ChatListActivity : BaseTabActivity()
             }
         }
 
-        tabLayout.setBackgroundResource(R.color.white)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tabLayout.elevation = 0f
+        }
+        tabLayout.background = ContextCompat.getDrawable(this, R.drawable.bg_chat_list_tab_layout)
         tabLayout.tabMode = TabLayout.MODE_FIXED
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

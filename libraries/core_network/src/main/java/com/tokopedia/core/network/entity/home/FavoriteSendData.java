@@ -11,15 +11,6 @@ import java.util.List;
 
 @Deprecated
 public class FavoriteSendData {
-    @SerializedName("config")
-    @Expose
-    String config;
-    @SerializedName("status")
-    @Expose
-    String status;
-    @SerializedName("server_process_time")
-    @Expose
-    String serverProcessTime;
     @SerializedName("data")
     @Expose
     Result result;

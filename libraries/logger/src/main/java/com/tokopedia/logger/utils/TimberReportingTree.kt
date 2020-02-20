@@ -100,7 +100,10 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         return PRIORITY_ONLINE
     }
 
-    private fun populateTagMaps(tags: List<String>) {
+    private fun populateTagMaps(tags: List<String>?) {
+        if (tags == null) {
+            return
+        }
         for (tag in tags) {
             val tagSplit = listOf(*tag.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
             if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {

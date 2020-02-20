@@ -7,13 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
@@ -23,13 +23,11 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
-import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
-import com.tokopedia.core.drawer2.view.databinder.DrawerPosHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
@@ -37,7 +35,8 @@ import com.tokopedia.core.router.wallet.TokoCashCoreRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.core2.R;
+import com.tokopedia.loyalty.common.TokoPointDrawerData;
 
 /**
  * Created on 3/23/16.
@@ -369,10 +368,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
             ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
                     .getData().setDrawerProfile(profile);
-        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerPosHeaderDataBinder) {
-            ((DrawerPosHeaderDataBinder) drawerHelper.getAdapter().getHeader())
-                    .getData().setDrawerProfile(profile);
-        }
 
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
         drawerHelper.setFooterData(profile);

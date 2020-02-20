@@ -226,116 +226,141 @@
                         tools:visibility="visible" />
                 </FrameLayout>
 
-                <RelativeLayout
-                    android:id="@+id/footerCta"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:paddingTop="@dimen/dp_8"
-                    android:paddingBottom="@dimen/dp_16">
+                    android:paddingBottom="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    >
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/likeGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        app:constraint_referenced_ids="likeIcon,likeText"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/likeIcon"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/kol_action_like"
+                        android:scaleType="fitCenter"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:srcCompat="@drawable/ic_thumb"
+                        />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/likeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="sans-serif"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:text="@string/kol_action_like"
+                        android:textColor="@color/color_like_comment_share"
+                        app:layout_constraintBottom_toBottomOf="@id/likeIcon"
+                        app:layout_constraintStart_toEndOf="@id/likeIcon"
+                        app:layout_constraintTop_toTopOf="@id/likeIcon"
+                        app:typographyType="body_3"
+                        tools:ignore="RtlSymmetry"
+                        />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/commentGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="commentIcon,commentText"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/commentIcon"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/kol_action_comment"
+                        android:scaleType="fitCenter"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_alignParentLeft="true">
+                        app:layout_constraintTop_toTopOf="@id/likeText"
+                        app:layout_constraintBottom_toBottomOf="@id/likeText"
+                        app:layout_constraintStart_toEndOf="@id/likeText"
+                        app:srcCompat="@drawable/ic_feed_comment"
+                        tools:ignore="RtlSymmetry"
+                        />
 
-                        <ImageView
-                            android:id="@+id/likeIcon"
-                            android:layout_width="@dimen/dp_18"
-                            android:layout_height="@dimen/dp_18"
-                            android:contentDescription="@string/kol_action_like"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/ic_thumb"
-                            android:visibility="visible"
-                            android:layout_gravity="center"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/likeText"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:visibility="visible" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/likeText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingStart="@dimen/dp_4"
-                            android:paddingLeft="@dimen/dp_4"
-                            android:paddingEnd="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16"
-                            android:text="@string/kol_action_like"
-                            android:layout_gravity="center"
-                            android:textColor="@color/color_like_comment_share"
-                            android:visibility="visible"
-                            app:typographyType="body_3"
-                            tools:ignore="RtlSymmetry"
-                            tools:visibility="visible" />
-
-                        <ImageView
-                            android:id="@+id/commentIcon"
-                            android:layout_width="@dimen/dp_18"
-                            android:layout_height="@dimen/dp_18"
-                            android:contentDescription="@string/kol_action_comment"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/ic_feed_comment"
-                            android:visibility="visible"
-                            android:layout_gravity="center"
-                            tools:ignore="RtlSymmetry"
-                            tools:visibility="visible" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/commentText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingStart="@dimen/dp_4"
-                            android:paddingLeft="@dimen/dp_4"
-                            android:paddingEnd="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16"
-                            android:text="@string/kol_action_comment"
-                            android:layout_gravity="center"
-                            android:textColor="@color/color_like_comment_share"
-                            android:visibility="visible"
-                            app:typographyType="body_3"
-                            tools:ignore="RtlSymmetry"
-                            tools:visibility="visible" />
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/commentText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_alignParentRight="true">
+                        android:layout_gravity="center"
+                        android:fontFamily="sans-serif"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:text="@string/kol_action_comment"
+                        android:textColor="@color/color_like_comment_share"
+                        app:layout_constraintBottom_toBottomOf="@id/commentIcon"
+                        app:layout_constraintStart_toEndOf="@id/commentIcon"
+                        app:layout_constraintTop_toTopOf="@id/commentIcon"
+                        app:typographyType="body_3"
+                        tools:ignore="RtlSymmetry"
+                        />
 
-                        <ImageView
-                            android:id="@+id/shareIcon"
-                            android:layout_width="@dimen/dp_18"
-                            android:layout_height="@dimen/dp_18"
-                            android:contentDescription="@string/kol_action_share"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/ic_share_grey_profile"
-                            android:visibility="visible"
-                            tools:visibility="visible" />
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/shareGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="shareIcon,shareText"
+                        />
 
-                        <TextView
-                            android:id="@+id/shareText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingStart="@dimen/dp_4"
-                            android:paddingLeft="@dimen/dp_4"
-                            android:text="@string/kol_action_share"
-                            android:textColor="@color/color_like_comment_share"
-                            android:textSize="@dimen/sp_12"
-                            android:textStyle="normal"
-                            android:visibility="visible"
-                            tools:ignore="RtlSymmetry"
-                            tools:visibility="visible" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/shareIcon"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        android:contentDescription="@string/kol_action_share"
+                        android:scaleType="fitCenter"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        app:layout_constraintBottom_toBottomOf="@id/commentText"
+                        app:layout_constraintStart_toEndOf="@id/commentText"
+                        app:layout_constraintTop_toTopOf="@id/commentText"
+                        app:srcCompat="@drawable/ic_share_grey_profile"
+                        />
 
-                    </LinearLayout>
-                </RelativeLayout>
+                    <TextView
+                        android:id="@+id/shareText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:paddingStart="@dimen/dp_4"
+                        android:paddingLeft="@dimen/dp_4"
+                        android:text="@string/kol_action_share"
+                        android:textColor="@color/color_like_comment_share"
+                        android:textSize="@dimen/sp_12"
+                        android:textStyle="normal"
+                        app:layout_constraintBottom_toBottomOf="@id/shareIcon"
+                        app:layout_constraintStart_toEndOf="@id/shareIcon"
+                        app:layout_constraintTop_toTopOf="@id/shareIcon"
+                        tools:ignore="RtlSymmetry"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/statsIcon"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        app:srcCompat="@drawable/ic_graph_grey"
+                        app:layout_constraintTop_toTopOf="@id/shareText"
+                        app:layout_constraintBottom_toBottomOf="@id/shareText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
         </LinearLayout>

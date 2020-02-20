@@ -264,6 +264,10 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               imageURL
               description
             }
+            stats {
+              text
+              productIDs
+            }
           }
           tracking {
             clickURL
@@ -522,6 +526,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               comment
               share
               ctaLink
+              stats
             }
           }
           cardhighlight {

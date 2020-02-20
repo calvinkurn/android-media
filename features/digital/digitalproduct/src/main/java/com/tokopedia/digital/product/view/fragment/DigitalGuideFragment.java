@@ -28,13 +28,16 @@ public class DigitalGuideFragment extends Fragment {
 
     private RecyclerView rvGuide;
 
-    private DigitalGuideConnector connector;
     private GuideAdapter adapter;
 
     private List<GuideData> guideDataList;
 
-    public static DigitalGuideFragment createInstance() {
-        return new DigitalGuideFragment();
+    public static DigitalGuideFragment createInstance(DigitalGuideConnector digitalGuideConnector) {
+        DigitalGuideFragment fragment = new DigitalGuideFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(EXTRA_GUIDE_DATA, (ArrayList<? extends Parcelable>) digitalGuideConnector.getGuideDataList());
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -43,6 +46,8 @@ public class DigitalGuideFragment extends Fragment {
 
         if (savedInstanceState != null) {
             guideDataList = savedInstanceState.getParcelableArrayList(EXTRA_GUIDE_DATA);
+        } else if (getArguments() != null) {
+            guideDataList = getArguments().getParcelableArrayList(EXTRA_GUIDE_DATA);
         }
     }
 
@@ -76,15 +81,9 @@ public class DigitalGuideFragment extends Fragment {
     }
 
     private void renderData() {
-        if (guideDataList == null) {
-            guideDataList = connector.getGuideDataList();
+        if (guideDataList != null) {
+            adapter.addData(guideDataList);
         }
-
-        adapter.addData(guideDataList);
-    }
-
-    public void setConnector(DigitalGuideConnector connector) {
-        this.connector = connector;
     }
 
     public interface DigitalGuideConnector {

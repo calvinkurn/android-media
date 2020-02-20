@@ -20,6 +20,7 @@ public class ProductViewModel implements Parcelable {
     private String additionalParams;
     private String autocompleteApplink;
     private String responseCode;
+    private String keywordProcess;
     private String errorMessage;
     private TickerViewModel tickerModel;
     private SuggestionViewModel suggestionModel;
@@ -28,7 +29,7 @@ public class ProductViewModel implements Parcelable {
     private boolean imageSearch;
     private boolean isQuerySafe;
     private DynamicFilterModel dynamicFilterModel;
-    private DataValue quickFilterModel;
+    private QuickFilterViewModel quickFilterModel;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
     private RelatedSearchViewModel relatedSearchModel;
@@ -75,11 +76,11 @@ public class ProductViewModel implements Parcelable {
         this.dynamicFilterModel = dynamicFilterModel;
     }
 
-    public DataValue getQuickFilterModel() {
+    public QuickFilterViewModel getQuickFilterModel() {
         return quickFilterModel;
     }
 
-    public void setQuickFilterModel(DataValue quickFilterModel) {
+    public void setQuickFilterModel(QuickFilterViewModel quickFilterModel) {
         this.quickFilterModel = quickFilterModel;
     }
 
@@ -150,6 +151,14 @@ public class ProductViewModel implements Parcelable {
         this.responseCode = responseCode;
     }
 
+    public String getKeywordProcess() {
+        return keywordProcess;
+    }
+
+    public void setKeywordProcess(String keywordProcess) {
+        this.keywordProcess = keywordProcess;
+    }
+
     public String getErrorMessage() {
         return errorMessage;
     }
@@ -216,6 +225,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeString(this.additionalParams);
         dest.writeString(this.autocompleteApplink);
         dest.writeString(this.responseCode);
+        dest.writeString(this.keywordProcess);
         dest.writeParcelable(this.tickerModel, flags);
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
@@ -223,7 +233,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isQuerySafe ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.dynamicFilterModel, flags);
-        dest.writeParcelable(this.quickFilterModel, flags);
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
         dest.writeParcelable(this.relatedSearchModel, flags);
@@ -239,6 +248,7 @@ public class ProductViewModel implements Parcelable {
         this.additionalParams = in.readString();
         this.autocompleteApplink = in.readString();
         this.responseCode = in.readString();
+        this.keywordProcess = in.readString();
         this.tickerModel = in.readParcelable(TickerViewModel.class.getClassLoader());
         this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
         this.totalData = in.readInt();
@@ -246,7 +256,6 @@ public class ProductViewModel implements Parcelable {
         this.imageSearch = in.readByte() != 0;
         this.isQuerySafe = in.readByte() != 0;
         this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
-        this.quickFilterModel = in.readParcelable(DataValue.class.getClassLoader());
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
         this.relatedSearchModel = in.readParcelable(RelatedSearchViewModel.class.getClassLoader());

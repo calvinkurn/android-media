@@ -5,6 +5,7 @@ import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -46,9 +47,13 @@ public interface ProductListSectionContract {
 
         void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
 
-        void backToTop();
+        void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 
-        List<Option> getQuickFilterOptions(DataValue dynamicFilterModel);
+        void trackEventImpressionBannedProducts(boolean isEmptySearch);
+
+        void trackEventImpressionSortPriceMinTicker();
+
+        void backToTop();
 
         void addLoading();
 
@@ -76,6 +81,8 @@ public interface ProductListSectionContract {
 
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
+        void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
+
         void setFirstTimeLoad(boolean isFirstTimeLoad);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
@@ -100,13 +107,9 @@ public interface ProductListSectionContract {
 
         void redirectSearchToAnotherPage(String applink);
 
-        void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
+        void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
         void setDefaultLayoutType(int defaultView);
-
-        void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
-
-        void hideErrorMessage();
 
         void successRemoveRecommendationWishlist(String productId);
 
@@ -115,6 +118,10 @@ public interface ProductListSectionContract {
         void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
+
+        boolean isTickerHasDismissed();
+
+        void redirectToBrowser(String url);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
@@ -126,5 +133,7 @@ public interface ProductListSectionContract {
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
 
         void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
+
+        void onBannedProductsGoToBrowserClick(String url);
     }
 }

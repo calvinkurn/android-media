@@ -68,4 +68,8 @@ public class TemplateChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         list.add(new TemplateChatModel(false));
         notifyDataSetChanged();
     }
+
+    public boolean hasTemplateChat() {
+        return !list.isEmpty();
+    }
 }

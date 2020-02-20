@@ -110,6 +110,6 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                                  contentPosition: Int,
                                  postId: String)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

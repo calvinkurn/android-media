@@ -48,7 +48,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql

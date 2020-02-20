@@ -41,6 +41,7 @@ public class ClientNumberInputView extends LinearLayout {
     private Button btnClear;
     private ImageView imgOperator;
     private Button btnContactPicker;
+    private Button btnCameraPicker;
     private RelativeLayout pulsaFramelayout;
     private TextView tvErrorClientNumber;
 
@@ -74,6 +75,7 @@ public class ClientNumberInputView extends LinearLayout {
         btnClear = findViewById(R.id.btn_clear_client_number);
         imgOperator = findViewById(R.id.iv_pic_operator);
         btnContactPicker = findViewById(R.id.btn_contact_picker);
+        btnCameraPicker = findViewById(R.id.btn_camera_picker);
         pulsaFramelayout = findViewById(R.id.fl_holder_input_client_number);
         tvErrorClientNumber = findViewById(R.id.tv_error_client_number);
 
@@ -184,6 +186,7 @@ public class ClientNumberInputView extends LinearLayout {
         autoCompleteTextView.addTextChangedListener(textWatcher);
         this.btnClear.setOnClickListener(getButtonClearClickListener());
         this.btnContactPicker.setOnClickListener(getButtonContactPickerClickListener());
+        this.btnCameraPicker.setOnClickListener(getButtonCameraPickerClickListener());
     }
 
     private void setupLayoutParamAndInputType(ClientNumber clientNumber) {
@@ -194,7 +197,13 @@ public class ClientNumberInputView extends LinearLayout {
             layoutParams.weight = 0.88f;
         } else {
             btnContactPicker.setVisibility(View.GONE);
-            layoutParams.weight = 1;
+            if (clientNumber.isEmoney()) {
+                btnCameraPicker.setVisibility(VISIBLE);
+                layoutParams.weight = 0.88f;
+            } else {
+                btnCameraPicker.setVisibility(GONE);
+                layoutParams.weight = 1;
+            }
         }
         pulsaFramelayout.setLayoutParams(layoutParams);
         if (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)
@@ -221,6 +230,16 @@ public class ClientNumberInputView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 actionListener.onButtonContactPickerClicked();
+            }
+        };
+    }
+
+    @NonNull
+    private OnClickListener getButtonCameraPickerClickListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onButtonCameraPickerClicked();
             }
         };
     }
@@ -296,6 +315,8 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     public interface ActionListener {
+        void onButtonCameraPickerClicked();
+
         void onButtonContactPickerClicked();
 
         void onClientNumberInputValid(String tempClientNumber);

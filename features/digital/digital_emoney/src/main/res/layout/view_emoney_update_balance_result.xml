@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/view_card_info"
+    android:padding="@dimen/dp_16"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <com.tokopedia.emoney.view.compoundview.ETollCardInfoView
+        android:id="@+id/view_etoll_card_info"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:id="@+id/button_topup"
+        android:layout_margin="@dimen/dp_4"
+        android:padding="@dimen/dp_16"
+        style="@style/Button.Submit.Green"
+        android:text="@string/emoney_button_topup"/>
+
+    <TextView
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:id="@+id/text_label_progress_title"/>
+
+    <TextView
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/text_label_progress_message"/>
+
+</LinearLayout>

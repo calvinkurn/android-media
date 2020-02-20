@@ -2,4 +2,5 @@
 <resources>
     <string name="review_count_format">(%d)</string>
     <string name="product_card_module_label_add_to_card">+ Keranjang</string>
+    <string name="product_card_module_text_add_to_card">Tambah ke Keranjang</string>
 </resources>

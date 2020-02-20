@@ -42,37 +42,6 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     private PermissionCheckerHelper permissionCheck;
 
-    // Address -> Router
-    public static Intent createInstanceFromAddress(@NonNull Context context,
-                                                   @Nullable HashMap<String, String> locationPass,
-                                                   boolean isFromMarketPlaceCart) {
-        Intent intent = new Intent(context, GeolocationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(EXTRA_HASH_LOCATION, locationPass);
-        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    // Shop Open -> Router
-    public static Intent createInstanceIntent(@NonNull Context context, @Nullable LocationPass locationPass) {
-        Intent intent = new Intent(context, GeolocationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    // Shipment Fragment -> Direct dep
-    public static Intent createInstanceFromMarketplaceCart(@NonNull Context context, @Nullable LocationPass locationPass) {
-        Intent intent = new Intent(context, GeolocationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
-        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, true);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_ADDRESS_GEOLOCATION;

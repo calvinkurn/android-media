@@ -174,6 +174,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
         void onButtonContactPickerClicked();
 
+        void onButtonCameraPickerClicked();
+
         void onProductDetailLinkClicked(String url);
 
         boolean isRecentInstantCheckoutUsed(String categoryId);

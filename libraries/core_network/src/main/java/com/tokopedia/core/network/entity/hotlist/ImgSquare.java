@@ -15,8 +15,4 @@ public class ImgSquare {
         return _200x200;
     }
 
-    public void set200x200(String _200x200) {
-        this._200x200 = _200x200;
-    }
-
 }

@@ -15,22 +15,8 @@ import java.util.List;
 @Deprecated
 public class Option implements Parcelable {
 
-    public static final String KEY_PRICE_MIN = "pmin";
-    public static final String KEY_PRICE_MAX = "pmax";
-    public static final String KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax";
-    public static final String KEY_PRICE_WHOLESALE = "wholesale";
-    public static final String KEY_CATEGORY = "sc";
-    public static final String KEY_OFFICIAL = "official";
-    public static final String KEY_RATING = "rt";
-
-    public static final String INPUT_TYPE_TEXTBOX = "textbox";
-    public static final String INPUT_TYPE_CHECKBOX = "checkbox";
     public static final String UID_FIRST_SEPARATOR_SYMBOL = "*";
     public static final String UID_SECOND_SEPARATOR_SYMBOL = "?";
-    public static final String METRIC_INTERNATIONAL = "International";
-
-    public static final String RATING_ABOVE_FOUR_NAME = "4 Keatas";
-    public static final String RATING_ABOVE_FOUR_VALUE = "4,5";
 
     @SerializedName("name")
     @Expose
@@ -76,15 +62,6 @@ public class Option implements Parcelable {
     List<LevelTwoCategory> levelTwoCategoryList;
 
     String inputState = "";
-
-
-    public boolean isCategoryOption() {
-        return Option.KEY_CATEGORY.equals(getKey());
-    }
-
-    public boolean isOfficialOption() {
-        return Option.KEY_OFFICIAL.equals(getKey());
-    }
 
     /**
      * @return The name
@@ -142,60 +119,12 @@ public class Option implements Parcelable {
         this.inputType = inputType;
     }
 
-    public String getHexColor() {
-        return hexColor;
-    }
-
-    public void setHexColor(String hexColor) {
-        this.hexColor = hexColor;
-    }
-
-    public String getMetric() {
-        return metric;
-    }
-
-    public void setMetric(String metric) {
-        this.metric = metric;
-    }
-
     public String getTotalData() {
         return totalData;
     }
 
     public void setTotalData(String totalData) {
         this.totalData = totalData;
-    }
-
-    public String getKeyMin() {
-        return keyMin;
-    }
-
-    public void setKeyMin(String keyMin) {
-        this.keyMin = keyMin;
-    }
-
-    public String getKeyMax() {
-        return keyMax;
-    }
-
-    public void setKeyMax(String keyMax) {
-        this.keyMax = keyMax;
-    }
-
-    public String getValMin() {
-        return valMin;
-    }
-
-    public void setValMin(String valMin) {
-        this.valMin = valMin;
-    }
-
-    public String getValMax() {
-        return valMax;
-    }
-
-    public void setValMax(String valMax) {
-        this.valMax = valMax;
     }
 
     public String getIconUrl() {
@@ -206,28 +135,12 @@ public class Option implements Parcelable {
         this.iconUrl = iconUrl;
     }
 
-    public String getInputState() {
-        return inputState;
-    }
-
-    public void setInputState(String inputState) {
-        this.inputState = inputState;
-    }
-
     public boolean isPopular() {
         return isPopular;
     }
 
     public void setPopular(boolean popular) {
         isPopular = popular;
-    }
-
-    public List<LevelTwoCategory> getLevelTwoCategoryList() {
-        return levelTwoCategoryList;
-    }
-
-    public void setLevelTwoCategoryList(List<LevelTwoCategory> levelTwoCategoryList) {
-        this.levelTwoCategoryList = levelTwoCategoryList;
     }
 
     public String getUniqueId() {

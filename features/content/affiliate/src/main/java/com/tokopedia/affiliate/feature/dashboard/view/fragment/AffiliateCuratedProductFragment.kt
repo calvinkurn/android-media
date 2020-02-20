@@ -101,7 +101,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter.attachView(this)
         return inflater.inflate(
-                if (hasInitialSwipeRefresh()) R.layout.fragment_af_curated_product_refresh else R.layout.fragment_af_curated_product,
+                if (hasInitialSwipeRefresh()) R.layout.fragment_af_curated_product_refresh
+                else R.layout.fragment_af_curated_product,
                 container,
                 false)
     }
@@ -110,6 +111,14 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         initView(view)
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
     }
 
     private fun initView(view: View) {
@@ -122,7 +131,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     private fun setupView(view: View) {
-        tvSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_system_action_sort_grayscale_24), null, null, null)
+        tvSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_sort_grayscale_24), null, null, null)
         if (type == null) {
             cvSort.visible()
             getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {

@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.express_checkout.view.variant.v
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.purchase_platform.common.view.model.InsuranceCartShopsViewModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 
 data class InsuranceRecommendationViewModel(

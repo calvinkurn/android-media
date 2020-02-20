@@ -24,14 +24,14 @@ class GetPostDetailUseCase @Inject constructor(
         private const val LIMIT_3 = 3
 
         @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = "", source: String, sourceId:
+        fun createRequestParams(userId: String, cursor: String = "", source: GetDynamicFeedUseCase.FeedV2Source, sourceId:
         String = ""):
                 RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(GetDynamicFeedUseCase.PARAM_USER_ID, userId)
             requestParams.putInt(GetDynamicFeedUseCase.PARAM_LIMIT, LIMIT_3)
             requestParams.putString(GetDynamicFeedUseCase.PARAM_CURSOR, cursor)
-            requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE, source)
+            requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE, source.sourceString)
             requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, sourceId)
             requestParams.putInt(GetKolPostDetailUseCase.PARAM_ID, sourceId.toIntOrZero())
             return requestParams
@@ -48,7 +48,9 @@ class GetPostDetailUseCase @Inject constructor(
         return GetDynamicFeedUseCase.createRequestParams(
                 userId = requestParams.getString(GetDynamicFeedUseCase.PARAM_USER_ID, ""),
                 cursor = requestParams.getString(GetDynamicFeedUseCase.PARAM_CURSOR, ""),
-                source = requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE, ""),
+                source = GetDynamicFeedUseCase.FeedV2Source.getSourceByString(
+                        requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE, "")
+                ),
                 sourceId = requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, "")
         )
     }

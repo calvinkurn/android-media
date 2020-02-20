@@ -16,9 +16,9 @@ class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecora
 
     init {
         context?.let {
-            divider = ContextCompat.getDrawable(it, R.drawable.bg_line_separator_thin)
+            divider = ContextCompat.getDrawable(it, com.tokopedia.design.R.drawable.bg_line_separator_thin)
             dividerHeight = context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_half)
-            dividerLeftPadding = context.resources.getDimensionPixelSize(R.dimen.dp_56)
+            dividerLeftPadding = context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_56)
         }
     }
 

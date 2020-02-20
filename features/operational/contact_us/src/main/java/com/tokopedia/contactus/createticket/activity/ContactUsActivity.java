@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
@@ -17,7 +15,6 @@ import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.Contac
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -26,7 +23,6 @@ import com.tokopedia.core.util.SessionHandler;
 /**
  * Created by nisie on 8/12/16.
  */
-@DeepLink(ApplinkConst.CONTACT_US)
 public class ContactUsActivity extends BasePresenterActivity implements
         ContactUsFaqListener,
         CreateTicketFormFragment.FinishContactUsListener,

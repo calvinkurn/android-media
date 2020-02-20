@@ -86,6 +86,6 @@ class TopadsShopViewHolder(v: View,
 
         fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

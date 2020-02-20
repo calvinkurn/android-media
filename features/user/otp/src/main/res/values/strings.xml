@@ -45,17 +45,14 @@
     <string name="my_phone_inactive_change_at_setting">Nomor ponsel sudah tidak aktif?\nUbah nomor ponsel di Pengaturan</string>
     <string name="setting">Pengaturan</string>
     
-    <string name="cotp_miscall_onboarding_title">Minta kode verifikasi lewat Missed Call</string>
-    <string name="cotp_miscall_onboarding_send_call">Telpon saya</string>
-    <string name="cotp_miscall_onboarding_point_1">1</string>
-    <string name="cotp_miscall_onboarding_point_2">2</string>
-    <string name="cotp_miscall_onboarding_step_1">Kamu akan menerima &lt;b&gt;panggilan telepon.&lt;/b&gt; Panggilan tidak perlu diangkat.</string>
-    <string name="cotp_miscall_onboarding_step_2">Masukkan &lt;b&gt;6 digit terakhir&lt;/b&gt; dari nomor tersebut.</string>
-    <string name="cotp_miscall_verification_title">Masukkan 6 Digit Terakhir Nomor Telepon Missed Call</string>
-    <string name="cotp_miscall_verification_resend">Kirim ulang</string>
+    <string name="cotp_miscall_onboarding_title">Kami akan Missed Call nomor kamu, panggilan ini tidak perlu dijawab.</string>
+    <string name="cotp_miscall_onboarding_desc">4 digit terakhir dari nomor yang menelpon kamu adalah kode verifikasi kamu.</string>
+    <string name="cotp_miscall_onboarding_send_call">Missed Call Saya</string>
+    <string name="cotp_miscall_verification_title">Masukkan 4 digit terakhir dari nomor yang menelpon kamu</string>
+    <string name="cotp_miscall_verification_resend">Missed call ulang</string>
     <string name="cotp_miscall_verification_phone_code">000-00</string>
     <string name="cotp_miscall_verification_invalid_code">Kode verifikasi salah. Silakan coba lagi.</string>
-    <string name="cotp_miscall_verification_not_received_code">Tidak menerima kode?</string>
+    <string name="cotp_miscall_verification_not_received_code">Tidak menerima missed call?</string>
     <string name="cotp_miscall_verification_please_wait_to_resend">Mohon tunggu ***** untuk kirim ulang</string>
     <string name="cotp_miscall_verification_with_other_method">Gunakan Metode Verifikasi Lain</string>
   
@@ -68,10 +65,13 @@
     <string name="validation_resend_email">Tidak menerima kode? Kirim ulang</string>
     <string name="validation_text"><![CDATA[Kode verifikasi telah dikirimkan melalui email ke <b>{email}</b>.]]></string>
     <string name="param_email_validation_text">{email}</string>
-    <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
+    <string name="message_resend_email_to"><![CDATA[Apakah anda ingin kirim ulang email ke <b>%s</b>]]></string>
     <string name="resend_activation_email">Kirim Ulang Email</string>
     <string name="button_change_email">Ubah Email</string>
     <string name="change_email_error_condition">change email</string>
     <string name="success_resend_activation">Kode aktivasi telah dikirim ulang</string>
     <string name="cancel_dialog_change_email">Batal</string>
+    <string name="job_was_cancelled">Job was cancelled</string>
+    <string name="no_network_connection">Tidak ada koneksi, periksa koneksi internet anda</string>
+    <string name="validator_coundown_text"><![CDATA[Mohon tunggu dalam <b>%d detik</b> untuk kirim ulang.]]></string>
 </resources>

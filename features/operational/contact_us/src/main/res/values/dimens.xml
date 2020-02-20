@@ -58,5 +58,11 @@
     <dimen name="text_toolbar_height_collapsed">58dp</dimen>
     <dimen name="text_toolbar_height_expanded">142dp</dimen>
     <dimen name="help_rate_height">124dp</dimen>
-
+    
+    <dimen name="screen_per_4_pad">80dp</dimen>
+    <dimen name="new_margin_sm">24dp</dimen>
+    <dimen name="margin_ms">8dp</dimen>
+    <dimen name="new_margin_small">8dp</dimen>
+    <dimen name="padding_vvvs">2dp</dimen>
+    <dimen name="new_margin_med">16dp</dimen>
 </resources>

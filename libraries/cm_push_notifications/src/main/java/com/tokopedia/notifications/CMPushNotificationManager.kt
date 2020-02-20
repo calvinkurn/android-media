@@ -1,21 +1,20 @@
 package com.tokopedia.notifications
 
 import android.app.Application
-import android.app.NotificationManager
 import android.content.Context
-import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
-import com.tokopedia.notifications.common.launchCatchError
-import com.tokopedia.notifications.factory.CMNotificationFactory
+import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
+
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
@@ -23,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
 class CMPushNotificationManager : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
+        get() = Job()
 
     private val TAG = CMPushNotificationManager::class.java.canonicalName
 
@@ -50,13 +49,14 @@ class CMPushNotificationManager : CoroutineScope {
 
     /**
      * initialization of push notification library
-     *
-     * @param context
+     * Push Worker is initialisation & scheduled periodic
+     * @param application
      */
     fun init(application: Application) {
         this.applicationContext = application.applicationContext
         CMInAppManager.getInstance().init(application)
         GraphqlClient.init(applicationContext)
+        PushWorker.schedulePeriodicWorker()
     }
 
     /**
@@ -143,20 +143,12 @@ class CMPushNotificationManager : CoroutineScope {
         try {
             if (isFromCMNotificationPlatform(remoteMessage.data)) {
                 val confirmationValue = remoteMessage.data[CMConstant.PayloadKeys.SOURCE]
-                val bundle = convertMapToBundle(remoteMessage.data)
+                val bundle = PayloadConverter.convertMapToBundle(remoteMessage.data)
                 if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
-                } else {
-                    launchCatchError(
-                            block = {
-                                if (isPushEnable)
-                                    handleNotificationBundle(bundle)
-                            }, onError = {
-                        Log.e(TAG, "CMPushNotificationManager: handleNotificationBundle ", it)
-                    })
+                } else if (isPushEnable){
+                    PushController(applicationContext).handleNotificationBundle(bundle)
                 }
-
-
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)
@@ -164,30 +156,6 @@ class CMPushNotificationManager : CoroutineScope {
 
     }
 
-    private fun convertMapToBundle(map: Map<String, String>?): Bundle {
-        val bundle = Bundle(map?.size ?: 0)
-        if (map != null) {
-            for ((key, value) in map) {
-                bundle.putString(key, value)
-            }
-        }
-        return bundle
-    }
-
-    private fun handleNotificationBundle(bundle: Bundle) {
-        try {
-            val applicationContext = instance.applicationContext
-            val baseNotification = CMNotificationFactory
-                    .getNotification(instance.applicationContext, bundle)
-            if (null != baseNotification) {
-                val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                val notification = baseNotification.createNotification()
-                notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, e.message)
-        }
-    }
 
     companion object {
         @JvmStatic

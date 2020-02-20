@@ -2,13 +2,14 @@ package com.tokopedia.shop.open.domain.interactor;
 
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.shop.open.domain.ShopOpenSaveInfoRepository;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import rx.Observable;

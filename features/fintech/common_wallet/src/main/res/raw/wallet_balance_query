@@ -3,10 +3,6 @@
     linked
     balance
     rawBalance
-    errors {
-      name
-      message
-    }
     text
     total_balance
     raw_total_balance

@@ -24,24 +24,6 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.purchase_platform.features.atc_variant.view.NormalCheckoutActivity"
-            android:label="@string/activity_title_checkout_variant"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_normal_checkout"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="com.tokopedia.purchase_platform.features.cart.view.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
             android:screenOrientation="portrait"

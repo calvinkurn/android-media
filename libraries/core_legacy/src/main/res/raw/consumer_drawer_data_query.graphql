@@ -37,12 +37,7 @@ query ConsumerDrawerData($userID: Int!) {
   wallet {
     linked
     balance
-    rawBalance
     text
-    total_balance
-    raw_total_balance
-    hold_balance
-    raw_hold_balance
     redirect_url
     applinks
     ab_tags {

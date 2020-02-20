@@ -2,7 +2,6 @@ package com.tokopedia.analytics.debugger.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.data.source.database.DataDBSource;
 import com.tokopedia.analytics.database.GtmLogDB;
 import com.tokopedia.analytics.database.TkpdAnalyticsDatabase;
 import com.tokopedia.analytics.debugger.AnalyticsDebuggerConst;
@@ -19,7 +18,7 @@ import rx.Observable;
 /**
  * @author okasurya on 5/16/18.
  */
-public class GtmLogDBSource implements DataDBSource<AnalyticsLogData, List<GtmLogDB>> {
+public class GtmLogDBSource {
 
     private GtmLogDao gtmLogDao;
 
@@ -28,15 +27,6 @@ public class GtmLogDBSource implements DataDBSource<AnalyticsLogData, List<GtmLo
         gtmLogDao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao();
     }
 
-    @Override
-    public Observable<Boolean> isDataAvailable() {
-        return Observable.unsafeCreate(subscriber -> {
-            List<GtmLogDB> list = gtmLogDao.getData();
-            subscriber.onNext(list != null && !list.isEmpty());
-        });
-    }
-
-    @Override
     public Observable<Boolean> deleteAll() {
         return Observable.unsafeCreate(subscriber -> {
             gtmLogDao.deleteAll();
@@ -44,7 +34,6 @@ public class GtmLogDBSource implements DataDBSource<AnalyticsLogData, List<GtmLo
         });
     }
 
-    @Override
     public Observable<Boolean> insertAll(AnalyticsLogData data) {
         return Observable.just(data).map(analyticsLogData -> {
             GtmLogDB gtmLogDB = new GtmLogDB();
@@ -57,7 +46,6 @@ public class GtmLogDBSource implements DataDBSource<AnalyticsLogData, List<GtmLo
         });
     }
 
-    @Override
     public Observable<List<GtmLogDB>> getData(HashMap<String, Object> params) {
         return Observable.just(params).map(params1 -> {
             int page;
@@ -78,8 +66,4 @@ public class GtmLogDBSource implements DataDBSource<AnalyticsLogData, List<GtmLo
         });
     }
 
-    @Override
-    public Observable<Integer> getDataCount(HashMap<String, Object> params) {
-        return Observable.just(params).map(stringObjectHashMap -> gtmLogDao.getCount());
-    }
 }

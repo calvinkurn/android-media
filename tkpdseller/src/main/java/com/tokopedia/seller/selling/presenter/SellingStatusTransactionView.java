@@ -47,6 +47,10 @@ public interface SellingStatusTransactionView extends BaseView {
 
     void addRetry();
 
+    void addRetryMessage(String message);
+
+    void removeRetryMessage();
+
     void addEmptyView();
 
     void removeEmpty();

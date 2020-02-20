@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travel.homepage.data.*
@@ -168,7 +169,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     override fun getScreenName(): String = ""
 
     override fun onBannerVHItemBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_banner), isFromCloud
+        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), isFromCloud
                 ?: true)
     }
 
@@ -219,11 +220,11 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         }
     }
 
-    override fun onTrackBannerImpression(banner: TravelHomepageBannerModel.Banner, position: Int) {
+    override fun onTrackBannerImpression(banner: TravelCollectiveBannerModel.Banner, position: Int) {
         travelHomepageTrackingUtil.travelHomepageImpressionBanner(banner, position)
     }
 
-    override fun onTrackBannerClick(banner: TravelHomepageBannerModel.Banner, position: Int) {
+    override fun onTrackBannerClick(banner: TravelCollectiveBannerModel.Banner, position: Int) {
         travelHomepageTrackingUtil.travelHomepageClickBanner(banner, position)
     }
 

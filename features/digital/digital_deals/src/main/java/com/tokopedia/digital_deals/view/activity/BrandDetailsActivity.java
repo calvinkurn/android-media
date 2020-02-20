@@ -56,6 +56,7 @@ public class BrandDetailsActivity extends DealsBaseActivity {
                 List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL, uri, true);
                 brandSeoUrl = params.get(0);
                 bundle = getInstanceIntentAppLinkBackToHome(this, brandSeoUrl);
+                bundle.putString("fromApplink", "true");
             }
             return BrandDetailsFragment.createInstance(bundle);
         }

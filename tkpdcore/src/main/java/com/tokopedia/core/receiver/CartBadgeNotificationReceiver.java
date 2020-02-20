@@ -7,7 +7,6 @@ import android.content.Intent;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.var.TkpdCache;
 
 /**
  * @author anggaprasetiyo on 1/6/17.
@@ -37,11 +36,5 @@ public class CartBadgeNotificationReceiver extends BroadcastReceiver {
 
     public interface ActionListener {
         void onRefreshBadgeCart();
-    }
-
-    public static void resetBadgeCart(Context context) {
-        Intent intent = new Intent(ACTION);
-        intent.putExtra(EXTRA_HAS_CART, false);
-        context.sendBroadcast(intent);
     }
 }

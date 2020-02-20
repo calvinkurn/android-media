@@ -33,14 +33,6 @@ public class MaintenancePage extends Activity {
     private ViewHolder holder;
     private String maintenanceMessage;
 
-    public static Intent createIntentFromNetwork(Context context, String msg) {
-        Intent intent = new Intent(context, MaintenancePage.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra(IS_NETWORK, true);
-        intent.putExtra("message", msg);
-        return intent;
-    }
-
     public static Intent createIntentFromNetwork(Context context) {
         Intent intent = new Intent(context, MaintenancePage.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);

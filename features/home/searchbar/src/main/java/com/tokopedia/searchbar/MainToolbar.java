@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.util.NotifAnalytics;
 import com.tokopedia.searchbar.util.NotifPreference;
 import com.tokopedia.user.session.UserSession;
@@ -28,7 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 public class MainToolbar extends Toolbar {
 
     private static String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
-
+    private boolean wishlistNewPage = false;
     protected ImageView btnNotification;
     protected ImageView btnWishlist;
     protected ImageView btnInbox;
@@ -99,6 +100,8 @@ public class MainToolbar extends Toolbar {
         notifPreference = new NotifPreference(context);
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
+        FirebaseRemoteConfigImpl firebaseRemoteConfig = new FirebaseRemoteConfigImpl(context);
+        wishlistNewPage = firebaseRemoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_WISHLIST_PAGE, true);
         inflateResource(context);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
@@ -134,7 +137,8 @@ public class MainToolbar extends Toolbar {
         btnWishlist.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
-                RouteManager.route(context, ApplinkConst.WISHLIST);
+                if(wishlistNewPage) RouteManager.route(context, ApplinkConst.NEW_WISHLIST);
+                else RouteManager.route(context, ApplinkConst.WISHLIST);
             } else {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
@@ -158,6 +162,7 @@ public class MainToolbar extends Toolbar {
 
         btnNotification.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingNotification(screenName);
+            searchBarAnalytics.eventTrackingNotifCenter();
             if (userSession.isLoggedIn()) {
                 RouteManager.route(context, ApplinkConst.NOTIFICATION);
             } else {

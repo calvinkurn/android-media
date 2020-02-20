@@ -417,6 +417,16 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     }
 
     @Override
+    public void addRetryMessage(String message) {
+        adapter.addRetryMessage(message);
+    }
+
+    @Override
+    public void removeRetryMessage() {
+        adapter.removeRetryMessage();
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         initRefreshView();
         initView();

@@ -2,9 +2,6 @@ package com.tokopedia.flight.passenger.di
 
 import com.tokopedia.flight.common.di.component.FlightComponent
 import com.tokopedia.flight.passenger.view.fragment.FlightBookingPassengerFragment
-import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment
-import com.tokopedia.flight.passenger.view.fragment.FlightPassengerUpdateFragment
-
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 
@@ -17,10 +14,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 interface FlightPassengerComponent {
 
     fun dispatcher(): CoroutineDispatcher
-
-    fun inject(flightPassengerUpdateFragment: FlightPassengerUpdateFragment)
-
-    fun inject(flightPassengerListFragment: FlightPassengerListFragment)
 
     fun inject(flightBookingPassengerFragment: FlightBookingPassengerFragment)
 

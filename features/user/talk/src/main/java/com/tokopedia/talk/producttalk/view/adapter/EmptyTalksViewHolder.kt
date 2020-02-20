@@ -24,7 +24,7 @@ class EmptyTalksViewHolder(val v: View) :
 
 
     override fun bind(element: EmptyProductTalkViewModel?) {
-        ImageHandler.loadImageWithIdWithoutPlaceholder(emptyIcon, R.drawable.ic_empty_state)
+        ImageHandler.loadImageWithIdWithoutPlaceholder(emptyIcon, com.tokopedia.design.R.drawable.ic_empty_state)
     }
 
 

@@ -94,6 +94,9 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
     }
 
     override fun getListExchangeCoupon(resources: Resources) {
+        if (!isViewAttached) {
+            return
+        }
         view.showProgressBar()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_exchange_coupon), ResponseExchangeCoupon::class.java, null, false)

@@ -63,7 +63,7 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
-        const val OTP_TYPE_PHONE_VERIFICATION = 124
+        const val OTP_TYPE_PHONE_VERIFICATION = 125
         const val PIN_LENGTH = 6
 
         fun createInstance(bundle: Bundle): ChangePinFragment {

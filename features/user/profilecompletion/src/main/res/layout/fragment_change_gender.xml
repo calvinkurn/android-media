@@ -57,7 +57,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/profile_completion_man"
-                android:textColor="@drawable/gender_color"
+                android:textColor="@drawable/bg_gender_color"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal" />
 
@@ -76,7 +76,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/profile_completion_woman"
-                android:textColor="@drawable/gender_color"
+                android:textColor="@drawable/bg_gender_color"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal" />
 

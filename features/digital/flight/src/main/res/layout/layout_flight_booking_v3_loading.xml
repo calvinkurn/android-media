@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_24"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ProgressBar
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_loading_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:text="@string/flight_booking_dialog_loading_title"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_loading_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/dp_2"
+        app:typographyType="body_2"
+        tools:text="Makan roti pakai meses\nPesananmu lagi diproses" />
+
+
+</LinearLayout>
