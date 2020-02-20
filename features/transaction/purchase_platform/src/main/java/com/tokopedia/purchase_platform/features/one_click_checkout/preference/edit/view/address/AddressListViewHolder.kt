@@ -7,6 +7,6 @@ import com.tokopedia.purchase_platform.R
 class AddressListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
     companion object{
-        val Layout = R.layout.item_address_list
+        val Layout = R.layout.card_address_list
     }
 }
