@@ -5,6 +5,7 @@ package com.tokopedia.reviewseller.common
  */
 
 object ReviewSellerConstant {
+    //TODO add data static list product review
     val listProductReview = mutableListOf<ProductReviewModel>().apply {
         add(ProductReviewModel(
                 "Adidas NMD Pharell William x Human Made",
@@ -83,6 +84,7 @@ object ReviewSellerConstant {
                 "/ 1 ulasan"))
     }
 
+    //TODO add data static summary product review
     val summaryReviewProduct = SummaryReviewModel(
             "4.6",
             "1.234 Ulasan",

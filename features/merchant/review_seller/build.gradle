@@ -60,7 +60,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.spek2Api
@@ -88,5 +87,3 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
