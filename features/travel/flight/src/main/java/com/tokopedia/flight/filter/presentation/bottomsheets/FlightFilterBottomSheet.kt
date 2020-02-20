@@ -76,7 +76,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
                 hideLoading()
             }
         })
-
     }
 
     override fun getFlightSearchStaticticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value

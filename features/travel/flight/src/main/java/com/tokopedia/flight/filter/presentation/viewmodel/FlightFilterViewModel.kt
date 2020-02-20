@@ -61,10 +61,11 @@ class FlightFilterViewModel @Inject constructor(
                 mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
                         flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
             }
-        }
 
-        mapStatisticToModel(statisticModel.value)
+            mapStatisticToModel(statisticModel.value)
+        }
     }
+
     fun setSelectedSort(selectedId: Int) {
         mutableSelectedSort.postValue(selectedId)
     }
