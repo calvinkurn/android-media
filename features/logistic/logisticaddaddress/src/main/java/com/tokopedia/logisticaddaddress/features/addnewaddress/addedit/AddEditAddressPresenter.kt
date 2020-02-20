@@ -7,6 +7,7 @@ import com.google.android.gms.location.places.Places
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
@@ -51,9 +52,9 @@ class AddEditAddressPresenter
         addAddressUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse?) {
                 if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
-                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess()
+                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(eventLabel = LOGISTIC_LABEL)
                 } else {
-                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(eventLabel = LOGISTIC_LABEL)
                 }
 
                 val response = addAddressMapper.map(t)
@@ -70,9 +71,9 @@ class AddEditAddressPresenter
 
             override fun onError(e: Throwable?) {
                 if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
-                    AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e?.printStackTrace().toString())
+                    AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e?.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
                 } else {
-                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e?.printStackTrace().toString())
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e?.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
                 }
                 e?.printStackTrace()
             }
