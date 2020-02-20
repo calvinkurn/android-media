@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cvItemProduct"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        android:layout_margin="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivItemProduct"
+            android:layout_width="@dimen/dp_64"
+            android:layout_height="@dimen/dp_64"
+            android:scaleType="centerCrop"/>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgTitleProduct"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintBottom_toTopOf="@id/ivRating"
+        app:layout_constraintStart_toEndOf="@+id/cvItemProduct"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Adidas NMD Pharell William x Human Mad Halloowowowoow" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivRating"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_6"
+        app:layout_constraintBottom_toBottomOf="@+id/tgCountRating"
+        app:layout_constraintStart_toEndOf="@id/cvItemProduct"
+        app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
+        android:src="@drawable/app_rating_star" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgCountRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/clr_f531353b"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
+        app:layout_constraintStart_toEndOf="@id/ivRating"
+        tools:text="5.0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgCountReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/clr_f531353b"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
+        app:layout_constraintStart_toEndOf="@id/tgCountRating"
+        tools:text="/ 5 Ulasan" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/cvItemProduct" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
