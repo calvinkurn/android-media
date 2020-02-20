@@ -277,11 +277,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            oldShopPageTrackingShopSearchProduct.clickManualSearch(
-                    SCREEN_SHOP_PAGE,
-                    searchQuery,
-                    String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
-            )
+            shopPageTrackingShopSearchProduct.typeSearch(isMyShop, keyword, customDimensionShopPage)
             redirectToShopProductListPage()
             activity?.finish()
         }
@@ -497,7 +493,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 timer?.cancel()
-                shopPageTrackingShopSearchProduct.typeSearch(isMyShop, text.toString(), customDimensionShopPage)
                 if (TextUtils.isEmpty(text.toString())) {
                     showSortButton()
                 } else {
