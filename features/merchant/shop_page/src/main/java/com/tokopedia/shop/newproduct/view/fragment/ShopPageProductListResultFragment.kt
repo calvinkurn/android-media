@@ -628,11 +628,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onWishListClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int) {
         shopInfo?.let {
             //shopTrackType is always from Product
-//            shopPageTracking?.clickWishlist(!shopProductViewModel.isWishList,
-//                    if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
-//                    selectedEtalaseName,
-//                    CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-//                            it.goldOS.isGold == 1, shopProductViewModel.id))
+            shopPageTracking?.clickWishlistProductResultPage(
+                    !shopProductViewModel.isWishList,
+                    isLogin,
+                    selectedEtalaseName,
+                    CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1, shopProductViewModel.id))
         }
         if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())

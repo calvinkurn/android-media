@@ -207,6 +207,19 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 customDimensionShopPage);
     }
 
+    public void clickWishlistProductResultPage(boolean isAdd,
+                              boolean isLogin,
+                              String selectedEtalaseName,
+                              CustomDimensionShopPageProduct customDimensionShopPage) {
+        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        String etalaseEvent = joinDash(String.format(SELECTED_ETALASE_CHIP, selectedEtalaseName), loginNonLoginString, SEARCH_RESULT);
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                joinDash(joinSpace(isAdd ? ADD : REMOVE, WISHLIST), etalaseEvent),
+                customDimensionShopPage.productId,
+                customDimensionShopPage);
+    }
+
     public void eventShopSendChat() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(CLICK_SHOP_MESSAGE,
                 SHOP_PAGE, CLICK_SEND_CHAT, "");
