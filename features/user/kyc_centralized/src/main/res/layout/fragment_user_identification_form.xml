@@ -19,16 +19,43 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_lvl4">
 
+        <ImageView
+            android:id="@+id/image_selfie_correct"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/image_selfie_wrong"
+            app:layout_constraintBottom_toTopOf="@id/vertical_guide"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/image_selfie_wrong"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/image_selfie_correct"
+            app:layout_constraintBottom_toTopOf="@id/vertical_guide"
+            android:visibility="gone"/>
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/form_onboarding_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/title"
+            app:layout_constraintBottom_toTopOf="@id/vertical_guide"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             android:layout_width="@dimen/kyc_centralized_218dp"
             android:layout_height="@dimen/kyc_centralized_144dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vertical_guide"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="144dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
@@ -42,7 +69,7 @@
             app:layout_constraintBottom_toTopOf="@+id/subtitle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/form_onboarding_image"
+            app:layout_constraintTop_toBottomOf="@+id/vertical_guide"
             tools:text="Foto bagian depan KTP"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -76,9 +103,6 @@
             app:layout_constraintTop_toTopOf="@id/security_textview"
             app:layout_constraintBottom_toBottomOf="@id/security_textview"
             app:layout_constraintRight_toLeftOf="@id/security_textview"
-            app:layout_constraintLeft_toLeftOf="@id/button"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             app:srcCompat="@drawable/ic_shield" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -89,6 +113,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_info_bullet"
+            android:paddingLeft="@dimen/spacing_lvl3"
+            android:paddingStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginBottom="@dimen/kyc_centralized_17dp"
             android:drawablePadding="@dimen/spacing_lvl3"

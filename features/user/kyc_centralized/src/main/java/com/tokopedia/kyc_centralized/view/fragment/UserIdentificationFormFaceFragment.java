@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieCompositionFactory;
 import com.airbnb.lottie.LottieTask;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.kyc_centralized.R;
@@ -59,16 +61,37 @@ public class UserIdentificationFormFaceFragment extends
 
     @Override
     protected void setContentView() {
+        if(isKycSelfie()){
+            setKycSelfieViews();
+        } else {
+            setLivenessViews();
+        }
+
+    }
+
+    private void setKycSelfieViews(){
+        title.setText(R.string.face_title_kyc);
+        subtitle.setText(R.string.face_subtitle_kyc);
+        button.setText(R.string.face_button_kyc);
+        button.setOnClickListener(v -> {
+            analytics.eventClickNextSelfiePage();
+            goToKycSelfie();
+        });
+        setExampleImages();
+        onboardingImage.setVisibility(View.GONE);
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity())
+                    .updateToolbarTitle(getString(R.string.title_kyc_form_selfie));
+        }
+    }
+
+    private void setLivenessViews(){
         title.setText(R.string.face_title);
         subtitle.setText(R.string.face_subtitle);
         button.setText(R.string.face_button);
         button.setOnClickListener(v -> {
             analytics.eventClickNextSelfiePage();
-            if(isKycSelfie()){
-                goToKycSelfie();
-            } else {
-                goToKycLiveness();
-            }
+            goToKycLiveness();
         });
         setLottieAnimation();
         if (getActivity() instanceof UserIdentificationFormActivity) {
@@ -84,6 +107,13 @@ public class UserIdentificationFormFaceFragment extends
             onboardingImage.setRepeatCount(ValueAnimator.INFINITE);
             onboardingImage.playAnimation();
         });
+    }
+
+    private void setExampleImages(){
+        correctImage.setVisibility(View.VISIBLE);
+        wrongImage.setVisibility(View.VISIBLE);
+        ImageHandler.LoadImage(correctImage, KycUrl.SELFIE_OK);
+        ImageHandler.LoadImage(wrongImage, KycUrl.SELFIE_FAIL);
     }
 
     private void goToKycSelfie(){

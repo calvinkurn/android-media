@@ -47,7 +47,11 @@
 
     <string name="face_title">Scan wajah kamu</string>
     <string name="face_subtitle">Sistem kami akan mendeteksi wajahmu untuk mencocokan data di KTP. Ikuti instruksi kami, ya.</string>
-    <string name="face_button">Mulai Verifikasi Wajah"</string>
+    <string name="face_button">Mulai Verifikasi Wajah</string>
+
+    <string name="face_title_kyc">Foto Diri Bersama KTP</string>
+    <string name="face_subtitle_kyc">Tunjukkan bagian depan KTP dengan posisi di bawah dagu tanpa menutupi wajah.</string>
+    <string name="face_button_kyc">Ambil Foto Diri Bersama KTP</string>
 
     <string name="camera_ktp_title">Verifikasi Data Diri</string>
     <string name="camera_ktp_subtitle">Posisikan KTP di dalam bingkai,\npastikan informasi di foto terlihat jelas</string>
@@ -73,6 +77,7 @@
     <string name="error_text_image_cant_be_accessed">Foto tidak dapat diakses</string>
 
     <string name="title_kyc_form_ktp">1. Foto KTP</string>
+    <string name="title_kyc_form_selfie">2. Foto Diri &amp; KTP</string>
     <string name="title_kyc_form_face">Verifikasi Wajah</string>
     <string name="title_kyc_form_upload">Kirim Dokumen</string>
 

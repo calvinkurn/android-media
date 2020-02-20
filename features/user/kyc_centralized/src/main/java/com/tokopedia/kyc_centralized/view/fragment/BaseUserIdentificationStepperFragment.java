@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,6 +44,8 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     protected TextView title;
     protected TextView subtitle;
     protected TextView button;
+    protected ImageView correctImage;
+    protected ImageView wrongImage;
     protected UserIdentificationCommonAnalytics analytics;
     protected int projectId;
 
@@ -91,6 +94,8 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         button = view.findViewById(R.id.button);
+        correctImage = view.findViewById(R.id.image_selfie_correct);
+        wrongImage = view.findViewById(R.id.image_selfie_wrong);
     }
 
     @Override
