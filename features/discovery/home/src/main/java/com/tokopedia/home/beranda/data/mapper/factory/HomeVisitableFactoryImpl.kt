@@ -251,9 +251,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
         val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
         val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
-        val PROMO_NAME_UNKNOWN = "/ - p%s - lego banner unknown - %s"
+        val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
 
         val VALUE_BANNER_UNKNOWN = "banner unknown"
+        val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
 
         if (!isCache) {
             if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
@@ -283,7 +284,8 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 channel.setPosition(position)
             } else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name
-                channel.promoName = String.format(PROMO_NAME_UNKNOWN, position.toString(), headerName)
+                val layoutType = if (channel.layout.isEmpty()) VALUE_BANNER_UNKNOWN_LAYOUT_TYPE else channel.layout
+                channel.promoName = String.format(PROMO_NAME_UNKNOWN, position.toString(), layoutType, headerName)
             }
         }
     }
