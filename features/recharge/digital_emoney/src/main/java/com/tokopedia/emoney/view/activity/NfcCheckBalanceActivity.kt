@@ -71,9 +71,6 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
     @Inject
     lateinit var brizziInstance: Brizzi
 
-    private var issuerIdSelected: Int = 0
-    private var operatorIdSelected: String = ""
-
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -129,6 +126,10 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
         })
     }
 
+    /**
+     * this method will be executed first time after NFC card detected
+     * @param intent is needed to process data NFC card brizzi and emoney mandiri
+     */
     override fun onNewIntent(intent: Intent?) {
         intent?.let {
             processTagIntent(intent)
@@ -293,10 +294,6 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
     }
 
     private fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
-        emoneyInquiry.attributesEmoneyInquiry?.let {
-            operatorIdSelected = it.operatorId
-            issuerIdSelected = it.issuer_id
-        }
         emoneyAnalytics.onShowLastBalance()
         tapETollCardView.visibility = View.GONE
         eTollUpdateBalanceResultView.visibility = View.VISIBLE
