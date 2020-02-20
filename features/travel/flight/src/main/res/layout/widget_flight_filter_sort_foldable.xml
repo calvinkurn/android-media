@@ -30,24 +30,33 @@
         app:layout_constraintTop_toTopOf="@id/tv_title"
         app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/layout_child"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/child_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
-        tools:background="@color/Green_G500"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_show_more"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:text="Lihat Semua"
-        android:textColor="@color/Green_G500"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_child"
-        app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        android:layout_marginTop="@dimen/layout_lvl1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_flight_sort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:background="@color/Green_G500"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_show_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:text="Lihat Semua"
+            android:textColor="@color/Green_G500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_flight_sort"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"
@@ -55,5 +64,5 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:background="@color/Neutral_N75"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_show_more" />
+        app:layout_constraintTop_toBottomOf="@id/child_view" />
 </androidx.constraintlayout.widget.ConstraintLayout>
