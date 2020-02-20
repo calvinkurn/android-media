@@ -54,6 +54,22 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
     }
 
+    fun getFilteredJourneysCoroutine(filterModel: FlightFilterModel, @TravelSortOption flightSortOption: Int):
+            List<JourneyAndRoutes> {
+        val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
+            "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+                    "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
+        } else {
+            "SELECT * FROM FlightJourneyTable WHERE "
+        }
+        val query = buildQuery(sqlQuery, filterModel, flightSortOption)
+        val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
+
+        return filteredJourney.map {
+            populateCompactJourneyAndRoutesCoroutine(it)
+        }.toList()
+    }
+
     private fun populateCompactJourneyAndRoutes(journeyAndRoutes: JourneyAndRoutes): Observable<JourneyAndRoutes> {
         val journeyDepartureAirport = FlightAirportViewModel(journeyAndRoutes.flightJourneyTable.departureAirport,
                 journeyAndRoutes.flightJourneyTable.departureAirportName, journeyAndRoutes.flightJourneyTable.departureAirportCity)
@@ -70,9 +86,8 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                             .map { Pair(flightAirlineViewModel, Pair(departureAirport, arrivalAirport)) }
                 }
                 .toList()
-                .zipWith(Observable.just(pairOfJourneyAirport)) {
-                    routesAirlinesAndAirports: List<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
-                    journeyAirports: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
+                .zipWith(Observable.just(pairOfJourneyAirport)) { routesAirlinesAndAirports: List<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
+                                                                  journeyAirports: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
                     val journeyAirlines = arrayListOf<FlightAirlineViewModel>()
                     for (routeAirline in routesAirlinesAndAirports) {
                         if (!journeyAirlines.contains(routeAirline.first)) {
@@ -83,6 +98,34 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                             journeyAndRoutes.flightJourneyTable, journeyAirports, journeyAirlines)
                     journeyAndRoutes
                 }
+    }
+
+    private fun populateCompactJourneyAndRoutesCoroutine(journeyAndRoutes: JourneyAndRoutes): JourneyAndRoutes {
+        val journeyDepartureAirport = FlightAirportViewModel(journeyAndRoutes.flightJourneyTable.departureAirport,
+                journeyAndRoutes.flightJourneyTable.departureAirportName, journeyAndRoutes.flightJourneyTable.departureAirportCity)
+        val journeyArrivalAirport = FlightAirportViewModel(journeyAndRoutes.flightJourneyTable.arrivalAirport,
+                journeyAndRoutes.flightJourneyTable.arrivalAirportName, journeyAndRoutes.flightJourneyTable.arrivalAirportCity)
+        val pairOfJourneyAirport = Pair(journeyDepartureAirport, journeyArrivalAirport)
+
+        val journeyAndRouteList = journeyAndRoutes.routes.map {
+            val flightAirlineViewModel = FlightAirlineViewModel(it.airline, it.airlineName, it.airlineShortName, it.airlineLogo)
+            val departureAirport = FlightAirportViewModel(it.departureAirport, it.departureAirportName, it.departureAirportCity)
+            val arrivalAirport = FlightAirportViewModel(it.arrivalAirport, it.arrivalAirportName, it.arrivalAirportCity)
+
+            Pair(flightAirlineViewModel, Pair(departureAirport, arrivalAirport))
+        }.toList()
+
+        val journeyAirlines = arrayListOf<FlightAirlineViewModel>()
+        for (routeAirline in journeyAndRouteList) {
+            if (!journeyAirlines.contains(routeAirline.first)) {
+                journeyAirlines.add(routeAirline.first)
+            }
+        }
+
+        journeyAndRoutes.flightJourneyTable = createJourneyWithAirportAndAirline(
+                journeyAndRoutes.flightJourneyTable, pairOfJourneyAirport, journeyAirlines)
+
+        return journeyAndRoutes
     }
 
     fun getSearchCount(filterModel: FlightFilterModel): Observable<Int> {
@@ -98,7 +141,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
     }
 
-    private fun buildQuery(sqlQuery: String, filterModel: FlightFilterModel, flightSortOption: Int) : SimpleSQLiteQuery {
+    private fun buildQuery(sqlQuery: String, filterModel: FlightFilterModel, flightSortOption: Int): SimpleSQLiteQuery {
         val sqlStringBuilder = StringBuilder()
         sqlStringBuilder.append(sqlQuery)
 
@@ -158,7 +201,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         for (i in 0 until airlines.size) {
             val airline = airlines[i]
             stringBuilder.append("FlightRouteTable.airline = '$airline' ")
-            if (i < airlines.size-1) {
+            if (i < airlines.size - 1) {
                 stringBuilder.append("OR ")
             }
         }
@@ -175,7 +218,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         for (i in 0 until refundableEnumList.size) {
             val refundableEnum = refundableEnumList[i]
             stringBuilder.append("FlightJourneyTable.isRefundable = ${refundableEnum.id} ")
-            if (i < refundableEnumList.size-1) {
+            if (i < refundableEnumList.size - 1) {
                 stringBuilder.append("OR ")
             }
         }
@@ -199,7 +242,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                         TransitEnum.THREE_OR_MORE -> "FlightJourneyTable.totalTransit > 3 "
                     }
             )
-            if (i < transitList.size-1) {
+            if (i < transitList.size - 1) {
                 stringBuilder.append("OR ")
             }
         }
@@ -220,10 +263,10 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                         DepartureTimeEnum._00 -> "FlightJourneyTable.departureTimeInt BETWEEN 0 AND 599 "
                         DepartureTimeEnum._06 -> "FlightJourneyTable.departureTimeInt BETWEEN 600 AND 1200 "
                         DepartureTimeEnum._12 -> "FlightJourneyTable.departureTimeInt BETWEEN 1200 AND 1800 "
-                        DepartureTimeEnum._18 ->  "FlightJourneyTable.departureTimeInt BETWEEN 1800 AND 2400"
+                        DepartureTimeEnum._18 -> "FlightJourneyTable.departureTimeInt BETWEEN 1800 AND 2400"
                     }
             )
-            if (i < departureTimeEnumList.size-1) {
+            if (i < departureTimeEnumList.size - 1) {
                 stringBuilder.append("OR ")
             }
         }

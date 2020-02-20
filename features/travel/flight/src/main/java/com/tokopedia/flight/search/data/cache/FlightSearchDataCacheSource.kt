@@ -21,6 +21,11 @@ constructor(private val cacheManager: CacheManager) {
             return Observable.just(specialTag)
         }
 
+    val cacheCoroutine: String
+        get() {
+            return cacheManager.get(FLIGHT_SPECIAL_TAG_KEY)
+        }
+
     fun deleteCache(): Observable<Boolean> {
         cacheManager.delete(FLIGHT_SPECIAL_TAG_KEY)
         return Observable.just(true)

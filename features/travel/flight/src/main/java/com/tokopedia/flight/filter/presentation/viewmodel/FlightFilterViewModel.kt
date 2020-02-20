@@ -8,6 +8,7 @@ import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 /**
@@ -19,6 +20,8 @@ class FlightFilterViewModel @Inject constructor(
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
+    private var isReturn = false
+
     private val mutableFilterModel = MutableLiveData<FlightFilterModel>()
     val filterModel: LiveData<FlightFilterModel>
         get() = mutableFilterModel
@@ -27,8 +30,20 @@ class FlightFilterViewModel @Inject constructor(
     val statisticModel: LiveData<FlightSearchStatisticModel>
         get() = mutableStatisticModel
 
-    fun init(filterModel: FlightFilterModel) {
+    fun init(filterModel: FlightFilterModel, isReturn: Boolean) {
         mutableFilterModel.value = filterModel
+        this.isReturn = isReturn
+    }
+
+    suspend fun getStatistics() {
+        val searchStatictics = async(dispatcherProvider.ui()) {
+            filterModel.value?.run {
+                flightSearchStatisticUseCase.createObservable(flightSearchStatisticUseCase
+                        .createRequestParams(filterModel.value!!))
+            }
+        }.await()
+
+        searchStatictics.
     }
 
     fun resetFilter() {

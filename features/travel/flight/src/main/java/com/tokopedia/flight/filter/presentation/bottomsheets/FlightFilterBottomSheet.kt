@@ -42,7 +42,9 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightFilterViewModel = viewModelProvider.get(FlightFilterViewModel::class.java)
             if (arguments?.containsKey(ARG_FILTER_MODEL) == true) {
-                flightFilterViewModel.init(arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel)
+                flightFilterViewModel.init(
+                        arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel,
+                        arguments?.getBoolean(ARG_IS_RETURN) ?: false)
             }
         }
 
@@ -92,11 +94,13 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         const val TAG_FILTER = "TagFilterBottomSheet"
 
         private const val ARG_FILTER_MODEL = "ARG_FILTER_MODEL"
+        private const val ARG_IS_RETURN = "ARG_IS_RETURN"
 
-        fun getInstance(filterModel: FlightFilterModel): FlightFilterBottomSheet =
+        fun getInstance(filterModel: FlightFilterModel, isReturn: Boolean = false): FlightFilterBottomSheet =
                 FlightFilterBottomSheet().also {
                     it.arguments = Bundle().apply {
                         putParcelable(ARG_FILTER_MODEL, filterModel)
+                        putBoolean(ARG_IS_RETURN, isReturn)
                     }
                 }
     }

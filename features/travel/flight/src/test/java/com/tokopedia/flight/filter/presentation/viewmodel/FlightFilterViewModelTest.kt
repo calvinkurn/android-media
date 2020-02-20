@@ -38,7 +38,7 @@ class FlightFilterViewModelTest : Spek({
             }
 
             When("Init method called") {
-                viewModel?.init(filterViewModel)
+                viewModel?.init(filterViewModel, false)
             }
 
             Then("View Model should be not null") {
