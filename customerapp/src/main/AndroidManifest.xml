@@ -321,6 +321,17 @@
             android:name=".home.TkpdYoutubeVideoActivity"
             android:screenOrientation="sensor"/>
 
+        <activity android:name=".nfc.NFCHandlerActivity"
+            android:theme="@style/Theme.White" >
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+        </activity>
+
+
         <receiver
             android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
             <intent-filter>
