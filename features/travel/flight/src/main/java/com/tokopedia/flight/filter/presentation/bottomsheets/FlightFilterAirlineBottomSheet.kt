@@ -58,7 +58,7 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
         isDragable = true
         isHideable = true
         setTitle(getString(R.string.airline))
-        setAction(getString(R.string.reset)) {
+        setAction(getString(R.string.flight_reset_label)) {
             resetAirlineFilter()
         }
 

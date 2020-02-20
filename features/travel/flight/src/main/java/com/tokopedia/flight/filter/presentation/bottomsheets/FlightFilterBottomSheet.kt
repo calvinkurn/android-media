@@ -69,7 +69,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         isDragable = true
         isHideable = true
         setTitle(getString(R.string.flight_filter_label))
-        setAction(getString(R.string.reset)) {
+        setAction(getString(R.string.flight_reset_label)) {
             flightFilterViewModel.resetFilter()
         }
 
