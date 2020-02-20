@@ -132,11 +132,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         initFireBase()
     }
 
-    private fun initFireBase() {
-        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPresenter(savedInstanceState)
@@ -182,6 +177,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onError(),
                     onSuccessGetMessageId())
         }
+    }
+
+    private fun initFireBase() {
+        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     private fun setupPresenter(savedInstanceState: Bundle?) {

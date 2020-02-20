@@ -97,27 +97,25 @@ class TopChatRoomPresenter @Inject constructor(
         private var removeWishListUseCase: RemoveWishListUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
-    override fun clearText() {
-    }
+    var thisMessageId: String = ""
 
+    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var mSubscription: CompositeSubscription
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
-
     private lateinit var webSocketUrl: String
-    private lateinit var subject: PublishSubject<Boolean>
+    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
     private var isUploading: Boolean = false
     private var dummyList: ArrayList<Visitable<*>>
-    var thisMessageId: String = ""
-    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
-
-    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
 
     init {
         mSubscription = CompositeSubscription()
         compressImageSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
+    }
+
+    override fun clearText() {
     }
 
     override fun connectWebSocket(messageId: String) {
