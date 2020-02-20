@@ -19,7 +19,6 @@ class GetCoroutinePendingCashbackUseCase @Inject constructor(
     }
     override suspend fun executeOnBackground(): PendingCashback {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(com.tokopedia.common_wallet.balance.domain.query.PendingCashback.query)
         graphqlUseCase.setRequestParams(mapOf())
         return mapper(graphqlUseCase.executeOnBackground().pendingCashbackEntity)
     }
