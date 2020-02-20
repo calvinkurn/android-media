@@ -7,13 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_wallet.balance.domain.coroutine.GetCoroutineWalletBalanceUseCase
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
-import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -49,6 +48,7 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -67,7 +67,6 @@ open class HomeViewModel @Inject constructor(
         private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
-        private val homeDataMapper: HomeDataMapper,
         homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
@@ -632,7 +631,7 @@ open class HomeViewModel @Inject constructor(
     private fun getTokocashBalance() {
         if(getTokocashJob?.isActive == true) return
         getTokocashJob = launchCatchError(coroutineContext, block = {
-            val homeHeaderWalletAction = homeDataMapper.mapToHomeHeaderWalletAction(getWalletBalanceUseCase.executeOnBackground())
+            val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.executeOnBackground())
             updateHeaderViewModel(
                     isWalletDataError = false,
                     homeHeaderWalletAction = homeHeaderWalletAction
@@ -769,4 +768,22 @@ open class HomeViewModel @Inject constructor(
         })
     }
 
+    private fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
+        val data = HomeHeaderWalletAction()
+        data.isLinked = walletBalanceModel.link
+        data.balance = walletBalanceModel.balance
+        data.labelTitle = walletBalanceModel.titleText
+        data.appLinkBalance = walletBalanceModel.applinks
+        data.labelActionButton = walletBalanceModel.actionBalanceModel?.labelAction ?: ""
+        data.isVisibleActionButton = (walletBalanceModel.actionBalanceModel?.visibility == "1")
+        data.appLinkActionButton = walletBalanceModel.actionBalanceModel?.applinks ?: ""
+        data.abTags = if (walletBalanceModel.abTags == null) ArrayList() else walletBalanceModel.abTags
+        data.pointBalance = walletBalanceModel.pointBalance
+        data.rawPointBalance = walletBalanceModel.rawPointBalance
+        data.cashBalance = walletBalanceModel.cashBalance
+        data.rawCashBalance = walletBalanceModel.rawCashBalance
+        data.walletType = walletBalanceModel.walletType
+        data.isShowAnnouncement = walletBalanceModel.isShowAnnouncement
+        return data
+    }
 }

@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.CacheUtil
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceEntity
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
-import com.tokopedia.common_wallet.balance.domain.query.WalletBalance
 import com.tokopedia.common_wallet.balance.view.ActionBalanceModel
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -24,8 +23,7 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
         private val remoteConfig: RemoteConfig,
         private val userSession: UserSessionInterface,
         private val localCacheHandler: LocalCacheHandler
-)
-    : UseCase<WalletBalanceModel>() {
+) : UseCase<WalletBalanceModel>() {
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -33,7 +31,6 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
     }
     override suspend fun executeOnBackground(): WalletBalanceModel = withContext(Dispatchers.IO){
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(WalletBalance.query)
         graphqlUseCase.setRequestParams(mapOf())
         mapper(graphqlUseCase.executeOnBackground().wallet)
     }

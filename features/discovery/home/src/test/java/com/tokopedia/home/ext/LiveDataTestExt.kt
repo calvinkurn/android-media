@@ -1,6 +1,11 @@
 package com.tokopedia.home.ext
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Lifecycle
+
 
 fun <T> LiveData<T>.observeOnce(onChangeHandler: (T) -> Unit) {
     val observer = OneTimeObserver(handler = onChangeHandler)

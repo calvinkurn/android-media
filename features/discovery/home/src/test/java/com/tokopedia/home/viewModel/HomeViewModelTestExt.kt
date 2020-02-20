@@ -33,20 +33,19 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val getStickyLoginUseCase by memoized<StickyLoginUseCase>()
     val homeDataMapper by memoized<HomeDataMapper>()
     return HomeViewModel(
-        dismissHomeReviewUseCase = dismissHomeReviewUseCase,
-        getFeedTabUseCase = getFeedTabUseCase,
-        getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-        getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
-        getKeywordSearchUseCase = getKeywordSearchUseCase,
-        getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-        getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
-        getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-        homeDataMapper = homeDataMapper,
-        homeDispatcher = TestDispatcherProvider(),
-        homeUseCase = getHomeUseCase,
-        sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-        stickyLoginUseCase = getStickyLoginUseCase,
-        userSession = userSessionInterface
+            homeUseCase = getHomeUseCase,
+            userSession = userSessionInterface,
+            getFeedTabUseCase = getFeedTabUseCase,
+            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
+            getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
+            getKeywordSearchUseCase = getKeywordSearchUseCase,
+            stickyLoginUseCase = getStickyLoginUseCase,
+            getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
+            dismissHomeReviewUseCase = dismissHomeReviewUseCase,
+            getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
+            homeDispatcher = TestDispatcherProvider()
     )
 }
 

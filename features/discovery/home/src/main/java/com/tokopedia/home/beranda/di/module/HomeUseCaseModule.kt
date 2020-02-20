@@ -2,26 +2,23 @@ package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.balance.domain.coroutine.GetCoroutineWalletBalanceUseCase
+import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
-import com.tokopedia.home.beranda.data.model.KeywordSearchData
-import com.tokopedia.home.beranda.data.model.PlayLiveDynamicChannelEntity
-import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -114,15 +111,20 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun getCoroutineWalletBalanceUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
-        return GetCoroutineWalletBalanceUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository), remoteConfig, userSession, localCacheHandler)
+    fun getCoroutineWalletBalanceUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, com.tokopedia.common_wallet.R.raw.wallet_balance_query)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
     }
-
 
     @HomeScope
     @Provides
-    fun getGetCoroutinePendingCashbackUseCase(graphqlRepository: GraphqlRepository): GetCoroutinePendingCashbackUseCase {
-        return GetCoroutinePendingCashbackUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
+    fun getGetCoroutinePendingCashbackUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetCoroutinePendingCashbackUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, com.tokopedia.common_wallet.R.raw.wallet_pending_cashback_query)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ResponsePendingCashback>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetCoroutinePendingCashbackUseCase(usecase)
     }
 
     @Provides
