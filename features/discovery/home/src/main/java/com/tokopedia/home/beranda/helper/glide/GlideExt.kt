@@ -21,6 +21,7 @@ const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
 const val FPM_THEMATIC_CARD_VIEW = "home_thematic_card"
 const val FPM_DYNAMIC_LEGO_BANNER = "home_lego_banner"
 const val FPM_USE_CASE_ICON = "home_use_case_icon"
+const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
 const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
 
