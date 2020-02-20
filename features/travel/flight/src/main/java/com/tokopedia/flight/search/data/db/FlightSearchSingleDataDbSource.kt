@@ -141,6 +141,17 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
     }
 
+    fun getSearchCountCoroutine(filterModel: FlightFilterModel): Int {
+        val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
+            "SELECT COUNT(DISTINCT FlightJourneyTable.id) FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+                    "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
+        } else {
+            "SELECT count(*) FROM FlightJourneyTable WHERE "
+        }
+        val query = buildQuery(sqlQuery, filterModel, TravelSortOption.CHEAPEST)
+        return flightJourneyDao.getSearchCount(query)
+    }
+
     private fun buildQuery(sqlQuery: String, filterModel: FlightFilterModel, flightSortOption: Int): SimpleSQLiteQuery {
         val sqlStringBuilder = StringBuilder()
         sqlStringBuilder.append(sqlQuery)

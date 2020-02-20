@@ -201,6 +201,10 @@ open class FlightSearchRepository @Inject constructor(
         return flightSearchSingleDataDbSource.getSearchCount(filterModel)
     }
 
+    fun getSearchCountCoroutine(filterModel: FlightFilterModel): Int {
+        return flightSearchSingleDataDbSource.getSearchCountCoroutine(filterModel)
+    }
+
     private fun getRouteAirlineByIdAndAirports(route: Route, included: List<Included<AttributesInc>>):
             Observable<Pair<Pair<FlightAirlineViewModel, FlightAirlineViewModel>, Pair<FlightAirportViewModel, FlightAirportViewModel>>>? {
         if (route.operatingAirline != null && route.operatingAirline.isNotEmpty()) {

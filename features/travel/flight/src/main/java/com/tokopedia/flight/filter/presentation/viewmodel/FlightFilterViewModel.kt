@@ -31,12 +31,17 @@ class FlightFilterViewModel @Inject constructor(
     val statisticModel: LiveData<FlightSearchStatisticModel>
         get() = mutableStatisticModel
 
+    private val mutableFlightCount = MutableLiveData<Int>()
+    val flightCount: LiveData<Int>
+        get() = mutableFlightCount
+
     fun init(filterModel: FlightFilterModel, isReturn: Boolean) {
         mutableFilterModel.value = filterModel
         this.isReturn = isReturn
 
         launch(dispatcherProvider.ui()) {
             getStatistics()
+            getFlightCount()
         }
     }
 
@@ -44,6 +49,15 @@ class FlightFilterViewModel @Inject constructor(
         mutableStatisticModel.postValue(withContext(dispatcherProvider.ui()) {
             filterModel.value?.run {
                 flightSearchStatisticUseCase.executeCoroutine(flightSearchStatisticUseCase
+                        .createRequestParams(filterModel.value!!))
+            }
+        })
+    }
+
+    suspend fun getFlightCount() {
+        mutableFlightCount.postValue(withContext(dispatcherProvider.ui()) {
+            filterModel.value?.run {
+                flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
                         .createRequestParams(filterModel.value!!))
             }
         })
