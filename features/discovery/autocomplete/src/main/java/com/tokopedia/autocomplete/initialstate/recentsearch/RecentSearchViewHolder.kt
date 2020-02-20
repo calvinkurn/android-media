@@ -16,7 +16,7 @@ class RecentSearchViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_recentsearch_autocomplete
+        val LAYOUT = R.layout.layout_recent_search_autocomplete
     }
 
     private val adapter: RecentSearchItemAdapter

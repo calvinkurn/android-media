@@ -1,9 +1,9 @@
 package com.tokopedia.autocomplete.initialstate.testinstance
 
 import com.tokopedia.autocomplete.initialstate.InitialStateContract
-import com.tokopedia.autocomplete.initialstate.DeleteRecentSearchUseCase
+import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.initialstate.InitialStateUseCase
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchUseCase
+import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -19,7 +19,7 @@ internal fun FeatureBody.createTestInstance() {
     }
 
     val popularSearchUseCase by memoized {
-        mockk<PopularSearchUseCase>(relaxed = true)
+        mockk<RefreshPopularSearchUseCase>(relaxed = true)
     }
 
     val userSession by memoized {

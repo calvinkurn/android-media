@@ -11,7 +11,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleVie
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewHolder
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewHolder
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewHolder
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
@@ -37,7 +37,7 @@ class InitialStateAdapterTypeFactory(private val clickListener: InitialStateItem
         return RecentSearchViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: RecentViewSearchViewModel): Int {
+    override fun type(viewModel: RecentViewViewModel): Int {
         return RecentViewViewHolder.LAYOUT
     }
 

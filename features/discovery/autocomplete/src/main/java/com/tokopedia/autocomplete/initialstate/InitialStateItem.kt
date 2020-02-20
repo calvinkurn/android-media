@@ -4,45 +4,39 @@ import com.google.gson.annotations.SerializedName
 
 data class InitialStateItem(
         @SerializedName("template")
-        var template: String = "",
+        val template: String = "",
 
         @SerializedName("image_url")
-        var imageUrl: String = "",
+        val imageUrl: String = "",
 
         @SerializedName("applink")
-        var applink: String = "",
+        val applink: String = "",
 
         @SerializedName("url")
-        var url: String = "",
+        val url: String = "",
 
         @SerializedName("title")
-        var title: String = "",
+        val title: String = "",
 
         @SerializedName("subtitle")
-        var subtitle: String = "",
+        val subtitle: String = "",
 
         @SerializedName("icon_title")
-        var iconTitle: String = "",
+        val iconTitle: String = "",
 
         @SerializedName("icon_subtitle")
-        var iconSubtitle: String = "",
+        val iconSubtitle: String = "",
 
         @SerializedName("label")
-        var label: String = "",
+        val label: String = "",
 
-        @SerializedName("shortcut_url")
-        var shortcutUrl: String = "",
+        @SerializedName("label_type")
+        val labelType: String = "",
 
         @SerializedName("shortcut_image")
-        var shortcutImage: String = "",
+        val shortcutImage: String = "",
 
         @SerializedName("id")
-        var itemId: String = "",
-
-        @SerializedName("price")
-        var price: String = "",
-
-        @SerializedName("keyword")
-        var keyword: String = ""
+        val itemId: String = ""
 )
 

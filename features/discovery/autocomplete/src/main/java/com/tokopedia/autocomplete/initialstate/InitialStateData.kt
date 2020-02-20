@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class InitialStateData(
         @SerializedName("id")
-        var id: String = "",
+        val id: String = "",
 
         @SerializedName("header")
-        var header: String = "",
+        val header: String = "",
 
         @SerializedName("label_action")
-        var labelAction: String = "",
+        val labelAction: String = "",
 
         @SerializedName("items")
         var items: List<InitialStateItem> = listOf()

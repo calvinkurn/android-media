@@ -3,8 +3,10 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchUseCase
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
+import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
@@ -17,7 +19,7 @@ import javax.inject.Inject
 class InitialStatePresenter @Inject constructor(
         private val initialStateUseCase: InitialStateUseCase,
         private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
-        private val popularSearchUseCase: PopularSearchUseCase,
+        private val refreshPopularSearchUseCase: RefreshPopularSearchUseCase,
         private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
 
@@ -28,7 +30,8 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private var querySearch = ""
-    private var initialStateViewModel = InitialStateViewModel()
+//    private var initialStateViewModel = InitialStateViewModel()
+    private var listVistable = listOf<Visitable<*>>()
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
@@ -38,7 +41,7 @@ class InitialStatePresenter @Inject constructor(
         }
 
         override fun onNext(list: List<InitialStateData>) {
-            initialStateViewModel = InitialStateViewModel()
+            val initialStateViewModel = InitialStateViewModel()
             initialStateViewModel.searchTerm = querySearch
 
             for (initialStateData in list) {
@@ -51,31 +54,36 @@ class InitialStatePresenter @Inject constructor(
                 }
             }
 
-            view.showInitialStateResult(
-                    getInitialStateResult(initialStateViewModel.list)
-            )
+            listVistable = getInitialStateResult(initialStateViewModel.list)
+            view.showInitialStateResult(listVistable)
         }
     }
 
-    private fun getPopularSearchSubscriber(): Subscriber<List<InitialStateItem>> = object : Subscriber<List<InitialStateItem>>() {
+    private fun getPopularSearchSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
         }
 
-        override fun onNext(list: List<InitialStateItem>) {
-
-            initialStateViewModel.list.find{ it.id == POPULAR_SEARCH }.let {
-                it?.items = list
+        override fun onNext(listData: List<InitialStateData>) {
+            val initialStateViewModel = InitialStateViewModel()
+            initialStateViewModel.searchTerm = querySearch
+            val newData: InitialStateData? = listData.find { it.id == POPULAR_SEARCH }
+            var refreshedPopularSearchData = listOf<BaseItemInitialStateSearch>()
+            newData?.let {
+                refreshedPopularSearchData = convertListPopularSearchToBaseItemInitialStateSearch(it.items)
             }
 
-            view.refreshPopularSearch(
-                    getInitialStateResult(initialStateViewModel.list)
-            )
+            listVistable.forEachIndexed { _, visitable ->
+                if (visitable is PopularSearchViewModel) {
+                    visitable.list = refreshedPopularSearchData
+                }
+            }
+
+            view.refreshPopularSearch(listVistable)
         }
     }
-
 
     private fun getInitialStateResult(list: MutableList<InitialStateData>): List<Visitable<*>> {
         val data = mutableListOf<Visitable<*>>()
@@ -122,6 +130,28 @@ class InitialStatePresenter @Inject constructor(
         return this
     }
 
+    fun convertListPopularSearchToBaseItemInitialStateSearch(items: List<InitialStateItem>): List<BaseItemInitialStateSearch> {
+        val childList = ArrayList<BaseItemInitialStateSearch>()
+        for (item in items) {
+            val model = BaseItemInitialStateSearch(
+                    template = item.template,
+                    imageUrl = item.imageUrl,
+                    applink =  item.applink,
+                    url = item.url,
+                    title = item.title,
+                    subtitle = item.subtitle,
+                    iconTitle = item.iconTitle,
+                    iconSubtitle = item.iconSubtitle,
+                    label = item.label,
+                    labelType = item.labelType,
+                    shortcutImage = item.shortcutImage,
+                    productId = item.itemId
+            )
+            childList.add(model)
+        }
+        return childList
+    }
+
     override fun getInitialStateData(searchParameter: SearchParameter) {
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
@@ -156,13 +186,13 @@ class InitialStatePresenter @Inject constructor(
         )
     }
 
-    override fun refreshPopularSearch() {
-        val params = PopularSearchUseCase.getParams(
-                userSession.deviceId,
-                userSession.userId
-        )
-        popularSearchUseCase.execute(
-                params,
+    override fun refreshPopularSearch(searchParameter: SearchParameter) {
+        refreshPopularSearchUseCase.execute(
+                InitialStateUseCase.getParams(
+                        searchParameter.getSearchParameterMap(),
+                        userSession.deviceId,
+                        userSession.userId
+                ),
                 getPopularSearchSubscriber()
         )
     }

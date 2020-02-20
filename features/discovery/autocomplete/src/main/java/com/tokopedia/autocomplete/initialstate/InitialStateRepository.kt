@@ -8,6 +8,4 @@ interface InitialStateRepository {
     fun getInitialStateData(parameters: HashMap<String, Any>): Observable<List<InitialStateData>>
 
     fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Response<Void>>
-
-    fun refreshPopularSearch(parameters: HashMap<String, Any>): Observable<List<InitialStateItem>>
 }

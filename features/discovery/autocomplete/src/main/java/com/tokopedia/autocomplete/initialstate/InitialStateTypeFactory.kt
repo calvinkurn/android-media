@@ -7,7 +7,7 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewMo
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
 
 interface InitialStateTypeFactory {
 
@@ -15,7 +15,7 @@ interface InitialStateTypeFactory {
 
     fun type(viewModel: RecentSearchViewModel): Int
 
-    fun type(viewModel: RecentViewSearchViewModel): Int
+    fun type(viewModel: RecentViewViewModel): Int
 
     fun type(viewModel: PopularSearchTitleViewModel): Int
 

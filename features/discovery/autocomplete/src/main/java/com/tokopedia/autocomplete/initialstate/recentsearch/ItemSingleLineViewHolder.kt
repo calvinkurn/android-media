@@ -4,35 +4,36 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
-import kotlinx.android.synthetic.main.layout_recent_item_autocomplete.view.*
+import kotlinx.android.synthetic.main.layout_recent_search_single_line_item_autocomplete.view.*
 
-class ItemOneLineViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
+class ItemSingleLineViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(item: BaseItemInitialStateSearch) {
-        bindIconSearch(item.imageUrl)
-        bindRecentSearchTextView(item.title)
-        bindRemoveButton(item.shortcutUrl)
+        bindIconSearch(item)
+        bindRecentSearchTextView(item)
+        bindRemoveButton(item)
         bindListener(item)
     }
 
-    private fun bindIconSearch(imgUrl: String) {
-        itemView.iconSearch?.shouldShowWithAction(imgUrl.isNotEmpty()) {
-            ImageHandler.loadImageCircle2(itemView.context, it, imgUrl)
+    private fun bindIconSearch(item: BaseItemInitialStateSearch) {
+        itemView.iconSearch?.let {
+            ImageHandler.loadImage2(it, item.imageUrl, R.drawable.autocomplete_ic_time)
         }
     }
 
-    private fun bindRecentSearchTextView(title: String) {
-        itemView.recentSearchTextView?.shouldShowWithAction(title.isNotEmpty()) {
-            it.text = MethodChecker.fromHtml(title)
+    private fun bindRecentSearchTextView(item: BaseItemInitialStateSearch) {
+        itemView.recentSearchTextView?.let {
+            it.text = MethodChecker.fromHtml(item.title)
         }
     }
 
-    private fun bindRemoveButton(imgUrl: String) {
-        itemView.actionRemoveButton?.shouldShowWithAction(imgUrl.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholder(it, imgUrl)
+    private fun bindRemoveButton(item: BaseItemInitialStateSearch) {
+        itemView.actionRemoveButton?.let {
+            ImageHandler.loadImage2(it, item.shortcutImage, R.drawable.autocomplete_ic_remove)
         }
     }
 
@@ -49,17 +50,6 @@ class ItemOneLineViewHolder(itemView: View, private val clickListener: InitialSt
                     )
             )
             clickListener.onItemClicked(item.applink, item.url)
-        }
-    }
-
-    private fun <T : View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
-        if (this == null) return
-
-        if (shouldShow) {
-            this.visibility = View.VISIBLE
-            action(this)
-        } else {
-            this.visibility = View.INVISIBLE
         }
     }
 }

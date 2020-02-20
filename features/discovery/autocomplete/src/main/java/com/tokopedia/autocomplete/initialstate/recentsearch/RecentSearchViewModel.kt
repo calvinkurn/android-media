@@ -5,7 +5,7 @@ import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateTypeFactory
 
 class RecentSearchViewModel(
-        var list: List<BaseItemInitialStateSearch> = listOf()
+        val list: List<BaseItemInitialStateSearch> = listOf()
 ): Visitable<InitialStateTypeFactory>{
 
     override fun type(typeFactory: InitialStateTypeFactory): Int {

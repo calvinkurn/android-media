@@ -178,7 +178,7 @@ public class AutoCompleteActivity extends BaseActivity
                 onShopQuerySubmit();
                 break;
             default:
-                throw new RuntimeException("Please handle this function if you have new tab of suggestion getInitialStateData view.");
+                throw new RuntimeException("Please handle this function if you have new tab of suggestion search view.");
         }
     }
 

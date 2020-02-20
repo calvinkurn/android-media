@@ -13,40 +13,40 @@ private val initialStateCommonJSON = """
       "items": [
         {
           "template": "list_single_line",
-          "applink": "tokopedia://getInitialStateData?q=sepatu&source=universe&st=product",
-          "url": "/getInitialStateData?q=sepatu&source=universe&st=product",
+          "applink": "tokopedia://search?q=sepatu&source=universe&st=product",
+          "url": "/search?q=sepatu&source=universe&st=product",
           "title": "sepatu",
           "label": "keyword",
           "shortcut_url": "https://shortcut"
         },
         {
           "template": "list_single_line",
-          "applink": "tokopedia://getInitialStateData?q=kaos&source=universe&st=product",
-          "url": "/getInitialStateData?q=kaos&source=universe&st=product",
+          "applink": "tokopedia://search?q=kaos&source=universe&st=product",
+          "url": "/search?q=kaos&source=universe&st=product",
           "title": "kaos",
           "label": "keyword",
           "shortcut_url": "https://shortcut"
         },
         {
           "template": "list_single_line",
-          "applink": "tokopedia://getInitialStateData?q=android&source=universe&st=product",
-          "url": "/getInitialStateData?q=android&source=universe&st=product",
+          "applink": "tokopedia://search?q=android&source=universe&st=product",
+          "url": "/search?q=android&source=universe&st=product",
           "title": "android",
           "label": "keyword",
           "shortcut_url": "https://shortcut"
         },
         {
           "template": "list_single_line",
-          "applink": "tokopedia://getInitialStateData?q=samsung&source=universe&st=product",
-          "url": "/getInitialStateData?q=samsung&source=universe&st=product",
+          "applink": "tokopedia://search?q=samsung&source=universe&st=product",
+          "url": "/search?q=samsung&source=universe&st=product",
           "title": "samsung",
           "label": "keyword",
           "shortcut_url": "https://shortcut"
         },
         {
           "template": "list_single_line",
-          "applink": "tokopedia://getInitialStateData?q=iphone&source=universe&st=product",
-          "url": "/getInitialStateData?q=iphone&source=universe&st=product",
+          "applink": "tokopedia://search?q=iphone&source=universe&st=product",
+          "url": "/search?q=iphone&source=universe&st=product",
           "title": "iphone",
           "label": "keyword",
           "shortcut_url": "https://shortcut"
@@ -81,29 +81,29 @@ private val initialStateCommonJSON = """
         {
           "template": "",
           "image_url": "https://ecs7.tokopedia.net/img/search_autocomplete/popular-icon.png",
-          "applink": "tokopedia://getInitialStateData?q=sepatu&source=universe&st=product",
-          "url": "/getInitialStateData?q=sepatu&source=universe&st=product",
+          "applink": "tokopedia://search?q=sepatu&source=universe&st=product",
+          "url": "/search?q=sepatu&source=universe&st=product",
           "title": "sepatu"
         },
         {
           "template": "",
           "image_url": "https://ecs7.tokopedia.net/img/search_autocomplete/popular-icon.png",
-          "applink": "tokopedia://getInitialStateData?q=new&source=universe&st=product",
-          "url": "/getInitialStateData?q=new&source=universe&st=product",
+          "applink": "tokopedia://search?q=new&source=universe&st=product",
+          "url": "/search?q=new&source=universe&st=product",
           "title": "new"
         },
         {
           "template": "",
           "image_url": "https://ecs7.tokopedia.net/img/search_autocomplete/popular-icon.png",
-          "applink": "tokopedia://getInitialStateData?q=kaos&source=universe&st=product",
-          "url": "/getInitialStateData?q=kaos&source=universe&st=product",
+          "applink": "tokopedia://searchp?q=kaos&source=universe&st=product",
+          "url": "/search?q=kaos&source=universe&st=product",
           "title": "kaos"
         },
         {
           "template": "",
           "image_url": "https://ecs7.tokopedia.net/img/search_autocomplete/popular-icon.png",
-          "applink": "tokopedia://getInitialStateData?q=diego&source=universe&st=product",
-          "url": "/getInitialStateData?q=diego&source=universe&st=product",
+          "applink": "tokopedia://search?q=diego&source=universe&st=product",
+          "url": "/search?q=diego&source=universe&st=product",
           "title": "diego"
         }
       ]

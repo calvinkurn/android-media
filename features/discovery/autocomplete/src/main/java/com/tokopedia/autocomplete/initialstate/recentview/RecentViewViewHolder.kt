@@ -1,5 +1,7 @@
 package com.tokopedia.autocomplete.initialstate.recentview
 
+import android.content.Context
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +21,7 @@ import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 class RecentViewViewHolder(
         itemView: View,
         listener: InitialStateItemClickListener
-) : AbstractViewHolder<RecentViewSearchViewModel>(itemView) {
+) : AbstractViewHolder<RecentViewViewModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -37,7 +39,7 @@ class RecentViewViewHolder(
         itemView.recyclerView?.adapter = adapter
     }
 
-    override fun bind(element: RecentViewSearchViewModel) {
+    override fun bind(element: RecentViewViewModel) {
         adapter.setData(element.list)
     }
 
@@ -65,9 +67,11 @@ class RecentViewViewHolder(
 
         inner class ItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
             fun bind(item: BaseItemInitialStateSearch) {
-                ImageHandler.loadImageAndCache(
+                ImageHandler.loadImageRounded2(
+                        itemView.context,
                         itemView.autocompleteRecentViewItem,
-                        item.imageUrl
+                        item.imageUrl,
+                        6.0f
                 )
                 itemView.autocompleteRecentViewItem?.setOnClickListener {
                     AutocompleteTracking.eventClickRecentView(

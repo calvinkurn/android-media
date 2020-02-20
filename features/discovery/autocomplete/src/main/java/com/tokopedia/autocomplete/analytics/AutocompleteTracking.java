@@ -49,11 +49,11 @@ public class AutocompleteTracking {
 
     public static final String EVENTCATEGORY_TOP_NAV = "top nav";
 
-    public static final String CLICK_POPULAR_SEARCH = "click - popular getInitialStateData";
-    public static final String CLICK_RECENT_SEARCH = "click - recent getInitialStateData";
+    public static final String CLICK_POPULAR_SEARCH = "click - popular search";
+    public static final String CLICK_RECENT_SEARCH = "click - recent search";
     public static final String CLICK_DIGITAL_PRODUCT_SUGGESTION = "click - digital product suggestion";
     public static final String CLICK_CATEGORY_SUGGESTION = "click - category suggestion";
-    public static final String CLICK_SEARCH = "click - getInitialStateData";
+    public static final String CLICK_SEARCH = "click - search";
     public static final String CLICK_PROFILE_SUGGESTION = "click - profile autocomplete on suggestion list";
     public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - profile autocomplete on top suggestion";
 
@@ -63,7 +63,7 @@ public class AutocompleteTracking {
     public static final String CLICK = "click";
     public static final String ACTION_FIELD = "actionField";
     public static final String LIST = "list";
-    public static final String RECENT_VIEW_ACTION_FIELD = "/getInitialStateData - recentview - product";
+    public static final String RECENT_VIEW_ACTION_FIELD = "/search - recentview - product";
     public static final String PRODUCTS = "products";
     public static final String PRODUCT_NAME = "name";
     public static final String PRODUCT_ID = "id";
@@ -260,7 +260,7 @@ public class AutocompleteTracking {
         return DataLayer.mapOf(
                 PRODUCT_NAME, data.getTitle(),
                 PRODUCT_ID, data.getProductId(),
-                PRODUCT_PRICE, data.getProductPrice(),
+                PRODUCT_PRICE, "",
                 PRODUCT_BRAND, NONE_OTHER,
                 PRODUCT_CATEGORY, NONE_OTHER,
                 PRODUCT_VARIANT, NONE_OTHER,

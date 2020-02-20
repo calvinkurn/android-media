@@ -5,19 +5,18 @@ import com.tokopedia.discovery.common.utils.URLParser
 import java.util.HashMap
 
 class BaseItemInitialStateSearch(
-        var template: String = "",
-        var imageUrl: String = "",
-        var applink: String = "",
-        var url: String = "",
-        var title: String = "",
-        var subtitle: String = "",
-        var iconTitle: String = "",
-        var iconSubtitle: String = "",
-        var label: String = "",
-        var shortcutUrl: String = "",
-        var shortcutImage: String = "",
-        var productId: String = "",
-        var productPrice: String = ""
+        val template: String = "",
+        val imageUrl: String = "",
+        val applink: String = "",
+        val url: String = "",
+        val title: String = "",
+        val subtitle: String = "",
+        val iconTitle: String = "",
+        val iconSubtitle: String = "",
+        val label: String = "",
+        val labelType: String = "",
+        val shortcutImage: String = "",
+        val productId: String = ""
 ) {
     val applinkParameterHashmap: HashMap<String, String>
         get() = URLParser(this.applink).paramKeyValueMap

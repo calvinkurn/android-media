@@ -1,6 +1,7 @@
-package com.tokopedia.autocomplete.initialstate
+package com.tokopedia.autocomplete.initialstate.data
 
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchResponseMapper
+import com.tokopedia.autocomplete.initialstate.InitialStateData
+import com.tokopedia.autocomplete.initialstate.InitialStateMapper
 import com.tokopedia.autocomplete.network.AutocompleteCache
 import com.tokopedia.cachemanager.CacheManager
 import retrofit2.Response
@@ -10,7 +11,6 @@ import java.util.concurrent.TimeUnit
 class InitialStateDataSource(
         private val initialStateApi: InitialStateApi,
         private val initialStateMapper: InitialStateMapper,
-        private val popularSearchResponseMapper: PopularSearchResponseMapper,
         private val cacheManager: CacheManager
 ) {
     fun getInitialState(param: HashMap<String, Any>): Observable<List<InitialStateData>> {
@@ -25,11 +25,5 @@ class InitialStateDataSource(
 
     fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Response<Void>> {
         return initialStateApi.deleteRecentSearch(parameters)
-    }
-
-    fun refreshPopularSearch(parameters: HashMap<String, Any>): Observable<List<InitialStateItem>> {
-        return initialStateApi.refreshPopularSearch(parameters)
-                .debounce(300, TimeUnit.MILLISECONDS)
-                .map(popularSearchResponseMapper)
     }
 }

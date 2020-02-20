@@ -58,8 +58,4 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
         this.list.clear();
         notifyItemRangeRemoved(0, size);
     }
-
-    public void refreshPopularSearch(){
-
-    }
 }

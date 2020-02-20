@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/autocomplete_ic_recent_search" />
+        app:srcCompat="@drawable/autocomplete_ic_time" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/recentSearchTextView"

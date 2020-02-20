@@ -19,6 +19,6 @@ interface InitialStateContract {
 
         fun deleteAllRecentSearch()
 
-        fun refreshPopularSearch()
+        fun refreshPopularSearch(searchParameter: SearchParameter)
     }
 }

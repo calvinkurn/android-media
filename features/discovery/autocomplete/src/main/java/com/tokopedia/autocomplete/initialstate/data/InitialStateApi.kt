@@ -1,7 +1,7 @@
-package com.tokopedia.autocomplete.initialstate
+package com.tokopedia.autocomplete.initialstate.data
 
 
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchResponse
+import com.tokopedia.autocomplete.initialstate.InitialStateResponse
 import com.tokopedia.autocomplete.network.AutocompleteBaseURL
 import retrofit2.Response
 import retrofit2.http.DELETE
@@ -20,9 +20,4 @@ interface InitialStateApi {
     fun deleteRecentSearch(
             @QueryMap parameters: HashMap<String, Any>
     ): Observable<Response<Void>>
-
-    @GET(AutocompleteBaseURL.Ace.PATH_POPULAR_SEARCH)
-    fun refreshPopularSearch(
-            @QueryMap parameters: HashMap<String, Any>
-    ): Observable<Response<PopularSearchResponse>>
 }

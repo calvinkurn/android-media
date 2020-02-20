@@ -1,7 +1,10 @@
-package com.tokopedia.autocomplete.initialstate
+package com.tokopedia.autocomplete.initialstate.recentsearch
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.autocomplete.initialstate.InitialStateData
+import com.tokopedia.autocomplete.initialstate.InitialStateRepository
+import com.tokopedia.autocomplete.initialstate.InitialStateUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable

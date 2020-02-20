@@ -1,5 +1,8 @@
-package com.tokopedia.autocomplete.initialstate
+package com.tokopedia.autocomplete.initialstate.data
 
+import com.tokopedia.autocomplete.initialstate.InitialStateData
+import com.tokopedia.autocomplete.initialstate.InitialStateItem
+import com.tokopedia.autocomplete.initialstate.InitialStateRepository
 import retrofit2.Response
 import rx.Observable
 import java.util.*
@@ -12,9 +15,5 @@ class InitialStateRepositoryImpl(private val initialStateDataSource: InitialStat
 
     override fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Response<Void>> {
         return initialStateDataSource.deleteRecentSearch(parameters)
-    }
-
-    override fun refreshPopularSearch(parameters: HashMap<String, Any>): Observable<List<InitialStateItem>> {
-        return initialStateDataSource.refreshPopularSearch(parameters)
     }
 }

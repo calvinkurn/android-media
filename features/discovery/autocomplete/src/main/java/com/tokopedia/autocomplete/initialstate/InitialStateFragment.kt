@@ -15,6 +15,8 @@ import com.tokopedia.autocomplete.AutoCompleteActivity
 import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AppScreen
+import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
+import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
@@ -139,7 +141,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     fun refreshPopularSearch(){
-        presenter.refreshPopularSearch()
+        searchParameter?.let { presenter.refreshPopularSearch(it) }
     }
 
     override fun onItemClicked(applink: String, webUrl: String) {

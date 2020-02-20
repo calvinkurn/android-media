@@ -6,45 +6,38 @@
     android:layout_height="@dimen/dp_60"
     android:foreground="?attr/selectableItemBackground">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_24"
-        android:minWidth="@dimen/dp_24"
-        android:maxHeight="@dimen/dp_40"
-        android:maxWidth="@dimen/dp_40"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
+        android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/autocomplete_ic_search" />
+        app:srcCompat="@drawable/autocomplete_ic_time"/>
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconTitle"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_3"
-        app:layout_constraintBottom_toTopOf="@id/iconSubtitle"
         app:layout_constraintLeft_toRightOf="@id/iconImage"
-        app:layout_constraintTop_toTopOf="@id/iconImage"
-        app:srcCompat="@drawable/autocomplete_kol_badge"
+        app:layout_constraintTop_toBottomOf="@id/recentSearchTitle"
+        app:layout_constraintBottom_toTopOf="@id/recentSearchTitle"
         android:visibility="gone"/>
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconSubtitle"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_2"
-        app:layout_constraintBottom_toBottomOf="@id/iconImage"
         app:layout_constraintLeft_toRightOf="@id/iconImage"
-        app:layout_constraintTop_toBottomOf="@id/iconTitle"
-        app:srcCompat="@drawable/autocomplete_location_solid"
+        app:layout_constraintTop_toBottomOf="@id/recentSearchSubtitle"
+        app:layout_constraintBottom_toTopOf="@id/recentSearchSubtitle"
         android:visibility="gone"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -55,21 +48,22 @@
         android:maxHeight="@dimen/dp_40"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
-        app:layout_goneMarginLeft="@dimen/dp_12"
-        app:layout_goneMarginStart="@dimen/dp_12"
+        app:layout_goneMarginLeft="@dimen/dp_8"
+        app:layout_goneMarginStart="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         app:layout_goneMarginRight="@dimen/dp_8"
         app:layout_goneMarginEnd="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_2"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="@string/dummy_recent_search_two_lines"
         android:textColor="@color/charcoal_grey_96"
-        app:layout_constraintLeft_toRightOf="@id/iconTitle"
+        app:layout_constraintTop_toTopOf="@id/iconImage"
+        app:layout_constraintBottom_toTopOf="@id/recentSearchSubtitle"
         app:layout_constraintRight_toLeftOf="@id/recentSearchLabel"
-        app:layout_constraintTop_toTopOf="@id/iconTitle"
-        app:layout_constraintBottom_toBottomOf="@id/iconTitle"
-        app:typographyType="body_2" />
+        app:layout_constraintLeft_toRightOf="@id/iconTitle"
+        app:typographyType="body_2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/recentSearchSubtitle"
@@ -87,12 +81,12 @@
         android:maxLines="1"
         android:text="@string/dummy_recent_search_subtitle"
         android:textColor="@color/charcoal_grey_44"
-        app:layout_constraintRight_toLeftOf="@id/recentSearchLabel"
+        app:layout_constraintTop_toBottomOf="@id/recentSearchTitle"
+        app:layout_constraintBottom_toBottomOf="@id/iconImage"
         app:layout_constraintLeft_toRightOf="@id/iconSubtitle"
-        app:layout_constraintTop_toTopOf="@id/iconSubtitle"
-        app:layout_constraintBottom_toBottomOf="@id/iconSubtitle"
+        app:layout_constraintRight_toLeftOf="@id/recentSearchLabel"
         app:typographyType="body_3"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/recentSearchLabel"
@@ -105,7 +99,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/actionRemoveButton"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <ImageView
         android:id="@+id/actionRemoveButton"

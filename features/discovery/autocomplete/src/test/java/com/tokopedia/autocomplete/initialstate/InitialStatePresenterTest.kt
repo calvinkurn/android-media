@@ -2,8 +2,9 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchUseCase
+import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.initialstate.testinstance.createTestInstance
@@ -25,7 +26,7 @@ internal class InitialStatePresenterTest: Spek({
         Scenario("Get initial state data success") {
             val getInitialStateUseCase by memoized<InitialStateUseCase>()
             val deleteRecentSearchUseCase by memoized<DeleteRecentSearchUseCase>()
-            val popularSearchUseCase by memoized<PopularSearchUseCase>()
+            val popularSearchUseCase by memoized<RefreshPopularSearchUseCase>()
             val userSession by memoized<UserSessionInterface>()
             val searchParameter by memoized<SearchParameter>()
             val initialStateView by memoized<InitialStateContract.View>()
@@ -83,7 +84,7 @@ internal class InitialStatePresenterTest: Spek({
         Scenario("Get initial state data success") {
             val getInitialStateUseCase by memoized<InitialStateUseCase>()
             val deleteRecentSearchUseCase by memoized<DeleteRecentSearchUseCase>()
-            val popularSearchUseCase by memoized<PopularSearchUseCase>()
+            val popularSearchUseCase by memoized<RefreshPopularSearchUseCase>()
             val userSession by memoized<UserSessionInterface>()
             val searchParameter by memoized<SearchParameter>()
             val initialStateView by memoized<InitialStateContract.View>()
@@ -127,7 +128,7 @@ internal class InitialStatePresenterTest: Spek({
         Scenario("Get initial state data success") {
             val getInitialStateUseCase by memoized<InitialStateUseCase>()
             val deleteRecentSearchUseCase by memoized<DeleteRecentSearchUseCase>()
-            val popularSearchUseCase by memoized<PopularSearchUseCase>()
+            val popularSearchUseCase by memoized<RefreshPopularSearchUseCase>()
             val userSession by memoized<UserSessionInterface>()
             val searchParameter by memoized<SearchParameter>()
             val initialStateView by memoized<InitialStateContract.View>()
@@ -176,7 +177,7 @@ internal class InitialStatePresenterTest: Spek({
             }
 
             When("Presenter refresh popular search") {
-                initialStatePresenter.refreshPopularSearch()
+                initialStatePresenter.refreshPopularSearch(searchParameter)
             }
 
             Then("Verify popularSearch API is called") {
@@ -210,7 +211,7 @@ internal class InitialStatePresenterTest: Spek({
         Scenario("Get initial state data success") {
             val getInitialStateUseCase by memoized<InitialStateUseCase>()
             val deleteRecentSearchUseCase by memoized<DeleteRecentSearchUseCase>()
-            val popularSearchUseCase by memoized<PopularSearchUseCase>()
+            val popularSearchUseCase by memoized<RefreshPopularSearchUseCase>()
             val userSession by memoized<UserSessionInterface>()
             val searchParameter by memoized<SearchParameter>()
             val initialStateView by memoized<InitialStateContract.View>()
@@ -258,7 +259,7 @@ internal class InitialStatePresenterTest: Spek({
             }
 
             When("Presenter call refresh popular search") {
-                initialStatePresenter.refreshPopularSearch()
+                initialStatePresenter.refreshPopularSearch(searchParameter)
             }
 
             Then("Verify popularSearch API is called") {

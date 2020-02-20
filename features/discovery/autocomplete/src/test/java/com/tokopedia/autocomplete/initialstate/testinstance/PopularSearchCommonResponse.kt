@@ -16,36 +16,36 @@ private val popularSearchCommonJSON = """
     {
       "keyword": "sepatu",
       "title": "sepatu",
-      "applink": "tokopedia://getInitialStateData?q=sepatu&source=universe&st=product",
-      "url": "/getInitialStateData?q=sepatu&source=universe&st=product",
+      "applink": "tokopedia://search?q=sepatu&source=universe&st=product",
+      "url": "/search?q=sepatu&source=universe&st=product",
       "image_url": ""
     },
     {
       "keyword": "kaos",
       "title": "kaos",
-      "applink": "tokopedia://getInitialStateData?q=kaos&source=universe&st=product",
-      "url": "/getInitialStateData?q=kaos&source=universe&st=product",
+      "applink": "tokopedia://search?q=kaos&source=universe&st=product",
+      "url": "/search?q=kaos&source=universe&st=product",
       "image_url": ""
     },
     {
       "keyword": "diego",
       "title": "diego",
-      "applink": "tokopedia://getInitialStateData?q=diego&source=universe&st=product",
-      "url": "/getInitialStateData?q=diego&source=universe&st=product",
+      "applink": "tokopedia://search?q=diego&source=universe&st=product",
+      "url": "/search?q=diego&source=universe&st=product",
       "image_url": ""
     },
     {
       "keyword": "new",
       "title": "new",
-      "applink": "tokopedia://getInitialStateData?q=new&source=universe&st=product",
-      "url": "/getInitialStateData?q=new&source=universe&st=product",
+      "applink": "tokopedia://search?q=new&source=universe&st=product",
+      "url": "/search?q=new&source=universe&st=product",
       "image_url": ""
     },
     {
       "keyword": "amild",
       "title": "amild",
-      "applink": "tokopedia://getInitialStateData?q=amild&source=universe&st=product",
-      "url": "/getInitialStateData?q=amild&source=universe&st=product",
+      "applink": "tokopedia://search?q=amild&source=universe&st=product",
+      "url": "/search?q=amild&source=universe&st=product",
       "image_url": ""
     }
   ]
