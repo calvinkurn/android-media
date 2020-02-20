@@ -51,8 +51,8 @@ class FlightFilterViewModel @Inject constructor(
     private fun getStatistics() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.run {
-                mutableStatisticModel.value = flightSearchStatisticUseCase.executeCoroutine(
-                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!))
+                mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
+                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
             }
         }
 
@@ -62,8 +62,8 @@ class FlightFilterViewModel @Inject constructor(
     fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.run {
-                mutableFlightCount.value = flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
-                        .createRequestParams(filterModel.value!!))
+                mutableFlightCount.postValue(flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
+                        .createRequestParams(filterModel.value!!)))
             }
         }
     }
