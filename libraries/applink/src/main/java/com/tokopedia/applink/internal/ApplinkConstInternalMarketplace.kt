@@ -292,4 +292,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
 
+    //SellerReviewListActivity
+    @JvmField
+    val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/review-page"
+
 }
