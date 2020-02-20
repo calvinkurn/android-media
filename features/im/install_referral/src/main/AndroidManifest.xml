@@ -5,7 +5,7 @@
     <application>
 
     <receiver
-        android:name="com.tokopedia.installreferral.InstallReferral"
+        android:name="com.tokopedia.installreferral.InstallReceiver"
         android:exported="true">
         <intent-filter>
             <action android:name="com.android.vending.INSTALL_REFERRER" />
