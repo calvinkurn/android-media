@@ -805,7 +805,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): List<PopularKeywordViewModel> {
+    private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordViewModel> {
         val dataList: MutableList<PopularKeywordViewModel> = mutableListOf()
         for (pojo in list) {
             dataList.add(PopularKeywordViewModel(pojo.url, pojo.imageUrl, pojo.keyword, pojo.productCount))
