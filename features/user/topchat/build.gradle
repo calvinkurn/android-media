@@ -24,11 +24,8 @@ repositories {
 
 buildscript {
     repositories {
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
-        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
