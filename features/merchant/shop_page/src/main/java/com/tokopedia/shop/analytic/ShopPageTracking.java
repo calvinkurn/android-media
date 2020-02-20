@@ -51,6 +51,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
@@ -60,6 +61,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SORT_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.USE_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
@@ -167,9 +169,12 @@ public class ShopPageTracking {
         return TextUtils.join(" ", s);
     }
 
-    public void sendScreenShopPage(String shopId) {
+    public void sendScreenShopPage(String shopId, String shopType) {
         String screenName = joinDash(SHOPPAGE, shopId);
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
+        Map<String,String> customDimension = new HashMap<>();
+        customDimension.put(SHOP_TYPE, shopType);
+        customDimension.put(PAGE_TYPE, SHOPPAGE);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName,customDimension);
     }
 
     public void clickManageShop(CustomDimensionShopPage customDimensionShopPage) {

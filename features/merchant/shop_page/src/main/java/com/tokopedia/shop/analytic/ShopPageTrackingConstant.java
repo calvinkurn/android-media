@@ -140,7 +140,7 @@ public class ShopPageTrackingConstant {
     public static final String EVENT_PRODUCT_ID = "productId";
     public static final String SHOP_ID = "shopId";
     public static final String SHOP_NAME = "shop_name";
-    public static final String PAGE_TYPE = "page_type";
+    public static final String PAGE_TYPE = "pageType";
     public static final String PRODUCT_ID = "product_id";
     public static final String ECOMMERCE = "ecommerce";
     public static final String ACTION_FIELD = "actionField";
@@ -166,7 +166,7 @@ public class ShopPageTrackingConstant {
     public static final String IMPRESSIONS = "impressions";
     public static final String CLICK_MENU = "click menu";
     public static final String CLICK_MORE_MENU = "click more menu";
-    public static final String SHOP_TYPE = "shop_type";
+    public static final String SHOP_TYPE = "shopType";
     public static final String PRODUCT_CLICK = "productClick";
     public static final String PRODUCT_VIEW = "productView";
     public static final String ALL_ETALASE = "Semua Etalase";
