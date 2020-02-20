@@ -302,14 +302,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.distinctBy { it.widgetType }
-                .forEach {
-                    when (it.widgetType) {
+        widgets.forEachIndexed { i, widget ->
+                    when (widget.widgetType) {
                         WidgetType.CARD -> getCardData()
                         WidgetType.LINE_GRAPH -> getLineGraphData()
                         WidgetType.PROGRESS -> getProgressData()
                         WidgetType.CAROUSEL -> getCarouselData()
                         WidgetType.POST_LIST -> getPostData()
+                        else -> adapter.notifyItemChanged(i)
                     }
                 }
     }

@@ -10,6 +10,7 @@
         android:id="@+id/llContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
         android:minHeight="268dp"
         android:paddingStart="@dimen/layout_lvl1"
         android:paddingLeft="@dimen/layout_lvl1"
