@@ -12,8 +12,8 @@ import com.tokopedia.common_tradein.customviews.TradeInTextView
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.common_tradein.usecase.CheckTradeInUseCase
-import com.tokopedia.design.dialog.AccessRequestFragmentDialog.Companion.TAG
-import com.tokopedia.design.dialog.AccessRequestFragmentDialog.Companion.newInstance
+import com.tokopedia.design.dialog.AccessRequestDialogFragment.Companion.newInstance
+import com.tokopedia.design.dialog.AccessRequestDialogFragment.Companion.TAG
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +39,7 @@ class TradeInTextViewModel @Inject constructor(private val useCase: CheckTradeIn
             accessDialog.setBodyText(activity!!.getString(R.string.tradein_text_permission_description))
             accessDialog.setTitle(activity.getString(R.string.tradein_text_request_access))
             accessDialog.setNegativeButton("")
-            accessDialog.show(fragmentManager, TAG)
+            accessDialog.show(fragmentManager!!, TAG)
         }
     }
 
