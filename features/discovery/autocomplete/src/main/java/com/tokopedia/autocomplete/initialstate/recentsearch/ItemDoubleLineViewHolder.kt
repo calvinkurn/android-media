@@ -26,6 +26,7 @@ class ItemDoubleLineViewHolder(itemView: View, private val clickListener: Initia
     private fun bindIconImage(item: BaseItemInitialStateSearch) {
         itemView.iconImage?.showWithAction(item.imageUrl.isNotEmpty()) {
             ImageHandler.loadImageCircle2(itemView.context, it, item.imageUrl)
+            it.setBackgroundResource(R.drawable.autocomplete_border_avatar)
         }
     }
 
