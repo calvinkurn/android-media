@@ -36,7 +36,6 @@
                 app:tabIndicatorColor="@color/tkpd_main_green"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/tkpd_main_green"
-                app:tabTextAppearance="@style/AccountTabLayoutTextStyle"
                 app:tabTextColor="@color/font_black_disabled_38" />
 
         </com.google.android.material.appbar.AppBarLayout>

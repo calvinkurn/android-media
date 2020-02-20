@@ -2,7 +2,8 @@
     package="com.tokopedia.reviewseller">
 
     <application>
-        <activity android:name=".feature.reviewlist.view.activity.SellerReviewListActivity">
+        <activity android:name=".feature.reviewlist.view.activity.SellerReviewListActivity"
+            android:theme="@style/Theme.White">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -12,7 +13,7 @@
 
                 <data
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_review_page"
+                    android:path="@string/path_seller_review_page"
                     android:scheme="@string/internal_scheme" />
 
             </intent-filter>

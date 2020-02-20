@@ -21,8 +21,6 @@ class SellerReviewListFragment: BaseDaggerFragment() {
     private var fragmentAdapter: ReviewFragmentAdapter? = null
     private val tabList = ArrayList<ReviewFragmentAdapter.ReviewFragmentItem>()
     private var viewPager: ViewPager? = null
-    private var toolbar: Toolbar? = null
-
 
     override fun getScreenName(): String = ""
 
@@ -36,15 +34,10 @@ class SellerReviewListFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewPager = view.findViewById(R.id.pager_review)
-        toolbar = view.findViewById(R.id.toolbar_review)
-
-        initActionBar()
         initTabReview()
     }
 
-
     private fun initTabReview() {
-
         tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(getString(R.string.title_review_rating_product), RatingProductFragment()))
         tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(getString(R.string.title_review_inbox), InboxReviewFragment()))
 
@@ -56,15 +49,4 @@ class SellerReviewListFragment: BaseDaggerFragment() {
 
     }
 
-    private fun initActionBar() {
-        activity?.let {
-            (it as AppCompatActivity).run {
-                setSupportActionBar(toolbar)
-                supportActionBar?.setDisplayShowHomeEnabled(true)
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-                supportActionBar?.setDisplayShowTitleEnabled(true)
-                supportActionBar?.title = getString(R.string.title_review_rating_product)
-            }
-        }
-    }
 }
