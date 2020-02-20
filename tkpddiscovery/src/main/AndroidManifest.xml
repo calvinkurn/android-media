@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".newdiscovery.hotlistRevamp.view.activity.HotlistNavActivity"
+            android:name=".hotlistRevamp.view.activity.HotlistNavActivity"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
