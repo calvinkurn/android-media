@@ -14,11 +14,10 @@ private val graphqlUseCase: GraphqlUseCase<ProductrevDismissSuggestion>
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(ProductrevDismissSuggestion::class.java)
+        graphqlUseCase.setRequestParams(mapOf())
     }
     override suspend fun executeOnBackground(): ProductrevDismissSuggestion {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(SuggestedReviewQuery.dismissSuggestedReviewQuery)
-        graphqlUseCase.setRequestParams(mapOf())
         return graphqlUseCase.executeOnBackground()
     }
 }

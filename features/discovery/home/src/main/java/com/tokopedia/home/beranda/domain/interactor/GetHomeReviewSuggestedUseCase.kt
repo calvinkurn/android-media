@@ -16,11 +16,10 @@ class GetHomeReviewSuggestedUseCase @Inject constructor(
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(SuggestedProductReview::class.java)
+        graphqlUseCase.setRequestParams(mapOf())
     }
     override suspend fun executeOnBackground(): SuggestedProductReview {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(SuggestedReviewQuery.suggestedReviewQuery)
-        graphqlUseCase.setRequestParams(mapOf())
         return graphqlUseCase.executeOnBackground()
     }
 }

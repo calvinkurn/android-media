@@ -18,7 +18,9 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -83,14 +85,20 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideHomeReviewSuggestedUseCase(graphqlRepository: GraphqlRepository): GetHomeReviewSuggestedUseCase {
-        return GetHomeReviewSuggestedUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
+    fun provideHomeReviewSuggestedUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetHomeReviewSuggestedUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.suggested_review_query)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SuggestedProductReview>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetHomeReviewSuggestedUseCase(usecase)
     }
 
     @Provides
     @HomeScope
-    fun provideDismissHomeReviewUseCase(graphqlRepository: GraphqlRepository): DismissHomeReviewUseCase {
-        return DismissHomeReviewUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
+    fun provideDismissHomeReviewUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): DismissHomeReviewUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.dismiss_suggested_query)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductrevDismissSuggestion>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return DismissHomeReviewUseCase(usecase)
     }
 
     @Provides
