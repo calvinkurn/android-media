@@ -14,11 +14,11 @@ import javax.inject.Inject
  */
 
 class GetPopularKeywordUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<HomeWidget.PopularKeywordList>)
-    : UseCase<HomeWidget.PopularKeywordList>() {
+        private val graphqlUseCase: GraphqlUseCase<HomeWidget.PopularKeywordQuery>)
+    : UseCase<HomeWidget.PopularKeywordQuery>() {
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        graphqlUseCase.setTypeClass(HomeWidget.PopularKeywordList::class.java)
+        graphqlUseCase.setTypeClass(HomeWidget.PopularKeywordQuery::class.java)
     }
     companion object {
 
@@ -48,7 +48,7 @@ class GetPopularKeywordUseCase @Inject constructor(
     }
     //endregion
 
-    override suspend fun executeOnBackground(): HomeWidget.PopularKeywordList {
+    override suspend fun executeOnBackground(): HomeWidget.PopularKeywordQuery {
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)

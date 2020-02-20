@@ -792,8 +792,8 @@ class HomeViewModel @Inject constructor(
         getPopularKeywordJob = launchCatchError(coroutineContext, {
             popularKeywordUseCase.setParams()
             val results = popularKeywordUseCase.executeOnBackground()
-            if (results.keywords.size != 0) {
-                val resultList = convertPopularKeywordDataList(results.keywords)
+            if (results.data.keywords.size != 0) {
+                val resultList = convertPopularKeywordDataList(results.data.keywords)
                 val data = PopularKeywordListViewModel(popularKeywordList = resultList, header = header)
                 data.position = rowNumber
                 _popularKeywordResp.postValue(Result.success(data))
