@@ -44,6 +44,9 @@ class FlightFilterSortWidgetAdapter(val items: MutableList<BaseFilterSortModel>,
 
     private fun resetAllSelectedChip() {
         listener.onResetChip()
+        for (item in items) {
+            item.isSelected = false
+        }
     }
 
     override fun getItemCount(): Int = if (items.size > maxItemCount) maxItemCount else items.size
