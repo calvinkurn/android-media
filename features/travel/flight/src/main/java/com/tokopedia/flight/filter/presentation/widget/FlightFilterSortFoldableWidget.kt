@@ -3,7 +3,15 @@ package com.tokopedia.flight.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.flight.R
+import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
+import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterSortViewHolder
+import com.tokopedia.flight.filter.presentation.data.BaseFilterSortModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -15,28 +23,42 @@ import kotlinx.android.synthetic.main.widget_flight_filter_sort_foldable.view.*
  */
 
 class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : BaseCustomView(context, attrs, defStyleAttr), FlightFilterSortAdapter.ActionListener {
 
     var titleText: String = ""
     var isFoldAble: Boolean = true
     var hasShowMore: Boolean = true
     var listener: ActionListener? = null
     var maxItemCount: Int = 5
+    var isFlowLayout: Boolean = true
+    var isSelectOnlyOneChip: Boolean = false
+
+    private lateinit var adapter: FlightFilterSortAdapter
 
     init {
         View.inflate(context, R.layout.widget_flight_filter_sort_foldable, this)
+
+        //data for testing
     }
 
     /**
      *  the buildView() function is expected to be called after all params set.
      */
-    fun buildView() {
+
+
+    fun buildView(items: List<BaseFilterSortModel>) {
         tv_title.text = titleText
 
         if (isFoldAble) {
             ic_arrow_up.show()
             ic_arrow_up.setOnClickListener {
-                if (layout_child.isVisible) layout_child.hide() else layout_child.show()
+                if (child_view.isVisible) {
+                    child_view.hide()
+                    ic_arrow_up.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24))
+                } else {
+                    child_view.show()
+                    ic_arrow_up.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_gray_24))
+                }
             }
         } else ic_arrow_up.hide()
 
@@ -46,6 +68,34 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
                 listener?.onClickShowMore()
             }
         } else tv_show_more.hide()
+
+        if (!::adapter.isInitialized) {
+            adapter = FlightFilterSortAdapter(FlightFilterSortAdapterTypeFactory(), items.toMutableList(), this)
+            adapter.isSelectOnlyOneChip = isSelectOnlyOneChip
+
+            if (isFlowLayout) {
+                rv_flight_sort.layoutManager = ChipsLayoutManager.newBuilder(context)
+                        .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                        .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                        .build()
+            } else {
+                rv_flight_sort.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            }
+
+            rv_flight_sort.adapter = adapter
+        }
+    }
+
+    override fun onResetChip() {
+        for (i in 0 until adapter.itemCount) {
+            with(rv_flight_sort.findViewHolderForAdapterPosition(i) as FlightFilterSortViewHolder<*>) {
+                this.unselectChip()
+            }
+        }
+    }
+
+    override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
+        Toast.makeText(context, items.toString(), Toast.LENGTH_SHORT).show()
     }
 
     interface ActionListener {
