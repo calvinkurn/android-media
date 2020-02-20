@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.presenter
+package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
 import androidx.annotation.VisibleForTesting
@@ -54,7 +54,7 @@ import javax.inject.Inject
 
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
-class HomeViewModel @Inject constructor(
+open class HomeViewModel @Inject constructor(
         private val homeUseCase: HomeUseCase,
         private val userSession: UserSessionInterface,
         private val getFeedTabUseCase: GetFeedTabUseCase,
