@@ -71,8 +71,10 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         })
 
         flightFilterViewModel.filterViewData.observe(this, Observer {
-            renderList(it)
-            hideLoading()
+            if (it.isNotEmpty()) {
+                renderList(it)
+                hideLoading()
+            }
         })
 
     }
