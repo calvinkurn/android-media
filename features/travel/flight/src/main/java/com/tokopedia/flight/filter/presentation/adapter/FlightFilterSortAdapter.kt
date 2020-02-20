@@ -15,7 +15,7 @@ class FlightFilterSortAdapter(val typeFactory: FlightFilterSortAdapterTypeFactor
                               val listener: ActionListener)
     : BaseAdapter<FlightFilterSortAdapterTypeFactory>(typeFactory, items as List<Visitable<*>>) {
 
-    private var maxItemCount: Int = 5
+    var maxItemCount: Int = 5
     var isSelectOnlyOneChip: Boolean = false
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {

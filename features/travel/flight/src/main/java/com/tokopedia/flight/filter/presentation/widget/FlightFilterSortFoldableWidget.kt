@@ -3,7 +3,6 @@ package com.tokopedia.flight.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
@@ -37,8 +36,6 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
 
     init {
         View.inflate(context, R.layout.widget_flight_filter_sort_foldable, this)
-
-        //data for testing
     }
 
     /**
@@ -72,6 +69,7 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
         if (!::adapter.isInitialized) {
             adapter = FlightFilterSortAdapter(FlightFilterSortAdapterTypeFactory(), items.toMutableList(), this)
             adapter.isSelectOnlyOneChip = isSelectOnlyOneChip
+            adapter.maxItemCount = maxItemCount
 
             if (isFlowLayout) {
                 rv_flight_sort.layoutManager = ChipsLayoutManager.newBuilder(context)
@@ -95,10 +93,11 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
     }
 
     override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
-        Toast.makeText(context, items.toString(), Toast.LENGTH_SHORT).show()
+        listener?.onChipStateChanged(items)
     }
 
     interface ActionListener {
+        fun onChipStateChanged(items: List<BaseFilterSortModel>)
         fun onClickShowMore()
     }
 
