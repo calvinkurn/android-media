@@ -477,6 +477,7 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             data.rowNumber = rowNumber
             val params = FollowKolPostGqlUseCase.getParam(id, data.status)
             followKolPostGqlUseCase.clearRequest()
+            followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, data.status))
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
 
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
