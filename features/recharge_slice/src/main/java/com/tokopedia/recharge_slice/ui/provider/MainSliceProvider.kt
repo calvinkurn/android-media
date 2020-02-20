@@ -19,6 +19,7 @@ import com.google.firebase.appindexing.Action
 import com.google.firebase.appindexing.FirebaseUserActions
 import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.recharge_slice.R
 import com.tokopedia.recharge_slice.data.Data
 import com.tokopedia.recharge_slice.data.Recommendation
@@ -73,7 +74,7 @@ class MainSliceProvider : SliceProvider() {
         val mainPendingIntent = PendingIntent.getActivity(
                 contextNonNull,
                 sliceUri.hashCode(),
-                Intent(contextNonNull, MainActivity::class.java),
+                RouteManager.getIntent(contextNonNull,ApplinkConst.HOME),
                 0
         )
         if (sliceUri.getQueryParameter("serviceName") != null) {
