@@ -29,7 +29,7 @@ class FlightFilterViewModel @Inject constructor(
 
     private val mutableSelectedSort = MutableLiveData<Int>()
     val selectedSort: LiveData<Int>
-        get() = selectedSort
+        get() = mutableSelectedSort
 
     private val mutableFilterModel = MutableLiveData<FlightFilterModel>()
     val filterModel: LiveData<FlightFilterModel>

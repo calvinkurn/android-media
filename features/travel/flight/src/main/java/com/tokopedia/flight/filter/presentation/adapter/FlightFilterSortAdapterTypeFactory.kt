@@ -14,7 +14,7 @@ import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
  * @author by jessica on 2020-02-20
  */
 
-class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener) :
+class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener, private val initialSortOption: Int) :
         BaseAdapterTypeFactory() {
 
     fun type(model: FlightSortModel): Int = FlightSortViewHolder.LAYOUT
@@ -23,7 +23,7 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener)
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            FlightSortViewHolder.LAYOUT -> FlightSortViewHolder(parent, listener)
+            FlightSortViewHolder.LAYOUT -> FlightSortViewHolder(parent, listener, initialSortOption)
             FlightFilterPriceRangeViewHolder.LAYOUT -> FlightFilterPriceRangeViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  * @author by jessica on 2020-02-20
  */
 
-class FlightSortViewHolder(val view: View, val listener: FlightFilterSortListener) : AbstractViewHolder<FlightSortModel>(view) {
+class FlightSortViewHolder(val view: View, val listener: FlightFilterSortListener, var selectedId: Int) : AbstractViewHolder<FlightSortModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_flight_filter_sort
@@ -30,6 +30,7 @@ class FlightSortViewHolder(val view: View, val listener: FlightFilterSortListene
             flight_sort_widget.hasShowMore = true
             flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
+                    selectedId = (items[0] as FlightSortModel).selectedOption
                     listener.onSortChanged((items[0] as FlightSortModel).selectedOption)
                 }
 
@@ -43,14 +44,14 @@ class FlightSortViewHolder(val view: View, val listener: FlightFilterSortListene
     }
 
     private fun getSortItem(): List<FlightSortModel> {
-        return listOf(FlightSortModel(TravelSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price)),
-                FlightSortModel(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price)),
-                FlightSortModel(TravelSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure)),
-                FlightSortModel(TravelSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure)),
-                FlightSortModel(TravelSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration)),
-                FlightSortModel(TravelSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration)),
-                FlightSortModel(TravelSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival)),
-                FlightSortModel(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival)))
+        return listOf(FlightSortModel(TravelSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), selectedId == TravelSortOption.CHEAPEST),
+                FlightSortModel(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), selectedId == TravelSortOption.MOST_EXPENSIVE),
+                FlightSortModel(TravelSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), selectedId == TravelSortOption.EARLIEST_DEPARTURE),
+                FlightSortModel(TravelSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), selectedId == TravelSortOption.LATEST_DEPARTURE),
+                FlightSortModel(TravelSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), selectedId == TravelSortOption.SHORTEST_DURATION),
+                FlightSortModel(TravelSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), selectedId == TravelSortOption.LONGEST_DURATION),
+                FlightSortModel(TravelSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), selectedId == TravelSortOption.EARLIEST_ARRIVAL),
+                FlightSortModel(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), selectedId == TravelSortOption.LATEST_ARRIVAL))
     }
 
 }
