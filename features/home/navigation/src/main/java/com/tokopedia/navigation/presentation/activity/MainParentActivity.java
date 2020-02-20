@@ -1078,12 +1078,6 @@ public class MainParentActivity extends BaseActivity implements
         lottieOsDrawable.setProgress(progress);
     }
 
-    @NotNull
-    private boolean executeHomePerformanceMonitoring(){
-        startHomePerformanceMonitoring();
-        return true;
-    }
-
     @Override
     public void startHomePerformanceMonitoring() {
         homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
