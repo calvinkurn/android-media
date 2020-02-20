@@ -41,8 +41,11 @@
                         android:layout_height="match_parent"
                         android:clickable="true"
                         android:focusable="true"
+                        android:background="@drawable/bg_corner"
+                        android:textColorHint="@android:color/darker_gray"
+                        android:textSize="@dimen/sp_16"
                         app:siv_search_hint="@string/brandlist_search_view_hint"
-                        app:siv_search_icon="@drawable/ic_search_bar"/>
+                        app:siv_search_icon="@drawable/ic_search_bar" />
 
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>

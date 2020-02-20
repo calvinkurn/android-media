@@ -19,7 +19,7 @@ class BrandlistSearchMapper {
                         BrandlistSearchRecommendationViewModel(
                                 shop.name,
                                 shop.logoUrl,
-                                shop.imageUrl,
+                                shop.exclusiveLogoUrl,
                                 shop.id,
                                 shop.url,
                                 listener,

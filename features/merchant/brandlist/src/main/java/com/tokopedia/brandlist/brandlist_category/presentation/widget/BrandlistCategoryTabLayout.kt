@@ -139,8 +139,8 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                expandAllTabsIcon()
-                appBarLayout?.let { startTabHeightExpandAnimation(it) }
+//                expandAllTabsIcon()
+//                appBarLayout?.let { startTabHeightExpandAnimation(it) }
             }
 
             override fun onPageSelected(position: Int) {

@@ -7,7 +7,7 @@ import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 class BrandlistSearchRecommendationViewModel(
         val name: String,
         val logoUrl: String,
-        val imageUrl: String,
+        val exclusiveLogoUrl: String,
         val id: Int,
         val url: String,
         val listener: BrandlistSearchTrackingListener,

@@ -5,7 +5,7 @@ import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSe
 
 class BrandlistSearchHeaderViewModel(
         val headerText: String,
-        val totalBrand: String
+        val totalBrand: Int?
 ) : Visitable<BrandlistSearchAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: BrandlistSearchAdapterTypeFactory): Int {
@@ -14,7 +14,6 @@ class BrandlistSearchHeaderViewModel(
 
     companion object {
         const val RECOMMENDATION_HEADER = "Rekomendasi untuk kamu"
-        const val TOTAL_BRANDS_DESCRIPTION = " Brands"
         const val TOTAL_BRANDS_HEADER = "Semua Brand"
     }
 }

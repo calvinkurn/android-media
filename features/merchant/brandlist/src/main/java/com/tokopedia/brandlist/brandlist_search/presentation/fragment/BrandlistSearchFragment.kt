@@ -2,6 +2,7 @@ package com.tokopedia.brandlist.brandlist_search.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -27,13 +28,12 @@ import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchAllBrandLabelViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchHeaderViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchAllBrandLabelViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
+import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -103,10 +103,10 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return when (adapterBrandSearch?.getItemViewType(position)) {
-                        BrandlistSearchHeaderViewHolder.LAYOUT -> 3
-                        BrandlistSearchNotFoundViewHolder.LAYOUT -> 3
-                        BrandlistSearchAllBrandLabelViewHolder.LAYOUT -> 3
-                        else -> 1
+                        BrandlistSearchRecommendationViewHolder.LAYOUT -> 1
+                        BrandlistSearchShimmeringViewHolder.LAYOUT -> 1
+                        BrandlistSearchResultViewHolder.LAYOUT -> 1
+                        else -> 3
                     }
                 }
             }
@@ -125,6 +125,9 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         viewModel.getTotalBrands()
         searchView = view.findViewById(R.id.search_input_view)
         searchView?.requestFocus()
+        searchView?.setOnClickListener{
+            searchView?.requestFocus()
+        }
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
         initView(view)
         observeSearchResultData()
@@ -132,6 +135,9 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         observeTotalBrands()
         observeAllBrands()
         recyclerView?.addOnScrollListener(endlessScrollListener)
+        recyclerView?.setOnTouchListener { _, _ ->  searchView?.hideKeyboard()
+            false
+        }
     }
 
     override fun getComponent(): BrandlistSearchComponent? {
@@ -163,6 +169,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
     override fun focusSearchView() {
         searchView?.requestFocus()
+        searchView?.searchText = ""
     }
 
     private fun initView(view: View) {
@@ -227,7 +234,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
                                         response, searchView?.searchText ?: "", this))
                     }
-                    recyclerView?.clearOnScrollListeners()
+                    recyclerView?.removeOnScrollListener(endlessScrollListener)
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)

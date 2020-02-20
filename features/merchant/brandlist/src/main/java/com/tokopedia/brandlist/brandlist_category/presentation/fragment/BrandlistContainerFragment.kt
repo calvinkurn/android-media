@@ -132,7 +132,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     override fun onContentScrolled(dy: Int) {
-        tabLayout?.adjustTabCollapseOnScrolled(dy)
+//        tabLayout?.adjustTabCollapseOnScrolled(dy)
     }
 
     private fun init(view: View) {

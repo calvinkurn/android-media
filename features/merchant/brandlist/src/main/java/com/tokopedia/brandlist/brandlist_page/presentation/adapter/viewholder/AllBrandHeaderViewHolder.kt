@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandHeaderViewModel
 import com.tokopedia.unifyprinciples.Typography
+import java.text.NumberFormat
+import java.util.*
 
 class AllBrandHeaderViewHolder(itemView: View?) : AbstractViewHolder<AllBrandHeaderViewModel>(itemView) {
 
@@ -22,9 +24,8 @@ class AllBrandHeaderViewHolder(itemView: View?) : AbstractViewHolder<AllBrandHea
 
         headerView?.text = element?.title
 
-        val totalBrandAmount = element?.totalBrands?.toString()
-        totalBrandAmount?.let {
-            val totalBrandContent: String = totalBrandAmount + " " + getString(R.string.brandlist_all_brand)
+        element?.totalBrands?.let {
+            val totalBrandContent: String = NumberFormat.getNumberInstance(Locale.US).format(it).toString() + " " + getString(R.string.brandlist_brand_label)
             totalBrandView?.text = totalBrandContent
         }
     }
