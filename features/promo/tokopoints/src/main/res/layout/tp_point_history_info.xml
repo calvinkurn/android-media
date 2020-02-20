@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/close_button"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/text_header"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/tp_history_header"
@@ -48,9 +48,10 @@
         android:textSize="@dimen/sp_14"
         android:layout_marginTop="@dimen/dp_14"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/close_button" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_exp_point"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,18 +62,20 @@
 
     <TextView
         android:id="@+id/text_point_info"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/tp_point_info"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintStart_toEndOf="@+id/img_exp_point"
-        app:layout_constraintTop_toTopOf="@+id/img_exp_point" />
+        app:layout_constraintStart_toEndOf="@id/img_exp_point"
+        app:layout_constraintTop_toTopOf="@+id/img_exp_point"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_exp_loyalty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -83,7 +86,7 @@
 
     <TextView
         android:id="@+id/text_loyalty_info"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
@@ -92,11 +95,12 @@
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toEndOf="@+id/img_exp_loyalty"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/img_exp_loyalty" />
 
     <TextView
         android:id="@+id/text_exp_info"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_14"
         android:lineSpacingExtra="@dimen/sp_6"

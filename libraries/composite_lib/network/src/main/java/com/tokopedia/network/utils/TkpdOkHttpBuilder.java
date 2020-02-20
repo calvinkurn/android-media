@@ -2,7 +2,7 @@ package com.tokopedia.network.utils;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
@@ -42,7 +42,7 @@ public class TkpdOkHttpBuilder {
 
     private TkpdOkHttpBuilder addDebugInterceptor() {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            this.addInterceptor(new ChuckInterceptor(context));
+            this.addInterceptor(new ChuckerInterceptor(context));
             this.addInterceptor(getHttpLoggingInterceptor());
         }
 

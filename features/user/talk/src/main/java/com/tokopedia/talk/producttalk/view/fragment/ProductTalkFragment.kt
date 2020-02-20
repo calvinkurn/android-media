@@ -382,9 +382,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
 
     private fun goToLogin() {
-        activity?.applicationContext?.run {
+        activity?.run {
             val intent: Intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-            activity!!.startActivityForResult(intent, REQUEST_GO_TO_LOGIN)
+            startActivityForResult(intent, REQUEST_GO_TO_LOGIN)
         }
     }
 
@@ -562,10 +562,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        activity?.applicationContext?.run {
+        activity?.run {
             analytics.trackClickProductFromAttachment()
             val intent: Intent? = getProductIntent(attachProduct.productId.toString())
-            this@ProductTalkFragment.startActivity(intent)
+            startActivity(intent)
         }
     }
 
@@ -633,7 +633,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onChatClicked() {
         if (presenter.isLoggedIn()) {
             if (shopId.isNotBlank()) {
-                activity?.applicationContext?.run {
+                activity?.run {
                     val intent = RouteManager.getIntent(this,
                             ApplinkConst.TOPCHAT_ASKSELLER,
                             shopId,
@@ -652,13 +652,13 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfile()
-        activity?.applicationContext?.run {
-            RouteManager.route(context, ApplinkConst.PROFILE, userId)
+        activity?.run {
+            RouteManager.route(this, ApplinkConst.PROFILE, userId)
         }
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }

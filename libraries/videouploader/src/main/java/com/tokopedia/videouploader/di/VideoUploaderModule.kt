@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.network.utils.ProgressResponseBody
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -117,8 +117,8 @@ class VideoUploaderModule constructor() {
 
     @VideoUploaderQualifier
     @Provides
-    fun provideChuckInterceptor(@VideoUploaderQualifier context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@VideoUploaderQualifier context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @VideoUploaderQualifier

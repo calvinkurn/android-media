@@ -113,7 +113,7 @@ class LabelSwitch : BaseCustomView {
         switchStatus = view.findViewById(R.id.switch_status)
     }
 
-    private fun subTitleText(summaryText: String) {
+    fun subTitleText(summaryText: String) {
         if (TextUtils.isEmpty(summaryText)) {
             summaryTextView.visibility = View.GONE
         } else {
@@ -122,7 +122,15 @@ class LabelSwitch : BaseCustomView {
         }
     }
 
+    fun disableSwitch(){
+        switchStatus.isClickable = false
+        this.isClickable = false
+        this.isEnabled = false
+        switchStatus.isEnabled = false
+    }
+
     fun setListenerValue(listener: CompoundButton.OnCheckedChangeListener) {
         this.listener = listener
     }
+
 }

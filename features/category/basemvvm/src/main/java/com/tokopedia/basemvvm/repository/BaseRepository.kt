@@ -4,7 +4,6 @@ import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -26,15 +25,16 @@ open class BaseRepository {
         graphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
     }
 
-    suspend fun getRestData(url: String, typeOf: Type,
-                            requestType: RequestType,
-                            queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters): RestResponse? {
+    suspend fun <T : Any> getRestData(url: String,
+                                      typeOf: Type,
+                                      requestType: RequestType,
+                                      queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters): T {
         try {
             val restRequest = RestRequest.Builder(url, typeOf)
                     .setRequestType(requestType)
                     .setQueryParams(queryMap)
                     .build()
-            return restRepository.getResponse(restRequest)
+            return restRepository.getResponse(restRequest).getData()
         } catch (t: Throwable) {
             throw t
         }
@@ -61,7 +61,8 @@ open class BaseRepository {
 
     suspend fun <T : Any> getGQLData(gqlQuery: String,
                                      gqlResponseType: Class<T>,
-                                     gqlParams: Map<String, Any>, cacheType: CacheType = CacheType.CLOUD_THEN_CACHE): Any? {
+                                     gqlParams: Map<String, Any>,
+                                     cacheType: CacheType = CacheType.CLOUD_THEN_CACHE): T {
         try {
             val gqlUseCase = GraphqlUseCase<T>(graphqlRepository)
             gqlUseCase.setTypeClass(gqlResponseType)

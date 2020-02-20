@@ -16,7 +16,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 
 /**
@@ -25,16 +29,6 @@ import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
 class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
-    private var isFromDeeplink = false
-    private var isFromAffiliate = false
-    private var shopDomain: String? = null
-    private var productKey: String? = null
-    private var productId: String? = null
-    private var warehouseId: String? = null
-    private var trackerAttribution: String? = null
-    private var trackerListName: String? = null
-    private var affiliateString: String? = null
-    private var deeplinkUrl: String? = null
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -66,6 +60,21 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
     }
 
+    private var isFromDeeplink = false
+    private var isFromAffiliate = false
+    private var shopDomain: String? = null
+    private var productKey: String? = null
+    private var productId: String? = null
+    private var warehouseId: String? = null
+    private var trackerAttribution: String? = null
+    private var trackerListName: String? = null
+    private var affiliateString: String? = null
+    private var deeplinkUrl: String? = null
+
+    private val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(this)
+    }
+
     object DeeplinkIntents {
         @DeepLink(ApplinkConst.PRODUCT_INFO)
         @JvmStatic
@@ -88,15 +97,31 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
     }
 
+    fun goToHomePageClicked() {
+        if (isTaskRoot) {
+            RouteManager.route(this, ApplinkConst.HOME)
+        } else {
+            onBackPressed()
+        }
+        finish()
+    }
+
     override fun getScreenName(): String {
         return "" // need only on success load data? (it needs custom dimension)
     }
 
     override fun getNewFragment(): Fragment =
-            ProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-                    productKey, isFromDeeplink,
-                    isFromAffiliate, trackerAttribution,
-                    trackerListName, affiliateString, deeplinkUrl)
+            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP, false)) {
+                ProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+                        productKey, isFromDeeplink,
+                        isFromAffiliate, trackerAttribution,
+                        trackerListName, affiliateString, deeplinkUrl)
+            } else {
+                DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+                        productKey, isFromDeeplink,
+                        isFromAffiliate, trackerAttribution,
+                        trackerListName, affiliateString, deeplinkUrl)
+            }
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -160,13 +185,17 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
 
+        if (productKey?.isNotEmpty() == true && shopDomain?.isNotEmpty() == true) {
+            isFromDeeplink = true
+        }
+
         super.onCreate(savedInstanceState)
     }
 
-    private fun generateApplink(applink:String) : String{
-        return if(applink.contains(getString(R.string.internal_scheme))){
+    private fun generateApplink(applink: String): String {
+        return if (applink.contains(getString(R.string.internal_scheme))) {
             applink.replace(getString(R.string.internal_scheme), "tokopedia")
-        }else {
+        } else {
             ""
         }
     }

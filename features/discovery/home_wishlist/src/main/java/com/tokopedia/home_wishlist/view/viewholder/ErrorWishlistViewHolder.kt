@@ -13,7 +13,6 @@ class ErrorWishlistViewHolder(
         view: View
 ) : SmartAbstractViewHolder<ErrorWishlistDataModel>(view) {
 
-    private val title: Typography by lazy { view.findViewById<Typography>(R.id.title) }
     private val description: Typography by lazy { view.findViewById<Typography>(R.id.description) }
     private val retry: UnifyButton by lazy { view.findViewById<UnifyButton>(R.id.retry_button) }
 

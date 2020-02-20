@@ -13,10 +13,7 @@ import com.tokopedia.tradein.model.DeviceDataResponse
 import com.tokopedia.tradein.usecase.DiagnosticDataUseCase
 import com.tokopedia.tradein.usecase.GetAddressUseCase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class FinalPriceViewModel@Inject constructor(
         @ApplicationContext val context: Context,
@@ -50,9 +47,5 @@ class FinalPriceViewModel@Inject constructor(
             errorMessage.value = it.localizedMessage
         })
     }
-
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
 }

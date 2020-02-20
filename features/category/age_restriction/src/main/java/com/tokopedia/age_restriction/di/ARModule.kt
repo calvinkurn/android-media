@@ -20,12 +20,6 @@ class ARModule {
 
     @ARScope
     @Provides
-    fun provideResource(@ApplicationContext context: Context): Resources {
-        return context.resources
-    }
-
-    @ARScope
-    @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
@@ -33,8 +27,8 @@ class ARModule {
     @Named(gql_user_profile_dob_update)
     @ARScope
     @Provides
-    fun provideUpdateDobQuery(resources: Resources): String {
-        return GraphqlHelper.loadRawString(resources, R.raw.gql_user_profile_dob_update)
+    fun provideUpdateDobQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_user_profile_dob_update)
     }
 
 

@@ -155,7 +155,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         sendMessageEditText = view.findViewById(R.id.new_comment)
         sendMessageButton = view.findViewById(R.id.send_but)
         sendMessageButton.setOnClickListener {
-            analytics.trackSendCommentTalk(source)
+            analytics.trackSendCommentTalk(
+                    source,
+                    talkId,
+                    adapter.list.filterIsInstance(InboxTalkItemViewModel::class.java).firstOrNull()?.productHeader?.productId ?: "0")
             KeyboardHandler.DropKeyboard(context, view)
             if (userSession.isLoggedIn) {
                 presenter.sendComment(talkId,
@@ -664,13 +667,13 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileInDetail(source)
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
         }
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }

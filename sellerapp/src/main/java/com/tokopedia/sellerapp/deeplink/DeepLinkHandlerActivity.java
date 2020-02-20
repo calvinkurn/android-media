@@ -52,8 +52,8 @@ import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.tracking.applink.TrackingAppLinkModule;
-import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
+import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
+import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
@@ -87,6 +87,7 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         PhoneVerificationApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
+        AutoAdsLinkModule.class,
         FlashsaleDeeplinkModule.class,
         RNDevOptionsApplinkModule.class
 })
@@ -119,6 +120,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new PhoneVerificationApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
+                new AutoAdsLinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
                 new RNDevOptionsApplinkModuleLoader()
         );

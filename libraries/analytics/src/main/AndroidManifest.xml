@@ -14,6 +14,31 @@
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true"/>
+
+        <activity
+            android:name=".debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity"
+            android:launchMode="singleTask"
+            android:label="Analytics Debugger - GTM Error"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true"/>
+
+        <activity
+            android:name=".debugger.ui.activity.AnalyticsIrisSaveDebuggerActivity"
+            android:launchMode="singleTask"
+            android:label="Analytics Debugger - Iris Save"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true"/>
+
+        <activity
+            android:name=".debugger.ui.activity.AnalyticsIrisSendDebuggerActivity"
+            android:launchMode="singleTask"
+            android:label="Analytics Debugger - Iris Send"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true"/>
+
         <activity
             android:name=".debugger.ui.activity.AnalyticsDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />

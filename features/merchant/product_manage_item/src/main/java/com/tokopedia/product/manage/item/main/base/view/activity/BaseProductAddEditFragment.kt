@@ -88,7 +88,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     protected abstract var addEditPageType: AddEditPageType
     private var listenerOnAddEditFragmentCreated: ListenerOnAddEditFragmentCreated? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is ListenerOnAddEditFragmentCreated)
             listenerOnAddEditFragmentCreated = context
@@ -452,13 +452,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewWeightLogisticProduct.setSubTitle("")
         }
         if (currentProductViewModel.productStock?.isActive == true) {
-            if ((currentProductViewModel.productStock?.stockCount ?: 0) > 0) {
-                labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
-            } else {
-                labelViewStockProduct.setContent(getString(R.string.label_always_available))
-            }
+            labelViewStockProduct.setContent(getString(R.string.label_always_active))
         } else {
-            labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
+            labelViewStockProduct.setContent(getString(R.string.label_always_nonactive))
         }
 
         if (currentProductViewModel.productVariantByCatModelList.size > 0 && currentProductViewModel.productVariantViewModel?.hasSelectedVariant() == true) {
@@ -504,7 +500,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 currentProductAddViewModel?.productStock?.stockCount = DEFAULT_PARENT_STOCK_IF_VARIANT
             } else {
                 currentProductAddViewModel?.productStock?.isActive = (stockType == StockTypeDef.TYPE_ACTIVE)
-                currentProductAddViewModel?.productStock?.stockCount = 0
             }
         }
         currentProductAddViewModel?.productVariantViewModel = productVariantViewModel
@@ -571,6 +566,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, hasOriginalVariantLevel1)
                     putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, hasOriginalVariantLevel2)
                     putExtra(ProductExtraConstant.EXTRA_HAS_WHOLESALE, hasWholesale)
+                    putExtra(ProductExtraConstant.EXTRA_IS_ADD, isAddStatus())
                     startActivityForResult(this, REQUEST_CODE_VARIANT)
                 }
             }

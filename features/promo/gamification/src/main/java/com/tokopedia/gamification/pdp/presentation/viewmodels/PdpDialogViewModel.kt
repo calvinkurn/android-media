@@ -40,11 +40,12 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 val response = paramUseCase.getResponse(paramUseCase.getRequestParams(pageName))
-                recommendationLiveData.postValue(LiveDataResult.success(response))
-                getProducts(0)
+                withContext(uiDispatcher){
+                    recommendationLiveData.value = (LiveDataResult.success(response))
+                    getProducts(0)
+                }
             }
         }, onError = {
-            it.printStackTrace()
             recommendationLiveData.postValue(LiveDataResult.error(it))
         })
     }
@@ -52,10 +53,11 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
     fun getProducts(page: Int) {
 
         launchCatchError(block = {
+            val params = recommendationLiveData.value!!.data!!.params
             withContext(workerDispatcher) {
-                val params = recommendationLiveData.value!!.data!!.params
                 val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, page)).first()
                 val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
+
                 productLiveData.postValue(LiveDataResult.success(list))
                 if (titleLiveData.value == null) {
                     titleLiveData.postValue(LiveDataResult.success(item.title))

@@ -4,20 +4,20 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class AddPhonePojo(
-        @SerializedName("userProfileCompletionUpdate")
+        @SerializedName("userProfileUpdate")
         @Expose
-        var data: UserProfileCompletionUpdatePhone = UserProfileCompletionUpdatePhone()
+        var data: UserProfileUpdatePhone = UserProfileUpdatePhone()
 
 )
 
-data class UserProfileCompletionUpdatePhone(
+data class UserProfileUpdatePhone(
         @SerializedName("isSuccess")
         @Expose
-        var isSuccess: Boolean = false,
-        @SerializedName("msisdnMessage")
-        @Expose
-        var errorMessage: String = "",
+        var isSuccess: Int = 0,
         @SerializedName("completionScore")
         @Expose
-        var completionScore: Int = 0
+        var completionScore: Int = 0,
+        @SerializedName("errors")
+        @Expose
+        var errors: ArrayList<String> = arrayListOf()
 )

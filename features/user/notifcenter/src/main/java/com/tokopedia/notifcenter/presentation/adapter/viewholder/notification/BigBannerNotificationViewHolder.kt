@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 
 class BigBannerNotificationViewHolder(
         itemView: View,
@@ -20,7 +21,7 @@ class BigBannerNotificationViewHolder(
         val imageUrl = element.contentUrl
 
         contentImageBanner.shouldShowWithAction(imageUrl.isNotEmpty()) {
-            ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_loading_toped_new)
+            ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_notifcenter_loading_toped)
         }
     }
 

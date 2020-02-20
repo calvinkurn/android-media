@@ -21,6 +21,7 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getYearNow
 import com.tokopedia.salam.umrah.homepage.data.Products
+import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageModel
 import com.tokopedia.salam.umrah.homepage.di.UmrahHomepageComponent
@@ -82,13 +83,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         rv_umrah_home_page.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH)
         fab_umrah_home_page_message.bringToFront()
         fab_umrah_home_page_message.setOnClickListener {
-            if (userSessionInterface.isLoggedIn){
-                context?.let {
-                    startChatUmrah(it)
-                }
-            }else{
-                goToLoginPage()
-            }
+            checkChatSession()
         }
     }
 
@@ -96,8 +91,18 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_CODE_LOGIN -> context?.let{startChatUmrah(it)}
+                REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
             }
+        }
+    }
+
+    private fun checkChatSession(){
+        if (userSessionInterface.isLoggedIn){
+            context?.let {
+                startChatUmrah(it)
+            }
+        }else{
+            goToLoginPage()
         }
     }
 
@@ -148,6 +153,8 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         isRequestedCategory = false
         isDreamFundViewed = false
         isRequestedSpinnerLike = false
+        isRequestedBanner = false
+        isRequestedPartner = false
     }
 
     private fun loadDataAll() {
@@ -225,12 +232,32 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onImpressionFeaturedCategory(headerTitle: String, product: Products, position: Int, positionDC: Int) {
         trackingUmrahUtil.umrahImpressionFeaturedCategoryTracker(headerTitle,product, position, positionDC)
     }
+
+    override fun onBindBannerVH(isLoadedFromCloud: Boolean) {
+        umrahHomepageViewModel.getBannerData(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_umrah_home_page_banner), isLoadedFromCloud)
+    }
+
+    override fun onClickBanner(banner: UmrahBanner, position: Int) {
+        trackingUmrahUtil.umrahClickBannerTracker(banner, position)
+    }
+
+    override fun onImpressionBanner(banner: UmrahBanner, position: Int) {
+        trackingUmrahUtil.umrahImpressionBannerTracker(banner,position)
+    }
+
+    override fun onBindPartnerVH(isLoadFromCloud: Boolean) {
+        umrahHomepageViewModel.getPartnerTravelData(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_umrah_common_travel_agents), isLoadFromCloud)
+    }
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
         var isRequestedMyUmrah = false
         var isDreamFundViewed = false
         var isRequestedCategory = false
         var isRequestedSpinnerLike = false
+        var isRequestedBanner = false
+        var isRequestedPartner = false
         const val REQUEST_CODE_LOGIN = 400
         const val UMRAH_SEARCH_PARAM_INDEX = 0
     }

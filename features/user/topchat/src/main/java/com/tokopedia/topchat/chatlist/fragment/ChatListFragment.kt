@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -487,7 +488,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     override fun onDestroy() {
         super.onDestroy()
         removeLiveDataObserver()
-        chatItemListViewModel.clear()
+        chatItemListViewModel.flush()
     }
 
     private fun removeLiveDataObserver() {
@@ -534,18 +535,21 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         var title = ""
         var subtitle = ""
         var image = ""
+        var ctaText = ""
+        var ctaApplink = ""
         activity?.let {
             when (sightTag) {
-                PARAM_TAB_USER -> {
-                    title = it.getString(R.string.buyer_empty_chat_title)
-                    subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
-                    image = CHAT_BUYER_EMPTY
-                }
-
                 PARAM_TAB_SELLER -> {
-                    title = it.getString(R.string.seller_empty_chat_title)
+                    title = it.getString(R.string.title_topchat_empty_chat)
                     subtitle = it.getString(R.string.seller_empty_chat_subtitle)
                     image = CHAT_SELLER_EMPTY
+                    ctaText = it.getString(R.string.title_topchat_manage_product)
+                    ctaApplink = ApplinkConst.PRODUCT_MANAGE
+                }
+                PARAM_TAB_USER -> {
+                    title = it.getString(R.string.title_topchat_empty_chat)
+                    subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
+                    image = CHAT_BUYER_EMPTY
                 }
             }
 
@@ -556,7 +560,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             }
         }
 
-        return EmptyChatModel(title, subtitle, image)
+        return EmptyChatModel(title, subtitle, image, ctaText, ctaApplink)
     }
 
     override fun onSwipeRefresh() {

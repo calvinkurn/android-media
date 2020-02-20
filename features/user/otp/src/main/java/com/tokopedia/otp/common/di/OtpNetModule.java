@@ -2,10 +2,12 @@ package com.tokopedia.otp.common.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
@@ -50,8 +52,12 @@ public class OtpNetModule {
 
     @OtpScope
     @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools());
+
+        return new ChuckerInterceptor(
+                context, collector);
     }
 
     @OtpScope
@@ -73,7 +79,7 @@ public class OtpNetModule {
     public OkHttpClient provideOkHttpClient(FingerprintInterceptor fingerprintInterceptor,
                                             AuthorizationBearerInterceptor
                                                     authorizationBearerInterceptor,
-                                            ChuckInterceptor chuckInterceptor,
+                                            ChuckerInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor) {
 
@@ -94,7 +100,7 @@ public class OtpNetModule {
     @Provides
     @MethodListQualifier
     public OkHttpClient provideMethodListOkHttpClient(FingerprintInterceptor fingerprintInterceptor,
-                                                      ChuckInterceptor chuckInterceptor,
+                                                      ChuckerInterceptor chuckInterceptor,
                                                       HttpLoggingInterceptor httpLoggingInterceptor,
                                                       TkpdAuthInterceptor tkpdAuthInterceptor) {
 

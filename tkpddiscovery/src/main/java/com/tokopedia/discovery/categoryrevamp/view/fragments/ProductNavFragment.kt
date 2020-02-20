@@ -497,7 +497,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {
-        catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), productItem.wishlist, isUserLoggedIn(), productItem.isTopAds)
+        catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), !productItem.wishlist, isUserLoggedIn(), productItem.isTopAds)
 
         if (userSession.isLoggedIn) {
             disableWishlistButton(productItem.id.toString())

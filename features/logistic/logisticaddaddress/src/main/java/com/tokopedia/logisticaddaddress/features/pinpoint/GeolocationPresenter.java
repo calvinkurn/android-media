@@ -22,32 +22,30 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.di.ActivityContext;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
 import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper;
-import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillResponseUiModel;
 import com.tokopedia.logisticaddaddress.utils.LocationCache;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
+import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 @GeolocationScope
 public class GeolocationPresenter implements GeolocationContract.GeolocationPresenter, LocationListener {
@@ -61,7 +59,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private final GoogleApiClient googleApiClient;
     private final LocationRequest locationRequest;
     private UserSession userSession;
-    private AutofillUseCase autofillUseCase;
+    private RevGeocodeUseCase revGeocodeUseCase;
     private GeolocationMapper mapper;
 
     private Context context;
@@ -73,13 +71,13 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     @Inject
     public GeolocationPresenter(@ActivityContext Context context, RetrofitInteractorImpl retrofitInteractor,
-                                UserSession userSession, AutofillUseCase autofillUseCase,
+                                UserSession userSession, RevGeocodeUseCase revGeocodeUseCase,
                                 GoogleMapFragment googleMapFragment, GeolocationMapper geolocationMapper) {
         this.context = context;
         this.userSession = userSession;
         this.view = googleMapFragment;
         this.retrofitInteractor = retrofitInteractor;
-        this.autofillUseCase = autofillUseCase;
+        this.revGeocodeUseCase = revGeocodeUseCase;
         this.mapper = geolocationMapper;
         this.locationRequest = LocationRequest.create()
                 .setInterval(DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS)
@@ -105,8 +103,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     public void setUpVariables(LocationPass locationPass, boolean hasLocation) {
         this.locationPass = locationPass;
         this.hasLocation = hasLocation;
-        if(hasLocation)
-        {
+        if (hasLocation) {
             Location location = new Location(LocationManager.NETWORK_PROVIDER);
             location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
             location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
@@ -126,6 +123,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private void getExistingLocation() {
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
+
     private void checkLocationSettings() {
         LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
@@ -189,10 +187,10 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         int resultCode = availability.isGooglePlayServicesAvailable(context);
 
         if (ConnectionResult.SUCCESS == resultCode) {
-            CommonUtils.dumper("Google play services available");
+            Timber.d("Google play services available");
             return true;
         } else {
-            CommonUtils.dumper("Google play services unavailable");
+            Timber.d("Google play services unavailable");
             return false;
         }
     }
@@ -233,8 +231,8 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     public void getReverseGeoCoding(String latitude, String longitude) {
         String keyword = String.format("%s,%s", latitude, longitude);
         view.setLoading(true);
-        autofillUseCase.execute(keyword)
-                .subscribe(new Subscriber<AutofillResponseUiModel>() {
+        revGeocodeUseCase.execute(keyword)
+                .subscribe(new Subscriber<KeroMapsAutofill>() {
                     @Override
                     public void onCompleted() {
 
@@ -247,10 +245,10 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
                     }
 
                     @Override
-                    public void onNext(AutofillResponseUiModel autofillResponseUiModel) {
+                    public void onNext(KeroMapsAutofill keroMapsAutofill) {
                         view.setLoading(false);
-                        view.setValuePointer(autofillResponseUiModel.getData().getFormattedAddress());
-                        setNewLocationPass(mapper.map(autofillResponseUiModel));
+                        view.setValuePointer(keroMapsAutofill.getData().getFormattedAddress());
+                        setNewLocationPass(mapper.map(keroMapsAutofill));
                     }
                 });
     }
@@ -330,7 +328,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     @Override
     public void onDestroy() {
         retrofitInteractor.unSubscribe();
-        autofillUseCase.unsubscribe();
+        revGeocodeUseCase.unsubscribe();
     }
 
     private RetrofitInteractor.GenerateLatLongListener latLongListener() {

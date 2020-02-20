@@ -25,7 +25,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
@@ -169,7 +169,7 @@ public class InboxChatFragment extends BaseDaggerFragment
         mainList = parentView.findViewById(R.id.chat_list);
         mainList.requestFocus();
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
-        refreshHandler = new RefreshHandler(getActivity(), parentView, view -> {
+        refreshHandler = new RefreshHandler(getActivity(), parentView.findViewById(R.id.swipe_refresh_layout), view -> {
             finishContextMode();
             presenter.refreshData();
         });

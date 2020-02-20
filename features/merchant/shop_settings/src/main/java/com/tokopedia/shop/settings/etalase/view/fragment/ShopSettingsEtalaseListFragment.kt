@@ -101,7 +101,7 @@ class ShopSettingsEtalaseListFragment :
         searchInputView.setSearchHint(getString(R.string.search_etalase))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (shopEtalaseViewModels == null) {
             menu!!.clear()
         } else if (shopEtalaseViewModels!!.size == 0 || !hasCustomEtalaseAtLeast2(shopEtalaseViewModels!!)) {
@@ -133,7 +133,7 @@ class ShopSettingsEtalaseListFragment :
         return false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         KeyboardHandler.DropKeyboard(context, view)
         if (item!!.itemId == R.id.menu_add) {
             onAddEtalaseButtonClicked()

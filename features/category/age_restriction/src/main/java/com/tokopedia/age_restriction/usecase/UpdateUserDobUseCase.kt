@@ -12,7 +12,7 @@ class UpdateUserDobUseCase @Inject constructor(@Named(gql_user_profile_dob_updat
     suspend fun getData(bdayDD: String, bdayMM: String, bdayYY: String):UserDOBUpdateResponse {
         return repository.getGQLData(updateDob,
                 UserDOBUpdateResponse::class.java,
-                getDobMap(bdayDD,bdayMM,bdayYY)) as UserDOBUpdateResponse
+                getDobMap(bdayDD,bdayMM,bdayYY))
     }
 
     fun getDobMap(bdayDD: String, bdayMM: String, bdayYY: String):HashMap<String, String>{

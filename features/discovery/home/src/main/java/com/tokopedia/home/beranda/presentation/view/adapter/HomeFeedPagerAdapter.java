@@ -4,8 +4,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.collection.SparseArrayCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.ViewGroup;
 
+import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
@@ -17,21 +20,27 @@ import java.util.List;
 
 public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
 
+    private final RecyclerView.RecycledViewPool parentPool;
+    private final HomeCategoryListener homeCategoryListener;
     private SparseArrayCompat<HomeFeedFragment> registeredFragments = new SparseArrayCompat<>();
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
     private final TrackingQueue homeTrackingQueue;
     private List<FeedTabModel> feedTabModelList = new ArrayList<>();
 
-    public HomeFeedPagerAdapter(HomeEggListener homeEggListener,
+    public HomeFeedPagerAdapter(HomeCategoryListener homeCategoryListener,
+                                HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fragmentManager,
                                 List<FeedTabModel> feedTabModelList,
-                                TrackingQueue homeTrackingQueue) {
+                                TrackingQueue homeTrackingQueue,
+                                RecyclerView.RecycledViewPool parentPool) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.homeTrackingQueue = homeTrackingQueue;
+        this.parentPool = parentPool;
+        this.homeCategoryListener = homeCategoryListener;
         updateData(feedTabModelList);
     }
 
@@ -49,7 +58,8 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
                 Integer.parseInt(feedTabModelList.get(position).getId()),
                 feedTabModelList.get(position).getName()
         );
-        homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setParentPool(parentPool);
         homeFeedFragment.setHomeTrackingQueue(homeTrackingQueue);
         return homeFeedFragment;
     }
@@ -58,7 +68,8 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
         HomeFeedFragment homeFeedFragment = (HomeFeedFragment) o;
-        homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setParentPool(parentPool);
         homeFeedFragment.setHomeTrackingQueue(homeTrackingQueue);
         registeredFragments.put(position, homeFeedFragment);
         return o;

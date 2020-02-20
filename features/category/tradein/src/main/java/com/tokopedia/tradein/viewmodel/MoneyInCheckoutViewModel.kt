@@ -32,9 +32,6 @@ class MoneyInCheckoutViewModel @Inject constructor(
         private const val SUCCESS = 1
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
-
 
     fun getPickupScheduleOption() {
         launchCatchError(block = {

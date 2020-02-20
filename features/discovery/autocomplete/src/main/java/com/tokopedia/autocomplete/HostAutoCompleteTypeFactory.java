@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 
 public interface HostAutoCompleteTypeFactory {
 
-    int type(DefaultAutoCompleteViewModel viewModel);
+    int type(InitialStateViewModel viewModel);
 
-    int type(TabAutoCompleteViewModel viewModel);
+    int type(TabSuggestionViewModel viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

@@ -4,20 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.notifcenter.data.entity.NotificationEntity
+import com.tokopedia.notifcenter.data.entity.NotificationUpdateFilter
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
-import com.tokopedia.notifcenter.domain.MarkReadNotificationUpdateItemUseCase
-import com.tokopedia.notifcenter.domain.NotificationFilterUseCase
-import com.tokopedia.notifcenter.domain.NotificationInfoTransactionUseCase
-import com.tokopedia.notifcenter.domain.NotificationTransactionUseCase
 import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
 import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.domain.*
+import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationTotalUnreadSubscriber
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -28,7 +27,9 @@ interface NotificationTransactionContract {
     fun getNotification(lastNotificationId: String)
     fun updateNotificationFilter(filter: HashMap<String, Int>)
     fun markReadNotification(notificationId: String)
+    fun markAllReadNotification()
     fun onErrorMessage(throwable: Throwable)
+    fun getTotalUnreadNotification()
     fun getInfoStatusNotification()
     fun resetNotificationFilter()
     fun getNotificationFilter()
@@ -38,10 +39,12 @@ typealias FilterWrapper = NotificationFilterSectionViewBean
 
 class NotificationTransactionViewModel @Inject constructor(
         private val notificationInfoTransactionUseCase: NotificationInfoTransactionUseCase,
+        private var markAllReadNotificationUseCase: MarkAllReadNotificationUpdateUseCase,
+        private var getNotificationTotalUnreadUseCase: GetNotificationTotalUnreadUseCase,
         private var notificationTransactionUseCase: NotificationTransactionUseCase,
         private var markNotificationUseCase: MarkReadNotificationUpdateItemUseCase,
+        private var notificationFilterMapper: GetNotificationUpdateFilterMapper,
         private var notificationFilterUseCase: NotificationFilterUseCase,
-        private var notificationFilterMapper : GetNotificationUpdateFilterMapper,
         private var notificationMapper: GetNotificationUpdateMapper,
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
@@ -54,6 +57,12 @@ class NotificationTransactionViewModel @Inject constructor(
 
     private val _filterNotification = MediatorLiveData<NotificationFilterSectionViewBean>()
     val filterNotification: LiveData<NotificationFilterSectionViewBean> get() = _filterNotification
+
+    private val _markAllNotification = MutableLiveData<Boolean>()
+    val markAllNotification: LiveData<Boolean> get() = _markAllNotification
+
+    private val _totalUnreadNotification = MutableLiveData<Long>()
+    val totalUnreadNotification: LiveData<Long> get() = _totalUnreadNotification
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -69,12 +78,16 @@ class NotificationTransactionViewModel @Inject constructor(
     private val _hasNotification = MutableLiveData<Boolean>()
     val hasNotification: LiveData<Boolean> get() = _hasNotification
 
+    //filter notification param
+    var filterNotificationParams = NotificationFilterUseCase.params()
+
     init {
         _filterNotification.addSource(_infoNotification) {
             getNotificationFilter()
         }
 
         _notification.addSource(_filterNotification) {
+            getTotalUnreadNotification()
             getNotification(_lastNotificationId.value?: "")
         }
     }
@@ -98,12 +111,21 @@ class NotificationTransactionViewModel @Inject constructor(
                 lastNotificationId)
 
         notificationTransactionUseCase.get(params, {
-            val data = notificationMapper.mapToNotifTransaction(it)
+            val data = notificationMapper.map(it)
             _hasNotification.value = data.list.isNotEmpty()
             _notification.postValue(data)
         }, {
             onErrorMessage(it)
         })
+    }
+
+    override fun getTotalUnreadNotification() {
+        getNotificationTotalUnreadUseCase.execute(
+                GetNotificationTotalUnreadUseCase.getRequestParams(TYPE_OF_NOTIF_TRANSACTION),
+                GetNotificationTotalUnreadSubscriber({
+                    _totalUnreadNotification.value = it.pojo.notifUnreadInt
+                })
+        )
     }
 
     override fun markReadNotification(notificationId: String) {
@@ -114,11 +136,23 @@ class NotificationTransactionViewModel @Inject constructor(
                 NotificationUpdateActionSubscriber())
     }
 
+    private fun filterMapToDataView(it: NotificationUpdateFilter): NotificationFilterSectionViewBean {
+        return FilterWrapper(notificationFilterMapper.mapToFilter(it))
+    }
+
+    override fun markAllReadNotification() {
+        markAllReadNotificationUseCase.execute(
+                MarkAllReadNotificationUpdateUseCase.params(TYPE_OF_NOTIF_TRANSACTION),
+                NotificationUpdateActionSubscriber({
+                    _markAllNotification.postValue(true)
+                })
+        )
+    }
+
     override fun getNotificationFilter() {
-        val params = NotificationFilterUseCase.params()
-        notificationFilterUseCase.get(params, {
-            val notificationFilter = FilterWrapper(notificationFilterMapper.mapToFilter(it))
-            _filterNotification.value = notificationFilter
+        if (filterNotificationParams.isEmpty()) return
+        notificationFilterUseCase.get(filterNotificationParams, {
+            _filterNotification.value = filterMapToDataView(it)
         }, {
             onErrorMessage(it)
         })

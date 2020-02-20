@@ -1,5 +1,6 @@
 package com.tokopedia.age_restriction.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
@@ -9,15 +10,15 @@ open class BaseARViewModel() : BaseViewModel() {
     protected var errorMessage = MutableLiveData<String>()
 
 
-    fun getProgressBarVisibility(): MutableLiveData<Boolean> {
+    fun getProgBarVisibility(): LiveData<Boolean> {
         return progBarVisibility
     }
 
-    fun getWarningmessage(): MutableLiveData<String> {
+    fun getWarningMessage(): LiveData<String> {
         return warningMessage
     }
 
-    fun getErrormessage(): MutableLiveData<String> {
+    fun getErrorMessage(): LiveData<String> {
         return errorMessage
     }
 }

@@ -1,7 +1,0 @@
-query GetShopManagerPopups($shopID:Int!){
-  getShopManagerPopups(shopID: $shopID) {
-     data {
-       showPopUp
-     }
-  }
-}

@@ -139,7 +139,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         mediaPreviewViewModel.postDetailLive.removeObservers(this)
         mediaPreviewViewModel.postFooterLive.removeObservers(this)
         mediaPreviewViewModel.postTagLive.removeObservers(this)
-        mediaPreviewViewModel.clear()
+        mediaPreviewViewModel.flush()
         super.onDestroy()
     }
 

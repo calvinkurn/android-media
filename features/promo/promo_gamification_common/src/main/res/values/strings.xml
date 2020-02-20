@@ -1,0 +1,5 @@
+<resources>
+    <string name="core_gami_app_name">core_gamification</string>
+    <string name="core_gami_countdown_format" formatted="false">%02d:%02d:%02d</string>
+    <string name="core_gami_toko_points_title">Crack the Egg</string>
+</resources>

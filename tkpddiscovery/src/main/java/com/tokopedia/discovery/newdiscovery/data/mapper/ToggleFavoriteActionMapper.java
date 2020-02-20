@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.network.constant.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.discovery.newdiscovery.domain.model.ActionResultModel;
 

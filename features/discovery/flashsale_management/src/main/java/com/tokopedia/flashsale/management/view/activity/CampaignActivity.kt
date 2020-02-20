@@ -59,11 +59,11 @@ class CampaignActivity : BaseTabActivity(), HasComponent<CampaignComponent> {
                 }
             }
 
-            override fun getItem(position: Int): Fragment? {
+            override fun getItem(position: Int): Fragment {
                 return when (position) {
                     0 -> UpcomingCampaignFragment.createInstance()
                     1 -> MyCampaignFragment.createInstance()
-                    else -> null
+                    else -> Fragment()
                 }
             }
 

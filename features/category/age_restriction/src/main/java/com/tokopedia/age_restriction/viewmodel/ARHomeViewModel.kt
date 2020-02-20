@@ -2,21 +2,19 @@ package com.tokopedia.age_restriction.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.age_restriction.usecase.FetchUserDobUseCase
 import com.tokopedia.age_restriction.data.UserDOBResponse
+import com.tokopedia.age_restriction.usecase.FetchUserDobUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
+
+private const val minimumAdultAge = 21
 
 class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: FetchUserDobUseCase,
-                                          private val userSession: UserSessionInterface) : BaseARViewModel(), CoroutineScope {
+                                          private val userSession: UserSessionInterface) : BaseARViewModel(){
 
     private val askUserLogin = MutableLiveData<Int>()
-    private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
     val notAdult = MutableLiveData<Int>()
     val notVerified = MutableLiveData<String>()
     val notFilled = MutableLiveData<Int>()
@@ -32,11 +30,12 @@ class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: Fetch
     }
 
     fun fetchUserDOB() {
+        val userDobQuery = TokopediaUrl.Companion.getInstance().ACCOUNTS.plus("userapp/api/v1/profile/get-dob")
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val response = fetchUserDobUseCase.getData(USER_DOB_PATH)
-                    processUserDOB(response.data)
+                    val response = fetchUserDobUseCase.getData(userDobQuery)
+                    processUserDOB(response)
                 },
                 onError = {
                     warningMessage.value = it.localizedMessage
@@ -45,9 +44,6 @@ class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: Fetch
         )
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
-
     fun getAskUserLogin(): LiveData<Int> {
         return askUserLogin
     }
@@ -55,7 +51,7 @@ class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: Fetch
     private fun processUserDOB(userDOBResponse: UserDOBResponse?) {
         userDOBResponse?.let {
             if (it.isDobVerified) {
-                if (it.isAdult || it.age >= 18)
+                if (it.isAdult || it.age >= minimumAdultAge)
                     userAdult.value = 1
                 else
                     notAdult.value = 1

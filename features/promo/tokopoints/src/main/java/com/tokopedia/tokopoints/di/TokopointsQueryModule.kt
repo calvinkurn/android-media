@@ -65,4 +65,77 @@ class TokopointsQueryModule {
         return GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.tp_gql_swipe_coupon)
     }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_FILTER)
+    fun getGQLCouponFilter(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_coupon_filter)
+    }
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_LISTING_STACK)
+    fun getGQLCouponListingStack(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_coupon_listing_stack)
+    }
+
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_IN_STACK)
+    fun getGQLCouponInStack(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_coupon_in_stack)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_USER_INFO)
+    fun isPhoneVerified(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_user_info)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_REDEEM_COUPON)
+    fun getGQLRedeemCoupon(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_tokopoint_redeem_coupon)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_CATLOG_STATUS)
+    fun getGQLCatalogStatus(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_catalog_status)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_VALIDATE_REDEEM)
+    fun getGQLTokopointValidateRedeem(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_tokopoint_validate_redeem)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_PRE_VALIDATE_REDEEM)
+    fun getGQLPreValidateREdeem(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_pre_validate_redeem)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_CATALOG_DETAIL)
+    fun getGQLCatalogDetail(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_catalog_detail)
+    }
+
 }

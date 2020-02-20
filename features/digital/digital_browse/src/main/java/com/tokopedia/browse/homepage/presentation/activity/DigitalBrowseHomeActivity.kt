@@ -11,22 +11,19 @@ import android.view.MenuItem
 import android.view.Menu
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.browse.DigitalBrowseComponentInstance
-import com.tokopedia.browse.common.applink.ApplinkConstant
+import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
 import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
 import com.tokopedia.browse.homepage.di.DaggerDigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
-import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.browse.R
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
-import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
@@ -66,10 +63,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
 
     override fun getNewFragment(): Fragment? {
         val type = if (intent.hasExtra(EXTRA_TYPE) && intent.getStringExtra(EXTRA_TYPE)?.isNotEmpty() == true ) intent.getStringExtra(EXTRA_TYPE) else "1"
-        if (Integer.parseInt(type) == TYPE_BELANJA) {
-            autocompleteParam = AUTOCOMPLETE_BELANJA
-            fragmentDigital = DigitalBrowseMarketplaceFragment.fragmentInstance
-        } else if (Integer.parseInt(type) == TYPE_LAYANAN) {
+       if (Integer.parseInt(type) == TYPE_LAYANAN) {
             autocompleteParam = AUTOCOMPLETE_LAYANAN
             fragmentDigital = if (intent.hasExtra(EXTRA_TAB)) {
                 val tab = if(intent.getStringExtra(EXTRA_TAB).isNotEmpty()) intent.getStringExtra(EXTRA_TAB) else "1"
@@ -114,9 +108,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         super.onBackPressed()
 
         if (fragmentDigital != null) {
-            if (fragmentDigital is DigitalBrowseMarketplaceFragment) {
-                digitalBrowseAnalytics.eventClickBackOnBelanjaPage()
-            } else if (fragmentDigital is DigitalBrowseServiceFragment) {
+           if (fragmentDigital is DigitalBrowseServiceFragment) {
                 digitalBrowseAnalytics.eventClickBackOnLayananPage()
             }
         }
@@ -151,7 +143,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         lateinit var intent: Intent
 
         @JvmStatic
-        @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
+        @DeepLink(ApplinkConst.Digital.DIGITAL_BROWSE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             intent = Intent(context, DigitalBrowseHomeActivity::class.java)
@@ -159,7 +151,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
             if (!extras.containsKey(EXTRA_TITLE)) {
                 if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_BELANJA) {
                     extras.putString(EXTRA_TITLE, TITLE_BELANJA)
-                    return CategoryNavigationConfig.updateCategoryConfig(context, ::openNewBelanja, ::openOldBelanja)
+                    return openBelanjaActivity(context)
                 } else if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_LAYANAN) {
                     intent = Intent(context, DigitalBrowseHomeActivity::class.java)
                     extras.putString(EXTRA_TITLE, TITLE_LAYANAN)
@@ -169,12 +161,8 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
             return intent.setData(uri.build()).putExtras(extras)
         }
 
-        fun openNewBelanja(context: Context): Intent {
+        private fun openBelanjaActivity(context: Context): Intent {
             return BaseCategoryBrowseActivity.newIntent(context)
-        }
-
-        fun openOldBelanja(context: Context): Intent {
-            return intent
         }
 
     }

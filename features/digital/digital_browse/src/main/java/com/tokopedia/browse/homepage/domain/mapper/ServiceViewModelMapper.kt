@@ -36,7 +36,7 @@ constructor() {
 
         categoryRow!!.map {
             returnData.add(DigitalBrowseServiceCategoryViewModel(it.id, it.name, it.url, it.imageUrl,
-                    it.type, it.categoryId, it.appLinks, it.categoryLabel, false))
+                    it.type, it.categoryId, it.appLinks, it.categoryLabel, false, it.buIdentifier))
         }
 
         return returnData

@@ -7,20 +7,20 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.NoteViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.NoteUiModel
 import kotlinx.android.synthetic.main.item_note_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class NoteViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<NoteViewModel>(view) {
+class NoteViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<NoteUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_note_detail_product_page
     }
 
-    override fun bind(element: NoteViewModel?) {
+    override fun bind(element: NoteUiModel?) {
         if (element != null) {
             if (element.note.isNotEmpty()) {
                 itemView.et_note.setText(element.note)

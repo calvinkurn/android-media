@@ -90,7 +90,7 @@ class HotlistNavAnalytics {
     // 7 user click on social share
 
     fun eventShareClicked(isUserLoggedIn: Boolean,
-                          pagePath: String, share_icon: String) {
+                          pagePath: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, KEY_CLICK_HOTLIST,
@@ -177,7 +177,7 @@ class HotlistNavAnalytics {
                 KEY_LOGIN_TYPE, getLoginType(isLoggedIn),
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, CURRENCY_VALUE,
-                KEY_IMPRESSIONS, DataLayer.listOf(list))
+                KEY_IMPRESSIONS, list)
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }

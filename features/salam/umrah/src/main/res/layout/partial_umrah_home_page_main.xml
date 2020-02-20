@@ -8,13 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/section_layout"
-        android:visibility="invisible"
+        android:visibility="gone"
         >
         <ImageView
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:id="@+id/iv_umrah_bg_kabbah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/umrah_bg_homepage_search" />
+            android:src="@drawable/umrah_bg_kabbah" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,20 +27,20 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:gravity="center"
                 android:text="@string/umrah_home_page_bg_label"
                 android:textColor="@color/white"
-                app:typographyType="heading_2"
+                app:typographyType="heading_1"
                 app:typographyWeight="bold" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_160"
+                android:layout_marginTop="@dimen/margin_top_umrah_search"
                 app:cardElevation="@dimen/dp_2"
                 app:cardUseCompatPadding="true"
                 app:cardCornerRadius="@dimen/dp_8"

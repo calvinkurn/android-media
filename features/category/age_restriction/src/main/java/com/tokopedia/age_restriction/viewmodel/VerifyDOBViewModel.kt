@@ -1,22 +1,17 @@
 package com.tokopedia.age_restriction.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.age_restriction.usecase.UpdateUserDobUseCase
 import com.tokopedia.age_restriction.data.UserDOBUpdateResponse
+import com.tokopedia.age_restriction.usecase.UpdateUserDobUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class VerifyDOBViewModel @Inject constructor(private val updateUserDobUseCase: UpdateUserDobUseCase) : BaseARViewModel(), CoroutineScope {
+private const val minimumAdultAge = 21
+class VerifyDOBViewModel @Inject constructor(private val updateUserDobUseCase: UpdateUserDobUseCase) : BaseARViewModel() {
 
     val userIsAdult = MutableLiveData<Boolean>()
     val userNotAdult = MutableLiveData<Boolean>()
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
     fun updateUserDoB(bdayDD: String, bdayMM: String, bdayYY: String) {
         progBarVisibility.value = true
@@ -39,7 +34,7 @@ class VerifyDOBViewModel @Inject constructor(private val updateUserDobUseCase: U
 
         }
         if (userDOBUpdateResponse.userDobUpdateData.isDobVerified) {
-            if (userDOBUpdateResponse.userDobUpdateData.age > 18)
+            if (userDOBUpdateResponse.userDobUpdateData.age > minimumAdultAge)
                 userIsAdult.value = true
             else
                 userNotAdult.value = true

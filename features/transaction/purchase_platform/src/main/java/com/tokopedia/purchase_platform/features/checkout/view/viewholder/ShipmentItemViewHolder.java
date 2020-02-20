@@ -61,6 +61,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentIn
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
@@ -127,7 +128,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private CheckBox cbPPP;
     private CheckBox cbPPPDisabled;
     private Typography tvAddressName;
-    private Typography tvAddressStatus;
+    private Label tvAddressStatus;
     private Typography tvRecipientName;
     private Typography tvRecipientAddress;
     private Typography tvRecipientPhone;
@@ -1514,7 +1515,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgInsuranceInfo.setOnClickListener(view -> showBottomSheet(imgInsuranceInfo.getContext(),
                             imgInsuranceInfo.getContext().getString(R.string.title_bottomsheet_insurance),
                             courierItemData.getInsuranceUsedInfo(),
-                            R.drawable.ic_insurance));
+                            R.drawable.ic_pp_insurance));
                 }
             }
 

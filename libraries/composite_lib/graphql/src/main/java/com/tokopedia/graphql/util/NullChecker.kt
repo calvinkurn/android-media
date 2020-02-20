@@ -78,7 +78,7 @@ fun logIfNull(`object`: Any?, clazz: Class<*>?, rawMessage: String? = null, acti
                 clazz?.canonicalName ?: "",
                 rawMessage ?: ""
         )
-        Timber.e("P1%s", message)
+        Timber.e("P1#NULL_CHECKER#%s", message)
         actionWhenNull(errorMessage)
     }
 }

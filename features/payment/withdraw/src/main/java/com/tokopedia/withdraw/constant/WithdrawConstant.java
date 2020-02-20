@@ -5,6 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.url.TokopediaUrl;
 
+import java.util.Collection;
+import java.util.Collections;
+
 public class WithdrawConstant {
     private static final String WEB_DOMAIN_URL = TokopediaUrl.getInstance().getWEB();
     public static final String SALDOLOCK_PAYNOW_URL = WEB_DOMAIN_URL + "fm/modal-toko/dashboard/pembayaran";
@@ -22,8 +25,7 @@ public class WithdrawConstant {
         String MESSAGE = "message";
         String AMOUNT = "amount";
     }
-
-    public interface ResultCode {
+    public interface ResultCode{
         int GOTO_SALDO_DETAIL_PAGE = 101;
         int GOTO_TOKOPEDIA_HOME_PAGE = 102;
     }

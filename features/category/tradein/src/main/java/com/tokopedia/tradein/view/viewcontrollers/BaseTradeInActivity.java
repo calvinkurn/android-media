@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -41,8 +42,7 @@ import com.tokopedia.common_tradein.utils.TradeInUtils;
 
 import javax.inject.Inject;
 
-
-public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extends BaseViewModelActivity<T> implements HasComponent<TradeInComponent> {
+public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extends BaseViewModelActivity<T> implements ContextInterface, HasComponent<TradeInComponent> {
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
     public static final int LOGIN_REQUEST = 514;
     public static final int TRADEIN_HOME_REQUEST = 22345;
@@ -125,6 +125,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
             if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE))
                 TRADEIN_TYPE = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_OFFLINE);
         }
+        ((BaseTradeInViewModel) TradeVM).setContextInterface(this);
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
             TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
@@ -135,7 +136,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black);
         }
-        TradeVM.getProgressBarVisibility().observe(this, (visibility) -> {
+        TradeVM.getProgBarVisibility().observe(this, (visibility) -> {
             if (visibility != null) {
                 if (visibility)
                     showProgressBar();
@@ -144,7 +145,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
             }
         });
 
-        TradeVM.getWarningmessage().observe(this, (message) -> {
+        TradeVM.getWarningMessage().observe(this, (message) -> {
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
@@ -156,7 +157,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
                 }
             }
         });
-        TradeVM.getErrormessage().observe(this, (message) -> {
+        TradeVM.getErrorMessage().observe(this, (message) -> {
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
@@ -272,6 +273,10 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
         super.onBackPressed();
     }
 
+    @Override
+    public Context getContextFromActivity() {
+        return this;
+    }
     @Override
     public TradeInComponent getComponent() {
         return DaggerTradeInComponent.builder().

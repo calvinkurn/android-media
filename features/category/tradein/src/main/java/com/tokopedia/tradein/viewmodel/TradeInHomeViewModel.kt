@@ -17,20 +17,16 @@ import com.tokopedia.tradein.usecase.ProcessMessageUseCase
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class TradeInHomeViewModel @Inject constructor(
         private val processMessageUseCase: ProcessMessageUseCase,
         private val checkMoneyInUseCase: CheckMoneyInUseCase,
         private val userSession: UserSessionInterface
 ) : BaseTradeInViewModel(),
-        CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
+        LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
     var tradeInParams = TradeInParams()
@@ -65,6 +61,9 @@ class TradeInHomeViewModel @Inject constructor(
             val result = HomeResult()
             result.isSuccess = true
             if (response.deviceDiagInputRepsponse.isEligible) {
+                if (homeResultData.value?.deviceDisplayName != null) {
+                    result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+                }
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
             } else {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
@@ -141,6 +140,8 @@ class TradeInHomeViewModel @Inject constructor(
         }
         val result = HomeResult()
         result.isSuccess = true
+        result.maxPrice = maxPrice
+        result.minPrice = minPrice
         if (diagnosedPrice > 0) {
             if (tradeInType != TRADEIN_MONEYIN) {
                 if (diagnosedPrice > tradeInParams.newPrice) {
@@ -153,13 +154,16 @@ class TradeInHomeViewModel @Inject constructor(
             }
             result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
-            result.displayMessage = String.format("%1\$s - %2\$s",
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+            result.displayMessage = String.format("%1\$s",
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true))
             result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
 
         }
-        result.deviceDisplayName = devicedisplayname
+        if (homeResultData.value?.deviceDisplayName != null) {
+            result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+        } else {
+            result.deviceDisplayName = devicedisplayname
+        }
         progBarVisibility.value = false
         homeResultData.value = result
     }
@@ -183,7 +187,4 @@ class TradeInHomeViewModel @Inject constructor(
         this.tradeInType = tradeinType
         laku6TradeIn.getMinMaxPrice(this)
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 }

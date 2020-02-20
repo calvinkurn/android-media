@@ -46,6 +46,9 @@
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
+  
+    <!-- Dynamic feature for Change Password -->
+    <string name="change_password_app_name">Ubah Kata Sandi</string>
 
     <!-- Dynamic feature for Open Shop-->
     <string name="title_open_shop">Buka Toko Gratis</string>
@@ -68,6 +71,9 @@
 
     <!-- Dynamic feature for Digital Recharge -->
     <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="digital_cart_toolbar_title">Checkout</string>
+    <string name="digital_title_fav_number">Nomor Favorit</string>
+    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>
@@ -79,10 +85,12 @@
     <string name="similar_search_app_name">similarsearch</string>
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_autocomplete_module_name" >Pencarian</string>
+    <string name="title_home_wishlist_module_name">Wishlist</string>
     <string name="autocomplete_app_name">autocomplete</string>
     <string name="title_search_result" >Pencarian</string>
     <string name="title_search_result_module_name" >Pencarian</string>
     <string name="search_result_app_name">search</string>
+    <string name="title_product_card_options">Product Card Options</string>
 
     <!--TopAds Dashboard-->
     <string name="title_module_top_ads_dashboard">TopAds Module</string>
@@ -210,5 +218,8 @@
     <string name="write_new_talk">Tulis Diskusi Baru</string>
     <string name="title_product_discussion">Diskusi Produk</string>
     <string name="title_report_talk">Laporkan</string>
+
+    <string name="sbank_title_add_bank_account">Tambah Rekening</string>
+    <string name="sbank_confirm_bank_account">Konfirmasi rekening bank</string>
 
 </resources>

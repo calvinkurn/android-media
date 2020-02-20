@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 
@@ -20,7 +19,7 @@ public class RefreshInboxReputationSubscriber extends GetFirstTimeInboxReputatio
     @Override
     public void onError(Throwable e) {
         viewListener.finishRefresh();
-        viewListener.onErrorRefresh(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorRefresh(e);
     }
 
     @Override
