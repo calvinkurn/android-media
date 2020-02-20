@@ -18,6 +18,7 @@ import com.tokopedia.flight.filter.di.FlightFilterComponent
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
+import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.FlightSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
@@ -72,6 +73,11 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightFilterViewModel.flightCount.observe(this, Observer {
             renderFlightCount(it)
         })
+
+        flightFilterViewModel.filterViewData.observe(this, Observer {
+            renderList(it)
+        })
+
     }
 
     override fun getFlightSearchStaticticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value
@@ -112,8 +118,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             rvFlightFilter.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             rvFlightFilter.adapter = adapter
 
-            adapter?.addElement(FlightSortModel())
-
             btnFlightFilterSave.setOnClickListener {
                 listener?.onSaveFilter(flightFilterViewModel.getSelectedSort(), flightFilterViewModel.filterModel.value)
             }
@@ -142,6 +146,12 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         fragmentManager?.let {
             flightSortBottomSheet.show(it, TAG_FLIGHT_SORT)
         }
+    }
+
+    private fun renderList(data: List<BaseFilterSortModel>) {
+        adapter?.clearAllElements()
+        adapter?.addElement(data)
+        adapter?.notifyDataSetChanged()
     }
 
     companion object {

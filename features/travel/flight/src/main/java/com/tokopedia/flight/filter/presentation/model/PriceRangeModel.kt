@@ -9,7 +9,8 @@ import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterT
 data class PriceRangeModel(val initialStartValue: Int = 0,
                            val initialEndValue: Int = 0,
                            var selectedStartValue: Int = 0,
-                           var selectedEndValue: Int = 0) : Visitable<FlightFilterSortAdapterTypeFactory> {
+                           var selectedEndValue: Int = 0)
+    : BaseFilterSortModel(), Visitable<FlightFilterSortAdapterTypeFactory> {
 
     override fun type(typeFactory: FlightFilterSortAdapterTypeFactory): Int = typeFactory.type(this)
 
