@@ -26,8 +26,8 @@ import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.domain.firebase.SellerFirebaseRemoteAppUpdate
 import com.tokopedia.sellerhomedrawer.domain.usecase.FlashSaleGetSellerStatusUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetShopStatusUseCase
+import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract
-import com.tokopedia.sellerhomedrawer.presentation.view.drawer.BaseSellerReceiverDrawerActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

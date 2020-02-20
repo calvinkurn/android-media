@@ -1,7 +1,8 @@
-package com.tokopedia.sellerhomedrawer.domain;
+package com.tokopedia.sellerhomedrawer.domain.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
@@ -22,11 +23,11 @@ public class SellerDrawerGetNotificationService extends JobIntentService {
 
     private static final int JOB_ID = 12383213;
 
-    private static final String KEY_IS_SELLER = "is_seller";
-    private static final String KEY_IS_REFRESH = "is_refresh";
-    private static final String BROADCAST_GET_NOTIFICATION = "broadcast_get_notification";
-    private static final String GET_NOTIFICATION_SUCCESS = "get_notification_success";
-    private static final String UPDATE_NOTIFICATON_DATA = "update_notification_data";
+    public static final String KEY_IS_SELLER = "is_seller";
+    public static final String KEY_IS_REFRESH = "is_refresh";
+    public static final String BROADCAST_GET_NOTIFICATION = "broadcast_get_notification";
+    public static final String GET_NOTIFICATION_SUCCESS = "get_notification_success";
+    public static final String UPDATE_NOTIFICATON_DATA = "update_notification_data";
 
     public static void startService(Context context, Boolean isRefresh) {
         Intent work = new Intent(context, SellerDrawerGetNotificationService.class);
@@ -60,12 +61,11 @@ public class SellerDrawerGetNotificationService extends JobIntentService {
         newNotificationUseCase.execute(NotificationUseCase.getRequestParam(isSeller), new Subscriber<NotificationModel>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
@@ -84,9 +84,15 @@ public class SellerDrawerGetNotificationService extends JobIntentService {
         serviceComponent.inject(this);
     }
 
-    private void sendBroadcast() {
+    public void sendBroadcast() {
         Intent intent = new Intent(BROADCAST_GET_NOTIFICATION);
         intent.putExtra(GET_NOTIFICATION_SUCCESS, true);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+    }
+
+    public static void sendBroadcast(Context context) {
+        Intent intent = new Intent(BROADCAST_GET_NOTIFICATION);
+        intent.putExtra(GET_NOTIFICATION_SUCCESS, true);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
