@@ -95,6 +95,13 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
+def isFirebasePerformanceLogEnabled() {
+    if (project.hasProperty('firebasePerformanceLogEnabled') && firebasePerformanceLogEnabled == "true") {
+        return "true"
+    }
+    return "false"
+}
+
 project.ext {
     defaultVersionCode = 341001101;
     defaultVersionName = "3.41";
@@ -200,7 +207,13 @@ android {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
-            minifyEnabled true
+
+            if(isFirebasePerformanceLogEnabled().toBoolean()){
+                minifyEnabled false
+            }else{
+                minifyEnabled true
+            }
+
             zipAlignEnabled true
             if (project.hasProperty("enable-shrinkresource")) {
                 shrinkResources true
@@ -236,6 +249,7 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
+        manifestPlaceholders = [firebasePerformanceLogEnabled:isFirebasePerformanceLogEnabled()]
     }
 
     dexOptions {
