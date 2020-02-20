@@ -86,7 +86,7 @@ class NewBrandAdapter(
                     loadImageToImageView(shop.logoUrl, it)
                 }
                 brandImageView?.let {
-                    loadImageToImageView(shop.imageUrl, it)
+                    loadImageToImageView(shop.exclusiveLogoUrl, it)
                 }
                 brandNameView?.let {
                     it.text = shop.name

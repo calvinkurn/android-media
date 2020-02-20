@@ -164,8 +164,10 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         viewModel.brandlistCategoriesResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    val brandListCategories: BrandlistCategories = it.data
                     removeLoading()
-                    populateCategoriesData(it.data)
+                    populateCategoriesData(brandListCategories)
+                    viewPager?.let { pager -> setRetainedPagesSize(pager, brandListCategories.categories.size) }
                 }
                 is Fail -> {
                     NetworkErrorHelper.showEmptyState(context, view) {
@@ -174,6 +176,10 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun setRetainedPagesSize(viewPager: ViewPager, limit: Int) {
+        viewPager.offscreenPageLimit = limit
     }
 
     private fun populateCategoriesData(brandListCategories: BrandlistCategories) {
@@ -273,14 +279,14 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             }
         }
         searchInputView?.setOnClickListener {
-            categoryData?.let{
+            categoryData?.let {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.BRANDLIST_SEARCH)
                 intent.putExtra(CATEGORY_INTENT, it)
                 startActivity(intent)
-                activity?.supportFragmentManager?.beginTransaction()?.setCustomAnimations(R.anim.slide_up,R.anim.no_change)?.commit()
+                activity?.supportFragmentManager?.beginTransaction()?.setCustomAnimations(R.anim.slide_up, R.anim.no_change)?.commit()
             }
         }
-        appBarLayout?.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener{
+        appBarLayout?.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout, p1: Int) {
                 ViewCompat.setElevation(appBarLayout, resources.getDimension(R.dimen.dp_16))
             }

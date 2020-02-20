@@ -13,6 +13,7 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.Fea
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.FeaturedBrandAdapter
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 
 class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTrackingListener) :
@@ -64,6 +65,7 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
             expandButtonView?.hide()
         } else {
             expandButtonView?.text = getString(R.string.brandlist_action_expand_all)
+            expandButtonView?.visible()
         }
     }
 
