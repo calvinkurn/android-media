@@ -3,6 +3,7 @@ package com.tokopedia.flight.filter.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
@@ -23,6 +24,10 @@ class FlightFilterViewModel @Inject constructor(
 
     private var isReturn = false
 
+    private val mutableSelectedSort = MutableLiveData<Int>()
+    val selectedSort: LiveData<Int>
+        get() = selectedSort
+
     private val mutableFilterModel = MutableLiveData<FlightFilterModel>()
     val filterModel: LiveData<FlightFilterModel>
         get() = mutableFilterModel
@@ -35,8 +40,9 @@ class FlightFilterViewModel @Inject constructor(
     val flightCount: LiveData<Int>
         get() = mutableFlightCount
 
-    fun init(filterModel: FlightFilterModel, isReturn: Boolean) {
-        mutableFilterModel.value = filterModel
+    fun init(selectedSort: Int, filterModel: FlightFilterModel, isReturn: Boolean) {
+        mutableSelectedSort.postValue(selectedSort)
+        mutableFilterModel.postValue(filterModel)
         this.isReturn = isReturn
 
         launch(dispatcherProvider.ui()) {
@@ -44,6 +50,12 @@ class FlightFilterViewModel @Inject constructor(
             getFlightCount()
         }
     }
+
+    fun setSelectedSort(selectedId: Int) {
+        mutableSelectedSort.postValue(selectedId)
+    }
+
+    fun getSelectedSort(): Int = selectedSort.value ?: TravelSortOption.CHEAPEST
 
     suspend fun getStatistics() {
         mutableStatisticModel.postValue(withContext(dispatcherProvider.ui()) {

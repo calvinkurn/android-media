@@ -166,7 +166,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     .flightComponent(FlightComponentInstance.getFlightComponent(activity!!.application))
                     .build()
         }
-
         flightSearchComponent?.inject(this)
     }
 
@@ -548,10 +547,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         return emptyResultViewModel
     }
 
-    override fun onSaveFilter(flightFilterModel: FlightFilterModel?) {
+    override fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?) {
+        this.selectedSortOption = sortOption
         if (flightFilterModel != null) {
             this.flightFilterModel = flightFilterModel
         }
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, this.flightFilterModel, false)
     }
 
     fun searchFlightData() {
@@ -617,7 +618,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         bottom_action_filter_sort.setButton1OnClickListener {
             addToolbarElevation()
-            val flightFilterBottomSheet = FlightFilterBottomSheet.getInstance(flightFilterModel)
+            val flightFilterBottomSheet = FlightFilterBottomSheet.getInstance(selectedSortOption, flightFilterModel)
             flightFilterBottomSheet.listener = this
             flightFilterBottomSheet.setShowListener { flightFilterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
             flightFilterBottomSheet.show(requireFragmentManager(), FlightFilterBottomSheet.TAG_FILTER)
