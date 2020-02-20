@@ -2,6 +2,7 @@ package com.tokopedia.common.topupbills.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
@@ -28,6 +29,8 @@ interface CommonTopupBillsComponent {
     fun graphqlRepository(): GraphqlRepository
 
     fun rechargeAnalytics(): RechargeAnalytics
+
+    fun commonTopupBillsAnalytics(): CommonTopupBillsAnalytics
 
     fun digitalCheckVoucherUseCase(): DigitalCheckVoucherUseCase
 

@@ -99,6 +99,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         set(value) {
             field = value
             productId = value?.id?.toIntOrNull() ?: 0
+            productName = value?.title ?: ""
             price = value?.price?.toLongOrNull()
         }
     private var operatorCluster: String = ""
@@ -107,9 +108,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private var enquiryLabel = ""
     private var enquiryData: TopupBillsEnquiry? = null
-
-    private var operatorName = ""
-    private var categoryName = ""
 
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 

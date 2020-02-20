@@ -1,7 +1,9 @@
 package com.tokopedia.common.topupbills.di
 
 import android.content.Context
+import com.google.android.gms.common.internal.service.Common
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -33,6 +35,12 @@ class CommonTopupBillsModule {
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @CommonTopupBillsScope
+    @Provides
+    fun provideCommonTopupBillsAnalytics(): CommonTopupBillsAnalytics {
+        return CommonTopupBillsAnalytics()
     }
 
     @CommonTopupBillsScope

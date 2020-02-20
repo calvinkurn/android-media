@@ -16,12 +16,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
-import com.tokopedia.common.topupbills.utils.debounce
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
@@ -50,9 +50,10 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
     @Inject
     lateinit var topupBillsViewModel: TopupBillsViewModel
+    @Inject
+    lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
 
     var promoTicker: TickerPromoStackingCheckoutView? = null
         set(value) {
@@ -74,6 +75,10 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     var productId: Int = 0
     var price: Long? = null
     var isInstantCheckout = false
+
+    var categoryName = ""
+    var operatorName = ""
+    var productName = ""
 
     private var checkVoucherJob: Job? = null
 
@@ -135,7 +140,18 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         topupBillsViewModel.expressCheckoutData.observe(this, Observer {
             it.run {
                 when (it) {
-                    is Success -> navigateToPayment(it.data)
+                    is Success -> {
+                        commonTopupBillsAnalytics.eventBuy(
+                                categoryName,
+                                operatorName,
+                                productId.toString(),
+                                productName,
+                                price.toString(),
+                                isInstantCheckout,
+                                promoCode.isNotEmpty()
+                        )
+                        navigateToPayment(it.data)
+                    }
                     is Fail -> onExpressCheckoutError(it.throwable)
                 }
             }
@@ -182,6 +198,8 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         return object: TickerPromoStackingCheckoutView.ActionListener {
             override fun onClickUsePromo() {
                 if (checkVoucherJob?.isActive != true) {
+                    commonTopupBillsAnalytics.eventClickUsePromo()
+
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
                     intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
                     startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
@@ -190,6 +208,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
             override fun onResetPromoDiscount() {
                 if (checkVoucherJob?.isActive != true) {
+                    commonTopupBillsAnalytics.eventClickRemovePromo()
                     resetPromoTicker()
                 }
             }

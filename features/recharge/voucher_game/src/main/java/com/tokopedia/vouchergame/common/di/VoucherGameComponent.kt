@@ -1,5 +1,6 @@
 package com.tokopedia.vouchergame.common.di
 
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -27,6 +28,8 @@ interface VoucherGameComponent {
     fun voucherGameAnalytics(): VoucherGameAnalytics
 
     fun rechargeAnalytics(): RechargeAnalytics
+
+    fun commonTopupBillsAnalytics(): CommonTopupBillsAnalytics
 
     fun digitalCheckVoucherUseCase(): DigitalCheckVoucherUseCase
 
