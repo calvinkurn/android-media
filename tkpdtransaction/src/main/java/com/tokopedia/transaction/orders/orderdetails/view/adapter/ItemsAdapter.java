@@ -111,8 +111,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 holder = new ItemViewHolder(v, viewType);
                 break;
             case ITEM_INSURANCE:
-                v = inflater.inflate(R.layout.voucher_item_insurance,parent,false);
-                holder = new ItemViewHolder(v,viewType);
+                v = inflater.inflate(R.layout.voucher_item_insurance, parent, false);
+                holder = new ItemViewHolder(v, viewType);
                 break;
             case ITEM_DEFAULT:
                 v = inflater.inflate(R.layout.voucher_item_default, parent, false);
@@ -146,9 +146,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS;
         } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2) {
             return ITEM_EVENTS;
-        }else if(itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_INSURANCE){
+        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_INSURANCE) {
             return ITEM_INSURANCE;
-        } else{
+        } else {
             return ITEM_DEFAULT;
         }
     }
@@ -191,8 +191,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         context.startActivity(intent);
                     }
                 }
-            }
-            else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
                 setEventDetails.openShowQRFragment(actionButton, item);
             }
         }
@@ -431,13 +430,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getTapActions().get(i);
-                        if(!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)){
+                        if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
                             RedeemVoucherView redeemVoucherView;
                             redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
                             tapActionLayoutDeals.addView(redeemVoucherView);
                         } else {
                             String[] voucherCodes = actionButton.getHeaderObject().getVoucherCodes().split(",");
-                            for(int j=0;j<voucherCodes.length;j++){
+                            for (int j = 0; j < voucherCodes.length; j++) {
                                 BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[j], j, actionButton.getHeaderObject().getItemLabel(), voucherCodes.length);
                                 tapActionLayoutDeals.addView(bookingCodeView);
                             }

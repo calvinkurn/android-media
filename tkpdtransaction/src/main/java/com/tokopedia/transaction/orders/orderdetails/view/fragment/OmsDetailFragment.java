@@ -256,7 +256,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if(!presenter.isValidUrl(invoice.invoiceUrl())){
+        if (!presenter.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(new View.OnClickListener() {
@@ -427,8 +427,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 itemsList.add(item);
             }
         }
-        for(Items item : itemsList){
-            if(!item.getMetaData().isEmpty()) {
+        for (Items item : itemsList) {
+            if (!item.getMetaData().isEmpty()) {
                 metadataEmpty = false;
                 break;
             }
@@ -500,7 +500,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             public void onClick(View v) {
                 if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON)) {
                     presenter.setActionButton(actionButtons, null, 0, false);
-                } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)){
+                } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                     RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
                 }
             }
@@ -606,7 +606,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                             });
                         }
                         presenter.setActionButton(item.getActionButtons(), null, 0, false);
-                    } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)){
+                    } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                         RouteManager.route(getContext(), actionButton.getBody().getAppURL());
                     }
                 }
@@ -619,7 +619,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             userInfo.setVisibility(View.VISIBLE);
             dividerUserInfo.setVisibility(View.VISIBLE);
             userInfo.removeAllViews();
-            for (EntityPessenger entityPessenger: metaDataInfo.getEntityPessengers()) {
+            for (EntityPessenger entityPessenger : metaDataInfo.getEntityPessengers()) {
                 DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                 doubleTextView.setTopText(entityPessenger.getTitle());
                 doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
@@ -636,12 +636,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         }
     }
 
-    private void showDealsQR(ActionButton actionButton){
+    private void showDealsQR(ActionButton actionButton) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.deals_qr_code_layout, mainView, false);
 
         BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
         bottomSheetUnify.setTitle(getString(R.string.text_redeem_voucher));
-        bottomSheetUnify.setCloseClickListener (v -> {
+        bottomSheetUnify.setCloseClickListener(v -> {
             bottomSheetUnify.dismiss();
             return Unit.INSTANCE;
         });
@@ -653,7 +653,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
         Header header = actionButton.getHeaderObject();
 
-        if(!header.getStatusLabel().isEmpty()){
+        if (!header.getStatusLabel().isEmpty()) {
             Typography disableText = view.findViewById(R.id.redeem_dialog_expired_text);
             View expiredOverlay = view.findViewById(R.id.redeem_dialog_expired_view);
             expiredOverlay.setVisibility(View.VISIBLE);
@@ -663,22 +663,22 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
         ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
 
-        if(actionButton.getHeaderObject() != null){
+        if (actionButton.getHeaderObject() != null) {
             poweredBy.setText(header.getPoweredBy());
             voucherNo.setText(header.getVoucherCodes());
 
-            if(header.getPoweredBy().isEmpty()){
+            if (header.getPoweredBy().isEmpty()) {
                 poweredBy.setVisibility(View.GONE);
                 poweredByPrefix.setVisibility(View.GONE);
             }
         }
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             bottomSheetUnify.setChild(view);
             bottomSheetUnify.show(getActivity().getSupportFragmentManager(), "");
         }
     }
 
-    private void showEventQR(ActionButton actionButton, Items item){
+    private void showEventQR(ActionButton actionButton, Items item) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.scan_qr_code_layout, mainView, false);
         Dialog dialog = new Dialog(getContext());
         dialog.setCanceledOnTouchOutside(false);
@@ -715,9 +715,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void openShowQRFragment(ActionButton actionButton, Items item) {
-        if(item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals) || item.getCategoryID() == ItemsAdapter.DEALS_CATEGORY_ID){
+        if (item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals) || item.getCategoryID() == ItemsAdapter.DEALS_CATEGORY_ID) {
             showDealsQR(actionButton);
-        }else {
+        } else {
             showEventQR(actionButton, item);
         }
     }
