@@ -23,7 +23,7 @@ class BrandlistSearchRecommendationViewHolder(view: View): AbstractViewHolder<Br
     private val txtBrandName = itemView.tv_brand_name
 
     override fun bind(element: BrandlistSearchRecommendationViewModel) {
-        bindData(element.name, element.logoUrl, element.imageUrl,
+        bindData(element.name, element.logoUrl, element.exclusiveLogoUrl,
                 element.id, element.url, element.listener, element.position)
     }
 
