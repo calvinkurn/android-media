@@ -67,17 +67,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_shimmer" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/tv_brand_name_second_line"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_lvl4"
-        android:layout_marginRight="@dimen/layout_lvl4"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:lineSpacingExtra="6sp"
-        android:textSize="12sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_brand_name_shimmer" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

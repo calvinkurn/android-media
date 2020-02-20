@@ -26,12 +26,8 @@ class BrandlistPageAdapter(
         object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (visitables[position].type(adapterTypeFactory)) {
-                    FeaturedBrandViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
-                    PopularBrandViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
-                    NewBrandViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
-                    AllBrandHeaderViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
-                    AllBrandGroupHeaderViewHolder.LAYOUT -> BRANDLIST_GRID_SPAN_COUNT
-                    else -> ALL_BRAND_GRID_SPAN_COUNT
+                    AllBrandViewHolder.LAYOUT -> ALL_BRAND_GRID_SPAN_COUNT
+                    else -> BRANDLIST_GRID_SPAN_COUNT
                 }
             }
         }
