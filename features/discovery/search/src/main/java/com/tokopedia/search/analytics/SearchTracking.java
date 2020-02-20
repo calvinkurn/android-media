@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -201,18 +202,23 @@ public class SearchTracking {
     public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue,
                                                           List<Object> list,
                                                           List<ProductItemViewModel> productItemViewModels,
-                                                          String eventLabel) {
+                                                          String eventLabel,
+                                                          String irisSessionId) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
+                "eventCategory", "search result",
+                "eventAction", "impression - product",
+                "eventLabel", eventLabel,
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                list.toArray(new Object[list.size()])
+                        ))
+        );
+        if(!TextUtils.isEmpty(irisSessionId))
+            map.put("sessionIris", irisSessionId);
+
         trackingQueue.putEETracking(
-                (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
-                        "eventCategory", "search result",
-                        "eventAction", "impression - product",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                ))
-                )
+                map
         );
     }
 

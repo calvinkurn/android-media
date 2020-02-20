@@ -6,13 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.iris.util.IrisSession;
 
 /**
  * Created by meta on 04/08/18.
  */
 public class SearchBarAnalytics {
 
-    SearchBarAnalytics(Context context) { }
+    private final IrisSession irisSession;
+
+    SearchBarAnalytics(Context context) {
+        irisSession = new IrisSession(context);
+    }
 
     public void eventTrackingSqanQr() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
@@ -66,11 +71,13 @@ public class SearchBarAnalytics {
     }
 
     public void eventTrackingSearchBar(String screenName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        Map<String, Object> stringObjectMap = TrackAppUtils.gtmData(
                 SearchBarConstant.CLICK_TOP_NAV,
                 SearchBarConstant.TOP_NAV + " - " + screenName,
                 SearchBarConstant.CLICK_SEARCH_BOX,
                 ""
-        ));
+        );
+        stringObjectMap.put("sessionIris", irisSession.getSessionId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(stringObjectMap);
     }
 }

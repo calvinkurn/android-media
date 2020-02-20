@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
@@ -86,7 +87,7 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName) {
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName, String irisSessionId) {
         if (!dataLayerList.isEmpty()) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -98,6 +99,8 @@ public class TopAdsGtmTracker {
                                     dataLayerList.toArray(new Object[dataLayerList.size()])
                             )
                     ));
+            if(!TextUtils.isEmpty(irisSessionId))
+                map.put("sessionIris", irisSessionId);
             trackingQueue.putEETracking((HashMap<String, Object>) map);
             clearDataLayerList();
         }
@@ -295,6 +298,9 @@ public class TopAdsGtmTracker {
                                             "position", position,
                                             "dimension83", isFreeOngkirActive(item) ? "bebas ongkir" : "none / other"))))
             );
+            IrisSession irisSession = new IrisSession(context);
+            if(!TextUtils.isEmpty(irisSession.getSessionId()))
+                map.put("sessionIris", irisSession.getSessionId());
             tracker.sendEnhanceEcommerceEvent(map);
         }
     }
