@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.7"
-        android:background="#000000"
+        android:background="@android:color/black"
         tools:visibility="visible">
 
         <ProgressBar
@@ -57,7 +57,7 @@
                     android:layout_below="@id/title_template"
                     android:layout_marginTop="@dimen/spacing_lvl3"
                     android:lineSpacingExtra="1sp"
-                    android:maxWidth="270dp"
+                    android:maxWidth="@dimen/dp_topchat_270"
                     android:text="@string/caption_switch_template"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/fontSize_lvl3" />
@@ -98,9 +98,9 @@
                     android:layout_marginBottom="@dimen/spacing_lvl3"
                     android:fontFamily="sans-serif"
                     android:paddingLeft="@dimen/spacing_lvl4"
-                    android:text="Daftar Template"
+                    android:text="@string/title_topchat_list_template"
                     android:textColor="@color/black_70"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/fontSize_lvl4"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -110,7 +110,7 @@
                     android:layout_alignTop="@id/template_list"
                     android:layout_alignBottom="@id/template_list"
                     android:layout_toRightOf="@id/template_list"
-                    android:paddingLeft="6dp"
+                    android:paddingLeft="@dimen/dp_topchat_6"
                     app:srcCompat="@drawable/ic_information_topchat" />
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -98,7 +98,7 @@
                 android:layout_below="@+id/blocked_text"
                 android:text="@string/enable_chat_settings"
                 android:textColor="@color/tkpd_main_green"
-                android:textSize="12sp" />
+                android:textSize="@dimen/fontSize_lvl2" />
 
         </RelativeLayout>
 
@@ -252,11 +252,11 @@
         android:id="@+id/notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#333333"
+        android:background="@color/topchat_header_chat"
         android:gravity="center_vertical"
-        android:minHeight="56dp"
+        android:minHeight="@dimen/dp_topchat_56"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="@dimen/spacing_lvl4"
         android:visibility="gone"
         tools:visibility="visible">
 
