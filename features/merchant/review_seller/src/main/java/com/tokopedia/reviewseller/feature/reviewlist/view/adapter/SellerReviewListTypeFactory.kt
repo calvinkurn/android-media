@@ -8,21 +8,20 @@ import com.tokopedia.reviewseller.common.ProductReviewModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.ReviewSummaryViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.SellerReviewListViewHolder
 
-class SellerReviewListTypeFactory: BaseAdapterTypeFactory() {
+class SellerReviewListTypeFactory: BaseAdapterTypeFactory(), TypeFactoryViewHolder {
 
-    fun type(summaryReviewModel: SummaryReviewModel): Int {
+    override fun type(summaryReviewModel: SummaryReviewModel): Int {
         return ReviewSummaryViewHolder.LAYOUT_RES
     }
 
-    fun type(productReviewModel: ProductReviewModel): Int {
+    override fun type(productReviewModel: ProductReviewModel): Int {
         return SellerReviewListViewHolder.LAYOUT_RES
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ReviewSummaryViewHolder.LAYOUT_RES -> ReviewSummaryViewHolder(
-                    parent
-            )
+                    parent)
             SellerReviewListViewHolder.LAYOUT_RES -> SellerReviewListViewHolder(
                     parent)
             else -> return super.createViewHolder(parent, type)
