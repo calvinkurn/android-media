@@ -48,11 +48,11 @@
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="@+id/tgCountRating"
         app:layout_constraintStart_toEndOf="@id/cvItemProduct"
         app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
-        android:background="@drawable/ic_rating_star_item" />
+        app:srcCompat="@drawable/ic_rating_star_item" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tgCountRating"
