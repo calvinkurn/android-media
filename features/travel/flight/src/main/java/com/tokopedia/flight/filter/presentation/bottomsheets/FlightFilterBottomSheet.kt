@@ -108,7 +108,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun initAdapter() {
-        val typeFactory = FlightFilterSortAdapterTypeFactory()
+        val typeFactory = FlightFilterSortAdapterTypeFactory(this)
         adapter = BaseAdapter(typeFactory)
     }
 

@@ -10,8 +10,7 @@ import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
  * @author by jessica on 2020-02-20
  */
 
-class FlightFilterSortWidgetAdapter(val typeFactory: FlightFilterSortAdapterTypeFactory,
-                                    val items: MutableList<BaseFilterSortModel>,
+class FlightFilterSortWidgetAdapter(val items: MutableList<BaseFilterSortModel>,
                                     val listener: ActionListener)
     : RecyclerView.Adapter<FlightFilterSortWidgetViewHolder>() {
 

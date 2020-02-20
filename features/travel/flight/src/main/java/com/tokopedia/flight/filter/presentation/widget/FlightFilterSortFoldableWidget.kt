@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortWidgetAdapter
-import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterSortWidgetViewHolder
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -67,7 +66,7 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
         } else tv_show_more.hide()
 
         if (!::widgetAdapter.isInitialized) {
-            widgetAdapter = FlightFilterSortWidgetAdapter(FlightFilterSortAdapterTypeFactory(), items.toMutableList(), this)
+            widgetAdapter = FlightFilterSortWidgetAdapter(items.toMutableList(), this)
             widgetAdapter.isSelectOnlyOneChip = isSelectOnlyOneChip
             widgetAdapter.maxItemCount = maxItemCount
 
