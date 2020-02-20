@@ -2,14 +2,23 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.AddressListComponent
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.DaggerAddressListComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address.AddressListFragment
 import kotlinx.android.synthetic.main.activity_preference_edit.*
 
-class PreferenceEditActivity : BaseActivity() {
+class PreferenceEditActivity : BaseActivity(), HasComponent<AddressListComponent> {
+    override fun getComponent(): AddressListComponent {
+        return DaggerAddressListComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
