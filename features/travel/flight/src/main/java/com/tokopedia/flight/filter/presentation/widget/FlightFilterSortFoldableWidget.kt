@@ -10,7 +10,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterSortViewHolder
-import com.tokopedia.flight.filter.presentation.data.BaseFilterSortModel
+import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
