@@ -91,6 +91,10 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
                 scanFingerprintDialog?.dismiss()
             }
 
+            override fun onLoginFingerprintSuccess() {
+                // do nothing
+            }
+
             override fun onFingerprintError(msg: String, errCode: Int) {
 //                scanFingerprintDialog?.dismiss()
 //                onErrorRegisterFP(Throwable(message = msg))

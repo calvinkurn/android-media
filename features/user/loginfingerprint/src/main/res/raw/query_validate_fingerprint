@@ -1,5 +1,5 @@
-query validate_fingerprint($otpType: String!, $signature: String!, $time_unix: String){
-    OTPValidate(otpType: $otpType, signature: $signature, time_unix: $time_unix) {
+query validate_fingerprint($otpType: String!, $signature: String!, $time_unix: String, $UserID: Int!, $mode: String!){
+    OTPValidate(otpType: $otpType, signature: $signature, time_unix: $time_unix, UserID: $UserID, mode: $mode) {
         success
         validateToken
         message
