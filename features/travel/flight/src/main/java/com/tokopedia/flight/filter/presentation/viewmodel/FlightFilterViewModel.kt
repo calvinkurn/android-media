@@ -11,7 +11,6 @@ import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -51,25 +50,21 @@ class FlightFilterViewModel @Inject constructor(
 
     private fun getStatistics() {
         launch(dispatcherProvider.ui()) {
-            mutableStatisticModel.postValue(withContext(dispatcherProvider.ui()) {
-                filterModel.value?.run {
-                    flightSearchStatisticUseCase.executeCoroutine(flightSearchStatisticUseCase
-                            .createRequestParams(filterModel.value!!))
-                }
-            })
-
-            mapStatisticToModel(statisticModel.value)
+            filterModel.value?.run {
+                mutableStatisticModel.value = flightSearchStatisticUseCase.executeCoroutine(
+                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!))
+            }
         }
+
+        mapStatisticToModel(statisticModel.value)
     }
 
     fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
-            mutableFlightCount.postValue(withContext(dispatcherProvider.ui()) {
-                filterModel.value?.run {
-                    flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
-                            .createRequestParams(filterModel.value!!))
-                }
-            })
+            filterModel.value?.run {
+                mutableFlightCount.value = flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
+                        .createRequestParams(filterModel.value!!))
+            }
         }
     }
 

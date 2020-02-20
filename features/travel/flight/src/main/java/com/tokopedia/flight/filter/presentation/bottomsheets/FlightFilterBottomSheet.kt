@@ -62,7 +62,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         super.onActivityCreated(savedInstanceState)
 
         flightFilterViewModel.statisticModel.observe(this, Observer {
-            // TODO: Render Filter Layout
+            renderList(flightFilterViewModel.filterViewData.value ?: arrayListOf())
         })
 
         flightFilterViewModel.flightCount.observe(this, Observer {
