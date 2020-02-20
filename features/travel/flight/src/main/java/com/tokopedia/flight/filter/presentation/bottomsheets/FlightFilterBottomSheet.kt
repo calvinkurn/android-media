@@ -8,11 +8,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.di.DaggerFlightFilterComponent
 import com.tokopedia.flight.filter.di.FlightFilterComponent
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
+import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
@@ -25,6 +27,7 @@ import javax.inject.Inject
  */
 class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
 
+    var adapter: BaseAdapter<FlightFilterSortAdapterTypeFactory>? = null
     var listener: FlightFilterBottomSheetListener? = null
 
     @Inject
@@ -50,6 +53,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         }
 
         initBottomSheet()
+        initAdapter()
         initView()
     }
 
@@ -92,10 +96,16 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         setChild(mChildView)
     }
 
+    private fun initAdapter() {
+        val typeFactory = FlightFilterSortAdapterTypeFactory()
+        adapter = BaseAdapter(typeFactory)
+    }
+
     private fun initView() {
         with(mChildView) {
             rvFlightFilter.setHasFixedSize(true)
             rvFlightFilter.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            rvFlightFilter.adapter = adapter
 
             btnFlightFilterSave.setOnClickListener {
                 listener?.onSaveFilter(flightFilterViewModel.filterModel.value)
