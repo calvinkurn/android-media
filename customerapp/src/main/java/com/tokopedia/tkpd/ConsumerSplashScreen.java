@@ -54,19 +54,16 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        startWarmStart();
-        startSplashTrace();
+//        startWarmStart();
+//        startSplashTrace();
 
         super.onCreate(savedInstanceState);
         createAndCallChkApk();
 
-        finishWarmStart();
+//        finishWarmStart();
 
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
-
-
-        trackIrisEventForAppOpen();
 
     }
 
@@ -75,15 +72,16 @@ public class ConsumerSplashScreen extends SplashScreen {
             @NotNull
             @Override
             public Boolean execute() {
+                trackIrisEventForAppOpen();
                 return checkApkTempered();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(chkTmprApkWeave,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
+                RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this);
     }
 
     private void trackIrisEventForAppOpen() {
-        Iris instance = IrisAnalytics.Companion.getInstance(this);
+        Iris instance = IrisAnalytics.Companion.getInstance(ConsumerSplashScreen.this);
         Map<String, Object> map = new HashMap<>();
         map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
         instance.saveEvent(map);
@@ -119,7 +117,7 @@ public class ConsumerSplashScreen extends SplashScreen {
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(homeIntent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finishSplashTrace();
+//        finishSplashTrace();
         finishAffinity();
     }
 

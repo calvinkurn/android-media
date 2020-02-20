@@ -129,7 +129,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-        initReact();
         createAndCallPreSeq();
 
         super.onCreate();
@@ -199,6 +198,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @NotNull
     private Boolean executePreCreateSequence(){
+        initReact();
         UIBlockDebugger.init(ConsumerMainApplication.this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         PersistentCacheManager.init(ConsumerMainApplication.this);
@@ -435,7 +435,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initReact() {
-        SoLoader.init(this, false);
+        SoLoader.init(ConsumerMainApplication.this, false);
     }
 
     private void initCacheApi() {

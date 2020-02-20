@@ -24,14 +24,23 @@ import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.UserData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
@@ -69,13 +78,21 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
-
-        fetchRemoteConfig();
+        WeaveInterface remoteConfigWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return fetchRemoteConfig();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(remoteConfigWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ6_ASYNC, remoteConfig));
     }
 
-    private void fetchRemoteConfig() {
+    @NotNull
+    private boolean fetchRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
         remoteConfig.fetch(getRemoteConfigListener());
+        return true;
     }
 
     protected RemoteConfig.Listener getRemoteConfigListener(){
@@ -85,25 +102,45 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onStart() {
         super.onStart();
-        getBranchDefferedDeeplink();
+        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return getBranchDefferedDeeplink();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(branchDefferedDeeplinkWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ7_ASYNC, remoteConfig));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        WeaveInterface moveToHomeFlowWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeMoveToHomeFlow();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_SEQ8_ASYNC, SplashScreen.this);
+        moveToHome();
+    }
+
+    @NotNull
+    private boolean executeMoveToHomeFlow(){
         boolean status = GCMHandler.isPlayServicesAvailable(this);
         if(!status){
             Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
                     + " | "+Build.TAGS);
         }
-        moveToHome();
-    }
-
-    protected void moveToHome() {
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
         registerFCMDeviceID();
+        return true;
+    }
+
+    protected void moveToHome() {
         finishSplashScreen();
     }
 
@@ -164,7 +201,11 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         }
     }
 
-    private void getBranchDefferedDeeplink() {
+    @NotNull
+    private boolean getBranchDefferedDeeplink() {
+        if(LinkerManager.getInstance() == null){
+            initLinker();
+        }
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setClientId(TrackingUtils.getClientID(this));
         linkerDeeplinkData.setReferrable(this.getIntent().getData());
@@ -205,11 +246,32 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                     public void onError(LinkerError linkerError) {
                     }
                 }, this));
+        return true;
+    }
+
+    private void initLinker(){
+        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(SplashScreen.this.getApplicationContext()));
+        UserSession userSession = new UserSession(SplashScreen.this);
+
+        if(userSession.isLoggedIn()) {
+            UserData userData = new UserData();
+            userData.setUserId(userSession.getUserId());
+
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                    userData));
+        }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        getBranchDefferedDeeplink();
+        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return getBranchDefferedDeeplink();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_SEQ9_ASYNC, SplashScreen.this);
     }
 }

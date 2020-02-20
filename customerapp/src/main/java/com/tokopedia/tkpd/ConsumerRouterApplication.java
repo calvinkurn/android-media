@@ -219,6 +219,10 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1293,7 +1297,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void onAppsFlyerInit() {
+        WeaveInterface appsflyerInitWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeAppflyerInit();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_SEQ11_ASYNC, context);
+    }
+
+    private boolean executeAppflyerInit(){
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
+        return true;
     }
 
     @Override

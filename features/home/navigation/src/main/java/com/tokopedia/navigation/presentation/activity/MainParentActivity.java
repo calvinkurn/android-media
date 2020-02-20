@@ -81,12 +81,18 @@ import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListene
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -237,13 +243,26 @@ public class MainParentActivity extends BaseActivity implements
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
-        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+        WeaveInterface executeEventsWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return initCategoryConfigAndSendOpenHomeEvent();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(executeEventsWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ14_ASYNC, null));
 
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
             new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
         }
+    }
+
+    @NotNull
+    private boolean initCategoryConfigAndSendOpenHomeEvent() {
+        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+        return true;
     }
 
     @Override
@@ -308,7 +327,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void createView(Bundle savedInstanceState) {
         isFirstNavigationImpression = true;
-        GraphqlClient.init(this);
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
@@ -324,15 +342,28 @@ public class MainParentActivity extends BaseActivity implements
 
         fragmentList = fragments();
 
-        if (isFirstTime()) {
-            globalNavAnalytics.trackFirstTime(this);
-        }
+        WeaveInterface firstTimeWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeFirstTimeEvent();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_SEQ15_ASYNC, getContext());
 
         handleAppLinkBottomNavigation(savedInstanceState);
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
 
         initNewFeedClickReceiver();
+    }
+
+    @NotNull
+    private boolean executeFirstTimeEvent(){
+        if (isFirstTime()) {
+            globalNavAnalytics.trackFirstTime(this);
+        }
+        return true;
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -1045,6 +1076,12 @@ public class MainParentActivity extends BaseActivity implements
             lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED); // important! to reset maxProgress
         }
         lottieOsDrawable.setProgress(progress);
+    }
+
+    @NotNull
+    private boolean executeHomePerformanceMonitoring(){
+        startHomePerformanceMonitoring();
+        return true;
     }
 
     @Override

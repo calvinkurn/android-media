@@ -199,6 +199,21 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
     public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
     public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
+    public static final String ENABLE_SEQ6_ASYNC = "android_exec_seq6_async";
+    public static final String ENABLE_SEQ7_ASYNC = "android_exec_seq7_async";
+    public static final String ENABLE_SEQ8_ASYNC = "android_exec_seq8_async";
+    public static final String ENABLE_SEQ9_ASYNC = "android_exec_seq9_async";
+    public static final String ENABLE_SEQ10_ASYNC = "android_exec_seq10_async";
+    public static final String ENABLE_SEQ11_ASYNC = "android_exec_seq11_async";
+    public static final String ENABLE_SEQ12_ASYNC = "android_exec_seq12_async";
+    public static final String ENABLE_SEQ13_ASYNC = "android_exec_seq13_async";
+    public static final String ENABLE_SEQ14_ASYNC = "android_exec_seq14_async";
+    public static final String ENABLE_SEQ15_ASYNC = "android_exec_seq15_async";
+    public static final String ENABLE_SEQ16_ASYNC = "android_exec_seq16_async";
+    public static final String ENABLE_SEQ17_ASYNC = "android_exec_seq17_async";
+    public static final String ENABLE_SEQ18_ASYNC = "android_exec_seq18_async";
+    public static final String ENABLE_SEQ19_ASYNC = "android_exec_seq19_async";
+    public static final String ENABLE_SEQ20_ASYNC = "android_exec_seq20_async";
     public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
 
 }

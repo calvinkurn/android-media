@@ -29,6 +29,10 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -748,6 +752,18 @@ public class GTMAnalytics extends ContextAnalytics {
     @Override
     public void initialize() {
         super.initialize();
+        WeaveInterface gtmRefreshWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return refreshGtmInBackGround();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gtmRefreshWeave, RemoteConfigKey.ENABLE_SEQ18_ASYNC, context);
+    }
+
+    @NotNull
+    private boolean refreshGtmInBackGround(){
         try {
             Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
             TagManager tagManager = getTagManager();
@@ -778,6 +794,7 @@ public class GTMAnalytics extends ContextAnalytics {
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());
         }
+        return true;
     }
 
 
