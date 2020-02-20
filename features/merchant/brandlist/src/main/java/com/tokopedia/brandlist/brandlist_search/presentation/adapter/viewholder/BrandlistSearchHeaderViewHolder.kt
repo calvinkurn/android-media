@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchHeaderViewModel
 import kotlinx.android.synthetic.main.brandlist_all_brand_header.view.*
+import java.text.NumberFormat
+import java.util.*
 
 class BrandlistSearchHeaderViewHolder(view: View) : AbstractViewHolder<BrandlistSearchHeaderViewModel>(view) {
 
@@ -14,12 +16,12 @@ class BrandlistSearchHeaderViewHolder(view: View) : AbstractViewHolder<Brandlist
 
     override fun bind(element: BrandlistSearchHeaderViewModel?) {
         itemView.tv_header.text = element?.headerText
-        if(element?.totalBrand.isNullOrEmpty()) {
-            itemView.tv_total_brand.visibility = View.GONE
-        } else {
+        itemView.tv_total_brand.visibility = View.GONE
+        element?.totalBrand?.let{
             itemView.tv_total_brand.text = StringBuilder().append(
-                    element?.totalBrand)
-                    .append(BrandlistSearchHeaderViewModel.TOTAL_BRANDS_DESCRIPTION)
+                    NumberFormat.getNumberInstance(Locale.US).format(element?.totalBrand).toString())
+                    .append(" ")
+                    .append(getString(R.string.brandlist_brand_label))
                     .toString()
             itemView.tv_total_brand.visibility = View.VISIBLE
         }

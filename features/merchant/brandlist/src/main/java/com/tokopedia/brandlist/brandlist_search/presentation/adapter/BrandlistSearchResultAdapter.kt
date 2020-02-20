@@ -23,7 +23,7 @@ class BrandlistSearchResultAdapter(
         visitables.clear()
         visitables.add(BrandlistSearchNotFoundViewModel())
         if(searchRecommendationList.isNotEmpty()) {
-            visitables.add(BrandlistSearchHeaderViewModel(BrandlistSearchHeaderViewModel.RECOMMENDATION_HEADER, ""))
+            visitables.add(BrandlistSearchHeaderViewModel(BrandlistSearchHeaderViewModel.RECOMMENDATION_HEADER, null))
             visitables.addAll(searchRecommendationList)
         }
         notifyDataSetChanged()
@@ -31,7 +31,7 @@ class BrandlistSearchResultAdapter(
 
     fun updateAllBrandsValue(totalBrands: Int) {
         visitables.clear()
-        visitables.add(BrandlistSearchHeaderViewModel(BrandlistSearchHeaderViewModel.TOTAL_BRANDS_HEADER, totalBrands.toString()))
+        visitables.add(BrandlistSearchHeaderViewModel(BrandlistSearchHeaderViewModel.TOTAL_BRANDS_HEADER, totalBrands))
         notifyDataSetChanged()
     }
 
