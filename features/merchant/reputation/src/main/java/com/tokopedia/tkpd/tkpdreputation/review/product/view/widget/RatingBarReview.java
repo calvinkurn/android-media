@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RatingBar;
@@ -70,7 +69,7 @@ public class RatingBarReview extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_rating_bar_review, this);
+        View view = inflate(getContext(), R.layout.reputation_widget_rating_bar_review, this);
         ratingBar = view.findViewById(R.id.product_rating);
         roundCornerProgressBar = view.findViewById(R.id.progress_value_review);
         counterReview = view.findViewById(R.id.counter_review);

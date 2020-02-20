@@ -1,6 +1,6 @@
 package com.tokopedia.core.drawer2.data.viewmodel;
 
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 
 /**
  * Created by nisie on 1/23/17.

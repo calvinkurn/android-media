@@ -2,8 +2,8 @@ package com.tokopedia.discovery.intermediary.view;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.intermediary.domain.model.BrandModel;

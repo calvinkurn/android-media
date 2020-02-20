@@ -10,7 +10,6 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ImageUploadViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener;
@@ -30,13 +29,13 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
     private static final int BLUR_HEIGHT = 30;
     private final ImageUploadListener listener;
 
-    private View progressBarSendImage;
+    protected View progressBarSendImage;
     private ImageView chatStatus;
     private View chatBalloon;
     private TextView name;
     private TextView label;
     private TextView dot;
-    private ImageView attachment;
+    protected ImageView attachment;
     private ImageView action;
 
     public ImageUploadViewHolder(View itemView, ImageUploadListener listener) {
@@ -67,23 +66,7 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
                 }
             });
 
-            if (element.isDummy()) {
-                setVisibility(progressBarSendImage, View.VISIBLE);
-                ImageHandler.loadImageBlurredWithListener(
-                        attachment,
-                        element.getImageUrl(),
-                        BLUR_WIDTH,
-                        BLUR_HEIGHT,
-                        new DynamicSizeImageRequestListener()
-                );
-            } else {
-                setVisibility(progressBarSendImage, View.GONE);
-                ImageHandler.loadImageWithListener(
-                        attachment,
-                        element.getImageUrl(),
-                        new DynamicSizeImageRequestListener()
-                );
-            }
+            bindImageAttachment(element);
 
             if (element.isRetry()) {
                 setRetryView(element);
@@ -94,10 +77,30 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
         }
     }
 
+    protected void bindImageAttachment(final ImageUploadViewModel element) {
+        if (element.isDummy()) {
+            setVisibility(progressBarSendImage, View.VISIBLE);
+            ImageHandler.loadImageBlurredWithListener(
+                    attachment,
+                    element.getImageUrl(),
+                    BLUR_WIDTH,
+                    BLUR_HEIGHT,
+                    new DynamicSizeImageRequestListener()
+            );
+        } else {
+            setVisibility(progressBarSendImage, View.GONE);
+            ImageHandler.loadImageWithListener(
+                    attachment,
+                    element.getImageUrl(),
+                    new DynamicSizeImageRequestListener()
+            );
+        }
+    }
+
     private void setupChatBubbleAlignment(View chatBalloon, ImageUploadViewModel element) {
         if (element.isSender()) {
             setChatRight(chatBalloon);
-            setReadStatus(element);
+            bindChatReadStatus(element);
         } else {
             setChatLeft(chatBalloon);
         }
@@ -105,17 +108,21 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
     private void setChatLeft(View chatBalloon) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
-        setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, hour);
-        chatStatus.setVisibility(View.GONE);
-        name.setVisibility(View.GONE);
-        label.setVisibility(View.GONE);
-        dot.setVisibility(View.GONE);
+        alignHour(RelativeLayout.ALIGN_PARENT_LEFT, hour);
+        setVisibility(chatStatus, View.GONE);
+        setVisibility(name, View.GONE);
+        setVisibility(label, View.GONE);
+        setVisibility(dot, View.GONE);
     }
 
     private void setChatRight(View chatBalloon) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
-        setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
-        chatStatus.setVisibility(View.VISIBLE);
+        alignHour(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
+        setVisibility(chatStatus, View.VISIBLE);
+    }
+
+    protected void alignHour(int alignment, TextView hour) {
+        setAlignParent(alignment, hour);
     }
 
     private void setAlignParent(int alignment, View view) {
@@ -143,40 +150,19 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
                 && element.isSender()
                 && !element.isDummy()
                 && element.isShowRole()) {
-            name.setText(element.getFrom());
-            label.setText(element.getFromRole());
-            name.setVisibility(View.VISIBLE);
-            dot.setVisibility(View.VISIBLE);
-            label.setVisibility(View.VISIBLE);
-
+            if (name != null) name.setText(element.getFrom());
+            if (label != null) label.setText(element.getFromRole());
+            setVisibility(name, View.VISIBLE);
+            setVisibility(dot, View.VISIBLE);
+            setVisibility(label, View.VISIBLE);
         } else {
-            name.setVisibility(View.GONE);
-            label.setVisibility(View.GONE);
-            dot.setVisibility(View.GONE);
+            setVisibility(name, View.GONE);
+            setVisibility(dot, View.GONE);
+            setVisibility(label, View.GONE);
         }
     }
 
-    public void setReadStatus(ImageUploadViewModel element) {
-        int imageResource;
-        if (element.isShowTime()) {
-            chatStatus.setVisibility(View.VISIBLE);
-            if (element.isRead()) {
-                imageResource = R.drawable.ic_chat_read;
-            } else {
-                imageResource = R.drawable.ic_chat_unread;
-            }
-
-            if (element.isDummy()) {
-                imageResource = R.drawable.ic_chat_pending;
-            }
-            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),imageResource));
-        } else {
-            chatStatus.setVisibility(View.GONE);
-        }
-    }
-
-
-    private void setVisibility(View view, int visibility) {
+    protected void setVisibility(View view, int visibility) {
         if (view != null) {
             view.setVisibility(visibility);
         }

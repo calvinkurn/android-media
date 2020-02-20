@@ -20,7 +20,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.cameraview)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

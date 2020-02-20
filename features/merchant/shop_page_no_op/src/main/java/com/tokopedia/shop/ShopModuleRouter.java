@@ -1,10 +1,9 @@
 package com.tokopedia.shop;
 
-import android.content.Context;
+import android.app.Activity;
 
 public interface ShopModuleRouter {
 
-    void goToWebview(Context context, String url);
-
+    void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel);
 
 }

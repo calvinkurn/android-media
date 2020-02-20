@@ -2,6 +2,7 @@ import com.tokopedia.plugin.ScanReleaseDateTask
 import com.tokopedia.plugin.ReadVersionConfigTask
 import com.tokopedia.plugin.ScanProjectTask
 import com.tokopedia.plugin.PublishCompositeTask
+import com.tokopedia.plugin.WriteLatestLogTask
 
 task scanReleaseDate(type: ScanReleaseDateTask){
     doFirst {
@@ -27,24 +28,39 @@ task scanProjectTask(type: ScanProjectTask) {
     doFirst {
         println("[VERSION TASK START]")
         versionConfigMap = readVersionConfigTask.versionConfigMap
-        latestReleaseDate = scanReleaseDate.latestReleaseDate
+        versionSuffix = readVersionConfigTask.versionSuffix
+        moduleLatestLogMap = scanReleaseDate.moduleLatestLogMap
     }
     doLast {
         println("[VERSION TASK END]")
     }
 }
 
+task writeLatestGitLog(type: WriteLatestLogTask){
+    doFirst {
+        if (!versionDependency.successPublish) {
+            throw new StopExecutionException()
+        }
+        println("[WRITE LATEST GIT LOG START]")
+    }
+    doLast {
+        println("[WRITE LATEST GIT LOG FINISHED]")
+    }
+}
+
 task versionDependency(type: PublishCompositeTask, dependsOn: scanProjectTask){
     doFirst {
         println("[PUBLISH COMPOSITE TASK START]")
-        latestReleaseDate = scanProjectTask.latestReleaseDate
+        moduleLatestLogMap = scanProjectTask.moduleLatestLogMap
         dependenciesProjectNameHashSet = scanProjectTask.dependenciesProjectNameHashSet
         candidateModuleListToUpdate = scanProjectTask.candidateModuleListToUpdate
         projectToArtifactInfoList = scanProjectTask.projectToArtifactInfoList
         artifactIdToProjectNameList = scanProjectTask.artifactIdToProjectNameList
         versionConfigMap = scanProjectTask.versionConfigMap
+        versionSuffix = scanProjectTask.versionSuffix
     }
     doLast{
         println("[PUBLISH COMPOSITE TASK FINISHED]")
     }
+    finalizedBy writeLatestGitLog
 }

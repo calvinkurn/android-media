@@ -1,7 +1,7 @@
 package com.tokopedia.oms.data.source;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 
 import retrofit2.Response;

@@ -40,7 +40,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.CouponListingStackedActivity"
+            android:name=".view.couponlisting.CouponListingStackedActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.White" >
@@ -58,7 +58,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.CouponCatalogDetailsActivity"
+            android:name=".view.catalogdetail.CouponCatalogDetailsActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.White" >
@@ -75,7 +75,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.CouponDetailActivity"
+            android:name=".view.coupondetail.CouponDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
             <intent-filter >
@@ -96,7 +96,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".view.activity.PointHistoryActivity"
+            android:name=".view.pointhistory.PointHistoryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

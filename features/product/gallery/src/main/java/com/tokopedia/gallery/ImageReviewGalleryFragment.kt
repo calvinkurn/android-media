@@ -28,7 +28,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override val isAllowLoadMore: Boolean
         get() = !adapter.isLoading
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = getActivity() as ImageReviewGalleryActivity?
     }

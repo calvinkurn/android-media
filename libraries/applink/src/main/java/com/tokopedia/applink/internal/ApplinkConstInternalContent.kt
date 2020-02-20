@@ -20,4 +20,10 @@ object ApplinkConstInternalContent {
     const val AFFILIATE_EXPLORE = "$INTERNAL_AFFILIATE/explore"
     const val AFFILIATE_DASHBOARD = "$INTERNAL_AFFILIATE/dashboard"
     const val AFFILIATE_EDUCATION = "$INTERNAL_AFFILIATE/education"
+
+
+    const val HOST_PLAY = "play"
+    const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
+    const val PLAY_DETAIL = "$INTERNAL_PLAY/{channel_id}"
+
 }

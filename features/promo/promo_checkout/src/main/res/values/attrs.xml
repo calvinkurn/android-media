@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TimerCheckoutWidget">
-        <attr name="text" format="string" />
-        <attr name="progress" format="integer" />
-        <attr name="time" format="integer" />
+        <attr name="tcw_text" format="string" />
+        <attr name="tcw_progress" format="integer" />
+        <attr name="tcw_time" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="PromoTicketView">

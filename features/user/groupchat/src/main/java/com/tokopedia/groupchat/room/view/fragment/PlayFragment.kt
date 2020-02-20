@@ -6,17 +6,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import com.google.android.material.snackbar.Snackbar
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -37,6 +38,7 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
@@ -152,14 +154,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         loadFirstTime()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.run {
             inflate(R.menu.group_chat_room_menu, menu)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         item?.let {
             return when {
                 it.itemId == android.R.id.home -> {
@@ -544,6 +546,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    override fun onChatDisabled(chatPermitViewModel: ChatPermitViewModel) {
+        viewState.setChatPermitDisabled(chatPermitViewModel)
+    }
+
     override fun handleEvent(it: EventGroupChatViewModel) {
         when {
             it.isFreeze -> {
@@ -841,6 +847,16 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun hasVideoVertical(): Boolean {
         return viewState?.verticalVideoShown()
+    }
+
+    override fun showChatDisabledError() {
+        if (activity != null) {
+            KeyboardHandler.hideSoftKeyboard(activity)
+            viewState.onKeyboardHidden()
+        }
+        viewState.onChatDisabledError(
+                message = getString(R.string.play_chat_blocked_message),
+                action = getString(R.string.play_chat_blocked_button))
     }
 
     fun isChannelActive(): Boolean {

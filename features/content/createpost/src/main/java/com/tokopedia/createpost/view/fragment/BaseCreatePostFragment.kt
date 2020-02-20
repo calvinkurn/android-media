@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -61,6 +62,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
 import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -143,7 +145,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 .inject(this)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         activity?.let {
             productSmoothScroller = object : LinearSmoothScroller(it) {
@@ -179,6 +181,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         initVar(savedInstanceState)
         initView()
         if (userSession.isLoggedIn) {
+            presenter.getFollowersCount(isTypeAffiliate())
+            presenter.invalidateShareOptions()
             if (viewModel.isEditState){
                 presenter.getFeedDetail(viewModel.postId, isTypeAffiliate())
             } else {
@@ -432,10 +436,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.productIdList.addAll(productIds)
             viewModel.adIdList.addAll(adIds)
         } else {
-            view?.showErrorToaster(
-                    getString(R.string.af_duplicate_product),
-                    getString(R.string.af_title_ok)
-            ) { }
+            view?.let {
+                Toaster.make(it, getString(R.string.af_duplicate_product), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.af_title_ok))
+            }
         }
     }
 
@@ -475,7 +478,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun handleDraftError(arguments: Bundle) {
         val errorMessage = arguments.getString(CREATE_POST_ERROR_MSG, "")
         if (errorMessage.isNotBlank()) {
-            view?.showErrorToaster(errorMessage)
+            view?.let {
+                Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            }
         }
     }
 
@@ -539,6 +544,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
+                showKeyboard()
                 v.parent.requestDisallowInterceptTouchEvent(true)
                 when (event.action and MotionEvent.ACTION_MASK) {
                     MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
@@ -808,7 +814,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun onErrorGetProductSuggestion(t: Throwable) {
         context?.let {
-            t.debugTrace()
+            Timber.d(t)
             val errorMessage = ErrorHandler.getErrorMessage(context, t)
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
             hideProductSuggestionLoading()
@@ -904,6 +910,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 saveDraftAndSubmit(true)
                 shareDialog.dismiss()
             }
+        }
+    }
+
+    private fun showKeyboard() {
+        activity?.let {
+            (it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
 }

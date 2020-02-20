@@ -18,8 +18,8 @@ class LendingPartnerPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm)
         notifyDataSetChanged()
     }
 
-    override fun getItem(position: Int): Fragment? {
-        return partnerDataPageItem[position].fragment
+    override fun getItem(position: Int): Fragment {
+        return partnerDataPageItem[position].fragment ?: Fragment()
     }
 
     override fun getItemPosition(any: Any): Int {

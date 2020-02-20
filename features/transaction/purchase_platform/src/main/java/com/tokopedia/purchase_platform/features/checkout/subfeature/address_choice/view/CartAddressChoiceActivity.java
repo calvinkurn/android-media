@@ -2,8 +2,8 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.address_cho
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.applink.RouteManager;
@@ -18,17 +18,13 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.corner_list.CornerListFragment;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * @author Irfan Khoirul on 05/02/18
@@ -148,19 +144,10 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                if (isAddNewAddressEnabled()) {
-                    mAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
-                    intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-                    intent.putExtra(KERO_TOKEN, token);
-                    startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
-                } else {
-                    intent = RouteManager.getIntent(this,
-                            ApplinkConstInternalLogistic.ADD_ADDRESS_V1,
-                            INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS);
-                    intent.putExtra(KERO_TOKEN, token);
-                    startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_CREATE);
-                }
-
+                mAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
+                intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+                intent.putExtra(KERO_TOKEN, token);
+                startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
                 RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
@@ -276,10 +263,5 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         }
         super.onBackPressed();
-    }
-
-    public boolean isAddNewAddressEnabled() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
     }
 }

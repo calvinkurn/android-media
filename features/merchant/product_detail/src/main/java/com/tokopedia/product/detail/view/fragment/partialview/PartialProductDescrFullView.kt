@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.util.Linkify
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -78,7 +78,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
             txt_asuransi.visible()
             txt_asuransi.text = if (data.basic.isMustInsurance) "Ya" else "Opsional"
 
-            with(txt_etalase){
+            with(txt_etalase) {
                 text = if (data.menu.name.isNotBlank()) {
                     MethodChecker.fromHtml(data.menu.name)
                 } else {
@@ -139,7 +139,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
                         productSpecificationResponse?.productCatalogQuery?.data?.catalog?.specification
                                 ?: arrayListOf()))
                 activity?.overridePendingTransition(R.anim.pull_up, 0)
-                productInfo?.let{
+                productInfo?.let {
                     productDetailTracking.eventClickProductDescriptionReadMore(it.basic.id.toString())
                 }
             }
@@ -148,7 +148,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
     }
 
     private fun openCategory(category: Category.Detail) {
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             RouteManager.route(view.context,
                     ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
                     category.id)

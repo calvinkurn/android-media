@@ -24,6 +24,7 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DataAddressData;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DisabledFeaturesDetailData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Donation;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupShop;
@@ -35,8 +36,8 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipme
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.TradeInInfoData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.UserAddress;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldTieringModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldTieringModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -77,32 +78,40 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
+        if (shipmentAddressFormDataResponse.getDisabledFeatures() != null &&
+                shipmentAddressFormDataResponse.getDisabledFeatures().contains(CheckoutDisabledFeaturesKt.multiAddress) &&
+                shipmentAddressFormDataResponse.getDisabledFeaturesDetail() != null) {
+            DisabledFeaturesDetailData disabledFeaturesDetailData = new DisabledFeaturesDetailData();
+            disabledFeaturesDetailData.setDisabledMultiAddressMessage(
+                    shipmentAddressFormDataResponse.getDisabledFeaturesDetail().getDisabledMultiAddressMessage()
+            );
+            dataResult.setDisabledFeaturesDetailData(disabledFeaturesDetailData);
+        }
+
         boolean isDisableEgold = false;
         boolean isDisablePPP = false;
         boolean isDisableDonation = false;
 
-        if (shipmentAddressFormDataResponse.isNewBuyer()) {
-            for (String disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
-                switch (disabledFeature) {
-                    case CheckoutDisabledFeaturesKt.dropshipper:
-                        dataResult.setDropshipperDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.multiAddress:
-                        dataResult.setMultipleDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.orderPrioritas:
-                        dataResult.setOrderPrioritasDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.egold:
-                        isDisableEgold = true;
-                        break;
-                    case CheckoutDisabledFeaturesKt.ppp:
-                        isDisablePPP = true;
-                        break;
-                    case CheckoutDisabledFeaturesKt.donation:
-                        isDisableDonation = true;
-                        break;
-                }
+        for (String disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
+            switch (disabledFeature) {
+                case CheckoutDisabledFeaturesKt.dropshipper:
+                    dataResult.setDropshipperDisable(true);
+                    break;
+                case CheckoutDisabledFeaturesKt.multiAddress:
+                    dataResult.setMultipleDisable(true);
+                    break;
+                case CheckoutDisabledFeaturesKt.orderPrioritas:
+                    dataResult.setOrderPrioritasDisable(true);
+                    break;
+                case CheckoutDisabledFeaturesKt.egold:
+                    isDisableEgold = true;
+                    break;
+                case CheckoutDisabledFeaturesKt.ppp:
+                    isDisablePPP = true;
+                    break;
+                case CheckoutDisabledFeaturesKt.donation:
+                    isDisableDonation = true;
+                    break;
             }
         }
 

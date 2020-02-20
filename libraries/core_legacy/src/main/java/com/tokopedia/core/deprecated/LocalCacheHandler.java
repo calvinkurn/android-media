@@ -27,47 +27,8 @@ public class LocalCacheHandler {
         sharedPrefs.edit().clear().apply();
     }
 
-    public static void clearSingleCacheKey(Context context, String prefName, String keyName) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        sharedPrefs.edit().remove(keyName).apply();
-    }
-
     public void putString(String key, String value) {
         editor.putString(key, value);
-    }
-
-    public void putArrayString(String key, String[] value) {
-        try {
-            if (value != null) {
-                String temp = "";
-                for (String string : value) {
-                    if (string != null)
-                        if (!string.equals("null"))
-                            if (temp.length() == 0) {
-                                temp = string;
-                            } else {
-                                temp = temp + "#separator#" + string;
-                            }
-                }
-
-                if (temp.length() > 0) {
-                    editor.putString(key, temp);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String[] getArrayString(String key) {
-        String[] temp = null;
-        String tmp = sharedPrefs.getString(key, null);
-
-        if (tmp != null) {
-            temp = tmp.split("#separator#");
-        }
-
-        return temp;
     }
 
     public void putInt(String key, int value) {
@@ -84,34 +45,6 @@ public class LocalCacheHandler {
 
     public void putLong(String key, Long value) {
         editor.putLong(key, value);
-    }
-
-    public void putArrayListString(String key, ArrayList<String> value) {
-        for (int i = 0; i < value.size(); i++) {
-            editor.putString(key + i, value.get(i));
-        }
-        editor.putInt(key + "_total", value.size());
-    }
-
-    public void putArrayListBoolean(String key, ArrayList<Boolean> value) {
-        for (int i = 0; i < value.size(); i++) {
-            editor.putBoolean(key + i, value.get(i));
-        }
-        editor.putInt(key + "_total", value.size());
-    }
-
-    public void putArrayListInteger(String key, ArrayList<Integer> value) {
-        for (int i = 0; i < value.size(); i++) {
-            editor.putInt(key + i, value.get(i));
-        }
-        editor.putInt(key + "_total", value.size());
-    }
-
-    public void putArrayListLong(String key, ArrayList<Long> value) {
-        for (int i = 0; i < value.size(); i++) {
-            editor.putLong(key + i, value.get(i));
-        }
-        editor.putInt(key + "_total", value.size());
     }
 
     public void applyEditor() {
@@ -180,24 +113,6 @@ public class LocalCacheHandler {
         return value;
     }
 
-    public ArrayList<Boolean> getArrayListBoolean(String key) {
-        int total = sharedPrefs.getInt(key + "_total", 0);
-        ArrayList<Boolean> value = new ArrayList<Boolean>();
-        for (int i = 0; i < total; i++) {
-            value.add(getBoolean(key + i));
-        }
-        return value;
-    }
-
-    public ArrayList<Long> getArrayListLong(String key) {
-        int total = sharedPrefs.getInt(key + "_total", 0);
-        ArrayList<Long> value = new ArrayList<Long>();
-        for (int i = 0; i < total; i++) {
-            value.add(getLong(key + i));
-        }
-        return value;
-    }
-
     public void setExpire(int time) {
         putInt("expired_time", time);
         Long curr_time = System.currentTimeMillis() / 1000;
@@ -221,24 +136,5 @@ public class LocalCacheHandler {
 
     public void clearCache(String name) {
         editor.clear().apply();
-    }
-
-    public int getSingleArrayListInteger(String key, int index) {
-        ArrayList<Integer> value = getArrayListInteger(key);
-        if (index < value.size()) {
-            return value.get(index);
-        }
-        return -1;
-    }
-
-    public Boolean modifyArrayListInteger(String key, int index, int newValue) {
-        ArrayList<Integer> value = getArrayListInteger(key);
-        if (index < value.size()) {
-            value.set(index, newValue);
-            putArrayListInteger(key, value);
-            applyEditor();
-            return true;
-        }
-        return false;
     }
 }

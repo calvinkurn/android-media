@@ -6,15 +6,20 @@ import android.text.TextUtils;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.moengage.push.PushManager;
-import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.fcmcommon.FirebaseMessagingManager;
+import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
+import com.tokopedia.fcmcommon.di.FcmComponent;
+import com.tokopedia.fcmcommon.di.FcmModule;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Inject;
 
 import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
@@ -28,10 +33,26 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
 
     private static final String TAG = FCMInstanceIDService.class.getSimpleName();
 
+    @Inject
+    FirebaseMessagingManager fcmManager;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        FcmComponent fcmComponent = DaggerFcmComponent.builder()
+                .fcmModule(new FcmModule(getApplicationContext()))
+                .build();
+        DaggerFcmServiceComponent.builder()
+                .fcmComponent(fcmComponent)
+                .build()
+                .inject(this);
+    }
+
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        CommonUtils.dumper(TAG + " RefreshedToken: " + refreshedToken);
+        Timber.d(TAG + " RefreshedToken: " + refreshedToken);
+        fcmManager.onNewToken(refreshedToken);
         propagateIDtoServer(refreshedToken);
         updateMoEngageToken(refreshedToken);
         Hansel.setNewToken(this, refreshedToken);
@@ -40,7 +61,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
 
         try {
             UserSessionInterface userSession = new UserSession(this);
-            Timber.w("P2" + "Notification Refresh Token - " + refreshedToken + " | "
+            Timber.w("P2#TOKEN_REFRESH#Notification Refresh Token - " + refreshedToken + " | "
                     + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
                     + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                     + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
@@ -56,15 +77,21 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
 
     @Override
     public void updateMoEngageToken(String token) {
-        CommonUtils.dumper("Moengage RefreshedToken: " + token);
+        Timber.d("Moengage RefreshedToken: " + token);
         PushManager.getInstance().refreshToken(getApplicationContext(), token);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        fcmManager.clear();
     }
 
     @Override
     public void propagateIDtoServer(String token) {
         if (!TextUtils.isEmpty(token)) {
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
-            CommonUtils.dumper(TAG + " RefreshedToken: " + token + ", localToken: " + localToken);
+            Timber.d(TAG + " RefreshedToken: " + token + ", localToken: " + localToken);
             if (!localToken.equals(token)) {
                 SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getApplicationContext()).legacySessionHandler();
                 if (sessionHandler.isV4Login()) {
@@ -81,5 +108,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
                 }
             }
         }
+
+
     }
 }

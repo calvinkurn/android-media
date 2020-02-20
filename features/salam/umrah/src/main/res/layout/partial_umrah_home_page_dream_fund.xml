@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_16" />
     </LinearLayout>
 
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_16"
         android:visibility="gone" />
 
@@ -37,7 +37,7 @@
         layout="@layout/partial_umrah_home_page_my_umrah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_8"
         android:visibility="gone" />
 
 </FrameLayout>

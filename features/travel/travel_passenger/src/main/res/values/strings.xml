@@ -1,0 +1,17 @@
+<resources>
+    <string name="phone_code_format">+%1$d</string>
+
+    <string name="travel_contact_data_activity_title">Data Pemesan</string>
+    <string name="travel_contact_data_name_title">Nama Lengkap</string>
+    <string name="travel_contact_data_email_title">Alamat E-mail</string>
+    <string name="travel_contact_data_phone_number_title">Nomor Telepon</string>
+    <string name="travel_contact_data_name_hint">Nama kamu</string>
+    <string name="travel_contact_data_email_hint">namakamu@contoh.com</string>
+    <string name="travel_contact_data_phone_number_hint">Minimum 9 digit</string>
+    <string name="travel_contact_data_name_error">Nama belum diisi</string>
+    <string name="travel_contact_data_name_alphabet_only">Hanya masukkan huruf</string>
+    <string name="travel_contact_data_email_error">Format e-mail salah</string>
+    <string name="travel_contact_data_phone_number_error">Nomor telepon minimum 9 digit</string>
+    <string name="travel_contact_data_notice">Pastikan data pemesan sudah benar, karena e-tiket akan dikirim ke kontak tercantum.</string>
+
+</resources>

@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.adapterDelegate)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -37,7 +38,6 @@ dependencies {
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.features.topAdsSdk)
 
     implementation rootProject.ext.unifyDependencies.components
@@ -49,6 +49,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

@@ -10,7 +10,6 @@ import android.view.View;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
@@ -40,12 +39,13 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationResponse;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -62,6 +62,7 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by baghira on 09/05/18.
@@ -80,6 +81,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final int DEFAULT_TAB_ID = 1;
     private static final String DEVICE_ID = "device_id";
     private static final String CATEGORY_IDS = "category_ids";
+    private static final String MP_CATEGORY_IDS = "mp_category_ids";
     private static final int DEFAULT_DEVICE_ID = 5;
 
     GraphqlUseCase orderDetailsUseCase;
@@ -102,7 +104,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private boolean isdownloadable = false;
     private OrderDetails details;
     private List<Body> retryBody = new ArrayList<>();
-    ArrayList<String> categoryList;
+    ArrayList<Integer> categoryList;
     String category;
 
     @Inject
@@ -121,7 +123,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
-        if (orderCategory.equalsIgnoreCase("marketplace")) {
+        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
             variables.put("orderCategory", orderCategory);
             variables.put(ORDER_ID, orderId);
             graphqlRequest = new
@@ -150,7 +152,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper("error occured" + e);
+                    Timber.d("error occured" + e);
                     getView().hideProgressBar();
                 }
             }
@@ -162,15 +164,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
 
-                    if (orderCategory.equalsIgnoreCase("marketplace")) {
+                    if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                         List<Items> list = orderDetails.getItems();
                         categoryList = new ArrayList<>();
                         for (Items item : list) {
-                            categoryList.add(Integer.toString(item.getCategoryID()));
-                            categoryList.add(Integer.toString(item.getCategoryL1()));
-                            categoryList.add(Integer.toString(item.getCategoryL2()));
-                            categoryList.add(Integer.toString(item.getCategoryL3()));
+                            categoryList.add(item.getCategoryID());
+                            categoryList.add(item.getCategoryL1());
+                            categoryList.add(item.getCategoryL2());
+                            categoryList.add(item.getCategoryL3());
                         }
+
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                             category = String.join(",", category);
                         } else {
@@ -236,7 +239,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                     @Override
                     public void onError(Throwable e) {
-                        CommonUtils.dumper("error occured" + e);
+                        Timber.d("error occured" + e);
                     }
 
                     @Override
@@ -459,7 +462,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs(),details.contactUs().helpUrl());
+        getView().setContactUs(details.contactUs(),details.getHelpLink());
 
         if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
@@ -518,7 +521,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                             @Override
                                             public void onError(Throwable e) {
                                                 if (getView() != null && getView().getAppContext() != null) {
-                                                    CommonUtils.dumper(e.getStackTrace());
+                                                    Timber.d(e);
                                                     getView().showErrorMessage(e.getMessage());
                                                     getView().hideProgressBar();
                                                     getView().finishOrderDetail();
@@ -570,7 +573,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper(e.getStackTrace());
+                    Timber.d(e);
                     getView().hideProgressBar();
                     getView().showErrorMessage(e.getMessage());
                     getView().finishOrderDetail();
@@ -682,10 +685,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private GraphqlRequest makegraphqlRequestForMPRecommendation() {
+        if (TextUtils.isEmpty(category)) category = "";
         GraphqlRequest graphqlRequestForMPRecommendation;
         Map<String, Object> variable = new HashMap<>();
         variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
         variable.put(CATEGORY_IDS, category);
+        variable.put(MP_CATEGORY_IDS, categoryList);
         graphqlRequestForMPRecommendation = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.recommendation_mp), RecommendationResponse.class, variable);
@@ -710,6 +715,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
         }
         return null;
+    }
+
+    public String getFirstProductId() {
+        if (details != null && details.getItems() != null && !details.getItems().isEmpty()) {
+            return String.valueOf(details.getItems().get(0).getId());
+        }
+        return "";
     }
 
     public void showRetryButtonToaster(String message) {

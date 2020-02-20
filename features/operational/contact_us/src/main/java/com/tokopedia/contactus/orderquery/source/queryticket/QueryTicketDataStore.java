@@ -1,6 +1,6 @@
 package com.tokopedia.contactus.orderquery.source.queryticket;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.contactus.orderquery.data.QueryTicket;
 import com.tokopedia.contactus.orderquery.data.Solutions;
 import com.tokopedia.contactus.orderquery.source.api.OrderQueryApi;

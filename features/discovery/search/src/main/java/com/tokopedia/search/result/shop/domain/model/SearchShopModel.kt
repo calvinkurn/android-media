@@ -13,6 +13,10 @@ internal data class SearchShopModel(
         @Expose
         val cpmModel: CpmModel = CpmModel()
 ) {
+    fun hasShopList() = aceSearchShop.shopList.isNotEmpty()
+
+    fun hasRecommendationShopList() = aceSearchShop.topShopList.isNotEmpty()
+
     data class AceSearchShop(
             @SerializedName("source")
             @Expose
@@ -36,7 +40,11 @@ internal data class SearchShopModel(
 
             @SerializedName("shops")
             @Expose
-            val shopList: List<ShopItem> = listOf()
+            val shopList: List<ShopItem> = listOf(),
+
+            @SerializedName("top_shop")
+            @Expose
+            val topShopList: List<ShopItem> = listOf()
     ) {
 
         data class Paging(

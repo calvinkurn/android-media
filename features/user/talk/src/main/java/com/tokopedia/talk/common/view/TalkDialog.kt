@@ -16,7 +16,7 @@ class TalkDialog @Inject constructor() {
 
         alertDialog.setTitle(context.getString(R.string.unfollow_talk_dialog_title))
         alertDialog.setDesc(context.getString(R.string.unfollow_talk_dialog_desc))
-        alertDialog.setBtnCancel(context.getString(R.string.button_cancel))
+        alertDialog.setBtnCancel(context.getString(com.tokopedia.design.R.string.button_cancel))
         alertDialog.setBtnOk(context.getString(R.string.button_unfollow_talk))
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
@@ -31,7 +31,7 @@ class TalkDialog @Inject constructor() {
 
         alertDialog.setTitle(context.getString(R.string.follow_talk_dialog_title))
         alertDialog.setDesc(context.getString(R.string.follow_talk_dialog_desc))
-        alertDialog.setBtnCancel(context.getString(R.string.button_cancel))
+        alertDialog.setBtnCancel(context.getString(com.tokopedia.design.R.string.button_cancel))
         alertDialog.setBtnOk(context.getString(R.string.button_follow_talk))
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
@@ -46,8 +46,8 @@ class TalkDialog @Inject constructor() {
 
         alertDialog.setTitle(context.getString(R.string.delete_talk_dialog_title))
         alertDialog.setDesc(context.getString(R.string.delete_talk_dialog_desc))
-        alertDialog.setBtnCancel(context.getString(R.string.button_cancel))
-        alertDialog.setBtnOk(context.getString(R.string.button_delete))
+        alertDialog.setBtnCancel(context.getString(com.tokopedia.design.R.string.button_cancel))
+        alertDialog.setBtnOk(context.getString(com.tokopedia.design.R.string.button_delete))
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
         }
@@ -63,8 +63,8 @@ class TalkDialog @Inject constructor() {
 
         alertDialog.setTitle(context.getString(R.string.delete_comment_talk_dialog_title))
         alertDialog.setDesc(context.getString(R.string.delete_comment_talk_dialog_desc))
-        alertDialog.setBtnCancel(context.getString(R.string.button_cancel))
-        alertDialog.setBtnOk(context.getString(R.string.button_delete))
+        alertDialog.setBtnCancel(context.getString(com.tokopedia.design.R.string.button_cancel))
+        alertDialog.setBtnOk(context.getString(com.tokopedia.design.R.string.button_delete))
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
         }

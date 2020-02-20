@@ -3,44 +3,42 @@ package com.tokopedia.plugin
 import GraphStr
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.HashSet
 import toVersion
 import versionToInt
+import java.io.File
+import java.util.*
+import kotlin.collections.HashSet
 
 open class PublishCompositeTask : DefaultTask() {
 
     // this will be populated from previous tasks
-    var latestReleaseDate: Date = Date()
+    var moduleLatestLogMap = hashMapOf<String, Date>()
     var candidateModuleListToUpdate = hashSetOf<String>()
     var dependenciesProjectNameHashSet = HashSet<Pair<String, String>>()
     var projectToArtifactInfoList = hashMapOf<String, ArtifactInfo>()
     var artifactIdToProjectNameList = hashMapOf<String, String>()
 
-    val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
     lateinit var sortedDependency: List<String>
     var versionConfigMap = mutableMapOf<String, Int>()
+    var versionSuffix = ""
 
     var successModuleList: MutableList<String> = mutableListOf()
     var failModuleList: MutableList<String> = mutableListOf()
     var noChangeModuleList: MutableList<String> = mutableListOf()
     var changedModuleList: MutableList<String> = mutableListOf()
+    var successPublish = false
     val logFile = File(LOG_FILE_PATH)
 
     companion object {
-        const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
         const val LOG_FILE_PATH = "tools/version/log.txt"
         const val LIBRARIES_PATH = "../../buildconfig/dependencies/dependency-libraries.gradle"
         const val LIBRARIES_BACKUP_PATH = "../../buildconfig/dependencies/dependency-libraries-backup.gradle"
         const val LIBRARIES_WRITER_PATH = "../../buildconfig/dependencies/dependency-libraries-writer.gradle"
-        const val RELEASE_DATE_PATH = "tools/version/release_date.txt"
     }
 
     @TaskAction
     fun run() {
-        println("Latest Release Date: $latestReleaseDate")
+        println("Latest Log Date: $moduleLatestLogMap")
         println("Candidate: $candidateModuleListToUpdate")
         println("Dep Hash Set: $dependenciesProjectNameHashSet")
         println("Project to Artifact: ${projectToArtifactInfoList.map {
@@ -94,19 +92,22 @@ open class PublishCompositeTask : DefaultTask() {
                     logFile.appendText("$it module artifact is not defined in the project. FAILED.\n\n")
                 } else {
                     val currentMaxVersion = artifactInfo.maxCurrentVersionName.versionToInt(versionConfigMap).first
+                    val versionSuffixString = (if (versionSuffix.isNotEmpty()) {
+                        "-$versionSuffix"
+                    } else "" )
                     val increasedVersionString = (currentMaxVersion + (versionConfigMap["Step"]
-                        ?: 1)).toVersion(versionConfigMap)
+                        ?: 1)).toVersion(versionConfigMap) + versionSuffixString
                     artifactInfo.increaseVersionString = increasedVersionString
 
                     logFile.appendText("Start increasing version:${artifactInfo.versionName} -> ${artifactInfo.increaseVersionString}\n")
 
-                    var textToPut = ""
+                    var textToPut: String
                     readerFile.forEachLine { line ->
                         textToPut = ""
                         //search for "versionName =" and change the value, but in the writer file
                         val lineTrim = line.trim()
                         if (lineTrim.startsWith("versionName =")) {
-                            textToPut = "    versionName = \"$increasedVersionString\"\n"
+                            textToPut = "    versionName = \"$increasedVersionString\""
                         } else {
                             textToPut = line
                         }
@@ -117,12 +118,16 @@ open class PublishCompositeTask : DefaultTask() {
 
                     val successPublishModule = publishModule(it)
                     if (successPublishModule) {
-                        logFile.appendText("$it PUBLISH - SUCCESS\n")
+                        val logStr = "$it PUBLISH - SUCCESS\n"
+                        print(logStr)
+                        logFile.appendText(logStr)
                         successModuleList.add(it)
                         changedModuleList.add(it)
                         changeRootDependencyFile(artifactInfo)
                     } else {
-                        logFile.appendText("$it PUBLISH - FAILED\n")
+                        val logStr = "$it PUBLISH - FAILED\n"
+                        print(logStr)
+                        logFile.appendText(logStr)
                         failModuleList.add(it)
                         changedModuleList.add(it)
                         returnBackup()
@@ -131,15 +136,13 @@ open class PublishCompositeTask : DefaultTask() {
                 }
             } else {
                 // here is no op. the module is not changed at all.
-                logFile.appendText("\n$it module is UP-TO-DATE.\n")
+                val logStr = "\n$it module is UP-TO-DATE.\n"
+                print(logStr)
+                logFile.appendText(logStr)
                 noChangeModuleList.add(it)
             }
         }
-        val isSuccessRelease = successModuleList.isNotEmpty() && failModuleList.isEmpty()
-        if (isSuccessRelease) {
-            val releaseFile = File(RELEASE_DATE_PATH)
-            releaseFile.appendText("\n" + dateFormatter.format(Calendar.getInstance().time))
-        }
+        successPublish = successModuleList.isNotEmpty() && failModuleList.isEmpty()
     }
 
     private fun backupRootDependencyLibraryFile() {
@@ -156,7 +159,7 @@ open class PublishCompositeTask : DefaultTask() {
     private fun changeRootDependencyFile(artifactInfo: ArtifactInfo) {
         val rootDependencyFile = File(LIBRARIES_PATH)
         val writerFile = File(LIBRARIES_WRITER_PATH)
-        var textToPut = ""
+        var textToPut: String
         var found = false
         rootDependencyFile.forEachLine { line ->
             textToPut = ""
@@ -224,7 +227,25 @@ open class PublishCompositeTask : DefaultTask() {
     private fun publishModule(module: String): Boolean {
         val moduleLogFile = File("${module}/${module}_log.txt")
         moduleLogFile.delete()
-        val gitCommandString = "./gradlew assemble artifactoryPublish  -p $module --parallel --stacktrace"
+
+        val outputFile = File("$module/build/outputs/aar/$module.aar")
+        val outputFile2 = File("$module/build/outputs/aar/$module-debug.aar")
+        if (outputFile.exists()) {
+            outputFile.delete()
+        }
+        if (outputFile2.exists()) {
+            outputFile2.delete()
+        }
+        
+        val gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
+        val gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
+            return false
+        }
+        if (outputFile2.exists()) {
+            outputFile2.copyTo(outputFile, true)
+        }
+        val gitCommandString = "./gradlew artifactoryPublish  -p $module --stacktrace"
         val gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         moduleLogFile.appendText(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")

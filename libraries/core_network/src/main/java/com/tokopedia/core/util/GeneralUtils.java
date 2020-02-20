@@ -4,7 +4,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 
 
 @Deprecated
@@ -30,12 +30,6 @@ public class GeneralUtils {
             return false;
         } else {
             return true;
-        }
-    }
-
-    public static void dumper(String str) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            Log.i("Dumper", str);
         }
     }
 

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.util.OnImageReviewClick
 import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
@@ -22,7 +23,7 @@ class PartialImageReviewView private constructor(private val view: View,
                                                  private val onImageReviewClick: OnImageReviewClick? = null,
                                                  private val onReviewClicked: (() -> Unit)? = null) {
     companion object {
-        fun build(_view: View, _onSeeAllReviewClick: (() -> Unit)?, _onImageReviewClick: ((List<ImageReviewItem>, Int) -> Unit)?, _onReviewClicked: (() -> Unit)?) =
+        fun build(_view: View, _onSeeAllReviewClick: ((ComponentTrackDataModel?) -> Unit)?, _onImageReviewClick: ((List<ImageReviewItem>, Int, ComponentTrackDataModel?) -> Unit)?, _onReviewClicked: (() -> Unit)?) =
                 PartialImageReviewView(_view, _onSeeAllReviewClick, _onImageReviewClick, _onReviewClicked)
     }
 
@@ -63,7 +64,7 @@ class PartialImageReviewView private constructor(private val view: View,
         }
     }
 
-    fun setBackgroundAndKeepPadding(view: View, reviews: List<Review>) {
+    private fun setBackgroundAndKeepPadding(view: View, reviews: List<Review>) {
         val drawablePadding = Rect()
 
         view.background.getPadding(drawablePadding)

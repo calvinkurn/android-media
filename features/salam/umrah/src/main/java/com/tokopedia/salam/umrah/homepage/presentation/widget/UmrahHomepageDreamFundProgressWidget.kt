@@ -1,6 +1,5 @@
 package com.tokopedia.salam.umrah.homepage.presentation.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.text.Html

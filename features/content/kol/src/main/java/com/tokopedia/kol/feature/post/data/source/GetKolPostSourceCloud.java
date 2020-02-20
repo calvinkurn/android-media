@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.GetProfileKolDataMapper;
-import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
+import com.tokopedia.kol.common.data.model.request.GraphqlRequest;
 import com.tokopedia.kol.feature.post.domain.model.KolProfileModel;
 import com.tokopedia.usecase.RequestParams;
 

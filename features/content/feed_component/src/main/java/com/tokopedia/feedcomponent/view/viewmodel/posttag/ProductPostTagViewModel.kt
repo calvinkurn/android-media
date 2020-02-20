@@ -24,6 +24,7 @@ data class ProductPostTagViewModel (
         val rating: Int = 0,
         val needToResize: Boolean = false,
         val authorType: String = "",
+        val mediaType: String = "",
         override var feedType: String = "",
         override var positionInFeed: Int = 0,
         override var postId: Int = 0

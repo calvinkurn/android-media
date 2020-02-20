@@ -9,7 +9,7 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
 

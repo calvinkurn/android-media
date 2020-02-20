@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
@@ -19,7 +20,6 @@ import com.tokopedia.talk.shoptalk.view.fragment.ShopTalkFragment
  * @author by nisie on 9/17/18.
  */
 class ShopTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
-
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -42,7 +42,6 @@ class ShopTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
             return intent
         }
 
-
         object DeepLinkIntents {
             @JvmStatic
             @DeepLink(ApplinkConst.SHOP_TALK)
@@ -58,6 +57,7 @@ class ShopTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         }
 
     }
+
 
     override fun getComponent(): TalkComponent {
         return DaggerTalkComponent.builder().baseAppComponent(

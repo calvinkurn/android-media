@@ -145,6 +145,10 @@ public class ProductViewModel implements ItemType, Parcelable {
     @Expose
     private boolean productNameEditable = true;
 
+    @SerializedName("tc_feature")
+    @Expose
+    private boolean tcFeature = true;
+
     public String getProductId() {
         return productId;
     }
@@ -163,6 +167,14 @@ public class ProductViewModel implements ItemType, Parcelable {
         } else {
             this.productName = productName;
         }
+    }
+
+    public boolean isTcFeature() {
+        return tcFeature;
+    }
+
+    public void setTcFeature(boolean tcFeature) {
+        this.tcFeature = tcFeature;
     }
 
     public double getProductPrice() {
@@ -521,6 +533,7 @@ public class ProductViewModel implements ItemType, Parcelable {
         dest.writeTypedList(this.productVideo);
         dest.writeParcelable(this.productVariant, flags);
         dest.writeByte(this.productNameEditable ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.tcFeature ? (byte) 1 : (byte) 0);
     }
 
     public ProductViewModel() {
@@ -558,6 +571,7 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productVideo = in.createTypedArrayList(ProductVideoViewModel.CREATOR);
         this.productVariant = in.readParcelable(ProductVariantViewModel.class.getClassLoader());
         this.productNameEditable = in.readByte() != 0;
+        this.tcFeature = in.readByte() != 0;
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

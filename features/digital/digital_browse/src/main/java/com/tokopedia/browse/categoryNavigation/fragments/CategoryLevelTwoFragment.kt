@@ -35,7 +35,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var categoryLevelTwoViewModel: CategoryLevelTwoViewModel
+    private lateinit var categoryLevelTwoViewModel: CategoryLevelTwoViewModel
 
     private lateinit var categoryLevelTwoAdapter: CategoryLevelTwoAdapter
     private lateinit var gridLayoutManager: GridLayoutManager
@@ -44,12 +44,12 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     private val categoryHotlist = ArrayList<ListItem>()
 
-    val default_case_id = "0"
+    private val defaultCaseId = "0"
 
-    var current_position = "0"
+    private var currentPosition = "0"
 
-    var categoryApplink: String? = null
-    var currentCategoryName: String = ""
+    private var categoryApplink: String? = null
+    private var currentCategoryName: String = ""
 
     var activityStateListener: ActivityStateListener? = null
 
@@ -63,7 +63,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
 
     override fun refreshView(id: String, categoryName: String, applink: String?) {
-        current_position = id
+        currentPosition = id
         currentCategoryName = categoryName
         categoryLevelTwoViewModel.refresh(id)
         categoryLevelTwoViewModel.fetchHotlist(id, currentCategoryName)
@@ -81,7 +81,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         category_name.visibility = View.GONE
         hotlist_name.visibility = View.GONE
 
-        if (id.equals(default_case_id)) {
+        if (id == defaultCaseId) {
             shimmer_layout_default.visibility = View.VISIBLE
             shimmer_layout.visibility = View.GONE
         } else {
@@ -93,7 +93,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     private fun removeShimmer() {
 
-        if (!current_position.equals("0")) {
+        if (currentPosition != defaultCaseId) {
             label_lihat_semua.visibility = View.VISIBLE
             hotlist.visibility = View.VISIBLE
             hotlist_name.visibility = View.VISIBLE
@@ -107,17 +107,19 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         if (categoryApplink != null) {
 
             label_lihat_semua.setOnClickListener {
-                routeToCategoryLevelTwo(activity!!, categoryApplink!!)
+                routeToCategoryLevelTwo(activity, categoryApplink ?: "")
             }
             category_name.setOnClickListener {
-                routeToCategoryLevelTwo(activity!!, categoryApplink!!)
+                routeToCategoryLevelTwo(activity, categoryApplink ?: "")
             }
         }
     }
-    private fun routeToCategoryLevelTwo(context: Context, categoryApplink: String) {
-        RouteManager.route(context, categoryApplink)
-        CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
 
+    private fun routeToCategoryLevelTwo(context: Context?, categoryApplink: String) {
+        context?.let {
+            RouteManager.route(it, categoryApplink)
+            CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -167,7 +169,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     private fun initView() {
 
         empty_view_second_level.setOnClickListener {
-            categoryLevelTwoViewModel.refresh(current_position)
+            categoryLevelTwoViewModel.refresh(currentPosition)
 
         }
 
@@ -200,13 +202,13 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun initViewModel() {
-         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            categoryLevelTwoViewModel = viewModelProvider.get(CategoryLevelTwoViewModel::class.java)
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        categoryLevelTwoViewModel = viewModelProvider.get(CategoryLevelTwoViewModel::class.java)
     }
 
     fun startShimmer(isStarted: Boolean) {
         if (isStarted) {
-            if (current_position == "0") {
+            if (currentPosition == defaultCaseId) {
                 shimmer_layout_default.visibility = View.VISIBLE
                 shimmer_layout.visibility = View.GONE
             } else {

@@ -3,6 +3,7 @@
     package="com.tokopedia.home">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application android:label="@string/app_name">
         <activity
@@ -10,6 +11,7 @@
             android:label="@string/explore"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>

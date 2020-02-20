@@ -26,8 +26,8 @@ abstract class BulkBottomSheetType(
     ) {
         fun getStockStatusProductView(): String {
             return when (stockStatus) {
-                STOCK_UNLIMITED -> "Stok Tersedia"
-                STOCK_EMPTY -> "Stok Kosong"
+                STOCK_UNLIMITED -> "Aktif"
+                STOCK_EMPTY -> "Nonaktif"
                 else -> ""
             }
         }

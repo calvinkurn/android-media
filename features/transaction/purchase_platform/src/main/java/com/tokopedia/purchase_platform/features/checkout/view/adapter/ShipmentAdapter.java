@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -53,12 +53,12 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewholder.Shipmen
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldTieringModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentInsuranceTncModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldTieringModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentInsuranceTncModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;

@@ -6,14 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategoriesFeatured
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import kotlinx.android.synthetic.main.item_umrah_home_page_category_featured.view.*
-import kotlinx.android.synthetic.main.partial_umrah_home_page_category_featured.view.*
 
 /**
  * @author by firman on 22/10/19

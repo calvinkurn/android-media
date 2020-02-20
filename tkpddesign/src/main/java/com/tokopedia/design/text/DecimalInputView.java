@@ -2,7 +2,6 @@ package com.tokopedia.design.text;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -10,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;

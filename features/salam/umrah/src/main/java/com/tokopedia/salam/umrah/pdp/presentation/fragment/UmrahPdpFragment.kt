@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.pdp.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -10,7 +11,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
@@ -30,6 +31,7 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahPdpTrackingUserAction
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentWidgetModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
@@ -53,10 +55,10 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_pdp_facilities.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_pdp.*
 import kotlinx.android.synthetic.main.fragment_umrah_pdp.view.*
-import kotlinx.android.synthetic.main.partial_umrah_pdp_ad.*
 import kotlinx.android.synthetic.main.widget_umrah_pdp_green_rect.view.*
 import kotlinx.android.synthetic.main.widget_umrah_pdp_itinerary.view.*
 import javax.inject.Inject
@@ -70,6 +72,9 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     lateinit var umrahPdpViewModel: UmrahPdpViewModel
     @Inject
     lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private val umrahPdpImageViewPagerAdapter by lazy { UmrahPdpImageViewPagerAdapter() }
     private val umrahPdpHotelAdapter by lazy { UmrahPdpHotelAdapter() }
@@ -141,6 +146,11 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
                     }
                 }
             }
+
+            REQUEST_CODE_LOGIN->
+                if (resultCode == Activity.RESULT_OK) {
+                    context?.let { checkChatSession() }
+                }
         }
     }
 
@@ -158,6 +168,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     }
 
     private fun setupAll() {
+        setupFAB()
         setupCollapsingToolbar()
         setupTopImages()
         setupPdpHeader()
@@ -175,6 +186,31 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         setupAdditionalInformation()
         initPackageAvailability()
         showData()
+    }
+
+    private fun setupFAB(){
+        fab_umrah_pdp_message.bringToFront()
+        fab_umrah_pdp_message.setOnClickListener {
+            checkChatSession()
+        }
+    }
+
+    private fun checkChatSession(){
+        if (userSessionInterface.isLoggedIn) {
+            context?.let {
+                startChatUmroh(it)
+            }
+        } else {
+            goToLoginPage()
+        }
+    }
+
+    private fun startChatUmroh(context: Context){
+        val intent = RouteManager.getIntent(context,
+                ApplinkConst.TOPCHAT_ASKSELLER,
+                resources.getString(R.string.umrah_shop_id), resources.getString(R.string.umrah_shop_link, umrahProduct.slugName),
+                resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
+        startActivity(intent)
     }
 
     private fun enableSwipeToRefresh() {
@@ -208,16 +244,10 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadAdContainerBg()
         setupSwipeToRefresh(view)
 
         if (umrahProduct.title != "") setupAll()
         else requestData()
-    }
-
-    private fun loadAdContainerBg() {
-        val containerBg = context?.let { AppCompatResources.getDrawable(it, R.drawable.umrah_bg_pdp_ad) }
-        cl_umrah_pdp_ad.background = containerBg
     }
 
     private fun setupCollapsingToolbar() {
@@ -279,8 +309,20 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             imageUri = travelAgent.imageUrl
             desc = travelAgent.permissionOfUmrah
         }
+        val umrahTravelAgentWidgetModel : UmrahTravelAgentWidgetModel = UmrahTravelAgentWidgetModel().apply {
+            establishedSince = travelAgent.establishedSince
+            pilgrimsPerYear = travelAgent.ui.pilgrimsPerYear
+            availableSeat = umrahProduct.ui.availableSeat
+        }
+
         iw_umrah_pdp_travel_agent.umrahItemWidgetModel = umrahItemWidgetModel
         iw_umrah_pdp_travel_agent.buildView()
+        iw_umrah_pdp_travel_agent.setPermissionPdp()
+        iw_umrah_pdp_travel_agent.setVerifiedTravel()
+
+        uta_umrah_pdp_travel_agent.umrahTravelAgentModel = umrahTravelAgentWidgetModel
+        uta_umrah_pdp_travel_agent.buildView()
+
     }
 
     private fun setupHotelTypeItem() {
@@ -538,6 +580,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     }
 
     companion object {
+        const val REQUEST_CODE_LOGIN = 400
+
         var umrahProduct: UmrahProductModel.UmrahProduct = UmrahProductModel.UmrahProduct()
 
         fun getInstance(slugName: String) =
@@ -571,5 +615,12 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     override fun onPause() {
         super.onPause()
         umrah_pdp_app_bar_layout.removeOnOffsetChangedListener(this)
+    }
+
+    private fun goToLoginPage() {
+        if (activity != null) {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN)
+        }
     }
 }

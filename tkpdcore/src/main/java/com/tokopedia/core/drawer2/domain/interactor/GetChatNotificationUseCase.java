@@ -4,6 +4,9 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.data.pojo.TopchatNotificationPojo.ChatNotificationResponse;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.TopChatNotificationModel;
+import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -21,22 +24,27 @@ public class GetChatNotificationUseCase extends UseCase<TopChatNotificationModel
 
     private String query;
     private GraphqlUseCase graphqlUseCase;
-    private LocalCacheHandler drawerCache;
+    private boolean isRefresh = false;
 
     @Inject
     public GetChatNotificationUseCase(
             @Named(GET_CHAT_NOTIFICATION_QUERY) String query,
-            GraphqlUseCase graphqlUseCase,
-            LocalCacheHandler drawerCache
+            GraphqlUseCase graphqlUseCase
     ) {
         this.query = query;
         this.graphqlUseCase = graphqlUseCase;
-        this.drawerCache = drawerCache;
     }
 
     @Override
     public Observable<TopChatNotificationModel> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(query, ChatNotificationResponse.class);
+        graphqlUseCase.clearRequest();
+        CacheType cacheType = isRefresh?CacheType.ALWAYS_CLOUD:CacheType.CACHE_FIRST;
+        graphqlUseCase.setCacheStrategy(new GraphqlCacheStrategy.Builder(cacheType)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.val() / 2)
+                .setSessionIncluded(true)
+                .build()
+        );
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(requestParams).map(graphqlResponse -> {
             ChatNotificationResponse response = graphqlResponse.getData(ChatNotificationResponse.class);
@@ -54,19 +62,10 @@ public class GetChatNotificationUseCase extends UseCase<TopChatNotificationModel
             } else {
                 throw new RuntimeException();
             }
-        }).doOnNext(saveToCache());
+        });
     }
 
-    private Action1<TopChatNotificationModel> saveToCache() {
-        return topChatNotificationModel -> {
-            int notifUnreadsSeller = topChatNotificationModel.getNotifUnreadsSeller();
-            drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsSeller);
-            drawerCache.putInt(
-                    DrawerNotification.CACHE_TOTAL_NOTIF,
-                    drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF, 0) + notifUnreadsSeller
-            );
-            drawerCache.applyEditor();
-        };
+    public void setRefresh(boolean refresh) {
+        isRefresh = refresh;
     }
-
 }

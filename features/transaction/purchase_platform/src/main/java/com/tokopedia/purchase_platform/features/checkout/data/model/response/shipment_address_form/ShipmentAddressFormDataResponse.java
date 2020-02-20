@@ -77,9 +77,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_ineligbile_promo_dialog_enabled")
     @Expose
     private boolean isIneligbilePromoDialogEnabled;
-    @SerializedName("is_new_buyer")
-    @Expose
-    private boolean isNewBuyer;
     @SerializedName("disabled_features")
     @Expose
     private List<String> disabledFeatures = new ArrayList<>();
@@ -92,6 +89,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("addresses")
     @Expose
     private Addresses addresses;
+    @SerializedName("disabled_features_detail")
+    @Expose
+    private DisabledFeaturesDetail disabledFeaturesDetail;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -172,10 +172,6 @@ public class ShipmentAddressFormDataResponse {
         return isIneligbilePromoDialogEnabled;
     }
 
-    public boolean isNewBuyer() {
-        return isNewBuyer;
-    }
-
     public List<String> getDisabledFeatures() {
         return disabledFeatures;
     }
@@ -190,5 +186,9 @@ public class ShipmentAddressFormDataResponse {
 
     public Addresses getAddresses() {
         return addresses;
+    }
+
+    public DisabledFeaturesDetail getDisabledFeaturesDetail() {
+        return disabledFeaturesDetail;
     }
 }

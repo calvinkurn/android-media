@@ -28,12 +28,14 @@ class HotlistParamBuilder {
         private const val KEY_TOP_PARAMS = "top_params"
         private const val KEY_PARAMS = "params"
         private const val KEY_SRC_HOTLIST = "hotlist"
+        private const val KEY_HEADLINE_PRODUCT_COUNT = "headline_product_count"
 
         private const val DEVICE_TYPE = "android"
         private const val ITEMS_PER_PAGE = 10
         private const val CPM_ADS_PER_PAGE = 1
         private const val TOP_ADS_PER_PAGE = "2"
         private const val CPM_TEMPLATE_ID = "3"
+        private const val CPM_HEADLINE_PRODUCT_COUNT_VALUE = "3"
 
         val hotlistParamBuilder: HotlistParamBuilder by lazy { HotlistParamBuilder() }
     }
@@ -127,6 +129,7 @@ class HotlistParamBuilder {
         cpmParams.putString(KEY_TEMPLATE_ID, CPM_TEMPLATE_ID)
         cpmParams.putString(KEY_PAGE, CPM_ADS_PER_PAGE.toString())
         cpmParams.putString(KEY_QUERY, queryItem)
+        cpmParams.putString(KEY_HEADLINE_PRODUCT_COUNT,CPM_HEADLINE_PRODUCT_COUNT_VALUE)
         param.putString(KEY_PARAMS, createParametersForQuery(cpmParams.parameters))
         return param
     }

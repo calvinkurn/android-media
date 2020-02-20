@@ -1,7 +1,7 @@
 package com.tokopedia.createpost.view.subscriber
 
 import android.text.TextUtils
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.createpost.TYPE_AFFILIATE
 import com.tokopedia.createpost.domain.entity.GetContentFormDomain

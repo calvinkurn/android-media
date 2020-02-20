@@ -74,7 +74,7 @@ class ARHomeViewModelTest {
         viewModel.fetchUserDOB()
 
         assertEquals(viewModel.userAdult.value, 1)
-        assertEquals(viewModel.getProgressBarVisibility().value, false)
+        assertEquals(viewModel.getProgBarVisibility().value, false)
     }
 
     @Test
@@ -89,7 +89,7 @@ class ARHomeViewModelTest {
         viewModel.fetchUserDOB()
 
         assertEquals(viewModel.userAdult.value, 1)
-        assertEquals(viewModel.getProgressBarVisibility().value, false)
+        assertEquals(viewModel.getProgBarVisibility().value, false)
     }
 
 
@@ -106,7 +106,7 @@ class ARHomeViewModelTest {
         viewModel.fetchUserDOB()
 
         assertEquals(viewModel.notAdult.value, 1)
-        assertEquals(viewModel.getProgressBarVisibility().value, false)
+        assertEquals(viewModel.getProgBarVisibility().value, false)
     }
 
     @Test
@@ -121,7 +121,7 @@ class ARHomeViewModelTest {
         viewModel.fetchUserDOB()
 
         assertEquals(viewModel.notAdult.value, 1)
-        assertEquals(viewModel.getProgressBarVisibility().value, false)
+        assertEquals(viewModel.getProgBarVisibility().value, false)
     }
 
 
@@ -139,7 +139,7 @@ class ARHomeViewModelTest {
         viewModel.fetchUserDOB()
 
         assertEquals(viewModel.notVerified.value, "1995")
-        assertEquals(viewModel.getProgressBarVisibility().value, false)
+        assertEquals(viewModel.getProgBarVisibility().value, false)
     }
 
 
@@ -155,7 +155,7 @@ class ARHomeViewModelTest {
         viewModel.fetchUserDOB()
 
         assertEquals(viewModel.notFilled.value, 1)
-        assertEquals(viewModel.getProgressBarVisibility().value, false)
+        assertEquals(viewModel.getProgBarVisibility().value, false)
     }
 
 

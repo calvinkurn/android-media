@@ -5,15 +5,21 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
+import com.tokopedia.analytics.debugger.data.source.GtmErrorLogDao;
 import com.tokopedia.analytics.debugger.data.source.GtmLogDao;
+import com.tokopedia.analytics.debugger.data.source.IrisLogSaveDao;
+import com.tokopedia.analytics.debugger.data.source.IrisLogSendDao;
 
 /**
  * @author okasurya on 5/14/18.
  */
-@Database(entities = {GtmLogDB.class}, version = 1)
+@Database(entities = {GtmLogDB.class, IrisSaveLogDB.class, IrisSendLogDB.class, GtmErrorLogDB.class}, version = 2)
 public abstract class TkpdAnalyticsDatabase extends RoomDatabase {
 
     public abstract GtmLogDao gtmLogDao();
+    public abstract IrisLogSaveDao irisLogSaveDao();
+    public abstract IrisLogSendDao irisLogSendDao();
+    public abstract GtmErrorLogDao gtmErrorLogDao();
 
     private static String DATABASE_NAME = "tkpd_gtm_log_analytics"; // previously was tkpd_analytics
 
