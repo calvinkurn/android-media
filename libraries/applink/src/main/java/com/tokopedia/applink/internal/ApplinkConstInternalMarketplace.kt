@@ -179,4 +179,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    //SellerReviewListActivity
+    @JvmField
+    val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/review-page"
+
 }

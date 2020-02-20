@@ -40,6 +40,10 @@
     <string name="path_onboarding" translatable="false">/onboarding</string>
     <string name="path_shop_page" translatable="false">/shop-page</string>
 
+
+    <string name="path_review_page" translatable="false">/review-page</string>
+
+
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>
     <string name="path_shop_settings_etalase" translatable="false">/shop-settings-etalase</string>

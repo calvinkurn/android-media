@@ -12,6 +12,7 @@ import android.util.Log;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -104,14 +105,17 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    intent = ((TkpdCoreRouter) context.getApplication())
-                            .getInboxReputationIntent(context);
-                    context.startActivity(intent);
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX,AppEventTracking.EventLabel.REVIEW);
+                //TODO change applink
+                RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER);
+//                if (context.getApplication() instanceof TkpdCoreRouter) {
+//                    intent = ((TkpdCoreRouter) context.getApplication())
+//                            .getInboxReputationIntent(context);
+//                    context.startActivity(intent);
+//                    sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
+//                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX,AppEventTracking.EventLabel.REVIEW);
+//
+//                }
 
-                }
                 break;
             case TkpdState.DrawerPosition.INBOX_TICKET:
                 intent = InboxRouter.getInboxTicketActivityIntent(context);
