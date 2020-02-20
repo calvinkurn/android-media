@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_address_list"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    app:cardCornerRadius="@dimen/dp_4">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/img_location_state"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_below="@+id/address_detail"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            tools:srcCompat="@drawable/ic_pin_map" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/address_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_50"
+            android:layout_marginRight="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_3"
+            android:singleLine="true"
+            android:text="@string/text_address_type"
+            app:typographyType="body_1"
+            android:textColor="@color/black"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/address_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/address_type"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_50"
+            android:layout_marginRight="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_1"
+            android:paddingBottom="@dimen/dp_1"
+            android:text="@string/text_address_name"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/address_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/address_name"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_50"
+            android:layout_marginRight="@dimen/dp_1"
+            android:paddingTop="@dimen/dp_1"
+            android:paddingBottom="@dimen/dp_1"
+            android:text="@string/text_address_number"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/address_detail"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_marginEnd="40dp"
+            android:text="@string/text_detail_address"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_3"
+            android:layout_marginRight="50dp"
+            android:layout_below="@id/address_number"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_pinpoint_state"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/img_location_state"
+            android:layout_alignBottom="@+id/img_location_state"
+            android:layout_toEndOf="@+id/img_location_state"
+            android:layout_toRightOf="@id/img_location_state"
+            android:gravity="center_vertical"
+            tools:text="Sudah Pin Point"
+            app:typographyType="body_3"
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/rb_option_clash"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </RelativeLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
+
+
