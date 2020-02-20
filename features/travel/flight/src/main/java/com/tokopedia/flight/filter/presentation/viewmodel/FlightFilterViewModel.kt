@@ -39,28 +39,30 @@ class FlightFilterViewModel @Inject constructor(
         mutableFilterModel.value = filterModel
         this.isReturn = isReturn
 
+        getStatistics()
+        getFlightCount()
+    }
+
+    private fun getStatistics() {
         launch(dispatcherProvider.ui()) {
-            getStatistics()
-            getFlightCount()
+            mutableStatisticModel.postValue(withContext(dispatcherProvider.ui()) {
+                filterModel.value?.run {
+                    flightSearchStatisticUseCase.executeCoroutine(flightSearchStatisticUseCase
+                            .createRequestParams(filterModel.value!!))
+                }
+            })
         }
     }
 
-    suspend fun getStatistics() {
-        mutableStatisticModel.postValue(withContext(dispatcherProvider.ui()) {
-            filterModel.value?.run {
-                flightSearchStatisticUseCase.executeCoroutine(flightSearchStatisticUseCase
-                        .createRequestParams(filterModel.value!!))
-            }
-        })
-    }
-
-    suspend fun getFlightCount() {
-        mutableFlightCount.postValue(withContext(dispatcherProvider.ui()) {
-            filterModel.value?.run {
-                flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
-                        .createRequestParams(filterModel.value!!))
-            }
-        })
+    fun getFlightCount() {
+        launch(dispatcherProvider.ui()) {
+            mutableFlightCount.postValue(withContext(dispatcherProvider.ui()) {
+                filterModel.value?.run {
+                    flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
+                            .createRequestParams(filterModel.value!!))
+                }
+            })
+        }
     }
 
     fun resetFilter() {
