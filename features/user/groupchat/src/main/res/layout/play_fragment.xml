@@ -108,7 +108,8 @@
                         android:id="@+id/toolbar_live"
                         layout="@layout/play_live"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
             </RelativeLayout>
