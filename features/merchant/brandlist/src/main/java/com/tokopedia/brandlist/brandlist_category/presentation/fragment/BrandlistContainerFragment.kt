@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
@@ -74,7 +75,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     private var appbarCategory: AppBarLayout? = null
     private var currentCategoryName = ""
     private var targetCategoryName = ""
-    private var searchInputView: Button? = null
+    private var searchInputView: LinearLayout? = null
     private var toolbar: Toolbar? = null
     private var categoryData: Category? = null
 
@@ -138,7 +139,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         configStatusBar(view)
         appBarLayout = view.findViewById(R.id.appbarLayout)
         toolbar = view.findViewById(R.id.toolbar)
-        searchInputView = view.findViewById(R.id.btn_search)
+        searchInputView = view.findViewById(R.id.layout_search)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
