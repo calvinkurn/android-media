@@ -58,12 +58,13 @@
             app:layout_constraintTop_toBottomOf="@+id/flightHighestLabel" />
 
         <com.tokopedia.unifycomponents.RangeSliderUnify
+            android:id="@+id/rsuFlightFilterPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/etFlightLowestPrice"
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintLeft_toLeftOf="@id/etFlightLowestPrice"
-            app:layout_constraintRight_toRightOf="@id/etFlightHighestPrice"/>
+            app:layout_constraintRight_toRightOf="@id/etFlightHighestPrice"
+            app:layout_constraintTop_toBottomOf="@id/etFlightLowestPrice" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
