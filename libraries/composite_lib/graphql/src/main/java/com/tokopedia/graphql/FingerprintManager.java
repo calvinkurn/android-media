@@ -93,4 +93,8 @@ public class FingerprintManager {
 
         return digestBuilder.toString();
     }
+
+    public String generateFingerPrint(String key) {
+        return generateFingerPrint(key, false);
+    }
 }

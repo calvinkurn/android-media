@@ -20,6 +20,10 @@ import rx.Observable;
 public interface GraphqlApi {
     @POST("./")
     @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
+    Observable<JsonArray> getResponse(@Body List<GraphqlRequest> requestObject);
+
+    @POST("./")
+    @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
     Observable<Response<JsonArray>> getResponse(@Body List<GraphqlRequest> requestObject,
                                                 @Header(GraphqlConstant.GqlApiKeys.CACHE) String values);
 }
