@@ -3,7 +3,6 @@ package com.tokopedia.flight.filter.presentation.bottomsheets
 import android.app.Application
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -58,7 +57,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         super.onActivityCreated(savedInstanceState)
 
         flightFilterViewModel.statisticModel.observe(this, Observer {
-            Toast.makeText(context, it.maxDuration.toString(), Toast.LENGTH_SHORT).show()
+            // TODO: Render Filter Layout
         })
     }
 
