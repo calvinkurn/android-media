@@ -45,7 +45,7 @@ class VerifyDOBViewModelTest {
 
         viewModel.updateUserDoB("", "", "")
 
-        assertEquals(viewModel.getWarningmessage().value, exception.localizedMessage)
+        assertEquals(viewModel.getWarningMessage().value, exception.localizedMessage)
 
     }
 
@@ -56,8 +56,8 @@ class VerifyDOBViewModelTest {
         coEvery { response.userDobUpdateData.error } returns "error_message"
         viewModel.updateUserDoB("", "", "")
 
-        assertFalse(viewModel.getProgressBarVisibility().value ?: true)
-        assertEquals(viewModel.getWarningmessage().value, "error_message")
+        assertFalse(viewModel.getProgBarVisibility().value ?: true)
+        assertEquals(viewModel.getWarningMessage().value, "error_message")
         assertEquals(viewModel.userIsAdult.value, null)
         assertEquals(viewModel.userNotAdult.value, null)
     }
@@ -67,12 +67,12 @@ class VerifyDOBViewModelTest {
         coEvery { updateUserDobUseCase.getData(any(), any(), any()) } returns response
 
         coEvery { response.userDobUpdateData.isDobVerified } returns true
-        coEvery { response.userDobUpdateData.age } returns 20
+        coEvery { response.userDobUpdateData.age } returns 22
 
         viewModel.updateUserDoB("", "", "")
 
 
-        assertTrue(viewModel.getProgressBarVisibility().value ?: false)
+        assertTrue(viewModel.getProgBarVisibility().value ?: false)
         assertEquals(viewModel.userIsAdult.value, true)
 
     }
@@ -86,7 +86,7 @@ class VerifyDOBViewModelTest {
 
         viewModel.updateUserDoB("", "", "")
 
-        assertTrue(viewModel.getProgressBarVisibility().value ?: false)
+        assertTrue(viewModel.getProgBarVisibility().value ?: false)
         assertEquals(viewModel.userNotAdult.value, true)
 
     }

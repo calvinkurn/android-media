@@ -2,9 +2,9 @@ package com.tokopedia.age_restriction.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.age_restriction.repository.ARRepository
+import com.tokopedia.network.data.model.response.DataResponse
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher

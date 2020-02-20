@@ -80,11 +80,11 @@ class ARHomeViewModelTest {
     @Test
     fun `dob verified and age_is_greater_than_18`() {
         coEvery {
-            fetchUserDobUseCase.getData(USER_DOB_PATH)
+            fetchUserDobUseCase.getData(any())
         } returns response
 
         coEvery { response.isDobVerified } returns true
-        coEvery { response.age } returns 18
+        coEvery { response.age } returns 22
 
         viewModel.fetchUserDOB()
 
