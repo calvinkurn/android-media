@@ -196,7 +196,6 @@ class TopChatRoomPresenter @Inject constructor(
         mSubscription.unsubscribe()
     }
 
-
     override fun mappingEvent(response: WebSocketResponse, messageId: String) {
         val pojo: ChatSocketPojo = Gson().fromJson(response.jsonObject, ChatSocketPojo::class.java)
 
@@ -237,7 +236,6 @@ class TopChatRoomPresenter @Inject constructor(
                 onError, onSuccessGetMessageId
         ))
     }
-
 
     override fun loadPreviousChat(
             messageId: String,
@@ -282,7 +280,6 @@ class TopChatRoomPresenter @Inject constructor(
     private fun readMessage() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
-
 
     override fun startCompressImages(it: ImageUploadViewModel) {
         if (validateImageAttachment(it.imageUrl)) {
