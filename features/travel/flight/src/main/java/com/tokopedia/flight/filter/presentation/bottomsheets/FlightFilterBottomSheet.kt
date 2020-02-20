@@ -8,11 +8,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.di.DaggerFlightFilterComponent
 import com.tokopedia.flight.filter.di.FlightFilterComponent
+import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
@@ -26,7 +29,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 19/02/2020
  */
-class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
+class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, FlightFilterSortListener {
 
     var adapter: BaseAdapter<FlightFilterSortAdapterTypeFactory>? = null
     var listener: FlightFilterBottomSheetListener? = null
@@ -48,6 +51,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
             flightFilterViewModel = viewModelProvider.get(FlightFilterViewModel::class.java)
             if (arguments?.containsKey(ARG_FILTER_MODEL) == true) {
                 flightFilterViewModel.init(
+                        arguments?.getInt(ARG_SORT) ?: TravelSortOption.CHEAPEST,
                         arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel,
                         arguments?.getBoolean(ARG_IS_RETURN) ?: false)
             }
@@ -103,7 +107,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
     }
 
     private fun initAdapter() {
-        val typeFactory = FlightFilterSortAdapterTypeFactory()
+        val typeFactory = FlightFilterSortAdapterTypeFactory(this, flightFilterViewModel.getSelectedSort())
         adapter = BaseAdapter(typeFactory)
     }
 
@@ -114,7 +118,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
             rvFlightFilter.adapter = adapter
 
             btnFlightFilterSave.setOnClickListener {
-                listener?.onSaveFilter(flightFilterViewModel.filterModel.value)
+                listener?.onSaveFilter(flightFilterViewModel.getSelectedSort(), flightFilterViewModel.filterModel.value)
             }
         }
     }
@@ -126,6 +130,23 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         }
     }
 
+    override fun onSortChanged(selectedSortOption: Int) {
+        flightFilterViewModel.setSelectedSort(selectedSortOption)
+    }
+
+    override fun onClickSeeAllSort() {
+        val flightSortBottomSheet = FlightSortBottomSheet.newInstance(flightFilterViewModel.getSelectedSort())
+        flightSortBottomSheet.listener = object : FlightSortBottomSheet.ActionListener {
+            override fun onSortOptionClicked(selectedSortOption: Int) {
+                flightFilterViewModel.setSelectedSort(selectedSortOption)
+            }
+        }
+        flightSortBottomSheet.setShowListener { flightSortBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        fragmentManager?.let {
+            flightSortBottomSheet.show(it, TAG_FLIGHT_SORT)
+        }
+    }
+
     private fun renderList(data: List<BaseFilterSortModel>) {
         adapter?.clearAllElements()
         adapter?.addElement(data)
@@ -134,13 +155,16 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
 
     companion object {
         const val TAG_FILTER = "TagFilterBottomSheet"
+        private val TAG_FLIGHT_SORT = "TagFlightSortBottomSheet"
 
+        private const val ARG_SORT = "ARG_SORT"
         private const val ARG_FILTER_MODEL = "ARG_FILTER_MODEL"
         private const val ARG_IS_RETURN = "ARG_IS_RETURN"
 
-        fun getInstance(filterModel: FlightFilterModel, isReturn: Boolean = false): FlightFilterBottomSheet =
+        fun getInstance(selectedSortOption: Int, filterModel: FlightFilterModel, isReturn: Boolean = false): FlightFilterBottomSheet =
                 FlightFilterBottomSheet().also {
                     it.arguments = Bundle().apply {
+                        putInt(ARG_SORT, selectedSortOption)
                         putParcelable(ARG_FILTER_MODEL, filterModel)
                         putBoolean(ARG_IS_RETURN, isReturn)
                     }
@@ -148,7 +172,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
     }
 
     interface FlightFilterBottomSheetListener {
-        fun onSaveFilter(flightFilterModel: FlightFilterModel?)
+        fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?)
     }
 
 }

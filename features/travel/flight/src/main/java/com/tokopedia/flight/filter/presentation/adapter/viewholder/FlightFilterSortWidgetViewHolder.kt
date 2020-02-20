@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.layout_flight_filter_sort_chip.view.*
  * @author by jessica on 2020-02-19
  */
 
-class FlightFilterSortViewHolder(itemView: View)
+class FlightFilterSortWidgetViewHolder(itemView: View)
     : RecyclerView.ViewHolder(itemView) {
 
     fun bind(element: BaseFilterSortModel) {

@@ -3,8 +3,10 @@ package com.tokopedia.flight.filter.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
+import com.tokopedia.flight.filter.presentation.model.FlightSortModel
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
 import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
@@ -24,6 +26,10 @@ class FlightFilterViewModel @Inject constructor(
 
     private var isReturn = false
 
+    private val mutableSelectedSort = MutableLiveData<Int>()
+    val selectedSort: LiveData<Int>
+        get() = mutableSelectedSort
+
     private val mutableFilterModel = MutableLiveData<FlightFilterModel>()
     val filterModel: LiveData<FlightFilterModel>
         get() = mutableFilterModel
@@ -40,7 +46,8 @@ class FlightFilterViewModel @Inject constructor(
     val filterViewData: LiveData<List<BaseFilterSortModel>>
         get() = mutableFilterViewData
 
-    fun init(filterModel: FlightFilterModel, isReturn: Boolean) {
+    fun init(selectedSort: Int, filterModel: FlightFilterModel, isReturn: Boolean) {
+        mutableSelectedSort.postValue(selectedSort)
         mutableFilterModel.value = filterModel
         this.isReturn = isReturn
 
@@ -58,6 +65,11 @@ class FlightFilterViewModel @Inject constructor(
 
         mapStatisticToModel(statisticModel.value)
     }
+    fun setSelectedSort(selectedId: Int) {
+        mutableSelectedSort.postValue(selectedId)
+    }
+
+    fun getSelectedSort(): Int = selectedSort.value ?: TravelSortOption.CHEAPEST
 
     fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
@@ -77,7 +89,7 @@ class FlightFilterViewModel @Inject constructor(
 
         statistic?.run {
             // Sort
-            items.add(SORT_ORDER, PriceRangeModel())
+            items.add(SORT_ORDER, FlightSortModel())
 
             // Transit
             items.add(TRANSIT_ORDER, PriceRangeModel())
