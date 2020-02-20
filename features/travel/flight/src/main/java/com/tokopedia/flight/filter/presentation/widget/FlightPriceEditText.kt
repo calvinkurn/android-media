@@ -36,7 +36,7 @@ class FlightPriceEditText @JvmOverloads constructor(
             val prefix = tag as String
             val widths = FloatArray(prefix.length)
             paint.getTextWidths(prefix, widths)
-            var textWidth = 0f
+            var textWidth = 4f
             for (w in widths) {
                 textWidth += w
             }
