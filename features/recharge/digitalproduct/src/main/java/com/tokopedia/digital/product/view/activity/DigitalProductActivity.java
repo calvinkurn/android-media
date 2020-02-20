@@ -6,6 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.google.firebase.appindexing.Action;
+import com.google.firebase.appindexing.FirebaseUserActions;
+import com.google.firebase.appindexing.builders.AssistActionBuilder;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
@@ -24,6 +27,9 @@ import java.util.Objects;
 
 public class DigitalProductActivity extends BaseSimpleActivity
         implements DigitalProductFragment.ActionListener {
+    private static final String ACTION_TOKEN_EXTRA =
+            "actions.fulfillment.extra.ACTION_TOKEN";
+
 
     private static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
@@ -62,6 +68,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
             passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
         }
         super.onCreate(savedInstanceState);
+        notifyActionStatus(Action.Builder.STATUS_TYPE_COMPLETED);
     }
 
     @Override
@@ -112,5 +119,14 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 passData.getAdditionalETollBalance(),
                 passData.getAdditionalETollLastUpdatedDate(),
                 passData.getAdditionalETollOperatorName());
+    }
+
+    void notifyActionStatus(String status) {
+        String actionToken = getIntent().getStringExtra(ACTION_TOKEN_EXTRA);
+        final Action action = new AssistActionBuilder()
+                .setActionToken(actionToken)
+                .setActionStatus(status)
+                .build();
+        FirebaseUserActions.getInstance().end(action);
     }
 }

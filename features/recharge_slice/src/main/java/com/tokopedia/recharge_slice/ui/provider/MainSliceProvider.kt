@@ -15,6 +15,9 @@ import androidx.slice.SliceProvider
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.*
 import com.bumptech.glide.Glide
+import com.google.firebase.appindexing.Action
+import com.google.firebase.appindexing.FirebaseUserActions
+import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.recharge_slice.R
 import com.tokopedia.recharge_slice.data.Data
@@ -308,4 +311,6 @@ class MainSliceProvider : SliceProvider() {
     companion object {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
     }
+
+
 }

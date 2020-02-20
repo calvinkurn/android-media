@@ -2,7 +2,11 @@ package com.tokopedia.vouchergame.list.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.firebase.appindexing.Action
+import com.google.firebase.appindexing.FirebaseUserActions
+import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
@@ -21,6 +25,8 @@ import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
 */
 
 class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherGameListComponent> {
+
+    private val actionTokenExtra = "actions.fulfillment.extra.ACTION_TOKEN"
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
@@ -55,6 +61,11 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         return R.id.parent_view
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        notifyActionStatus(Action.Builder.STATUS_TYPE_COMPLETED)
+    }
+
     override fun shouldShowOptionMenu(): Boolean { return true }
 
     companion object {
@@ -78,5 +89,14 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
     override fun onBackPressed() {
         (fragment as VoucherGameListFragment).onBackPressed()
         super.onBackPressed()
+    }
+
+    fun notifyActionStatus(status: String) {
+        val actionToken = intent.getStringExtra(actionTokenExtra)
+        val action = AssistActionBuilder()
+                .setActionToken(actionToken)
+                .setActionStatus(status)
+                .build()
+        FirebaseUserActions.getInstance().end(action)
     }
 }

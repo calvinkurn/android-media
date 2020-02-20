@@ -61,6 +61,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.firebase.appIndexing
+
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

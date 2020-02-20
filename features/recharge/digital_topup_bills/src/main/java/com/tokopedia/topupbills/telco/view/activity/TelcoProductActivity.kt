@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.firebase.appindexing.Action
+import com.google.firebase.appindexing.FirebaseUserActions
+import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -19,6 +22,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
  */
 
 class TelcoProductActivity : BaseTelcoActivity() {
+    private val actionTokenExtra = "actions.fulfillment.extra.ACTION_TOKEN"
 
     override fun getNewFragment(): Fragment {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
@@ -32,6 +36,7 @@ class TelcoProductActivity : BaseTelcoActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        notifyActionStatus(Action.Builder.STATUS_TYPE_COMPLETED)
         updateTitle(getString(R.string.digital_title_telco_page))
     }
 
@@ -55,5 +60,14 @@ class TelcoProductActivity : BaseTelcoActivity() {
     override fun onBackPressed() {
         (fragment as DigitalTelcoFragment).onBackPressed()
         super.onBackPressed()
+    }
+
+    fun notifyActionStatus(status: String) {
+        val actionToken = intent.getStringExtra(actionTokenExtra)
+        val action = AssistActionBuilder()
+                .setActionToken(actionToken)
+                .setActionStatus(status)
+                .build()
+        FirebaseUserActions.getInstance().end(action)
     }
 }

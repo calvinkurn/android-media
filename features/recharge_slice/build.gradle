@@ -40,6 +40,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.firebase.appIndexing
 
     // Slice
     implementation "androidx.slice:slice-builders-ktx:1.0.0-alpha6"
