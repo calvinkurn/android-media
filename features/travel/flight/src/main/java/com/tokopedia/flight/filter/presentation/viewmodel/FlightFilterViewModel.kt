@@ -8,7 +8,8 @@ import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -33,17 +34,19 @@ class FlightFilterViewModel @Inject constructor(
     fun init(filterModel: FlightFilterModel, isReturn: Boolean) {
         mutableFilterModel.value = filterModel
         this.isReturn = isReturn
+
+        launch(dispatcherProvider.ui()) {
+            getStatistics()
+        }
     }
 
     suspend fun getStatistics() {
-        val searchStatictics = async(dispatcherProvider.ui()) {
+        mutableStatisticModel.postValue(withContext(dispatcherProvider.ui()) {
             filterModel.value?.run {
-                flightSearchStatisticUseCase.createObservable(flightSearchStatisticUseCase
+                flightSearchStatisticUseCase.executeCoroutine(flightSearchStatisticUseCase
                         .createRequestParams(filterModel.value!!))
             }
-        }.await()
-
-        searchStatictics.
+        })
     }
 
     fun resetFilter() {
