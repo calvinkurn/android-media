@@ -378,7 +378,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onLogout(AppComponent appComponent) {
         new CacheApiClearAllUseCase(this).executeSync();
 
-        TkpdSellerLogout.onLogOut(appComponent);
+        TkpdSellerLogout.onLogOut(appComponent, this);
     }
 
     @Override
