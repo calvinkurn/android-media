@@ -59,6 +59,10 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
         flightFilterViewModel.statisticModel.observe(this, Observer {
             // TODO: Render Filter Layout
         })
+
+        flightFilterViewModel.flightCount.observe(this, Observer {
+            renderFlightCount(it)
+        })
     }
 
     override fun getFlightSearchStaticticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value
@@ -96,6 +100,13 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener {
             btnFlightFilterSave.setOnClickListener {
                 listener?.onSaveFilter(flightFilterViewModel.filterModel.value)
             }
+        }
+    }
+
+    private fun renderFlightCount(flightCount: Int) {
+        with(mChildView) {
+            btnFlightFilterSave.visibility = View.VISIBLE
+            btnFlightFilterSave.text = getString(R.string.flight_there_has_x_flights, flightCount)
         }
     }
 
