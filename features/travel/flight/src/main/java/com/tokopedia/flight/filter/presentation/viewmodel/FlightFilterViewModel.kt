@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
+import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
 import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
@@ -35,6 +37,10 @@ class FlightFilterViewModel @Inject constructor(
     val flightCount: LiveData<Int>
         get() = mutableFlightCount
 
+    private val mutableFilterViewData = MutableLiveData<List<BaseFilterSortModel>>()
+    val filterViewData: LiveData<List<BaseFilterSortModel>>
+        get() = mutableFilterViewData
+
     fun init(filterModel: FlightFilterModel, isReturn: Boolean) {
         mutableFilterModel.value = filterModel
         this.isReturn = isReturn
@@ -51,6 +57,8 @@ class FlightFilterViewModel @Inject constructor(
                             .createRequestParams(filterModel.value!!))
                 }
             })
+
+
         }
     }
 
@@ -67,5 +75,33 @@ class FlightFilterViewModel @Inject constructor(
 
     fun resetFilter() {
         // TODO: Reset Filter Value
+    }
+
+    private fun mapStatisticToModel(statistic: FlightSearchStatisticModel) {
+        val items = arrayListOf<BaseFilterSortModel>()
+
+        // Sort
+        items.add(SORT_ORDER, PriceRangeModel())
+
+        // Transit
+
+        // Departure Time
+
+        // Arrival Time
+
+        // Facility
+
+        // Price
+
+    }
+
+    companion object {
+        const val SORT_ORDER = 0
+        const val TRANSIT_ORDER = 1
+        const val DEPARTURE_TIME_ORDER = 2
+        const val ARRIVAL_TIME_ORDER = 3
+        const val AIRLINE_ORDER = 4
+        const val FACILITY_ORDER = 5
+        const val PRICE_ORDER = 6
     }
 }

@@ -9,5 +9,5 @@ import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterT
 
 abstract class BaseFilterSortModel(
         var title: String = "",
-        var isSelected: Boolean
+        var isSelected: Boolean = false
 ): Visitable<FlightFilterSortAdapterTypeFactory>
