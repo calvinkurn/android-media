@@ -25,7 +25,8 @@ class AllBrandHeaderViewHolder(itemView: View?) : AbstractViewHolder<AllBrandHea
         headerView?.text = element?.title
 
         element?.totalBrands?.let {
-            val totalBrandContent: String = NumberFormat.getNumberInstance(Locale.US).format(it).toString() + " " + getString(R.string.brandlist_brand_label)
+            val totalBrandContent: String = NumberFormat.getNumberInstance(Locale.US)
+                    .format(it).toString().replace(",",".") + " " + getString(R.string.brandlist_brand_label)
             totalBrandView?.text = totalBrandContent
         }
     }

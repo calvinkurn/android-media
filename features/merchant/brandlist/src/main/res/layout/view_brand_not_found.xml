@@ -68,10 +68,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_brand_not_found"/>
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"
-        android:background="@color/light_gray"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/btn_check_balance" />
 
