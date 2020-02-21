@@ -68,7 +68,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.layout_scanner_qr;
+        return R.layout.qr_scanner_layout_scanner_qr;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected int getInflateViewId() {
-        return R.layout.layout_scanner_qr;
+        return R.layout.qr_scanner_layout_scanner_qr;
     }
 
     @Override

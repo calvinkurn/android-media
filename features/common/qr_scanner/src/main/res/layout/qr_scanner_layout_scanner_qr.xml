@@ -8,7 +8,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/dp_4"
+        android:elevation="@dimen/qr_scanner_dp_4"
         android:theme="?toolbarTheme"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
@@ -21,7 +21,7 @@
         android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:zxing_scanner_layout="@layout/layout_custom_qr">
+        app:zxing_scanner_layout="@layout/qr_scanner_layout_custom_qr">
     </com.journeyapps.barcodescanner.DecoratedBarcodeView>
 
     <ImageView
@@ -31,7 +31,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         app:srcCompat="@drawable/qr_ic_flash_turn_on"
-        android:layout_marginBottom="@dimen/margin_large"/>
+        android:layout_marginBottom="@dimen/qr_scanner_margin_large"/>
 
     <ProgressBar
         android:id="@+id/progress_bar_scanner"

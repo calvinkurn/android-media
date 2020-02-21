@@ -3,10 +3,10 @@
 
     <gradient
         android:angle="90"
-        android:centerColor="@color/tkpd_main_green_70"
+        android:centerColor="@color/qr_scanner_tkpd_main_green_70"
         android:centerX="20%"
         android:endColor="@android:color/transparent"
-        android:startColor="@color/medium_green"
+        android:startColor="@color/qr_scanner_medium_green"
         android:type="linear" />
 
 </shape>
