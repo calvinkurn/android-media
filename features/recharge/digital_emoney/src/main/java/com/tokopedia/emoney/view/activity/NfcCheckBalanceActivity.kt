@@ -83,6 +83,7 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
         initViewModel()
         bindView()
         processTagIntent(intent)
+        title = getString(R.string.title_digital_emoney)
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
@@ -134,6 +135,10 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
         intent?.let {
             processTagIntent(intent)
         }
+    }
+
+    override fun getCloseButton(): Int {
+        return com.tokopedia.resources.common.R.drawable.ic_system_close_default
     }
 
     override fun getLayoutRes(): Int {
