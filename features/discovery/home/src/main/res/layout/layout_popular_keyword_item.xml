@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_64"
+    android:layout_height="@dimen/dp_80"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,8 +23,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/charcoal_grey_96"
             app:layout_constraintLeft_toRightOf="@+id/iv_product"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintRight_toRightOf="parent"
             app:typographyType="heading_5"/>
 
@@ -34,10 +39,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/charcoal_grey_44"
             app:layout_constraintTop_toBottomOf="@+id/tv_product"
             app:layout_constraintLeft_toLeftOf="@+id/tv_product"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="body_3"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
