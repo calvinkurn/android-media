@@ -34,7 +34,7 @@ class FlightFilterArrivalTimeViewHolder(view: View, val listener: FlightFilterSo
                         arrivalTimes.add((it as ArrivalTimeModel).arrivalTimeEnum)
                     }
                     selectedArrivalTime = arrivalTimes
-                    listener.onDepartureTimeFilterChanged(arrivalTimes)
+                    listener.onArrivalTimeFilterChanged(arrivalTimes)
                 }
 
                 override fun onClickShowMore() {
