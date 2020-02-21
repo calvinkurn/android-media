@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.AddressListComponent
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import kotlinx.android.synthetic.main.fragment_choose_address.*
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ class AddressListFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(AddressListComponent::class.java).inject(this)
+        getComponent(PreferenceEditComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -50,8 +50,13 @@ class AddressListFragment : BaseDaggerFragment() {
                 address_list_layout.visibility = View.VISIBLE
                 empty_state_order_list.visibility = View.GONE
             } else {
+  /*              val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragment_layout_id, fragment)
+                transaction.commit()
+                supportFragmentManager.beginTransaction().replace(R.id.container, ShippingDurationFragment()).commit()*/
+/*
                 address_list_layout.visibility = View.GONE
-                empty_state_order_list.visibility = View.VISIBLE
+                empty_state_order_list.visibility = View.VISIBLE*/
             }
         }
 
