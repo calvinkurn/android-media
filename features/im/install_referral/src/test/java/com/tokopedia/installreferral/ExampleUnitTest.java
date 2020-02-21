@@ -1,4 +1,4 @@
-package com.tokopedia.commonpromo;
+package com.tokopedia.installreferral;
 
 import org.junit.Test;
 

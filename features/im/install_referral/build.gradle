@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
 
 
 

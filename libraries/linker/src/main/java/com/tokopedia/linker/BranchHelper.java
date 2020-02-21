@@ -160,7 +160,7 @@ public class BranchHelper {
                 .logEvent(context);
     }
     private static void sendMarketPlaceFirstTxnEvent(Context context, PaymentData branchIOPayment,  String userId, double revenuePrice,double shippingPrice){
-        new BranchEvent("marketplace_first_txn")
+        new BranchEvent(LinkerConstants.EVENT_MARKETPLACE_FIRST_TXN)
                 .setTransactionID(branchIOPayment.getOrderId())
                 .setCurrency(CurrencyType.IDR)
                 .setShipping(shippingPrice)

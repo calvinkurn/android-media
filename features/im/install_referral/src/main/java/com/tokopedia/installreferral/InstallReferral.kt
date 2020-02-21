@@ -9,21 +9,26 @@ import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.gms.analytics.CampaignTrackingReceiver
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.track.TrackApp
 
-class InstallReferral
-{
+const val KEY_INSTALL_REF_SHARED_PREF_FILE_NAME = "install_ref"
+const val KEY_INSTALL_REF_INITIALISED = "install_ref_initialised"
+
+class InstallReferral {
 
     private lateinit var referrerClient: InstallReferrerClient
 
     fun initilizeInstallReferral(context: Context) {
-        referrerClient = InstallReferrerClient.newBuilder(context).build()
+        referrerClient = InstallReferrerClient.newBuilder(context.applicationContext).build()
+        val applicationContext = context.applicationContext
         referrerClient.startConnection(object : InstallReferrerStateListener {
 
             override fun onInstallReferrerSetupFinished(responseCode: Int) {
                 when (responseCode) {
                     InstallReferrerClient.InstallReferrerResponse.OK -> {
                         // Connection established.
+                        updateReferralCache()
 
                         val response: ReferrerDetails = referrerClient.installReferrer
                         val referrerUrl: String = response.installReferrer
@@ -31,17 +36,17 @@ class InstallReferral
                         val appInstallTime: Long = response.installBeginTimestampSeconds
                         val instantExperienceLaunched: Boolean = response.googlePlayInstantParam
 
-                        Toast.makeText(context, response.toString() + " and " + response.installReferrer, Toast.LENGTH_LONG).show()
-                        Log.d("install_referral","from api"+ response.toString() + " and " + response.installReferrer)
                         trackIfFromCampaignUrl(response.installReferrer)
                         sendToGA(context, response.installReferrer)
                         InstallUtils.sendIrisInstallEvent(context)
                     }
                     InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED -> {
                         // API not available on the current Play Store app.
+                        updateReferralCache()
                     }
                     InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE -> {
                         // Connection couldn't be established.
+                        updateReferralCache()
                     }
                     else -> {
 
@@ -49,15 +54,23 @@ class InstallReferral
                 }
             }
 
-            override fun onInstallReferrerServiceDisconnected() {
+            private fun updateReferralCache() {
+                val localCacheHandler = LocalCacheHandler(applicationContext, KEY_INSTALL_REF_SHARED_PREF_FILE_NAME)
+                val installRefInitialised = localCacheHandler.getBoolean(KEY_INSTALL_REF_INITIALISED)
 
+                if (!installRefInitialised)
+                    localCacheHandler.putBoolean(KEY_INSTALL_REF_INITIALISED, true)
+            }
+
+            override fun onInstallReferrerServiceDisconnected() {
             }
         })
     }
 
     fun sendToGA(context: Context, referral: String) {
         val intent = Intent()
-        intent.action="com.android.vending.INSTALL_REFERRER"
+        Intent.ACTION_INSTALL_PACKAGE
+        intent.action = InstallUtils.INSTALL_REFERRAL_ACTION
         intent.putExtra("referrer", referral)
         CampaignTrackingReceiver().onReceive(context, intent)
 

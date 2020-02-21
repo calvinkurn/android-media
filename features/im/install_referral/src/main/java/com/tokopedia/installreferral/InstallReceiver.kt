@@ -15,12 +15,10 @@ class InstallReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
         if (intent != null) {
-            Toast.makeText(context, intent.getStringExtra("referrer"), Toast.LENGTH_LONG).show()
 
             trackIfFromCampaignUrl(intent.getStringExtra("referrer"))
             InstallUtils.sendIrisInstallEvent(context)
             CampaignTrackingReceiver().onReceive(context, intent)
-            Log.d("install_referral","from Broadcast"+ intent.getStringExtra("referrer"))
 
         }
 
