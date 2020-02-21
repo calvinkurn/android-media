@@ -77,6 +77,8 @@
     <string name="direct">Langsung</string>
     <string name="one_trasit">1 Transit</string>
     <string name="two_transit">2 Transit</string>
+    <string name="one_transit_without_1">Transit</string>
+    <string name="two_plus_transit">2+ Transit</string>
     <string name="more_than_2_transit">Lebih dari 2 transit</string>
     <string name="refundable">Refundable</string>
     <string name="non_refundable">Non-refundable</string>

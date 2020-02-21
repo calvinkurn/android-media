@@ -14,7 +14,13 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  * @author by jessica on 2020-02-21
  */
 
-class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortListener, var selectedTransits: List<TransitEnum>) : AbstractViewHolder<TransitModel>(view) {
+class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortListener, var selectedTransits: MutableList<TransitEnum>) : AbstractViewHolder<TransitModel>(view) {
+
+    init {
+        for ((index, transit) in selectedTransits.withIndex()) {
+            if (transit.id == TransitEnum.THREE_OR_MORE.id) selectedTransits.removeAt(index)
+        }
+    }
 
     companion object {
         val LAYOUT = R.layout.item_flight_filter_sort
@@ -33,8 +39,8 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
                     items.forEach {
                         transits.add((it as TransitModel).transitEnum)
                     }
-                    selectedTransits = transits
-                    listener.onTransitFilterChanged(transits)
+                    selectedTransits = combineTwoAndThreeTransit(transits)
+                    listener.onTransitFilterChanged(combineTwoAndThreeTransit(transits).toList())
                 }
 
                 override fun onClickShowMore() {
@@ -43,6 +49,19 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
             }
             flight_sort_widget.buildView(getTransitItem())
         }
+    }
+
+    private fun combineTwoAndThreeTransit(transits: MutableList<TransitEnum>): MutableList<TransitEnum> {
+        var twoTransitPosition: Int? = null
+        var threeTrasitPosition: Int? = null
+        for ((index, transit) in transits.withIndex()) {
+            if (transit.id == TransitEnum.TWO.id) twoTransitPosition = index
+            else if (transit.id == TransitEnum.THREE_OR_MORE.id) threeTrasitPosition = index
+        }
+        if (twoTransitPosition != null && threeTrasitPosition == null) transits.add(TransitEnum.THREE_OR_MORE)
+        else if (twoTransitPosition == null && threeTrasitPosition != null) transits.removeAt(threeTrasitPosition)
+
+        return transits
     }
 
     private fun getSelectedByTransitEnum(transitEnum: TransitEnum): Boolean {
@@ -54,9 +73,8 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
 
     private fun getTransitItem(): List<TransitModel> {
         return listOf(TransitModel(TransitEnum.DIRECT, getString(R.string.direct), getSelectedByTransitEnum(TransitEnum.DIRECT)),
-                TransitModel(TransitEnum.ONE, getString(R.string.one_trasit), getSelectedByTransitEnum(TransitEnum.ONE)),
-                TransitModel(TransitEnum.TWO, getString(R.string.two_transit), getSelectedByTransitEnum(TransitEnum.TWO)),
-                TransitModel(TransitEnum.THREE_OR_MORE, getString(R.string.more_than_2_transit), getSelectedByTransitEnum(TransitEnum.THREE_OR_MORE)))
+                TransitModel(TransitEnum.ONE, getString(R.string.one_transit_without_1), getSelectedByTransitEnum(TransitEnum.ONE)),
+                TransitModel(TransitEnum.TWO, getString(R.string.two_plus_transit), getSelectedByTransitEnum(TransitEnum.TWO)))
     }
 
 }

@@ -30,7 +30,7 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             TYPE_FLIGHT_SORT -> FlightSortViewHolder(parent, listener, initialSortOption)
-            TYPE_FLIGHT_FILTER_TRANSIT -> FlightFilterTransitViewHolder(parent, listener, filterModel.transitTypeList ?: listOf())
+            TYPE_FLIGHT_FILTER_TRANSIT -> FlightFilterTransitViewHolder(parent, listener, filterModel.transitTypeList ?: mutableListOf())
             TYPE_FLIGHT_FILTER_DEPARTURE_TIME -> FlightFilterDepartureTimeViewHolder(parent, listener, filterModel.departureTimeList ?: listOf())
             TYPE_FLIGHT_FILTER_ARRIVAL_TIME -> FlightFilterArrivalTimeViewHolder(parent, listener, filterModel.arrivalTimeList)
             FlightFilterPriceRangeViewHolder.LAYOUT -> FlightFilterPriceRangeViewHolder(parent)
