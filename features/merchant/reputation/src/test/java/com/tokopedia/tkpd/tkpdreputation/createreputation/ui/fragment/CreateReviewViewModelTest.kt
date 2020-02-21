@@ -97,7 +97,7 @@ class CreateReviewViewModelTest {
             sendReviewWithImageUseCase.createObservable(any())
         } returns Observable.just(SendReviewDomain(true))
 
-        mViewModel.submitReview(anyString(), anyString(), anyString(), anyString(), anyString(), anyFloat(), listOf(anyString()), anyBoolean())
+        mViewModel.submitReview(anyString(), anyString(), anyString(), anyString(), anyString(), anyFloat(), listOf(anyString()), anyBoolean(), anyString())
 
         verify {
             sendReviewWithImageUseCase.createObservable(any())
@@ -112,7 +112,7 @@ class CreateReviewViewModelTest {
             sendReviewWithImageUseCase.createObservable(any())
         } returns Observable.error(Throwable())
 
-        mViewModel.submitReview(anyString(), anyString(), anyString(), anyString(), anyString(), anyFloat(), listOf(anyString()), anyBoolean())
+        mViewModel.submitReview(anyString(), anyString(), anyString(), anyString(), anyString(), anyFloat(), listOf(anyString()), anyBoolean(), anyString())
 
         verify {
             sendReviewWithImageUseCase.createObservable(any())
@@ -127,7 +127,7 @@ class CreateReviewViewModelTest {
             sendReviewWithoutImageUseCase.createObservable(any())
         } returns Observable.just(SendReviewValidateDomain(anyString(), anyInt(), anyInt()))
 
-        mViewModel.submitReview(anyString(), anyString(), anyString(), anyString(), anyString(), anyFloat(), emptyList(), anyBoolean())
+        mViewModel.submitReview(anyString(), anyString(), anyString(), anyString(), anyString(), anyFloat(), emptyList(), anyBoolean(), anyString())
 
         verify {
             sendReviewWithoutImageUseCase.createObservable(any())
@@ -142,7 +142,7 @@ class CreateReviewViewModelTest {
             sendReviewWithoutImageUseCase.createObservable(any())
         } returns Observable.error(Throwable())
 
-        mViewModel.submitReview(anyString(), anyString(), anyString(), anyString(), anyString(), anyFloat(), emptyList(), anyBoolean())
+        mViewModel.submitReview(anyString(), anyString(), anyString(), anyString(), anyString(), anyFloat(), emptyList(), anyBoolean(), anyString())
 
         verify {
             sendReviewWithoutImageUseCase.createObservable(any())

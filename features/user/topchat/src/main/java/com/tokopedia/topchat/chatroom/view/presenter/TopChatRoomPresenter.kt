@@ -8,7 +8,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -589,7 +589,6 @@ class TopChatRoomPresenter @Inject constructor(
             clearAttachmentPreview()
             attachmentsPreview.add(invoiceViewModel)
         }
-
     }
 
     override fun initAttachmentPreview() {

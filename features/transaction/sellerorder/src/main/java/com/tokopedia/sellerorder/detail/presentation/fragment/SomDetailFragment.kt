@@ -103,6 +103,7 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -324,13 +325,30 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     somBottomSheetRejectReasonsAdapter = SomBottomSheetRejectReasonsAdapter(this)
                     bottomSheetUnify.dismiss()
                     bottomSheetUnify = BottomSheetUnify()
-                    // if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
-                    val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
-                    viewBottomSheet.rv_bottomsheet_secondary?.apply {
-                        layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-                        adapter = somBottomSheetRejectReasonsAdapter
+                    val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
+                        // set new penalty ticker
+                        if (detailResponse.penaltyRejectInfo.isPenaltyReject) {
+                            ticker_penalty_secondary?.visibility = View.VISIBLE
+                            ticker_penalty_secondary?.setHtmlDescription(detailResponse.penaltyRejectInfo.penaltyRejectWording)
+                            ticker_penalty_secondary?.setDescriptionClickEvent(object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                                    SomAnalytics.eventClickSeeMoreOnTicker()
+                                }
+
+                                override fun onDismiss() {}
+
+                            })
+                        } else {
+                            ticker_penalty_secondary?.visibility = View.GONE
+                        }
+
+                        rv_bottomsheet_secondary?.apply {
+                            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+                            adapter = somBottomSheetRejectReasonsAdapter
+                        }
+                        tf_extra_notes?.visibility = View.GONE
                     }
-                    viewBottomSheet.tf_extra_notes?.visibility = View.GONE
 
                     bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
                     bottomSheetUnify.setChild(viewBottomSheet)
@@ -411,21 +429,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun renderShipment() {
         // shipping
-        val receiverStreet = detailResponse.receiver.street
-        var notesValue = ""
-        if (receiverStreet.contains(RECEIVER_NOTES_START)) {
-            val indexStart = receiverStreet.indexOf(RECEIVER_NOTES_START)
-            val indexEnd = receiverStreet.indexOf(RECEIVER_NOTES_END)
-            if (receiverStreet.length > indexStart && receiverStreet.length >= indexEnd + 1) {
-                val getAllNotes = receiverStreet.substring(indexStart, indexEnd+1)
-                val indexValueStart = getAllNotes.indexOf(RECEIVER_NOTES_COLON)
-                val indexValueEnd = getAllNotes.indexOf(RECEIVER_NOTES_END)
-                if (getAllNotes.length > indexValueStart+1 && getAllNotes.length >= indexValueEnd-1) {
-                    notesValue = getAllNotes.substring(indexValueStart+1, indexValueEnd-1)
-                }
-            }
-        }
-
         val dataShipping = SomDetailShipping(
                 detailResponse.shipment.name + " - " + detailResponse.shipment.productName,
                 detailResponse.paymentSummary.shippingPriceText,
@@ -480,7 +483,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                             buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
                             buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
-                            buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionCancelOrder()
+                            buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                         }
                     }
                 }
@@ -603,7 +606,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             val btSheet = BottomSheetUnify()
             val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
             infoLayout.tv_confirm_info?.text = detailResponse.onlineBooking.infoText
-            infoLayout.button_understand.setOnClickListener { btSheet.dismiss() }
+            infoLayout.button_understand?.setOnClickListener { btSheet.dismiss() }
 
             fragmentManager?.let {
                 btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
@@ -638,16 +641,17 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         detailResponse.button.forEach {
             if (key.equals(it.key, true)) {
                 eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse.statusText)
+                when {
+                    key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
+                    key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
+                    key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+                    key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
+                    key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
+                }
             }
         }
         bottomSheetUnify.dismiss()
-        when {
-            key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
-            key.equals(KEY_BATALKAN_PESANAN, true) -> setActionCancelOrder()
-            key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
-            key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
-            key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-        }
     }
 
     private fun setActionChangeCourier() {
@@ -871,11 +875,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         when (rejectReason.reasonCode) {
-            1 -> setProductEmpty(rejectReason.reasonCode.toString())
-            4 -> setShopClosed(rejectReason.reasonCode.toString())
-            7 -> setCourierProblems(rejectReason.reasonCode.toString(), rejectReason.listChild)
-            15 -> setBuyerNoResponse(rejectReason.reasonCode.toString())
-            14 -> setOtherReason(rejectReason.reasonCode.toString())
+            1 -> setProductEmpty(rejectReason)
+            4 -> setShopClosed(rejectReason)
+            7 -> setCourierProblems(rejectReason)
+            15 -> setBuyerNoResponse(rejectReason)
+            14 -> setOtherReason(rejectReason)
         }
     }
 
@@ -911,42 +915,51 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
-    private fun setProductEmpty(rCode: String) {
+    private fun setProductEmpty(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         // ini penentu previous bottomsheetnya dismissed apa nggak?
         bottomSheetUnify.dismiss()
         somBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter()
         bottomSheetUnify = BottomSheetUnify()
         if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
-        viewBottomSheet.rv_bottomsheet_secondary?.apply {
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = somBottomSheetStockEmptyAdapter
-        }
-
-        viewBottomSheet.tf_extra_notes?.visibility = View.VISIBLE
-        viewBottomSheet.tf_extra_notes?.setLabelStatic(true)
-        viewBottomSheet.tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.empty_stock_extra_note)
-        viewBottomSheet.tf_extra_notes?.setPlaceholder(getString(R.string.empty_stock_extra_placeholder))
-
-        viewBottomSheet.fl_btn_primary?.visibility = View.VISIBLE
-        viewBottomSheet.fl_btn_primary?.setOnClickListener {
-            bottomSheetUnify.dismiss()
-            val orderRejectRequest = SomRejectRequest()
-            orderRejectRequest.orderId = detailResponse.orderId.toString()
-            orderRejectRequest.rCode = rCode
-            var strListPrd = ""
-            var indexPrd = 0
-            somBottomSheetStockEmptyAdapter.getListProductEmptied().forEach {
-                if (indexPrd > 0) strListPrd += "~"
-                strListPrd += it.id
-                indexPrd++
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
+            rv_bottomsheet_secondary?.apply {
+                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+                adapter = somBottomSheetStockEmptyAdapter
             }
-            orderRejectRequest.listPrd = strListPrd
-            orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
-            if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString())) {
-                doRejectOrder(orderRejectRequest)
+
+            if (rejectReason.reasonTicker.isNotEmpty()) {
+                ticker_penalty_secondary?.visibility = View.VISIBLE
+                ticker_penalty_secondary?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_secondary?.setHtmlDescription(rejectReason.reasonTicker)
             } else {
-                showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                ticker_penalty_secondary?.visibility = View.GONE
+            }
+
+            tf_extra_notes?.visibility = View.VISIBLE
+            tf_extra_notes?.setLabelStatic(true)
+            tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.empty_stock_extra_note)
+            tf_extra_notes?.setPlaceholder(getString(R.string.empty_stock_extra_placeholder))
+
+            fl_btn_primary?.visibility = View.VISIBLE
+            fl_btn_primary?.setOnClickListener {
+                bottomSheetUnify.dismiss()
+                val orderRejectRequest = SomRejectRequest()
+                orderRejectRequest.orderId = detailResponse.orderId.toString()
+                orderRejectRequest.rCode = rejectReason.reasonCode.toString()
+                var strListPrd = ""
+                var indexPrd = 0
+                somBottomSheetStockEmptyAdapter.getListProductEmptied().forEach {
+                    if (indexPrd > 0) strListPrd += "~"
+                    strListPrd += it.id
+                    indexPrd++
+                }
+                orderRejectRequest.listPrd = strListPrd
+                orderRejectRequest.reason = tf_extra_notes?.textFieldInput?.text.toString()
+                if (checkReasonRejectIsNotEmpty(tf_cancel_notes?.textFieldInput?.text.toString())) {
+                    doRejectOrder(orderRejectRequest)
+                } else {
+                    showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                }
             }
         }
 
@@ -964,37 +977,45 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
-    private fun setShopClosed(rCode: String) {
+    private fun setShopClosed(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         bottomSheetUnify.dismiss()
         bottomSheetUnify = BottomSheetUnify().apply {
             if (isAdded) this.dismiss()
 
         }
         if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_shop_closed, null)
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_shop_closed, null).apply {
+            if (rejectReason.reasonTicker.isNotEmpty()) {
+                ticker_penalty_shop_closed?.visibility = View.VISIBLE
+                ticker_penalty_shop_closed?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_shop_closed?.setHtmlDescription(rejectReason.reasonTicker)
+            } else {
+                ticker_penalty_shop_closed?.visibility = View.GONE
+            }
 
-        val defaultDateNow = Date().toFormattedString("dd/MM/yyyy")
-        // setup closing start date
-        viewBottomSheet.tf_start_shop_closed?.textFieldWrapper?.hint = getString(R.string.start_shop_closed_label)
-        viewBottomSheet.tf_start_shop_closed?.textFieldInput?.setText(defaultDateNow)
-        viewBottomSheet.tf_start_shop_closed?.textFieldInput?.isEnabled = false
+            val defaultDateNow = Date().toFormattedString("dd/MM/yyyy")
+            // setup closing start date
+            tf_start_shop_closed?.textFieldWrapper?.hint = getString(R.string.start_shop_closed_label)
+            tf_start_shop_closed?.textFieldInput?.setText(defaultDateNow)
+            tf_start_shop_closed?.textFieldInput?.isEnabled = false
 
-        // setup closing end date
-        viewBottomSheet.tf_end_shop_closed?.textFieldWrapper?.hint = getString(R.string.end_shop_closed_label)
-        viewBottomSheet.tf_end_shop_closed?.textFieldInput?.apply {
-            setText(defaultDateNow)
+            // setup closing end date
+            tf_end_shop_closed?.textFieldWrapper?.hint = getString(R.string.end_shop_closed_label)
+            tf_end_shop_closed?.textFieldInput?.apply {
+                setText(defaultDateNow)
+            }
+            tf_end_shop_closed?.textFieldInput?.isEnabled = false
+            tf_end_shop_closed?.setFirstIcon(R.drawable.ic_som_filter_calendar)
+            tf_end_shop_closed?.textFieldIcon1?.setOnClickListener {
+                showDatePicker(tf_end_shop_closed, this)
+            }
+            updateClosingEndDate(convertFormatDate(defaultDateNow, "dd/MM/yyyy", "dd MMM yyyy"), this)
+
+            // setup closing additional notes
+            tf_shop_closed_notes?.setLabelStatic(true)
+            tf_shop_closed_notes?.textFiedlLabelText?.text = getString(R.string.shop_closed_note_label)
+            tf_shop_closed_notes?.textFieldInput?.hint = getString(R.string.shop_closed_note_placeholder)
         }
-        viewBottomSheet.tf_end_shop_closed?.textFieldInput?.isEnabled = false
-        viewBottomSheet.tf_end_shop_closed?.setFirstIcon(R.drawable.ic_som_filter_calendar)
-        viewBottomSheet.tf_end_shop_closed?.textFieldIcon1?.setOnClickListener {
-            showDatePicker(viewBottomSheet.tf_end_shop_closed, viewBottomSheet)
-        }
-        updateClosingEndDate(convertFormatDate(defaultDateNow, "dd/MM/yyyy", "dd MMM yyyy"), viewBottomSheet)
-
-        // setup closing additional notes
-        viewBottomSheet.tf_shop_closed_notes?.setLabelStatic(true)
-        viewBottomSheet.tf_shop_closed_notes?.textFiedlLabelText?.text = getString(R.string.shop_closed_note_label)
-        viewBottomSheet.tf_shop_closed_notes?.textFieldInput?.hint = getString(R.string.shop_closed_note_placeholder)
 
         fragmentManager?.let {
             bottomSheetUnify.setFullPage(true)
@@ -1010,7 +1031,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             bottomSheetUnify.dismiss()
             val orderRejectRequest = SomRejectRequest(
                     orderId = detailResponse.orderId.toString(),
-                    rCode = rCode,
+                    rCode = rejectReason.reasonCode.toString(),
                     closedNote = viewBottomSheet.tf_shop_closed_notes?.textFieldInput?.text.toString(),
                     closeEnd = viewBottomSheet.tf_end_shop_closed?.textFieldInput?.text.toString()
             )
@@ -1033,35 +1054,44 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
-    private fun setCourierProblems(rCode: String, listChild: List<SomReasonRejectData.Data.SomRejectReason.Child>) {
+    private fun setCourierProblems(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         bottomSheetUnify.dismiss()
         somBottomSheetCourierProblemsAdapter = SomBottomSheetCourierProblemsAdapter(this)
-        somBottomSheetCourierProblemsAdapter.reasonCode = rCode
+        somBottomSheetCourierProblemsAdapter.reasonCode = rejectReason.reasonCode.toString()
         bottomSheetUnify = BottomSheetUnify()
         if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
-        viewBottomSheet.rv_bottomsheet_secondary?.apply {
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = somBottomSheetCourierProblemsAdapter
-        }
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
+            rv_bottomsheet_secondary?.apply {
+                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+                adapter = somBottomSheetCourierProblemsAdapter
+            }
 
-        viewBottomSheet.fl_btn_primary?.visibility = View.VISIBLE
-        viewBottomSheet.fl_btn_primary?.setOnClickListener {
-            bottomSheetUnify.dismiss()
-            val orderRejectRequest = SomRejectRequest()
-            orderRejectRequest.orderId = detailResponse.orderId.toString()
-            orderRejectRequest.rCode = rCode
-
-            if (viewBottomSheet.tf_extra_notes.visibility == View.VISIBLE) {
-                orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
-                if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString())) {
-                    doRejectOrder(orderRejectRequest)
-                } else {
-                    showToasterError(getString(R.string.cancel_order_notes_empty_warning))
-                }
+            if (rejectReason.reasonTicker.isNotEmpty()) {
+                ticker_penalty_secondary?.visibility = View.VISIBLE
+                ticker_penalty_secondary?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_secondary?.setHtmlDescription(rejectReason.reasonTicker)
             } else {
-                orderRejectRequest.reason = reasonCourierProblemText
-                doRejectOrder(orderRejectRequest)
+                ticker_penalty_secondary?.visibility = View.GONE
+            }
+
+            fl_btn_primary?.visibility = View.VISIBLE
+            fl_btn_primary?.setOnClickListener {
+                bottomSheetUnify.dismiss()
+                val orderRejectRequest = SomRejectRequest()
+                orderRejectRequest.orderId = detailResponse.orderId.toString()
+                orderRejectRequest.rCode = rejectReason.reasonCode.toString()
+
+                if (tf_extra_notes?.visibility == View.VISIBLE) {
+                    orderRejectRequest.reason = tf_extra_notes?.textFieldInput?.text.toString()
+                    if (checkReasonRejectIsNotEmpty(tf_extra_notes?.textFieldInput?.text.toString())) {
+                        doRejectOrder(orderRejectRequest)
+                    } else {
+                        showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                    }
+                } else {
+                    orderRejectRequest.reason = reasonCourierProblemText
+                    doRejectOrder(orderRejectRequest)
+                }
             }
         }
 
@@ -1074,14 +1104,21 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
             bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
         }
-        somBottomSheetCourierProblemsAdapter.listChildCourierProblems = listChild.toMutableList()
+        somBottomSheetCourierProblemsAdapter.listChildCourierProblems = rejectReason.listChild.toMutableList()
         somBottomSheetCourierProblemsAdapter.notifyDataSetChanged()
     }
 
-    private fun setBuyerNoResponse(reasonCode: String) {
+    private fun setBuyerNoResponse(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         bottomSheetUnify.dismiss()
 
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
+            if (rejectReason.reasonTicker.isNotEmpty()) {
+                ticker_penalty_secondary?.visibility = View.VISIBLE
+                ticker_penalty_secondary?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_secondary?.setHtmlDescription(rejectReason.reasonTicker)
+            } else {
+                ticker_penalty_secondary?.visibility = View.GONE
+            }
             rv_bottomsheet_secondary?.visibility = View.GONE
             tf_extra_notes?.visibility = View.VISIBLE
             tf_extra_notes?.setLabelStatic(true)
@@ -1093,7 +1130,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
                 val orderRejectRequest = SomRejectRequest().apply {
                     orderId = detailResponse.orderId.toString()
-                    rCode = reasonCode
+                    rCode = rejectReason.reasonCode.toString()
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
                 }
                 if (checkReasonRejectIsNotEmpty(tf_extra_notes?.textFieldInput?.text.toString())) {
@@ -1117,10 +1154,18 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
-    private fun setOtherReason(reasonCode: String) {
+    private fun setOtherReason(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         bottomSheetUnify.dismiss()
 
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
+            if (rejectReason.reasonTicker.isNotEmpty()) {
+                ticker_penalty_secondary?.visibility = View.VISIBLE
+                ticker_penalty_secondary?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_secondary?.setHtmlDescription(rejectReason.reasonTicker)
+            } else {
+                ticker_penalty_secondary?.visibility = View.GONE
+            }
+
             rv_bottomsheet_secondary?.visibility = View.GONE
             tf_extra_notes?.visibility = View.VISIBLE
             tf_extra_notes?.setLabelStatic(true)
@@ -1132,7 +1177,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
                 val orderRejectRequest = SomRejectRequest().apply {
                     orderId = detailResponse.orderId.toString()
-                    rCode = reasonCode
+                    rCode = rejectReason.reasonCode.toString()
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
                 }
                 if (checkReasonRejectIsNotEmpty(tf_extra_notes?.textFieldInput?.text.toString())) {

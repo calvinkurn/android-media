@@ -26,7 +26,7 @@ class HomePlayWidgetHelper(
 
     companion object{
         private const val DELAY_PLAYING = 2000L
-        private const val DELAY_BACK = 500L
+        private const val DELAY_BACK = 1000L
     }
 
     private var mPlayer: ExoPlayer? = null
@@ -139,7 +139,7 @@ class HomePlayWidgetHelper(
     }
 
     fun resumeVideo() {
-        if(videoUri != null && videoUri.toString().isNotEmpty() && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+        if(videoUri != null && !videoUri?.toString().isNullOrEmpty() && isDeviceHasRequirementAutoPlay()) {
             playManager.safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
             exoPlayerView.setPlayer(mPlayer)

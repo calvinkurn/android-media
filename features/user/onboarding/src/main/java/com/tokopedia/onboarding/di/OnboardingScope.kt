@@ -3,8 +3,10 @@ package com.tokopedia.onboarding.di
 import javax.inject.Scope
 
 /**
- * @author by stevenfredian on 12/12/18.
+ * Created by Ade Fulki on 2020-02-09.
+ * ade.hadian@tokopedia.com
  */
+
 @Scope
-@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+@Retention
 annotation class OnboardingScope

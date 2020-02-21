@@ -47,6 +47,8 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 object : Subscriber<List<SearchData>>() {
                     override fun onNext(t: List<SearchData>) {
                         val tabAutoCompleteViewModel = TabSuggestionViewModel()
+                        tabAutoCompleteViewModel.searchTerm = querySearch
+
                         allSuggestionList.clear()
                         productSuggestionList.clear()
                         shopSuggestionList.clear()
@@ -55,7 +57,6 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                             if (searchData.items.size > 0) {
                                 when (searchData.id) {
                                     DIGITAL, CATEGORY, AUTOCOMPLETE, HOTLIST, IN_CATEGORY, SHOP, PROFILE, TOP_PROFILE -> {
-                                        tabAutoCompleteViewModel.searchTerm = querySearch
                                         tabAutoCompleteViewModel.addList(searchData)
                                     }
                                 }

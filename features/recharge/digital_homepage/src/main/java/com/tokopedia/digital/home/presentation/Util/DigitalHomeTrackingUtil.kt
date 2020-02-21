@@ -188,7 +188,7 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, eventAction,
                         TrackAppUtils.EVENT_LABEL, "",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
                 ))
     }
 

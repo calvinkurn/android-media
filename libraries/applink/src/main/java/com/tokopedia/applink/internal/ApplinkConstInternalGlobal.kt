@@ -103,6 +103,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
 
+    // LandingShopCreationActivity
+    // tokopedia-android-internal://global/landing-shop-creation
+    @JvmField
+    val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
+
+    // PhoneShopCreationActivity
+    // tokopedia-android-internal://global/phone-shop-creation
+    @JvmField
+    val PHONE_SHOP_CREATION = "$INTERNAL_GLOBAL/phone-shop-creation"
+
+    // NameShopCreationActivity
+    // tokopedia-android-internal://global/name-shop-creation
+    @JvmField
+    val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
+
     @JvmField
     val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 
@@ -211,6 +226,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
     val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
+
+    // ChangePPasswordActivity
+    // tokopedia-android-internal://global/change-password
+    @JvmField
+    val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
 
     // ChangePinActivity
     // tokopedia-android-internal://global/change-pin
@@ -350,8 +370,16 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    /**
+     * LogoutActivity
+     * @applink : tokopedia-android-internal://global/logout
+     * @param   : [PARAM_IS_RETURN_HOME]
+     * default is 'true', set 'false' if you wan get activity result
+     **/
     @JvmField
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
+    @JvmField
+    val PARAM_IS_RETURN_HOME = "return_to_home"
 
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
@@ -367,6 +395,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/push-notification-troubleshooter
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
+
+    // Topchat
+    @JvmField
+    val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
 
     // Phone Number Verification Activity
     // tokopedia-android-internal://global/setting-referral-phone-verification

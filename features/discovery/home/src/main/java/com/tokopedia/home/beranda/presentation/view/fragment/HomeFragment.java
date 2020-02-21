@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,13 +25,15 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.AsyncDifferConfig;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -46,28 +49,22 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.home.analytics.HomePageTrackingV2;
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
-import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.home.beranda.data.model.PlayChannel;
+import com.tokopedia.home.analytics.HomePageTrackingV2;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.helper.Resource;
+import com.tokopedia.home.beranda.helper.Result;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -76,16 +73,17 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
-import com.tokopedia.home.beranda.presentation.view.HomeContract;
+import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
-import com.tokopedia.home.beranda.presentation.view.adapter.PreCachingLayoutManager;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
@@ -93,7 +91,6 @@ import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
-import com.tokopedia.home_page_banner.presenter.lifecycle.HomePageBannerLifecycleObserver;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.locationmanager.DeviceLocation;
@@ -119,42 +116,42 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_GIF_BANNER;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_ORGANIC;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_SALE;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO;
-import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO;
-import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
 
 
 /**
  * @author by errysuprayogi on 11/27/17.
  */
-public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
+@SuppressLint("SyntheticAccessor")
+public class HomeFragment extends BaseDaggerFragment implements
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
         HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
@@ -166,11 +163,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111;
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
-    public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
-    public static final String REVIEW_CLICK_AT = "rating";
-    public static final String UTM_SOURCE = "utm_source";
-    public static final String EXTRA_URL = "url";
-    public static final String EXTRA_TITLE = "core_web_view_extra_title";
+    private static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
+    private static final String REVIEW_CLICK_AT = "rating";
+    private static final String UTM_SOURCE = "utm_source";
+    private static final String EXTRA_URL = "url";
+    private static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     private static final String DEFAULT_UTM_SOURCE = "home_notif";
@@ -182,7 +179,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private ActivityStateListener activityStateListener;
 
     @Inject
-    HomePresenter presenter;
+    ViewModelProvider.Factory viewModelFactory;
+
+    private HomeViewModel viewModel;
 
     @Inject
     PermissionCheckerHelper permissionCheckerHelper;
@@ -196,7 +195,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomeRecycleAdapter adapter;
     private RemoteConfig firebaseRemoteConfig;
     private SnackbarRetry messageSnackbar;
-    private PreCachingLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private StickyLoginView stickyLoginView;
     private boolean showRecomendation;
@@ -230,6 +229,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
+    @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -239,7 +239,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mainParentStatusBarListener = (MainParentStatusBarListener)context;
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context);
@@ -266,6 +266,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
+
+        ViewModelProvider viewModelProvider = ViewModelProviders.of(this, viewModelFactory);
+        viewModel = viewModelProvider.get(HomeViewModel.class);
+        setGeolocationPermission();
+        needToShowGeolocationComponent();
     }
 
     @Override
@@ -279,30 +284,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
                     getActivity().getApplication()).getBaseAppComponent()).build();
             component.inject(this);
-            component.inject(presenter);
         }
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public void reInitInjector(BerandaComponent component) {
-        component.inject(this);
-        component.inject(presenter);
-        presenter.attachView(this);
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public HomePresenter getPresenter() {
-        return presenter;
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setPresenter(HomePresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public void clearAll() {
-        adapter.notifyDataSetChanged();
     }
 
     private void fetchRemoteConfig() {
@@ -333,8 +315,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getArguments() != null) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
-
-        presenter.attachView(this);
 
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         setupStatusBar();
@@ -393,7 +373,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void evaluateInheritScrollForHomeRecommendation() {
         if (layoutManager.findLastCompletelyVisibleItemPosition()
-                == presenter.getRecommendationFeedSectionPosition()) {
+                == viewModel.getRecommendationFeedSectionPosition()) {
             float vt = homeRecyclerView.getOverScroller().getCurrVelocity()/1000;
             float a = -10f;
 
@@ -405,8 +385,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void evaluateFloatingTextButtonOnStateChanged() {
-        int position = layoutManager.findMaxVisibleItemPosition();
-        if (position == presenter.getRecommendationFeedSectionPosition()) {
+        int position = layoutManager.getItemCount();
+        if (position == viewModel.getRecommendationFeedSectionPosition()) {
             floatingTextButton.hide();
         } else {
             floatingTextButton.show();
@@ -435,12 +415,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             showFeedSectionViewHolderShadow(true);
             homeRecyclerView.setNestedCanScroll(true);
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        HomePageBannerLifecycleObserver.INSTANCE.registerLifecycle(getLifecycle());
     }
 
     @Override
@@ -486,7 +460,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void scrollToRecommendList() {
-        homeRecyclerView.smoothScrollToPosition(presenter.getRecommendationFeedSectionPosition());
+        homeRecyclerView.smoothScrollToPosition(viewModel.getRecommendationFeedSectionPosition());
         scrollToRecommendList = false;
     }
 
@@ -507,14 +481,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        Weaver.Companion.executeWeaveCoRoutine(this::sendScreen,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
+        createAndCallSendScreen();
         sendScreen();
         adapter.onResume();
-        presenter.onResume();
+        viewModel.refresh();
         if (activityStateListener != null) {
             activityStateListener.onResume();
         }
+    }
+
+    private void createAndCallSendScreen(){
+        WeaveInterface sendScrWeave = this::sendScreen;
+        Weaver.Companion.executeWeaveCoRoutine(sendScrWeave,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
     }
 
     @Override
@@ -531,22 +510,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onDestroy() {
         super.onDestroy();
         adapter.onDestroy();
-        presenter.onDestroy();
-        presenter.detachView();
         homeRecyclerView.setAdapter(null);
         adapter = null;
         homeRecyclerView.setLayoutManager(null);
         layoutManager = null;
-        presenter = null;
         unRegisterBroadcastReceiverTokoCash();
     }
 
     private void initRefreshLayout() {
         refreshLayout.post(() -> {
-            if (presenter != null) {
-                presenter.searchHint();
-                presenter.refreshHomeData();
-            }
+            viewModel.searchHint();
+            viewModel.refreshHomeData();
             /**
              * set notification gimmick
              */
@@ -556,7 +530,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void subscribeHome(){
-        presenter.getHomeLiveData().observe(this, data -> {
+        observeHomeData();
+        observeUpdateNetworkStatusData();
+        observePopupIntroOvo();
+        observeSendLocation();
+        observeSearchHint();
+        observeStickyLogin();
+        observeTrackingData();
+        observeRequestImagePlayBanner();
+    }
+
+    private void observeHomeData(){
+        viewModel.getHomeLiveData().observe(this, data -> {
             if(data != null){
                 if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER ) {
                     configureHomeFlag(data.getHomeFlag());
@@ -566,33 +551,70 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         });
+    }
 
-        presenter.getTrackingLiveData().observe(this, trackingData-> {
-            List<Visitable> visitables = new ArrayList(trackingData.getContentIfNotHandled());
-            addImpressionToTrackingQueue(visitables);
-            setupViewportImpression(visitables);
-        });
-
-        presenter.getUpdateNetworkLiveData().observe(this, resource -> {
+    private void observeUpdateNetworkStatusData(){
+        viewModel.getUpdateNetworkLiveData().observe(this, result -> {
             resetImpressionListener();
-            if(resource.getStatus() == Resource.Status.SUCCESS){
+            if(result.getStatus() == Result.Status.SUCCESS){
                 hideLoading();
-            } else if(resource.getStatus() == Resource.Status.ERROR){
+            } else if(result.getStatus() == Result.Status.ERROR){
                 hideLoading();
                 showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
             } else {
                 showLoading();
             }
         });
+    }
 
-        presenter.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> {
+    private void observeTrackingData(){
+        viewModel.getTrackingLiveData().observe(this, trackingData-> {
+            List<Visitable> visitables = new ArrayList(trackingData.getContentIfNotHandled());
+            addImpressionToTrackingQueue(visitables);
+            setupViewportImpression(visitables);
+        });
+    }
+
+    private void observeSearchHint(){
+        viewModel.getSearchHint().observe(getViewLifecycleOwner(), data -> {
+            setHint(data);
+        });
+    }
+
+    private void observeSendLocation(){
+        viewModel.getSendLocationLiveData().observe(getViewLifecycleOwner(), data -> detectAndSendLocation());
+    }
+
+    private void observePopupIntroOvo(){
+        viewModel.getPopupIntroOvoLiveData().observe(getViewLifecycleOwner(), data -> {
+            if (RouteManager.isSupportApplink(getActivity(), data.peekContent())) {
+                Intent intentBalanceWallet = RouteManager.getIntent(getActivity(), data.peekContent());
+                Objects.requireNonNull(getContext()).startActivity(intentBalanceWallet);
+                Activity activity = (Activity) getContext();
+                activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
+            }
+        });
+    }
+
+    private void observeStickyLogin(){
+        viewModel.getStickyLogin().observe(getViewLifecycleOwner(), result -> {
+            if(result.getStatus() == Result.Status.SUCCESS){
+                setStickyContent(result.getData());
+            } else {
+                hideStickyLogin();
+            }
+        });
+    }
+
+    private void observeRequestImagePlayBanner(){
+        viewModel.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> {
             Glide.with(getContext())
                     .asBitmap()
                     .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
                     .into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            presenter.setPlayBanner(playCardViewModelEvent.peekContent());
+                            viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
                         }
 
                         @Override
@@ -601,7 +623,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            presenter.clearPlayBanner();
+                            viewModel.clearPlayBanner();
                         }
                     });
         });
@@ -609,10 +631,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
-            if (!isCache) {
-                layoutManager.setExtraLayoutSpace(getWindowHeightForExtraSpace()*5);
-            } else {
-                if (needToPerformanceMonitoring()) setOnRecyclerViewLayoutReady();
+            if (isCache && needToPerformanceMonitoring()) {
+                setOnRecyclerViewLayoutReady();
             }
 
             adapter.submitList(data);
@@ -719,8 +739,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initAdapter() {
-        layoutManager = new PreCachingLayoutManager(getContext());
-        layoutManager.setExtraLayoutSpace(0);
+        layoutManager = new LinearLayoutManager(getContext());
         homeRecyclerView.setLayoutManager(layoutManager);
         HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
                 getChildFragmentManager(),
@@ -749,8 +768,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         onActionLinkClicked(actionLink);
     }
 
-    @Override
-    public void configureHomeFlag(HomeFlag homeFlag) {
+    private void configureHomeFlag(HomeFlag homeFlag) {
         floatingTextButton.setVisibility(homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation ? View.VISIBLE : View.GONE);
     }
 
@@ -810,7 +828,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        presenter.getTokocashPendingBalance();
+        viewModel.getTokocashPendingBalance();
     }
 
     @Override
@@ -851,8 +869,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             else
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
-
-        HomePageTracking.sendTokopointTrackerClick();
     }
 
     @Override
@@ -869,7 +885,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getActivity());
         }
-        presenter.onBannerClicked(slidesModel);
+        viewModel.onBannerClicked(slidesModel);
     }
 
     @Override
@@ -905,7 +921,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCloseTicker() {
         HIDE_TICKER = true;
-        presenter.onCloseTicker();
+        viewModel.onCloseTicker();
     }
 
     @Override
@@ -923,7 +939,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             case REQUEST_CODE_REVIEW:
                 adapter.notifyDataSetChanged();
                 if (resultCode == Activity.RESULT_OK) {
-                    presenter.removeSuggestedReview();
+                    viewModel.removeSuggestedReview();
                 }
                 break;
         }
@@ -931,17 +947,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
-        //onrefresh most likely we already lay out many view, then we can reduce
+        //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-        layoutManager.setExtraLayoutSpace(0);
-
+        adapter.resetImpressionHomeBanner();
         resetFeedState();
         removeNetworkError();
-        if (presenter != null) {
-            presenter.searchHint();
-            presenter.refreshHomeData();
-            presenter.getStickyContent();
+        if (viewModel != null) {
+            viewModel.searchHint();
+            viewModel.refreshHomeData();
+            getStickyContent();
         }
 
         if (getActivity() instanceof RefreshNotificationListener) {
@@ -951,19 +966,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
 
-    public void onNetworkRetry() {
-        //onrefresh most likely we already lay out many view, then we can reduce
+    private void onNetworkRetry() {
+        //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-        layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
         removeNetworkError();
         homeRecyclerView.setEnabled(false);
-        if (presenter != null) {
-            presenter.searchHint();
-            presenter.onHomeNetworkRetry();
-            presenter.getStickyContent();
+        if (viewModel != null) {
+            viewModel.refresh();
+            getStickyContent();
         }
 
         if (getActivity() instanceof RefreshNotificationListener) {
@@ -979,23 +992,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCountDownFinished() {
-        if (presenter != null) {
-            presenter.refreshHomeData();
+        if (viewModel != null) {
+            viewModel.refreshHomeData();
         }
     }
 
-    @Override
-    public boolean isLoading() {
-        return refreshLayout.isRefreshing();
-    }
-
-    @Override
-    public void showLoading() {
+    private void showLoading() {
         refreshLayout.setRefreshing(true);
     }
 
-    @Override
-    public void hideLoading() {
+    private void getStickyContent(){
+        boolean isShowSticky = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
+        if(isShowSticky) viewModel.getStickyContent();
+    }
+
+    private void hideLoading() {
         refreshLayout.setRefreshing(false);
         homeRecyclerView.setEnabled(true);
     }
@@ -1014,11 +1025,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     }
                 });
     }
-    @Override
-    public boolean needToShowGeolocationComponent() {
+
+    private void needToShowGeolocationComponent() {
         boolean firebaseShowGeolocationComponent = remoteConfig.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true);
         if (!firebaseShowGeolocationComponent) {
-            return false;
+            viewModel.setNeedToShowGeolocationComponent(false);
+            return;
         }
 
         boolean needToShowGeolocationComponent = true;
@@ -1028,24 +1040,27 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     .shouldShowRequestPermissionRationale(getActivity(),
                             PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION);
             if (userHasDeniedPermissionBefore) {
-                return false;
+                viewModel.setNeedToShowGeolocationComponent(false);
+                return;
             }
         }
 
         if (getActivity() != null) {
-            if (hasGeolocationPermission()) {
+            if (viewModel.hasGeolocationPermission()) {
                 needToShowGeolocationComponent = false;
             }
         }
-        if(needToShowGeolocationComponent && HIDE_GEO) return false;
-        return needToShowGeolocationComponent;
+        if(needToShowGeolocationComponent && HIDE_GEO) {
+            viewModel.setNeedToShowGeolocationComponent(false);
+            return;
+        }
+        viewModel.setNeedToShowGeolocationComponent(needToShowGeolocationComponent);
     }
 
-    @Override
-    public boolean hasGeolocationPermission() {
-        if (getActivity() == null) return false;
-        return permissionCheckerHelper.hasPermission(getActivity(),
-                new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
+    private void setGeolocationPermission() {
+        if (getActivity() == null) viewModel.setGeolocationPermission(false);
+        else viewModel.setGeolocationPermission(permissionCheckerHelper.hasPermission(getActivity(),
+                new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION}));
     }
 
     private void promptGeolocationPermission() {
@@ -1055,7 +1070,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     @Override
                     public void onPermissionDenied(@NotNull String permissionText) {
                         HomePageTracking.eventClickNotAllowGeolocation(getActivity());
-                        presenter.onCloseGeolocation();
+                        viewModel.onCloseGeolocation();
                         showNotAllowedGeolocationSnackbar();
                     }
 
@@ -1068,14 +1083,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     public void onPermissionGranted() {
                         HomePageTracking.eventClickAllowGeolocation(getActivity());
                         detectAndSendLocation();
-                        presenter.onCloseGeolocation();
+                        viewModel.onCloseGeolocation();
                         showAllowedGeolocationSnackbar();
                     }
                 }, "");
     }
 
-    @Override
-    public void detectAndSendLocation() {
+    private void detectAndSendLocation() {
         LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
                 permissionCheckerHelper,
                 LocationServices.getFusedLocationProviderClient(getActivity()
@@ -1089,7 +1103,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Function1<DeviceLocation, Unit> onGetLocation() {
         return (deviceLocation) -> {
             saveLocation(getActivity(), deviceLocation.getLatitude(), deviceLocation.getLongitude());
-            presenter.sendGeolocationData();
+            viewModel.sendGeolocationData();
             return null;
         };
     }
@@ -1113,15 +1127,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
     }
 
-    @Override
-    public void setHint(SearchPlaceholder searchPlaceholder) {
+    private void setHint(SearchPlaceholder searchPlaceholder) {
         if (searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null) {
             homeMainToolbar.setHint(searchPlaceholder.getData().getPlaceholder(), searchPlaceholder.getData().getKeyword());
         }
     }
 
-    @Override
-    public void addImpressionToTrackingQueue(List<Visitable> visitables) {
+    private void addImpressionToTrackingQueue(List<Visitable> visitables) {
         if (visitables != null) {
             List<Object> combinedTracking = new ArrayList<>();
             for (Visitable visitable : visitables) {
@@ -1147,13 +1159,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (messageSnackbar == null) {
                     messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
                             getActivity(), getString(R.string.msg_network_error),
-                            () -> onNetworkRetry()
+                            this::onNetworkRetry
                     );
                 }
                 messageSnackbar.showRetrySnackbar();
             } else {
                 NetworkErrorHelper.showEmptyState(getActivity(), root, message,
-                        () -> onRefresh());
+                        this::onRefresh);
             }
         }
     }
@@ -1212,8 +1224,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    @Override
-    public void removeNetworkError() {
+    private void removeNetworkError() {
         NetworkErrorHelper.removeEmptyState(root);
         if (messageSnackbar != null && messageSnackbar.isShown()) {
             messageSnackbar.hideRetrySnackbar();
@@ -1235,12 +1246,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefreshTokoPointButtonClicked() {
-        presenter.onRefreshTokoPoint();
+        viewModel.onRefreshTokoPoint();
     }
 
     @Override
     public void onRefreshTokoCashButtonClicked() {
-        presenter.onRefreshTokoCash();
+        viewModel.onRefreshTokoCash();
     }
 
     @Override
@@ -1251,7 +1262,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
         if (getUserVisibleHint()) {
-            presenter.hitBannerImpression(bannerSlidesModel);
+            viewModel.hitBannerImpression(bannerSlidesModel);
         }
     }
 
@@ -1270,8 +1281,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            Weaver.Companion.executeWeaveCoRoutine(this::sendScreen,
-                    new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
+            createAndCallSendScreen();
         }
     }
 
@@ -1346,24 +1356,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (extras != null) {
                 String data = extras.getString(getActivity().getString(R.string.broadcast_wallet));
                 if (data != null && !data.isEmpty())
-                    presenter.getHeaderData(); // update header data
+                    viewModel.getHeaderData(); // update header data
             }
         }
     };
 
     @Override
-    public void showPopupIntroOvo(String applinkActivation) {
-        if (RouteManager.isSupportApplink(getActivity(), applinkActivation)) {
-            Intent intentBalanceWalet = RouteManager.getIntent(getActivity(), applinkActivation);
-            getContext().startActivity(intentBalanceWalet);
-            Activity activity = (Activity) getContext();
-            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
-        }
-    }
-
-    @Override
     public void onRetryLoadFeeds() {
-        presenter.getFeedTabData();
+        viewModel.getFeedTabData();
     }
 
     private boolean isUserLoggedIn() {
@@ -1469,7 +1469,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void showFeedSectionViewHolderShadow(Boolean show) {
         RecyclerView.ViewHolder feedViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(
-                presenter.getRecommendationFeedSectionPosition()
+                viewModel.getRecommendationFeedSectionPosition()
         );
         if (feedViewHolder instanceof HomeRecommendationFeedViewHolder) {
             ((HomeRecommendationFeedViewHolder) feedViewHolder).showFeedTabShadow(show);
@@ -1478,7 +1478,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void inheritScrollVelocityToRecommendation(int velocity) {
         RecyclerView.ViewHolder feedViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(
-                presenter.getRecommendationFeedSectionPosition()
+                viewModel.getRecommendationFeedSectionPosition()
         );
         if (feedViewHolder instanceof HomeRecommendationFeedViewHolder) {
             ((HomeRecommendationFeedViewHolder) feedViewHolder).scrollByVelocity(velocity);
@@ -1510,7 +1510,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCloseGeolocationView() {
         HIDE_GEO = true;
-        presenter.onCloseGeolocation();
+        viewModel.onCloseGeolocation();
     }
 
     private Snackbar getSnackbar(String text, int duration) {
@@ -1567,14 +1567,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    @Override
-    public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
+    private void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
         this.tickerDetail = tickerDetail;
         updateStickyState();
     }
 
-    @Override
-    public void hideStickyLogin() {
+    private void hideStickyLogin() {
         stickyLoginView.setVisibility(View.GONE);
     }
 
@@ -1624,12 +1622,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCloseClick() {
-        presenter.dismissReview();
-    }
-
-    @Override
-    public void onSuccessDismissReview() {
-        presenter.removeSuggestedReview();
+        viewModel.dismissReview();
     }
 
     private void updateEggBottomMargin(FloatingEggButtonFragment floatingEggButtonFragment) {
@@ -1663,6 +1656,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         }
         impressionScrollListeners.clear();
+    }
+
+    @Override
+    public void refreshHomeData() {
+        refreshLayout.setRefreshing(true);
+        onNetworkRetry();
     }
 
     @Override

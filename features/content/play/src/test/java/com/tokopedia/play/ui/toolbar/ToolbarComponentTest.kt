@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.toolbar
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
@@ -134,7 +135,7 @@ class ToolbarComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class ToolbarComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ToolbarComponent(container, bus, coroutineScope) {
+    class ToolbarComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ToolbarComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ToolbarView {
             return mockk(relaxed = true)
         }

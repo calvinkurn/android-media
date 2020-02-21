@@ -25,7 +25,7 @@ class DynamicIconSectionViewModel : HomeVisitable {
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()
-    val itemList: MutableList<HomeIconItem>
+    var itemList: MutableList<HomeIconItem>
     private var isCache: Boolean = false
     var dynamicIconWrap: Boolean = false
 

@@ -487,8 +487,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
             if (intent!= null) {
-                hasMoveToNativePage = true;
-                startActivity(intent);
+                try {
+                    hasMoveToNativePage = true;
+                    startActivity(intent);
+                } catch (Exception ignored) { }
                 return true;
             } else {
                 // logging here, url might return blank page

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.analytic.AttachInvoiceAnalytic
 import com.tokopedia.attachinvoice.data.Invoice
@@ -33,6 +34,8 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         EmptyAttachInvoiceViewHolder.Listener {
 
     private val screenName = "attach-invoice"
+    private var messageId: String = ""
+    private var opponentName: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,6 +48,8 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
 
     private lateinit var adapter: AttachInvoiceAdapter
     private var listener: Listener? = null
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     interface Listener {
         fun onClickAttachInvoice(intent: Intent)
@@ -59,10 +64,46 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_attachinvoice_attach_invoice, container, false).also {
-            viewModel.initializeArguments(arguments)
+            initializeArguments(arguments)
             setupRecyclerView(it)
             setupObserver()
         }
+    }
+
+    override fun getScreenName(): String = screenName
+
+    override fun initInjector() {
+        getComponent(AttachInvoiceComponent::class.java).inject(this)
+    }
+
+    override fun getAdapterTypeFactory(): AttachInvoiceTypeFactory {
+        return AttachInvoiceTypeFactoryImpl(this)
+    }
+
+    override fun onItemClicked(t: Visitable<*>?) {}
+
+    override fun loadData(page: Int) {
+        viewModel.loadInvoices(page, messageId)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AttachInvoiceTypeFactory> {
+        adapter = AttachInvoiceAdapter(adapterTypeFactory)
+        return adapter
+    }
+
+    override fun hideAttachButton() {
+        flAttach?.hide()
+        attachShadow?.hide()
+    }
+
+    override fun getOpponentName(): String {
+        return opponentName
+    }
+
+    private fun initializeArguments(arguments: Bundle?) {
+        if (arguments == null) return
+        messageId = arguments.getString(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, "")
+        opponentName = arguments.getString(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, "")
     }
 
     private fun setupRecyclerView(view: View) {
@@ -92,7 +133,7 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         btnAttach?.isEnabled = true
         btnAttach.setOnClickListener {
             analytic.trackOnAttachInvoice(invoice)
-            val intent = viewModel.getInvoicePreviewIntent(invoice)
+            val intent = getInvoicePreviewIntent(invoice)
             listener?.onClickAttachInvoice(intent)
         }
     }
@@ -116,42 +157,28 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         return currentPage == 1
     }
 
-    override fun getScreenName(): String = screenName
-
-    override fun initInjector() {
-        getComponent(AttachInvoiceComponent::class.java).inject(this)
+    fun getInvoicePreviewIntent(invoice: Invoice): Intent {
+        return Intent().apply {
+            putExtra(ApplinkConst.Chat.INVOICE_ID, invoice.id.toString())
+            putExtra(ApplinkConst.Chat.INVOICE_CODE, invoice.code)
+            putExtra(ApplinkConst.Chat.INVOICE_TITLE, invoice.productName)
+            putExtra(ApplinkConst.Chat.INVOICE_DATE, invoice.timeStamp)
+            putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, invoice.thumbnailUrl)
+            putExtra(ApplinkConst.Chat.INVOICE_URL, invoice.url)
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, invoice.statusId.toString())
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS, invoice.status)
+            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, invoice.productPrice)
+        }
     }
-
-    override fun getAdapterTypeFactory(): AttachInvoiceTypeFactory {
-        return AttachInvoiceTypeFactoryImpl(this)
-    }
-
-    override fun onItemClicked(t: Visitable<*>?) {}
-
-    override fun loadData(page: Int) {
-        viewModel.loadInvoices(page)
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AttachInvoiceTypeFactory> {
-        adapter = AttachInvoiceAdapter(adapterTypeFactory)
-        return adapter
-    }
-
-    override fun hideAttachButton() {
-        flAttach?.hide()
-        attachShadow?.hide()
-    }
-
-    override fun getOpponentName(): String {
-        return viewModel.opponentName
-    }
-
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
-        fun createInstance(extra: Bundle?): AttachInvoiceFragment {
+        fun createInstance(messageId: String, opponentName: String): AttachInvoiceFragment {
+            val args = Bundle().apply {
+                putString(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, messageId)
+                putString(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, opponentName)
+            }
             return AttachInvoiceFragment().apply {
-                arguments = extra
+                arguments = args
             }
         }
     }

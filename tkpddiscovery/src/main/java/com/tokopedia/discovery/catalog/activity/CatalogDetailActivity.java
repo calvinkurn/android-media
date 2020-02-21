@@ -20,7 +20,7 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 import com.tokopedia.linker.model.LinkerData;

@@ -24,7 +24,7 @@ class DFInstaller {
     companion object {
         internal var manager: SplitInstallManager? = null
         private const val TAG_DFM_DEFERRED = "DFM_DEFERRED"
-        const val TAG_LOG_DFM_BG = "DFM Background"
+        const val TAG_LOG_DFM_BG = "Background"
         private const val TAG_LOG_DFM_DEFERRED_INSTALL = "Install"
         private const val TAG_LOG_DFM_DEFERRED_UNINSTALL = "Uninstall"
         @JvmStatic
@@ -145,7 +145,7 @@ class DFInstaller {
     internal fun logSuccessStatus(tag: String, context: Context, moduleNameToDownload: List<String>) {
         DFTracking.trackDownloadDF(moduleNameToDownload, null, tag == TAG_LOG_DFM_BG)
         DFInstallerLogUtil.logStatus(context, tag, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, emptyList(), 0, false)
+                usableSpaceBeforeDownload, moduleSize, emptyList(), 1, true)
     }
 
     internal fun logFailedStatus(tag: String, applicationContext: Context, moduleNameToDownload: List<String>,

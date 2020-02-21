@@ -12,19 +12,26 @@ class ImageDecodeRunnable(
     interface TaskDecodeProperties {
         val mTargetWidth: Int
         val mTargetHeight: Int
-        fun getByteBuffer(): ByteArray
+        fun getByteBuffer(): ByteArray?
         fun setCurrentThread(thread: Thread?)
+        fun getCurrentThread(): Thread?
         fun setImage(image: Bitmap)
         fun handleDecodeState(state: Int)
         fun getDisplayMetrics(): DisplayMetrics
     }
 
+    @Volatile
+    private var isRunning = false
+
     override fun run() {
 
         task.setCurrentThread(Thread.currentThread())
-
+        isRunning = true
         val imageBuffer = task.getByteBuffer()
-
+        if (imageBuffer == null) {
+            task.handleDecodeState(DECODE_STATE_FAILED)
+            return
+        }
         var returnBitmap: Bitmap? = null
 
         task.handleDecodeState(DECODE_STATE_STARTED)
@@ -36,6 +43,7 @@ class ImageDecodeRunnable(
         if (Thread.interrupted()) {
             return
         }
+
         bitmapOptions.inJustDecodeBounds = true
         BitmapFactory
                 .decodeByteArray(imageBuffer, 0, imageBuffer.size, bitmapOptions)
@@ -84,17 +92,31 @@ class ImageDecodeRunnable(
             } finally {
                 if (null == returnBitmap) {
                     task.handleDecodeState(DECODE_STATE_FAILED)
-                } else {
+                } else if (isRunning) {
                     task.setImage(returnBitmap)
                     task.handleDecodeState(DECODE_STATE_COMPLETED)
                 }
                 task.setCurrentThread(null)
                 Thread.interrupted()
-
             }
             i++
         }
+        isRunning = false
     }
+
+
+    fun stopDecoding() {
+        if (isRunning) {
+            task.getCurrentThread()?.let {
+                if (it.isAlive) {
+                    it.interrupt()
+                    isRunning = false
+                    task.handleDecodeState(DECODE_STATE_COMPLETED)
+                }
+            }
+        }
+    }
+
 
     companion object {
         const val DECODE_STATE_FAILED = 0

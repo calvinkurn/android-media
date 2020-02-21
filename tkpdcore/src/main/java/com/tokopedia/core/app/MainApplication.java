@@ -32,6 +32,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
@@ -107,7 +108,18 @@ public abstract class MainApplication extends MainRouterApplication{
         locationUtils.initLocationBackground();
         NotificationUtils.setNotificationChannel(this);
 
-        Weaver.Companion.executeWeaveCoRoutine(this::executeInBackground,
+        createAndCallBgWork();
+    }
+
+    private void createAndCallBgWork(){
+        WeaveInterface executeBgWorkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executeInBackground();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(executeBgWorkWeave,
                 new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ3_ASYNC, remoteConfig));
     }
 

@@ -7,7 +7,7 @@ include "libraries:base_adapter"
 include "libraries:base_list"
 include "libraries:base_list_seller"
 include "libraries:bottom_sheet_builder"
-include "libraries:cameraview"
+include "libraries:circular_view_pager"
 include "libraries:cm_push_notifications"
 include "libraries:collapsing_tab_layout"
 include "libraries:common_network"
@@ -28,6 +28,7 @@ include "libraries:logger"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
 //include 'libraries:iris_no_op'
+include "libraries:mediauploader"
 include "libraries:oms"
 include "libraries:push_notification"
 include 'libraries:permissionchecker'

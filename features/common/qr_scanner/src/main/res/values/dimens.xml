@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="qr_scanner_padding_detail">15dp</dimen>
+    <dimen name="qr_scanner_margin_med">20dp</dimen>
+    <dimen name="qr_scanner_margin_large">30dp</dimen>
+    <dimen name="qr_scanner_dp_4">4dp</dimen>
+    <dimen name="qr_scanner_fontvs">12sp</dimen>
+</resources>
