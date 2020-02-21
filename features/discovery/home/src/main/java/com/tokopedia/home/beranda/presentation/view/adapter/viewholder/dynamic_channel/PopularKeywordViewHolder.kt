@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
@@ -20,7 +21,8 @@ import com.tokopedia.unifyprinciples.Typography
  */
 
 class PopularKeywordViewHolder (val view: View,
-                                val homeCategoryListener: HomeCategoryListener)
+                                val homeCategoryListener: HomeCategoryListener,
+                                val popularKeywordListener: PopularKeywordListener)
     : AbstractViewHolder<PopularKeywordListViewModel>(view) {
     companion object {
         @LayoutRes
@@ -39,7 +41,7 @@ class PopularKeywordViewHolder (val view: View,
     }
 
     private fun initAdapter(element: PopularKeywordListViewModel) {
-        adapter = PopularKeywordAdapter(element.popularKeywordList)
+        adapter = PopularKeywordAdapter(element.popularKeywordList, popularKeywordListener)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
         recyclerView.adapter = adapter
@@ -79,7 +81,7 @@ class PopularKeywordViewHolder (val view: View,
                 } else {
                     itemView.findViewById(R.id.tv_reload)
                 }
-                tvReload?.setOnClickListener(reloadClickListener())
+                tvReload?.setOnClickListener(reloadClickListener(element))
             }
             ivReloadStub?.let {
                 it.visibility = View.VISIBLE
@@ -90,7 +92,7 @@ class PopularKeywordViewHolder (val view: View,
                 } else {
                     itemView.findViewById(R.id.iv_reload)
                 }
-                ivReload?.setOnClickListener(reloadClickListener())
+                ivReload?.setOnClickListener(reloadClickListener(element))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -101,9 +103,14 @@ class PopularKeywordViewHolder (val view: View,
         return viewStub?.parent == null
     }
 
-    private fun reloadClickListener(): View.OnClickListener {
+    private fun reloadClickListener(element: PopularKeywordListViewModel): View.OnClickListener {
         return View.OnClickListener {
-
+            popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.header)
         }
+    }
+
+    interface PopularKeywordListener {
+        fun onPopularKeywordSectionReloadClicked(position: Int, header: DynamicHomeChannel.Header)
+        fun onPopularKeywordItemClicked(applink: String)
     }
 }

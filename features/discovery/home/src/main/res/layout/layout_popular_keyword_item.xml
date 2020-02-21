@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    android:id="@+id/card_product"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -44,6 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_2"
             android:textColor="@color/charcoal_grey_44"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintTop_toBottomOf="@+id/tv_product"
             app:layout_constraintLeft_toLeftOf="@+id/tv_product"
             app:layout_constraintRight_toRightOf="parent"

@@ -85,6 +85,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
@@ -156,7 +157,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
         HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
-        HomeReviewListener {
+        HomeReviewListener, PopularKeywordViewHolder.PopularKeywordListener {
 
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int SCROLL_STATE_DRAG = 0;
@@ -749,7 +750,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                 this,
                 this,
                 this,
-                homeRecyclerView.getRecycledViewPool()
+                homeRecyclerView.getRecycledViewPool(),
+                this
         );
         AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
                 new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())
@@ -1328,6 +1330,15 @@ public class HomeFragment extends BaseDaggerFragment implements
         return isLightThemeStatusBar;
     }
 
+    @Override
+    public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Header header) {
+        viewModel.getPopularKeywordData(position, header);
+    }
+
+    @Override
+    public void onPopularKeywordItemClicked(@NotNull String applink) {
+        RouteManager.route(getContext(),applink);
+    }
 
     protected void registerBroadcastReceiverTokoCash() {
         if (getActivity() == null)

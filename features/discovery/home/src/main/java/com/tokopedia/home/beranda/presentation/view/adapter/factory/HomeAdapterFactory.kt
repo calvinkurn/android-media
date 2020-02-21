@@ -34,7 +34,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
-                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
+                         private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -218,7 +219,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
-            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener)
+            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

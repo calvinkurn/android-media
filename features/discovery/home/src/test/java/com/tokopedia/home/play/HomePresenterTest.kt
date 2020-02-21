@@ -5,7 +5,7 @@ import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-//import com.tokopedia.home.beranda.presentation.presenter.HomePresenter
+import com.tokopedia.home.beranda.presentation.presenter.HomePresenter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import io.mockk.every
 import io.mockk.mockk
