@@ -3,6 +3,7 @@ package com.tokopedia.vouchergame.list.view.activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.gms.actions.SearchIntents
@@ -24,7 +25,7 @@ import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
  * tokopedia://digital/form?category_id=6&menu_id=4&template=voucher
  * or
  * @sample voucherGame = RouteManager.route(this, ApplinkConsInternalDigital.PRODUCT_TEMPLATE, "6", "4", "voucher")
-*/
+ */
 
 class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherGameListComponent> {
 
@@ -66,10 +67,11 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         intent?.handleIntent()
-        notifyActionStatus(Action.Builder.STATUS_TYPE_COMPLETED)
     }
 
-    override fun shouldShowOptionMenu(): Boolean { return true }
+    override fun shouldShowOptionMenu(): Boolean {
+        return true
+    }
 
     companion object {
 
@@ -94,25 +96,46 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         super.onBackPressed()
     }
 
-    fun notifyActionStatus(status: String) {
-        val actionToken = intent.getStringExtra(actionTokenExtra)
-        val action = AssistActionBuilder()
-                .setActionToken(actionToken)
-                .setActionStatus(status)
-                .build()
-        FirebaseUserActions.getInstance().end(action)
-    }
 
     private fun Intent.handleIntent() {
         when (action) {
-//            // When the action is triggered by a deep-link, Intent.Action_VIEW will be used
-//            Intent.ACTION_VIEW -> handleDeepLink(data)
-//            // When the action is triggered by the Google search action, the ACTION_SEARCH will be used
-//            SearchIntents.ACTION_SEARCH -> handleSearchIntent(
-//                    searchQuery = intent.getStringExtra(SearchManager.QUERY)
-//            )
-//            // Otherwise start the app as you would normally do.
-//            else -> showDefaultView()
+            // When the action is triggered by a deep-link, Intent.Action_VIEW will be used
+            Intent.ACTION_VIEW -> handleDeepLink(data)
+            // When the action is triggered by the Google search action, the ACTION_SEARCH will be used
+            SearchIntents.ACTION_SEARCH -> {
+            }
+            // Otherwise start the app as you would normally do.
+            else -> {
+            }
+        }
+    }
+
+    private fun handleDeepLink(data: Uri?) {
+        // path is normally used to indicate which view should be displayed
+        // i.e https://fit-actions.firebaseapp.com/start?exerciseType="Running" -> path = "start"
+        var actionHandled = true
+        when (data?.path) {
+            "/getInvoice" -> actionHandled = true
+            else -> actionHandled = false
+        }
+
+        notifyActionSuccess(actionHandled)
+    }
+
+    private fun notifyActionSuccess(succeed: Boolean) {
+        intent.getStringExtra(actionTokenExtra)?.let { actionToken ->
+            val actionStatus = if (succeed) {
+                Action.Builder.STATUS_TYPE_COMPLETED
+            } else {
+                Action.Builder.STATUS_TYPE_FAILED
+            }
+            val action = AssistActionBuilder()
+                    .setActionToken(actionToken)
+                    .setActionStatus(actionStatus)
+                    .build()
+
+            // Send the end action to the Firebase app indexing.
+            FirebaseUserActions.getInstance().end(action)
         }
     }
 }

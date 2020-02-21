@@ -6,7 +6,10 @@
     <application>
         <activity
             android:name="com.tokopedia.recharge_slice.ui.activity.MainActivity"
-            android:theme="@style/Theme.AppCompat">
+            android:theme="@style/Theme.AppCompat"
+            android:exported="true"
+            android:launchMode="singleTask"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

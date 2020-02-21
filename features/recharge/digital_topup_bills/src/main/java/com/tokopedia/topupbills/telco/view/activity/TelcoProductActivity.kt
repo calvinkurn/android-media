@@ -2,8 +2,10 @@ package com.tokopedia.topupbills.telco.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.android.gms.actions.SearchIntents
 import com.google.firebase.appindexing.Action
 import com.google.firebase.appindexing.FirebaseUserActions
 import com.google.firebase.appindexing.builders.AssistActionBuilder
@@ -27,7 +29,8 @@ class TelcoProductActivity : BaseTelcoActivity() {
     override fun getNewFragment(): Fragment {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
-        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID) ?: TelcoComponentType.TELCO_PREPAID.toString()
+        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID)
+                ?: TelcoComponentType.TELCO_PREPAID.toString()
         digitalTelcoExtraParam.categoryId = bundle?.getString(PARAM_CATEGORY_ID) ?: ""
         digitalTelcoExtraParam.productId = bundle?.getString(PARAM_PRODUCT_ID) ?: ""
         digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER) ?: ""
@@ -36,7 +39,8 @@ class TelcoProductActivity : BaseTelcoActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        notifyActionStatus(Action.Builder.STATUS_TYPE_COMPLETED)
+
+        intent?.handleIntent()
         updateTitle(getString(R.string.digital_title_telco_page))
     }
 
@@ -62,12 +66,44 @@ class TelcoProductActivity : BaseTelcoActivity() {
         super.onBackPressed()
     }
 
-    fun notifyActionStatus(status: String) {
-        val actionToken = intent.getStringExtra(actionTokenExtra)
-        val action = AssistActionBuilder()
-                .setActionToken(actionToken)
-                .setActionStatus(status)
-                .build()
-        FirebaseUserActions.getInstance().end(action)
+    private fun Intent.handleIntent() {
+        when (action) {
+            // When the action is triggered by a deep-link, Intent.Action_VIEW will be used
+            Intent.ACTION_VIEW -> handleDeepLink(data)
+            // When the action is triggered by the Google search action, the ACTION_SEARCH will be used
+            SearchIntents.ACTION_SEARCH -> {
+            }
+            // Otherwise start the app as you would normally do.
+            else -> {
+            }
+        }
+    }
+
+    private fun handleDeepLink(data: Uri?) {
+        // path is normally used to indicate which view should be displayed
+        var actionHandled = true
+        when (data?.path) {
+            "/telco" -> actionHandled = true
+            else -> actionHandled = false
+        }
+
+        notifyActionSuccess(actionHandled)
+    }
+
+    private fun notifyActionSuccess(succeed: Boolean) {
+        intent.getStringExtra(actionTokenExtra)?.let { actionToken ->
+            val actionStatus = if (succeed) {
+                Action.Builder.STATUS_TYPE_COMPLETED
+            } else {
+                Action.Builder.STATUS_TYPE_FAILED
+            }
+            val action = AssistActionBuilder()
+                    .setActionToken(actionToken)
+                    .setActionStatus(actionStatus)
+                    .build()
+
+            // Send the end action to the Firebase app indexing.
+            FirebaseUserActions.getInstance().end(action)
+        }
     }
 }

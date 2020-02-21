@@ -11,6 +11,7 @@
             android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.White" >
 
             <intent-filter android:autoVerify="true">

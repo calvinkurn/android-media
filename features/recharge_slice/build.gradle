@@ -21,6 +21,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.digitalproduct)
+
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.unifyDependencies.components

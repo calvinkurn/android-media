@@ -25,6 +25,7 @@ import com.tokopedia.recharge_slice.data.Data
 import com.tokopedia.recharge_slice.data.Recommendation
 import com.tokopedia.recharge_slice.ui.activity.MainActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
@@ -73,8 +74,8 @@ class MainSliceProvider : SliceProvider() {
     private fun createGetInvoiceV3Slice(sliceUri: Uri): Slice? {
         val mainPendingIntent = PendingIntent.getActivity(
                 contextNonNull,
-                sliceUri.hashCode(),
-                RouteManager.getIntent(contextNonNull,ApplinkConst.HOME),
+                0,
+                Intent(contextNonNull, MainActivity::class.java),
                 0
         )
         if (sliceUri.getQueryParameter("serviceName") != null) {
