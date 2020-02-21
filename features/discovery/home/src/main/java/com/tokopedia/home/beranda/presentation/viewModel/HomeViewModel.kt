@@ -69,6 +69,7 @@ open class HomeViewModel @Inject constructor(
         private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
+        private val popularKeywordUseCase: GetPopularKeywordUseCase,
         private val homeDataMapper: HomeDataMapper,
         homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
