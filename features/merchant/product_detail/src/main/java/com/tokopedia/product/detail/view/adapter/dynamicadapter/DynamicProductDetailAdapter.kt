@@ -13,6 +13,13 @@ class DynamicProductDetailAdapter(
         val listener: DynamicProductDetailListener
 ) : BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
+    fun notifySnapshot(snapshotData: ProductSnapshotDataModel?) {
+        snapshotData?.let {
+            val indexOfSnapshot = list.indexOf(it)
+            notifyItemChanged(indexOfSnapshot)
+        }
+    }
+
     fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int) {
         snapshotData?.let{
             val indexOfSnapshot = list.indexOf(it)
