@@ -17,7 +17,7 @@ class CpmAdsUseCase @Inject constructor(private val context: Context) : UseCase<
     override fun createObservable(requestParams: RequestParams?): Observable<List<CpmItem>> {
         val graphqlUseCase = GraphqlUseCase()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.gql_cpm_top_ads), CpmTopAdsResponse::class.java, requestParams?.parameters, false)
+                R.raw.gql_cpm_top_ads), CpmTopAdsResponse::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

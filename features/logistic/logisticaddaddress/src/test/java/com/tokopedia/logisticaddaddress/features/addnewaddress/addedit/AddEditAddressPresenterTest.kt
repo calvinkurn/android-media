@@ -28,8 +28,8 @@ object AddEditAddressPresenterTest : Spek({
     val view: AddEditAddressListener = mockk(relaxed = true)
 
     mockkObject(AddNewAddressAnalytics)
-    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess() } just Runs
-    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess() } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any()) } just Runs
 
     lateinit var presenter: AddEditAddressPresenter
 
@@ -57,7 +57,7 @@ object AddEditAddressPresenterTest : Spek({
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess()
+                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any())
                 }
             }
             Then("view show success") {
@@ -83,7 +83,7 @@ object AddEditAddressPresenterTest : Spek({
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any())
                 }
             }
             Then("view show success") {

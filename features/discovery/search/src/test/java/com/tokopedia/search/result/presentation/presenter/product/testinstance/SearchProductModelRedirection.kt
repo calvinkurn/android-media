@@ -27,4 +27,4 @@ private val searchProductModelRedirectionJSON = """
 }
 """.trimIndent().replace("\n", "")
 
-val searchProductModelRedirection = Gson().fromJson(searchProductModelRedirectionJSON, SearchProductModel::class.java)
+internal val searchProductModelRedirection = Gson().fromJson(searchProductModelRedirectionJSON, SearchProductModel::class.java)

@@ -137,7 +137,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
-                Drawable upArrow = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_arrow_back_white, null);
+                Drawable upArrow = ResourcesCompat.getDrawable(getResources(), R.drawable.events_ic_arrow_back_white, null);
                 if (offset < -200) {
                     upArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);

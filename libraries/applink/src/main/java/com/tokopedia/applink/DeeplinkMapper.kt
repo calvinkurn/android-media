@@ -78,7 +78,7 @@ object DeeplinkMapper {
                     deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL) ->
                         getRegisteredNavigationPlay(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
-                        getRegisteredHotlist(context, deeplink)
+                        getRegisteredHotlist(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)
@@ -99,6 +99,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
                     isShopReview(deeplink) -> getRegisteredNavigationShopReview(deeplink)
+                    deeplink.startsWith(ApplinkConst.TOPCHAT_IDLESS) -> getRegisteredNavigationTopChat(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -135,6 +136,18 @@ object DeeplinkMapper {
             }
         } else {
             deeplink
+        }
+    }
+
+    private fun getRegisteredNavigationTopChat(deeplink: String): String {
+        val query = Uri.parse(deeplink).query
+        val path = Uri.parse(deeplink).path
+        var deepLinkInternal = ApplinkConstInternalGlobal.TOPCHAT
+        if(query?.isNotEmpty() == true || path?.isNotEmpty() == true){
+            deepLinkInternal = "$deepLinkInternal$path?$query"
+            return deepLinkInternal
+        } else {
+            return deepLinkInternal
         }
     }
 
