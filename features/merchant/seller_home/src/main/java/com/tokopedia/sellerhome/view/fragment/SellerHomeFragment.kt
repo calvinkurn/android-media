@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -130,6 +131,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
         }
         recyclerView.layoutManager = gridLayoutManager
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
 
         swipeRefreshLayout.setOnRefreshListener {
             reloadPage()
