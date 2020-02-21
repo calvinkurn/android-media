@@ -26,7 +26,7 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
             flight_sort_widget.isSelectOnlyOneChip = false
             flight_sort_widget.hasShowMore = false
             flight_sort_widget.maxItemCount = 5
-            flight_sort_widget.isFlowLayout = true
+            flight_sort_widget.isFlowLayout = false
             flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
                     var departureTimes = mutableListOf<DepartureTimeEnum>()
@@ -54,9 +54,9 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
 
     private fun getItems(): List<DepartureTimeModel> {
         return listOf(DepartureTimeModel(DepartureTimeEnum._00, getString(R.string.departure_0000_to_0600_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._00)),
-                DepartureTimeModel(DepartureTimeEnum._06, getString(R.string.one_trasit), getSelectedByDepartureTimeEnum(DepartureTimeEnum._06)),
-                DepartureTimeModel(DepartureTimeEnum._12, getString(R.string.two_transit), getSelectedByDepartureTimeEnum(DepartureTimeEnum._12)),
-                DepartureTimeModel(DepartureTimeEnum._18, getString(R.string.more_than_2_transit), getSelectedByDepartureTimeEnum(DepartureTimeEnum._18)))
+                DepartureTimeModel(DepartureTimeEnum._06, getString(R.string.departure_0600_to_1200_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._06)),
+                DepartureTimeModel(DepartureTimeEnum._12, getString(R.string.departure_1200_to_1800_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._12)),
+                DepartureTimeModel(DepartureTimeEnum._18, getString(R.string.departure_1800_to_2400_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._18)))
     }
 
 }

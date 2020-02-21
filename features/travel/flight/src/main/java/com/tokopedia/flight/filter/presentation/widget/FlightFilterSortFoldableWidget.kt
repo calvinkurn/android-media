@@ -94,6 +94,7 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
 
     fun performClickOnChipWithPosition(position: Int) {
         if (position < widgetAdapter.maxItemCount) (rv_flight_sort.findViewHolderForAdapterPosition(position) as FlightFilterSortWidgetViewHolder).itemView.performClick()
+        else widgetAdapter.resetAllSelectedChip()
     }
 
     override fun onChipStateChanged(items: List<BaseFilterSortModel>) {

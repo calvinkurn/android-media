@@ -42,7 +42,7 @@ class FlightFilterSortWidgetAdapter(val items: MutableList<BaseFilterSortModel>,
         listener.onChipStateChanged(selectedItems)
     }
 
-    private fun resetAllSelectedChip() {
+    fun resetAllSelectedChip() {
         listener.onResetChip()
         for (item in items) {
             item.isSelected = false

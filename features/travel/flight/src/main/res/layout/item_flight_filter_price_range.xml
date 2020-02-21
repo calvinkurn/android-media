@@ -11,7 +11,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:text="@string/flight_search_filter_ticket_price_label"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_4" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
