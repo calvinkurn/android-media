@@ -271,7 +271,7 @@ class TrackingHotelUtil {
         map[EVENT] = VIEW_PRODUCT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_ROOM_DETAILS
-        map[EVENT_LABEL] = "$HOTEL_LABEL - ${addToCartParam.destinationType} - ${addToCartParam.roomCount} - ${addToCartParam.adult} - ${convertDate(addToCartParam.checkIn)} - $duration - ${addToCartParam.propertyId}"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - ${addToCartParam.destinationType} - ${addToCartParam.destinationName} - ${addToCartParam.roomCount} - ${addToCartParam.adult} - ${convertDate(addToCartParam.checkIn)} - $duration - ${addToCartParam.propertyId}"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 DETAIL_LABEL, DataLayer.mapOf(ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL),
