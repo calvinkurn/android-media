@@ -11,10 +11,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.DaggerPreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address.AddressListFragment
 import kotlinx.android.synthetic.main.activity_preference_edit.*
 
 class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent> {
+
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)

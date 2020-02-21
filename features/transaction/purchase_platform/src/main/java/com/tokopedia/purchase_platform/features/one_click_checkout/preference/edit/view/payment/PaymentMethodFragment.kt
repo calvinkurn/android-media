@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.ShippingDurationFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 
 class PaymentMethodFragment : BaseDaggerFragment() {
