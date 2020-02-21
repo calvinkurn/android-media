@@ -50,7 +50,7 @@ ext {
     playServiceFirebaseMessaging = '17.3.4'
     playServiceLocation = '16.0.0'
     playServiceMaps = '16.0.0'
-    playServiceAuth = '16.0.1'
+    playServiceAuth = '17.0.0'
     playServicePlace = '16.0.0'
     playServiceAuthApiPhone = '16.0.0'
     playServiceMapsUtil = '0.4'

@@ -39,7 +39,6 @@ class TelcoProductActivity : BaseTelcoActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         intent?.handleIntent()
         updateTitle(getString(R.string.digital_title_telco_page))
     }
@@ -86,6 +85,7 @@ class TelcoProductActivity : BaseTelcoActivity() {
             "/telco" -> actionHandled = true
             else -> actionHandled = false
         }
+
 
         notifyActionSuccess(actionHandled)
     }
