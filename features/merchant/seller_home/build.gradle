@@ -47,8 +47,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
-    implementation project(rootProject.ext.libraries.williamchart)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.linker)
@@ -57,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.sellerHomeDrawer)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.baseList)
 
     //internal libs
     implementation rootProject.ext.unifyDependencies.icon
@@ -68,6 +67,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
