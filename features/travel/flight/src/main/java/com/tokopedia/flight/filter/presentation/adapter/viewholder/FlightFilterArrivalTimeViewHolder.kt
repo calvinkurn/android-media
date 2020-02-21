@@ -6,7 +6,6 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.ArrivalTimeModel
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
-import com.tokopedia.flight.filter.presentation.model.DepartureTimeModel
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
@@ -15,13 +14,13 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  * @author by jessica on 2020-02-21
  */
 
-class FlightFilterArrivalTimeViewHolder(view: View, val listener: FlightFilterSortListener, var selectedArrivalTime: List<DepartureTimeEnum>) : AbstractViewHolder<DepartureTimeModel>(view) {
+class FlightFilterArrivalTimeViewHolder(view: View, val listener: FlightFilterSortListener, var selectedArrivalTime: List<DepartureTimeEnum>) : AbstractViewHolder<ArrivalTimeModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_flight_filter_sort
     }
 
-    override fun bind(element: DepartureTimeModel) {
+    override fun bind(element: ArrivalTimeModel) {
         with(itemView) {
             flight_sort_widget.titleText = resources.getString(R.string.flight_search_filter_arrival_time)
             flight_sort_widget.isSelectOnlyOneChip = false
