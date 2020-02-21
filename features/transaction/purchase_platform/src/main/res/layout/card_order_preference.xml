@@ -75,13 +75,15 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toStartOf="@+id/tv_shipping_price"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
             app:typographyType="body_3"
@@ -90,25 +92,33 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_duration"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintEnd_toStartOf="@+id/tv_shipping_price"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="durasi 3 jam" />
+            tools:text="durasi 3 jam - Gojek" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="center_vertical"
             android:lines="1"
-            android:textColor="@color/Neutral_N700_68"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_8"
+            android:textColor="@color/Neutral_N700_96"
+            app:drawableEndCompat="@drawable/ic_keyboard_arrow_down_grey_24dp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
+            app:layout_constraintTop_toBottomOf="@+id/divider2"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Rp. 25.000" />
@@ -142,14 +152,17 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_payment_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:lines="1"
             android:paddingBottom="@dimen/dp_2"
             android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_payment"
             app:layout_constraintTop_toBottomOf="@+id/divider2"
             app:typographyType="body_3"
@@ -158,10 +171,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_payment_detail"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
             app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
             app:typographyType="body_3"
