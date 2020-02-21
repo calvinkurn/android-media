@@ -15,7 +15,6 @@ import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
@@ -36,15 +35,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.DeeplinkDFMapper
-import com.tokopedia.applink.DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.dynamicfeatures.DFInstaller
-import com.tokopedia.dynamicfeatures.DFInstaller.Companion.isInstalled
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -71,7 +66,6 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
@@ -274,7 +268,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             showSmartLock()
         }
 
-        presenter.getDynamicBanner(DynamicBannerConstant.Page.LOGIN)
+        if (!GlobalConfig.isSellerApp()) {
+            if (isShowBanner) {
+                presenter.getDynamicBanner(DynamicBannerConstant.Page.LOGIN)
+            } else {
+                showTicker()
+            }
+        }
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
@@ -1136,12 +1136,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     }
 
-    private fun goToProfileCompletionPage() {
-        if (activity != null) {
-            RouteManager.route(context, ApplinkConst.PROFILE_COMPLETION)
-        }
-    }
-
     private fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
@@ -1332,14 +1326,25 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onGetDynamicBannerSuccess(dynamicBannerDataModel: DynamicBannerDataModel) {
+        if (dynamicBannerDataModel.authBanner.isSuccess) {
+            context?.let {
+                analytics.eventViewBanner()
+                ImageHandler.LoadImage(bannerLogin, dynamicBannerDataModel.authBanner.imgUrl)
+                bannerLogin.visibility = View.VISIBLE
+            }
+        } else {
+            showTicker()
+        }
+    }
+
+    override fun onGetDynamicBannerError(throwable: Throwable) {
+        bannerLogin.hide()
+        showTicker()
+    }
+
+    private fun showTicker() {
         if (!GlobalConfig.isSellerApp()) {
-            if (isShowBanner && dynamicBannerDataModel.authBanner.isSuccess) {
-                context?.let {
-                    analytics.eventViewBanner()
-                    ImageHandler.LoadImage(bannerLogin, dynamicBannerDataModel.authBanner.imgUrl)
-                    bannerLogin.visibility = View.VISIBLE
-                }
-            } else if (isFromAtcPage() && isShowTicker) {
+            if (isFromAtcPage() && isShowTicker) {
                 tickerAnnouncement.visibility = View.VISIBLE
                 tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
                 tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
@@ -1358,10 +1363,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 presenter.getTickerInfo()
             }
         }
-    }
-
-    override fun onGetDynamicBannerError(throwable: Throwable) {
-        bannerLogin.hide()
     }
 
     companion object {

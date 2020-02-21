@@ -17,7 +17,6 @@ import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -28,13 +27,13 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
@@ -280,13 +279,20 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private fun initData() {
         showLoadingDiscover()
         registerInitialViewModel.getProvider()
-        registerInitialViewModel.getDynamicBannerData(DynamicBannerConstant.Page.REGISTER)
         partialRegisterInputView.setListener(this)
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
+
+        if (!GlobalConfig.isSellerApp()) {
+            if (isShowBanner) {
+                registerInitialViewModel.getDynamicBannerData(DynamicBannerConstant.Page.REGISTER)
+            } else {
+                showTicker()
+            }
+        }
 
     }
 
@@ -438,11 +444,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         registerInitialViewModel.dynamicBannerResponse.observe(this, Observer {
             when(it) {
-                is Success -> {
-                    loadDynamicBannerData(it.data)
-                }
+                is Success -> setDynamicBannerView(it.data)
                 is Fail -> {
                     bannerRegister.hide()
+                    showTicker()
                 }
             }
         })
@@ -1213,15 +1218,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         return result
     }
 
-    private fun loadDynamicBannerData(dynamicBannerDataModel: DynamicBannerDataModel) {
+    private fun showTicker() {
         if (!GlobalConfig.isSellerApp()) {
-            if (isShowBanner && dynamicBannerDataModel.authBanner.isSuccess) {
-                context?.let {
-                    registerAnalytics.eventViewBanner()
-                    ImageHandler.LoadImage(bannerRegister, dynamicBannerDataModel.authBanner.imgUrl)
-                    bannerRegister.visibility = View.VISIBLE
-                }
-            } else if (isFromAtc() && isShowTicker) {
+            if (isFromAtc() && isShowTicker) {
                 tickerAnnouncement.visibility = View.VISIBLE
                 tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
                 tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
@@ -1239,6 +1238,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             } else {
                 registerInitialViewModel.getTickerInfo()
             }
+        }
+    }
+
+    private fun setDynamicBannerView(dynamicBannerDataModel: DynamicBannerDataModel) {
+        if (dynamicBannerDataModel.authBanner.isSuccess) {
+            context?.let {
+                registerAnalytics.eventViewBanner()
+                ImageHandler.LoadImage(bannerRegister, dynamicBannerDataModel.authBanner.imgUrl)
+                bannerRegister.visibility = View.VISIBLE
+            }
+        } else {
+            showTicker()
         }
     }
 
