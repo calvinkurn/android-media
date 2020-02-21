@@ -1,5 +1,6 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view
+package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
@@ -18,12 +19,18 @@ class ShippingDurationItemAdapter : androidx.recyclerview.widget.ListAdapter<Pre
 
         }
     }
+/*
+    inner class ShippingDurationViewHolder(view: View): RecyclerView.ViewHolder(view) {
+
+    }*/
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingDurationViewHolder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ShippingDurationViewHolder(LayoutInflater.from(parent.context).inflate(ShippingDurationViewHolder.Layout, parent, false))
     }
 
     override fun onBindViewHolder(holder: ShippingDurationViewHolder, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 }

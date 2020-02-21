@@ -11,38 +11,36 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone">
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <LinearLayout
             android:id="@+id/address_list_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_layout">
 
-            <com.tokopedia.design.text.SearchInputView
+            <com.tokopedia.unifycomponents.SearchBarUnify
                 android:id="@+id/search_input_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"/>
+                android:layout_margin="@dimen/dp_16"
+                app:search_bar_show_icon="false"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/address_list_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-    <include
-        android:id="@+id/empty_state_order_list"
-        layout="@layout/empty_list_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-
     <FrameLayout
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
@@ -60,9 +58,17 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
             android:text="@string/label_button_save_address" />
 
     </FrameLayout>
+
+    <include
+        android:id="@+id/empty_state_order_list"
+        layout="@layout/empty_list_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

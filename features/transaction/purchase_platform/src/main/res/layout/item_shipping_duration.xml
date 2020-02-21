@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_shipping_rl"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,15 +10,18 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_shipping_duration"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyWeight="bold"
         android:textColor="@color/black"
+        app:typographyType="body_1"
+        android:text="@string/text_shipping_duration"
         tools:text="@string/text_shipping_duration" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/item_shipping_radio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/item_shipping_duration"

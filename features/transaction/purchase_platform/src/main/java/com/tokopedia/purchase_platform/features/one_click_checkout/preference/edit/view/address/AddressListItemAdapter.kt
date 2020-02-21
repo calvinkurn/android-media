@@ -1,5 +1,6 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view
+package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -21,11 +22,11 @@ class AddressListItemAdapter : ListAdapter<Preference, AddressListViewHolder>(DI
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressListViewHolder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return AddressListViewHolder(LayoutInflater.from(parent.context).inflate(AddressListViewHolder.Layout, parent, false))
     }
 
     override fun onBindViewHolder(holder: AddressListViewHolder, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
 }

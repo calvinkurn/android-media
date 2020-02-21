@@ -6,9 +6,8 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
     app:cardCornerRadius="@dimen/dp_4">
 
     <RelativeLayout
@@ -23,7 +22,8 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
-            tools:srcCompat="@drawable/ic_pin_map" />
+            android:layout_marginBottom="@dimen/dp_18"
+            app:srcCompat="@drawable/ic_pin_map_address" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_type"
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_2"
             android:layout_marginBottom="@dimen/dp_6"
             android:layout_marginEnd="40dp"
             android:text="@string/text_detail_address"
@@ -93,7 +93,7 @@
             android:layout_toEndOf="@+id/img_location_state"
             android:layout_toRightOf="@id/img_location_state"
             android:gravity="center_vertical"
-            tools:text="Sudah Pin Point"
+            android:text="Sudah Pin Point"
             app:typographyType="body_3"
             android:textColor="@color/black"
             android:layout_marginLeft="@dimen/dp_8"
