@@ -81,6 +81,7 @@
                     android:textColor="#ffffff"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
+                    android:ellipsize="end"
                     tools:text="Ramadan Ekstra"/>
 
                 <LinearLayout

@@ -66,10 +66,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
     override fun bind(element: DynamicChannelViewModel) {
         try {
             val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
-            val stubChannelTitle: ViewStub? = itemView.findViewById(R.id.channel_title)
-            val stubCountDownView: ViewStub? = itemView.findViewById(R.id.count_down)
-            val stubSeeAllButton: ViewStub? = itemView.findViewById(R.id.see_all_button)
-            val stubSeeAllButtonUnify: ViewStub? = itemView.findViewById(R.id.see_all_button_unify)
+            val stubChannelTitle: View? = itemView.findViewById(R.id.channel_title)
+            val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
+            val stubSeeAllButton: View? = itemView.findViewById(R.id.see_all_button)
+            val stubSeeAllButtonUnify: View? = itemView.findViewById(R.id.see_all_button_unify)
 
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
@@ -82,11 +82,12 @@ abstract class DynamicChannelViewHolder(itemView: View,
                      */
                     if (channelHeaderName?.isNotEmpty() == true) {
                         channelTitleContainer.visibility = View.VISIBLE
-                        channelTitle = if (isViewStubHasBeenInflated(stubChannelTitle)) {
-                            itemView.findViewById(R.id.channel_title)
-                        } else {
-                            val stubChannelView = stubChannelTitle?.inflate()
+                        channelTitle = if (stubChannelTitle is ViewStub &&
+                                !isViewStubHasBeenInflated(stubChannelTitle)) {
+                            val stubChannelView = stubChannelTitle.inflate()
                             stubChannelView?.findViewById(R.id.channel_title)
+                        } else {
+                            itemView.findViewById(R.id.channel_title)
                         }
                         channelTitle?.text = channelHeaderName
                         channelTitle?.visibility = View.VISIBLE
@@ -105,11 +106,12 @@ abstract class DynamicChannelViewHolder(itemView: View,
                      */
                     if (isHasSeeMoreApplink(channel) &&
                             getLayoutType(channel) != TYPE_BANNER_CAROUSEL) {
-                        seeAllButton = if (isViewStubHasBeenInflated(stubSeeAllButton)) {
-                            itemView.findViewById(R.id.see_all_button)
-                        } else {
-                            val stubSeeAllView = stubSeeAllButton?.inflate()
+                        seeAllButton = if (stubSeeAllButton is ViewStub &&
+                                !isViewStubHasBeenInflated(stubSeeAllButton)) {
+                            val stubSeeAllView = stubSeeAllButton.inflate()
                             stubSeeAllView?.findViewById(R.id.see_all_button)
+                        } else {
+                            itemView.findViewById(R.id.see_all_button)
                         }
 
                         seeAllButton?.show()
@@ -126,11 +128,12 @@ abstract class DynamicChannelViewHolder(itemView: View,
                      * Show unify button of see more button for dc sprint if back image is not empty
                      */
                     if (channel.header.backImage.isNotBlank() && getLayoutType(channel) == TYPE_SPRINT_LEGO) {
-                        seeAllButtonUnify = if (isViewStubHasBeenInflated(stubSeeAllButton)) {
-                            itemView.findViewById(R.id.see_all_button_unify)
-                        } else {
-                            val stubSeeAllButtonView = stubSeeAllButtonUnify?.inflate()
+                        seeAllButtonUnify = if (stubSeeAllButtonUnify is ViewStub &&
+                                !isViewStubHasBeenInflated(stubSeeAllButtonUnify)) {
+                            val stubSeeAllButtonView = stubSeeAllButtonUnify.inflate()
                             stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
+                        } else {
+                            itemView.findViewById(R.id.see_all_button_unify)
                         }
 
                         seeAllButtonUnify?.show()
@@ -144,14 +147,18 @@ abstract class DynamicChannelViewHolder(itemView: View,
                      *  since onCountDownFinished would getting called and refresh home
                      */
                     if (hasExpiredTime(channel)) {
-                        val countDownStubView = stubCountDownView?.inflate()
-                        val inflatedCountDownView = countDownStubView?.findViewById<CountDownView>(R.id.count_down)
-                        countDownView = inflatedCountDownView
+                        countDownView = if (stubCountDownView is ViewStub &&
+                                !isViewStubHasBeenInflated(stubCountDownView)) {
+                            val inflatedStubCountDownView = stubCountDownView.inflate()
+                            inflatedStubCountDownView.findViewById<CountDownView>(R.id.count_down)
+                        } else {
+                            itemView.findViewById(R.id.count_down)
+                        }
 
                         val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
                         if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
-                            inflatedCountDownView?.setup(element.serverTimeOffset, expiredTime, countDownListener)
-                            inflatedCountDownView?.visibility = View.VISIBLE
+                            countDownView?.setup(element.serverTimeOffset, expiredTime, countDownListener)
+                            countDownView?.visibility = View.VISIBLE
                         }
                     }
                 }

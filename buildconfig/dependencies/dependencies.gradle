@@ -81,7 +81,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.0.0'
-    unifyComponentsVersion = '1.1.8-beta-1'
+    unifyComponentsVersion = '1.1.10'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -158,7 +158,6 @@ ext {
 
     viewDependencies = [
             ahBottomNavigation : "com.aurelhubert:ahbottomnavigation:1.4.0",
-            appIntro           : "com.github.apl-devs:appintro:v4.2.2",
             expandableTextview : "at.blogc:expandabletextview:1.0.5",
     ]
 

@@ -42,7 +42,7 @@ import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
+import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
@@ -372,12 +372,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
             intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
                     context, linkSegment.get(1));
-        } else {
-            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
-                    context);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
         }
-        intent.putExtras(bundle);
-        context.startActivity(intent);
     }
 
     private void openDigitalPage(String applink) {
@@ -640,6 +637,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
+                || lastSegment.equals("discount")
                 || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
     }
 
@@ -735,10 +733,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openCatalogDetail(List<String> linkSegment) {
         try {
             String catalogId = linkSegment.get(1);
-            viewListener.inflateFragment(
-                    CatalogDetailListFragment.newInstance(catalogId),
-                    TAG_FRAGMENT_CATALOG_DETAIL
-            );
+            Intent intent = CatalogDetailPageActivity.createIntent(context, catalogId);
+            context.startActivity(intent);
         } catch (Exception e) {
             Crashlytics.log(e.getLocalizedMessage());
         }
