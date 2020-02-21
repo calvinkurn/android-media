@@ -68,7 +68,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         dest.writeList(this.departureTimeList);
         dest.writeList(this.arrivalTimeList);
         dest.writeList(this.refundableTypeList);
-        dest.writeList(this.facilityList)
+        dest.writeList(this.facilityList);
         dest.writeByte((byte) (isHasFilter ? 1 : 0));
         dest.writeByte((byte) (isSpecialPrice ? 1 : 0));
         dest.writeByte((byte) (isBestPairing ? 1 : 0));
