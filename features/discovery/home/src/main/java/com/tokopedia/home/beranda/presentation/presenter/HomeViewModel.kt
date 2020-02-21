@@ -793,16 +793,15 @@ class HomeViewModel @Inject constructor(
                 val data = PopularKeywordListViewModel(popularKeywordList = resultList, header = header)
                 data.position = rowNumber
                 val currentList = _homeLiveData.value?.list?.toMutableList()
-                currentList?.forEachIndexed{pos, list ->
-                    if (currentList[pos] is PopularKeywordListViewModel && pos == rowNumber) {
-                        currentList[pos] = data
+                currentList?.let {
+                    if (it[rowNumber] is PopularKeywordListViewModel) {
+                        currentList[rowNumber] = data
                         val newHomeViewModel = _homeLiveData.value?.copy(
                                 list = currentList
                         )
                         _homeLiveData.postValue(newHomeViewModel)
                     }
                 }
-
             }
         }){}
     }
