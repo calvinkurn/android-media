@@ -22,7 +22,7 @@ class BrandlistSearchHeaderViewHolder(view: View) : AbstractViewHolder<Brandlist
                     NumberFormat.getNumberInstance(Locale.US).format(element?.totalBrand).toString())
                     .append(" ")
                     .append(getString(R.string.brandlist_brand_label))
-                    .toString()
+                    .toString().replace(",",".")
             itemView.tv_total_brand.visibility = View.VISIBLE
         }
     }
