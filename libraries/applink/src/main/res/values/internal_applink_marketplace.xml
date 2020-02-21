@@ -62,5 +62,6 @@
     <string name="title_ovop2p">OVO P2P Transfer</string>
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
-
+    <string name="path_etalase_dynamic_picker">/etalase-dynamic-picker</string>
+    <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
 </resources>

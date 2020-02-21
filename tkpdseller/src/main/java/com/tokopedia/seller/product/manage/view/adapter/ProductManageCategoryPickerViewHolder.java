@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
+import com.tokopedia.product.manage.item.category.view.model.ProductManageCategoryViewModel;
 
 /**
  * Created by zulfikarrahman on 9/29/17.

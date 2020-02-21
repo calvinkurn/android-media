@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.common.utils;
+package com.tokopedia.product.manage.list.utils;
 
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;

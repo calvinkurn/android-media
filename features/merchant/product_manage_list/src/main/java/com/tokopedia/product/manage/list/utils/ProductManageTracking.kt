@@ -1,14 +1,13 @@
 package com.tokopedia.product.manage.list.utils
 
 import android.text.TextUtils
-import com.tokopedia.core.analytics.AppEventTracking
-import com.tokopedia.core.analytics.nishikino.model.EventTracking
+import com.tokopedia.product.manage.list.analytics.EventTracking
 import com.tokopedia.product.manage.list.constant.*
 import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
 import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant
+import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -48,16 +47,16 @@ object ProductManageTracking {
     }
 
     fun eventDraftClick(label: String) {
-        eventProductManage(AppEventTracking.Action.CLICK, label)
+        eventProductManage(CLICK, label)
     }
 
     fun trackingFilter(productManageFilterModel: ProductManageFilterModel) {
         val filters = ArrayList<String>()
-        if (productManageFilterModel.categoryId != ProductManageConstant.FILTER_ALL_CATEGORY.toString()) {
+        if (productManageFilterModel.categoryId != ProductManageListConstant.FILTER_ALL_CATEGORY.toString()) {
             filters.add(CATEGORY)
         }
 
-        if (productManageFilterModel.etalaseProductOption != ProductManageConstant.FILTER_ALL_PRODUK) {
+        if (productManageFilterModel.etalaseProductOption != ProductManageListConstant.FILTER_ALL_PRODUK) {
             filters.add(ETALASE)
         }
 

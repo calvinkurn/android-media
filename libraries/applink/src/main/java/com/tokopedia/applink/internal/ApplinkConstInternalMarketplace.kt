@@ -179,4 +179,18 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    // DashboardActivity
+    @JvmField
+    val SELLER_APP_DASHBOARD = "$INTERNAL_MARKETPLACE/sellerapp-dashboard"
+
+    // EtalaseDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/etalase-dynamic-picker
+    @JvmField
+    val ETALASE_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/etalase-dynamic-picker"
+
+
+    // CategoryDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/category-dynamic-picker
+    @JvmField
+    val CATEGORY_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/category-dynamic-picker"
 }

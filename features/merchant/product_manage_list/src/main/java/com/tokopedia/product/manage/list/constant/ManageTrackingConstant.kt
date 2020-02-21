@@ -19,6 +19,7 @@ const val CATALOG = "Katalog"
 const val CONDITION = "condition"
 const val PICTURE_STATUS = "picture status"
 const val CLICK_OVERFLOW_MENU = "click overflow menu"
+const val CLICK = "Click"
 
 
 
