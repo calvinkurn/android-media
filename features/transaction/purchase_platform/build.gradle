@@ -13,8 +13,7 @@ android {
             }
         }
         unitTests.all {
-            testLogging.events = ["started", "passed", "skipped", "failed"]
-            testLogging.showStandardStreams = true
+            testLogging.events = ["passed", "skipped", "failed"]
         }
     }
 }
