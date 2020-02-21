@@ -33,6 +33,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     private List<TransitEnum> transitTypeList;
     private List<String> airlineList;
     private List<DepartureTimeEnum> departureTimeList;
+    private List<DepartureTimeEnum> arrivalTimeList;
     private List<RefundableEnum> refundableTypeList;
     private boolean isHasFilter = false;
     private boolean isSpecialPrice = false;
@@ -53,6 +54,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         this.airlineList = in.createStringArrayList();
         this.departureTimeList = new ArrayList<>();
         in.readList(this.departureTimeList, DepartureTimeEnum.class.getClassLoader());
+        this.arrivalTimeList = new ArrayList<>();
+        in.readList(this.arrivalTimeList, DepartureTimeEnum.class.getClassLoader());
         this.refundableTypeList = new ArrayList<>();
         in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
         this.isHasFilter = in.readByte() != 0;
@@ -118,6 +121,14 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         this.departureTimeList = departureTimeList;
     }
 
+    public List<DepartureTimeEnum> getArrivalTimeList() {
+        return arrivalTimeList;
+    }
+
+    public void setArrivalTimeList(List<DepartureTimeEnum> arrivalTimeList) {
+        this.arrivalTimeList = arrivalTimeList;
+    }
+
     public List<RefundableEnum> getRefundableTypeList() {
         return refundableTypeList;
     }
@@ -163,6 +174,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         flightFilterModel.setTransitTypeList(getCopyOfTransitList());
         flightFilterModel.setAirlineList(getCopyOfAirlineList());
         flightFilterModel.setDepartureTimeList(getCopyOfDepartureList());
+        flightFilterModel.setArrivalTimeList(getCopyOfArrivalList());
         flightFilterModel.setRefundableTypeList(getCopyOfRefundableList());
         flightFilterModel.setSpecialPrice(isSpecialPrice());
         flightFilterModel.setBestPairing(isBestPairing());
@@ -189,6 +201,16 @@ public class FlightFilterModel implements Parcelable, Cloneable {
             }
         }
         return departureTimeEnumList;
+    }
+
+    private List<DepartureTimeEnum> getCopyOfArrivalList(){
+        List<DepartureTimeEnum> arrivalTimeEnumList = new ArrayList<>();
+        if (getArrivalTimeList()!= null) {
+            for (int i = 0, sizei = getArrivalTimeList().size(); i < sizei; i++) {
+                arrivalTimeEnumList.add(getArrivalTimeList().get(i));
+            }
+        }
+        return arrivalTimeEnumList;
     }
 
     private List<String> getCopyOfAirlineList(){
@@ -233,6 +255,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
                 (this.transitTypeList != null && this.transitTypeList.size() > 0) ||
                 (this.airlineList != null && this.airlineList.size() > 0) ||
                 (this.departureTimeList != null && this.departureTimeList.size() > 0) ||
+                (this.arrivalTimeList != null && this.arrivalTimeList.size() > 0) ||
                 (this.refundableTypeList != null && this.refundableTypeList.size() > 0));
     }
 
@@ -257,6 +280,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         dest.writeList(this.transitTypeList);
         dest.writeStringList(this.airlineList);
         dest.writeList(this.departureTimeList);
+        dest.writeList(this.arrivalTimeList);
         dest.writeList(this.refundableTypeList);
         dest.writeByte((byte) (isHasFilter ? 1 : 0));
         dest.writeByte((byte) (isSpecialPrice ? 1 : 0));

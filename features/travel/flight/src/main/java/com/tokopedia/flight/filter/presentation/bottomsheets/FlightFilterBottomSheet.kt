@@ -164,6 +164,11 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightFilterViewModel.filterDepartureTime(departureTimeList)
     }
 
+    override fun onArrivalTimeFilterChanged(arrivalTimeList: List<DepartureTimeEnum>) {
+        flightFilterViewModel.filterArrivalTime(arrivalTimeList)
+    }
+
+
     private fun renderList(data: List<BaseFilterSortModel>) {
         adapter?.clearAllElements()
         adapter?.addElement(data)

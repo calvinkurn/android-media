@@ -6,14 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterDepartureTimeViewHolder
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterPriceRangeViewHolder
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterTransitViewHolder
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
-import com.tokopedia.flight.filter.presentation.model.DepartureTimeModel
-import com.tokopedia.flight.filter.presentation.model.FlightSortModel
-import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
-import com.tokopedia.flight.filter.presentation.model.TransitModel
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.*
+import com.tokopedia.flight.filter.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 
 /**
@@ -31,11 +25,14 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
 
     fun type(model: DepartureTimeModel): Int = TYPE_FLIGHT_FILTER_DEPARTURE_TIME
 
+    fun type(model: ArrivalTimeModel): Int = TYPE_FLIGHT_FILTER_ARRIVAL_TIME
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             TYPE_FLIGHT_SORT -> FlightSortViewHolder(parent, listener, initialSortOption)
             TYPE_FLIGHT_FILTER_TRANSIT -> FlightFilterTransitViewHolder(parent, listener, filterModel.transitTypeList ?: listOf())
             TYPE_FLIGHT_FILTER_DEPARTURE_TIME -> FlightFilterDepartureTimeViewHolder(parent, listener, filterModel.departureTimeList ?: listOf())
+            TYPE_FLIGHT_FILTER_ARRIVAL_TIME -> FlightFilterArrivalTimeViewHolder(parent, listener, filterModel.arrivalTimeList)
             FlightFilterPriceRangeViewHolder.LAYOUT -> FlightFilterPriceRangeViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
@@ -43,7 +40,8 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
 
     fun getViewHolderLayout(type: Int): Int {
         return when (type) {
-            TYPE_FLIGHT_SORT, TYPE_FLIGHT_FILTER_TRANSIT, TYPE_FLIGHT_FILTER_DEPARTURE_TIME -> R.layout.item_flight_filter_sort
+            TYPE_FLIGHT_SORT, TYPE_FLIGHT_FILTER_TRANSIT, TYPE_FLIGHT_FILTER_DEPARTURE_TIME,
+            TYPE_FLIGHT_FILTER_ARRIVAL_TIME -> R.layout.item_flight_filter_sort
             else -> type
         }
     }
@@ -52,6 +50,7 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
         const val TYPE_FLIGHT_SORT = 0
         const val TYPE_FLIGHT_FILTER_TRANSIT = 1
         const val TYPE_FLIGHT_FILTER_DEPARTURE_TIME = 2
+        const val TYPE_FLIGHT_FILTER_ARRIVAL_TIME = 3
     }
 
 }

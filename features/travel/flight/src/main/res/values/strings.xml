@@ -47,6 +47,7 @@
     <string name="flight_search_filter_transit">Transit</string>
     <string name="flight_search_filter_airplane">Maskapai Penerbangan</string>
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
+    <string name="flight_search_filter_arrival_time">Waktu Tiba</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
     <string name="flight_search_filter_ticket_price_label">Harga tiket</string>
     <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
