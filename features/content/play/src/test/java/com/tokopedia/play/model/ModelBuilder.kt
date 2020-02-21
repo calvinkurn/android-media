@@ -1,8 +1,8 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
-import com.tokopedia.play.data.Channel
-import com.tokopedia.play.data.ShopInfo
+import com.tokopedia.play.data.*
+import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.ChannelInfoUiModel
@@ -12,9 +12,9 @@ import com.tokopedia.play.view.uimodel.ChannelInfoUiModel
  */
 class ModelBuilder {
 
-    val gson = Gson()
+    private val gson = Gson()
 
-    val channelJson = """
+    private val channelJson = """
         {
         			"gc_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNzIxMTA0OCwiaWQiOjE3MjExMDQ4LCJuYW1lIjoiS3VtZGphZmYiLCJkYXRhIjoiIiwicGFydG5lcl90eXBlIjowLCJwYXJ0bmVyX2lkIjowLCJhdWQiOiJLdW1kamFmZiIsImV4cCI6MTU4MjIwNjMyMiwianRpIjoiMTcyMTEwNDgiLCJpYXQiOjE1ODIxOTEzMjIsImlzcyI6InRva29wZWRpYV9wbGF5IiwibmJmIjoxNTgyMTkxMzIyLCJzdWIiOiJ0b2tvcGVkaWFfcGxheV90b2tlbl8xNzIxMTA0OF8xNTgyMTkxMzIyIn0.i0moJfXrq43AhFLtbczPuIIw2wI2v7H7BN7HSh1WhMk",
         			"partner_type": 1,
@@ -84,7 +84,7 @@ class ModelBuilder {
         }
     """.trimIndent()
 
-    val shopInfoJson = """
+    private val shopInfoJson = """
         {
 				"shopCore": {
 					"name": "DUMA Official",
@@ -97,9 +97,43 @@ class ModelBuilder {
         }
     """.trimIndent()
 
+    private val newChatJson = """
+        {
+                "channel_id": "1387",
+                "msg_id": "1241515151",
+                "message": "Woaw!! Keren",
+                "user": {
+                    "id": "12314",
+                    "name": "Kumdjaff",
+                    "image": "https://www.google.com"
+                }
+        }
+    """.trimIndent()
+
+    private val totalLikeCount = """
+        {
+            "like": {
+                "fmt": "48",
+                "value": 48
+            }
+        }
+    """.trimIndent()
+
+    private val isLike = """
+        {
+            "isLike": true
+        }
+    """.trimIndent()
+
     fun buildChannel() = gson.fromJson(channelJson, Channel::class.java)
 
     fun buildShopInfo() = gson.fromJson(shopInfoJson, ShopInfo::class.java)
+
+    fun buildNewChat() = gson.fromJson(shopInfoJson, PlayChat::class.java)
+
+    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Data::class.java)
+
+    fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
     fun buildChannelInfoUiModel(
             id: String = "1230",
