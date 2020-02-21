@@ -199,6 +199,10 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
             override fun onSearchTextChanged(text: String?) {
                 text?.let {
+                    categoryData?.let {
+                        brandlistTracking?.clickSearchBox(
+                                it.title, text.toString(), false)
+                    }
                     if (it.isNotEmpty()) {
                         val offset = 0
                         val firstLetter = ""
