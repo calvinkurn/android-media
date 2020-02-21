@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -38,7 +37,6 @@ import com.tokopedia.brandlist.brandlist_category.presentation.adapter.Brandlist
 import com.tokopedia.brandlist.brandlist_category.presentation.viewmodel.BrandlistCategoryViewModel
 import com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -132,7 +130,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     override fun onContentScrolled(dy: Int) {
-//        tabLayout?.adjustTabCollapseOnScrolled(dy)
     }
 
     private fun init(view: View) {

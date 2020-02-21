@@ -17,7 +17,6 @@ import com.tokopedia.unifyprinciples.Typography
 
 class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabLayout(context, attrs) {
 
-    private var totalScrollUp: Int = 0
     private var tabMaxHeight: Int = 0
     private var tabMinHeight: Int = 0
 
@@ -46,7 +45,7 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
 
         // add on page change listener
         viewPager?.clearOnPageChangeListeners()
-        viewPager?.addOnPageChangeListener(createOnPageChangeListener(appBarLayout))
+        viewPager?.addOnPageChangeListener(createOnPageChangeListener())
     }
 
     private fun getTabMaxHeightFromRes(resources: Resources): Int {
@@ -133,69 +132,18 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
         }
     }
 
-    private fun createOnPageChangeListener(appBarLayout: AppBarLayout?): ViewPager.OnPageChangeListener {
+    private fun createOnPageChangeListener(): ViewPager.OnPageChangeListener {
         return object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-//                expandAllTabsIcon()
-//                appBarLayout?.let { startTabHeightExpandAnimation(it) }
             }
 
             override fun onPageSelected(position: Int) {
                 getTabAt(position)?.select()
             }
         }
-    }
-
-    private fun startTabHeightExpandAnimation(appBarLayout: AppBarLayout) {
-        if (layoutParams.height != tabMaxHeight) {
-            appBarLayout.setExpanded(true)
-        }
-    }
-
-    private fun expandAllTabsIcon() {
-        for (tabIndex in 0 until tabCount) {
-            expandTabIcon(getTabAt(tabIndex))
-        }
-    }
-
-
-    private fun expandTabIcon(tab: Tab?) {
-        val iconView: ImageView? = tab?.customView?.findViewById(R.id.image_view_category_icon)
-        val categoryTextView: Typography? = tab?.customView?.findViewById(R.id.text_view_category_title)
-        iconView?.animate()?.translationY(0f)?.duration = 1000
-        categoryTextView?.animate()?.translationY(0f)?.duration = 1000
-    }
-
-    private fun collapseAllTabsIcon() {
-        for (tabIndex in 0 until tabCount) {
-            collapseTabIcon(getTabAt(tabIndex))
-        }
-    }
-
-    private fun collapseTabIcon(tab: Tab?) {
-        val iconView: ImageView? = tab?.customView?.findViewById(R.id.image_view_category_icon)
-        val categoryTextView: Typography? = tab?.customView?.findViewById(R.id.text_view_category_title)
-        iconView?.animate()?.translationY(-30f)?.duration = 1000
-        categoryTextView?.animate()?.translationY(-14.0f)?.duration = 1000
-    }
-
-    fun adjustTabCollapseOnScrolled(dy: Int) {
-        if (dy == 0) return
-        adjustCollapseExpandTab(getTotalScrollUp(dy) in 0..10)
-    }
-
-    private fun getTotalScrollUp(dy: Int): Int {
-        if (dy < 0) totalScrollUp -= dy
-        else totalScrollUp = 0
-        return totalScrollUp
-    }
-
-    private fun adjustCollapseExpandTab(collapseTabsIcon: Boolean) {
-        if (collapseTabsIcon) collapseAllTabsIcon()
-        else expandAllTabsIcon()
     }
 
     class CategoryTabModel(val title: String, val iconUrl: String, val inactiveIconUrl: String)
