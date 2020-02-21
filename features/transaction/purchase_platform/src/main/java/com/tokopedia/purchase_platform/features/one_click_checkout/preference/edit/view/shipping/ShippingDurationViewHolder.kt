@@ -7,6 +7,6 @@ import com.tokopedia.purchase_platform.R
 class ShippingDurationViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
     companion object{
-        val LayoutInflater = R.layout.item_shipping_duration
+        val Layout = R.layout.item_shipping_duration
     }
 }
