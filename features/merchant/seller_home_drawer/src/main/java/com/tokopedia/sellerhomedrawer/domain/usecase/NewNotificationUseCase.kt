@@ -38,20 +38,21 @@ class NewNotificationUseCase @Inject constructor(val notificationUseCase: Notifi
                 GetInfoPenjualNotificationUseCase.createParams(2)
         )
 
-        return Observable.zip<NotificationModel, TopChatNotificationModel, InfoPenjualNotification, NotificationModel>(notif, notifTopChat, infoPenjualNotification, { notificationModel, chatNotificationModel, infoPenjualNotif ->
-            val data = notificationModel.getNotificationData()
-            data.setTotalNotif(data.getTotalNotif() - data.getInbox().getInboxMessage() +
-                    chatNotificationModel.getNotifUnreadsSeller() + infoPenjualNotif.getNotifUnreadInt()!!.toInt())
-            data.getInbox().setInboxMessage(chatNotificationModel.getNotifUnreadsSeller())
-            notificationModel.setNotificationData(data)
-            val notifUnreadsSeller = chatNotificationModel.getNotifUnreadsSeller()
-            val notifInfoPenjual = infoPenjualNotif.getNotifUnreadInt()!!.toInt()
-            drawerCache.putInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsSeller)
-            drawerCache.putInt(SellerDrawerNotification.CACHE_INBOX_SELLER_INFO, notifInfoPenjual)
-            drawerCache.putInt(SellerDrawerNotification.CACHE_TOTAL_NOTIF, data.getTotalNotif())
-            drawerCache.applyEditor()
-            notificationModel
-        })
+        return Observable.zip<NotificationModel, TopChatNotificationModel, InfoPenjualNotification, NotificationModel>(notif, notifTopChat, infoPenjualNotification) {
+            notificationModel, chatNotificationModel, infoPenjualNotif ->
+                val data = notificationModel.notificationData
+                data.totalNotif = (data.totalNotif - data.inbox.inboxMessage +
+                        chatNotificationModel.notifUnreadsSeller + infoPenjualNotif.notifUnreadInt.toInt())
+                data.inbox.inboxMessage = chatNotificationModel.notifUnreadsSeller
+                notificationModel.notificationData = data
+                val notifUnreadsSeller = chatNotificationModel.notifUnreadsSeller
+                val notifInfoPenjual = infoPenjualNotif.notifUnreadInt.toInt()
+                drawerCache.putInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsSeller)
+                drawerCache.putInt(SellerDrawerNotification.CACHE_INBOX_SELLER_INFO, notifInfoPenjual)
+                drawerCache.putInt(SellerDrawerNotification.CACHE_TOTAL_NOTIF, data.totalNotif)
+                drawerCache.applyEditor()
+                notificationModel
+        }
     }
 
 

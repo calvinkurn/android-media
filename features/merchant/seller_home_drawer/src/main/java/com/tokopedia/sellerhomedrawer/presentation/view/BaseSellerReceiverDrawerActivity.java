@@ -19,9 +19,9 @@ public class BaseSellerReceiverDrawerActivity extends SellerDrawerPresenterActiv
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null) {
-                if (intent.getAction().equals(SellerDrawerGetNotificationService.getBROADCAST_GET_NOTIFICATION()) && intent.getBooleanExtra(SellerDrawerGetNotificationService.getGET_NOTIFICATION_SUCCESS(), false)) {
+                if (intent.getAction().equals(SellerDrawerGetNotificationService.BROADCAST_GET_NOTIFICATION) && intent.getBooleanExtra(SellerDrawerGetNotificationService.GET_NOTIFICATION_SUCCESS, false)) {
                     updateDrawerData();
-                } else if (intent.getAction().equals(SellerDrawerGetNotificationService.getUPDATE_NOTIFICATON_DATA())) {
+                } else if (intent.getAction().equals(SellerDrawerGetNotificationService.UPDATE_NOTIFICATON_DATA)) {
                     startDrawerGetNotificationService();
                 }
             }
@@ -65,7 +65,7 @@ public class BaseSellerReceiverDrawerActivity extends SellerDrawerPresenterActiv
 
     private void registerBroadcastReceiver() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(SellerDrawerGetNotificationService.getBROADCAST_GET_NOTIFICATION());
+        intentFilter.addAction(SellerDrawerGetNotificationService.BROADCAST_GET_NOTIFICATION);
         LocalBroadcastManager.getInstance(this).registerReceiver(drawerGetNotificationReceiver, intentFilter);
     }
 

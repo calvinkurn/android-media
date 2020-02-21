@@ -294,7 +294,7 @@ class SellerDrawerHelper(val context: Activity,
             SellerHomeState.DrawerPosition.PEOPLE ->
                 drawerCache.putBoolean(SellerDrawerAdapter.IS_PEOPLE_OPENED, isExpand)
             SellerHomeState.DrawerPosition.SHOP ->
-                drawerCache.putBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, isExpand)
+                drawerCache.putBoolean(SellerDrawerAdapter.IS_SHOP_OPENED, isExpand)
             SellerHomeState.DrawerPosition.SELLER_PRODUCT_EXTEND ->
                 drawerCache.putBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, isExpand)
             SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE ->
@@ -484,27 +484,27 @@ class SellerDrawerHelper(val context: Activity,
 
         sellerMenu.apply {
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_list_selling),
-                    id = SellerHomeState.DrawerPosition.SHOP_TRANSACTION_LIST,
+                    label = context.getString(R.string.drawer_title_opportunity),
+                    id = SellerHomeState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
                     isExpanded = isExpanded))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_shipping_status),
-                    id = SellerHomeState.DrawerPosition.SHOP_SHIPPING_STATUS,
-                    isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_STATUS)))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_confirm_shipping),
-                    id = SellerHomeState.DrawerPosition.SHOP_CONFIRM_SHIPPING,
-                    isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION)))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_new_order),
                     id = SellerHomeState.DrawerPosition.SHOP_NEW_ORDER,
                     isExpanded = isExpanded,
                     notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_NEW_ORDER)))
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_opportunity),
-                    id = SellerHomeState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
+                    label = context.getString(R.string.drawer_title_confirm_shipping),
+                    id = SellerHomeState.DrawerPosition.SHOP_CONFIRM_SHIPPING,
+                    isExpanded = isExpanded,
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION)))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_shipping_status),
+                    id = SellerHomeState.DrawerPosition.SHOP_SHIPPING_STATUS,
+                    isExpanded = isExpanded,
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_STATUS)))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_list_selling),
+                    id = SellerHomeState.DrawerPosition.SHOP_TRANSACTION_LIST,
                     isExpanded = isExpanded))
         }
 
@@ -524,30 +524,30 @@ class SellerDrawerHelper(val context: Activity,
 
         inboxMenu.apply {
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_seller_info),
-                    id = SellerHomeState.DrawerPosition.SELLER_INFO,
+                    label = context.getString(R.string.drawer_title_inbox_message),
+                    id = SellerHomeState.DrawerPosition.INBOX_MESSAGE,
                     isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_SELLER_INFO)))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_inbox_ticket),
-                    id = SellerHomeState.DrawerPosition.INBOX_TICKET,
-                    isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_TICKET)))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_inbox_review),
-                    id = SellerHomeState.DrawerPosition.INBOX_REVIEW,
-                    isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_REVIEW)))
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE)))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_inbox_discussion),
                     id = SellerHomeState.DrawerPosition.INBOX_TALK,
                     isExpanded = isExpanded,
                     notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_TALK)))
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_inbox_message),
-                    id = SellerHomeState.DrawerPosition.INBOX_MESSAGE,
+                    label = context.getString(R.string.drawer_title_inbox_review),
+                    id = SellerHomeState.DrawerPosition.INBOX_REVIEW,
                     isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE)))
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_REVIEW)))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_inbox_ticket),
+                    id = SellerHomeState.DrawerPosition.INBOX_TICKET,
+                    isExpanded = isExpanded,
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_TICKET)))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_seller_info),
+                    id = SellerHomeState.DrawerPosition.SELLER_INFO,
+                    isExpanded = isExpanded,
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_SELLER_INFO)))
         }
         return inboxMenu
     }
@@ -563,24 +563,24 @@ class SellerDrawerHelper(val context: Activity,
 
         productMenu.apply {
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_etalase_list),
-                    id = SellerHomeState.DrawerPosition.MANAGE_ETALASE,
-                    isExpanded = isExpanded))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.featured_product_title),
-                    id = SellerHomeState.DrawerPosition.FEATURED_PRODUCT,
-                    isExpanded = isExpanded))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_draft_list),
-                    id = SellerHomeState.DrawerPosition.DRAFT_PRODUCT,
+                    label = context.getString(R.string.drawer_title_add_product),
+                    id = SellerHomeState.DrawerPosition.ADD_PRODUCT,
                     isExpanded = isExpanded))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_product_list),
                     id = SellerHomeState.DrawerPosition.MANAGE_PRODUCT,
                     isExpanded = isExpanded))
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_add_product),
-                    id = SellerHomeState.DrawerPosition.ADD_PRODUCT,
+                    label = context.getString(R.string.drawer_title_draft_list),
+                    id = SellerHomeState.DrawerPosition.DRAFT_PRODUCT,
+                    isExpanded = isExpanded))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.featured_product_title),
+                    id = SellerHomeState.DrawerPosition.FEATURED_PRODUCT,
+                    isExpanded = isExpanded))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_etalase_list),
+                    id = SellerHomeState.DrawerPosition.MANAGE_ETALASE,
                     isExpanded = isExpanded))
         }
         return productMenu
