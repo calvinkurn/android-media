@@ -69,6 +69,10 @@
     <string name="departure_0600_to_1200">06:00 – 12:00</string>
     <string name="departure_1200_to_1800">12:00 – 18:00</string>
     <string name="departure_1800_to_2400">18:00 – 24:00</string>
+    <string name="departure_0000_to_0600_with_desc">Dini Hari (00:00 – 06:00)</string>
+    <string name="departure_0600_to_1200_with_desc">Pagi (06:00 – 12:00)</string>
+    <string name="departure_1200_to_1800_with_desc">Siang (12:00 – 18:00)</string>
+    <string name="departure_1800_to_2400_with_desc">Malam (18:00 – 24:00)</string>
     <string name="direct">Langsung</string>
     <string name="one_trasit">1 Transit</string>
     <string name="two_transit">2 Transit</string>

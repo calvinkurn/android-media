@@ -17,10 +17,12 @@ import com.tokopedia.flight.filter.di.DaggerFlightFilterComponent
 import com.tokopedia.flight.filter.di.FlightFilterComponent
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
+import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
@@ -34,7 +36,7 @@ import javax.inject.Inject
  */
 class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, FlightFilterSortListener {
 
-    var adapter: BaseAdapter<FlightFilterSortAdapterTypeFactory>? = null
+    var adapter: FlightFilterSortAdapter? = null
     var listener: FlightFilterBottomSheetListener? = null
 
     @Inject
@@ -111,7 +113,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     private fun initAdapter() {
         val typeFactory = FlightFilterSortAdapterTypeFactory(this, flightFilterViewModel.getSelectedSort(),
                 flightFilterViewModel.filterModel.value ?: FlightFilterModel())
-        adapter = BaseAdapter(typeFactory)
+        adapter = FlightFilterSortAdapter(typeFactory)
     }
 
     private fun initView() {
@@ -156,6 +158,10 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     override fun onTransitFilterChanged(transitTypeList: List<TransitEnum>) {
         flightFilterViewModel.filterTransit(transitTypeList)
+    }
+
+    override fun onDepartureTimeFilterChanged(departureTimeList: List<DepartureTimeEnum>) {
+        flightFilterViewModel.filterDepartureTime(departureTimeList)
     }
 
     private fun renderList(data: List<BaseFilterSortModel>) {

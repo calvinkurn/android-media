@@ -1,0 +1,62 @@
+package com.tokopedia.flight.filter.presentation.adapter.viewholder
+
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.flight.R
+import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
+import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
+import com.tokopedia.flight.filter.presentation.model.DepartureTimeModel
+import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
+import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
+
+/**
+ * @author by jessica on 2020-02-21
+ */
+
+class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilterSortListener, var selectedDepartureTime: List<DepartureTimeEnum>) : AbstractViewHolder<DepartureTimeModel>(view) {
+
+    companion object {
+        val LAYOUT = R.layout.item_flight_filter_sort
+    }
+
+    override fun bind(element: DepartureTimeModel) {
+        with(itemView) {
+            flight_sort_widget.titleText = resources.getString(R.string.flight_search_filter_departure_time)
+            flight_sort_widget.isSelectOnlyOneChip = false
+            flight_sort_widget.hasShowMore = false
+            flight_sort_widget.maxItemCount = 5
+            flight_sort_widget.isFlowLayout = true
+            flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
+                override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
+                    var departureTimes = mutableListOf<DepartureTimeEnum>()
+                    items.forEach {
+                        departureTimes.add((it as DepartureTimeModel).departureTimeEnum)
+                    }
+                    selectedDepartureTime = departureTimes
+                    listener.onDepartureTimeFilterChanged(departureTimes)
+                }
+
+                override fun onClickShowMore() {
+                    //do nothing
+                }
+            }
+            flight_sort_widget.buildView(getItems())
+        }
+    }
+
+    private fun getSelectedByDepartureTimeEnum(departureTimeEnum: DepartureTimeEnum): Boolean {
+        for (selectedTransit in selectedDepartureTime) {
+            if (departureTimeEnum.id == selectedTransit.id) return true
+        }
+        return false
+    }
+
+    private fun getItems(): List<DepartureTimeModel> {
+        return listOf(DepartureTimeModel(DepartureTimeEnum._00, getString(R.string.departure_0000_to_0600_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._00)),
+                DepartureTimeModel(DepartureTimeEnum._06, getString(R.string.one_trasit), getSelectedByDepartureTimeEnum(DepartureTimeEnum._06)),
+                DepartureTimeModel(DepartureTimeEnum._12, getString(R.string.two_transit), getSelectedByDepartureTimeEnum(DepartureTimeEnum._12)),
+                DepartureTimeModel(DepartureTimeEnum._18, getString(R.string.more_than_2_transit), getSelectedByDepartureTimeEnum(DepartureTimeEnum._18)))
+    }
+
+}

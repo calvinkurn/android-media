@@ -5,12 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
-import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
-import com.tokopedia.flight.filter.presentation.model.FlightSortModel
-import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
-import com.tokopedia.flight.filter.presentation.model.TransitModel
+import com.tokopedia.flight.filter.presentation.model.*
 import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
@@ -79,6 +77,12 @@ class FlightFilterViewModel @Inject constructor(
         mutableFilterModel.postValue(updatedFilterModel)
     }
 
+    fun filterDepartureTime(selectedDepartureTimes: List<DepartureTimeEnum>) {
+        val updatedFilterModel = (filterModel.value as FlightFilterModel)
+        updatedFilterModel.departureTimeList = selectedDepartureTimes
+        mutableFilterModel.postValue(updatedFilterModel)
+    }
+
     fun getSelectedSort(): Int = selectedSort.value ?: TravelSortOption.CHEAPEST
 
     fun getFlightCount() {
@@ -105,7 +109,7 @@ class FlightFilterViewModel @Inject constructor(
             items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
 
             // Departure Time
-            items.add(DEPARTURE_TIME_ORDER, PriceRangeModel())
+            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
 
             // Arrival Time
             items.add(ARRIVAL_TIME_ORDER, PriceRangeModel())

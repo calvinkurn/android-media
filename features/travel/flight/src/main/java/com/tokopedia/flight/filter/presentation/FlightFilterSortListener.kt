@@ -1,5 +1,6 @@
 package com.tokopedia.flight.filter.presentation
 
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 
 /**
@@ -10,4 +11,5 @@ interface FlightFilterSortListener {
     fun onSortChanged(selectedSortOption: Int)
     fun onClickSeeAllSort()
     fun onTransitFilterChanged(transitTypeList: List<TransitEnum>)
+    fun onDepartureTimeFilterChanged(departureTimeList: List<DepartureTimeEnum>)
 }
