@@ -11,22 +11,16 @@
         android:layout="@layout/view_stub_pk_title"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/iv_reload"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/iv_reload"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="start"
-        app:constraint_referenced_ids="iv_reload"/>
+        app:layout_constraintBottom_toTopOf="@+id/rv_popular_keyword" />
 
     <ViewStub
         android:id="@+id/iv_reload"
@@ -37,7 +31,7 @@
         android:layout_marginRight="@dimen/dp_4"
         app:layout_constraintRight_toLeftOf="@+id/tv_reload"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="@+id/channel_title"/>
 
     <ViewStub
         android:id="@+id/tv_reload"
@@ -48,9 +42,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/channel_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_popular_keyword"
@@ -59,7 +53,7 @@
         android:layout_marginTop="@dimen/dp_13"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/channel_title"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
