@@ -7,7 +7,6 @@ import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.FlightFilterAirlineModel
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
-import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
 
 /**
@@ -15,7 +14,7 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  */
 class FlightFilterWidgetAirlineViewHolder(view: View,
                                           val listener: FlightFilterSortListener,
-                                          var selectedAirline: List<AirlineStat>)
+                                          var selectedAirline: List<String>)
     : AbstractViewHolder<FlightFilterAirlineModel>(view) {
 
     override fun bind(element: FlightFilterAirlineModel) {
@@ -39,14 +38,10 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
     }
 
     private fun getItems(): List<FlightFilterAirlineModel> {
-        val selectedAirlineIds = selectedAirline.map {
-            it.airlineDB.id
-        }
-
         return listener.getAirlineList().map {
             FlightFilterAirlineModel(
                     title = it.airlineDB.name,
-                    isSelected = selectedAirlineIds.contains(it.airlineDB.id)
+                    isSelected = selectedAirline.contains(it.airlineDB.id)
             )
         }
     }
