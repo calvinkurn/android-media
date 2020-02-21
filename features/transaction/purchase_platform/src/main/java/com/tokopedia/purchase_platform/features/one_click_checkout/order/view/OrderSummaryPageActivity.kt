@@ -1,2 +1,12 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+
+class OrderSummaryPageActivity : BaseSimpleActivity() {
+
+    override fun getNewFragment(): Fragment? {
+        return OrderSummaryPageFragment()
+    }
+
+}

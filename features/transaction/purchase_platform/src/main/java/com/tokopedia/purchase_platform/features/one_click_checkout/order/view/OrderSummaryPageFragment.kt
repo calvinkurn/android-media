@@ -1,0 +1,22 @@
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.purchase_platform.R
+
+class OrderSummaryPageFragment : BaseDaggerFragment() {
+
+    override fun getScreenName(): String {
+        return this::class.java.simpleName
+    }
+
+    override fun initInjector() {
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_order_summary_page, container, false)
+    }
+}
