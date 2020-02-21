@@ -400,3 +400,8 @@
 -keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
 
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
+
+-keep class com.google.errorprone.annotations.** { *; }
+-keep class com.google.j2objc.annotations.** { *; }
+-dontwarn class com.google.j2objc.annotations.**
+-dontwarn class com.google.errorprone.annotations.**
