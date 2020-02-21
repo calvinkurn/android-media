@@ -5,6 +5,7 @@ ext {
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
             resourcesCommon                 : ":features:common:resources_common",
+            qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
             commonTradein                   : ":features:common:common_tradein",
@@ -113,7 +114,6 @@ ext {
             productDetail                   : ":features:merchant:product_detail",
             atc_variant                     : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
-            scanner                         : ":features:scanner",
             ovop2p                          : ":features:ovop2p",
             productManageItem               : ":features:merchant:product_manage_item",
             productManageList               : ":features:merchant:product_manage_list",

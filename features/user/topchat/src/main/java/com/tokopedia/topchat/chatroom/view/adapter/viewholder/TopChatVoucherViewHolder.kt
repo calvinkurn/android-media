@@ -19,7 +19,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopChatVoucherListener)
     : BaseChatViewHolder<TopChatVoucherViewModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
 
-    private var chatStatus: ImageView = itemView.findViewById(R.id.chat_status)
+    private var chatStatus: ImageView = itemView.findViewById(com.tokopedia.chat_common.R.id.chat_status)
     private var isOwner: Boolean = false
     private lateinit var model: TopChatVoucherViewModel
     private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)

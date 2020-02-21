@@ -1,16 +1,12 @@
 package com.tokopedia.topchat.chatlist.domain.usecase;
 
-import android.util.Pair;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository;
-import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
+import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -43,19 +39,6 @@ public class DeleteMessageListUseCase extends UseCase<DeleteChatListViewModel> {
         requestParams.putString("page", String.valueOf(page));
         requestParams.putString("per_page", "10");
         requestParams.putString("platform", "android");
-        return requestParams;
-    }
-
-    public static RequestParams generateParam(List<Pair> listMove) {
-        RequestParams requestParams = RequestParams.create();
-        JsonObject object = new JsonObject();
-        JsonArray array = new JsonArray();
-        for (Pair item : listMove) {
-            ChatListViewModel first = (ChatListViewModel) item.first;
-            array.add(Integer.valueOf(first.getId()));
-        }
-        object.add("list_msg_id", array);
-        requestParams.putObject("json", object);
         return requestParams;
     }
 

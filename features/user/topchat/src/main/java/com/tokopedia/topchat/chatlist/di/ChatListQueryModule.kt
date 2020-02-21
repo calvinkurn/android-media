@@ -8,8 +8,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.pojo.ChatNotificationsPojo
-import com.tokopedia.topchat.chatlist.pojo.NotificationsPojo
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
