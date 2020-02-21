@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -51,29 +53,22 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
+    lateinit var topupBillsViewModelFactory: ViewModelProvider.Factory
     lateinit var topupBillsViewModel: TopupBillsViewModel
     @Inject
     lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
 
-    var promoTicker: TickerPromoStackingCheckoutView? = null
-        set(value) {
-            field = value
-            promoData?.run { setupPromoTicker(this) }
-        }
-    private var promoData: PromoData? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                setupPromoTicker(value)
-            }
-        }
+    open var promoTicker: TickerPromoStackingCheckoutView? = null
 
-    // Promo Checkout
+    // Promo
     var promoCode: String = ""
     var isCoupon: Boolean = false
     open var categoryId: Int = 0
     var productId: Int = 0
     var price: Long? = null
+
+    // Express Checkout
+    var isExpressCheckout = false
     var isInstantCheckout = false
 
     var categoryName = ""
@@ -81,6 +76,19 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     var productName = ""
 
     private var checkVoucherJob: Job? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.let {
+            val viewModelProvider = ViewModelProviders.of(it, topupBillsViewModelFactory)
+            topupBillsViewModel = viewModelProvider.get(TopupBillsViewModel::class.java)
+        }
+
+        savedInstanceState?.run {
+            promoCode = this.getString(EXTRA_PROMO_CODE, "")
+        }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -184,7 +192,8 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
                     data?.let {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
-                            promoData = it.getParcelableExtra(EXTRA_PROMO_DATA)
+                            val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA)
+                            setupPromoTicker(promoData)
                         }
                     }
                 }
@@ -252,8 +261,8 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         return promoModel
     }
 
-    private fun setupPromoTicker(data: PromoData) {
-        promoTicker?.run {
+    fun setupPromoTicker(data: PromoData) {
+        promoTicker?.apply {
             promoCode = if (data.isActive()) data.promoCode else ""
             isCoupon = data.typePromo == PromoData.TYPE_COUPON
             title = data.title
@@ -264,6 +273,12 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
                 else -> TickerPromoStackingCheckoutView.State.EMPTY
             }
         }
+        if (promoTicker == null) onPromoTickerNull(data)
+    }
+
+    // Optional function if promo ticker can be null e.g General Template Promo
+    open fun onPromoTickerNull(data: PromoData) {
+
     }
 
     private fun resetPromoTicker() {
@@ -320,7 +335,9 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     abstract fun processEnquiry(data: TopupBillsEnquiryData)
 
-    abstract fun processMenuDetail(data: TopupBillsMenuDetail)
+    open fun processMenuDetail(data: TopupBillsMenuDetail) {
+        isExpressCheckout = data.isExpressCheckout
+    }
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 

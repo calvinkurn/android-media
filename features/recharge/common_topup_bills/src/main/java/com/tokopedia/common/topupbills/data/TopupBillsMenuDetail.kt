@@ -21,5 +21,11 @@ class TopupBillsMenuDetail(
         val tickers: List<TopupBillsTicker>,
         @SerializedName("banners")
         @Expose
-        val banners: List<TopupBillsBanner>
+        val banners: List<TopupBillsBanner>,
+        @SerializedName("onboardingDescriptions")
+        @Expose
+        val onboardingDescriptions: List<String> = listOf(),
+        @SerializedName("express_checkout")
+        @Expose
+        val isExpressCheckout: Boolean = false
 )

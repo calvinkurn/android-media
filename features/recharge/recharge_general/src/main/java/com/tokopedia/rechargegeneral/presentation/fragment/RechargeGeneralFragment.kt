@@ -43,6 +43,8 @@ import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
@@ -72,9 +74,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
     lateinit var viewModel: RechargeGeneralViewModel
-    @Inject
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
@@ -106,6 +106,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
     private var hasInputData = false
 
+    var pendingPromoData: PromoData? = null
+    override var promoTicker: TickerPromoStackingCheckoutView? = null
+        set(value) {
+            field = value
+            pendingPromoData?.run {
+                setupPromoTicker(this)
+                pendingPromoData = null
+            }
+        }
+
     private var enquiryLabel = ""
     private var enquiryData: TopupBillsEnquiry? = null
 
@@ -129,7 +139,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
             val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
-            if (savedEnquiryData != null) enquiryData = savedEnquiryData
+            if (savedEnquiryData != null) {
+                enquiryData = savedEnquiryData
+                productId = enquiryData?.attributes?.productId?.toIntOrNull() ?: 0
+                price = enquiryData?.attributes?.price?.toLongOrNull() ?: 0L
+            }
 
             adapter = RechargeGeneralAdapter(it, RechargeGeneralAdapterFactory(this), this)
         }
@@ -751,6 +765,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
+        super.processMenuDetail(data)
         (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         categoryName = data.catalog.name.toLowerCase()
         renderTickers(data.tickers)
@@ -804,8 +819,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             val checkoutView = RechargeGeneralCheckoutBottomSheet(context, listener = this)
             checkoutView.setPayload(data)
             checkoutBottomSheet.setChild(checkoutView)
+
             promoTicker = checkoutView.getPromoTicker()
             promoTicker?.actionListener = getPromoListener()
+            // Check promo
+            if (promoCode.isNotEmpty()
+                    && categoryId > 0
+                    && productId > 0) {
+                checkVoucher()
+            }
 
             fragmentManager?.let { fm ->
                 checkoutBottomSheet.show(fm, "checkout view bottom sheet")
@@ -818,12 +840,20 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         return null
     }
 
+    override fun onPromoTickerNull(data: PromoData) {
+        pendingPromoData = data
+    }
+
     override fun onClickCheckout(data: TopupBillsEnquiry) {
-//        processCheckout(data)
         // Put operatorId in input list
         val inputs = inputData.toMutableMap()
         inputs[ENQUIRY_PARAM_OPERATOR_ID] = operatorId.toString()
-        processExpressCheckout(inputs)
+
+        if (isExpressCheckout) {
+            processExpressCheckout(inputs)
+        } else {
+            processCheckout(data)
+        }
     }
 
     private fun processCheckout(data: TopupBillsEnquiry) {
