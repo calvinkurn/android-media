@@ -48,6 +48,7 @@
     <string name="flight_search_filter_airplane">Maskapai penerbangan</string>
     <string name="flight_search_filter_facility">Fasilitas</string>
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
+    <string name="flight_search_filter_arrival_time">Waktu Tiba</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
     <string name="flight_search_filter_ticket_price_label">Harga tiket</string>
     <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
@@ -77,6 +78,8 @@
     <string name="direct">Langsung</string>
     <string name="one_trasit">1 Transit</string>
     <string name="two_transit">2 Transit</string>
+    <string name="one_transit_without_1">Transit</string>
+    <string name="two_plus_transit">2+ Transit</string>
     <string name="more_than_2_transit">Lebih dari 2 transit</string>
     <string name="refundable">Refundable</string>
     <string name="non_refundable">Non-refundable</string>

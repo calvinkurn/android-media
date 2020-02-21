@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
@@ -163,6 +164,11 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     override fun onDepartureTimeFilterChanged(departureTimeList: List<DepartureTimeEnum>) {
         flightFilterViewModel.filterDepartureTime(departureTimeList)
     }
+
+    override fun onArrivalTimeFilterChanged(arrivalTimeList: List<DepartureTimeEnum>) {
+        flightFilterViewModel.filterArrivalTime(arrivalTimeList)
+    }
+
 
     override fun onClickSeeAllAirline() {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

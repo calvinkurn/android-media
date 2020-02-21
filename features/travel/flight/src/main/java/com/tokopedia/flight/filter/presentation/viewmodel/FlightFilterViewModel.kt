@@ -84,6 +84,12 @@ class FlightFilterViewModel @Inject constructor(
         mutableFilterModel.postValue(updatedFilterModel)
     }
 
+    fun filterArrivalTime(selectedArrivalTimes: List<DepartureTimeEnum>) {
+        val updatedFilterModel = (filterModel.value as FlightFilterModel)
+        updatedFilterModel.arrivalTimeList = selectedArrivalTimes
+        mutableFilterModel.postValue(updatedFilterModel)
+    }
+
     fun getSelectedSort(): Int = selectedSort.value ?: TravelSortOption.CHEAPEST
 
     fun getFlightCount() {
@@ -115,7 +121,7 @@ class FlightFilterViewModel @Inject constructor(
             items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
 
             // Arrival Time
-            items.add(ARRIVAL_TIME_ORDER, PriceRangeModel())
+            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
 
             // Airline
             items.add(AIRLINE_ORDER, FlightFilterAirlineModel())

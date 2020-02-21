@@ -22,6 +22,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     private List<TransitEnum> transitTypeList;
     private List<String> airlineList;
     private List<DepartureTimeEnum> departureTimeList;
+    private List<DepartureTimeEnum> arrivalTimeList;
     private List<RefundableEnum> refundableTypeList;
     private List<FlightFilterFacilityEnum> facilityList;
     private boolean isHasFilter = false;
@@ -34,30 +35,45 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     }
 
     protected FlightFilterModel(Parcel in) {
-        priceMin = in.readInt();
-        priceMax = in.readInt();
-        durationMin = in.readInt();
-        durationMax = in.readInt();
-        airlineList = in.createStringArrayList();
-        isHasFilter = in.readByte() != 0;
-        isSpecialPrice = in.readByte() != 0;
-        isBestPairing = in.readByte() != 0;
-        isReturn = in.readByte() != 0;
-        journeyId = in.readString();
+        this.priceMin = in.readInt();
+        this.priceMax = in.readInt();
+        this.durationMin = in.readInt();
+        this.durationMax = in.readInt();
+        this.transitTypeList = new ArrayList<>();
+        in.readList(this.transitTypeList, TransitEnum.class.getClassLoader());
+        this.airlineList = in.createStringArrayList();
+        this.departureTimeList = new ArrayList<>();
+        in.readList(this.departureTimeList, DepartureTimeEnum.class.getClassLoader());
+        this.arrivalTimeList = new ArrayList<>();
+        in.readList(this.arrivalTimeList, DepartureTimeEnum.class.getClassLoader());
+        this.refundableTypeList = new ArrayList<>();
+        in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
+        this.facilityList = new ArrayList<>();
+        in.readList(this.facilityList, FlightFilterFacilityEnum.class.getClassLoader());
+        this.isHasFilter = in.readByte() != 0;
+        this.isSpecialPrice = in.readByte() != 0;
+        this.isBestPairing = in.readByte() != 0;
+        this.isReturn = in.readByte() != 0;
+        this.journeyId = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(priceMin);
-        dest.writeInt(priceMax);
-        dest.writeInt(durationMin);
-        dest.writeInt(durationMax);
-        dest.writeStringList(airlineList);
+        dest.writeInt(this.priceMin);
+        dest.writeInt(this.priceMax);
+        dest.writeInt(this.durationMin);
+        dest.writeInt(this.durationMax);
+        dest.writeList(this.transitTypeList);
+        dest.writeStringList(this.airlineList);
+        dest.writeList(this.departureTimeList);
+        dest.writeList(this.arrivalTimeList);
+        dest.writeList(this.refundableTypeList);
+        dest.writeList(this.facilityList)
         dest.writeByte((byte) (isHasFilter ? 1 : 0));
         dest.writeByte((byte) (isSpecialPrice ? 1 : 0));
         dest.writeByte((byte) (isBestPairing ? 1 : 0));
         dest.writeByte((byte) (isReturn ? 1 : 0));
-        dest.writeString(journeyId);
+        dest.writeString(this.journeyId);
     }
 
     @Override
@@ -133,6 +149,14 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         this.departureTimeList = departureTimeList;
     }
 
+    public List<DepartureTimeEnum> getArrivalTimeList() {
+        return arrivalTimeList;
+    }
+
+    public void setArrivalTimeList(List<DepartureTimeEnum> arrivalTimeList) {
+        this.arrivalTimeList = arrivalTimeList;
+    }
+
     public List<RefundableEnum> getRefundableTypeList() {
         return refundableTypeList;
     }
@@ -186,6 +210,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         flightFilterModel.setTransitTypeList(getCopyOfTransitList());
         flightFilterModel.setAirlineList(getCopyOfAirlineList());
         flightFilterModel.setDepartureTimeList(getCopyOfDepartureList());
+        flightFilterModel.setArrivalTimeList(getCopyOfArrivalList());
+        flightFilterModel.setFacilityList(getCopyOfFacilityList());
         flightFilterModel.setRefundableTypeList(getCopyOfRefundableList());
         flightFilterModel.setSpecialPrice(isSpecialPrice());
         flightFilterModel.setBestPairing(isBestPairing());
@@ -212,6 +238,26 @@ public class FlightFilterModel implements Parcelable, Cloneable {
             }
         }
         return departureTimeEnumList;
+    }
+
+    private List<DepartureTimeEnum> getCopyOfArrivalList() {
+        List<DepartureTimeEnum> arrivalTimeEnumList = new ArrayList<>();
+        if (getArrivalTimeList() != null) {
+            for (int i = 0, sizei = getArrivalTimeList().size(); i < sizei; i++) {
+                arrivalTimeEnumList.add(getArrivalTimeList().get(i));
+            }
+        }
+        return arrivalTimeEnumList;
+    }
+
+    private List<FlightFilterFacilityEnum> getCopyOfFacilityList() {
+        List<FlightFilterFacilityEnum> facilityEnumList = new ArrayList<>();
+        if (getFacilityList() != null) {
+            for (int i = 0, sizei = getFacilityList().size(); i < sizei; i++) {
+                facilityEnumList.add(getFacilityList().get(i));
+            }
+        }
+        return facilityEnumList;
     }
 
     private List<String> getCopyOfAirlineList() {
@@ -256,6 +302,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
                 (this.transitTypeList != null && this.transitTypeList.size() > 0) ||
                 (this.airlineList != null && this.airlineList.size() > 0) ||
                 (this.departureTimeList != null && this.departureTimeList.size() > 0) ||
+                (this.arrivalTimeList != null && this.arrivalTimeList.size() > 0) ||
                 (this.refundableTypeList != null && this.refundableTypeList.size() > 0)) ||
                 (this.facilityList != null && this.facilityList.size() > 0);
     }

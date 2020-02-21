@@ -13,6 +13,7 @@ interface FlightFilterSortListener {
     fun onClickSeeAllSort()
     fun onTransitFilterChanged(transitTypeList: List<TransitEnum>)
     fun onDepartureTimeFilterChanged(departureTimeList: List<DepartureTimeEnum>)
+    fun onArrivalTimeFilterChanged(arrivalTimeList: List<DepartureTimeEnum>)
     fun onClickSeeAllAirline()
 
     fun getAirlineList(): List<AirlineStat>
