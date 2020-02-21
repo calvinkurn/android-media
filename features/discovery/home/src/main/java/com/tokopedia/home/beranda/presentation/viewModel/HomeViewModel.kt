@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
@@ -140,11 +141,11 @@ open class HomeViewModel @Inject constructor(
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var hasGeoLocationPermission = false
     private var isNeedShowGeoLocation = false
+    private var headerViewModel: HeaderViewModel? = null
 
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
     init {
-        initHeaderViewModelData()
         initFlow()
     }
 
@@ -207,28 +208,6 @@ open class HomeViewModel @Inject constructor(
         getTokopoint()
     }
 
-    private fun initHeaderViewModelData() {
-        //check if headerviewmodel is exist
-        val headerViewModel = _homeLiveData.value?.list?.find {
-            visitable-> visitable is HeaderViewModel
-        }
-
-        headerViewModel?.let {
-            if (headerViewModel is HeaderViewModel) {
-                updateHeaderViewModel(
-                        null,
-                        null,
-                        null,
-                        null,
-                        false,
-                        null,
-                        null
-                )
-                return
-            }
-        }
-    }
-
     private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
                                       homeHeaderWalletAction: HomeHeaderWalletAction? = null,
                                       tokopointHomeDrawerData: TokopointHomeDrawerData? = null,
@@ -236,35 +215,32 @@ open class HomeViewModel @Inject constructor(
                                       isPendingTokocashChecked: Boolean? = null,
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
+        if(headerViewModel == null){
+            headerViewModel = _homeLiveData.value?.list?.find { visitable-> visitable is HeaderViewModel } as HeaderViewModel?
+        }
 
-        val currentHeaderViewModel = _homeLiveData.value?.list?.find {
-            visitable-> visitable is HeaderViewModel }
+        val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderViewModel }?.index ?: -1
 
-        if (currentHeaderViewModel is HeaderViewModel) {
-            val headerViewModel = currentHeaderViewModel.copy()
+        headerViewModel?.let { headerViewModel ->
+            tokopointsDrawer?.let { headerViewModel.tokopointsDrawerHomeData = it }
+            homeHeaderWalletAction?.let { headerViewModel.homeHeaderWalletActionData = it }
+            cashBackData?.let { headerViewModel.cashBackData = it }
+            tokopointHomeDrawerData?.let { headerViewModel.tokoPointDrawerData = it }
+            isPendingTokocashChecked?.let { headerViewModel.isPendingTokocashChecked = it }
+            isWalletDataError?.let { headerViewModel.isWalletDataError = it }
+            isTokoPointDataError?.let { headerViewModel.isTokoPointDataError = it }
+            headerViewModel.isUserLogin = userSession.isLoggedIn
 
-            val currentPosition = _homeLiveData.value?.list?.indexOf(headerViewModel)?:-1
-
-            headerViewModel.let {
-                tokopointsDrawer?.let { headerViewModel.tokopointsDrawerHomeData = it }
-                homeHeaderWalletAction?.let { headerViewModel.homeHeaderWalletActionData = it }
-                cashBackData?.let { headerViewModel.cashBackData = it }
-                tokopointHomeDrawerData?.let { headerViewModel.tokoPointDrawerData = it }
-                isPendingTokocashChecked?.let { headerViewModel.isPendingTokocashChecked = it }
-                isWalletDataError?.let { headerViewModel.isWalletDataError = it }
-                isTokoPointDataError?.let { headerViewModel.isTokoPointDataError = it }
-                headerViewModel.isUserLogin = userSession.isLoggedIn
-
-                val homeListWithNewHeader = _homeLiveData.value?.list?.toMutableList()
-                homeListWithNewHeader?.let {
-                    it[currentPosition] = headerViewModel
-                    val newHomeViewModel = _homeLiveData.value?.copy(
-                            list = it
-                    )
-                    _homeLiveData.postValue(newHomeViewModel)
-                }
+            val homeListWithNewHeader = _homeLiveData.value?.list?.copy()?.toMutableList()
+            homeListWithNewHeader?.let {
+                it[currentPosition] = headerViewModel.copy()
+                val newHomeViewModel = _homeLiveData.value?.copy(
+                        list = it
+                )
+                _homeLiveData.postValue(newHomeViewModel)
             }
         }
+
     }
 
     private fun getReviewData() {
@@ -373,23 +349,23 @@ open class HomeViewModel @Inject constructor(
 // =================================================================================
 
     private fun insertSuggestedReview(suggestedProductReview: SuggestedProductReview) {
-        val findReviewViewModel =
-                _homeLiveData.value?.list?.find { visitable -> visitable is ReviewViewModel }
-        val currentList = _homeLiveData.value?.list?.toMutableList()
-        currentList?.let {
-            val indexOfReviewViewModel = currentList.indexOf(findReviewViewModel)
-            if (findReviewViewModel is ReviewViewModel) {
-                val newFindReviewViewModel = findReviewViewModel.copy(
-                        suggestedProductReview = suggestedProductReview
-                )
-                it[indexOfReviewViewModel] = newFindReviewViewModel
-
-                val newHomeViewModel = _homeLiveData.value?.copy(
+        val findReviewViewModel = _homeLiveData.value?.list?.find { visitable -> visitable is ReviewViewModel }
+        val indexOfReviewViewModel = _homeLiveData.value?.list?.indexOf(findReviewViewModel) ?: -1
+        if(indexOfReviewViewModel != -1 && findReviewViewModel is ReviewViewModel){
+            val newFindReviewViewModel = findReviewViewModel.copy(
+                suggestedProductReview = suggestedProductReview
+            )
+            val currentList = _homeLiveData.value?.list?.copy()?.toMutableList()
+            currentList?.set(indexOfReviewViewModel, newFindReviewViewModel)
+            val newHomeViewModel = currentList?.let {
+                _homeLiveData.value?.copy(
                         list = it
                 )
-                _homeLiveData.postValue(newHomeViewModel)
             }
+            _homeLiveData.postValue(newHomeViewModel)
+
         }
+
     }
 
     private fun removeSuggestedReview(homeDataModel: HomeDataModel?): HomeDataModel? {
