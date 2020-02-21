@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tkpd.tkpdreputation.R
@@ -12,7 +13,7 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.DefaultI
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.ImageReviewViewHolder
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.OnAddImageClick
 
-class ImageReviewAdapter(private val addDataClick: OnAddImageClick) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
+class ImageReviewAdapter(private val addDataClick: OnAddImageClick, private val editText: View) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
 
     companion object {
         const val TYPE_DEFAULT = 1
@@ -30,11 +31,11 @@ class ImageReviewAdapter(private val addDataClick: OnAddImageClick) : RecyclerVi
         return when (position) {
             TYPE_DEFAULT -> {
                 DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review, view, false),
-                        addDataClick)
+                        addDataClick, editText)
             }
             TYPE_IMAGE -> {
                 return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false),
-                        addDataClick)
+                        addDataClick, editText)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }

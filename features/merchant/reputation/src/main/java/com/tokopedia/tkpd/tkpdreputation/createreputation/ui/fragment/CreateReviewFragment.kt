@@ -11,11 +11,8 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -107,7 +104,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private lateinit var animatedReviewPicker: AnimatedReputationView
     private lateinit var createReviewViewModel: CreateReviewViewModel
     private val imageAdapter: ImageReviewAdapter by lazy {
-        ImageReviewAdapter(this::addImageClick)
+        ImageReviewAdapter(this::addImageClick, edit_text_review)
     }
     private var isLowDevice = false
     private var selectedImage: ArrayList<String> = arrayListOf()
@@ -220,6 +217,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                     }
                 }
                 generateReviewBackground(position)
+                clearFocusAndHideSoftInput(view)
             }
         })
         animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
@@ -246,18 +244,19 @@ class CreateReviewFragment : BaseDaggerFragment() {
             if (anonymous_cb.isChecked) {
                 reviewTracker.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
             }
+            clearFocusAndHideSoftInput(view)
         }
 
-        edit_text_review.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(text: Editable) {
+        edit_text_review.setOnFocusChangeListener { _, _ ->
+            if(!edit_text_review.isFocused) {
                 reviewTracker.reviewOnMessageChangedTracker(
                         orderId,
                         productId.toString(10),
-                        text.toString().isEmpty(),
+                        edit_text_review.text.toString().isEmpty(),
                         false
                 )
 
-                if (text.toString().isEmpty() && !shouldIncreaseProgressBar) {
+                if (edit_text_review.text.toString().isEmpty() && !shouldIncreaseProgressBar) {
                     shouldIncreaseProgressBar = true
                     stepper_review.progress = stepper_review.progress - 1
                 } else if (shouldIncreaseProgressBar) {
@@ -265,14 +264,19 @@ class CreateReviewFragment : BaseDaggerFragment() {
                     shouldIncreaseProgressBar = false
                 }
             }
+        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        review_container.setOnTouchListener { _, _ ->
+            if(edit_text_review.isFocused){
+                clearFocusAndHideSoftInput(view)
             }
+            return@setOnTouchListener false
+        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-        })
+        rv_img_review.setOnTouchListener { _, _ ->
+            clearFocusAndHideSoftInput(view)
+            return@setOnTouchListener false
+        }
 
         rv_img_review?.adapter = imageAdapter
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
@@ -586,6 +590,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
             }
             finish()
         }
+    }
+
+    private fun clearFocusAndHideSoftInput(view: View) {
+        edit_text_review.clearFocus()
+        val imm = view.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     class BackgroundCustomTarget(private val context: Context) : CustomTarget<Bitmap>() {

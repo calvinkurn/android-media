@@ -7,9 +7,10 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewM
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.OnAddImageClick
 import kotlinx.android.synthetic.main.item_image_chooser_review.view.*
 
-class ImageReviewViewHolder(val view: View, private val addDataClick: OnAddImageClick) : BaseImageReviewViewHolder<ImageReviewViewModel>(view) {
+class ImageReviewViewHolder(val view: View, private val addDataClick: OnAddImageClick, private val editText: View) : BaseImageReviewViewHolder<ImageReviewViewModel>(view) {
     override fun bind(element: ImageReviewViewModel) {
         view.setOnClickListener {
+            editText.clearFocus()
             addDataClick.invoke()
         }
         if (adapterPosition == 3 && element.shouldDisplayOverlay) {
