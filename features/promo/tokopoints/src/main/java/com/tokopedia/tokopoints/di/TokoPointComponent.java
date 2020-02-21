@@ -11,7 +11,7 @@ import dagger.Component;
 @Component(dependencies = BaseAppComponent.class )
 public interface TokoPointComponent {
 
-    void inject(TokoPointsHomeFragmentNew fragment);
+
 
 
 

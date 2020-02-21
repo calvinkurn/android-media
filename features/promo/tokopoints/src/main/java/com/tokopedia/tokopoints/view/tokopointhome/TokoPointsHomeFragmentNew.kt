@@ -19,6 +19,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
@@ -30,6 +31,7 @@ import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.google.android.material.tabs.TabLayout.ViewPagerOnTabSelectedListener
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -45,10 +47,12 @@ import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter
+import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.CustomViewPager
@@ -61,8 +65,7 @@ import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import javax.inject.Inject
@@ -88,7 +91,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var appBarHeader: AppBarLayout? = null
     private var mRvDynamicLinks: RecyclerView? = null
     @Inject
-    lateinit var mPresenter: TokoPointsHomePresenterNew
+    lateinit var viewFactory: ViewModelFactory
+    private val mPresenter: TokoPointsHomeViewModel by lazy { ViewModelProviders.of(this,viewFactory).get(TokoPointsHomeViewModel::class.java) }
     private var mSumToken = 0
     private var mValueMembershipDescription: String? = null
     private var mStartPurchaseBottomSheet: StartPurchaseBottomSheet? = null
@@ -247,9 +251,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mPresenter!!.attachView(this)
         initListener()
-        mPresenter!!.getTokoPointDetail()
+        mPresenter.getTokoPointDetail()
         val localCacheHandler = LocalCacheHandler(appContext, CommonConstant.PREF_TOKOPOINTS)
         if (!localCacheHandler.getBoolean(CommonConstant.PREF_KEY_ON_BOARDED)) {
             showOnBoardingTooltip(getString(R.string.tp_label_know_tokopoints), getString(R.string.tp_message_tokopoints_on_boarding))
@@ -259,17 +262,81 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         tokoPointToolbar!!.setTitle(R.string.tp_title_tokopoints)
         tokoPointToolbar!!.setOnTokoPointToolbarClickListener(this)
         TokoPointsNotificationManager.fetchNotification(activity, "main", childFragmentManager)
-        mPresenter!!.tokopointOnboarding2020()
+        mPresenter.tokopointOnboarding2020(this)
+        initObserver()
     }
 
+    private fun initObserver() {
+        addStartValidateObserver()
+        addStartSaveCouponObserver()
+        addRedeemCouponObserver()
+        addTokopointDetailObserver()
+        addTokenDetailObserver()
+        addCouponCountObserver()
+    }
+
+    private fun addCouponCountObserver() = mPresenter.couponCountLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+            showTokoPointCoupon(it)
+        }
+    })
+
+    private fun addTokenDetailObserver() = mPresenter.tokoenDetailLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+            hideLoading()
+            onSuccessTokenDetail(it)
+            onFinishRendering()
+        }
+    })
+
+    private fun addTokopointDetailObserver() = mPresenter.tokopointDetailLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+           when(it){
+               is Loading -> showLoading()
+               is ErrorMessage -> {
+                   hideLoading()
+                   onError(it.data, NetworkDetector.isConnectedToInternet(context))
+                   onFinishRendering()
+               }
+               is Success -> {
+                   hideLoading()
+                   onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
+                   onFinishRendering()
+               }
+           }
+        }
+    })
+
+    private fun addRedeemCouponObserver() = mPresenter.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let { RouteManager.route(context,it) }
+    })
+
+    private fun addStartSaveCouponObserver() = mPresenter.startSaveCouponLiveData.observe(this , androidx.lifecycle.Observer {
+        it?.let {
+            when(it){
+                is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
+                is ValidationError<*, *> -> {
+                    if (it.data is ValidateMessageDialog){
+                        showValidationMessageDialog(it.data.item,it.data.title,it.data.desc,it.data.messageCode)
+                    }
+                }
+            }
+        }
+    })
+
+    private fun addStartValidateObserver() = mPresenter.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+        it?.let {
+            showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
+        }
+    })
+
     override fun onDestroy() {
-        mPresenter!!.destroyView()
         super.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
-        mPresenter!!.couponCount
+        mPresenter.couponCount
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
@@ -299,7 +366,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun initInjector() {
-        getComponent(TokoPointComponent::class.java).inject(this)
+        getComponent(TokopointBundleComponent::class.java).inject(this)
     }
 
     override fun onClick(source: View) {
@@ -480,7 +547,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
         adb.setPositiveButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
             //Call api to validate the coupon
-            mPresenter!!.redeemCoupon(code, cta)
+            mPresenter.redeemCoupon(code, cta)
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,

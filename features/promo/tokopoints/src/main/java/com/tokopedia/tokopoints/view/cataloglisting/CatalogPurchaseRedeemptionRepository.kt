@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.cataloglisting
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.ApplyCouponBaseEntity
 import com.tokopedia.tokopoints.view.model.CatalogStatusOuter
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity
@@ -12,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@TokoPointScope
 open class CatalogPurchaseRedeemptionRepository @Inject constructor(private val map : Map<String, String>) {
 
     @Inject

@@ -26,10 +26,10 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import java.util.*
 
-class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomePresenterNew, sections: List<SectionContent>?) : PagerAdapter() {
+class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeViewModel, sections: List<SectionContent>?) : PagerAdapter() {
     private val mLayoutInflater: LayoutInflater
     private val mSections: List<SectionContent>?
-    private val mPresenter: TokoPointsHomePresenterNew
+    private val mPresenter: TokoPointsHomeViewModel
     private val swipeToRefresh = arrayOfNulls<SwipeToRefresh>(2)
     private var countDownView: CountDownView? = null
     private val mCouponListAdapterList: ArrayList<CouponListAdapter>? = ArrayList()

@@ -13,13 +13,15 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
+import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.user.session.UserSession
 
-class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokoPointComponent?>, onAppBarCollapseListener {
-    private var tokoPointComponent: TokoPointComponent? = null
+class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
+    private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     private var mUserSession: UserSession? = null
     private var initialLoggedInState = false
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,13 +47,12 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokoPointCo
         }
     }
 
-    override fun getComponent(): TokoPointComponent {
-        if (tokoPointComponent == null) initInjector()
-        return tokoPointComponent!!
+    override fun getComponent(): TokopointBundleComponent {
+        return tokoPointComponent
     }
 
-    private fun initInjector() {
-        tokoPointComponent = DaggerTokoPointComponent.builder()
+    private fun initInjector() : TokopointBundleComponent {
+        return DaggerTokopointBundleComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
     }
