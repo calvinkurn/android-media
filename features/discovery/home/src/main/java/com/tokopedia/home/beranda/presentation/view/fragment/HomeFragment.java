@@ -950,7 +950,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-
+        adapter.resetImpressionHomeBanner();
         resetFeedState();
         removeNetworkError();
         if (viewModel != null) {

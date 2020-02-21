@@ -47,11 +47,15 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     override fun bind(element: BannerViewModel, payloads: MutableList<Any>) {
-        slidesList = element.slides
-        this.isCache = element.isCache
-        element.slides?.let {
-            circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
-            indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+        try {
+            slidesList = element.slides
+            this.isCache = element.isCache
+            element.slides?.let {
+                circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
+                indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
         }
     }
 
@@ -129,6 +133,10 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     fun onResume(){
         circularViewPager.resetImpressions()
         circularViewPager.resumeAutoScroll()
+    }
+
+    fun resetImpression(){
+        circularViewPager.resetImpressions()
     }
 
     fun onPause(){
