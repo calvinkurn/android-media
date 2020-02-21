@@ -394,3 +394,6 @@
 -dontwarn android.test.**
 -dontwarn org.mockito.**
 -dontwarn org.junit.**
+
+-keep class com.google.errorprone.annotations.** { *; }
+-keep class com.google.j2objc.annotations.** { *; }
