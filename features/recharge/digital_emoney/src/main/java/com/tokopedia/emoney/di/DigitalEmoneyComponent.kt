@@ -2,6 +2,7 @@ package com.tokopedia.emoney.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.emoney.view.activity.NfcCheckBalanceActivity
+import com.tokopedia.emoney.view.fragment.NfcCheckBalanceFragment
 
 import dagger.Component
 
@@ -11,4 +12,5 @@ import dagger.Component
 interface DigitalEmoneyComponent {
 
     fun inject(nfcCheckBalanceFragment: NfcCheckBalanceActivity)
+    fun inject(nfcCheckBalanceFragment: NfcCheckBalanceFragment)
 }

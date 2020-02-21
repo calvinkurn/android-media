@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.emoney.viewmodel.BrizziBalanceViewModel
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
+import com.tokopedia.emoney.viewmodel.NfcCheckBalanceViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -27,5 +28,10 @@ abstract class DigitalEmoneyViewModelModule {
     @IntoMap
     @ViewModelKey(BrizziBalanceViewModel::class)
     internal abstract fun brizziBalanceViewModel(customBalanceViewModel: BrizziBalanceViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(NfcCheckBalanceViewModel::class)
+    internal abstract fun nfcCheckBalanceViewModel(nfcBalanceViewModel: NfcCheckBalanceViewModel): ViewModel
 
 }
