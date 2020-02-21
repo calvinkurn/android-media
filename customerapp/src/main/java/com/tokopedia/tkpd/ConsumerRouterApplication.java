@@ -85,7 +85,6 @@ import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.events.EventModuleRouter;
-import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
@@ -169,7 +168,6 @@ import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -194,7 +192,6 @@ import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -265,7 +262,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactNativeRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
-        SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
         OmsModuleRouter,
@@ -275,7 +271,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalBrowseRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
-        ScanQrCodeRouter,
         UnifiedOrderListRouter,
         RecentViewRouter,
         MerchantVoucherModuleRouter,
@@ -1131,12 +1126,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
         return intent;
     }
-
-    @Override
-    public Intent gotoQrScannerPage(boolean needResult) {
-        return QrScannerActivity.newInstance(this, needResult);
-    }
-
 
     @Override
     public Fragment getHomeFragment(boolean scrollToRecommendList) {
