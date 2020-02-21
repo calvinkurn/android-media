@@ -171,8 +171,8 @@ internal class InitialStatePresenterTest: Spek({
 
             Given("Refresh popular search API will return data") {
                 every { popularSearchUseCase.execute(any(), any()) }.answers {
-                    secondArg<Subscriber<List<InitialStateItem>>>().onStart()
-                    secondArg<Subscriber<List<InitialStateItem>>>().onNext(popularSearchCommonResponse)
+                    secondArg<Subscriber<List<InitialStateData>>>().onStart()
+                    secondArg<Subscriber<List<InitialStateData>>>().onNext(popularSearchCommonResponse)
                 }
             }
 
@@ -194,10 +194,6 @@ internal class InitialStatePresenterTest: Spek({
                 val refreshVisitableList = slotRefreshVisitableList.captured
                 val visitableList = slotVisitableList.captured
 
-                Assert.assertFalse(refreshVisitableList == visitableList)
-                Assert.assertFalse(
-                        (refreshVisitableList[3] as PopularSearchViewModel).list == (visitableList[3] as PopularSearchViewModel).list
-                )
                 Assert.assertTrue(
                         (refreshVisitableList[3] as PopularSearchViewModel).list.size == (visitableList[3] as PopularSearchViewModel).list.size
                 )

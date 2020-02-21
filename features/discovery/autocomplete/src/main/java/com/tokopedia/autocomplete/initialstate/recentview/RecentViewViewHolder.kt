@@ -1,16 +1,19 @@
 package com.tokopedia.autocomplete.initialstate.recentview
 
 import android.content.Context
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
@@ -67,12 +70,7 @@ class RecentViewViewHolder(
 
         inner class ItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
             fun bind(item: BaseItemInitialStateSearch) {
-                ImageHandler.loadImageRounded2(
-                        itemView.context,
-                        itemView.autocompleteRecentViewItem,
-                        item.imageUrl,
-                        6.0f
-                )
+                itemView.autocompleteRecentViewItem?.loadImageCircle(itemView.context, item.imageUrl)
                 itemView.autocompleteRecentViewItem?.setOnClickListener {
                     AutocompleteTracking.eventClickRecentView(
                             (adapterPosition + 1).toString(),
@@ -80,6 +78,14 @@ class RecentViewViewHolder(
                     )
                     clickListener.onItemClicked(item.applink, item.url)
                 }
+            }
+
+            private fun ImageView.loadImageCircle(context: Context, url: String){
+                Glide.with(context)
+                        .load(url)
+                        .transform(CenterCrop(), RoundedCorners(context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .into(this)
             }
         }
     }

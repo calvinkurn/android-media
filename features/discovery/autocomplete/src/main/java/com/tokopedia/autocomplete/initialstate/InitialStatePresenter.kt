@@ -30,7 +30,6 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private var querySearch = ""
-//    private var initialStateViewModel = InitialStateViewModel()
     private var listVistable = listOf<Visitable<*>>()
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {

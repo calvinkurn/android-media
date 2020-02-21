@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_44">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconSearch"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
@@ -35,7 +35,7 @@
         app:layout_constraintRight_toLeftOf="@id/actionRemoveButton"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/actionRemoveButton"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
