@@ -89,13 +89,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else if (host.contains("tokopedia")) {
                 openActivity(barcodeData);
             } else {
-                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
             }
         } else if (isOvoPayQrEnabled && barcodeData.toLowerCase().contains(OVO_TEXT)
                 || barcodeData.toLowerCase().contains(GPNR_TEXT)) {
             checkBarCode(barcodeData);
         } else {
-            getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+            getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
         }
     }
 
@@ -118,7 +118,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
             @Override
             public void onError(Throwable e) {
-                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
             }
 
             @Override
@@ -134,14 +134,14 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                             if (errorObject != null && errorObject.get(MESSAGE) != null
                                     && !TextUtils.isEmpty(errorObject.get(MESSAGE).getAsString())) {
                                 //error
-                                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                                getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
                             }
                         } else {
                             getView().goToPaymentPage(barcodeData, response);
                         }
                     }
                 } else {
-                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                    getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
                 }
 
             }
@@ -164,11 +164,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             public void onError(Throwable e) {
                 getView().hideProgressDialog();
                 if (e instanceof CampaignException) {
-                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                    QRTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
+                    getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
+                    QRTracking.eventScanQRCode("fail", context.getString(R.string.qr_scanner_msg_dialog_wrong_scan), "");
                 } else {
                     getView().showErrorNetwork(e);
-                    QRTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
+                    QRTracking.eventScanQRCode("fail", context.getString(R.string.qr_scanner_msg_dialog_wrong_scan), "");
                 }
             }
 
@@ -193,7 +193,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                     getView().finish();
                     return Unit.INSTANCE;
                 } else {
-                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                    getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
                     QRTracking.eventScanQRCode("fail", idCampaign, "");
                     return Unit.INSTANCE;
                 }
@@ -253,7 +253,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                             @Override
                             public void onNext(WalletBalanceModel walletBalanceModel) {
                                 getView().hideProgressDialog();
-                                getView().showErrorGetInfo(context.getString(R.string.no_available_feature));
+                                getView().showErrorGetInfo(context.getString(R.string.qr_scanner_no_available_feature));
                             }
                         }));
     }

@@ -2,7 +2,6 @@ package com.tokopedia.qrscanner;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -137,12 +136,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     void requestCameraPermissionDenied() {
-        Toast.makeText(this, getResources().getString(R.string.error_actiivty_open_permission), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(R.string.qr_scanner_error_actiivty_open_permission), Toast.LENGTH_LONG).show();
         finish();
     }
 
     void requestCameraPermissionNeverAsk() {
-        Toast.makeText(this, getResources().getString(R.string.error_actiivty_open_permission), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(R.string.qr_scanner_error_actiivty_open_permission), Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -181,7 +180,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     protected void initView() {
         initInjector();
         presenter.attachView(this);
-        updateTitle(getString(R.string.title_scan_qr));
+        updateTitle(getString(R.string.qr_scanner_title_scan_qr));
 
         final ImageView torch = (ImageView) findViewById(R.id.switch_flashlight);
         torch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
@@ -260,9 +259,9 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     public void showErrorGetInfo(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.title_dialog_wrong_scan));
+        builder.setTitle(getString(R.string.qr_scanner_title_dialog_wrong_scan));
         builder.setMessage(message);
-        builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
+        builder.setPositiveButton(getString(R.string.qr_scanner_btn_dialog_wrong_scan),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
