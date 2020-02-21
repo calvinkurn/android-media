@@ -1,4 +1,4 @@
-package com.tokopedia.common_wallet.pendingcashback.domain.coroutine
+package com.tokopedia.home.beranda.domain.interactor
 
 import com.tokopedia.common_wallet.pendingcashback.data.PendingCashbackEntity
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback

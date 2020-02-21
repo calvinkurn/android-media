@@ -22,7 +22,6 @@ import javax.inject.Inject
  * Created by nabillasabbaha on 2/7/18.
  */
 
-@Deprecated("Use GetCoroutinePendingCashbackUseCase coroutine")
 class GetPendingCasbackUseCase @Inject constructor(@param:ApplicationContext private val context: Context,
                                                    private val graphqlUseCase: GraphqlUseCase)
     : UseCase<PendingCashback>() {

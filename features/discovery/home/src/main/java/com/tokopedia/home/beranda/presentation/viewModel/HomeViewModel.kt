@@ -6,9 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common_wallet.balance.domain.coroutine.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
-import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer

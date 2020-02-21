@@ -5,9 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
-import com.tokopedia.common_wallet.balance.domain.coroutine.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
-import com.tokopedia.common_wallet.pendingcashback.domain.coroutine.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.R

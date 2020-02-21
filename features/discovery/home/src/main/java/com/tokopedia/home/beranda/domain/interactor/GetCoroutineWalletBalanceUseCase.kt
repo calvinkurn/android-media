@@ -1,4 +1,4 @@
-package com.tokopedia.common_wallet.balance.domain.coroutine
+package com.tokopedia.home.beranda.domain.interactor
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.CacheUtil
@@ -36,7 +36,7 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
     }
 
     private fun mapper(walletBalanceEntity: WalletBalanceEntity?): WalletBalanceModel {
-        walletBalanceEntity?.let {
+        walletBalanceEntity?.let { walletBalanceEntity ->
 
             val balanceTokoCash = WalletBalanceModel()
 
@@ -87,10 +87,10 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
 
             if (walletBalanceEntity.action != null) {
                 val actionBalance = ActionBalanceModel()
-                actionBalance.applinks = walletBalanceEntity.action.applinks
-                actionBalance.labelAction = walletBalanceEntity.action.text
-                actionBalance.redirectUrl = walletBalanceEntity.action.redirectUrl
-                actionBalance.visibility = walletBalanceEntity.action.visibility
+                actionBalance.applinks = walletBalanceEntity.action!!.applinks
+                actionBalance.labelAction = walletBalanceEntity.action!!.text
+                actionBalance.redirectUrl = walletBalanceEntity.action!!.redirectUrl
+                actionBalance.visibility = walletBalanceEntity.action!!.visibility
                 balanceTokoCash.actionBalanceModel = actionBalance
             }
 
@@ -117,7 +117,7 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
             //set ab tags
             val abTags = ArrayList<String>()
             if (walletBalanceEntity.abTags != null) {
-                for (abTag in walletBalanceEntity.abTags) {
+                for (abTag in walletBalanceEntity.abTags!!) {
                     abTags.add(abTag.tag)
                 }
             }

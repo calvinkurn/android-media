@@ -31,7 +31,6 @@ import javax.inject.Inject
  * Created by nabillasabbaha on 9/10/19.
  */
 
-@Deprecated("Use GetCoroutineWalletBalanceUseCase coroutine")
 class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext private val context: Context,
                                                   private val graphqlUseCase: GraphqlUseCase,
                                                   private val remoteConfig: RemoteConfig,
