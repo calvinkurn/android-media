@@ -69,41 +69,6 @@ public class ProductManageActivity extends BaseSellerReceiverDrawerActivity {
     }
 
     @Override
-    public void onErrorGetDeposit(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetNotificationDrawer(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetProfile(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetTokoCash(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetTopPoints(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onServerError() {
-        // no op
-    }
-
-    @Override
-    public void onTimezoneError() {
-        // no op
-    }
-
-    @Override
     protected int setDrawerPosition() {
         return TkpdState.DrawerPosition.MANAGE_PRODUCT;
     }
