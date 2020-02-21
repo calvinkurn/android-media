@@ -127,6 +127,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     fun onResume(){
+        circularViewPager.resetImpressions()
         circularViewPager.resumeAutoScroll()
     }
 
