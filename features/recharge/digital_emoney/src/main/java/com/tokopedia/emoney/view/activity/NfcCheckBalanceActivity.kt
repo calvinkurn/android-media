@@ -41,7 +41,7 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         processTagIntent(intent)
-        title = getString(R.string.title_digital_emoney)
+        title = getString(R.string.emoney_toolbar_title_etoll_check_balance)
     }
 
     /**
