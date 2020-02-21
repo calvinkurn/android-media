@@ -9,6 +9,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordViewModel
 import com.tokopedia.unifyprinciples.Typography
+import java.lang.StringBuilder
 
 /**
  * @author by yoasfs on 2020-02-18
@@ -39,7 +40,8 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>)
         fun bind(data : PopularKeywordViewModel) {
             ivImage.loadImage(data.imageUrl)
             tvProduct.text = data.title
-            tvCount.text = data.productCount
+            val countString = StringBuilder().append(data.productCount).append(" Produk")
+            tvCount.text = countString
         }
     }
 }
