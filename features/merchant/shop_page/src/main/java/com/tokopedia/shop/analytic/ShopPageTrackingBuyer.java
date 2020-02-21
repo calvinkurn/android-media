@@ -48,10 +48,10 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                     CATEGORY, NONE,
                     VARIANT, NONE,
                     LIST, joinDash(SHOPPAGE, shopId, etalaseEvent, loginNonLoginString),
-                    POSITION, productPosition
+                    POSITION, productPosition,
+                    DIMENSION_81, shopTypeDef,
+                    DIMENSION_79, shopId
             ));
-            event.put(DIMENSION_81, shopTypeDef);
-            event.put(DIMENSION_79, shopId);
             list.add(event);
         }
         return list;
@@ -208,9 +208,9 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     }
 
     public void clickWishlistProductResultPage(boolean isAdd,
-                              boolean isLogin,
-                              String selectedEtalaseName,
-                              CustomDimensionShopPageProduct customDimensionShopPage) {
+                                               boolean isLogin,
+                                               String selectedEtalaseName,
+                                               CustomDimensionShopPageProduct customDimensionShopPage) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
         String etalaseEvent = joinDash(String.format(SELECTED_ETALASE_CHIP, selectedEtalaseName), loginNonLoginString, SEARCH_RESULT);
         sendGeneralEvent(CLICK_SHOP_PAGE,
