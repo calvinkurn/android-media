@@ -22,14 +22,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_card_header"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:lines="1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
+            app:layout_constraintEnd_toStartOf="@+id/iv_edit_preference"
             app:layout_constraintStart_toStartOf="@+id/iv_card_header"
             app:layout_constraintTop_toTopOf="@+id/iv_card_header"
             app:typographyType="heading_5"
@@ -40,10 +40,11 @@
             android:id="@+id/iv_edit_preference"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_18"
+            android:layout_marginRight="@dimen/dp_18"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_card_header"
             app:srcCompat="@drawable/ic_system_action_gear_normal_24"
             tools:ignore="ContentDescription" />
 
@@ -156,8 +157,9 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_6"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_payment_name"
+            app:layout_constraintBottom_toTopOf="@+id/divider3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider2"
             tools:ignore="ContentDescription"
@@ -185,8 +187,8 @@
             android:layout_height="wrap_content"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
-            app:layout_constraintStart_toStartOf="@+id/iv_payment"
-            app:layout_constraintTop_toBottomOf="@+id/iv_payment"
+            app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="8098097230948209384" />
@@ -202,25 +204,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_edit_preference"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:paddingStart="@dimen/dp_6"
-            android:paddingLeft="@dimen/dp_6"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_12"
-            android:textColor="@color/Neutral_N700_68"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_edit_preference"
-            app:layout_constraintTop_toBottomOf="@+id/divider3"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="Atur Preferensi" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_choose_preference"
@@ -239,7 +222,7 @@
             app:layout_constraintTop_toBottomOf="@+id/divider3"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Pilih Preferensi"
+            tools:text="Jadikan Pilihan Utama"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,21 +24,42 @@ class AddressListFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         btn_save_address.setOnClickListener {
-            if(empty_state_order_list.visibility == View.VISIBLE) {
-                address_list_layout.visibility = View.VISIBLE
-                empty_state_order_list.visibility = View.GONE
-            } else {
-                address_list_layout.visibility = View.GONE
-                empty_state_order_list.visibility = View.VISIBLE
-            }
+            //            if(empty_state_order_list.visibility == View.VISIBLE) {
+//                address_list_layout.visibility = View.VISIBLE
+//                empty_state_order_list.visibility = View.GONE
+//            } else {
+//                address_list_layout.visibility = View.GONE
+//                empty_state_order_list.visibility = View.VISIBLE
+//            }
+            goToNextStep()
         }
 
         address_list_rv.adapter = adapter
         address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setStep()
+    }
+
+    private fun setStep() {
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            parent.showStepper()
+            parent.setStepperValue(25, true)
+        }
+    }
+
+    private fun goToNextStep() {
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            parent.addFragment(ShippingDurationFragment())
+            parent.setStepperValue(50, true)
+        }
     }
 
 }
