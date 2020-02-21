@@ -1,12 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 
-data class HomeViewModel(
+data class HomeDataModel(
         val homeFlag: HomeFlag = HomeFlag(),
         val list: List<Visitable<*>> = listOf(),
         val isCache: Boolean = false
@@ -18,5 +15,5 @@ data class HomeViewModel(
 }
 
 class HomeViewType{
-    fun type(homeViewModel: HomeViewModel): Int = -1
+    fun type(homeDataModel: HomeDataModel): Int = -1
 }

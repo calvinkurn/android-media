@@ -16,26 +16,26 @@
 
 package com.tokopedia.home.beranda.helper
 
-data class Resource<out T>(val status: Status, val data: T?, val error: Throwable?) {
+data class Result<out T>(val status: Status, val data: T?, val error: Throwable?) {
     companion object {
-        fun <T> success(data: T?): Resource<T> {
-            return Resource(
+        fun <T> success(data: T?): Result<T> {
+            return Result(
                     Status.SUCCESS,
                     data,
                     null
             )
         }
 
-        fun <T> error(error: Throwable, data: T? = null): Resource<T> {
-            return Resource(
+        fun <T> error(error: Throwable, data: T? = null): Result<T> {
+            return Result(
                     Status.ERROR,
                     data,
                     error
             )
         }
 
-        fun <T> loading(data: T?): Resource<T> {
-            return Resource(
+        fun <T> loading(data: T?): Result<T> {
+            return Result(
                     Status.LOADING,
                     data,
                     null
