@@ -8,14 +8,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.AddressListComponent
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.DaggerAddressListComponent
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address.AddressListFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.DaggerPreferenceEditComponent
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import kotlinx.android.synthetic.main.activity_preference_edit.*
 
-class PreferenceEditActivity : BaseActivity(), HasComponent<AddressListComponent> {
-    override fun getComponent(): AddressListComponent {
-        return DaggerAddressListComponent.builder()
+class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent> {
+    override fun getComponent(): PreferenceEditComponent {
+        return DaggerPreferenceEditComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
     }
@@ -32,7 +32,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<AddressListComponent
         }
         showStepper()
         setStepperValue(30, true)
-        supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container, ShippingDurationFragment()).commit()
     }
 
     fun setTitle(title: String) {
