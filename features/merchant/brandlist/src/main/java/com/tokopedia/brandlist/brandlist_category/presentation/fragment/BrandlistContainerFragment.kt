@@ -285,7 +285,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         }
         appBarLayout?.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout, p1: Int) {
-                ViewCompat.setElevation(appBarLayout, resources.getDimension(R.dimen.dp_16))
+                ViewCompat.setElevation(appBarLayout, resources.getDimension(R.dimen.layout_lvl1))
             }
         })
     }

@@ -48,14 +48,14 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:minHeight="@dimen/layout_lvl4"
                 app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
                 <com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout
                     android:id="@+id/tablayout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_lvl7"
+                    android:layout_height="@dimen/dp_70"
                     android:background="@color/white"
                     app:layout_collapseMode="pin"
                     app:tabIndicatorColor="@color/Purple_P600"
