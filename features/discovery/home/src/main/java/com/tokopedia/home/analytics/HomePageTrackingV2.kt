@@ -1,88 +1,13 @@
 package com.tokopedia.home.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
-object HomePageTrackingV2 {
-    private object Event{
-        val NONE = ""
-        val KEY = "event"
-        val CLICK = "click"
-        val IMPRESSION = "impression"
+object HomePageTrackingV2 : BaseTracking() {
+    private class CustomEvent : BaseTracking.Event(){
         val CLICK_HOMEPAGE = "clickHomepage"
-        val PROMO_VIEW = "promoView"
-        val PROMO_CLICK = "promoClick"
-        val PROMO_VIEW_IRIS = "promoViewIris"
     }
-
-    private object Category{
-        val KEY = "eventCategory"
-        val HOMEPAGE = "homepage"
-    }
-
-    private object Action{
-        const val KEY = "eventAction"
-        const val IMPRESSION = "%s impression"
-        const val CLICK = "%s click"
-    }
-
-    private object Label{
-        const val KEY = "eventLabel"
-        const val CHANNEL_LABEL = "channelId"
-        const val AFFINITY_LABEL = "affinityLabel"
-        const val ATTRIBUTION_LABEL = "attribution"
-        const val CATEGORY_LABEL = "categoryId"
-        const val SHOP_LABEL = "shopId"
-        const val NONE = ""
-    }
-
-    private object Ecommerce {
-        const val KEY = "ecommerce"
-        const val PROMOTION_NAME = "/ - p%s - %s - %s"
-        private const val PROMO_VIEW = "promoView"
-        private const val PROMO_CLICK = "promoClick"
-        private const val PROMOTIONS = "promotions"
-        private const val KEY_ID = "id"
-        private const val KEY_NAME = "name"
-        private const val KEY_CREATIVE = "creative"
-        private const val KEY_CREATIVE_URL = "creative_url"
-        private const val KEY_POSITION = "position"
-
-
-        fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
-            return DataLayer.mapOf(
-                PROMO_VIEW, DataLayer.listOf(
-                    PROMOTIONS, getPromotions(promotions)
-                )
-            )
-        }
-
-        fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
-            return DataLayer.mapOf(
-                PROMO_CLICK, DataLayer.listOf(
-                    PROMOTIONS, getPromotions(promotions)
-                )
-            )
-        }
-
-        private fun getPromotions(promotions: List<Promotion>): List<Any>{
-            val list = ArrayList<Map<String,Any>>()
-            promotions.forEach { list.add(createPromotionMap(it)) }
-            return DataLayer.listOf(*list.toTypedArray<Any>())
-        }
-
-        private fun createPromotionMap(promotion: Promotion) : Map<String, Any>{
-            val map = HashMap<String, Any>()
-            map[KEY_ID] = promotion.id
-            map[KEY_NAME] = promotion.name
-            map[KEY_CREATIVE] = promotion.creative
-            map[KEY_CREATIVE_URL] = promotion.creativeUrl
-            map[KEY_POSITION] = promotion.position
-            return map
-        }
-    }
-
-    class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String)
 
     private fun getBasicPromotionView(
         event: String,
@@ -92,7 +17,7 @@ object HomePageTrackingV2 {
         promotions: List<Promotion>
     ): Map<String, Any>{
         return DataLayer.mapOf(
-                Event.KEY, event,
+                CustomEvent.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
