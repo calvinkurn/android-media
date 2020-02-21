@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterDepartureTimeViewHolder
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterPriceRangeViewHolder
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterTransitViewHolder
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
@@ -34,6 +35,7 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
         return when (type) {
             TYPE_FLIGHT_SORT -> FlightSortViewHolder(parent, listener, initialSortOption)
             TYPE_FLIGHT_FILTER_TRANSIT -> FlightFilterTransitViewHolder(parent, listener, filterModel.transitTypeList)
+            TYPE_FLIGHT_FILTER_DEPARTURE_TIME -> FlightFilterDepartureTimeViewHolder(parent, listener, filterModel.departureTimeList)
             FlightFilterPriceRangeViewHolder.LAYOUT -> FlightFilterPriceRangeViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
