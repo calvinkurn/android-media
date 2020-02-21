@@ -2,6 +2,7 @@
 <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -12,6 +13,7 @@
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -44,7 +46,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_44"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,25 +54,33 @@
                 app:typographyWeight="bold"
                 tools:text="hi blablabla" />
 
-            <include
-                android:id="@+id/preference_card"
-                layout="@layout/card_preference"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_subheader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_header_2" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_header_2"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text="ini balbalablasdfj lasdjf lasjdf asjdf"
+                tools:visibility="gone" />
 
             <include
-                android:id="@+id/preference_card_2"
-                layout="@layout/card_preference"
+                android:id="@+id/preference_card"
+                layout="@layout/card_order_preference"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/preference_card" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_subheader" />
 
             <View
                 android:id="@+id/divider"
@@ -83,7 +92,7 @@
                 android:background="@color/Neutral_N75"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/preference_card_2" />
+                app:layout_constraintTop_toBottomOf="@+id/preference_card" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_insurance"
@@ -178,7 +187,7 @@
                 tools:text="Rp600.000" />
 
             <ImageView
-                android:id="@+id/drop_down_arrow"
+                android:id="@+id/btn_order_detail"
                 android:layout_width="@dimen/dp_32"
                 android:layout_height="0dp"
                 android:paddingStart="@dimen/dp_8"
@@ -186,7 +195,7 @@
                 android:paddingEnd="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_total_payment_value"
-                app:layout_constraintEnd_toStartOf="@+id/unifyButton"
+                app:layout_constraintEnd_toStartOf="@+id/btn_pay"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toEndOf="@+id/tv_total_payment_value"
                 app:layout_constraintTop_toTopOf="@+id/tv_total_payment_value"
@@ -194,7 +203,7 @@
                 tools:ignore="ContentDescription" />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/unifyButton"
+                android:id="@+id/btn_pay"
                 android:layout_width="@dimen/dp_140"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
@@ -204,6 +213,13 @@
                 app:unifyButtonSize="large"
                 app:unifyButtonType="transaction"
                 tools:text="Bayar" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_insurance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="divider,cb_insurance,tv_insurance,img_bt_insurance_info,tv_insurance_price,divider2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
