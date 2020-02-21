@@ -46,6 +46,7 @@
     <string name="flight_search_filter_duration_min_label">Durasi Maksimum</string>
     <string name="flight_search_filter_transit">Transit</string>
     <string name="flight_search_filter_airplane">Maskapai penerbangan</string>
+    <string name="flight_search_filter_facility">Fasilitas</string>
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
     <string name="flight_search_filter_ticket_price_label">Harga tiket</string>

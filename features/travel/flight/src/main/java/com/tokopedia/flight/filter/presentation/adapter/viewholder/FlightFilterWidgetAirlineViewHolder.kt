@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  * @author by furqan on 21/02/2020
  */
 class FlightFilterWidgetAirlineViewHolder(view: View,
-                                          val listener: FlightFilterSortListener,
-                                          var selectedAirline: List<String>)
+                                          private val listener: FlightFilterSortListener,
+                                          private var selectedAirline: List<String>)
     : AbstractViewHolder<FlightFilterAirlineModel>(view) {
 
     override fun bind(element: FlightFilterAirlineModel) {
@@ -44,9 +44,5 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
                     isSelected = selectedAirline.contains(it.airlineDB.id)
             )
         }
-    }
-
-    companion object {
-        val LAYOUT = R.layout.item_flight_filter_sort
     }
 }

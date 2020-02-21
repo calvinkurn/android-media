@@ -121,7 +121,7 @@ class FlightFilterViewModel @Inject constructor(
             items.add(AIRLINE_ORDER, FlightFilterAirlineModel())
 
             // Facility
-            items.add(FACILITY_ORDER, PriceRangeModel())
+            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
 
             // Price
             items.add(PRICE_ORDER, PriceRangeModel(

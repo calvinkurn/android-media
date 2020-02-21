@@ -29,6 +29,8 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
 
     fun type(model: FlightFilterAirlineModel): Int = TYPE_FLIGHT_FILTER_AIRLINE
 
+    fun type(model: FlightFilterFacilityModel): Int = TYPE_FLIGHT_FILTER_FACILITY
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             TYPE_FLIGHT_SORT -> FlightSortViewHolder(parent, listener, initialSortOption)
@@ -38,6 +40,8 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
                     ?: listOf())
             TYPE_FLIGHT_FILTER_AIRLINE -> FlightFilterWidgetAirlineViewHolder(parent, listener, filterModel.airlineList
                     ?: listOf())
+            TYPE_FLIGHT_FILTER_FACILITY -> FlightFilterFacilityViewHolder(parent, listener, filterModel.facilityList
+                    ?: listOf())
             FlightFilterPriceRangeViewHolder.LAYOUT -> FlightFilterPriceRangeViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
@@ -45,7 +49,7 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
 
     fun getViewHolderLayout(type: Int): Int {
         return when (type) {
-            TYPE_FLIGHT_SORT, TYPE_FLIGHT_FILTER_TRANSIT, TYPE_FLIGHT_FILTER_DEPARTURE_TIME, TYPE_FLIGHT_FILTER_AIRLINE -> R.layout.item_flight_filter_sort
+            TYPE_FLIGHT_SORT, TYPE_FLIGHT_FILTER_TRANSIT, TYPE_FLIGHT_FILTER_DEPARTURE_TIME, TYPE_FLIGHT_FILTER_AIRLINE, TYPE_FLIGHT_FILTER_FACILITY -> R.layout.item_flight_filter_sort
             else -> type
         }
     }
@@ -55,6 +59,7 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
         const val TYPE_FLIGHT_FILTER_TRANSIT = 1
         const val TYPE_FLIGHT_FILTER_DEPARTURE_TIME = 2
         const val TYPE_FLIGHT_FILTER_AIRLINE = 4
+        const val TYPE_FLIGHT_FILTER_FACILITY = 5
     }
 
 }
