@@ -16,7 +16,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.miscDependencies.viewModel
