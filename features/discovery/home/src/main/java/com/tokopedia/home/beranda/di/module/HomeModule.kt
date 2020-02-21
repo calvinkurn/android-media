@@ -2,7 +2,9 @@ package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
+import com.tokopedia.common_wallet.balance.data.CacheUtil
 import com.tokopedia.common_wallet.di.CommonWalletModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -78,7 +80,14 @@ class HomeModule {
     @HomeScope
     fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!)
 
+    @HomeScope
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig = FirebaseRemoteConfigImpl(context)
+
+    @HomeScope
+    @Provides
+    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+        return LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
+    }
 
 }

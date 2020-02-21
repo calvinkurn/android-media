@@ -11,6 +11,7 @@ import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceEntity
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.balance.view.ActionBalanceModel
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
