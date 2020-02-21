@@ -3,7 +3,7 @@
     android:id="@+id/iv_reload"
     android:layout_width="@dimen/dp_20"
     android:layout_height="@dimen/dp_20"
-    android:src="@drawable/ic_refresh"
+    android:src="@drawable/ic_reload_yellow_32dp"
     android:tint="@color/g_500"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"

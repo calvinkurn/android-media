@@ -791,7 +791,7 @@ open class HomeViewModel @Inject constructor(
                         val newHomeViewModel = _homeLiveData.value?.copy(
                                 list = currentList
                         )
-                        _homeLiveData.postValue(newHomeViewModel)
+                        _homeLiveData.value = newHomeViewModel
                     }
                 }
             }
