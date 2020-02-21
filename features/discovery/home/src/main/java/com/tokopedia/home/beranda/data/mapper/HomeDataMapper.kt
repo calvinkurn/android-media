@@ -27,24 +27,4 @@ class HomeDataMapper(
                 .build()
         return HomeDataModel(homeData.homeFlag, list, isCache)
     }
-
-    fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
-        val data = HomeHeaderWalletAction()
-        data.isLinked = walletBalanceModel.link
-        data.balance = walletBalanceModel.balance
-        data.labelTitle = walletBalanceModel.titleText
-        data.appLinkBalance = walletBalanceModel.applinks
-        data.labelActionButton = walletBalanceModel.actionBalanceModel!!.labelAction
-        data.isVisibleActionButton = (walletBalanceModel.actionBalanceModel!!.visibility != null
-                && walletBalanceModel.actionBalanceModel!!.visibility == "1")
-        data.appLinkActionButton = walletBalanceModel.actionBalanceModel!!.applinks
-        data.abTags = if (walletBalanceModel.abTags == null) ArrayList() else walletBalanceModel.abTags
-        data.pointBalance = walletBalanceModel.pointBalance
-        data.rawPointBalance = walletBalanceModel.rawPointBalance
-        data.cashBalance = walletBalanceModel.cashBalance
-        data.rawCashBalance = walletBalanceModel.rawCashBalance
-        data.walletType = walletBalanceModel.walletType
-        data.isShowAnnouncement = walletBalanceModel.isShowAnnouncement
-        return data
-    }
 }

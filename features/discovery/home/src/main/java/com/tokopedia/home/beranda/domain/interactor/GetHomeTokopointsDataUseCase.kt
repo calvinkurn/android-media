@@ -18,7 +18,6 @@ class GetHomeTokopointsDataUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): TokopointsDrawerHomeData {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(TokopointQuery.query)
         graphqlUseCase.setRequestParams(mapOf())
         return graphqlUseCase.executeOnBackground()
     }

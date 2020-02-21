@@ -73,7 +73,7 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.presenter.HomeViewModel;
+import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
@@ -953,13 +953,13 @@ public class HomeFragment extends BaseDaggerFragment implements
         //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-
+        adapter.resetImpressionHomeBanner();
         resetFeedState();
         removeNetworkError();
         if (viewModel != null) {
             viewModel.searchHint();
             viewModel.refreshHomeData();
-            viewModel.getStickyContent();
+            getStickyContent();
         }
 
         if (getActivity() instanceof RefreshNotificationListener) {
@@ -978,9 +978,8 @@ public class HomeFragment extends BaseDaggerFragment implements
         removeNetworkError();
         homeRecyclerView.setEnabled(false);
         if (viewModel != null) {
-            viewModel.searchHint();
             viewModel.refresh();
-            viewModel.getStickyContent();
+            getStickyContent();
         }
 
         if (getActivity() instanceof RefreshNotificationListener) {
@@ -1003,6 +1002,11 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void showLoading() {
         refreshLayout.setRefreshing(true);
+    }
+
+    private void getStickyContent(){
+        boolean isShowSticky = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
+        if(isShowSticky) viewModel.getStickyContent();
     }
 
     private void hideLoading() {

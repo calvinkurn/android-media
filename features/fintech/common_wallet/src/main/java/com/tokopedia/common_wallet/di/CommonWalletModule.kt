@@ -2,10 +2,6 @@ package com.tokopedia.common_wallet.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.common_wallet.balance.data.CacheUtil
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -17,7 +13,12 @@ import dagger.Provides
 class CommonWalletModule {
 
     @Provides
-    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler{
-        return LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
+
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 }

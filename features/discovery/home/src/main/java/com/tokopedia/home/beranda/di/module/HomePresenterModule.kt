@@ -11,14 +11,12 @@ import dagger.Provides
 
 @Module
 class HomePresenterModule {
-
     @Provides
     fun homeFeedPresenter(
-            getHomeFeedUseCase: GetHomeFeedUseCase?,
-            addWishListUseCase: AddWishListUseCase?,
-            removeWishListUseCase: RemoveWishListUseCase?,
-            topAdsWishlishedUseCase: TopAdsWishlishedUseCase?,
-            userSessionInterface: UserSessionInterface?
-    ): HomeFeedPresenter = HomeFeedPresenter(userSessionInterface!!, getHomeFeedUseCase!!, addWishListUseCase!!, removeWishListUseCase!!, topAdsWishlishedUseCase!!)
-
+            getHomeFeedUseCase: GetHomeFeedUseCase,
+            addWishListUseCase: AddWishListUseCase,
+            removeWishListUseCase: RemoveWishListUseCase,
+            topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+            userSessionInterface: UserSessionInterface
+    ): HomeFeedPresenter = HomeFeedPresenter(userSessionInterface, getHomeFeedUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase)
 }

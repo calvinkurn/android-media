@@ -139,7 +139,7 @@ class HomePlayWidgetHelper(
     }
 
     fun resumeVideo() {
-        if(videoUri != null && videoUri.toString().isNotEmpty() && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+        if(videoUri != null && !videoUri?.toString().isNullOrEmpty() && isDeviceHasRequirementAutoPlay()) {
             playManager.safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
             exoPlayerView.setPlayer(mPlayer)

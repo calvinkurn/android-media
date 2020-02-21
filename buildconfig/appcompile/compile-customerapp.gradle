@@ -4,6 +4,7 @@ includeDynamicFeatureIfEnabled("customerapp")
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
+include "features:common:qr_scanner"
 include "features:common:common_tradein"
 
 include "features:communication:broadcast_message_common"
@@ -86,7 +87,6 @@ include "features:home:account-home"
 include "features:im:common_promo"
 include "features:im:referral"
 include "features:kyc"
-include "features:scanner"
 
 include "features:logistic:logisticorder"
 include "features:logistic:logisticaddaddress"

@@ -4,7 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.query.StickyLoginQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -15,11 +14,10 @@ class StickyLoginUseCase(
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        graphqlUseCase.setTypeClass(StickyLoginTickerPojo.TickerResponse::class.java)
     }
     override suspend fun executeOnBackground(): StickyLoginTickerPojo.TickerResponse {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setTypeClass(StickyLoginTickerPojo.TickerResponse::class.java)
-        graphqlUseCase.setGraphqlQuery(StickyLoginQuery.query)
         graphqlUseCase.setRequestParams(params)
         return graphqlUseCase.executeOnBackground()
     }
