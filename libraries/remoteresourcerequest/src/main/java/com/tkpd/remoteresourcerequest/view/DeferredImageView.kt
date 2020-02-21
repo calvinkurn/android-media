@@ -3,7 +3,9 @@ package com.tkpd.remoteresourcerequest.view
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.text.TextUtils
 import android.util.AttributeSet
+import android.webkit.URLUtil
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
@@ -58,6 +60,10 @@ class DeferredImageView : AppCompatImageView {
 
     private fun downloadAndSetResource() {
         task?.let { it.deferredImageView?.clear() }
+        if (TextUtils.isEmpty(mRemoteFileName))
+            throw IllegalArgumentException("Please use valid url in remoteFileName field " +
+                    "if used in xml. Or use DeferredImageView(context, remoteFileName) " +
+                    "constructor to initialize the correct object!!")
         task = ResourceDownloadManager.getManager().startDownload(mRemoteFileName, this, null)
     }
 
