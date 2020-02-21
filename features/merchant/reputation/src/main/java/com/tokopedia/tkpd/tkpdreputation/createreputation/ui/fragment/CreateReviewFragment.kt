@@ -244,7 +244,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             if (anonymous_cb.isChecked) {
                 reviewTracker.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
             }
-            clearFocusAndHideSoftInput(view)
+            edit_text_review.clearFocus()
         }
 
         edit_text_review.setOnFocusChangeListener { _, _ ->
