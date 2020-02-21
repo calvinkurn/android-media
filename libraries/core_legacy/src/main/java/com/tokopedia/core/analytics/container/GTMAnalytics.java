@@ -759,7 +759,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 return refreshGtmInBackGround();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gtmRefreshWeave, RemoteConfigKey.ENABLE_SEQ18_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gtmRefreshWeave, RemoteConfigKey.ENABLE_ASYNC_GTMREFRESH, context);
     }
 
     @NotNull

@@ -84,7 +84,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                 return executeViewCreateFlow()
             }
         }
-        Weaver.executeWeaveCoRoutine(executeViewCreatedWeave, WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ12_ASYNC, remoteConfig))
+        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
     }
 
     @NotNull

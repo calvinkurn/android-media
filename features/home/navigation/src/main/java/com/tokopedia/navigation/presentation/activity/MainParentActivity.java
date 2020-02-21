@@ -61,7 +61,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -90,7 +89,6 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -247,10 +245,10 @@ public class MainParentActivity extends BaseActivity implements
             @NotNull
             @Override
             public Object execute() {
-                return initCategoryConfigAndSendOpenHomeEvent();
+                return sendOpenHomeEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(executeEventsWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ14_ASYNC, null));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
 
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
@@ -260,7 +258,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @NotNull
-    private boolean initCategoryConfigAndSendOpenHomeEvent() {
+    private boolean sendOpenHomeEvent() {
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
         return true;
     }
@@ -349,7 +347,7 @@ public class MainParentActivity extends BaseActivity implements
                 return executeFirstTimeEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_SEQ15_ASYNC, getContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
 
         handleAppLinkBottomNavigation(savedInstanceState);
         checkAppUpdateAndInApp();

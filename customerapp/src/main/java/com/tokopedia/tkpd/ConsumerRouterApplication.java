@@ -1304,7 +1304,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeAppflyerInit();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_SEQ11_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext());
     }
 
     private boolean executeAppflyerInit(){

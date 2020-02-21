@@ -69,7 +69,7 @@ public class MoengageAnalytics extends ContextAnalytics {
                 return sendExistingUserAndInstallTrackingEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_SEQ19_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context);
     }
 
     @Override

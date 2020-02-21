@@ -173,7 +173,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 return executeInitAppsFlyer(key, userID, conversionListener);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsFlyerInitWeave, RemoteConfigKey.ENABLE_SEQ16_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsFlyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_CREATE_APPSFLYER, context);
     }
 
     @NotNull

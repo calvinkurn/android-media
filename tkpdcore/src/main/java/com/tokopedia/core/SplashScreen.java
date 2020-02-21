@@ -85,7 +85,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 return fetchRemoteConfig();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(remoteConfigWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ6_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutine(remoteConfigWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_REMOTECONF_FETCH, remoteConfig));
     }
 
     @NotNull
@@ -109,7 +109,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 return getBranchDefferedDeeplink();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(branchDefferedDeeplinkWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ7_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutine(branchDefferedDeeplinkWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, remoteConfig));
     }
 
     @Override
@@ -122,7 +122,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 return executeMoveToHomeFlow();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_SEQ8_ASYNC, SplashScreen.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_ASYNC_MOVETOHOME, SplashScreen.this);
         moveToHome();
     }
 
@@ -272,6 +272,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 return getBranchDefferedDeeplink();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_SEQ9_ASYNC, SplashScreen.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, SplashScreen.this);
     }
 }

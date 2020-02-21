@@ -193,27 +193,21 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
-    public static final String ENABLE_NETWORK_CLIENT_INIT_ASYNC = "android_init_nwclient_async";
     public static final String ENABLE_SEQ1_ASYNC = "android_exec_seq1_async";
     public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
     public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
     public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
     public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
-    public static final String ENABLE_SEQ6_ASYNC = "android_exec_seq6_async";
-    public static final String ENABLE_SEQ7_ASYNC = "android_exec_seq7_async";
-    public static final String ENABLE_SEQ8_ASYNC = "android_exec_seq8_async";
-    public static final String ENABLE_SEQ9_ASYNC = "android_exec_seq9_async";
-    public static final String ENABLE_SEQ10_ASYNC = "android_exec_seq10_async";
-    public static final String ENABLE_SEQ11_ASYNC = "android_exec_seq11_async";
-    public static final String ENABLE_SEQ12_ASYNC = "android_exec_seq12_async";
-    public static final String ENABLE_SEQ13_ASYNC = "android_exec_seq13_async";
-    public static final String ENABLE_SEQ14_ASYNC = "android_exec_seq14_async";
-    public static final String ENABLE_SEQ15_ASYNC = "android_exec_seq15_async";
-    public static final String ENABLE_SEQ16_ASYNC = "android_exec_seq16_async";
-    public static final String ENABLE_SEQ17_ASYNC = "android_exec_seq17_async";
-    public static final String ENABLE_SEQ18_ASYNC = "android_exec_seq18_async";
-    public static final String ENABLE_SEQ19_ASYNC = "android_exec_seq19_async";
-    public static final String ENABLE_SEQ20_ASYNC = "android_exec_seq20_async";
+    public static final String ENABLE_ASYNC_REMOTECONF_FETCH = "android_async_remoteconf_fetch";
+    public static final String ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH = "android_async_deffered_deeplink_fetch";
+    public static final String ENABLE_ASYNC_MOVETOHOME = "android_async_movetohome";
+    public static final String ENABLE_ASYNC_APPSFLYER_INIT = "android_async_appsflyer_init";
+    public static final String ENABLE_ASYNC_ONBOARDING_CREATE = "android_async_onboarding_create";
+    public static final String ENABLE_ASYNC_OPENHOME_EVENT = "android_async_openhome_event";
+    public static final String ENABLE_ASYNC_FIRSTTIME_EVENT = "android_async_firsttime_event";
+    public static final String ENABLE_ASYNC_CREATE_APPSFLYER = "android_async_create_appsflyer";
+    public static final String ENABLE_ASYNC_GTMREFRESH = "android_async_gtmrefresh";
+    public static final String ENABLE_ASYNC_INSTALLTRACK = "android_async_installtrack";
     public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
 
 }
