@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -53,7 +51,6 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
-    lateinit var topupBillsViewModelFactory: ViewModelProvider.Factory
     lateinit var topupBillsViewModel: TopupBillsViewModel
     @Inject
     lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
@@ -68,7 +65,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     var price: Long? = null
 
     // Express Checkout
-    var isExpressCheckout = false
+    var isExpressCheckout = true
     var isInstantCheckout = false
 
     var categoryName = ""
@@ -79,11 +76,6 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, topupBillsViewModelFactory)
-            topupBillsViewModel = viewModelProvider.get(TopupBillsViewModel::class.java)
-        }
 
         savedInstanceState?.run {
             promoCode = this.getString(EXTRA_PROMO_CODE, "")
