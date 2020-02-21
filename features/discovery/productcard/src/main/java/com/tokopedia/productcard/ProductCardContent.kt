@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextGimmick(productCardModel)
     renderTextProductName(productCardModel)
-    renderLabelPrice(productCardModel)
     renderDiscount(productCardModel)
+    renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
     renderShopBadge(productCardModel)
     renderTextShopLocation(productCardModel)
@@ -36,10 +36,6 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     }
 }
 
-private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
-    labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
-}
-
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         it.text = productCardModel.discountPercentage
@@ -49,6 +45,10 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
         it.text = productCardModel.slashedPrice
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
+}
+
+private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
+    labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {

@@ -5,15 +5,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.SparseIntArray
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CarouselProductCardView: BaseCustomView {
 
@@ -61,16 +64,21 @@ class CarouselProductCardView: BaseCustomView {
     ) {
         if (productCardModelList.isEmpty()) return
 
-        val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
-            it.onItemClickListener = carouselProductCardOnItemClickListener
-            it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
-            it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+        CoroutineScope(Dispatchers.Main).launch {
+            val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
+                it.onItemClickListener = carouselProductCardOnItemClickListener
+                it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
+                it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+            }
+
+            initLayoutManager(scrollToPosition)
+            initRecyclerView(recyclerViewPool)
+
+            val productCardWidth = context.resources.getDimensionPixelSize(R.dimen.carousel_product_card_width)
+            val productCardHeight = productCardModelList.getMaxHeightForGridView(context, productCardWidth)
+
+            submitList(productCardModelList, carouselProductCardListenerInfo, productCardHeight)
         }
-
-        initLayoutManager(scrollToPosition)
-        initRecyclerView(recyclerViewPool)
-
-        submitList(productCardModelList, carouselProductCardListenerInfo)
     }
 
     private fun initLayoutManager(scrollToPosition: Int) {
@@ -101,9 +109,17 @@ class CarouselProductCardView: BaseCustomView {
         }
     }
 
-    private fun submitList(productCardModelList: List<ProductCardModel>, carouselProductCardListenerInfo: CarouselProductCardListenerInfo) {
+    private fun submitList(
+            productCardModelList: List<ProductCardModel>,
+            carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
+            productCardHeight: Int
+    ) {
         carouselAdapter.submitList(productCardModelList.map {
-            CarouselProductCardModel(it, carouselProductCardListenerInfo)
+            CarouselProductCardModel(
+                    productCardModel = it,
+                    carouselProductCardListenerInfo = carouselProductCardListenerInfo,
+                    forcedHeight = productCardHeight
+            )
         })
     }
 

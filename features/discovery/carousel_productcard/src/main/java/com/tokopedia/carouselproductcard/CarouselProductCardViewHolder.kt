@@ -21,9 +21,9 @@ internal class CarouselProductCardViewHolder(
         val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
         val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
 
-        itemView.carouselProductCardItem?.setCardHeight(
-                itemView.context?.resources?.getDimensionPixelSize(R.dimen.carousel_product_card_height) ?: -1
-        )
+        if (carouselProductCardModel.forcedHeight != -1) {
+            itemView.carouselProductCardItem?.setCardHeight(carouselProductCardModel.forcedHeight)
+        }
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
 

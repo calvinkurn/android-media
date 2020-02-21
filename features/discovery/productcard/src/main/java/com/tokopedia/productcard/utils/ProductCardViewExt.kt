@@ -101,7 +101,6 @@ internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         Glide.with(context)
                 .load(url)
-                .transition(DrawableTransitionOptions.withCrossFade())
                 .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_loading_toped_new)

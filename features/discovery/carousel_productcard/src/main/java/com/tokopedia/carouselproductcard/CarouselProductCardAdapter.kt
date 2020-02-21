@@ -22,6 +22,7 @@ internal class CarouselProductCardAdapter: ListAdapter<CarouselProductCardModel,
         carouselProductCardViewHolder.bind(getItem(position))
     }
 
+    @Deprecated("Cannot update wishlist anymore")
     fun updateWishlist(index: Int, isWishlist: Boolean){
         getItem(index).productCardModel.isWishlisted = isWishlist
         notifyItemChanged(index)

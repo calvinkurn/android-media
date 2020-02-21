@@ -14,7 +14,7 @@
         android:id="@+id/constraintLayoutProductCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingBottom="@dimen/product_card_padding_bottom"
         tools:layout_height="match_parent">
 
         <ImageView
@@ -72,7 +72,7 @@
             android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_margin="@dimen/product_card_content_margin"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/imageProduct"
             app:layout_constraintEnd_toEndOf="@id/imageProduct"
@@ -100,10 +100,10 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonAddToCart"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/product_card_button_add_to_cart_height"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:text="@string/product_card_text_add_to_cart_grid"
