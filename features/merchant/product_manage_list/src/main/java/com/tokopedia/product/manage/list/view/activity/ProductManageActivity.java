@@ -8,15 +8,14 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.product.manage.list.constant.AppScreen;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
-import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -24,7 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 /**
  * Created by zulfikarrahman on 9/25/17.
  */
-public class ProductManageActivity extends BaseSellerReceiverDrawerActivity implements HasComponent<ProductComponent> {
+public class ProductManageActivity extends BaseSellerReceiverDrawerActivity {
 
     public UserSessionInterface userSession;
 
