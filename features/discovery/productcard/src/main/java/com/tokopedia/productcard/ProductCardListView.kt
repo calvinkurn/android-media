@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.initLabelGroup
@@ -54,11 +55,19 @@ class ProductCardListView: BaseCustomView {
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
-
+        imageProduct?.addOnImpressionListener(impressHolder, viewHintListener)
     }
 
-    fun setAddToCartOnClickListener(onAddToCartClickListener: () -> Unit) {
+    fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) {
+        imageThreeDots?.setOnClickListener(threeDotsClickListener)
+    }
 
+    fun setRemoveWishlistOnClickListener(removeWishlistClickListener: (View) -> Unit) {
+        buttonRemoveFromWishlist?.setOnClickListener(removeWishlistClickListener)
+    }
+
+    fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
+        buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
     fun setCardHeight(height: Int) {
