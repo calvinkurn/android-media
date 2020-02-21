@@ -814,8 +814,8 @@ class HomeViewModel @Inject constructor(
                                     list = it
                             )
                             _homeLiveData.postValue(newHomeViewModel)
+                            break
                         }
-                        break
                     }
                 }
 
