@@ -108,12 +108,10 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                     listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
                             it[position]
                     ))
-                    it[position].invoke()
                 } else if (!it[position].isInvoke) {
                     listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
                             it[position]
                     ))
-                    it[position].invoke()
                 }
 
             }
