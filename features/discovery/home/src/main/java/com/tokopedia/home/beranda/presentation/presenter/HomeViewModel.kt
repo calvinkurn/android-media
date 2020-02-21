@@ -794,7 +794,7 @@ class HomeViewModel @Inject constructor(
                 data.position = rowNumber
                 val currentList = _homeLiveData.value?.list?.toMutableList()
                 currentList?.forEachIndexed{pos, list ->
-                    if (currentList[pos] is PopularKeywordListViewModel) {
+                    if (currentList[pos] is PopularKeywordListViewModel && pos == rowNumber) {
                         currentList[pos] = data
                         val newHomeViewModel = _homeLiveData.value?.copy(
                                 list = currentList
