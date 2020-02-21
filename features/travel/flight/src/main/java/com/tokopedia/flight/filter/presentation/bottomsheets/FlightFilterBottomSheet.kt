@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
@@ -25,6 +24,7 @@ import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_flight_filter.*
@@ -163,6 +163,13 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     override fun onDepartureTimeFilterChanged(departureTimeList: List<DepartureTimeEnum>) {
         flightFilterViewModel.filterDepartureTime(departureTimeList)
     }
+
+    override fun onClickSeeAllAirline() {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getAirlineList(): List<AirlineStat> =
+        flightFilterViewModel.getAirlineList()
 
     private fun renderList(data: List<BaseFilterSortModel>) {
         adapter?.clearAllElements()
