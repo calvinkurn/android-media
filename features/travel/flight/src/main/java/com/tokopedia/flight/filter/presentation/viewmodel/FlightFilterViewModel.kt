@@ -8,9 +8,11 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.FlightSortModel
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
+import com.tokopedia.flight.filter.presentation.model.TransitModel
 import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,6 +73,12 @@ class FlightFilterViewModel @Inject constructor(
         mutableSelectedSort.postValue(selectedId)
     }
 
+    fun filterTransit(selectedTransits: List<TransitEnum>) {
+        val updatedFilterModel = (filterModel.value as FlightFilterModel)
+        updatedFilterModel.transitTypeList = selectedTransits
+        mutableFilterModel.postValue(updatedFilterModel)
+    }
+
     fun getSelectedSort(): Int = selectedSort.value ?: TravelSortOption.CHEAPEST
 
     fun getFlightCount() {
@@ -94,7 +102,7 @@ class FlightFilterViewModel @Inject constructor(
             items.add(SORT_ORDER, FlightSortModel())
 
             // Transit
-            items.add(TRANSIT_ORDER, PriceRangeModel())
+            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
 
             // Departure Time
             items.add(DEPARTURE_TIME_ORDER, PriceRangeModel())

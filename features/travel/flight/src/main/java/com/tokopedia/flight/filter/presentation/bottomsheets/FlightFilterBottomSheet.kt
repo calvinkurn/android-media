@@ -22,6 +22,7 @@ import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortVie
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_flight_filter.*
@@ -108,7 +109,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun initAdapter() {
-        val typeFactory = FlightFilterSortAdapterTypeFactory(this, flightFilterViewModel.getSelectedSort())
+        val typeFactory = FlightFilterSortAdapterTypeFactory(this, flightFilterViewModel.getSelectedSort(),
+                flightFilterViewModel.filterModel.value ?: FlightFilterModel())
         adapter = BaseAdapter(typeFactory)
     }
 
@@ -152,6 +154,10 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         }
     }
 
+    override fun onTransitFilterChanged(transitTypeList: List<TransitEnum>) {
+        flightFilterViewModel.filterTransit(transitTypeList)
+    }
+
     private fun renderList(data: List<BaseFilterSortModel>) {
         adapter?.clearAllElements()
         adapter?.addElement(data)
@@ -174,7 +180,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     companion object {
         const val TAG_FILTER = "TagFilterBottomSheet"
-        private val TAG_FLIGHT_SORT = "TagFlightSortBottomSheet"
+        private const val TAG_FLIGHT_SORT = "TagFlightSortBottomSheet"
 
         private const val ARG_SORT = "ARG_SORT"
         private const val ARG_FILTER_MODEL = "ARG_FILTER_MODEL"
