@@ -1,14 +1,14 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration;
 
 import android.graphics.Rect;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import android.view.View;
 
-import com.tokopedia.productcard.v2.ProductCardView;
 import com.tokopedia.search.R;
 
 import java.util.Arrays;
