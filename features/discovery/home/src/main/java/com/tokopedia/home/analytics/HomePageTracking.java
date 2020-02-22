@@ -839,42 +839,6 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventClickWishlistOnProductRecommendation(Context context, String tabName) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE_WISHLIST,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION,
-                    tabName
-            ));
-        }
-    }
-
-    public static void eventClickRemoveWishlistOnProductRecommendation(Context context, String tabName) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE_WISHLIST,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION,
-                    tabName
-            ));
-        }
-    }
-
-    public static void eventClickWishlistOnProductRecommendationForNonLogin(Context context, String tabName) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_HOME_PAGE_WISHLIST,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                    tabName
-            ));
-        }
-    }
-
     public static void eventClickTickerHomePage(Context context, String tickerId) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {

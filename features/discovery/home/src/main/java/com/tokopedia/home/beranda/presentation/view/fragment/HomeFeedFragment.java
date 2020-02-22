@@ -346,25 +346,6 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     }
 
     @Override
-    public void onWishlistClick(@NotNull HomeFeedViewModel homeFeedViewModel,
-                                int position,
-                                boolean isAddWishlist,
-                                @NotNull Function2<? super Boolean, ? super Throwable, Unit> responseWishlist) {
-        if(presenter.isLogin()) {
-            if (isAddWishlist) {
-                HomePageTracking.eventClickWishlistOnProductRecommendation(getActivity(), tabName);
-                presenter.addWishlist(homeFeedViewModel, responseWishlist);
-            } else {
-                HomePageTracking.eventClickRemoveWishlistOnProductRecommendation(getActivity(), tabName);
-                presenter.removeWishlist(homeFeedViewModel, responseWishlist);
-            }
-        }else {
-            HomePageTracking.eventClickWishlistOnProductRecommendationForNonLogin(getActivity(), tabName);
-            RouteManager.route(getContext(), ApplinkConst.LOGIN);
-        }
-    }
-
-    @Override
     public void onProductClick(HomeFeedViewModel homeFeedViewModel, int position) {
         if (userSession.isLoggedIn()) {
             if (!homeFeedViewModel.isTopAds()) {

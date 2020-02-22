@@ -19,7 +19,6 @@ object HomeFeedContract {
     interface View : BaseListViewListener<Visitable<HomeFeedTypeFactory>> {
         fun onProductImpression(homeFeedViewModel: HomeFeedViewModel, position: Int)
         fun onProductClick(homeFeedViewModel: HomeFeedViewModel, position: Int)
-        fun onWishlistClick(homeFeedViewModel: HomeFeedViewModel, position: Int, isAddWishlist: Boolean, responseWishlist: ((Boolean, Throwable?) -> Unit))
         fun getTrackingQueue(): TrackingQueue
         fun getTabName(): String
     }
