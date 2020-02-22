@@ -15,12 +15,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
-import com.tokopedia.sellerhome.common.utils.getResColor
+import com.tokopedia.sellerhome.common.utils.Utils
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
@@ -34,6 +35,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_sah.view.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -187,35 +189,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     override fun getCardData() {
         if (hasLoadCardData) return
         hasLoadCardData = true
-        val dataKeys = getWidgetDataKeys<CardWidgetUiModel>()
+        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(adapter.data)
         sellerHomeViewModel.getCardWidgetData(dataKeys)
     }
 
     override fun getLineGraphData() {
         if (hasLoadLineGraphData) return
         hasLoadLineGraphData = true
-        val dataKeys = getWidgetDataKeys<LineGraphWidgetUiModel>()
+        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(adapter.data)
         sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
     }
 
     override fun getProgressData() {
         if (hasLoadProgressData) return
         hasLoadProgressData = true
-        val dataKeys = getWidgetDataKeys<ProgressWidgetUiModel>()
+        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(adapter.data)
         sellerHomeViewModel.getProgressWidgetData(dataKeys)
     }
 
     override fun getPostData() {
         if (hasLoadPostData) return
         hasLoadPostData = true
-        val dataKeys = getWidgetDataKeys<PostListWidgetUiModel>()
+        val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(adapter.data)
         sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
 
     override fun getCarouselData() {
         if (hasLoadCarouselData) return
         hasLoadCarouselData = true
-        val dataKeys = getWidgetDataKeys<CarouselWidgetUiModel>()
+        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(adapter.data)
         sellerHomeViewModel.getCarouselWidgetData(dataKeys)
     }
 
@@ -247,10 +249,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
         showErrorToaster()
-    }
-
-    private inline fun <reified T : BaseWidgetUiModel<*>> getWidgetDataKeys(): List<String> {
-        return adapter.data.orEmpty().filterIsInstance<T>().map { it.dataKey }
     }
 
     private fun showGetWidgetProgress(isShown: Boolean) {
@@ -334,7 +332,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         Toaster.make(this, context.getString(R.string.sah_failed_to_get_information),
                 TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload),
                 View.OnClickListener {
-                    reloadPageOrErrorWidget()
+                    reloadPageOrLoadDataOfErrorWidget()
                 }
         )
 
@@ -343,9 +341,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }, TOAST_DURATION)
     }
 
-    private fun reloadPageOrErrorWidget() {
-        val isErrorWidget = adapter.data.any { !it.data?.error.isNullOrBlank() }
-        if (!isErrorWidget) {
+    /**
+     * if any widget that failed when load their data, the action should be load the widget data
+     * else, reload the page like pull refresh
+     * */
+    private fun reloadPageOrLoadDataOfErrorWidget() {
+        val isAnyErrorWidget = adapter.data.any { !it.data?.error.isNullOrBlank() }
+        if (!isAnyErrorWidget) {
             reloadPage()
             return
         }
@@ -434,8 +436,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
 
         fun getTickerType(hexColor: String): Int = when (hexColor) {
-            "#cde4c3" -> Ticker.TYPE_ANNOUNCEMENT
-            "#ecdb77" -> Ticker.TYPE_WARNING
+            context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
 

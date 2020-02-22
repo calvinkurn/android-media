@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhome.domain.model.ProgressDataResponse
-import com.tokopedia.sellerhome.common.utils.getData
 import com.tokopedia.sellerhome.view.model.ProgressDataUiModel
 import com.tokopedia.usecase.RequestParams
 

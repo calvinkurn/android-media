@@ -7,7 +7,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhome.domain.mapper.CardMapper
 import com.tokopedia.sellerhome.domain.model.GetCardDataResponse
-import com.tokopedia.sellerhome.common.utils.getData
 import com.tokopedia.sellerhome.view.model.CardDataUiModel
 import com.tokopedia.usecase.RequestParams
 

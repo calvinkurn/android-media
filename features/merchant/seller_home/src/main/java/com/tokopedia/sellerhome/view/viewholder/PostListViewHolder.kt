@@ -6,14 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
-import com.tokopedia.sellerhome.common.utils.dpToPx
-import com.tokopedia.sellerhome.common.utils.parseAsHtml
 import com.tokopedia.sellerhome.view.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.PostListWidgetUiModel
 import com.tokopedia.sellerhome.view.model.PostUiModel
@@ -33,7 +29,7 @@ class PostListViewHolder(
         val RES_LAYOUT = R.layout.sah_post_list_card_widget
     }
 
-    private lateinit var adapter: BaseListAdapter<PostUiModel, ListAdapterTypeFactory>
+    private val postAdapter = BaseListAdapter<PostUiModel, ListAdapterTypeFactory>(ListAdapterTypeFactory(), this)
 
     private var dataKey: String = ""
 
@@ -175,17 +171,17 @@ class PostListViewHolder(
     }
 
     private fun setupPostList(posts: List<PostUiModel>) {
-        adapter = BaseListAdapter<PostUiModel, ListAdapterTypeFactory>(ListAdapterTypeFactory(), this@PostListViewHolder)
         itemView.rvPostList.apply {
             layoutManager = object : LinearLayoutManager(itemView.context) {
                 override fun canScrollVertically(): Boolean {
                     return false
                 }
             }
-            adapter = this@PostListViewHolder.adapter
+            adapter = this@PostListViewHolder.postAdapter
             isNestedScrollingEnabled = true
         }
-        adapter.run {
+        postAdapter.run {
+            data.clear()
             data.addAll(posts)
             notifyDataSetChanged()
         }

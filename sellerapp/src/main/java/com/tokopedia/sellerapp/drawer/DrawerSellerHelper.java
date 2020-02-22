@@ -301,7 +301,7 @@ public class DrawerSellerHelper extends DrawerHelper
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
-                    context.startActivity(SellerHomeActivity.createInstance(context));
+                    context.startActivity(SellerHomeActivity.createIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
                     if (context.getApplication() instanceof AbstractionRouter) {

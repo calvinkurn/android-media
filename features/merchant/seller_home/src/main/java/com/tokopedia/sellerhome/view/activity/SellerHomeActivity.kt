@@ -37,16 +37,11 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
     companion object {
         @JvmStatic
-        val TAG = SellerHomeActivity::class.java.simpleName
-
-        @JvmStatic
-        fun createInstance(context: Context) = Intent(context, SellerHomeActivity::class.java)
+        fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
     }
 
     private val sellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
-
-    //    @Inject
-    lateinit var sellerHomeDashboardDrawerPresenter: SellerHomeDashboardDrawerPresenter
+    private var sellerHomeDashboardDrawerPresenter: SellerHomeDashboardDrawerPresenter? = null
 
     override val isSellerHome: Boolean
         get() = true
@@ -55,7 +50,6 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         super.onCreate(savedInstanceState)
 
         initInjector()
-        sellerHomeDashboardDrawerPresenter.attachView(this)
         checkAppUpdate()
 
         sellerHomeFragment.setOnPageRefreshedListener(this)
@@ -63,11 +57,6 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
     override fun getNewFragment(): Fragment? {
         return sellerHomeFragment
-    }
-
-    override fun onResume() {
-        sellerHomeDashboardDrawerPresenter.attachView(this)
-        super.onResume()
     }
 
     override fun setDrawerPosition(): Int {
@@ -86,7 +75,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
     override fun onPause() {
         super.onPause()
-        sellerHomeDashboardDrawerPresenter.unsubscribe()
+        sellerHomeDashboardDrawerPresenter?.unsubscribe()
     }
 
     override fun onRefreshPage() {
@@ -151,8 +140,8 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         if (userSession.isLoggedIn) {
             setDataDrawer()
             getDrawerSellerAttrUseCase(userSession)
-            sellerHomeDashboardDrawerPresenter.getFlashSaleSellerStatus()
-            sellerHomeDashboardDrawerPresenter.isGoldMerchantAsync()
+            sellerHomeDashboardDrawerPresenter?.getFlashSaleSellerStatus()
+            sellerHomeDashboardDrawerPresenter?.isGoldMerchantAsync()
         }
 
     }
@@ -162,7 +151,6 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
     }
 
     private fun initInjector() {
-
         //Dagger injecting still fails, will do manual instantiation
         val userSession: UserSessionInterface = UserSession(context)
         val graphqlUseCase = GraphqlUseCase()
@@ -170,7 +158,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         val flashSaleGetSellerStatusUseCase = FlashSaleGetSellerStatusUseCase(graphqlUseCase)
         sellerHomeDashboardDrawerPresenter = SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession)
 
-        sellerHomeDashboardDrawerPresenter.attachView(this)
+        sellerHomeDashboardDrawerPresenter?.attachView(this)
     }
 
     override fun setupToolbar() {

@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
-import com.tokopedia.sellerhome.common.utils.dpToPx
 import com.tokopedia.sellerhome.view.model.CarouselItemUiModel
 import kotlinx.android.synthetic.main.sah_banner_item_layout.view.*
 

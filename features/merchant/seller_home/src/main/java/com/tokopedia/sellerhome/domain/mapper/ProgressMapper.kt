@@ -9,9 +9,9 @@ import javax.inject.Inject
 class ProgressMapper @Inject constructor() {
 
     companion object {
-        const val GOOD = "GOOD"
-        const val WARNING = "WARNING"
-        const val DANGER = "DANGER"
+        private const val GOOD = "GOOD"
+        private const val WARNING = "WARNING"
+        private const val DANGER = "DANGER"
     }
 
     fun mapResponseToUi(progressDataResponse: List<ProgressDataModel>): List<ProgressDataUiModel> {

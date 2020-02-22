@@ -14,14 +14,9 @@ import com.db.williamchart.util.TooltipConfiguration
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
-import com.tokopedia.sellerhome.common.utils.getResColor
-import com.tokopedia.sellerhome.common.utils.getResDrawable
-import com.tokopedia.sellerhome.common.utils.parseAsHtml
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.sah_line_graph_widget.view.*
@@ -70,7 +65,6 @@ class LineGraphViewHolder(
      * Error State -> when errorMessage field have a message
      * else -> state is Success
      * */
-
     private fun observeState(element: LineGraphWidgetUiModel) {
         val data: LineGraphDataUiModel? = element.data
         when {
@@ -189,7 +183,7 @@ class LineGraphViewHolder(
 
         companion object {
             private const val DEFAULT_WIDTH = 68F
-            private const val DEFAULT_HEIGHT = 32F
+            private const val DEFAULT_HEIGHT = 30F
         }
 
         override fun width(): Int = Tools.fromDpToPx(DEFAULT_WIDTH).toInt()

@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerhome.common.utils.getData
 import com.tokopedia.sellerhome.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhome.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel

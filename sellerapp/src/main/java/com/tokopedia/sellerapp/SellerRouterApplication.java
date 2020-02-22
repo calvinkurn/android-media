@@ -343,7 +343,7 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
             if (SessionHandler.isUserHasShop(context)) {
-                return SellerHomeActivity.createInstance(context);
+                return SellerHomeActivity.createIntent(context);
             } else {
                 return intent;
             }
@@ -394,7 +394,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void goToDefaultRoute(Context context) {
-        Intent intent = SellerHomeActivity.createInstance(context);
+        Intent intent = SellerHomeActivity.createIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }

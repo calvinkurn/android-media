@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.domain.usecase
 
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -10,4 +11,8 @@ import com.tokopedia.usecase.coroutines.UseCase
 abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
     var params: RequestParams = RequestParams.EMPTY
+
+    protected inline fun <reified T> GraphqlResponse.getData(): T {
+        return this.getData<T>(T::class.java)
+    }
 }
