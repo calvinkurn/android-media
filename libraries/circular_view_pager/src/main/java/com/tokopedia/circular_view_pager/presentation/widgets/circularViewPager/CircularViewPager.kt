@@ -248,7 +248,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
         }
     }
 
-    private fun resetImpressions(){
+    fun resetImpressions(){
         impressionStatusList.clear()
         for (i in 0..(adapter?.listCount ?: 0)) {
             impressionStatusList.add(false)

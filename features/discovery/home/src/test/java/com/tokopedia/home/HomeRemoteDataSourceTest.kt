@@ -3,9 +3,10 @@ package com.tokopedia.home
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.v2.home.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.v2.home.model.pojo.home.HomeData
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -28,7 +29,7 @@ class HomeRemoteDataSourceTest {
 
     @Before
     fun init(){
-        homeRemoteDataSource = HomeRemoteDataSource(graphqlRepository, userSessionInterface, homeQuery)
+        homeRemoteDataSource = HomeRemoteDataSource(graphqlRepository, TestDispatcherProvider())
         every { userSessionInterface.isLoggedIn } returns true
         every { userSessionInterface.userId } returns "-1"
     }
@@ -43,7 +44,6 @@ class HomeRemoteDataSourceTest {
             val graphqlResponse = homeRemoteDataSource.getHomeData()
             val result = graphqlResponse.getData<HomeData>(HomeData::class.java)
             Assert.assertEquals(null, graphqlResponse.getError(HomeData::class.java))
-            Assert.assertEquals(0, result.id)
             Assert.assertEquals("16206", result.dynamicHomeChannel?.channels?.first()?.id)
         }
     }
