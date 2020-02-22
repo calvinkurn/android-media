@@ -60,18 +60,13 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
                                         isActive = product.isFreeOngkirActive,
                                         imageUrl = product.freeOngkirImageUrl
                                 ),
-                                labelPromo = ProductCardModel.Label(
-                                        title = product.labelPromo.title,
-                                        type = product.labelPromo.type
-                                ),
-                                labelCredibility = ProductCardModel.Label(
-                                        title = product.labelCredibility.title,
-                                        type = product.labelCredibility.type
-                                ),
-                                labelOffers = ProductCardModel.Label(
-                                        title = product.labelOffers.title,
-                                        type = product.labelOffers.type
-                                )
+                                labelGroupList = product.labelGroupList.map { recommendationLabel ->
+                                    ProductCardModel.LabelGroup(
+                                            position = recommendationLabel.position,
+                                            type = recommendationLabel.type,
+                                            title = recommendationLabel.title
+                                    )
+                                }
                         ),
                         BlankSpaceConfig(
                                 ratingCount = true,
