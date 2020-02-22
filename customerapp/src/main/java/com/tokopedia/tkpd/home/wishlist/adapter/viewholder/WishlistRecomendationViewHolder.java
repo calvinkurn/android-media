@@ -1,17 +1,20 @@
 package com.tokopedia.tkpd.home.wishlist.adapter.viewholder;
 
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
-import androidx.annotation.LayoutRes;
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.kotlin.extensions.view.ViewHintListener;
 import com.tokopedia.productcard.v2.BlankSpaceConfig;
 import com.tokopedia.productcard.v2.ProductCardModel;
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid;
+import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
