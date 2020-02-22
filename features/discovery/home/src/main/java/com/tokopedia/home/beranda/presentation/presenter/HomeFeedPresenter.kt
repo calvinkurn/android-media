@@ -28,8 +28,6 @@ open class HomeFeedPresenter @Inject constructor(
                 GetHomeFeedsSubscriber(view))
     }
 
-    fun isLogin() = userSessionInterface.isLoggedIn
-
     override fun detachView() {
         super.detachView()
         getHomeFeedUseCase.unsubscribe()
