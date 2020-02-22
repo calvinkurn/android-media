@@ -64,10 +64,7 @@ abstract class BaseRecommendationView(context: Context,
             getView().base_recom_4 -> PDP_4
             else -> ""
         }
-        getRecyclerView().bindCarouselProductCardView(
-                activity = activity,
-                parentView = getView(),
-                isScrollable = true,
+        getRecyclerView().bindCarouselProductCardViewGrid(
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
                         val productRecommendation = product.recommendationItemList[adapterPosition]
@@ -129,18 +126,13 @@ abstract class BaseRecommendationView(context: Context,
                                     isActive = it.isFreeOngkirActive,
                                     imageUrl = it.freeOngkirImageUrl
                             ),
-                            labelPromo = ProductCardModel.Label(
-                                    title = it.labelPromo.title,
-                                    type = it.labelPromo.type
-                            ),
-                            labelCredibility = ProductCardModel.Label(
-                                    title = it.labelCredibility.title,
-                                    type = it.labelCredibility.type
-                            ),
-                            labelOffers = ProductCardModel.Label(
-                                    title = it.labelOffers.title,
-                                    type = it.labelOffers.type
-                            )
+                            labelGroupList = it.labelGroupList.map { recommendationLabel ->
+                                ProductCardModel.LabelGroup(
+                                        position = recommendationLabel.position,
+                                        title = recommendationLabel.title,
+                                        type = recommendationLabel.type
+                                )
+                            }
                     )
                 }
 

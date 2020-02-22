@@ -294,18 +294,13 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                             isActive = it.isFreeOngkirActive,
                             imageUrl = it.freeOngkirImageUrl
                     ),
-                    labelPromo = ProductCardModel.Label(
-                            title = it.labelPromo.title,
-                            type = it.labelPromo.type
-                    ),
-                    labelCredibility = ProductCardModel.Label(
-                            title = it.labelCredibility.title,
-                            type = it.labelCredibility.type
-                    ),
-                    labelOffers = ProductCardModel.Label(
-                            title = it.labelOffers.title,
-                            type = it.labelOffers.type
-                    )
+                    labelGroupList = it.labelGroupList.map { recommendationLabel ->
+                        ProductCardModel.LabelGroup(
+                                position = recommendationLabel.position,
+                                title = recommendationLabel.title,
+                                type = recommendationLabel.type
+                        )
+                    }
             )
         }
     }
