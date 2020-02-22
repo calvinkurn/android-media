@@ -35,10 +35,14 @@ data class ProductCardModel (
         val hasAddToCartButton: Boolean = false,
         val hasRemoveFromWishlistButton: Boolean = false
 ) {
+    @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
+    @Deprecated("replace with labelGroupList")
     var isProductPreOrder: Boolean = false
+    @Deprecated("replace with labelGroupList")
     var isProductWholesale: Boolean = false
 
+    @Deprecated("replace with LabelGroup")
     data class Label(
             val position: String = "",
             val title: String = "",
@@ -65,12 +69,12 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_PRODUCT_STATUS)
     }
 
-    fun getLabelPrice(): LabelGroup? {
-        return findLabelGroup(LABEL_PRICE)
-    }
-
     private fun findLabelGroup(position: String): LabelGroup? {
         return labelGroupList.find { it.position == position }
+    }
+
+    fun getLabelPrice(): LabelGroup? {
+        return findLabelGroup(LABEL_PRICE)
     }
 
     fun getLabelGimmick(): LabelGroup? {
