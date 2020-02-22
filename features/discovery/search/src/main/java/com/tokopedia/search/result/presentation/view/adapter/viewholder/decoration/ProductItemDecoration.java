@@ -97,7 +97,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getVerticalCardViewOffset(View view) {
-        if(view instanceof ProductCardView) {
+        if(view instanceof CardView) {
             CardView cardView = (CardView)view;
 
             float maxElevation = cardView.getMaxCardElevation();
