@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlin.math.roundToInt
@@ -17,7 +18,7 @@ abstract class ProductItemViewHolder(
 
     protected val context = itemView.context!!
 
-    fun ProductItemViewModel.toProductCardModel(isUsingBigImageUrl: Boolean): ProductCardModel {
+    protected fun ProductItemViewModel.toProductCardModel(isUsingBigImageUrl: Boolean): ProductCardModel {
         return ProductCardModel(
                 productImageUrl = if (isUsingBigImageUrl) imageUrl700 else imageUrl,
                 productName = productName,
@@ -33,18 +34,14 @@ abstract class ProductItemViewHolder(
                 isTopAds = isTopAds,
                 ratingString = "", // TODO:: Wait for backend to be ready
                 hasOptions = true,
-                labelGroupList = listOf() // TODO:: Wait for backend to be ready
+                labelGroupList = labelGroupList.toProductCardModelLabelGroup()
         )
     }
 
-    private fun List<BadgeItemViewModel>.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {
-        val shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>()
-
-        forEach {
-            shopBadgeList.add(ProductCardModel.ShopBadge(it.isShown, it.imageUrl))
-        }
-
-        return shopBadgeList
+    private fun List<BadgeItemViewModel>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {
+        return this?.map {
+            ProductCardModel.ShopBadge(it.isShown, it.imageUrl)
+        } ?: listOf()
     }
 
     private fun Int.toRatingCount(isTopAds: Boolean): Int {
@@ -56,6 +53,12 @@ abstract class ProductItemViewHolder(
 
     private fun FreeOngkirViewModel.toProductCardModelFreeOngkir(): ProductCardModel.FreeOngkir {
         return ProductCardModel.FreeOngkir(isActive, imageUrl)
+    }
+
+    private fun List<LabelGroupViewModel>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
+        return this?.map {
+            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type)
+        } ?: listOf()
     }
 
     protected fun createImageProductViewHintListener(productItem: ProductItemViewModel): ViewHintListener {
