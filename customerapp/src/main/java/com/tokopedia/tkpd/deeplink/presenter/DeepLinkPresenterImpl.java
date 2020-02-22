@@ -372,12 +372,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
             intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
                     context, linkSegment.get(1));
-        } else {
-            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
-                    context);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
         }
-        intent.putExtras(bundle);
-        context.startActivity(intent);
     }
 
     private void openDigitalPage(String applink) {
