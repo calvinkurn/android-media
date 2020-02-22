@@ -63,7 +63,12 @@ class ProductFilterSheetList {
         adapter?.updateData(data)
     }
 
-    fun getSelectedFilter(): String = selectedItem.id
+    fun getSelectedFilter(): String {
+        return if (selectedItem.name == "Semua Etalase" || selectedItem.name == "Semua Produk")
+            ""
+        else
+            selectedItem.id
+    }
 
     private fun onItemClick(pos: Int) {
         adapter?.items?.forEachIndexed { index, result -> if(result is EtalaseItemViewModel) result.checked = index == pos }

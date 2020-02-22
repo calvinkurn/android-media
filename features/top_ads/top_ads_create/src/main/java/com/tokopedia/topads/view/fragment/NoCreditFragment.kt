@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.create.R
-import kotlinx.android.synthetic.main.topads_create_activity_success.*
+import kotlinx.android.synthetic.main.topads_create_bottom_sheet_insufficient_credit.*
 
 class NoCreditFragment : TkpdBaseV4Fragment() {
 
@@ -30,7 +30,7 @@ class NoCreditFragment : TkpdBaseV4Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        btn_go_to_dashboard.setOnClickListener {
+        btn_topup.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
 
         }

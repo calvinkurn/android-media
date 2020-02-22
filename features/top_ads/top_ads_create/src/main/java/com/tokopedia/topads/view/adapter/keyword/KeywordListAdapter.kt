@@ -46,7 +46,7 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
 
     fun getSelectedItems(): List<KeywordItemViewModel> {
         var selected = mutableListOf<KeywordItemViewModel>()
-        items.forEachIndexed { index, model ->
+        items.forEachIndexed { _, model ->
             if ((model is KeywordItemViewModel) && model.isChecked) {
                 selected.add(model)
             }
@@ -58,7 +58,7 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
         if (items.size != 0 && items[0] is KeywordEmptyViewModel) {
             items.clear()
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
-        } else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != "Kata Kunci Pilihan") {
+        } else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != SELECTED_KEYWORD) {
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         }
         favoured.forEachIndexed lit@{ index, _ ->
@@ -91,26 +91,35 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
         items.clear()
         items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         items.addAll(favoured)
-        items.forEach { index ->
-            if (index is KeywordItemViewModel) {
-                index.isChecked = true
-            }
+        if(remains.size!=0) {
+            items.add(KeywordGroupViewModel(RECOMMENDED))
+            items.addAll(remains)
         }
-        items.add(KeywordGroupViewModel(RECOMMENDED))
-        items.addAll(remains)
         notifyDataSetChanged()
     }
 
+
     fun setSelectedList(selectedKeywords: MutableList<String>) {
-        items.forEachIndexed { index, key ->
-            selectedKeywords.forEach {
-                if (key is KeywordItemViewModel) {
-                    if (key.data.keyword == it) {
-                        key.isChecked = true
+        items.forEachIndexed { _, key ->
+            if (key is KeywordItemViewModel) {
+                key.isChecked = false
+                selectedKeywords.forEach {
+                    if (key is KeywordItemViewModel) {
+                        if (key.data.keyword == it) {
+                            key.isChecked = true
+                        }
                     }
                 }
             }
         }
+        notifyDataSetChanged()
+    }
+
+    fun addManual(list: MutableList<KeywordItemViewModel>) {
+        items.clear()
+        manualKeywords.addAll(list)
+        items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
+        items.addAll(list)
         notifyDataSetChanged()
     }
 }

@@ -100,6 +100,8 @@
     <string name="bid_info_step">Atur Biaya Iklan</string>
     <string name="summary_page_step">Ringkasan Iklan</string>
     <string name="product_list_step">Pilih Produk</string>
-    <string name="daily_budget_error">Biaya minimum 25 rupiah</string>
+    <string name="daily_budget_error">Biaya minimum %d rupiah</string>
+    <string name="group_name_empty_error">"group name can't be empty"</string>
+    <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
 
 </resources>

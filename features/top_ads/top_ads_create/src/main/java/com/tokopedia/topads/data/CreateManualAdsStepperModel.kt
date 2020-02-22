@@ -13,8 +13,11 @@ open class CreateManualAdsStepperModel() : StepperModel {
     var groupName: String = ""
     var selectedProductIds = mutableListOf<Int>()
     var selectedKeywords = mutableListOf<String>()
+    var manualKeywords = mutableListOf<String>()
     var selectedSuggestBid = mutableListOf<Int>()
-    var suggestedBidPerClick = 0
+    var minSuggestBidKeyword =0 // for keywords
+    var suggestedBidPerClick = 0 // for Default
+    var finalBidPerClick = -1 // Edited Bid by User
     var maxBid = 0
     var minBid = 0
     var dailyBudget = 0
@@ -26,6 +29,8 @@ open class CreateManualAdsStepperModel() : StepperModel {
         suggestedBidPerClick = parcel.readInt()
         maxBid = parcel.readInt()
         minBid = parcel.readInt()
+        finalBidPerClick = parcel.readInt()
+        minSuggestBidKeyword = parcel.readInt()
         dailyBudget = parcel.readInt()
         selectedProductIds = arrayListOf<Int>().apply {
             parcel.readList(this, Int::class.java.classLoader)
@@ -34,6 +39,9 @@ open class CreateManualAdsStepperModel() : StepperModel {
             parcel.readList(this, Int::class.java.classLoader)
         }
         selectedKeywords = arrayListOf<String>().apply {
+            parcel.readList(this, String::class.java.classLoader)
+        }
+        manualKeywords = arrayListOf<String>().apply {
             parcel.readList(this, String::class.java.classLoader)
         }
         selectedSuggestBid = arrayListOf<Int>().apply {
@@ -46,12 +54,15 @@ open class CreateManualAdsStepperModel() : StepperModel {
         parcel.writeString(groupName)
         parcel.writeList(selectedProductIds)
         parcel.writeList(selectedKeywords)
+        parcel.writeList(manualKeywords)
         parcel.writeList(selectedSuggestBid)
         parcel.writeInt(suggestedBidPerClick)
         parcel.writeInt(maxBid)
         parcel.writeInt(minBid)
         parcel.writeInt(dailyBudget)
         parcel.writeList(adIds)
+        parcel.writeInt(finalBidPerClick)
+        parcel.writeInt(minSuggestBidKeyword)
     }
 
     override fun describeContents(): Int {

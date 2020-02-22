@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.*
 import com.tokopedia.topads.data.response.*
@@ -40,8 +41,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
     private var adsItemsList: MutableList<AdsItem> = mutableListOf()
 
-
     companion object {
+        private const val MORE_INFO = " Info Selengkapnya"
+        private const val MULTIPLIER = 40
+        private const val dailyBudget = 0
         fun createInstance(): Fragment {
 
             val fragment = SummaryAdsFragment()
@@ -91,59 +94,40 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
         btn_submit.setOnClickListener {
-
-            viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
+            //  viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
             var map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
         }
-        stepperModel?.dailyBudget = stepperModel?.suggestedBidPerClick!! * 40
-        toggle.setOnClickListener {
-            if (toggle.isChecked) {
+        var suggestion = (stepperModel?.suggestedBidPerClick!!) * MULTIPLIER
+        error_text.text = String.format(getString(R.string.daily_budget_error), suggestion)
+
+        toggle.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
                 daily_budget.visibility = View.VISIBLE
-                daily_budget.setText(((stepperModel?.suggestedBidPerClick!!) * 40).toString())
-            } else
-                daily_budget.visibility = View.GONE
-        }
-        daily_budget.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                var budget = 0
                 try {
-                    var input = 0
-                    if (s.isNotEmpty()) {
-                        input = Integer.parseInt(s.toString())
-                        stepperModel?.dailyBudget = input
-                    }
-                    if (input < 25) {
-                        error_text.visibility = View.VISIBLE
-                    } else
-                        error_text.visibility = View.GONE
-
+                    budget = Integer.parseInt(daily_budget.text.toString())
                 } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                }
-            }
-        })
 
-        var spannableText = SpannableString(" Info Selengkapnya")
-        var startIndex = 0
-        var endIndex = spannableText.length
+                }
+                if (budget < suggestion && daily_budget.isVisible) {
+                    error_text.visibility = View.VISIBLE
+                }
+            } else {
+                daily_budget.visibility = View.GONE
+                error_text.visibility = View.GONE
+            }
+
+        }
+        daily_budget.addTextChangedListener(watcher())
+        val spannableText = SpannableString(MORE_INFO)
+        val startIndex = 0
+        val endIndex = spannableText.length
         spannableText.setSpan(resources.getColor(R.color.tkpd_main_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
-                RouteManager.route(context, "https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/")
-
-            }
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
+                RouteManager.route(context, getString(R.string.more_info))
 
             }
         }
@@ -154,13 +138,53 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         bid_range.text = String.format(resources.getString(R.string.bid_range), stepperModel?.minBid, stepperModel?.maxBid)
     }
 
-    private fun convertToParam(view: View): HashMap<String, Any> {
-        var userSession = UserSession(view.context)
+    private fun watcher(): TextWatcher? {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                try {
+                    var input = 0
+                    if (s.isNotEmpty()) {
+                        input = Integer.parseInt(s.toString())
+                        stepperModel?.dailyBudget = input
+                    }
+                    if (input < stepperModel?.suggestedBidPerClick!! * MULTIPLIER
+                            && daily_budget.isVisible) {
+                        error_text.visibility = View.VISIBLE
+                    } else
+                        error_text.visibility = View.GONE
+
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.runOnUiThread {
+            daily_budget.setText(dailyBudget.toString())
+            daily_budget.refreshDrawableState()
+        }
+
+    }
+
+    private fun convertToParam(view: View): HashMap<String, Any> {
+        val userSession = UserSession(view.context)
         input.shopID = userSession.shopId
         input.group.groupName = stepperModel?.groupName ?: ""
-        input.group.priceBid = stepperModel?.suggestedBidPerClick ?: 0
+        input.group.priceBid = stepperModel?.finalBidPerClick ?: 0
         input.group.priceDaily = stepperModel?.dailyBudget ?: 0
+        input.group.suggestedBidValue = stepperModel?.suggestedBidPerClick ?: 0
         keywordsList.clear()
         adsItemsList.clear()
 
@@ -176,7 +200,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         if (stepperModel!!.selectedProductIds.count() > 0) {
             stepperModel!!.selectedProductIds.forEachIndexed { index, _ ->
-                var add = AdsItem()
+                val add = AdsItem()
                 add.productID = stepperModel!!.selectedProductIds[index].toString()
                 add.ad.adID = stepperModel!!.adIds[index].toString()
                 add.ad.adType = "1"
@@ -185,21 +209,19 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             }
             input.group.ads = adsItemsList
         }
-        map.put("input", input)
+        map["input"] = input
         return map
     }
 
     private fun onSuccessActivation(data: ResponseCreateGroup) {
-        var group = data.topadsCreateGroupAds.data.group
-        if (group.isEnoughDeposit) {
-            var intent = Intent(context, SuccessActivity::class.java)
-            startActivity(intent)
-
+        val group = data.topadsCreateGroupAds.data.group
+        val intent:Intent
+        intent = if (group.isEnoughDeposit) {
+            Intent(context, SuccessActivity::class.java)
         } else {
-            var intent = Intent(context, NoCreditActivity::class.java)
-            startActivity(intent)
+            Intent(context, NoCreditActivity::class.java)
         }
-
+        startActivity(intent)
     }
 
     private fun onErrorActivation(throwable: Throwable) {

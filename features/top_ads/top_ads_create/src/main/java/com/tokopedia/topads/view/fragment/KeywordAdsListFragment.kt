@@ -44,6 +44,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     companion object {
         private const val COACH_MARK_TAG = "keyword"
+        private const val NOT_KNOWN = "Tidak diketahui"
         fun createInstance(): Fragment {
 
             val fragment = KeywordAdsListFragment()
@@ -82,7 +83,6 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         var s = list.toString()
         var productId = s.substring(1, s.length - 1)
         viewModel.getSugestionKeyword(productId, 0, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
-        keywordListAdapter.setSelectedList(stepperModel?.selectedKeywords!!)
         keywordListAdapter.notifyDataSetChanged()
     }
 
@@ -123,7 +123,19 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             keywordList.add(KeywordItemViewModel(index).data.keyword)
         }
         tip_btn.visibility = View.VISIBLE
+        addManualKeywords()
         keywordListAdapter.notifyDataSetChanged()
+        showSelectMessage()
+    }
+
+    private fun addManualKeywords() {
+        stepperModel?.manualKeywords!!.forEach {
+            keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(it))
+        }
+        keywordListAdapter.setSelectedList(stepperModel?.selectedKeywords!!)
+
+        if (stepperModel?.selectedKeywords?.size != 0)
+            keywordListAdapter.setSelectedKeywords(getFavouredData())
 
     }
 
@@ -136,8 +148,19 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun onEmptySuggestion() {
         coachitem_title.visibility = View.GONE
         keywordListAdapter.items = mutableListOf(KeywordEmptyViewModel())
-        keywordListAdapter.notifyDataSetChanged()
+        addManualKeywordsEmpty()
         tip_btn.visibility = View.INVISIBLE
+        showSelectMessage()
+    }
+
+    private fun addManualKeywordsEmpty() {
+        val list = mutableListOf<KeywordItemViewModel>()
+        stepperModel?.manualKeywords!!.forEach {
+            list.add(viewModel.addNewKeyword(it))
+        }
+        if (stepperModel?.manualKeywords?.size != 0)
+            keywordListAdapter.addManual(list)
+        keywordListAdapter.setSelectedList(stepperModel?.selectedKeywords!!)
     }
 
     override fun initiateStepperModel() {
@@ -149,6 +172,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun gotoNextPage() {
         stepperModel?.selectedKeywords = getSelectedKeyword()
         stepperModel?.selectedSuggestBid = getSelectedBid()
+        stepperModel?.manualKeywords = getManualKeywords()
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -168,8 +192,12 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         return list
     }
 
-    private fun getSelectedData(): List<KeywordItemViewModel> {
-        return keywordListAdapter.getSelectedItems()
+    private fun getManualKeywords(): MutableList<String> {
+        var list = mutableListOf<String>()
+        keywordListAdapter.manualKeywords.forEach {
+            list.add(it.data.keyword)
+        }
+        return list
     }
 
     private fun getFavouredData(): List<KeywordItemViewModel> {
@@ -181,7 +209,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         manual.addAll(selected)
         selected.forEach { index ->
             if (index is KeywordItemViewModel) {
-                if (index.data.totalSearch == "Tidak diketahui") {
+                if (index.data.totalSearch == NOT_KNOWN) {
                     manual.remove(index)
 
                 }
@@ -224,19 +252,15 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 var text = validateKeyword(s)
                 if (!text.isNullOrBlank()) {
-                    add_btn.isEnabled = false
-                    editText.imeOptions = EditorInfo.IME_ACTION_NONE
-                    error_text.visibility = View.VISIBLE
+                    setValues(false)
                     error_text.text = text
                 } else {
-                    add_btn.isEnabled = true
-                    editText.imeOptions = EditorInfo.IME_ACTION_NEXT
-                    error_text.visibility = View.INVISIBLE
+                    setValues(true)
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
-              //  add_btn.isEnabled = !s.isNullOrBlank()
+                //  add_btn.isEnabled = !s.isNullOrBlank()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -255,6 +279,19 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 return true
             }
         })
+    }
+
+    private fun setValues(flag: Boolean) {
+        if (flag) {
+            add_btn.isEnabled = true
+            editText.imeOptions = EditorInfo.IME_ACTION_NEXT
+            error_text.visibility = View.INVISIBLE
+
+        } else {
+            add_btn.isEnabled = false
+            editText.imeOptions = EditorInfo.IME_ACTION_NONE
+            error_text.visibility = View.VISIBLE
+        }
     }
 
     private fun makeToast() {

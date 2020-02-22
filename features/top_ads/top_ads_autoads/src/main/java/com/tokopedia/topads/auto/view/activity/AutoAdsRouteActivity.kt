@@ -104,7 +104,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     private fun openDashboard() {
         if (AppUtil.isSellerInstalled(this)) {
-            RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER)
+            RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
         } else {
             RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
         }

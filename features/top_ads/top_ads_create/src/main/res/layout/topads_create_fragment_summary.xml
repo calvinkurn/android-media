@@ -54,11 +54,13 @@
                     app:typographyType="body_2" />
 
 
-            <EditText
+            <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/daily_budget"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:visibility="gone"
+                android:inputType="number"
+                android:maxLines="1"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_below="@id/summary"
                 tools:visibility="visible"
@@ -68,9 +70,10 @@
                     android:id="@+id/error_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/daily_budget"
+                    android:text="@string/daily_budget_error"
                     android:textColor="@color/bright_red"
                     android:visibility="gone"
-                    android:layout_below="@id/daily_budget"
                     app:typographyType="body_3"
                     tools:text="@string/daily_budget_error"
                     tools:visibility="visible" />

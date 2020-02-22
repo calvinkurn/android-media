@@ -21,7 +21,7 @@ object ParamObject {
     const val SHOP_ID = "shopID"
     const val SHOP_id = "shop_id"
     const val ETALASE = "etalase"
-    const val SORT_BY = "sort_by"
+    const val SORT_BY = "sortBy"
     const val START = "start"
     const val ROWS = "rows"
     const val STATUS = "status"

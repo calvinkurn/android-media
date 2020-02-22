@@ -37,7 +37,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
             val fragment = CreateGroupAdsFragment()
             val args = Bundle()
-            fragment.setArguments(args)
+            fragment.arguments = args
             return fragment
         }
     }
@@ -80,9 +80,9 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         super.onViewCreated(view, savedInstanceState)
      //   btn_submit.isEnabled = false
         btn_submit.setOnClickListener {
-            if(group_name_input.text.toString()==""){
+            if(group_name_input.text.toString().trim()==""){
                 SnackbarManager.make(activity,
-                        "group name can't be empty",
+                        resources.getString(R.string.group_name_empty_error),
                         Snackbar.LENGTH_LONG)
                         .show()
             }
@@ -94,32 +94,31 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         tip_btn.setOnClickListener {
             InfoSheetGroupList.newInstance(it.context).show()
         }
-        group_name_input.setOnEditorActionListener(object: TextView.OnEditorActionListener{
-            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                when(actionId){
-                    EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
-                }
-                Utils.dismissKeyboard(context, v)
-                return true
+        group_name_input.setOnEditorActionListener { v, actionId, _ ->
+            when(actionId){
+                EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
             }
-        })
+            Utils.dismissKeyboard(context, v)
+            true
+        }
     }
 
     private fun validateGroup(s: String?) {
         s?.let {
-            if (s.length > 0) {
+            if (s.isNotEmpty()) {
                 viewModel.validateGroup(it, this::onSuccess, this::onError)
             }
         }
     }
 
     private fun onError(t: Throwable) {
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage, object : NetworkErrorHelper.RetryClickedListener{
-            override fun onRetryClicked() {
-                btn_submit.isEnabled = false
-                validateGroup(group_name_input.text.toString())
-            }
-        })
+//        SnackbarManager.make(activity, t.message,
+//                Snackbar.LENGTH_LONG)
+//                .show()
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) {
+            btn_submit.isEnabled = false
+            validateGroup(group_name_input.text.toString())
+        }
     }
 
     private fun onSuccess(data: TopAdsGroupValidateName.Data) {

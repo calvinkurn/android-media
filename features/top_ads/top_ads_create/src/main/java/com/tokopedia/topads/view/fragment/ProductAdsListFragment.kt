@@ -49,7 +49,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         private const val NOT_PROMOTED = "not_promoted"
         private const val PROMOTED = "promoted"
         private const val ALL = "all"
-        private const val ROW = 10
+        private const val ROW = 50
         private const val START = 0
 
         fun createInstance(): Fragment {
@@ -188,6 +188,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         var count = productListAdapter.getSelectedItems().size
         select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
+        stepperModel?.selectedProductIds = getSelectedProduct()
     }
 
     private fun onEmptyProduct() {
@@ -195,6 +196,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         btn_next.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
+        select_product_info.text = String.format(getString(R.string.format_selected_produk), 0)
+
     }
 
     private fun onError(t: Throwable) {
