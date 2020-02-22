@@ -9,8 +9,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
-import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
@@ -36,17 +36,13 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
-import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 
 
-@Module(includes = [TopAdsWishlistModule::class, PlayCardModule::class])
+@Module(includes = [PlayCardModule::class])
 class HomeModule {
 
     @HomeScope
@@ -125,16 +121,6 @@ class HomeModule {
     }
 
     @Provides
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @Provides
-    fun provideRemoveWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
-    }
-
-    @Provides
     fun feedTabMapper(): FeedTabMapper {
         return FeedTabMapper()
     }
@@ -204,11 +190,8 @@ class HomeModule {
     @Provides
     fun homeFeedPresenter(
             getHomeFeedUseCase: GetHomeFeedUseCase?,
-            addWishListUseCase: AddWishListUseCase?,
-            removeWishListUseCase: RemoveWishListUseCase?,
-            topAdsWishlishedUseCase: TopAdsWishlishedUseCase?,
             userSessionInterface: UserSessionInterface?
     ): HomeFeedPresenter {
-        return HomeFeedPresenter(userSessionInterface!!, getHomeFeedUseCase!!, addWishListUseCase!!, removeWishListUseCase!!, topAdsWishlishedUseCase!!)
+        return HomeFeedPresenter(userSessionInterface!!, getHomeFeedUseCase!!)
     }
 }

@@ -47,7 +47,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                             isWishlistVisible = true,
                             isWishlisted = element.isWishList,
                             shopBadgeList = element.badges.map {
-                                ProductCardModel.ShopBadge(imageUrl = it.imageUrl?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.isFreeOngkirActive,
