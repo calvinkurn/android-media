@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.decorat
 
 import android.graphics.Rect;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -83,11 +84,11 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getHorizontalCardViewOffset(View view) {
-        if(view instanceof ProductCardView) {
-            ProductCardView cardView = (ProductCardView)view;
+        if(view instanceof CardView) {
+            CardView cardView = (CardView)view;
 
-            float maxElevation = cardView.getCardViewMaxElevation();
-            float radius = cardView.getCardViewRadius();
+            float maxElevation = cardView.getMaxCardElevation();
+            float radius = cardView.getRadius();
 
             return Math.round((float)(maxElevation + (1 - Math.cos(45)) * radius)) / 2;
         }
@@ -97,10 +98,10 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
     private int getVerticalCardViewOffset(View view) {
         if(view instanceof ProductCardView) {
-            ProductCardView cardView = (ProductCardView)view;
+            CardView cardView = (CardView)view;
 
-            float maxElevation = cardView.getCardViewMaxElevation();
-            float radius = cardView.getCardViewRadius();
+            float maxElevation = cardView.getMaxCardElevation();
+            float radius = cardView.getRadius();
 
             return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
         }
