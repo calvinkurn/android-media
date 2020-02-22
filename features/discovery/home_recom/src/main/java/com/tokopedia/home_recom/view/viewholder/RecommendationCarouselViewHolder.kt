@@ -82,18 +82,11 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                                     isActive = it.productItem.isFreeOngkirActive,
                                     imageUrl = it.productItem.freeOngkirImageUrl
                             ),
-                            labelPromo = ProductCardModel.Label(
-                                    title = it.productItem.labelPromo.title,
-                                    type = it.productItem.labelPromo.type
-                            ),
-                            labelCredibility = ProductCardModel.Label(
-                                    title = it.productItem.labelCredibility.title,
-                                    type = it.productItem.labelCredibility.type
-                            ),
-                            labelOffers = ProductCardModel.Label(
-                                    title = it.productItem.labelOffers.title,
-                                    type = it.productItem.labelOffers.type
-                            )
+                            labelGroupList = it.productItem.labelGroupList.map {  recommendationLabel ->
+                                ProductCardModel.LabelGroup(
+                                        title = recommendationLabel.title, position = recommendationLabel.position, type = recommendationLabel.type
+                                )
+                            }
                     )
                 }
 
