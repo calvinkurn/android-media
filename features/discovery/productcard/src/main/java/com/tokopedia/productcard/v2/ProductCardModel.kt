@@ -81,8 +81,8 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_GIMMICK)
     }
 
-    fun getLabelCredibility2(): LabelGroup? {
-        return findLabelGroup(LABEL_CREDIBILITY)
+    fun getLabelIntegrity(): LabelGroup? {
+        return findLabelGroup(LABEL_INTEGRITY)
     }
 
     fun getLabelShipping(): LabelGroup? {

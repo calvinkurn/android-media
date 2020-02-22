@@ -20,7 +20,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelGimmickNumberOfStock())
     it.add(testLabelSoldOut())
     it.add(testLabelNewProduct())
-    it.add(testLabelCredibility())
+    it.add(testLabelIntegrity())
     it.add(testLabelShippingInfo())
     it.add(testNoShopBadge())
     it.add(testNoRatingButHasReviewCount())
@@ -289,12 +289,12 @@ private fun testLabelNewProduct(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testLabelCredibility(): ProductCardModelMatcher {
+private fun testLabelIntegrity(): ProductCardModelMatcher {
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
-    val labelCredibility = LabelGroup(position = LABEL_CREDIBILITY, title = "Terjual 122", type = "#ae31353b")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
 
     val productCardModel = ProductCardModel(
-            productName = "Label Credibility",
+            productName = "Label Integrity",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
@@ -305,7 +305,7 @@ private fun testLabelCredibility(): ProductCardModelMatcher {
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelPrice)
-                labelGroups.add(labelCredibility)
+                labelGroups.add(labelIntegrity)
             }
     )
 
@@ -316,7 +316,7 @@ private fun testLabelCredibility(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.textViewCredibility] = isDisplayedWithText(labelCredibility.title)
+        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }

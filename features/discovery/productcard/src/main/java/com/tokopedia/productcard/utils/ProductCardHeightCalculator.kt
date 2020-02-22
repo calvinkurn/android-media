@@ -132,7 +132,7 @@ private fun ProductCardModel.getCredibilitySectionHeight(context: Context): Int 
     val credibilitySectionHeightList = mutableListOf<Int>().also {
         it.add(getRatingHeight(context))
         it.add(getReviewCountHeight(context))
-        it.add(getLabelCredibilityHeight(context))
+        it.add(getLabelIntegrityHeight(context))
     }
 
     return credibilitySectionHeightList.max() ?: 0
@@ -166,12 +166,12 @@ private fun ProductCardModel.getReviewCountHeight(context: Context): Int {
     else 0
 }
 
-private fun ProductCardModel.getLabelCredibilityHeight(context: Context): Int {
-    val labelCredibility = getLabelCredibility2()
+private fun ProductCardModel.getLabelIntegrityHeight(context: Context): Int {
+    val labelIntegrity = getLabelIntegrity()
 
-    return if (labelCredibility != null && labelCredibility.title.isNotEmpty()) {
-        val labelCredibilityMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_credibility_margin_top)
-        val labelCredibilityHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_credibility_height)
+    return if (labelIntegrity != null && labelIntegrity.title.isNotEmpty()) {
+        val labelCredibilityMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_integrity_margin_top)
+        val labelCredibilityHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_integrity_height)
 
         labelCredibilityMarginTop + labelCredibilityHeight
     }

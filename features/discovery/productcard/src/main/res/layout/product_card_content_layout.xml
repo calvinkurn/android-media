@@ -251,10 +251,10 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textViewCredibility"
+        android:id="@+id/textViewIntegrity"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/product_card_text_view_credibility_height"
-        android:layout_marginTop="@dimen/product_card_text_view_credibility_margin_top"
+        android:layout_height="@dimen/product_card_text_view_integrity_height"
+        android:layout_marginTop="@dimen/product_card_text_view_integrity_margin_top"
         android:gravity="center_vertical"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
@@ -269,7 +269,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="imageRatingString,textViewRatingString,textViewReviewCount,textViewCredibility" />
+        app:constraint_referenced_ids="imageRatingString,textViewRatingString,textViewReviewCount,textViewIntegrity" />
 
     <ImageView
         android:id="@+id/imageFreeOngkirPromo"

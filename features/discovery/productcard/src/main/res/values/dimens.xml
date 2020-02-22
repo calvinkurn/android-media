@@ -41,8 +41,8 @@
     <dimen name="product_card_text_review_count_margin_top">2dp</dimen>
     <dimen name="product_card_text_review_count_height">18dp</dimen>
 
-    <dimen name="product_card_text_view_credibility_margin_top">2dp</dimen>
-    <dimen name="product_card_text_view_credibility_height">18dp</dimen>
+    <dimen name="product_card_text_view_integrity_margin_top">2dp</dimen>
+    <dimen name="product_card_text_view_integrity_height">18dp</dimen>
 
     <dimen name="product_card_free_ongkir_badge_margin_top">4dp</dimen>
     <dimen name="product_card_free_ongkir_badge_height">20dp</dimen>

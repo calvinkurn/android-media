@@ -127,7 +127,7 @@ private fun View.renderTextReview(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
-    textViewCredibility?.initLabelGroup(productCardModel.getLabelCredibility2())
+    textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
 }
 
 private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
