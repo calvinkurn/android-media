@@ -39,7 +39,10 @@ class RecommendationItemViewHolder(
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.productItem.isFreeOngkirActive,
                                     imageUrl = element.productItem.freeOngkirImageUrl
-                            )
+                            ),
+                            labelGroupList = element.productItem.labelGroupList.map {
+                                ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type)
+                            }
                     )
             )
 
