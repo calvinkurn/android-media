@@ -33,7 +33,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                                               @ListTitleTypeDef String listTitle, String etalaseName,
                                               String attribution, int productPositionStart,
                                               @TrackShopTypeDef String shopTypeDef,
-                                              String shopId, String shopName, boolean isActiveFreeOngkir) {
+                                              String shopId, String shopName, boolean isActiveFreeOngkir, String shopRef) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < shopProductViewModelList.size(); i++) {
             ShopProductViewModel viewModel = shopProductViewModelList.get(i);
@@ -52,7 +52,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                             SHOP_NAME, shopName,
                             PAGE_TYPE, SHOPPAGE,
                             ATTRIBUTION, attribution,
-                            DIMENSION83, isActiveFreeOngkir ? FREE_ONGKIR : NONE_OR_OTHER
+                            DIMENSION83, isActiveFreeOngkir ? FREE_ONGKIR : NONE_OR_OTHER,
+                            SHOP_REF, shopRef
                     )
             );
         }
@@ -73,7 +74,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 createProductListMap(shopProductViewModelList, listTitle, listName,
                         customDimensionShopPage.attribution,
                         productPositionStart,
-                        customDimensionShopPage.shopType, shopId, shopName, isActiveFreeOngkir)));
+                        customDimensionShopPage.shopType, shopId, shopName, isActiveFreeOngkir,
+                        customDimensionShopPage.shopRef)));
         return eventMap;
     }
 
@@ -94,7 +96,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                                 customDimensionShopPage.attribution,
                                 productPositionStart,
                                 customDimensionShopPage.shopType,
-                                shopId, shopName, isActiveFreeOngkir))
+                                shopId, shopName, isActiveFreeOngkir,
+                                customDimensionShopPage.shopRef))
         ));
         return eventMap;
     }
