@@ -1097,7 +1097,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @TargetApi(Build.VERSION_CODES.N)
     public void startFrameMetrics(Activity activity) {
-        ics();
+        setupMetrics();
         onFrameMetricAvailableListener = new Window.OnFrameMetricsAvailableListener() {
             @Override
             public void onFrameMetricsAvailable(Window window, FrameMetrics frameMetrics, int dropCountSinceLastInvocation) {
