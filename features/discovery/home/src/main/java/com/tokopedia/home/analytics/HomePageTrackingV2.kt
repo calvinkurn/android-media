@@ -5,50 +5,8 @@ import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 object HomePageTrackingV2 : BaseTracking() {
-    private class CustomEvent : BaseTracking.Event(){
-        val CLICK_HOMEPAGE = "clickHomepage"
-    }
-
-    private fun getBasicPromotionView(
-        event: String,
-        eventCategory: String,
-        eventAction: String,
-        eventLabel: String,
-        promotions: List<Promotion>
-    ): Map<String, Any>{
-        return DataLayer.mapOf(
-                CustomEvent.KEY, event,
-                Category.KEY, eventCategory,
-                Action.KEY, eventAction,
-                Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)
-        )
-    }
-
-    private fun getBasicPromotionClick(
-        event: String,
-        eventCategory: String,
-        eventAction: String,
-        eventLabel: String,
-        channelId: String,
-        affinity: String,
-        attribution: String,
-        categoryId: String,
-        shopId: String,
-        promotions: List<Promotion>
-    ): Map<String, Any>{
-        return DataLayer.mapOf(
-                Event.KEY, event,
-                Category.KEY, eventCategory,
-                Action.KEY, eventAction,
-                Label.KEY, eventLabel,
-                Label.CHANNEL_LABEL, channelId,
-                Label.AFFINITY_LABEL, affinity,
-                Label.ATTRIBUTION_LABEL, attribution,
-                Label.CATEGORY_LABEL, categoryId,
-                Label.SHOP_LABEL, shopId,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
-        )
+    private object CustomEvent{
+        const val CLICK_HOMEPAGE = "clickHomepage"
     }
 
     object LegoBanner{
@@ -92,7 +50,7 @@ object HomePageTrackingV2 : BaseTracking() {
 
         fun getLegoBannerFourImageSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
             return DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
+                Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME) + " view all",
                 Label.KEY, channel.header.name,
