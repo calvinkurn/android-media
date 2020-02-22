@@ -40,8 +40,7 @@ class AddToCartDoneRecommendationViewHolder(
             title_recom.text = element.recommendationWidget.title
             val products = element.recommendationWidget.recommendationItemList
             val parentPosition = adapterPosition
-            product_recom.bindCarouselProductCardView(
-                    isScrollable = true,
+            product_recom.bindCarouselProductCardViewGrid(
                     carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                         override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
                             val productRecommendation = products[adapterPosition]
@@ -61,30 +60,6 @@ class AddToCartDoneRecommendationViewHolder(
                         override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
                             val productRecommendation = products[adapterPosition]
                             recommendationListener.onProductImpression(productRecommendation)
-                        }
-                    },
-                    carouselProductCardOnWishlistItemClickListener = object : CarouselProductCardListener.OnWishlistItemClickListener {
-                        override fun onWishlistItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                            val productRecommendation = products[adapterPosition]
-                            recommendationListener.onWishlistClick(productRecommendation, !productRecommendation.isWishlist) { success, throwable ->
-                                if (success) {
-                                    productRecommendation.isWishlist = !productRecommendation.isWishlist
-                                    updateWishlist(adapterPosition, productRecommendation.isWishlist)
-                                    if (productRecommendation.isWishlist) {
-                                        showSuccessAddWishlist(
-                                                itemView,
-                                                getString(R.string.msg_success_add_wishlist)
-                                        )
-                                    } else {
-                                        showSuccessRemoveWishlist(
-                                                itemView,
-                                                getString(R.string.msg_success_remove_wishlist)
-                                        )
-                                    }
-                                } else {
-                                    showError(rootView, throwable)
-                                }
-                            }
                         }
                     },
                     productCardModelList = products.map {
@@ -120,21 +95,6 @@ class AddToCartDoneRecommendationViewHolder(
             )
             visible()
         }
-    }
-
-    private fun showSuccessAddWishlist(view: View, message: String){
-        Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
-                view.context.getString(R.string.recom_go_to_wishlist), View.OnClickListener {
-            RouteManager.route(view.context, ApplinkConst.WISHLIST)
-        })
-    }
-
-    private fun showSuccessRemoveWishlist(view: View, message: String){
-        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
-    }
-
-    private fun showError(view: View, throwable: Throwable?){
-        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
     fun updateWishlist(position: Int, isAddWishlist: Boolean) {
