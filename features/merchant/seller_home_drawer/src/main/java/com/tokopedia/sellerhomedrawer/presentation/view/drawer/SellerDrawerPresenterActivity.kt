@@ -38,6 +38,7 @@ import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataList
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sah_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_custom_actionbar_drawer_notification.view.*
 import rx.Observable
@@ -63,7 +64,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     @Inject
     lateinit var getSellerHomeUserAttributesUseCase: GetSellerHomeUserAttributesUseCase
     @Inject
-    lateinit var userSession: UserSession
+    lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var drawerCache: LocalCacheHandler
     @Inject

@@ -21,8 +21,9 @@ class SellerHomeDashboardModule(val context: Context) {
     @Provides
     fun providePresenter(getShopStatusUseCase: GetShopStatusUseCase,
                          flashSaleGetSellerStatusUseCase: FlashSaleGetSellerStatusUseCase,
-                         userSession: UserSessionInterface): SellerHomeDashboardDrawerPresenter =
-            SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession)
+                         userSession: UserSessionInterface,
+                         context: Context): SellerHomeDashboardDrawerPresenter =
+            SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession, context)
 
     @SellerHomeDashboardScope
     @Provides
