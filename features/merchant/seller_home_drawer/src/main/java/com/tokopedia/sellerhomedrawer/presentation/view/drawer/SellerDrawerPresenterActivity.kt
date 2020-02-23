@@ -47,7 +47,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         SellerDrawerDataListener
 {
     companion object {
-        const val MAX_NOTIF = 999
+        private const val MAX_NOTIF = 999
     }
 
     lateinit var sellerDrawerHelper: SellerDrawerHelper
