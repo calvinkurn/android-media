@@ -148,7 +148,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
     }
 
-    private fun getDrawerSellerAttrUseCase(userSession: UserSession) {
+    private fun getDrawerSellerAttrUseCase(userSession: UserSessionInterface) {
         drawerDataManager?.getSellerUserAttributes(userSession)
     }
 
