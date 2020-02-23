@@ -16,7 +16,7 @@ public class GraphqlCacheManager {
     private GraphqlDatabaseDao databaseDao;
 
     public static long lastDeleteExpired = 0L;
-    public final static long periodOfExpirationDeletion = TimeUnit.MINUTES.toMillis(1);
+    public final static long periodOfExpirationDeletion = TimeUnit.MINUTES.toMillis(3);
 
     public GraphqlCacheManager() {
         databaseDao = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao();
