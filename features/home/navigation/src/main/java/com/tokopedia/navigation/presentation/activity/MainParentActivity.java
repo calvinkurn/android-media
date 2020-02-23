@@ -614,31 +614,34 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        for(int i = 0; i < fragmentPerformanceDatas.size(); i++) {
-            int key = fragmentPerformanceDatas.keyAt(i);
-            // get the object by the key.
-            PerformanceData performanceData = fragmentPerformanceDatas.get(key);
-            if (performanceData instanceof HomePerformanceData) {
-                Map<String, Integer> dynamicChannelList = ((HomePerformanceData) performanceData).getDynamicChannelList();
-                if (dynamicChannelList != null) {
-                    for (Map.Entry<String,Integer> dynamicChannel : dynamicChannelList.entrySet()) {
-                        mainParentPerformanceMonitoring.putMetric(
-                                dynamicChannel.getKey(), dynamicChannel.getValue()
-                        );
+        if (fragmentPerformanceDatas.size() > 0) {
+            for(int i = 0; i < fragmentPerformanceDatas.size(); i++) {
+                int key = fragmentPerformanceDatas.keyAt(i);
+                // get the object by the key.
+                PerformanceData performanceData = fragmentPerformanceDatas.get(key);
+                if (performanceData instanceof HomePerformanceData) {
+                    Map<String, Integer> dynamicChannelList = ((HomePerformanceData) performanceData).getDynamicChannelList();
+                    if (dynamicChannelList != null) {
+                        for (Map.Entry<String,Integer> dynamicChannel : dynamicChannelList.entrySet()) {
+                            mainParentPerformanceMonitoring.putMetric(
+                                    dynamicChannel.getKey(), dynamicChannel.getValue()
+                            );
+                        }
                     }
                 }
+                mainParentPerformanceMonitoring.putMetric(
+                        performanceData.getAllFramesTag(), performanceData.getAllFrames()
+                );
+                mainParentPerformanceMonitoring.putMetric(
+                        performanceData.getJankyFramesTag(), performanceData.getJankyFrames()
+                );
+                mainParentPerformanceMonitoring.putMetric(
+                        performanceData.getJankyFramesPercentageTag(), performanceData.getJankyFramePercentage()
+                );
             }
-            mainParentPerformanceMonitoring.putMetric(
-                    performanceData.getAllFramesTag(), performanceData.getAllFrames()
-            );
-            mainParentPerformanceMonitoring.putMetric(
-                    performanceData.getJankyFramesTag(), performanceData.getJankyFrames()
-            );
-            mainParentPerformanceMonitoring.putMetric(
-                    performanceData.getJankyFramesPercentageTag(), performanceData.getJankyFramePercentage()
-            );
+            mainParentPerformanceMonitoring.stopTrace();
         }
-        mainParentPerformanceMonitoring.stopTrace();
+        fragmentPerformanceDatas.clear();
         if (presenter != null)
             presenter.onDestroy();
     }
