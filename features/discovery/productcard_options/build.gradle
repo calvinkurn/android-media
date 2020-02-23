@@ -71,7 +71,7 @@ dependencies {
 project.ext {
     artifactId = 'productcard-options'
     groupId = 'com.tokopedia.discovery'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "productcard-options-release"
 }
 

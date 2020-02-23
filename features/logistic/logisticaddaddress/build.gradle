@@ -90,7 +90,7 @@ dependencies {
 project.ext {
     artifactId = "add-address"
     groupId = "com.tokopedia.logistic"
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "logisticaddaddress-release"
 }
 

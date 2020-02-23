@@ -55,7 +55,7 @@ dependencies {
 project.ext {
     artifactId = 'identification-common'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "user_identification_common-release"
 }
 

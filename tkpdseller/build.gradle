@@ -113,7 +113,7 @@ dependencies {
 project.ext {
     artifactId = 'seller'
     groupId = 'com.tokopedia.seller'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="tkpdseller-release"
 }
 

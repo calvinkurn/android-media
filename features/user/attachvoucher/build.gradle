@@ -76,7 +76,7 @@ dependencies {
 project.ext {
     artifactId = 'attachvoucher'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "attachvoucher-release"
 }
 

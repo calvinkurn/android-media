@@ -58,7 +58,7 @@ dependencies {
 project.ext {
     artifactId = 'recharge-general'
     groupId = 'com.tokopedia.rechargegeneral'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "recharge_general-release"
 }
 

@@ -30,7 +30,7 @@ dependencies {
 project.ext {
     artifactId = 'product-detail-common'
     groupId = 'com.tokopedia.merchant'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "product_detail_common-release"
 }
 

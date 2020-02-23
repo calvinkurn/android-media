@@ -44,7 +44,7 @@ dependencies {
 project.ext {
     artifactId = "opportunity"
     groupId = "com.tokopedia.transaction"
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "opportunity-release"
 }
 

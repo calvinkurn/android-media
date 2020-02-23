@@ -59,7 +59,7 @@ dependencies {
 project.ext {
     artifactId = 'kyc_centralized'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "kyc_centralized-release"
 }
 

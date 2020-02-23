@@ -32,7 +32,7 @@ dependencies {
 project.ext {
     artifactId = 'gamification-common'
     groupId = 'com.tokopedia.promo'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "promo_gamification_common-release"
 }
 

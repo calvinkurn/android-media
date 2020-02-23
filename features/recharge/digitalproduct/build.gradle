@@ -69,7 +69,7 @@ dependencies {
 project.ext {
     artifactId = 'product'
     groupId = 'com.tokopedia.digital'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "digitalproduct-release"
 }
 

@@ -114,7 +114,7 @@ dependencies {
 project.ext {
     artifactId = 'topchat'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "topchat-release"
 }
 

@@ -46,7 +46,7 @@ dependencies {
 project.ext {
     artifactId = 'common-topup-bills'
     groupId = 'com.tokopedia.digital'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "common_topup_bills-release"
 }
 

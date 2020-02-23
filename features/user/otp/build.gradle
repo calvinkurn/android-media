@@ -81,7 +81,7 @@ dependencies {
 project.ext {
     artifactId = 'otp'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "otp-release"
 }
 

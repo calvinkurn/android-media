@@ -70,7 +70,7 @@ dependencies {
 project.ext {
     artifactId = 'reputation'
     groupId = 'com.tokopedia.merchant'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="reputation-release"
 }
 

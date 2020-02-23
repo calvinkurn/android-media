@@ -40,7 +40,7 @@ dependencies {
 project.ext {
     artifactId = 'ovop2p'
     groupId = 'com.tokopedia.ovop2p'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "ovop2p-release"
 }
 

@@ -42,7 +42,7 @@ dependencies {
 project.ext {
     artifactId = 'instant-loan'
     groupId = 'com.tokopedia.fintech'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="instant_loan-release"
 }
 

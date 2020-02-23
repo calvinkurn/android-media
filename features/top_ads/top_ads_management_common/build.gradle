@@ -47,7 +47,7 @@ dependencies {
 project.ext {
     artifactId = 'management-common'
     groupId = 'com.tokopedia.topads'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "top_ads_management_common-release"
 }
 

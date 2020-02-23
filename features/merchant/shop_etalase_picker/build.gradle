@@ -36,7 +36,7 @@ dependencies {
 project.ext {
     artifactId = 'shop-etalase-picker'
     groupId = 'com.tokopedia.merchant'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="shop_etalase_picker-release"
 }
 
