@@ -8,7 +8,6 @@ class SellerHomeDashboardContract {
     interface View {
         fun onSuccessGetFlashSaleSellerStatus(isVisible: Boolean)
         fun onSuccessGetShopInfo(goldGetPmOsStatus: GoldGetPmOsStatus)
-        val context: Context
     }
 
     interface Presenter {

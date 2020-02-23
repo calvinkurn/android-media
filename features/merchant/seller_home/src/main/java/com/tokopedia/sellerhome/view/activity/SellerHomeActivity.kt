@@ -138,9 +138,6 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         sellerHomeFragment.setShopStatus(mShopStatus)
     }
 
-    override val context: Context
-        get() = this
-
     override fun updateDrawerData() {
         if (userSession.isLoggedIn) {
             setDataDrawer()
@@ -157,11 +154,11 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
 
     private fun initInjector() {
         //Dagger injecting still fails, will do manual instantiation
-        val userSession: UserSessionInterface = UserSession(context)
+        val userSession: UserSessionInterface = UserSession(this)
         val graphqlUseCase = GraphqlUseCase()
-        val getShopStatusUseCase = GetShopStatusUseCase(graphqlUseCase, GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status))
+        val getShopStatusUseCase = GetShopStatusUseCase(graphqlUseCase, GraphqlHelper.loadRawString(resources, R.raw.gold_merchant_status))
         val flashSaleGetSellerStatusUseCase = FlashSaleGetSellerStatusUseCase(graphqlUseCase)
-        sellerHomeDashboardDrawerPresenter = SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession)
+        sellerHomeDashboardDrawerPresenter = SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession, this)
 
         sellerHomeDashboardDrawerPresenter?.attachView(this)
     }
