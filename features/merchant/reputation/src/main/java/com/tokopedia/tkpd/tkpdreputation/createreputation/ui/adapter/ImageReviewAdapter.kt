@@ -12,7 +12,7 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.DefaultI
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.ImageReviewViewHolder
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.listener.OnAddImageClickListener
 
-class ImageReviewAdapter : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
+class ImageReviewAdapter(private val onAddImageClickListener: OnAddImageClickListener) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
 
     companion object {
         const val TYPE_DEFAULT = 1
@@ -21,15 +21,9 @@ class ImageReviewAdapter : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() 
 
     private var imageReviewData: MutableList<BaseImageReviewViewModel> = mutableListOf()
 
-    private var onAddImageClickListener: OnAddImageClickListener? = null
-
     fun setImageReviewData(data: List<BaseImageReviewViewModel>) {
         imageReviewData = data.toMutableList()
         notifyDataSetChanged()
-    }
-
-    fun setOnAddImageClickListener(onAddImageClickListener: OnAddImageClickListener) {
-        this.onAddImageClickListener = onAddImageClickListener
     }
 
     override fun onCreateViewHolder(view: ViewGroup, position: Int): BaseImageReviewViewHolder<*> {

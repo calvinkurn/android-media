@@ -60,7 +60,7 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewFragment : BaseDaggerFragment() {
+class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -107,7 +107,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private lateinit var animatedReviewPicker: AnimatedReputationView
     private lateinit var createReviewViewModel: CreateReviewViewModel
     private val imageAdapter: ImageReviewAdapter by lazy {
-        ImageReviewAdapter()
+        ImageReviewAdapter(this)
     }
     private var isLowDevice = false
     private var selectedImage: ArrayList<String> = arrayListOf()
@@ -282,7 +282,6 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         rv_img_review?.adapter = imageAdapter
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
-        imageAdapter.setOnAddImageClickListener(imageClicked())
 
         btn_submit_review.setOnClickListener {
             submitReview()
@@ -295,25 +294,23 @@ class CreateReviewFragment : BaseDaggerFragment() {
         createReviewViewModel.getSubmitReviewResponse.removeObservers(this)
     }
 
-    private fun imageClicked() = object: OnAddImageClickListener {
-        override fun onAddImageClick() {
-            clearFocusAndHideSoftInput(view)
-            context?.let {
-                val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                        intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                        GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                        ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                        ImagePickerEditorBuilder(
-                                intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                        ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                                false, null),
-                        ImagePickerMultipleSelectionBuilder(
-                                selectedImage, null, -1, 5
-                        ))
+    override fun onAddImageClick() {
+        clearFocusAndHideSoftInput(view)
+        context?.let {
+            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
+                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                    ImagePickerEditorBuilder(
+                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
+                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
+                            false, null),
+                    ImagePickerMultipleSelectionBuilder(
+                            selectedImage, null, -1, 5
+                    ))
 
-                val intent = ImagePickerActivity.getIntent(it, builder)
-                startActivityForResult(intent, REQUEST_CODE_IMAGE)
-            }
+            val intent = ImagePickerActivity.getIntent(it, builder)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
 
