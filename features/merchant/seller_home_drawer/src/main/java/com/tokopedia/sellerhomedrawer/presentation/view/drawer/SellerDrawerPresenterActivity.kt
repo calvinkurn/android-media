@@ -51,9 +51,6 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     lateinit var sellerDrawerHelper: SellerDrawerHelper
-    lateinit var userSession: UserSession
-    lateinit var drawerCache: LocalCacheHandler
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     lateinit var toolbarTitle: View
 
@@ -65,15 +62,18 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
 
     @Inject
     lateinit var getSellerHomeUserAttributesUseCase: GetSellerHomeUserAttributesUseCase
+    @Inject
+    lateinit var userSession: UserSession
+    @Inject
+    lateinit var drawerCache: LocalCacheHandler
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (!isSellerHome && GlobalConfig.isSellerApp()) {
             setTheme(R.style.Theme_Green_NoOverlay)
         }
         super.onCreate(savedInstanceState)
-        userSession = UserSession(applicationContext)
-        drawerCache = LocalCacheHandler(this, SellerDrawerHelper.DRAWER_CACHE)
-        remoteConfig = FirebaseRemoteConfigImpl(this)
 
         injectDependency()
 
