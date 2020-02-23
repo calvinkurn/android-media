@@ -86,7 +86,7 @@ abstract class BaseTracking {
         fun getEcommerceProductClick(products: List<Product>, list: String): Map<String, Any> {
             return DataLayer.mapOf(
                     CURRENCY_CODE, IDR,
-                    CLICK, DataLayer.listOf(
+                    CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(
                             LIST, list
                         ),
@@ -98,12 +98,7 @@ abstract class BaseTracking {
         fun getEcommerceProductView(products: List<Product>, list: String): Map<String, Any> {
             return DataLayer.mapOf(
                     CURRENCY_CODE, IDR,
-                    IMPRESSIONS, DataLayer.listOf(
-                        ACTION_FIELD, DataLayer.mapOf(
-                            LIST, list
-                        ),
-                        PRODUCTS, getProducts(products)
-                    )
+                    IMPRESSIONS, getProductsImpression(products, list)
             )
         }
 
@@ -119,9 +114,9 @@ abstract class BaseTracking {
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun getProductsImpressiono(products: List<Product>): List<Any>{
+        private fun getProductsImpression(products: List<Product>, listImpression: String): List<Any>{
             val list = ArrayList<Map<String,Any>>()
-            products.forEach { list.add(createProductMap(it)) }
+            products.forEach { list.add(createProductMap(it, listImpression)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
@@ -143,7 +138,7 @@ abstract class BaseTracking {
             map[KEY_VARIANT] = product.variant
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition
+            map[KEY_POSITION] = product.productPosition.toString()
             map[KEY_DIMENSION_83] = if(product.freeOngkir) FREE_ONGKIR else NONE
             return map
         }
@@ -155,7 +150,7 @@ abstract class BaseTracking {
             map[KEY_VARIANT] = product.variant
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition
+            map[KEY_POSITION] = product.productPosition.toString()
             map[KEY_LIST] = list
             map[KEY_DIMENSION_83] = if(product.freeOngkir) FREE_ONGKIR else NONE
             return map
@@ -237,7 +232,7 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
+                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list)
         )
     }
 }
