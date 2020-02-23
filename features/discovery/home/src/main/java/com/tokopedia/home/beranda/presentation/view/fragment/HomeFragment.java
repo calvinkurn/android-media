@@ -627,6 +627,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         if (channel != null && dynamicChannelList.get(channel.getLayout()) != null) {
                             int currentCount = dynamicChannelList.get(channel.getLayout());
                             dynamicChannelList.put(channel.getLayout(), ++currentCount);
+                        } else if (dynamicChannelList.get(channel.getLayout()) == null) {
+                            dynamicChannelList.put(channel.getLayout(), 1);
                         }
                     }
                 }
