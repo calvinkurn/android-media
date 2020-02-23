@@ -19,6 +19,7 @@ import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataList
 import com.tokopedia.sellerhomedrawer.presentation.view.subscriber.SellerTokoCashSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
 class SellerDrawerDataManagerImpl(private val context: Context,
@@ -39,7 +40,7 @@ class SellerDrawerDataManagerImpl(private val context: Context,
         sellerTokoCashUseCase.unsubscribe()
     }
 
-    override fun getSellerUserAttributes(userSession: UserSession) {
+    override fun getSellerUserAttributes(userSession: UserSessionInterface) {
 
         val query = GraphqlHelper.loadRawString(viewListener.getActivity().resources, R.raw.sah_seller_drawer_data_query)
 

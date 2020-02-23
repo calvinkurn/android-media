@@ -37,7 +37,7 @@
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingRight="@dimen/padding_small"
                 android:text=""
-                android:textColor="@color/href_link"
+                android:textColor="@color/sah_href_link"
                 android:textStyle="bold" />
 
             <ProgressBar

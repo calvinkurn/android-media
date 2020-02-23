@@ -14,7 +14,7 @@
         android:layout_height="@dimen/drawer_cover_height"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        tools:src="@drawable/drawer_header_bg"/>
+        tools:src="@drawable/sh_drawer_header_bg"/>
 
     <RelativeLayout
         android:id="@+id/drawer_header"
@@ -29,7 +29,7 @@
             android:layout_height="@dimen/drawer_avatar"
             android:layout_marginLeft="@dimen/margin_sm"
             android:background="@drawable/cards_ui_2"
-            tools:src="@drawable/default_avatar"/>
+            tools:src="@drawable/sah_default_avatar"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
                     android:layout_alignTop="@+id/verified"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_toRightOf="@+id/verified"
-                    app:srcCompat="@drawable/ic_verified"/>
+                    app:srcCompat="@drawable/sh_ic_verified"/>
             </RelativeLayout>
 
         </RelativeLayout>
@@ -153,7 +153,7 @@
             android:maxHeight="10dip"
             android:minHeight="10dip"
             android:progress="0"
-            android:progressDrawable="@drawable/horizontal_progressbar"
+            android:progressDrawable="@drawable/sah_horizontal_progressbar"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="273dp"/>
 

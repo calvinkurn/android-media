@@ -3,12 +3,17 @@ package com.tokopedia.sellerhomedrawer.domain.usecase;
 import com.tokopedia.graphql.GraphqlConstant;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
+import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.network.exception.MessageErrorException;
+import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant;
 import com.tokopedia.sellerhomedrawer.data.drawernotification.InfoPenjualNotification;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,7 +55,21 @@ public class GetInfoPenjualNotificationUseCase extends UseCase<InfoPenjualNotifi
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(requestParams).map(graphqlResponse -> {
             InfoPenjualNotification.Response response = graphqlResponse.getData(InfoPenjualNotification.Response.class);
-            if (null != response) {
+            List<GraphqlError> graphqlErrors = graphqlResponse.getError(InfoPenjualNotification.Response.class);
+            if (graphqlErrors != null) {
+                if (graphqlErrors.size() > 0) {
+                    String errorMessage = graphqlErrors.get(0).getMessage();
+                    if (errorMessage != null) {
+                        if (!errorMessage.isEmpty())
+                            try {
+                                throw new MessageErrorException(errorMessage);
+                            } catch (MessageErrorException e) {
+                                e.printStackTrace();
+                            }
+                    }
+                }
+            }
+            if (response != null) {
                 return response.getInfoPenjualNotification();
             } else {
                 throw new RuntimeException();

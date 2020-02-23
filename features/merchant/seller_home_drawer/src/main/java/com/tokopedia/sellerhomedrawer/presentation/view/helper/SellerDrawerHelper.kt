@@ -39,10 +39,11 @@ import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.S
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
 
 class SellerDrawerHelper(val context: Activity,
-                         val userSession: UserSession,
+                         override val userSession: UserSessionInterface,
                          val drawerCache: LocalCacheHandler,
                          val remoteConfig: FirebaseRemoteConfigImpl) :
         SellerDrawerItemListener, SellerDrawerHeaderListener, SellerDrawerGroupListener ,

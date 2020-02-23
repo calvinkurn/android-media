@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomedrawer.presentation.listener
 
+import com.tokopedia.user.session.UserSessionInterface
+
 interface DrawerHeaderListener {
 
     fun onGoToDeposit()
@@ -10,4 +12,6 @@ interface DrawerHeaderListener {
     fun onWalletActionButtonClicked(redirectUrlActionButton: String?, appLinkActionButton: String?)
     fun onTokoPointActionClicked(mainPageUrl: String?, title: String?)
     fun onGotoTokoCard()
+
+    val userSession: UserSessionInterface
 }

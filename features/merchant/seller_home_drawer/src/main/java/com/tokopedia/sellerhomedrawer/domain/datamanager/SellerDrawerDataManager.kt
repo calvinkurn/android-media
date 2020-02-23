@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomedrawer.domain.datamanager
 
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 interface SellerDrawerDataManager {
 
@@ -8,5 +9,5 @@ interface SellerDrawerDataManager {
 
     fun unsubscribe()
 
-    fun getSellerUserAttributes(userSession: UserSession)
+    fun getSellerUserAttributes(userSession: UserSessionInterface)
 }

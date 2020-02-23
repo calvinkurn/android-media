@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:foreground="@drawable/selectable_white_background"
+    android:foreground="@drawable/sh_selectable_white_background"
     android:id="@+id/drawer_shop"
     android:clickable="true"
     >

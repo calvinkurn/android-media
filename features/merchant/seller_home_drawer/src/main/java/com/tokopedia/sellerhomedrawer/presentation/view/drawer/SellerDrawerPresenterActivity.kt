@@ -38,6 +38,7 @@ import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataList
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sah_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_custom_actionbar_drawer_notification.view.*
 import rx.Observable
@@ -46,13 +47,11 @@ import javax.inject.Inject
 abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         SellerDrawerDataListener
 {
-    private val MAX_NOTIF = 999
-    private val HELLO_STRING = "Halo, "
+    companion object {
+        private const val MAX_NOTIF = 999
+    }
 
     lateinit var sellerDrawerHelper: SellerDrawerHelper
-    lateinit var userSession: UserSession
-    lateinit var drawerCache: LocalCacheHandler
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     lateinit var toolbarTitle: View
 
@@ -64,15 +63,18 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
 
     @Inject
     lateinit var getSellerHomeUserAttributesUseCase: GetSellerHomeUserAttributesUseCase
+    @Inject
+    lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var drawerCache: LocalCacheHandler
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (!isSellerHome && GlobalConfig.isSellerApp()) {
             setTheme(R.style.Theme_Green_NoOverlay)
         }
         super.onCreate(savedInstanceState)
-        userSession = UserSession(applicationContext)
-        drawerCache = LocalCacheHandler(this, SellerDrawerHelper.DRAWER_CACHE)
-        remoteConfig = FirebaseRemoteConfigImpl(this)
 
         injectDependency()
 
@@ -139,8 +141,8 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
 
     override fun onGetDeposit(drawerDeposit: SellerDrawerDeposit) {
 
-        if (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) is SellerDrawerHeader) {
-            (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerDeposit = drawerDeposit
+        if (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) is SellerDrawerHeader) {
+            (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as SellerDrawerHeader).sellerDrawerDeposit = drawerDeposit
         }
         sellerDrawerHelper.sellerDrawerAdapter?.notifyDataSetChanged()
 
@@ -209,7 +211,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     override fun onGetTopPoints(drawerTopPoints: SellerDrawerTopPoints) {
-        (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerTopPoints = drawerTopPoints
+        (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as? SellerDrawerHeader)?.sellerDrawerTopPoints = drawerTopPoints
         sellerDrawerHelper.notifyDataSetChanged()
 
     }
@@ -219,12 +221,10 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     override fun onGetProfile(drawerProfile: SellerDrawerProfile) {
-        (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerProfile = drawerProfile
+        (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as? SellerDrawerHeader)?.sellerDrawerProfile = drawerProfile
         sellerDrawerHelper.notifyDataSetChanged()
         sellerDrawerHelper.setFooterData(drawerProfile)
-
-        val title = HELLO_STRING + drawerProfile.shopName
-        setToolbarTitle(title)
+        setupSellerHomeToolbarTitle(drawerProfile.shopName)
     }
 
     override fun onErrorGetProfile(errorMessage: String) {
@@ -238,7 +238,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     override fun onSuccessGetProfileCompletion(completion: Int) {
-        (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).profileCompletion = completion
+        (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as? SellerDrawerHeader)?.profileCompletion = completion
         sellerDrawerHelper.notifyDataSetChanged()
     }
 
@@ -329,6 +329,12 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
             val frameLayout = findViewById<FrameLayout>(R.id.parent_view)
             frameLayout.addView(inflatedView)
         }
+    }
+
+    private fun setupSellerHomeToolbarTitle(shopName: String?) {
+        val helloString = resources?.getString(R.string.seller_home_toolbar_title)
+        val title = "$helloString$shopName"
+        setToolbarTitle(title)
     }
 
 }

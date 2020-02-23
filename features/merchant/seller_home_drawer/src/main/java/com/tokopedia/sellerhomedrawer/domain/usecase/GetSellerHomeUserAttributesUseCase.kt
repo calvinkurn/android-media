@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomedrawer.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.sellerhomedrawer.data.SellerUserData
 import com.tokopedia.usecase.RequestParams
@@ -33,6 +34,10 @@ class GetSellerHomeUserAttributesUseCase @Inject constructor(val graphqlUseCase:
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(requestParams)
                 .map{ response ->
+                    val responseError = response.getError(SellerUserData::class.java)
+                    responseError?.let {
+                        throw MessageErrorException(it.getOrNull(0)?.message)
+                    }
                     response.getData<SellerUserData>(SellerUserData::class.java)
                 }
     }
