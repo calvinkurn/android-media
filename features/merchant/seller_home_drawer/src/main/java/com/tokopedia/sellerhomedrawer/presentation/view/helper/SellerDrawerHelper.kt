@@ -42,7 +42,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
 
 class SellerDrawerHelper(val context: Activity,
-                         val userSession: UserSession,
+                         override val userSession: UserSession,
                          val drawerCache: LocalCacheHandler,
                          val remoteConfig: FirebaseRemoteConfigImpl) :
         SellerDrawerItemListener, SellerDrawerHeaderListener, SellerDrawerGroupListener ,

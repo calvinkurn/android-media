@@ -41,17 +41,16 @@ class DrawerHeaderViewHolder(itemView: View,
         val LAYOUT_RES = R.layout.sh_drawer_header
     }
 
-    private lateinit var userSession: UserSessionInterface
+    private var userSession: UserSessionInterface = drawerHeaderListener.userSession
     private var oldUserAvatar = ""
 
     override fun bind(drawerHeader: DrawerHeader?) {
-        userSession = UserSession(context)
         if (userSession.isLoggedIn && drawerHeader != null)
             bindDrawerHeader(drawerHeader)
         else bindDrawerHeaderGuest()
     }
 
-    protected fun bindDrawerHeaderGuest() {
+    private fun bindDrawerHeaderGuest() {
         with(itemView) {
             cover_img.visibility = View.VISIBLE
             drawer_points_layout.visibility = View.GONE
@@ -64,7 +63,7 @@ class DrawerHeaderViewHolder(itemView: View,
         }
     }
 
-    protected fun bindDrawerHeader(drawerHeader: DrawerHeader) {
+    private fun bindDrawerHeader(drawerHeader: DrawerHeader) {
         with(itemView) {
 
             drawer_header.visibility = View.VISIBLE
