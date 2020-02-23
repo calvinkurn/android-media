@@ -14,8 +14,8 @@ public class HomePerformanceData extends PerformanceData {
         return dataLocked;
     }
 
-    public void setDataLocked(Boolean dataLocked) {
-        this.dataLocked = dataLocked;
+    public void lockData() {
+        this.dataLocked = true;
     }
 
     public Map<String, Integer> getDynamicChannelList() {

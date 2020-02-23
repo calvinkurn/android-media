@@ -1107,6 +1107,7 @@ public class MainParentActivity extends BaseActivity implements
         PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
         if (performanceData instanceof HomePerformanceData && !((HomePerformanceData) performanceData).isDataLocked()) {
             ((HomePerformanceData) performanceData).setDynamicChannelList(dynamicChannelList);
+            ((HomePerformanceData) performanceData).lockData();
         }
     }
 
