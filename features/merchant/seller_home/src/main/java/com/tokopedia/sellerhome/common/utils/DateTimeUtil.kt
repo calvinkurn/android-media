@@ -14,13 +14,13 @@ object DateTimeUtil {
         return Locale("id")
     }
 
-    fun format(time: Long, pattern: String, locale: Locale = getLocale()): String {
+    fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
         val sdf = SimpleDateFormat(pattern, locale)
-        return sdf.format(time)
+        return sdf.format(timeMillis)
     }
 
-    private fun getNPastDaysTimestamp(daysBefore: Long): Long {
-        return Calendar.getInstance(Locale.getDefault()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
+    fun getNPastDaysTimestamp(daysBefore: Long): Long {
+        return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
     }
 
     fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)

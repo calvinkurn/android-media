@@ -7,7 +7,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/sahLineGraphShimmer0"
-        android:layout_width="120dp"
+        android:layout_width="@dimen/sah_dimen_120dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -18,19 +18,19 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/sahLineGraphShimmer1"
-        android:layout_width="150dp"
+        android:layout_width="@dimen/sah_dimen_150dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/sah_dimen_20dp"
         app:corners="10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sahLineGraphShimmer0" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/sahLineGraphShimmer2"
-        android:layout_width="0dp"
-        android:layout_height="180dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/sah_medium_widget_height"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -45,7 +45,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/sahLineGraphShimmer3"
-        android:layout_width="150dp"
+        android:layout_width="@dimen/sah_dimen_150dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"

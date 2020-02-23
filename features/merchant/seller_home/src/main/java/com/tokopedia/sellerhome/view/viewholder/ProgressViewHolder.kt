@@ -4,10 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.view.model.ProgressWidgetUiModel
@@ -101,7 +98,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
         hideProgressLayout()
         hideShimmeringLayout()
         itemView.tvProgressTitleOnError.text = element.title
-        ImageHandler.loadImageWithId(itemView.imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+        itemView.imgWidgetOnError.loadImageDrawable(R.drawable.unify_globalerrors_connection)
         showErrorLayout()
     }
 

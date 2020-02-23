@@ -59,7 +59,7 @@ class PostListViewHolder(
         hideShimmeringLayout()
         with(itemView) {
             tvPostListTitleOnError.text = cardTitle
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            imgWidgetOnError.loadImageDrawable(R.drawable.unify_globalerrors_connection)
             showErrorLayout()
         }
     }

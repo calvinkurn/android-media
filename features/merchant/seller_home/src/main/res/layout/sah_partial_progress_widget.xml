@@ -5,13 +5,13 @@
     android:id="@+id/sahProgressOnSuccessLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/sah_medium_widget_height"
-    android:padding="16dp"
+    android:padding="@dimen/layout_lvl2"
     android:visibility="gone"
     tools:visibility="visible">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProgressTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:maxLines="1"
@@ -25,7 +25,7 @@
 
     <com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
         android:id="@+id/shopScoreProgress"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,11 +34,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProgressDescription"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:ellipsize="end"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/line_spacing_6"
         android:maxLines="2"
         android:textColor="@color/sah_description"
         app:layout_constraintBottom_toTopOf="@+id/tvProgressSeeDetails"
@@ -50,12 +50,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProgressSeeDetails"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="end"
         android:maxLines="1"
-        android:paddingStart="0dp"
-        android:paddingLeft="0dp"
+        android:paddingStart="@dimen/layout_lvl0"
+        android:paddingLeft="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/spacing_lvl2"
         android:paddingRight="@dimen/spacing_lvl2"
         android:textColor="@color/Green_G500"

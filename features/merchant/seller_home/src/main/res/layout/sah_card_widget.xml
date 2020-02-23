@@ -22,11 +22,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardTitle"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:minHeight="18dp"
+            android:minHeight="@dimen/sah_dimen_18dp"
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,11 +38,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardValue"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:minHeight="22dp"
+            android:minHeight="@dimen/sah_dimen_22dp"
             android:text="@string/sah_card_on_error"
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/fontSize_lvl4"
@@ -54,11 +54,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardSubValue"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:minHeight="18dp"
+            android:minHeight="@dimen/sah_dimen_18dp"
             android:ellipsize="end"
             android:textColor="@color/Neutral_N700_68"
             android:textSize="@dimen/fontSize_lvl2"
@@ -73,7 +73,7 @@
             android:id="@+id/shimmerCardTitle"
             android:layout_width="@dimen/layout_lvl8"
             android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:visibility="gone"
             app:corners="10"
             app:layout_constraintStart_toStartOf="parent"

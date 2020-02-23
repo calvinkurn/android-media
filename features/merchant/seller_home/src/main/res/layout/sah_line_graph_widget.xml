@@ -80,7 +80,7 @@
         <LinearLayout
             android:id="@+id/linearLineGraphView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/layout_lvl0"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
@@ -97,22 +97,22 @@
             <com.db.williamchart.view.LineChartView
                 android:id="@+id/lineGraphView"
                 android:layout_width="match_parent"
-                android:layout_height="190dp" />
+                android:layout_height="@dimen/sah_dimen_190dp" />
         </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btnLineGraphMore"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
             android:gravity="end"
-            android:paddingStart="0dp"
-            android:paddingLeft="0dp"
-            android:paddingEnd="4dp"
-            android:paddingRight="4dp"
+            android:paddingStart="@dimen/layout_lvl0"
+            android:paddingLeft="@dimen/layout_lvl0"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2"
             android:textColor="@color/Green_G500"
             android:textSize="@dimen/fontSize_lvl3"
             android:visibility="invisible"
@@ -126,7 +126,7 @@
             android:id="@+id/btnLineGraphNext"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:visibility="invisible"
@@ -137,7 +137,7 @@
 
         <include
             layout="@layout/sah_partial_common_widget_state_error"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -146,7 +146,7 @@
 
         <include
             layout="@layout/sah_partial_line_graph_widget_loading"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -34,102 +35,117 @@ class SellerHomeViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val shopId: String by lazy { userSession.shopId }
+    companion object {
+        private const val DATE_FORMAT = "dd-MM-yyyy"
+    }
 
-    private val locale = Locale.getDefault()
+    private val shopId: String by lazy { userSession.shopId }
     private val startDate: String by lazy {
-        val cal = Calendar.getInstance(locale)
-        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).minus(7))
-        return@lazy DateTimeUtil.format(cal.timeInMillis, "dd-MM-yyyy", locale)
+        val timeInMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
+        return@lazy DateTimeUtil.format(timeInMillis, DATE_FORMAT)
     }
     private val endDate: String by lazy {
-        val cal = Calendar.getInstance(locale)
-        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH).minus(1))
-        return@lazy DateTimeUtil.format(cal.timeInMillis, "dd-MM-yyyy", locale)
+        val timeInMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1)
+        return@lazy DateTimeUtil.format(timeInMillis, DATE_FORMAT)
     }
 
-    val homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
-    val widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
-    val cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
-    val lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
-    val progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
-    val postListWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
-    val carouselWidgetData = MutableLiveData<Result<List<CarouselDataUiModel>>>()
+    private val _homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
+    private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
+    private val _cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
+    private val _lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
+    private val _progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
+    private val _postListWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
+    private val _carouselWidgetData = MutableLiveData<Result<List<CarouselDataUiModel>>>()
+
+    val homeTicker: LiveData<Result<List<TickerUiModel>>>
+        get() = _homeTicker
+    val widgetLayout: LiveData<Result<List<BaseWidgetUiModel<*>>>>
+        get() = _widgetLayout
+    val cardWidgetData: LiveData<Result<List<CardDataUiModel>>>
+        get() = _cardWidgetData
+    val lineGraphWidgetData: LiveData<Result<List<LineGraphDataUiModel>>>
+        get() = _lineGraphWidgetData
+    val progressWidgetData: LiveData<Result<List<ProgressDataUiModel>>>
+        get() = _progressWidgetData
+    val postListWidgetData: LiveData<Result<List<PostListDataUiModel>>>
+        get() = _postListWidgetData
+    val carouselWidgetData: LiveData<Result<List<CarouselDataUiModel>>>
+        get() = _carouselWidgetData
 
     fun getTicker() {
         launchCatchError(block = {
-            homeTicker.value = Success(withContext(Dispatchers.IO) {
+            _homeTicker.value = Success(withContext(Dispatchers.IO) {
                 getTickerUseCase.executeOnBackground()
             })
         }, onError = {
-            homeTicker.value = Fail(it)
+            _homeTicker.value = Fail(it)
         })
     }
 
     fun getWidgetLayout() {
         launchCatchError(block = {
-            widgetLayout.value = Success(withContext(Dispatchers.IO) {
+            _widgetLayout.value = Success(withContext(Dispatchers.IO) {
                 getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
                 return@withContext getLayoutUseCase.executeOnBackground()
             })
         }, onError = {
-            widgetLayout.value = Fail(it)
+            _widgetLayout.value = Fail(it)
         })
     }
 
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            cardWidgetData.value = Success(withContext(Dispatchers.IO) {
+            _cardWidgetData.value = Success(withContext(Dispatchers.IO) {
                 getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
                 return@withContext getCardDataUseCase.executeOnBackground()
             })
         }, onError = {
-            cardWidgetData.value = Fail(it)
+            _cardWidgetData.value = Fail(it)
         })
     }
 
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            lineGraphWidgetData.value = Success(withContext(Dispatchers.IO) {
+            _lineGraphWidgetData.value = Success(withContext(Dispatchers.IO) {
                 getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
                 return@withContext getLineGraphDataUseCase.executeOnBackground()
             })
         }, onError = {
-            lineGraphWidgetData.value = Fail(it)
+            _lineGraphWidgetData.value = Fail(it)
         })
     }
 
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            progressWidgetData.value = Success(withContext(Dispatchers.IO) {
-                val today = DateTimeUtil.format(Date().time, "yyyy-MM-dd", locale)
+            _progressWidgetData.value = Success(withContext(Dispatchers.IO) {
+                val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
                 getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(userSession.shopId, today, dataKeys)
                 return@withContext getProgressDataUseCase.executeOnBackground()
             })
         }, onError = {
-            progressWidgetData.value = Fail(it)
+            _progressWidgetData.value = Fail(it)
         })
     }
 
     fun getPostWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            postListWidgetData.value = Success(withContext(Dispatchers.IO) {
+            _postListWidgetData.value = Success(withContext(Dispatchers.IO) {
                 getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
                 return@withContext getPostDataUseCase.executeOnBackground()
             })
         }, onError = {
-            postListWidgetData.value = Fail(it)
+            _postListWidgetData.value = Fail(it)
         })
     }
 
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            carouselWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys, 5)
+            _carouselWidgetData.value = Success(withContext(Dispatchers.IO) {
+                getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
                 return@withContext getCarouselDataUseCase.executeOnBackground()
             })
         }, onError = {
-            carouselWidgetData.value = Fail(it)
+            _carouselWidgetData.value = Fail(it)
         })
     }
 }

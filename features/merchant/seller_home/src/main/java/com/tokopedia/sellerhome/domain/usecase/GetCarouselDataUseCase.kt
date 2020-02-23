@@ -38,13 +38,14 @@ class GetCarouselDataUseCase(
         private const val DATA_KEY = "dataKey"
         private const val PAGE = "page"
         private const val LIMIT = "limit"
+        private const val NUMBER_OF_LIMIT = 5
 
-        fun getRequestParams(dataKeys: List<String>, limit: Int): RequestParams {
+        fun getRequestParams(dataKeys: List<String>): RequestParams {
             val mapList: List<Map<String, Any>> = dataKeys.map {
                 mapOf(
                         DATA_KEY to it,
                         PAGE to 1,
-                        LIMIT to limit
+                        LIMIT to NUMBER_OF_LIMIT
                 )
             }
             return RequestParams.create().apply {

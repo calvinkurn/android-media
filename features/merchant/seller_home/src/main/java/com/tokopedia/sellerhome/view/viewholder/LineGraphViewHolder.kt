@@ -22,6 +22,7 @@ import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.sah_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_line_graph_widget_loading.view.*
+import java.lang.NumberFormatException
 
 /**
  * Created By @ilhamsuaib on 2020-01-15
@@ -174,7 +175,11 @@ class LineGraphViewHolder(
                 R.id.tvTitle,
                 R.id.tvValue,
                 StringFormatRenderer { s ->
-                    KMNumbers.formatSuffixNumbers(java.lang.Float.valueOf(s))
+                    return@StringFormatRenderer try {
+                        KMNumbers.formatSuffixNumbers(java.lang.Float.valueOf(s))
+                    } catch (e: NumberFormatException) {
+                        s
+                    }
                 }
         )
     }

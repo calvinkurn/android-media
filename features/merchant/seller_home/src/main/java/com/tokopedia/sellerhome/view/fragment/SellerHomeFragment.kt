@@ -114,9 +114,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun hideTooltipIfExist() {
         val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
-        if (bottomSheet != null) {
-            (bottomSheet as BottomSheetUnify).dismiss()
-        }
+        if (bottomSheet is BottomSheetUnify)
+            bottomSheet.dismiss()
     }
 
     private fun setupView() = view?.run {
@@ -224,7 +223,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         val bottomSheetContentView = SellerHomeBottomSheetContent(context ?: return)
 
-        with(tooltipBottomSheet) tooltip@{
+        with(tooltipBottomSheet) {
             setTitle(tooltip.title)
             clearClose(false)
             clearHeader(false)
@@ -235,7 +234,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             bottomSheetContentView.setTooltipData(tooltip)
 
             setChild(bottomSheetContentView)
-            this@tooltip.show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
+            show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
         }
     }
 

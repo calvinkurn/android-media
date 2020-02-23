@@ -4,25 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="74dp"
+    android:maxHeight="@dimen/sah_dimen_74dp"
     android:background="?android:attr/selectableItemBackground"
     android:paddingTop="@dimen/layout_lvl1"
     android:paddingBottom="@dimen/layout_lvl1">
 
     <ImageView
         android:id="@+id/imgPost"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="@dimen/sah_dimen_56dp"
+        android:layout_height="@dimen/sah_dimen_56dp"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPostTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
+        android:layout_marginStart="@dimen/sah_dimen_12dp"
+        android:layout_marginLeft="@dimen/sah_dimen_12dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Neutral_N700_96"
@@ -35,9 +35,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPostDescription"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:maxLines="1"
         app:layout_constraintStart_toStartOf="@id/tvPostTitle"
         app:layout_constraintTop_toBottomOf="@id/tvPostTitle"
