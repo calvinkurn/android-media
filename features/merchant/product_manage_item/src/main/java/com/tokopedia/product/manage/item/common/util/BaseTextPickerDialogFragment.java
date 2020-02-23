@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.video.view.fragment;
+package com.tokopedia.product.manage.item.common.util;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputLayout;
+import com.tokopedia.product.manage.item.R;
+
 import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +16,6 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.tokopedia.abstraction.R;
 
 /**
  * @author sebastianuskh on 4/17/17.

@@ -7,4 +7,17 @@
     <declare-styleable name="VerticalRecyclerView">
         <attr name="has_divider_left_padding" format="boolean" />
     </declare-styleable>
+
+    <style name="TextInputLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutColorLine</item>
+    </style>
+
+    <style name="TextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
+        <item name="android:textColorHint">@color/font_black_secondary_54</item>
+        <item name="colorControlNormal">@color/colorGray</item>
+        <item name="colorControlActivated">@color/tkpd_main_green</item>
+        <item name="colorControlHighlight">@color/tkpd_main_green</item>
+    </style>
 </resources>

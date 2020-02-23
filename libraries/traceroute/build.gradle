@@ -1,2 +1,18 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
 configurations.maybeCreate("default")
 artifacts.add("default", file('traceroute-for-android-1.0.1.aar'))
+
+dependencies {
+    implementation fileTree(dir: '/', include: ['*.aar'])
+}
+
+project.ext {
+    artifactId = 'trace-route'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "traceroute1-release"
+}
+
+apply from: '../../publish_local.gradle'

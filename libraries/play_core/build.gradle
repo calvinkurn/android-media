@@ -1,2 +1,18 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
 configurations.maybeCreate("default")
 artifacts.add("default", file('play-core-1.6.4-IAR-SNAPSHOT.aar'))
+
+dependencies {
+    implementation fileTree(dir: '/', include: ['*.aar'])
+}
+
+project.ext {
+    artifactId = 'play-core'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "play_core1-release"
+}
+
+apply from: '../../publish_local.gradle'

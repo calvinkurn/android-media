@@ -24,6 +24,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
 //    implementation rootProject.ext.miscDependencies.exoPlayerCore
 //    implementation rootProject.ext.miscDependencies.exoPlayer
@@ -38,7 +41,7 @@ project.ext {
     artifactId = 'play-common'
     groupId = 'com.tokopedia.content'
     versionName = "0.0.2"
-    artifactName ="play-common-release"
+    artifactName ="play_common-release"
 }
 
 apply from: '../../../publish_local.gradle'
