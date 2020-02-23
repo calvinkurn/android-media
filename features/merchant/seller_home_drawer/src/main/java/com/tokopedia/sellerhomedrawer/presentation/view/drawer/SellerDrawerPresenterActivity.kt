@@ -139,8 +139,8 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
 
     override fun onGetDeposit(drawerDeposit: SellerDrawerDeposit) {
 
-        if (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) is SellerDrawerHeader) {
-            (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerDeposit = drawerDeposit
+        if (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) is SellerDrawerHeader) {
+            (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as SellerDrawerHeader).sellerDrawerDeposit = drawerDeposit
         }
         sellerDrawerHelper.sellerDrawerAdapter?.notifyDataSetChanged()
 
@@ -209,7 +209,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     override fun onGetTopPoints(drawerTopPoints: SellerDrawerTopPoints) {
-        (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerTopPoints = drawerTopPoints
+        (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as? SellerDrawerHeader)?.sellerDrawerTopPoints = drawerTopPoints
         sellerDrawerHelper.notifyDataSetChanged()
 
     }
@@ -219,7 +219,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     override fun onGetProfile(drawerProfile: SellerDrawerProfile) {
-        (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerProfile = drawerProfile
+        (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as? SellerDrawerHeader)?.sellerDrawerProfile = drawerProfile
         sellerDrawerHelper.notifyDataSetChanged()
         sellerDrawerHelper.setFooterData(drawerProfile)
 
