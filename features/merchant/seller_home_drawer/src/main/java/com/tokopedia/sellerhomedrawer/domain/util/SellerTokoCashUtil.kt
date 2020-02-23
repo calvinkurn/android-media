@@ -92,17 +92,19 @@ class SellerTokoCashUtil {
             data.balance = sellerTokoCashData.balance
             data.labelActionButton = sellerTokoCashData.action?.text
             data.visibleActionButton = sellerTokoCashData.action?.visibility != null && sellerTokoCashData.action?.visibility == "1"
-            data.linked = sellerTokoCashData.linked!!
+            sellerTokoCashData.linked?.let { isLinked ->
+                data.linked = isLinked
+                if (isLinked) {
+                    data.appLinkActionButton = if (sellerTokoCashData.action?.applinks == null)
+                        ""
+                    else
+                        sellerTokoCashData.action?.applinks
+                } else {
+                    data.appLinkActionButton = sellerTokoCashData.action?.applinks
+                    data.labelActionButton = sellerTokoCashData.action?.text
+                    data.labelTitle = sellerTokoCashData.text
+                }
 
-            if (sellerTokoCashData.linked!!) {
-                data.appLinkActionButton = if (sellerTokoCashData.action?.applinks == null)
-                    ""
-                else
-                    sellerTokoCashData.action?.applinks
-            } else {
-                data.appLinkActionButton = sellerTokoCashData.action?.applinks
-                data.labelActionButton = sellerTokoCashData.action?.text
-                data.labelTitle = sellerTokoCashData.text
             }
 
             data.redirectUrlActionButton = if (sellerTokoCashData.action?.redirectUrl == null)
