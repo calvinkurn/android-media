@@ -9,12 +9,13 @@ import java.util.List;
  * Created by stevenfredian on 11/27/17.
  */
 
-public class EditTemplateViewModel {
-    private List<Visitable> listTemplate;
+public class GetTemplateUiModel {
+
+    boolean isSuccess;
 
     boolean isEnabled;
 
-    boolean isSuccess;
+    private List<Visitable> listTemplate;
 
     public void setListTemplate(List<Visitable> listTemplate) {
         this.listTemplate = listTemplate;

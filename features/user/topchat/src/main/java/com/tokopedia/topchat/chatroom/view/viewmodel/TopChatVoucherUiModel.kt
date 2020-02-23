@@ -3,13 +3,12 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 /**
  * Created by Steven on 18/03/19.
  */
-class TopChatVoucherViewModel
+class TopChatVoucherUiModel
 /**
  * Constructor for WebSocketResponse / API Response
  *
@@ -19,7 +18,6 @@ class TopChatVoucherViewModel
  * @param fromRole          role of sender
  * @param attachmentId      attachment id
  * @param attachmentType    attachment type. Please refer to
- * [WebSocketMapper] types
  * @param replyTime         replytime in unixtime
  * @param imageUrlTop       image url Top image
  * @param redirectUrlTop    redirect url in http for Top image click

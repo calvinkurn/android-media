@@ -1,25 +1,26 @@
-package com.tokopedia.topchat.chatsearch.di
+package com.tokopedia.topchat.chatsetting.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
+import com.tokopedia.topchat.chatsetting.viewmodel.ChatSettingViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
+
 @Module
-@ChatSearchScope
-abstract class ChatSearchViewModelModule {
+@ChatSettingScope
+abstract class ChatSettingViewsModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ChatSearchViewModel::class)
-    abstract fun provideChatSearchViewModel(viewModel: ChatSearchViewModel): ViewModel
+    @ViewModelKey(ChatSettingViewModel::class)
+    abstract fun provideChatTabCounterViewModel(viewModel: ChatSettingViewModel): ViewModel
 
     @Binds
-    @ChatSearchScope
+    @ChatSettingScope
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
 }

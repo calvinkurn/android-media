@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by stevenfredian on 10/30/17.
  */
 
-public class DeleteChatViewModel {
+public class DeleteChatUiModel {
 
     @SerializedName("msg_id")
     @Expose

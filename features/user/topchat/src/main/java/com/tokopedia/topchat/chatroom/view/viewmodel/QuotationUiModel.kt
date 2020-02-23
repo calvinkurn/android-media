@@ -5,7 +5,7 @@ import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationPojo
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-class QuotationViewModel(
+class QuotationUiModel(
         private val quotationPojo: QuotationPojo,
         messageId: String,
         fromUid: String,
