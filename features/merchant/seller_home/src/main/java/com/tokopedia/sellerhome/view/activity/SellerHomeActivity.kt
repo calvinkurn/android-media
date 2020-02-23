@@ -59,6 +59,11 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         return sellerHomeFragment
     }
 
+    override fun onResume() {
+        sellerHomeDashboardDrawerPresenter?.attachView(this)
+        super.onResume()
+    }
+
     override fun setDrawerPosition(): Int {
         return SellerHomeState.DrawerPosition.SELLER_INDEX_HOME
     }
