@@ -45,6 +45,7 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.listener.OnAddImageClickListener
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Fail
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
@@ -104,7 +105,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private lateinit var animatedReviewPicker: AnimatedReputationView
     private lateinit var createReviewViewModel: CreateReviewViewModel
     private val imageAdapter: ImageReviewAdapter by lazy {
-        ImageReviewAdapter(this::addImageClick, edit_text_review)
+        ImageReviewAdapter()
     }
     private var isLowDevice = false
     private var selectedImage: ArrayList<String> = arrayListOf()
@@ -244,7 +245,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             if (anonymous_cb.isChecked) {
                 reviewTracker.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
             }
-            edit_text_review.clearFocus()
+            clearFocusAndHideSoftInput(view)
         }
 
         edit_text_review.setOnFocusChangeListener { _, _ ->
@@ -256,10 +257,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
                         false
                 )
 
-                if (edit_text_review.text.toString().isEmpty() && !shouldIncreaseProgressBar) {
+                val editTextReview = edit_text_review.text.toString()
+                if (editTextReview.isEmpty() && !shouldIncreaseProgressBar) {
                     shouldIncreaseProgressBar = true
                     stepper_review.progress = stepper_review.progress - 1
-                } else if (shouldIncreaseProgressBar) {
+                } else if (editTextReview.isNotEmpty() && shouldIncreaseProgressBar) {
                     stepper_review.progress = stepper_review.progress + 1
                     shouldIncreaseProgressBar = false
                 }
@@ -267,9 +269,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
 
         review_container.setOnTouchListener { _, _ ->
-            if(edit_text_review.isFocused){
-                clearFocusAndHideSoftInput(view)
-            }
+            clearFocusAndHideSoftInput(view)
             return@setOnTouchListener false
         }
 
@@ -280,6 +280,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         rv_img_review?.adapter = imageAdapter
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
+        imageAdapter.setOnAddImageClickListener(imageClicked())
 
         btn_submit_review.setOnClickListener {
             submitReview()
@@ -290,6 +291,28 @@ class CreateReviewFragment : BaseDaggerFragment() {
         super.onDestroy()
         createReviewViewModel.getReputationDataForm.removeObservers(this)
         createReviewViewModel.getSubmitReviewResponse.removeObservers(this)
+    }
+
+    private fun imageClicked() = object: OnAddImageClickListener {
+        override fun onAddImageClick() {
+            clearFocusAndHideSoftInput(view)
+            context?.let {
+                val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
+                        intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
+                        GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                        ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                        ImagePickerEditorBuilder(
+                                intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
+                                        ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
+                                false, null),
+                        ImagePickerMultipleSelectionBuilder(
+                                selectedImage, null, -1, 5
+                        ))
+
+                val intent = ImagePickerActivity.getIntent(it, builder)
+                startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            }
+        }
     }
 
     private fun getReviewData() {
@@ -492,25 +515,6 @@ class CreateReviewFragment : BaseDaggerFragment() {
         return ""
     }
 
-    private fun addImageClick() {
-        context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null),
-                    ImagePickerMultipleSelectionBuilder(
-                            selectedImage, null, -1, 5
-                    ))
-
-            val intent = ImagePickerActivity.getIntent(it, builder)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
-        }
-    }
-
     private fun onSuccessSubmitReview() {
         stopLoading()
         showLayout()
@@ -592,9 +596,9 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun clearFocusAndHideSoftInput(view: View) {
+    private fun clearFocusAndHideSoftInput(view: View?) {
         edit_text_review.clearFocus()
-        val imm = view.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 

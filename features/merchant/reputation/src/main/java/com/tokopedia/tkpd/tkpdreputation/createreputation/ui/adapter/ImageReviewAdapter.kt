@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tkpd.tkpdreputation.R
@@ -11,9 +10,9 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewM
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.BaseImageReviewViewHolder
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.DefaultImageReviewViewHolder
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.ImageReviewViewHolder
-import com.tokopedia.tkpd.tkpdreputation.createreputation.util.OnAddImageClick
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.listener.OnAddImageClickListener
 
-class ImageReviewAdapter(private val addDataClick: OnAddImageClick, private val editText: View) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
+class ImageReviewAdapter : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
 
     companion object {
         const val TYPE_DEFAULT = 1
@@ -22,20 +21,24 @@ class ImageReviewAdapter(private val addDataClick: OnAddImageClick, private val 
 
     private var imageReviewData: MutableList<BaseImageReviewViewModel> = mutableListOf()
 
+    private var onAddImageClickListener: OnAddImageClickListener? = null
+
     fun setImageReviewData(data: List<BaseImageReviewViewModel>) {
         imageReviewData = data.toMutableList()
         notifyDataSetChanged()
     }
 
+    fun setOnAddImageClickListener(onAddImageClickListener: OnAddImageClickListener) {
+        this.onAddImageClickListener = onAddImageClickListener
+    }
+
     override fun onCreateViewHolder(view: ViewGroup, position: Int): BaseImageReviewViewHolder<*> {
         return when (position) {
             TYPE_DEFAULT -> {
-                DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review, view, false),
-                        addDataClick, editText)
+                DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review, view, false), onAddImageClickListener)
             }
             TYPE_IMAGE -> {
-                return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false),
-                        addDataClick, editText)
+                return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false), onAddImageClickListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
