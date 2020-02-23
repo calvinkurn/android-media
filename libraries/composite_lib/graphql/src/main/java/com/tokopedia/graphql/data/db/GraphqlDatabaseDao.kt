@@ -32,6 +32,6 @@ interface GraphqlDatabaseDao {
     @Query("SELECT * FROM ${DbMetadata.NAME} WHERE key LIKE :key LIMIT 1")
     fun getGraphqlModel(key: String): GraphqlDatabaseModel?
 
-    @Query("SELECT * FROM ${DbMetadata.NAME} WHERE key LIKE :key && expiredTime > :currentTime LIMIT 1")
+    @Query("SELECT * FROM ${DbMetadata.NAME} WHERE key LIKE :key AND expiredTime > :currentTime LIMIT 1")
     fun getGraphqlModel(key: String, currentTime: Long): GraphqlDatabaseModel?
 }
