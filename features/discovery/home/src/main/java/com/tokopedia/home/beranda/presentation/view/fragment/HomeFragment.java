@@ -618,6 +618,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
 
             adapter.submitList(data);
+            if (homePerformanceMonitoringListener != null && !isCache && homePerformanceMonitoringListener.needToSubmitDynamicChannelCount()) {
+                Map<String, Integer> dynamicChannelList = new HashMap<>();
+                for (Visitable visitable: data) {
+                    if (visitable instanceof DynamicChannelViewModel) {
+                        DynamicChannelViewModel dynamicChannelViewModel = (((DynamicChannelViewModel) visitable));
+                        DynamicHomeChannel.Channels channel = dynamicChannelViewModel.getChannel();
+                        if (channel != null && dynamicChannelList.get(channel.getLayout()) != null) {
+                            int currentCount = dynamicChannelList.get(channel.getLayout());
+                            dynamicChannelList.put(channel.getLayout(), ++currentCount);
+                        }
+                    }
+                }
+
+                homePerformanceMonitoringListener.submitDynamicChannelCount(dynamicChannelList);
+            }
 
             if (isDataValid(data)) {
                 removeNetworkError();
@@ -1006,7 +1021,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         //dimensions of recyclerView and any child views are known.
                         //Remove listener after changed RecyclerView's height to prevent infinite loop
                         if (homePerformanceMonitoringListener != null) homePerformanceMonitoringListener.stopHomePerformanceMonitoring();
-                        homePerformanceMonitoringListener = null;
                         homeRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });

@@ -71,6 +71,7 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.analytics.performance.HomePerformanceData;
 import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
@@ -94,6 +95,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -616,6 +618,14 @@ public class MainParentActivity extends BaseActivity implements
             int key = fragmentPerformanceDatas.keyAt(i);
             // get the object by the key.
             PerformanceData performanceData = fragmentPerformanceDatas.get(key);
+            if (performanceData instanceof HomePerformanceData) {
+                Map<String, Integer> dynamicChannelList = ((HomePerformanceData) performanceData).getDynamicChannelList();
+                for (Map.Entry<String,Integer> dynamicChannel : dynamicChannelList.entrySet()) {
+                    mainParentPerformanceMonitoring.putMetric(
+                            dynamicChannel.getKey(), dynamicChannel.getValue()
+                    );
+                }
+            }
             mainParentPerformanceMonitoring.putMetric(
                     performanceData.getAllFramesTag(), performanceData.getAllFrames()
             );
@@ -1088,6 +1098,23 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
+    public void submitDynamicChannelCount(Map<String, Integer> dynamicChannelList) {
+        PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
+        if (performanceData instanceof HomePerformanceData && !((HomePerformanceData) performanceData).isDataLocked()) {
+            ((HomePerformanceData) performanceData).setDynamicChannelList(dynamicChannelList);
+        }
+    }
+
+    @Override
+    public Boolean needToSubmitDynamicChannelCount() {
+        PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
+        if (performanceData instanceof HomePerformanceData) {
+            return !((HomePerformanceData) performanceData).isDataLocked();
+        }
+        return false;
+    }
+
+    @Override
     public void stopHomePerformanceMonitoring() {
         if (homePerformanceMonitoring != null) {
             homePerformanceMonitoring.stopTrace();
@@ -1121,7 +1148,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void setupMetrics() {
-        fragmentPerformanceDatas.put(HOME_MENU, new PerformanceData("home_all_frames", "home_janky_frames", "home_janky_frames_percentage"));
+        fragmentPerformanceDatas.put(HOME_MENU, new HomePerformanceData("home_all_frames", "home_janky_frames", "home_janky_frames_percentage"));
         fragmentPerformanceDatas.put(FEED_MENU, new PerformanceData("feed_all_frames", "feed_janky_frames", "feed_janky_frames_percentage"));
         fragmentPerformanceDatas.put(OS_MENU, new PerformanceData("os_all_frames", "os_janky_frames", "os_janky_frames_percentage"));
         fragmentPerformanceDatas.put(CART_MENU, new PerformanceData("cart_all_frames", "cart_janky_frames", "cart_janky_frames_percentage"));
