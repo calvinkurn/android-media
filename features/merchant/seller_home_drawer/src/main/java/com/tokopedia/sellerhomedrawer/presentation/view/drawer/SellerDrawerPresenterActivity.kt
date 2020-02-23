@@ -46,8 +46,9 @@ import javax.inject.Inject
 abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         SellerDrawerDataListener
 {
-    private val MAX_NOTIF = 999
-    private val HELLO_STRING = "Halo, "
+    companion object {
+        const val MAX_NOTIF = 999
+    }
 
     lateinit var sellerDrawerHelper: SellerDrawerHelper
     lateinit var userSession: UserSession
@@ -222,9 +223,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as? SellerDrawerHeader)?.sellerDrawerProfile = drawerProfile
         sellerDrawerHelper.notifyDataSetChanged()
         sellerDrawerHelper.setFooterData(drawerProfile)
-
-        val title = HELLO_STRING + drawerProfile.shopName
-        setToolbarTitle(title)
+        setupSellerHomeToolbarTitle(drawerProfile.shopName)
     }
 
     override fun onErrorGetProfile(errorMessage: String) {
@@ -238,7 +237,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     override fun onSuccessGetProfileCompletion(completion: Int) {
-        (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).profileCompletion = completion
+        (sellerDrawerHelper.sellerDrawerAdapter?.list?.getOrNull(0) as? SellerDrawerHeader)?.profileCompletion = completion
         sellerDrawerHelper.notifyDataSetChanged()
     }
 
@@ -329,6 +328,12 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
             val frameLayout = findViewById<FrameLayout>(R.id.parent_view)
             frameLayout.addView(inflatedView)
         }
+    }
+
+    private fun setupSellerHomeToolbarTitle(shopName: String?) {
+        val helloString = resources?.getString(R.string.seller_home_toolbar_title)
+        val title = "$helloString$shopName"
+        setToolbarTitle(title)
     }
 
 }

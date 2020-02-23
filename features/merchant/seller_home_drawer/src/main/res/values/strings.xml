@@ -72,5 +72,7 @@
     <string name="seller_home_cancel">Batal</string>
     <string name="seller_home_loading">Loading...</string>
 
+    <string name="seller_home_toolbar_title">Halo, </string>
+
 
 </resources>
