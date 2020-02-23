@@ -620,10 +620,12 @@ public class MainParentActivity extends BaseActivity implements
             PerformanceData performanceData = fragmentPerformanceDatas.get(key);
             if (performanceData instanceof HomePerformanceData) {
                 Map<String, Integer> dynamicChannelList = ((HomePerformanceData) performanceData).getDynamicChannelList();
-                for (Map.Entry<String,Integer> dynamicChannel : dynamicChannelList.entrySet()) {
-                    mainParentPerformanceMonitoring.putMetric(
-                            dynamicChannel.getKey(), dynamicChannel.getValue()
-                    );
+                if (dynamicChannelList != null) {
+                    for (Map.Entry<String,Integer> dynamicChannel : dynamicChannelList.entrySet()) {
+                        mainParentPerformanceMonitoring.putMetric(
+                                dynamicChannel.getKey(), dynamicChannel.getValue()
+                        );
+                    }
                 }
             }
             mainParentPerformanceMonitoring.putMetric(
