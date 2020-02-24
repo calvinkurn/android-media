@@ -177,7 +177,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightFilterViewModel.filterArrivalTime(arrivalTimeList)
     }
 
-
     override fun onClickSeeAllAirline() {
         val filterAirlineBottomSheet = FlightFilterAirlineBottomSheet.getInstance()
         filterAirlineBottomSheet.listener = this
@@ -198,6 +197,10 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     override fun onAirlineChanged(checkedAirlines: List<String>) {
         flightFilterViewModel.filterAirlines(checkedAirlines)
+    }
+
+    override fun onPriceRangeChanged(minPrice: Int, maxPrice: Int) {
+        flightFilterViewModel.filterPrices(minPrice, maxPrice)
     }
 
     private fun showLoading() {

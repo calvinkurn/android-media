@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
+import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
 import com.tokopedia.unifycomponents.RangeSliderUnify
 import kotlinx.android.synthetic.main.item_flight_filter_price_range.view.*
@@ -11,11 +12,9 @@ import kotlinx.android.synthetic.main.item_flight_filter_price_range.view.*
 /**
  * @author by furqan on 20/02/2020
  */
-class FlightFilterPriceRangeViewHolder(val view: View) : AbstractViewHolder<PriceRangeModel>(view) {
-
-    companion object {
-        val LAYOUT = R.layout.item_flight_filter_price_range
-    }
+class FlightFilterPriceRangeViewHolder(val view: View,
+                                       private val listener: FlightFilterSortListener)
+    : AbstractViewHolder<PriceRangeModel>(view) {
 
     override fun bind(element: PriceRangeModel) {
         with(view) {
@@ -30,9 +29,13 @@ class FlightFilterPriceRangeViewHolder(val view: View) : AbstractViewHolder<Pric
                 override fun onSliderMove(p0: Pair<Int, Int>) {
                     etFlightLowestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(p0.first))
                     etFlightHighestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(p0.second))
+                    listener.onPriceRangeChanged(p0.first, p0.second)
                 }
-
             }
         }
+    }
+
+    companion object {
+        val LAYOUT = R.layout.item_flight_filter_price_range
     }
 }
