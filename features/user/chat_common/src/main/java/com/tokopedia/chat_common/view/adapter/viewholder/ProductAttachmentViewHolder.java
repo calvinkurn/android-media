@@ -93,7 +93,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         setupChatBubbleAlignment(chatBalloon, element);
         setupVariantLayout(element);
         setupIfEmptyStock(element);
-        viewListener.trackSeenProduct(element);
+        viewListener.trackSeenProduct(element, getAdapterPosition());
     }
 
     @Override

@@ -802,9 +802,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.detachView()
     }
 
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {
+    override fun trackSeenProduct(element: ProductAttachmentViewModel, position: Int) {
         if (seenAttachedProduct.add(element.productId)) {
-            analytics.eventSeenProductAttachment(element)
+            analytics.eventSeenProductAttachment(element, session, position)
         }
     }
 
