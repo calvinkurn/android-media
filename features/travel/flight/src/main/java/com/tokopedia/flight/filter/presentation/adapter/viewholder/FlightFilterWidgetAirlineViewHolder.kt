@@ -42,19 +42,12 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
 
     fun onSelectedAirlineChanged(selectedAirline: List<String>) {
         this.selectedAirline = selectedAirline
-        itemView.flight_sort_widget.resetAllSelectedChip()
-        for (selectedId in selectedAirline) {
-            if (getAirlinePosition(selectedId) in 0 until MAX_ITEM_SHOWED) {
-                itemView.flight_sort_widget.performClickOnChipWithPosition(getAirlinePosition(selectedId))
+        itemView.flight_sort_widget.getItems().let {
+            for (item in it) {
+                item.isSelected = this.selectedAirline.contains((item as FlightFilterAirlineModel).airlineId)
             }
         }
-    }
-
-    private fun getAirlinePosition(selectedId: String): Int {
-        for ((index, item) in getItems().withIndex()) {
-            if (item.airlineId == selectedId) return index
-        }
-        return -1
+        itemView.flight_sort_widget.notifyDataSetChanged()
     }
 
     private fun getItems(): List<FlightFilterAirlineModel> {
