@@ -66,7 +66,7 @@ class FinalPriceViewModelTest {
 
         finalPriceViewModel.getDiagnosticData()
 
-        assertEquals(finalPriceViewModel.getWarningmessage().value, exception)
+        assertEquals(finalPriceViewModel.getWarningMessage().value, exception)
 
     }
 
@@ -84,7 +84,7 @@ class FinalPriceViewModelTest {
         finalPriceViewModel.getAddress()
 
         assertEquals(finalPriceViewModel.addressLiveData.value, addressResult)
-        assertEquals(finalPriceViewModel.getProgressBarVisibility().value, false)
+        assertEquals(finalPriceViewModel.getProgBarVisibility().value, false)
 
     }
 
@@ -94,8 +94,8 @@ class FinalPriceViewModelTest {
 
         finalPriceViewModel.getAddress()
 
-        assertEquals(finalPriceViewModel.getErrormessage().value, "AddressResult Exception")
-        assertEquals(finalPriceViewModel.getProgressBarVisibility().value, false)
+        assertEquals(finalPriceViewModel.getErrorMessage().value, "AddressResult Exception")
+        assertEquals(finalPriceViewModel.getProgBarVisibility().value, false)
 
     }
 

@@ -68,19 +68,6 @@ class GetAddressUseCaseTest {
 
     /**************************** getAddress() *******************************************/
 
-    @Test(expected = ClassCastException::class)
-    fun getAddressException() {
-        val responseData: ResponseData? = null
-        runBlocking {
-            mockkStatic(GraphqlHelper::class)
-            every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
-            coEvery { tradeInRepository.getGQLData(any(), ResponseData::class.java, any()) } returns responseData
-
-            getAddressUseCase.getAddress()
-        }
-    }
-
     @Test
     fun getAddress() {
         val address: ResponseData = createMockGraphqlSuccessResponse()

@@ -87,19 +87,6 @@ class CheckMoneyInUseCaseTest {
 
     /**************************** checkMoneyIn() *******************************************/
 
-    @Test(expected = ClassCastException::class)
-    fun checkMoneyInException() {
-        val validateTradePDP: ValidateTradePDP? = null
-        runBlocking {
-            mockkStatic(GraphqlHelper::class)
-            every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
-            coEvery { tradeInRepository.getGQLData(any(), ValidateTradePDP::class.java, any())} returns validateTradePDP
-
-            checkMoneyInUseCase.checkMoneyIn(1,tradeInParams, "2")
-        }
-    }
-
     @Test
     fun checkMoneyInMessage() {
         val validateTradePDP: ValidateTradePDP = mockk()

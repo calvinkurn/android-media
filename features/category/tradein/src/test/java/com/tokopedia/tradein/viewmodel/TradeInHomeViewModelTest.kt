@@ -114,7 +114,7 @@ class TradeInHomeViewModelTest {
         tradeInHomeViewModel.processMessage(androidIntent)
 
         assertEquals(tradeInHomeViewModel.tradeInParams.deviceId, deviceDiagnostics.imei)
-        assertEquals(tradeInHomeViewModel.getWarningmessage().value, "check warningmessage value is called when exception thrown in Process Message")
+        assertEquals(tradeInHomeViewModel.getWarningMessage().value, "check warningmessage value is called when exception thrown in Process Message")
     }
 
     @Test
@@ -190,8 +190,8 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.checkMoneyIn(modelId, jsonObject)
 
-        assertEquals(tradeInHomeViewModel.getWarningmessage().value, "check warningmessage value is called when exception thrown in checkMoneyIn")
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, true)
+        assertEquals(tradeInHomeViewModel.getWarningMessage().value, "check warningmessage value is called when exception thrown in checkMoneyIn")
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }
 
     @Test
@@ -212,7 +212,7 @@ class TradeInHomeViewModelTest {
         assertEquals(tradeInHomeViewModel.homeResultData.value?.getDisplayMessage(), moneyInResponse?.response?.message)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.priceStatus, HomeResult.PriceState.MONEYIN_ERROR)
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, true)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, true)
 
         /**Eligible case**/
         coEvery { moneyInResponse?.response?.isEligible } returns true
@@ -226,7 +226,7 @@ class TradeInHomeViewModelTest {
         assertEquals(tradeInHomeViewModel.tradeInParams.isEligible, 1)
         assertEquals(tradeInHomeViewModel.tradeInParams.usedPrice, usedPrice)
         assertEquals(tradeInHomeViewModel.tradeInParams.isUseKyc, 0)
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, false)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }
     /**************************** checkMoneyIn() *******************************************/
 
@@ -253,7 +253,7 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.onFinished(jsonObject)
 
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, false)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }
 
     @Test
@@ -262,7 +262,7 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.onFinished(jsonObject)
 
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, false)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }
 
     @Test
@@ -280,7 +280,7 @@ class TradeInHomeViewModelTest {
         assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), true)
         assertEquals(HomeResult.PriceState.DIAGNOSED_INVALID, tradeInHomeViewModel.homeResultData.value?.priceStatus)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.deviceDisplayName, "LG Nexus 5")
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, false)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
 
 
         /** Not Diagnosed **/
@@ -292,7 +292,7 @@ class TradeInHomeViewModelTest {
         assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), true)
         assertEquals(HomeResult.PriceState.NOT_DIAGNOSED, tradeInHomeViewModel.homeResultData.value?.priceStatus)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.deviceDisplayName, "LG Nexus 5")
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, false)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
 
 
         /** Diagnosed valid **/
@@ -304,7 +304,7 @@ class TradeInHomeViewModelTest {
         verify(exactly = 0) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
         assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), true)
         assertEquals(HomeResult.PriceState.DIAGNOSED_VALID, tradeInHomeViewModel.homeResultData.value?.priceStatus)
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, false)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.getDeviceDisplayName(), "LG Nexus 5")
 
     }
@@ -321,7 +321,7 @@ class TradeInHomeViewModelTest {
 
         assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), false)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.displayMessage, "Error tradein")
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, false)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }
 
     @Test
@@ -332,7 +332,7 @@ class TradeInHomeViewModelTest {
 
         assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), false)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.displayMessage, "")
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, false)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }
 
     /**************************** onError() *******************************************/
@@ -344,8 +344,8 @@ class TradeInHomeViewModelTest {
         tradeInHomeViewModel.getMaxPrice(laku6TradeIn, tradeInType)
 
         assertEquals(tradeInHomeViewModel.tradeInType, tradeInType)
-        coVerify { laku6TradeIn.getMinMaxPrice(any()) }
-        assertEquals(tradeInHomeViewModel.getProgressBarVisibility().value, true)
+        verify { laku6TradeIn.getMinMaxPrice(any()) }
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, true)
     }
 
     /**************************** getMaxPrice() *******************************************/

@@ -84,6 +84,7 @@ class TradeInHomeViewModel @Inject constructor(
         launchCatchError(block = {
             checkIfElligible(checkMoneyInUseCase.checkMoneyIn(modelId, tradeInParams, userSession.userId), jsonObject)
         }, onError = {
+            progBarVisibility.value = false
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
         })
@@ -115,7 +116,7 @@ class TradeInHomeViewModel @Inject constructor(
         var modelId = 0
         try {
             modelId = jsonObject.getInt("model_id")
-        } catch (e: JSONException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         if (tradeInType == 2) {
@@ -135,7 +136,7 @@ class TradeInHomeViewModel @Inject constructor(
             maxPrice = jsonObject.getInt("max_price")
             minPrice = jsonObject.getInt("min_price")
             devicedisplayname = jsonObject.getString("model_display_name")
-        } catch (e: JSONException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         val result = HomeResult()

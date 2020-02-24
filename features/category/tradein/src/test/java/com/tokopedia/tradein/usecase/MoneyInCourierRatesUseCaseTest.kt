@@ -66,19 +66,6 @@ class MoneyInCourierRatesUseCaseTest {
 
     /**************************** makeCheckoutMutation() *******************************************/
 
-    @Test(expected = ClassCastException::class)
-    fun makeCheckoutMutationException() {
-        val responseData: ResponseData? = null
-        runBlocking {
-            mockkStatic(GraphqlHelper::class)
-            every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
-            coEvery { tradeInRepository.getGQLData(any(), ResponseData::class.java, any())} returns responseData
-
-            moneyInCourierRatesUseCase.getCourierRates(anyString())
-        }
-    }
-
     @Test
     fun makeCheckoutMutation() {
         val responseData: ResponseData = mockk()

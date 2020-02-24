@@ -53,16 +53,6 @@ class CheckTradeInUseCaseTest {
 
     /**************************** checkTradeIn() *******************************************/
 
-    @Test(expected = ClassCastException::class)
-    fun checkTradeInException() {
-        val validateTradePDP: ValidateTradePDP? = null
-        runBlocking {
-            coEvery { repository.getGQLData(any(), ValidateTradePDP::class.java, any())} returns validateTradePDP
-
-            useCase.checkTradeIn("", tradeInParams)
-        }
-    }
-
     @Test
     fun checkTradeIn() {
         val validateTradePDP: ValidateTradePDP = mockk()

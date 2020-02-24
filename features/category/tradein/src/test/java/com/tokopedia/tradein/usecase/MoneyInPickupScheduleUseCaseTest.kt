@@ -44,18 +44,6 @@ class MoneyInPickupScheduleUseCaseTest {
 
     /**************************** getPickupScheduleOption() *******************************************/
 
-    @Test(expected = ClassCastException::class)
-    fun getPickupScheduleOptionException() {
-        val responseData: ResponseData? = null
-        runBlocking {
-            mockkStatic(GraphqlHelper::class)
-            every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
-            coEvery { tradeInRepository.getGQLData(any(), ResponseData::class.java, any())} returns responseData
-
-            moneyInPickupScheduleUseCase.getPickupScheduleOption()
-        }
-    }
 
     @Test
     fun getPickupScheduleOption() {

@@ -99,19 +99,6 @@ class ProcessMessageUseCaseTest {
 
     /**************************** processMessage() *******************************************/
 
-    @Test(expected = ClassCastException::class)
-    fun processMessageException() {
-        val deviceDiagInputResponse: DeviceDiagInputResponse? = null
-        runBlocking {
-            mockkStatic(GraphqlHelper::class)
-            every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
-            coEvery { tradeInRepository.getGQLData(any(), DeviceDiagInputResponse::class.java, any())} returns deviceDiagInputResponse
-
-            processMessageUseCase.processMessage(tradeInParams, deviceDiagnostics)
-        }
-    }
-
     @Test
     fun processMessage() {
         val deviceDiagInputResponse: DeviceDiagInputResponse = mockk()
