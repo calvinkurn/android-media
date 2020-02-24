@@ -94,6 +94,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
         const val SAVED_SHOP_ID = "saved_shop_id"
+        const val SAVED_SHOP_REF = "saved_shop_ref"
         const val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         const val ALL_ETALASE_ID = "etalase"
@@ -101,11 +102,12 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val SHOP_INFO_CACHE_MANAGER_ID = "SHOP_INFO_CACHE_MANAGER_ID"
 
         @JvmStatic
-        fun createInstance(shopAttribution: String?): ShopPageProductListFragment {
+        fun createInstance(shopAttribution: String?, shopRef: String): ShopPageProductListFragment {
             val fragment = ShopPageProductListFragment()
             val bundle = Bundle()
             bundle.putString(SHOP_ATTRIBUTION, shopAttribution)
             fragment.arguments = bundle
+            fragment.shopRef = shopRef
             return fragment
         }
     }
@@ -133,6 +135,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var urlNeedTobBeProceed: String? = null
     private var shopInfo: ShopInfo? = null
     private var shopId: String? = null
+    private var shopRef: String = ""
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
     private var selectedEtalaseId = ""
@@ -292,14 +295,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                         ListTitleTypeDef.HIGHLIGHTED, FEATURED_PRODUCT,
                         CustomDimensionShopPageProduct.create(shopInfo!!.shopCore.shopID,
                                 shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                shopProductViewModel.id))
+                                shopProductViewModel.id, shopRef))
                 ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickWishlist(
                         !shopProductViewModel.isWishList,
                         ListTitleTypeDef.ETALASE, shopProductAdapter.shopProductEtalaseListViewModel?.selectedEtalaseName
                         ?: "",
                         CustomDimensionShopPageProduct.create(shopInfo!!.shopCore.shopID,
                                 shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                shopProductViewModel.id))
+                                shopProductViewModel.id, shopRef))
                 else -> // highlight
                     shopPageTracking?.clickWishlist(
                             !shopProductViewModel.isWishList,
@@ -307,7 +310,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
                             CustomDimensionShopPageProduct.create(shopInfo!!.shopCore.shopID,
                                     shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                    shopProductViewModel.id))
+                                    shopProductViewModel.id, shopRef))
             }
         }
         if (!viewModel.isLogin) {
@@ -336,7 +339,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             FEATURED_PRODUCT,
                             CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
                                     shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                    shopProductViewModel.id, attribution),
+                                    shopProductViewModel.id, attribution, shopRef),
                             shopProductViewModel, finalProductPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
                             it.freeOngkir.isActive)
                 }
@@ -347,7 +350,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                     ?: "",
                             CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
                                     shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                    shopProductViewModel.id, attribution),
+                                    shopProductViewModel.id, attribution, shopRef),
                             shopProductViewModel, finalProductPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
                             it.freeOngkir.isActive)
                 }
@@ -357,7 +360,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
                             CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
                                     shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                    shopProductViewModel.id, attribution),
+                                    shopProductViewModel.id, attribution, shopRef),
                             shopProductViewModel, finalProductPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
                             it.freeOngkir.isActive)
                 }
@@ -403,7 +406,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     if (shopInfo != null) {
                         val intent = ShopProductListActivity.createIntent(activity,
                                 shopInfo!!.shopCore.shopID, "",
-                                etalaseId, attribution, sortName)
+                                etalaseId, attribution, sortName, shopRef)
                         startActivity(intent)
                     }
                 }
@@ -443,7 +446,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopPageTracking?.clickHighLightSeeAll(customDimensionShopPage)
             val intent = ShopProductListActivity.createIntent(activity,
                     it.shopCore.shopID, "",
-                    shopProductEtalaseChipItemViewModel.etalaseId, attribution, sortName)
+                    shopProductEtalaseChipItemViewModel.etalaseId, attribution, sortName, shopRef)
             startActivity(intent)
         }
     }
@@ -632,6 +635,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId)
         outState.putString(SAVED_SELECTED_ETALASE_NAME, selectedEtalaseName)
         outState.putString(SAVED_SHOP_ID, shopId)
+        outState.putString(SAVED_SHOP_REF, shopRef)
         outState.putBoolean(SAVED_SHOP_IS_OFFICIAL, isOfficialStore)
         outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant)
         shopInfo?.let {
@@ -660,6 +664,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             selectedEtalaseId = it.getString(SAVED_SELECTED_ETALASE_ID) ?: ""
             selectedEtalaseName = it.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
             shopId = it.getString(SAVED_SHOP_ID)
+            shopRef = it.getString(SAVED_SHOP_REF).orEmpty()
             val shopInfoCacheManagerId = it.getString(SHOP_INFO_CACHE_MANAGER_ID, "")
             isGoldMerchant = it.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT)
             isOfficialStore = it.getBoolean(SAVED_SHOP_IS_OFFICIAL)
@@ -826,7 +831,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 shopInfo!!.goldOS.isOfficial == 1,
                                 shopInfo!!.goldOS.isGold == 1,
                                 "",
-                                attribution
+                                attribution,
+                                shopRef
                         ),
                         productList,
                         shopProductAdapter.shopProductViewModelList.size,
@@ -870,7 +876,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             if (data.etalaseHighlightCarouselViewModelList.isNotEmpty()) {
                 val customDimensionShopPageAttribution = CustomDimensionShopPageAttribution
                         .create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                                it.goldOS.isGold == 1, null, attribution)
+                                it.goldOS.isGold == 1, null, attribution, shopRef)
                 data.etalaseHighlightCarouselViewModelList.forEachIndexed { _, etalaseHighlightCarouselViewModel ->
                     if (etalaseHighlightCarouselViewModel.shopProductViewModelList.isNotEmpty()) {
                         shopInfo?.let { shopInfo ->
@@ -898,7 +904,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                         ListTitleTypeDef.HIGHLIGHTED,
                         FEATURED_PRODUCT,
                         CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1, "", attribution),
+                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1, "", attribution, shopRef),
                         listFeaturedProduct, 0,
                         shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
                         it.freeOngkir.isActive

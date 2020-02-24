@@ -169,6 +169,7 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_LOCATION = "shop_location";
     public static final String URL_SLUG = "url_slug";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
+    public static final String SHOP_REF = "dimension90";
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";

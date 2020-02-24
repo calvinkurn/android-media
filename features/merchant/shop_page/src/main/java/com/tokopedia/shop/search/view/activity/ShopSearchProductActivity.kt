@@ -17,20 +17,22 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
         const val KEY_SHOP_ATTRIBUTION = "keyShopAttribution"
         const val KEY_KEYWORD = "keyKeyword"
         const val KEY_SORT_ID = "keySortId"
+        const val KEY_SHOP_REF = "shopRef"
 
         @JvmStatic
-        fun createIntent(context: Context, keyword: String, cacheManagerId: String, shopAttribution: String?): Intent {
+        fun createIntent(context: Context, keyword: String, cacheManagerId: String, shopAttribution: String?, shopRef: String): Intent {
             val intent = Intent(context, ShopSearchProductActivity::class.java)
             intent.putExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID, cacheManagerId)
             intent.putExtra(KEY_SHOP_ATTRIBUTION, shopAttribution)
             intent.putExtra(KEY_KEYWORD, keyword)
+            intent.putExtra(KEY_SHOP_REF, shopRef)
             return intent
         }
 
         @JvmStatic
         fun createIntent(context: Context, keyword: String, cacheManagerId: String,
-                         shopAttribution: String?, sortId: String): Intent {
-            val intent = createIntent(context, keyword, cacheManagerId, shopAttribution)
+                         shopAttribution: String?, sortId: String, shopRef: String): Intent {
+            val intent = createIntent(context, keyword, cacheManagerId, shopAttribution, shopRef)
             intent.putExtra(KEY_SORT_ID, sortId)
             return intent
         }
@@ -44,6 +46,8 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
 
     private var sortId: String = ""
 
+    private var shopRef: String = ""
+
     private var component: ShopComponent? = null
 
     private fun getIntentData() {
@@ -52,6 +56,7 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             shopAttribution = getStringExtra(KEY_SHOP_ATTRIBUTION).orEmpty()
             keyword = getStringExtra(KEY_KEYWORD).orEmpty()
             sortId = getStringExtra(KEY_SORT_ID).orEmpty()
+            shopRef = getStringExtra(KEY_SHOP_REF).orEmpty()
         }
     }
 
@@ -64,7 +69,8 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             keyword,
             shopInfoCacheManagerId,
             shopAttribution,
-            sortId
+            sortId,
+            shopRef
     )
 
     override fun getComponent(): ShopComponent = component
