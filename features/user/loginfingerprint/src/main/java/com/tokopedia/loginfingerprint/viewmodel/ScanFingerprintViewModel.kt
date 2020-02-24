@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintResult
-import com.tokopedia.loginfingerprint.data.preference.PreferenceHelper
+import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                    private val userSession: UserSessionInterface,
                                                    val cryptographyUtils: CryptographyUtils,
-                                                   private val preferenceHelper: PreferenceHelper,
+                                                   private val fingerprintPreferenceHelper: FingerprintPreferenceHelper,
                                                    private val loginTokenUseCase: LoginTokenUseCase,
                                                    private val validateFingerprintUseCase: ValidateFingerprintUseCase)
     : BaseViewModel(dispatcher) {
@@ -40,13 +40,13 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
 //        get() = mutableValidateFingerprintResult
 
     fun validateFingerprint() {
-        val signature = cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-        val param = validateFingerprintUseCase.createRequestParams(preferenceHelper.getFingerprintUserId(), signature)
+        val signature = cryptographyUtils.generateFingerprintSignature(fingerprintPreferenceHelper.getFingerprintUserId(), userSession.deviceId)
+        val param = validateFingerprintUseCase.createRequestParams(fingerprintPreferenceHelper.getFingerprintUserId(), signature)
         validateFingerprintUseCase.executeUseCase(param, onSuccessValidateFP(), onErrorValidateFP())
     }
 
     private fun loginToken(validateToken: String){
-        val param = LoginTokenUseCase.generateParamForFingerprint(validateToken, preferenceHelper.getFingerprintUserId())
+        val param = LoginTokenUseCase.generateParamForFingerprint(validateToken, fingerprintPreferenceHelper.getFingerprintUserId())
         loginTokenUseCase.executeLoginFingerprint(param, LoginTokenSubscriber(userSession,
                 { mutableLoginFingerprintResult.value = Success(it) },
                 onErrorValidateFP(), {}, {}))

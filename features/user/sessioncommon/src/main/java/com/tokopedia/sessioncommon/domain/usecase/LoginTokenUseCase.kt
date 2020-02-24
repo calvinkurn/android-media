@@ -133,7 +133,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
         fun generateParamForFingerprint(validateToken: String, userId: String): Map<String, Any> {
             val requestParams = HashMap<String, Any>()
 
-            requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_FINGERPRINT)
+            requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_PASSWORD)
             requestParams[PARAM_PASSWORD_TYPE] = TYPE_FINGERPRINT
             requestParams[PARAM_USERNAME] = TokenGenerator().encode(userId)
             requestParams[PARAM_PASSWORD] = TokenGenerator().encode(validateToken)

@@ -7,7 +7,7 @@ import android.content.Context
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class PreferenceHelper(context: Context) {
+class FingerprintPreferenceHelper(context: Context) {
 
     companion object {
         const val LOGIN_FINGERPRINT_STATUS_KEY = "loginFingerprintStatusKey"

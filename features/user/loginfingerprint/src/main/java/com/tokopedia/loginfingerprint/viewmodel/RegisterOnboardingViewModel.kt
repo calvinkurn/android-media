@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
-import com.tokopedia.loginfingerprint.data.preference.PreferenceHelper
+import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                       private val userSession: UserSessionInterface,
                                                       private val cryptographyUtils: CryptographyUtils,
-                                                      private val preferenceHelper: PreferenceHelper,
+                                                      private val fingerprintPreferenceHelper: FingerprintPreferenceHelper,
                                                       private val registerFingerprintUseCase: RegisterFingerprintUseCase)
     : BaseViewModel(dispatcher){
 
@@ -46,8 +46,8 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispa
 
             if (errorMessage.isBlank() && isSuccess) {
                 mutableRegisterFingerprintResult.value = Success(it.data)
-                preferenceHelper.registerFingerprint()
-                preferenceHelper.saveUserId(userSession.userId)
+                fingerprintPreferenceHelper.registerFingerprint()
+                fingerprintPreferenceHelper.saveUserId(userSession.userId)
             } else if (!errorMessage.isBlank()) {
                 mutableRegisterFingerprintResult.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
@@ -65,6 +65,6 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispa
     }
 
     fun unregisterFP(){
-        preferenceHelper.unregisterFingerprint()
+        fingerprintPreferenceHelper.unregisterFingerprint()
     }
 }
