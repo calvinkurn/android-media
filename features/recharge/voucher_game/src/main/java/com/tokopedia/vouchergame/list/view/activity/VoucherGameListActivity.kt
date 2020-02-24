@@ -62,6 +62,10 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         super.onCreate(savedInstanceState)
     }
 
+    override fun shouldShowOptionMenu(): Boolean {
+        return true
+    }
+
     companion object {
 
         const val PARAM_CATEGORY_ID = "category_id"

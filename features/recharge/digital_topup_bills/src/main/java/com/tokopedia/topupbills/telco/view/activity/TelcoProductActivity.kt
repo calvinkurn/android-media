@@ -23,8 +23,7 @@ class TelcoProductActivity : BaseTelcoActivity() {
     override fun getNewFragment(): Fragment {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
-        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID)
-                ?: TelcoComponentType.TELCO_PREPAID.toString()
+        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID) ?: TelcoComponentType.TELCO_PREPAID.toString()
         digitalTelcoExtraParam.categoryId = bundle?.getString(PARAM_CATEGORY_ID) ?: ""
         digitalTelcoExtraParam.productId = bundle?.getString(PARAM_PRODUCT_ID) ?: ""
         digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER) ?: ""
