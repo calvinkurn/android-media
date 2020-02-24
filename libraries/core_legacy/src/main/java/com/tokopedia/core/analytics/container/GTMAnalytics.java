@@ -1017,7 +1017,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
-                    log(getContext(), null, it);
                     logIrisAnalytics(values);
                     pushIris("", it);
                     return true;
