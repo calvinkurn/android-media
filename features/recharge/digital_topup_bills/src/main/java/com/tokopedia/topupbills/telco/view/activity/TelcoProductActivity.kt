@@ -2,13 +2,8 @@ package com.tokopedia.topupbills.telco.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.gms.actions.SearchIntents
-import com.google.firebase.appindexing.Action
-import com.google.firebase.appindexing.FirebaseUserActions
-import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -24,7 +19,6 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
  */
 
 class TelcoProductActivity : BaseTelcoActivity() {
-    private val actionTokenExtra = "actions.fulfillment.extra.ACTION_TOKEN"
 
     override fun getNewFragment(): Fragment {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
@@ -39,7 +33,6 @@ class TelcoProductActivity : BaseTelcoActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent?.handleIntent()
         updateTitle(getString(R.string.digital_title_telco_page))
     }
 
@@ -63,43 +56,5 @@ class TelcoProductActivity : BaseTelcoActivity() {
     override fun onBackPressed() {
         (fragment as DigitalTelcoFragment).onBackPressed()
         super.onBackPressed()
-    }
-
-    private fun Intent.handleIntent() {
-        when (action) {
-            Intent.ACTION_VIEW -> handleDeepLink(data)
-            SearchIntents.ACTION_SEARCH -> {
-            }
-            else -> {
-            }
-        }
-    }
-
-    private fun handleDeepLink(data: Uri?) {
-        var actionHandled = true
-        when (data?.path) {
-            "/telco" -> actionHandled = true
-            else -> actionHandled = false
-
-        }
-
-
-        notifyActionSuccess(actionHandled)
-    }
-
-    private fun notifyActionSuccess(succeed: Boolean) {
-        intent.getStringExtra(actionTokenExtra)?.let { actionToken ->
-            val actionStatus = if (succeed) {
-                Action.Builder.STATUS_TYPE_COMPLETED
-            } else {
-                Action.Builder.STATUS_TYPE_FAILED
-            }
-            val action = AssistActionBuilder()
-                    .setActionToken(actionToken)
-                    .setActionStatus(actionStatus)
-                    .build()
-
-            FirebaseUserActions.getInstance().end(action)
-        }
     }
 }

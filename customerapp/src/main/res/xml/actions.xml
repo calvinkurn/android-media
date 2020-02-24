@@ -7,6 +7,6 @@
         <!--        </fulfillment>-->
         <fulfillment
             fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="tokopedia-android-internal://digital/telco" />
+            urlTemplate="tokopedia://recharge/home" />
     </action>
 </actions>

@@ -62,7 +62,7 @@ class MainSliceProvider : SliceProvider() {
             PendingIntent.getActivity(
                     contextNonNull,
                     it,
-                    RouteManager.getIntent(contextNonNull, applink),
+                    RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME),
                     0
             )
         }
@@ -72,7 +72,7 @@ class MainSliceProvider : SliceProvider() {
         val mainPendingIntent = PendingIntent.getActivity(
                 contextNonNull,
                 0,
-                Intent(contextNonNull, MainActivity::class.java),
+                RouteManager.getIntent(contextNonNull,ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME),
                 0
         )
         if (sliceUri.getQueryParameter("serviceName") != null) {
@@ -115,7 +115,7 @@ class MainSliceProvider : SliceProvider() {
                                     it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
                                     it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
                                 }
-                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink)?.let {
+                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)?.let {
                                     SliceAction.create(
                                             it,
                                             createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
@@ -276,8 +276,6 @@ class MainSliceProvider : SliceProvider() {
             try {
                 val data = repository.getReseponse(listOf(graphqlRequest)).getSuccessData<Data>()
                 recommendationModel = data.rechargeFavoriteRecommendationList.recommendations
-                Log.d("SLICE_URI", recommendationModel!![0].appLink)
-                Log.d("SLICE_URI", "Applink")
                 updateSlice(sliceUri)
             } catch (e: Exception) {
                 if(e.message=="401 - UNAUTHORIZED")
