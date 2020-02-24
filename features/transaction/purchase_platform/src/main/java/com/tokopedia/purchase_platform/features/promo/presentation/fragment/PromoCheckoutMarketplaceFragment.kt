@@ -8,21 +8,24 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
-import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapterTypeFactory
+import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoInputUiModel
 import javax.inject.Inject
-import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 
-class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(), PromoCheckoutMarketplaceActionListener {
+class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(), PromoCheckoutMarketplaceActionListener {
 
     @Inject
     lateinit var itemDecorator: PromoDecoration
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: PromoCheckoutAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_promo_checkout_marketplace, container, false)
@@ -33,7 +36,12 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
         return view
     }
 
-    override fun getAdapterTypeFactory(): PromoCheckoutAdapterTypeFactory {
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory> {
+        adapter = PromoCheckoutAdapter(adapterTypeFactory)
+        return adapter
+    }
+
+    override fun getAdapterTypeFactory(): PromoCheckoutMarketplaceAdapterTypeFactory {
         return PromoCheckoutMarketplaceAdapterTypeFactory(this)
     }
 
@@ -59,7 +67,20 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
     }
 
     override fun loadData(page: Int) {
+        hideLoading()
+        val promoInputUiModel = PromoInputUiModel(
+                uiData = PromoInputUiModel.UiData().apply {
+                    promoCode = ""
+                },
+                uiState = PromoInputUiModel.UiState().apply {
+                    isButtonSelectEnabled = false
+                }
+        )
+        adapter.addVisitable(promoInputUiModel)
+    }
 
+    override fun isLoadMoreEnabledByDefault(): Boolean {
+        return false
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
