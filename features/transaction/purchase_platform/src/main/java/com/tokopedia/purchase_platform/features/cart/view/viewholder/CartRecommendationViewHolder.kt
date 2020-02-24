@@ -32,27 +32,25 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                             reviewCount = element.recommendationItem.countReview,
                             ratingCount = element.recommendationItem.rating,
                             shopLocation = element.recommendationItem.location,
-                            isWishlistVisible = true,
-                            isWishlisted = element.recommendationItem.isWishlist,
                             shopBadgeList = element.recommendationItem.badgesUrl.map {
                                 ProductCardModel.ShopBadge(imageUrl = it?:"")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.recommendationItem.isFreeOngkirActive,
                                     imageUrl = element.recommendationItem.freeOngkirImageUrl
-                            )
+                            ),
+                            labelGroupList = element.recommendationItem.labelGroupList.map { recommendationLabel ->
+                                ProductCardModel.LabelGroup(
+                                        position = recommendationLabel.position,
+                                        title = recommendationLabel.title,
+                                        type = recommendationLabel.type
+                                )
+                            },
+                            hasAddToCartButton = true
                     )
             )
-            setAddToCartVisible(true)
             setAddToCartOnClickListener {
                 actionListener?.onButtonAddToCartClicked(element)
-            }
-            setButtonWishlistOnClickListener {
-                if (element.recommendationItem.isWishlist) {
-                    actionListener?.onRemoveRecommendationFromWishlist(element.recommendationItem.productId.toString())
-                } else {
-                    actionListener?.onAddRecommendationToWishlist(element.recommendationItem.productId.toString())
-                }
             }
         }
         itemView.setOnClickListener {
@@ -61,6 +59,6 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
     }
 
     fun clearImage() {
-        itemView.productCardView.setImageProductVisible(false)
+//        itemView.productCardView.setImageProductVisible(false)
     }
 }

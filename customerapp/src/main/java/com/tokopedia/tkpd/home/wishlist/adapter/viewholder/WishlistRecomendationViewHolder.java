@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kotlin.extensions.view.ViewHintListener;
+import com.tokopedia.productcard.ProductCardGridView;
 import com.tokopedia.productcard.v2.BlankSpaceConfig;
 import com.tokopedia.productcard.v2.ProductCardModel;
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid;
@@ -26,7 +27,7 @@ public class WishlistRecomendationViewHolder extends AbstractViewHolder<Wishlist
 
     @LayoutRes
     public static int LAYOUT = R.layout.wishlist_item_recomnedation;
-    private ProductCardViewSmallGrid productCardViewSmallGrid;
+    private ProductCardGridView productCardViewSmallGrid;
     private WishlistAnalytics wishlistAnalytics;
 
     public WishlistRecomendationViewHolder(View itemView, WishlistAnalytics wishlistAnalytics) {
@@ -59,6 +60,7 @@ public class WishlistRecomendationViewHolder extends AbstractViewHolder<Wishlist
                         item.getName(),
                         String.valueOf(item.getDiscountPercentage()),
                         item.getSlashedPrice(),
+                        "",
                         item.getPrice(),
                         badges,
                         item.getLocation(),
@@ -67,8 +69,13 @@ public class WishlistRecomendationViewHolder extends AbstractViewHolder<Wishlist
                         new ProductCardModel.Label(),
                         new ProductCardModel.Label(),
                         freeOngkir,
-                        item.isTopAds()
-                ), new BlankSpaceConfig()
+                        item.isTopAds(),
+                        "",
+                        false,
+                        new ArrayList<>(),
+                        false,
+                        false
+                )
         );
 
         productCardViewSmallGrid.setImageProductViewHintListener(
