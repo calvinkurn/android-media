@@ -274,6 +274,7 @@ open class HomeViewModel @Inject constructor(
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
             return newHomeViewModel
         }
         return homeDataModel
@@ -544,6 +545,23 @@ open class HomeViewModel @Inject constructor(
         return homeDataModel
     }
 
+    private fun evaluatePopularKeywordComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { homeViewModel ->
+
+            val list = homeViewModel.list.toMutableList()
+            // find the old data from current list
+            _homeLiveData.value?.list?.forEachIndexed{pos, data ->
+                run {
+                    if (data is PopularKeywordListViewModel && pos != -1) {
+                        list[pos] = data
+                    }
+                }
+            }
+            homeViewModel.copy(list = list)
+        }
+        return homeDataModel
+    }
+
     fun getRecommendationFeedSectionPosition() = (_homeLiveData.value?.list?.size?:0)-1
 
 // =================================================================================
@@ -767,32 +785,29 @@ open class HomeViewModel @Inject constructor(
         return data
     }
     private fun getPopularKeyword() {
-        _homeLiveData.value?.list?.forEachIndexed { index, element ->
-            if (element is PopularKeywordListViewModel) {
-                getPopularKeywordData(index, element.header)
-            }
+        val data = _homeLiveData.value?.list?.find { it is PopularKeywordListViewModel }
+        if(data != null && data is PopularKeywordListViewModel) {
+            getPopularKeywordData()
         }
-
     }
 
-    fun getPopularKeywordData(rowNumber: Int, header: DynamicHomeChannel.Header) {
+    fun getPopularKeywordData() {
         if(getPopularKeywordJob?.isActive == true) return
         getPopularKeywordJob = launchCatchError(coroutineContext, {
             popularKeywordUseCase.setParams()
             val results = popularKeywordUseCase.executeOnBackground()
             if (results.data.keywords.size != 0) {
                 val resultList = convertPopularKeywordDataList(results.data.keywords)
-                val data = PopularKeywordListViewModel(popularKeywordList = resultList, header = header)
-                data.position = rowNumber
                 val currentList = _homeLiveData.value?.list?.toMutableList()
                 currentList?.let {
-                    if (it[rowNumber] is PopularKeywordListViewModel) {
-                        currentList[rowNumber] = data
-                        val newHomeViewModel = _homeLiveData.value?.copy(
-                                list = currentList
-                        )
-                        _homeLiveData.value = newHomeViewModel
+                    val oldData = currentList.find { it is PopularKeywordListViewModel }
+                    if (oldData != null && oldData is PopularKeywordListViewModel) {
+                        oldData.popularKeywordList = resultList
                     }
+                    val newHomeViewModel = _homeLiveData.value?.copy(
+                            list = currentList
+                    )
+                    _homeLiveData.value = newHomeViewModel
                 }
             }
         }){}

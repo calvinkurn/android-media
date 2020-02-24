@@ -1336,7 +1336,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Header header) {
-        viewModel.getPopularKeywordData(position, header);
+        viewModel.getPopularKeywordData();
     }
 
     @Override
