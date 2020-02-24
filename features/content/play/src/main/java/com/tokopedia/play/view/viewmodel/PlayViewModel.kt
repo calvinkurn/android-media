@@ -442,7 +442,6 @@ class PlayViewModel @Inject constructor(
 
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
-        playManager.muteVideo(false)
         playManager.setRepeatMode(false)
     }
 
