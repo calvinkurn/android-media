@@ -60,7 +60,6 @@ public interface ApplinkConst {
     String DIGITAL = "tokopedia://digital";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
-    String DIGITAL_SMARTCARD_BRIZZI = "tokopedia-android-internal://smartcard/emoneybrizzi";
     String DIGITAL_CART = "tokopedia://digital/cart";
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
