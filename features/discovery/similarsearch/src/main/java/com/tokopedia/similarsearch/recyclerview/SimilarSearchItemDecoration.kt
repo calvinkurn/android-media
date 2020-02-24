@@ -15,7 +15,7 @@ internal class SimilarSearchItemDecoration(
 ): RecyclerView.ItemDecoration() {
 
     private val allowedViewTypes = listOf(
-            SimilarProductItemViewHolder.LAYOUT
+            0
     )
 
     private var horizontalCardViewOffset: Int = 0
