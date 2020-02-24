@@ -83,6 +83,7 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
@@ -115,7 +116,8 @@ public class MainParentActivity extends BaseActivity implements
         CartNotifyListener,
         RefreshNotificationListener,
         MainParentStatusBarListener,
-        HomePerformanceMonitoringListener {
+        HomePerformanceMonitoringListener,
+        JankyFramesMonitoringListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
