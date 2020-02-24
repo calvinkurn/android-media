@@ -8,9 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.flight.R
+import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterAirlineAdapterTypeFactory
-import com.tokopedia.flight.search.presentation.fragment.OnFlightFilterListener
 import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
+import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_flight_filter_airline.view.*
 import java.util.*
@@ -37,8 +38,9 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (::listener.isInitialized && listener.flightSearchStatisticModel != null) {
-            renderList(listener.flightSearchStatisticModel.airlineStatList)
+        if (::listener.isInitialized && listener.getFlightSearchStaticticModel() != null) {
+            val statisticModel = listener.getFlightSearchStaticticModel() as FlightSearchStatisticModel
+            renderList(statisticModel.airlineStatList)
         }
     }
 
@@ -86,7 +88,7 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     private fun renderList(list: List<AirlineStat>) {
         adapter.addElement(list)
 
-        val flightFilterModel = listener.flightFilterModel
+        val flightFilterModel = listener.getFlightFilterModel()
         val checkedPositionList = HashSet<Int>()
         if (flightFilterModel != null) {
             val airlineList = flightFilterModel.airlineList
@@ -115,13 +117,12 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     }
 
     private fun saveAirlineFilter() {
-        val filterModel = listener.flightFilterModel
+        val filterModel = listener.getFlightFilterModel()
         val checkedAirlineList = adapter.checkedDataList
 
-        filterModel.airlineList = checkedAirlineList.map {
+        filterModel?.airlineList = checkedAirlineList.map {
             it.airlineDB.id
         }.toList()
-        listener.onFilterModelChanged(filterModel)
 
         if (isAdded) {
             dismiss()
@@ -129,11 +130,10 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     }
 
     private fun resetAirlineFilter() {
-        val filterModel = listener.flightFilterModel
-        filterModel.airlineList = arrayListOf()
+        val filterModel = listener.getFlightFilterModel()
+        filterModel?.airlineList = arrayListOf()
         adapter.resetCheckedItemSet()
         adapter.notifyDataSetChanged()
-        listener.onFilterModelChanged(filterModel)
     }
 
     companion object {

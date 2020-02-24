@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
@@ -171,11 +170,16 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
 
     override fun onClickSeeAllAirline() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val filterAirlineBottomSheet = FlightFilterAirlineBottomSheet.getInstance()
+        filterAirlineBottomSheet.listener = this
+        filterAirlineBottomSheet.setShowListener { filterAirlineBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        fragmentManager?.let {
+            filterAirlineBottomSheet.show(it, FlightFilterAirlineBottomSheet.TAG_FILTER_AIRLINE)
+        }
     }
 
     override fun getAirlineList(): List<AirlineStat> =
-        flightFilterViewModel.getAirlineList()
+            flightFilterViewModel.getAirlineList()
 
     private fun renderList(data: List<BaseFilterSortModel>) {
         adapter?.clearAllElements()
