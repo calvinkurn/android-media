@@ -195,6 +195,7 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            ext.enableCrashlytics = false
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic HTTP/S network request monitoring
