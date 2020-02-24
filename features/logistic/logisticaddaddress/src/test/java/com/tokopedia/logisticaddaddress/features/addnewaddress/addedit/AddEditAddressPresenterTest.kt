@@ -1,29 +1,26 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import android.content.Context
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
+import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
+import com.tokopedia.logisticaddaddress.domain.model.add_address.Data
+import com.tokopedia.logisticaddaddress.domain.model.add_address.KeroAddAddress
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictItem
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictZipcodes
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.KeroDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressResponseUiModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
-import rx.Subscriber
 
 object AddEditAddressPresenterTest : Spek({
 
     val saveUseCase: AddAddressUseCase = mockk(relaxUnitFun = true)
     val zipUseCase: GetZipCodeUseCase = mockk(relaxUnitFun = true)
-    val mapper: AddAddressMapper = mockk()
     val context: Context = mockk()
     val view: AddEditAddressListener = mockk(relaxed = true)
 
@@ -34,23 +31,18 @@ object AddEditAddressPresenterTest : Spek({
     lateinit var presenter: AddEditAddressPresenter
 
     beforeEachTest {
-        presenter = AddEditAddressPresenter(context, saveUseCase, zipUseCase, mapper)
+        presenter = AddEditAddressPresenter(context, saveUseCase, zipUseCase)
         presenter.attachView(view)
     }
 
     Feature("save address") {
         Scenario("success from positive form") {
-            val successGql = GraphqlResponse(mapOf(), mapOf(), false)
-            val successAnswer = AddAddressResponseUiModel(
-                    data = AddAddressDataUiModel(123, 1),
-                    status = "OK"
-            )
+            val successGql = AddAddressResponse(KeroAddAddress(
+                    Data(isSuccess = 1, addrId = 99)
+            ))
             val model = SaveAddressDataModel()
             Given("success answer") {
-                every { saveUseCase.execute(any(), any()) } answers {
-                    secondArg<Subscriber<GraphqlResponse>>().onNext(successGql)
-                }
-                every { mapper.map(successGql) } returns successAnswer
+                every { saveUseCase.execute(any()) } returns Observable.just(successGql)
             }
             When("executed from positive form") {
                 presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
@@ -66,17 +58,12 @@ object AddEditAddressPresenterTest : Spek({
         }
 
         Scenario("error from negative form") {
-            val successGql = GraphqlResponse(mapOf(), mapOf(), false)
-            val failAnswer = AddAddressResponseUiModel(
-                    data = AddAddressDataUiModel(0, 0),
-                    status = "OK"
-            )
+            val notSuccessResponse = AddAddressResponse(KeroAddAddress(
+                    Data(isSuccess = 0)
+            ))
             val model = SaveAddressDataModel()
             Given("not success answer") {
-                every { saveUseCase.execute(any(), any()) } answers {
-                    secondArg<Subscriber<GraphqlResponse>>().onNext(successGql)
-                }
-                every { mapper.map(successGql) } returns failAnswer
+                every { saveUseCase.execute(any()) } returns Observable.just(notSuccessResponse)
             }
             When("executed from negative form ") {
                 presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE)
@@ -87,7 +74,7 @@ object AddEditAddressPresenterTest : Spek({
                 }
             }
             Then("view show success") {
-                verify { view.showError(any()) }
+                verify { view.showError(null) }
             }
         }
     }
