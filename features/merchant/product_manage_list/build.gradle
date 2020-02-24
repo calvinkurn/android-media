@@ -92,6 +92,10 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+    implementation rootProject.ext.miscDependencies.chips
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {

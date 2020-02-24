@@ -95,7 +95,7 @@ import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
+import com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
