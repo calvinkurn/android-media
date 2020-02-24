@@ -18,8 +18,7 @@ import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterWidgetAirlineViewHolder
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.*
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_DEFAULT_VALUE
@@ -47,8 +46,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     private lateinit var flightFilterComponent: FlightFilterComponent
     private lateinit var mChildView: View
-
-    lateinit var typeFactory: FlightFilterSortAdapterTypeFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,6 +116,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         setTitle(getString(R.string.flight_filter_label))
         setAction(getString(R.string.flight_reset_label)) {
             flightFilterViewModel.resetFilter()
+            resetAllView()
         }
 
         mChildView = View.inflate(requireContext(), R.layout.fragment_flight_filter, null)
@@ -126,7 +124,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun initAdapter() {
-        typeFactory = FlightFilterSortAdapterTypeFactory(this, getFlightSelectedSort(),
+        val typeFactory = FlightFilterSortAdapterTypeFactory(this, getFlightSelectedSort(),
                 getFlightFilterModel() ?: FlightFilterModel())
         adapter = FlightFilterSortAdapter(typeFactory)
     }
@@ -227,6 +225,16 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             containerLoading.visibility = View.GONE
             containerContent.visibility = View.VISIBLE
         }
+    }
+
+    private fun resetAllView() {
+        (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.SORT_ORDER) as FlightSortViewHolder).resetView()
+        (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.TRANSIT_ORDER) as FlightFilterTransitViewHolder).resetView()
+        (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.DEPARTURE_TIME_ORDER) as FlightFilterDepartureTimeViewHolder).resetView()
+        (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.ARRIVAL_TIME_ORDER) as FlightFilterArrivalTimeViewHolder).resetView()
+        (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder).resetView()
+        (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.FACILITY_ORDER) as FlightFilterFacilityViewHolder).resetView()
+        (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.PRICE_ORDER) as FlightFilterPriceRangeViewHolder).resetView()
     }
 
     companion object {

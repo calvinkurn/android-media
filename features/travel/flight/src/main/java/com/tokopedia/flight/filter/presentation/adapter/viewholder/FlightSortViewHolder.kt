@@ -47,11 +47,15 @@ class FlightSortViewHolder(view: View, val listener: FlightFilterSortListener, v
         itemView.flight_sort_widget.performClickOnChipWithPosition(getSortIdByPosition(selectedId))
     }
 
-    fun getSortIdByPosition(selectedId: Int): Int {
+    private fun getSortIdByPosition(selectedId: Int): Int {
         for ((index, item) in getSortItem().withIndex()) {
             if (item.selectedOption == selectedId) return index
         }
         return 0
+    }
+
+    fun resetView() {
+        performClickOnSortId(TravelSortOption.CHEAPEST)
     }
 
     private fun getSortItem(): List<FlightSortModel> {

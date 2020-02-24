@@ -61,6 +61,17 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
         }
     }
 
+    fun resetView() {
+        this.selectedAirline = arrayListOf()
+        itemView.flight_sort_widget.getItems().let {
+            for (item in it) {
+                item.isSelected = false
+            }
+        }
+        itemView.flight_sort_widget.onResetChip()
+        itemView.flight_sort_widget.notifyDataSetChanged()
+    }
+
     companion object {
         const val MAX_ITEM_SHOWED = 5
     }

@@ -59,4 +59,13 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
                 DepartureTimeModel(DepartureTimeEnum._18, getString(R.string.departure_1800_to_2400_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._18)))
     }
 
+    fun resetView() {
+        selectedDepartureTime = arrayListOf()
+        for (item in itemView.flight_sort_widget.getItems()) {
+            item.isSelected = false
+        }
+        itemView.flight_sort_widget.onResetChip()
+        itemView.flight_sort_widget.notifyDataSetChanged()
+    }
+
 }

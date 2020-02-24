@@ -14,7 +14,9 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  * @author by jessica on 2020-02-21
  */
 
-class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortListener, var selectedTransits: MutableList<TransitEnum>) : AbstractViewHolder<TransitModel>(view) {
+class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortListener,
+                                    var selectedTransits: MutableList<TransitEnum>)
+    : AbstractViewHolder<TransitModel>(view) {
 
     init {
         for ((index, transit) in selectedTransits.withIndex()) {
@@ -75,6 +77,15 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
         return listOf(TransitModel(TransitEnum.DIRECT, getString(R.string.direct), getSelectedByTransitEnum(TransitEnum.DIRECT)),
                 TransitModel(TransitEnum.ONE, getString(R.string.one_transit_without_1), getSelectedByTransitEnum(TransitEnum.ONE)),
                 TransitModel(TransitEnum.TWO, getString(R.string.two_plus_transit), getSelectedByTransitEnum(TransitEnum.TWO)))
+    }
+
+    fun resetView() {
+        selectedTransits = arrayListOf()
+        for (item in itemView.flight_sort_widget.getItems()) {
+            item.isSelected = false
+        }
+        itemView.flight_sort_widget.onResetChip()
+        itemView.flight_sort_widget.notifyDataSetChanged()
     }
 
 }

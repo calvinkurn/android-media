@@ -55,4 +55,13 @@ class FlightFilterFacilityViewHolder(view: View,
         }
         return false
     }
+
+    fun resetView() {
+        selectedFacility = arrayListOf()
+        for (item in itemView.flight_sort_widget.getItems()) {
+            item.isSelected = false
+        }
+        itemView.flight_sort_widget.onResetChip()
+        itemView.flight_sort_widget.notifyDataSetChanged()
+    }
 }

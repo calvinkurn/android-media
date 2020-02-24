@@ -41,7 +41,7 @@ class FlightFilterPriceRangeViewHolder(val view: View,
         }
     }
 
-    fun onResetValue() {
+    fun resetView() {
         view.rsuFlightFilterPrice.setInitialValue(startValue, endValue)
     }
 
