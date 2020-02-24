@@ -52,6 +52,7 @@ import com.tokopedia.shop.search.di.module.ShopSearchProductModule
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_KEYWORD
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_ATTRIBUTION
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_INFO_CACHE_MANAGER_ID
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_REF
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SORT_ID
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDataModel
@@ -84,13 +85,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         fun createInstance(
                 keyword: String,
                 shopInfoCacheManagerId: String,
-                shopAttribution: String
+                shopAttribution: String,
+                shopRef: String
         ): Fragment {
             return ShopSearchProductFragment().apply {
                 val bundleData = Bundle()
                 bundleData.putString(KEY_SHOP_INFO_CACHE_MANAGER_ID, shopInfoCacheManagerId)
                 bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
                 bundleData.putString(KEY_KEYWORD, keyword)
+                bundleData.putString(KEY_SHOP_REF, shopRef)
                 arguments = bundleData
             }
         }
@@ -99,7 +102,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 keyword: String,
                 shopInfoCacheManagerId: String,
                 shopAttribution: String,
-                sortId: String
+                sortId: String,
+                shopRef: String
         ): Fragment {
             return ShopSearchProductFragment().apply {
                 val bundleData = Bundle()
@@ -107,6 +111,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
                 bundleData.putString(KEY_KEYWORD, keyword)
                 bundleData.putString(KEY_SORT_ID, sortId)
+                bundleData.putString(KEY_SHOP_REF, shopRef)
                 arguments = bundleData
             }
         }
@@ -156,6 +161,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private var searchQuery = ""
     private var sortValue: String? = ""
+    private var shopRef: String = ""
 
     private var viewFragment: View? = null
 
@@ -362,7 +368,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                     searchQuery,
                     "",
                     shopAttribution,
-                    sortValue
+                    sortValue,
+                    shopRef
             )
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
@@ -580,6 +587,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             shopAttribution = getString(KEY_SHOP_ATTRIBUTION).orEmpty()
             searchQuery = getString(KEY_KEYWORD).orEmpty()
             sortValue = getString(KEY_SORT_ID).orEmpty()
+            shopRef = getString(KEY_SHOP_REF).orEmpty()
         }
     }
 
