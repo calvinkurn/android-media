@@ -282,7 +282,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             if (isShowBanner) {
                 context?.let {
                     registerAnalytics.eventViewBanner()
-                    ImageHandler.LoadImage(bannerRegister, BANNER_REGISTER_URL)
+                    ImageHandler.loadImage(it, bannerRegister, BANNER_REGISTER_URL,
+                            R.drawable.banner_login_register_placeholder)
                     bannerRegister.visibility = View.VISIBLE
                 }
             } else if (isFromAtc() && isShowTicker) {

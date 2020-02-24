@@ -85,7 +85,7 @@ object ErrorHelper {
 
 
         if (isFromDeeplink && !isConnectionException) {
-            Timber.w("#P2#PDP_OPEN_DEEPLINK_ERROR#$deeplinkUrl")
+            Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$deeplinkUrl")
         }
     }
 }
