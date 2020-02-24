@@ -167,6 +167,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         sqlStringBuilder.append("${getRefundableCondition(filterModel.refundableTypeList)}")
         sqlStringBuilder.append("${getTransitCondition(filterModel.transitTypeList)}")
         sqlStringBuilder.append("${getDepartureTimeCondition(filterModel.departureTimeList)}")
+        sqlStringBuilder.append("${getArrivalTimeCondition(filterModel.arrivalTimeList)}")
 
         if (filterModel.isSpecialPrice) {
             sqlStringBuilder.append("FlightJourneyTable.isSpecialPrice = $isSpecialPrice AND ")
@@ -178,9 +179,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
         sqlStringBuilder.append(getOrderBy(flightSortOption))
 
-        val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
-
-        return simpleSQLiteQuery
+        return SimpleSQLiteQuery(sqlStringBuilder.toString())
     }
 
     fun getJourneyById(onwardJourneyId: String?): Observable<JourneyAndRoutes> {
@@ -209,7 +208,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
         val stringBuilder = StringBuilder()
         stringBuilder.append("(")
-        for (i in 0 until airlines.size) {
+        for (i in airlines.indices) {
             val airline = airlines[i]
             stringBuilder.append("FlightRouteTable.airline = '$airline' ")
             if (i < airlines.size - 1) {
@@ -226,7 +225,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
         val stringBuilder = StringBuilder()
         stringBuilder.append("(")
-        for (i in 0 until refundableEnumList.size) {
+        for (i in refundableEnumList.indices) {
             val refundableEnum = refundableEnumList[i]
             stringBuilder.append("FlightJourneyTable.isRefundable = ${refundableEnum.id} ")
             if (i < refundableEnumList.size - 1) {
@@ -243,7 +242,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
         val stringBuilder = StringBuilder()
         stringBuilder.append("(")
-        for (i in 0 until transitList.size) {
+        for (i in transitList.indices) {
             val transitEnum = transitList[i]
             stringBuilder.append(
                     when (transitEnum) {
@@ -267,7 +266,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
         val stringBuilder = StringBuilder()
         stringBuilder.append("(")
-        for (i in 0 until departureTimeEnumList.size) {
+        for (i in departureTimeEnumList.indices) {
             val departureTimeEnum = departureTimeEnumList[i]
             stringBuilder.append(
                     when (departureTimeEnum) {
@@ -284,6 +283,54 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         stringBuilder.append(") AND ")
         return stringBuilder.toString()
     }
+
+    private fun getArrivalTimeCondition(arrivalTimeEnumList: List<DepartureTimeEnum>?): String? {
+        if (arrivalTimeEnumList == null || arrivalTimeEnumList.isEmpty()) {
+            return ""
+        }
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("(")
+        for (i in arrivalTimeEnumList.indices) {
+            val arrivalTimeEnum = arrivalTimeEnumList[i]
+            stringBuilder.append(
+                    when (arrivalTimeEnum) {
+                        DepartureTimeEnum._00 -> "FlightJourneyTable.arrivalTimeInt BETWEEN 0 AND 599 "
+                        DepartureTimeEnum._06 -> "FlightJourneyTable.arrivalTimeInt BETWEEN 600 AND 1200 "
+                        DepartureTimeEnum._12 -> "FlightJourneyTable.arrivalTimeInt BETWEEN 1200 AND 1800 "
+                        DepartureTimeEnum._18 -> "FlightJourneyTable.arrivalTimeInt BETWEEN 1800 AND 2400"
+                    }
+            )
+            if (i < arrivalTimeEnumList.size - 1) {
+                stringBuilder.append("OR ")
+            }
+        }
+        stringBuilder.append(") AND ")
+        return stringBuilder.toString()
+    }
+
+//    private fun getFacilityCondition(facilityEnumList: List<FlightFilterFacilityEnum>?): String? {
+//        if (facilityEnumList == null || facilityEnumList.isEmpty()) {
+//            return ""
+//        }
+//        val stringBuilder = StringBuilder()
+//        stringBuilder.append("(")
+//        for (i in facilityEnumList.indices) {
+//            val facilityEnum = facilityEnumList[i]
+//            stringBuilder.append(
+//                    when (facilityEnum) {
+//                        FlightFilterFacilityEnum.BAGGAGE -> {
+//                        }
+//                        FlightFilterFacilityEnum.MEAL -> {
+//                        }
+//                    }
+//            )
+//            if (i < facilityEnumList.size - 1) {
+//                stringBuilder.append("AND ")
+//            }
+//        }
+//        stringBuilder.append(") AND ")
+//        return stringBuilder.toString()
+//    }
 
     private fun getOrderBy(@TravelSortOption flightSortOption: Int): String {
         return when (flightSortOption) {
