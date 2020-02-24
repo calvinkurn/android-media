@@ -50,7 +50,9 @@ data class PopularKeywordListViewModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return false
+        return b is PopularKeywordListViewModel
+                && b.popularKeywordList == popularKeywordList
+                && b.popularKeywordList.firstOrNull()?.title == popularKeywordList.firstOrNull()?.title
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle {
