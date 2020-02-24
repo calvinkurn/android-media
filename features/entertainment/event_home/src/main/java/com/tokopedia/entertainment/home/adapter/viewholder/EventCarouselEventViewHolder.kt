@@ -14,7 +14,6 @@ import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselViewModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
-import com.tokopedia.entertainment.home.fragment.EventHomeFragment
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
@@ -29,7 +28,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
                                                              onError: (Throwable) -> Unit) -> Unit))
     : HomeEventViewHolder<EventCarouselViewModel>(itemView) {
 
-    var itemAdapter = ItemAdapter(action)
+    var itemAdapter = InnerItemAdapter(action)
 
     init {
         itemView.ent_recycle_view.apply {
@@ -55,27 +54,27 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
         val TAG = EventCarouselEventViewHolder::class.java.simpleName
     }
 
-    class ItemAdapter(val action: (data: EventItemModel,
-                                   onSuccess: (EventItemModel) -> Unit,
-                                   onError: (Throwable) -> Unit) -> Unit)
-        : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
-
-        class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class InnerItemAdapter(val action: (data: EventItemModel,
+                                        onSuccess: (EventItemModel) -> Unit,
+                                        onError: (Throwable) -> Unit) -> Unit)
+        : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
         var productNames = mutableListOf<String>()
         var sdf = SimpleDateFormat("dd/MM/yy")
         var newsdf = SimpleDateFormat("dd\nMMM")
+        var pos: Int = 0
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InnerViewHolder {
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.ent_layout_viewholder_event_carousel_adapter_item, parent,
                             false)
-            return ItemViewHolder(view)
+            return InnerViewHolder(view)
         }
 
-        override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
             var item = items.get(position)
+            this.pos = position
             Glide.with(holder.view).load(item.imageUrl).into(holder.view.event_image)
             holder.view.event_location.text = item.location
             holder.view.event_title.text = item.title
@@ -101,11 +100,11 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
         }
 
         fun onSuccessPostLiked(data: EventItemModel) {
-            notifyDataSetChanged()
+            notifyItemChanged(pos)
         }
 
         fun onErrorPostLiked(throwable: Throwable) {
-            notifyDataSetChanged()
+            notifyItemChanged(pos)
             Log.e(TAG, throwable.localizedMessage)
         }
 
@@ -126,6 +125,8 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
 
         override fun getItemCount() = items.size
     }
+
+    class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
 
 }

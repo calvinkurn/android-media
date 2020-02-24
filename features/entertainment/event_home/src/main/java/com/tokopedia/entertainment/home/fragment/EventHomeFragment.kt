@@ -69,7 +69,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+//        setHasOptionsMenu(true)
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(HomeEventViewModel::class.java)
         }
@@ -118,7 +118,6 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {
         shimering_layout.visibility = View.GONE
-        content.visibility = View.VISIBLE
         homeAdapter.setItems(data)
         swipe_refresh_layout?.isRefreshing = false
         startShowCase()

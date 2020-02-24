@@ -80,7 +80,7 @@ class EventHomePageTracking {
     }
 
     fun openHomeEvent() {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, "",
                 Event.CATEGORY, "",
                 Event.ACTION, "",
@@ -111,7 +111,7 @@ class EventHomePageTracking {
     }
 
     fun clickSeeAllTopEventProduct() {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click lihat semua on top event",
@@ -191,7 +191,7 @@ class EventHomePageTracking {
     }
 
     fun clickSeeAllCuratedEventProduct(){
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, "",
                 Event.CATEGORY, "",
                 Event.ACTION, "",

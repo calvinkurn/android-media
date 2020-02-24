@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,21 +7,19 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryViewModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import kotlinx.android.synthetic.main.ent_layout_category_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
-import java.util.*
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
 class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryViewModel>(itemView) {
 
-    val listAdapter = SimpleCategoryItemAdapter()
+    val listAdapter = InnerCategoryItemAdapter()
 
     init {
         itemView.list.apply {
@@ -35,7 +32,6 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryView
 
     override fun bind(element: CategoryViewModel) {
         listAdapter.items = element.items
-        listAdapter.notifyDataSetChanged()
     }
 
     companion object {
@@ -46,19 +42,17 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryView
 
     data class CategoryItemModel(var imageUrl: String, var title: String, var applink: String)
 
-    class SimpleCategoryItemAdapter : RecyclerView.Adapter<SimpleCategoryItemAdapter.ItemViewHolder>() {
-
-        class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class InnerCategoryItemAdapter : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<CategoryItemModel>
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InnerViewHolder {
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.ent_layout_category_adapter_item, parent, false)
-            return ItemViewHolder(view)
+            return InnerViewHolder(view)
         }
 
-        override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
             Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.icon)
             holder.view.title.text = items.get(position).title
             holder.view.setOnClickListener {
@@ -69,4 +63,6 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryView
 
         override fun getItemCount() = items.size
     }
+
+    class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adape
  */
 class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLocationViewModel>(itemView) {
 
-    var itemAdapter = ItemAdapter()
+    var itemAdapter = InnerItemAdapter()
 
     init {
         itemView.ent_recycle_view.apply {
@@ -42,19 +41,17 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
         val TAG = EventLocationEventViewHolder::class.java.simpleName
     }
 
-    class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
-
-        class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class InnerItemAdapter : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemLocationModel>
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InnerViewHolder {
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.ent_layout_viewholder_event_location_adaper_item, parent, false)
-            return ItemViewHolder(view)
+            return InnerViewHolder(view)
         }
 
-        override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
             Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.image)
             holder.view.txt_title.text = items.get(position).title
             holder.view.txt_subtitle.text = items.get(position).tagline
@@ -70,5 +67,7 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
 
         override fun getItemCount() = items.size
     }
+
+    class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
 }

@@ -5,12 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.ItemUtilCallback
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridViewModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
@@ -26,7 +28,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
                                                          onError: (Throwable) -> Unit) -> Unit))
     : HomeEventViewHolder<EventGridViewModel>(itemView) {
 
-    var itemAdapter = ItemAdapter(action)
+    var itemAdapter = InnerItemAdapter(action)
 
     init {
         itemView.ent_recycle_view.apply {
@@ -50,24 +52,24 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         val TAG = EventGridEventViewHolder::class.java.simpleName
     }
 
-    class ItemAdapter(val action: (data: EventItemModel,
-                                   onSuccess: (EventItemModel) -> Unit,
-                                   onError: (Throwable) -> Unit) -> Unit)
-        : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
-
-        class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class InnerItemAdapter(val action: (data: EventItemModel,
+                                        onSuccess: (EventItemModel) -> Unit,
+                                        onError: (Throwable) -> Unit) -> Unit)
+        : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
+        var pos: Int = 0
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InnerViewHolder {
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.ent_layout_viewholder_event_grid_adapter_item, parent,
                             false)
-            return ItemViewHolder(view)
+            return InnerViewHolder(view)
         }
 
-        override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
             var item = items.get(position)
+            this.pos = position
             Glide.with(holder.view).load(item.imageUrl).into(holder.view.image)
             holder.view.txt_location.text = item.location
             holder.view.txt_title.text = item.title
@@ -92,16 +94,17 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         }
 
         fun onSuccessPostLiked(data: EventItemModel) {
-
-            notifyDataSetChanged()
+            notifyItemChanged(pos)
         }
 
         fun onErrorPostLiked(throwable: Throwable) {
-            notifyDataSetChanged()
+            notifyItemChanged(pos)
             Log.e(TAG, throwable.localizedMessage)
         }
 
         override fun getItemCount() = items.size
     }
+
+    class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
 }

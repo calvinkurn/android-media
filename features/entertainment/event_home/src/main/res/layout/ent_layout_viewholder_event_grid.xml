@@ -30,6 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ent_title_card"
         tools:itemCount="4"
+        android:nestedScrollingEnabled="true"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/ent_layout_viewholder_event_grid_adapter_item"
         tools:spanCount="2" />
