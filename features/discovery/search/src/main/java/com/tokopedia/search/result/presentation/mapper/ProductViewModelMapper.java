@@ -1,7 +1,5 @@
 package com.tokopedia.search.result.presentation.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -33,7 +31,7 @@ public class ProductViewModelMapper {
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
         if (searchProduct.getRelated() != null &&
-                !TextUtils.isEmpty(searchProduct.getRelated().getRelatedKeyword())) {
+                !textIsEmpty(searchProduct.getRelated().getRelatedKeyword())) {
             productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
         }
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts()));
@@ -71,6 +69,10 @@ public class ProductViewModelMapper {
         return productViewModel;
     }
 
+    private boolean textIsEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
+
     private QuickFilterViewModel convertToQuickFilterViewModel(DataValue dynamicFilterModel, String formattedResultCount) {
         QuickFilterViewModel quickFilterViewModel = new QuickFilterViewModel();
         quickFilterViewModel.setFormattedResultCount(formattedResultCount);
@@ -106,6 +108,7 @@ public class ProductViewModelMapper {
                 globalNavModel.getData().getBackground(),
                 globalNavModel.getData().getSeeAllApplink(),
                 globalNavModel.getData().getSeeAllUrl(),
+                globalNavModel.getData().getIsShowTopAds(),
                 convertToViewModel(globalNavModel.getData().getGlobalNavItems())
         );
     }

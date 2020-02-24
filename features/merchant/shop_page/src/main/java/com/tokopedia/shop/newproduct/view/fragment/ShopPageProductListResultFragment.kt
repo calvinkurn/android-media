@@ -109,6 +109,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     internal var shopPageTracking: ShopPageTrackingBuyer? = null
 
     private var shopId: String? = null
+    private var shopRef: String = ""
     private var keyword: String = ""
     private var prevAnalyticKeyword: String? = ""
     private var sortValue: String? = null
@@ -219,6 +220,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 keyword = it.getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "")
                 sortValue = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
+                shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
             }
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST)
@@ -227,6 +229,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             keyword = savedInstanceState.getString(SAVED_KEYWORD) ?: ""
             sortValue = savedInstanceState.getString(SAVED_SORT_VALUE)
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
+            shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
         }
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
         setHasOptionsMenu(true)
@@ -389,7 +392,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                         viewModel.isMyShop(it.shopCore.shopID),
                         if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                         selectedEtalaseName, CustomDimensionShopPageAttribution.create(it.shopCore.shopID,
-                        it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution),
+                        it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution, shopRef),
                         productList, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name, it.freeOngkir.isActive
                 )
             }
@@ -461,7 +464,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                     selectedEtalaseName,
                     CustomDimensionShopPageAttribution.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1, shopProductViewModel.id, attribution),
+                            it.goldOS.isGold == 1, shopProductViewModel.id, attribution, shopRef),
                     shopProductViewModel, productPosition, shopId, it.shopCore.name, it.freeOngkir.isActive)
         }
 
@@ -607,7 +610,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                     selectedEtalaseName,
                     CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1, shopProductViewModel.id))
+                            it.goldOS.isGold == 1, shopProductViewModel.id, shopRef))
         }
         if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())
@@ -782,6 +785,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         outState.putString(SAVED_SORT_VALUE, sortValue)
         outState.putString(SAVED_KEYWORD, keyword)
         outState.putString(SAVED_SHOP_ID, shopId)
+        outState.putString(SAVED_SHOP_REF, shopRef)
         outState.putBoolean(SAVED_SHOP_IS_OFFICIAL, isOfficialStore)
         outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant)
     }
@@ -811,6 +815,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
         val SAVED_SHOP_ID = "saved_shop_id"
+        val SAVED_SHOP_REF = "saved_shop_ref"
         val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         val SAVED_KEYWORD = "saved_keyword"
@@ -818,12 +823,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         @JvmStatic
         fun createInstance(shopId: String,
+                           shopRef: String?,
                            keyword: String?,
                            etalaseId: String?,
                            sort: String?,
                            attribution: String?): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
+                putString(ShopParamConstant.EXTRA_SHOP_REF, shopRef.orEmpty())
                 putString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword ?: "")
                 putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId ?: "")
                 putString(ShopParamConstant.EXTRA_SORT_ID, sort ?: "")

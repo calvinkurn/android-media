@@ -40,6 +40,7 @@
 /features/common/developer_options                  	@tokopedia/core-team
 /features/common/nps                                	@tokopedia/core-team
 /features/common/resources_common                   	@tokopedia/core-team
+/features/common/qr_scanner                   	        @tokopedia/core-team
 
 /features/discovery/category_common/                	@tokopedia/minion-stuart
 /features/discovery/flashsale_management/               @tokopedia/minion-stuart
