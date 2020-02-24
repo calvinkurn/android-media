@@ -228,6 +228,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
+    private boolean isPerformanceMonitoringAttachedToRv = false;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -1026,6 +1027,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         homeRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
+        isPerformanceMonitoringAttachedToRv = true;
     }
     @Override
     public boolean needToShowGeolocationComponent() {
@@ -1700,7 +1702,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private boolean needToPerformanceMonitoring() {
-        return homePerformanceMonitoringListener != null;
+        return homePerformanceMonitoringListener != null && isPerformanceMonitoringAttachedToRv;
     }
 
     private void showToaster(String message, int typeToaster){

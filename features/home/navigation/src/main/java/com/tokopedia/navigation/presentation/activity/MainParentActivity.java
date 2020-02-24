@@ -388,6 +388,12 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        submitMainParentPerformanceMonitoring();
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
@@ -614,6 +620,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (presenter != null)
+            presenter.onDestroy();
+    }
+
+    private void submitMainParentPerformanceMonitoring() {
         if (fragmentPerformanceDatas.size() > 0) {
             for(int i = 0; i < fragmentPerformanceDatas.size(); i++) {
                 int key = fragmentPerformanceDatas.keyAt(i);
@@ -642,8 +653,6 @@ public class MainParentActivity extends BaseActivity implements
             mainParentPerformanceMonitoring.stopTrace();
         }
         fragmentPerformanceDatas.clear();
-        if (presenter != null)
-            presenter.onDestroy();
     }
 
     private void reloadPage() {
