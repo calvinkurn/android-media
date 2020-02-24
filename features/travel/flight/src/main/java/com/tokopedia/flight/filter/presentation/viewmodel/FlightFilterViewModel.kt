@@ -97,6 +97,19 @@ class FlightFilterViewModel @Inject constructor(
         mutableFilterModel.postValue(updatedFilterModel)
     }
 
+    fun filterAirlines(selectedArlines: List<String>) {
+        val updatedFilterModel = (filterModel.value as FlightFilterModel)
+        updatedFilterModel.airlineList = selectedArlines
+        mutableFilterModel.value = updatedFilterModel
+    }
+
+    fun filterPrices(minPrice: Int, maxPrice: Int) {
+        val updateFilterModel = (filterModel.value as FlightFilterModel)
+        updateFilterModel.priceMin = minPrice
+        updateFilterModel.priceMax = maxPrice
+        mutableFilterModel.value = updateFilterModel
+    }
+
     fun getSelectedSort(): Int = selectedSort.value ?: TravelSortOption.CHEAPEST
 
     fun getFlightCount() {

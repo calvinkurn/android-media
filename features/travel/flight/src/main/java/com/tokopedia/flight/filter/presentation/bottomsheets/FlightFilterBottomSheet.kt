@@ -197,7 +197,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     override fun onAirlineChanged(checkedAirlines: List<String>) {
-        flightFilterViewModel.filterModel.value?.airlineList = checkedAirlines
+        flightFilterViewModel.filterAirlines(checkedAirlines)
     }
 
     private fun showLoading() {
