@@ -97,9 +97,6 @@ ext {
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
 
-            challenges                      : ":features:im:challenges",
-//            challenges                    : ":features:im:challenges_no_op",
-
             logisticdata                    : ":features:logistic:logisticdata",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             logisticorder                   : ":features:logistic:logisticorder",
@@ -121,6 +118,7 @@ ext {
             report                          : ":features:merchant:report",
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
+            install_referral                : ":features:im:install_referral",
 
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",

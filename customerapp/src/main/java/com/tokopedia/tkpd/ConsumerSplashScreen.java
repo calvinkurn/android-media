@@ -6,10 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.installreferral.InstallReferral;
+import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -67,7 +70,17 @@ public class ConsumerSplashScreen extends SplashScreen {
 
 
         trackIrisEventForAppOpen();
+        checkInstallReferrerInitialised();
 
+    }
+
+    private void checkInstallReferrerInitialised() {
+        LocalCacheHandler localCacheHandler=new LocalCacheHandler(this, InstallReferralKt.KEY_INSTALL_REF_SHARED_PREF_FILE_NAME);
+        Boolean installRefInitialised = localCacheHandler.getBoolean(InstallReferralKt.KEY_INSTALL_REF_INITIALISED);
+        if (!installRefInitialised) {
+            localCacheHandler.applyEditor();
+            new InstallReferral().initilizeInstallReferral(this);
+        }
     }
 
     private void createAndCallChkApk(){
