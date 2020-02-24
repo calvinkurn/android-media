@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.analytics.posttag
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analytic_constant.DataLayer
 import java.util.ArrayList
 
 /**

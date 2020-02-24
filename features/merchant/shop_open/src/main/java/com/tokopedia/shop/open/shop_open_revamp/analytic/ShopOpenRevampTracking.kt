@@ -1,7 +1,7 @@
 package com.tokopedia.shop.open.shop_open_revamp.analytic
 
 import android.content.Context
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analytic_constant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue

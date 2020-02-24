@@ -2,7 +2,7 @@ package com.tokopedia.promocheckout.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analytic_constant.DataLayer
 
 class PromoCheckoutAnalytics {
 

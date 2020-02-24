@@ -2,7 +2,7 @@ package com.tokopedia.autocomplete.analytics;
 
 import android.content.Context;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
