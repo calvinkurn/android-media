@@ -31,7 +31,8 @@ public class ProductManageActivity extends BaseSellerReceiverDrawerActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
-        setupLayout(savedInstanceState);
+        if (!GlobalConfig.isSellerApp())
+            setupLayout(savedInstanceState);
     }
 
     @Nullable
