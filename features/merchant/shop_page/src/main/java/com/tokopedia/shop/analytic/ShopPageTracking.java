@@ -141,6 +141,8 @@ public class ShopPageTracking {
             if (customDimensionShopPage instanceof CustomDimensionShopPageProduct) {
                 eventMap.put(ShopPageTrackingConstant.PRODUCT_ID,
                         ((CustomDimensionShopPageProduct) customDimensionShopPage).productId);
+                eventMap.put(ShopPageTrackingConstant.SHOP_REF,
+                        ((CustomDimensionShopPageProduct) customDimensionShopPage).shopRef);
             }
         }
         return eventMap;

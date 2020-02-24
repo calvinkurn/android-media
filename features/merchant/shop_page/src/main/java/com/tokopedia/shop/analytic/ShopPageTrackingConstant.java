@@ -180,6 +180,7 @@ public class ShopPageTrackingConstant {
     public static final String DIMENSION_81 = "dimension81";
     public static final String DIMENSION_79 = "dimension79";
 
+    public static final String SHOP_REF = "dimension90";
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";

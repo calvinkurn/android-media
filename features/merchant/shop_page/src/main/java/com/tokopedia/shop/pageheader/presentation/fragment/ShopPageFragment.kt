@@ -78,6 +78,7 @@ class ShopPageFragment :
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
+        const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
@@ -124,6 +125,7 @@ class ShopPageFragment :
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var titles = listOf<String>()
     var shopId: String? = null
+    var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var isShowFeed: Boolean = false
@@ -270,6 +272,7 @@ class ShopPageFragment :
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID)
+                shopRef = getStringExtra(SHOP_REF).orEmpty()
                 shopDomain = getStringExtra(SHOP_DOMAIN)
                 shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
                 tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
@@ -372,7 +375,8 @@ class ShopPageFragment :
                             context,
                             "",
                             cacheManagerId,
-                            shopAttribution
+                            shopAttribution,
+                            shopRef
                     ))
                 }
             }
@@ -593,7 +597,7 @@ class ShopPageFragment :
     }
 
     private fun getListFragment(): List<Fragment> {
-        val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
+        val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution, shopRef)
         val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
         val homeFragment = HomeProductFragment.createInstance()
         val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
@@ -723,7 +727,7 @@ class ShopPageFragment :
             shopPageTracking?.clickSortBy(isMyShop,
                     sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
             startActivity(ShopProductListActivity.createIntent(activity, shopId,
-                    "", selectedEtalaseId, "", sortName))
+                    "", selectedEtalaseId, "", sortName, shopRef))
         }
     }
 

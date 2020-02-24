@@ -35,7 +35,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                                               boolean isOwner, String selectedEtalaseName, String etalaseName, int productPosition,
                                               String shopTypeDef,
                                               String loginNonLoginString,
-                                              String shopId) {
+                                              String shopId,
+                                              String shopRef) {
         String etalaseEvent = isOwner ? String.format(SELECTED_ETALASE_CHIP, selectedEtalaseName) : joinDash(String.format(SELECTED_ETALASE_CHIP, selectedEtalaseName), String.format(ETALASE_SECTION, etalaseName));
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < shopProductViewModelList.size(); i++) {
@@ -50,7 +51,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                     LIST, joinDash(SHOPPAGE, shopId, etalaseEvent, loginNonLoginString),
                     POSITION, productPosition,
                     DIMENSION_81, shopTypeDef,
-                    DIMENSION_79, shopId
+                    DIMENSION_79, shopId,
+                    SHOP_REF, shopRef
             ));
             list.add(event);
         }
@@ -75,7 +77,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                         productPositionStart,
                         customDimensionShopPage.shopType,
                         loginNonLoginString,
-                        shopId)));
+                        shopId,
+                        customDimensionShopPage.shopRef)));
         return eventMap;
     }
 
@@ -97,7 +100,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                                 productPositionStart,
                                 customDimensionShopPage.shopType,
                                 loginNonLoginString,
-                                shopId))
+                                shopId,
+                                customDimensionShopPage.shopRef))
         ));
         return eventMap;
     }
