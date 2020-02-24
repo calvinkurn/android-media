@@ -17,10 +17,17 @@ import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.*
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.AIRLINE_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.ARRIVAL_TIME_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.DEPARTURE_TIME_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.FACILITY_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.PRICE_ORDER
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_DEFAULT_VALUE
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.TRANSIT_ORDER
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
@@ -108,6 +115,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         setTitle(getString(R.string.flight_filter_label))
         setAction(getString(R.string.flight_reset_label)) {
             flightFilterViewModel.resetFilter()
+            resetFilter()
         }
 
         mChildView = View.inflate(requireContext(), R.layout.fragment_flight_filter, null)
@@ -138,6 +146,16 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             btnFlightFilterSave.visibility = View.VISIBLE
             btnFlightFilterSave.text = getString(R.string.flight_there_has_x_flights, flightCount)
         }
+    }
+
+    private fun resetFilter() {
+        (rvFlightFilter.findViewHolderForAdapterPosition(SORT_ORDER) as FlightSortViewHolder).onResetChip()
+        (rvFlightFilter.findViewHolderForAdapterPosition(TRANSIT_ORDER) as FlightFilterTransitViewHolder).onResetChip()
+        (rvFlightFilter.findViewHolderForAdapterPosition(DEPARTURE_TIME_ORDER) as FlightFilterDepartureTimeViewHolder).onResetChip()
+        (rvFlightFilter.findViewHolderForAdapterPosition(ARRIVAL_TIME_ORDER) as FlightFilterArrivalTimeViewHolder).onResetChip()
+        (rvFlightFilter.findViewHolderForAdapterPosition(AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder).onResetChip()
+        (rvFlightFilter.findViewHolderForAdapterPosition(FACILITY_ORDER) as FlightFilterFacilityViewHolder).onResetChip()
+        (rvFlightFilter.findViewHolderForAdapterPosition(PRICE_ORDER) as FlightFilterPriceRangeViewHolder).onResetValue()
     }
 
     override fun onSortChanged(selectedSortOption: Int) {

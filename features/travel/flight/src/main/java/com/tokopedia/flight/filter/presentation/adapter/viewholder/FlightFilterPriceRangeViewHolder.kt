@@ -13,12 +13,18 @@ import kotlinx.android.synthetic.main.item_flight_filter_price_range.view.*
  */
 class FlightFilterPriceRangeViewHolder(val view: View) : AbstractViewHolder<PriceRangeModel>(view) {
 
+    var startValue: Int = 0
+    var endValue: Int = 0
+
     companion object {
         val LAYOUT = R.layout.item_flight_filter_price_range
     }
 
     override fun bind(element: PriceRangeModel) {
         with(view) {
+
+            startValue = element.initialStartValue
+            endValue = element.selectedEndValue
 
             etFlightLowestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.initialStartValue))
             etFlightHighestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.initialEndValue))
@@ -34,5 +40,9 @@ class FlightFilterPriceRangeViewHolder(val view: View) : AbstractViewHolder<Pric
 
             }
         }
+    }
+
+    fun onResetValue() {
+        view.rsuFlightFilterPrice.setInitialValue(startValue, endValue)
     }
 }
