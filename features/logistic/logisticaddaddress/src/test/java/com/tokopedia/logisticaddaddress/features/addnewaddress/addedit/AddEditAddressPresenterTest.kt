@@ -12,6 +12,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.spekframework.spek2.Spek
@@ -28,6 +29,7 @@ object AddEditAddressPresenterTest : Spek({
     mockkObject(AddNewAddressAnalytics)
     every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any()) } just Runs
     every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any()) } just Runs
 
     lateinit var presenter: AddEditAddressPresenter
 
@@ -76,6 +78,21 @@ object AddEditAddressPresenterTest : Spek({
             }
             Then("view show success") {
                 verify { view.showError(null) }
+            }
+        }
+
+        Scenario("error gql response") {
+            val exception = MessageErrorException("hi")
+            Given("error answer") {
+                every { saveUseCase.execute(any()) } returns Observable.error(exception)
+            }
+            When("executed") {
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
+            }
+            Then("view shows error") {
+                verify {
+                    view.showError(exception)
+                }
             }
         }
     }
