@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Review Seller</string>
+    <string name="rating_star_icon_content_description">Rating Star Icon</string>
+    <string name="product_average_rating">4.6</string>
+    <string name="maximum_product_rating">/ 5.0</string>
+    <string name="total_product_review">1.234 Ulasan</string>
+    <string name="product_rating_bar_value">5</string>
+    <string name="default_total_star_review">(1200)</string>
 </resources>

@@ -86,6 +86,10 @@ object ApplinkConstInternalMarketplace {
 
     //ShopOpenRoutingActivity
     @JvmField
+    val SELLER_REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/seller-review-detail"
+
+    //ShopOpenRoutingActivity
+    @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
 
     @JvmField
