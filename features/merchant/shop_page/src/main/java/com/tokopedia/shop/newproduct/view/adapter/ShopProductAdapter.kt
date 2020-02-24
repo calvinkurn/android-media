@@ -1,5 +1,6 @@
 package com.tokopedia.shop.newproduct.view.adapter
 
+import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -32,7 +33,11 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = mapOfDataModel[KEY_ETALASE_DATA_MODEL] as? ShopProductEtalaseListViewModel
     val shopProductEtalaseTitlePosition: Int
         get() = shopProductEtalaseTitleViewModel?.let {
-            visitables.indexOf(shopProductEtalaseTitleViewModel)
+            visitables.indexOf(it)
+        } ?: 0
+    val shopProductEtalaseListPosition: Int
+        get() = shopProductEtalaseListViewModel?.let {
+            visitables.indexOf(it)
         } ?: 0
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
@@ -101,6 +106,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             (mapOfDataModel[KEY_ETALASE_DATA_MODEL] as? ShopProductEtalaseListViewModel)?.let {
                 viewHolder.bind(it)
             }
+        }
+    }
+
+    override fun updateEtalaseListViewHolderData() {
+        Handler().post {
+            notifyItemChanged(shopProductEtalaseListPosition)
         }
     }
 

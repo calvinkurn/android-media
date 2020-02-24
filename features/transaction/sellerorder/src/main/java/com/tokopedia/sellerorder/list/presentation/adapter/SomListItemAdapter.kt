@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.som_list_item.view.*
  */
 class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>() {
 
-    private lateinit var actionListener: ActionListener
+    private var actionListener: ActionListener? = null
 
     interface ActionListener {
         fun onListItemClicked(orderId: String)
@@ -108,7 +108,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             }
 
             holder.itemView.setOnClickListener {
-                actionListener.onListItemClicked(somItemList[position].orderId)
+                actionListener?.onListItemClicked(somItemList[position].orderId)
             }
         }
     }

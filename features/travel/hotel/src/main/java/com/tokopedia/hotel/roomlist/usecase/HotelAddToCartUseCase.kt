@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.roomlist.usecase
 
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
@@ -9,7 +8,6 @@ import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -26,13 +24,20 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
 
         useCase.clearRequest()
 
-        try {
+        return try {
             val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartData.Response::class.java, param)
             useCase.addRequest(graphqlRequest)
-            val hotelAddToCartData = useCase.executeOnBackground().getSuccessData<HotelAddCartData.Response>()
-            return Success(hotelAddToCartData)
+            val graphqlResponse = useCase.executeOnBackground()
+            val errors = graphqlResponse.getError(HOTEL_ADD_TO_CART_RESPONSE_TYPE)
+
+            if (errors != null && errors.isNotEmpty() && errors[0].extensions != null) {
+                Fail(Throwable(errors[0].extensions.code.toString()))
+            } else {
+                val hotelAddToCartData = graphqlResponse.getData<HotelAddCartData.Response>(HOTEL_ADD_TO_CART_RESPONSE_TYPE)
+                Success(hotelAddToCartData)
+            }
         } catch (throwable: Throwable) {
-            return Fail(throwable)
+            Fail(throwable)
         }
     }
 
@@ -44,5 +49,6 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
 
     companion object {
         const val PARAM_ADD_TO_CART = "data"
+        val HOTEL_ADD_TO_CART_RESPONSE_TYPE = HotelAddCartData.Response::class.java
     }
 }

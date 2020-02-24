@@ -105,8 +105,8 @@ class DynamicHomeChannel(
                             "id", grids[position].id,
                             "price", CurrencyFormatHelper.convertRupiahToInt(grids[position].price).toString(),
                             "list", "/ - p1 - lego product - " + header.name,
-                            "position", (position + 1).toString()),
-                            "dimension84", id
+                            "position", (position + 1).toString(),
+                            "dimension84", id)
             )
             )
             ),
@@ -530,6 +530,7 @@ class DynamicHomeChannel(
             const val LAYOUT_BANNER_CAROUSEL: String = "banner_carousel"
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_BANNER: String = "play_widget"
+            const val LAYOUT_DEFAULT_ERROR: String = "default_error"
             const val channelId: String = "channelId"
         }
     }
@@ -558,7 +559,7 @@ class DynamicHomeChannel(
             val attribution: String = ""
     )
 
-    inner class Grid(
+    class Grid(
             @Expose
             @SerializedName("id")
             val id: String = "",

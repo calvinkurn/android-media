@@ -54,6 +54,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
                 ratesEstModel?.texts?.shopCity = ratesEstModel?.shop?.cityName ?: ""
                 productInfoP3.rateEstSummarizeText = ratesEstModel?.texts
                 productInfoP3.ratesModel = ratesEstModel?.rates
+                productInfoP3.addressModel = ratesEstModel?.address
             }
 
             if (needRequestCod && response.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true) {

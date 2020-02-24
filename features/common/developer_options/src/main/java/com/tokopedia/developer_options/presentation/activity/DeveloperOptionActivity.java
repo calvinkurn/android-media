@@ -29,7 +29,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.chuckerteam.chucker.api.Chucker;
-import com.tkpd.library.utils.OneOnClick;
+import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.analytics.debugger.IrisLogger;
@@ -45,9 +45,6 @@ import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 @DeepLink(ApplinkConst.DEVELOPER_OPTIONS)
 public class DeveloperOptionActivity extends BaseActivity {

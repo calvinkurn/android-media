@@ -1,19 +1,23 @@
 package com.tokopedia.core.util.toolargetool;
 
 import android.app.Activity;
+import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-import android.util.Log;
+
 import com.crashlytics.android.Crashlytics;
+
 import java.util.WeakHashMap;
 
 /**
  * {@link android.app.Application.ActivityLifecycleCallbacks} implementation that logs information
  * about the saved state of Activities.
  */
-public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
+public class ActivitySavedStateLogger implements Application.ActivityLifecycleCallbacks {
 
     private final int priority;
     @NonNull
@@ -43,6 +47,21 @@ public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
     }
 
     @Override
+    public void onActivityStarted(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
+
+    }
+
+    @Override
     public void onActivityDestroyed(Activity activity) {
         if (activity instanceof FragmentActivity && fragmentLogger != null) {
             ((FragmentActivity) activity)
@@ -62,7 +81,7 @@ public class ActivitySavedStateLogger extends EmptyActivityLifecycleCallbacks {
         if (savedState != null) {
             String message = activity.getClass().getSimpleName() + ".onSaveInstanceState wrote: " + TooLargeTool.bundleBreakdown(savedState);
             log(message);
-            if (TooLargeTool.isPotentialCrash(savedState) && !com.tokopedia.core.util.GlobalConfig.DEBUG)
+            if (TooLargeTool.isPotentialCrash(savedState) && !com.tokopedia.config.GlobalConfig.DEBUG)
                 Crashlytics.logException(new Throwable(message));
         }
     }
