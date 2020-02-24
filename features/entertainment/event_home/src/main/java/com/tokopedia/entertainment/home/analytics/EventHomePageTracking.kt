@@ -79,7 +79,18 @@ class EventHomePageTracking {
         return TrackApp.getInstance().gtm
     }
 
-    fun impressionTopEventProduct(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
+    fun openHomeEvent() {
+        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                Event.KEY, "",
+                Event.CATEGORY, "",
+                Event.ACTION, "",
+                Event.LABEL, ""
+        ))
+    }
+
+    fun impressionTopEventProduct(item: EventItemModel,
+                                  listItems: List<String>,
+                                  position: Int) {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productView",
                 Event.CATEGORY, "digital - event",
@@ -88,13 +99,13 @@ class EventHomePageTracking {
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
                 Impression.KEY, DataLayer.listOf(DataLayer.mapOf(
-                Impression.NAME, item.displayName,
-                Impression.ID, item.id,
+                Impression.NAME, item.title,
+                Impression.ID, item.produkId,
                 Impression.PRICE, item.price,
                 Impression.BRAND, "none",
                 Impression.CATEGORY, "hiburan",
                 Impression.VARIANT, "none",
-                Impression.LIST, String.format("%s - %s - %s", "hiburan", position.toString(), item.displayName),
+                Impression.LIST, DataLayer.listOf(listItems),
                 Impression.POSITION, position)))
         ))
     }
@@ -108,7 +119,9 @@ class EventHomePageTracking {
         ))
     }
 
-    fun clickTopEventProduct(item: EventItemModel, position: Int) {
+    fun clickTopEventProduct(item: EventItemModel,
+                             listItems: List<String>,
+                             position: Int) {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
@@ -124,12 +137,12 @@ class EventHomePageTracking {
                 Product.BRAND, "none",
                 Product.CATEGORY, "hiburan",
                 Product.VARIANT, "none",
-                Product.LIST, item.title,
+                Product.LIST, DataLayer.listOf(listItems),
                 Product.POSITION, position)))))
         ))
     }
 
-    fun clickRecomendationEventProduct(item: EventItemModel, position: Int) {
+    fun clickRecomendationEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
@@ -145,28 +158,101 @@ class EventHomePageTracking {
                 Product.BRAND, "none",
                 Product.CATEGORY, "hiburan",
                 Product.VARIANT, "none",
-                Product.LIST, item.title,
+                Product.LIST, DataLayer.listOf(listItems),
                 Product.POSITION, position)))))
         ))
     }
 
-    fun clickLocationEventProduct(item: EventItemLocationModel, position: Int) {
+    fun impressionRecomendationEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
+
+    }
+
+    fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "productClick",
+                Event.KEY, "promoClick",
+                Event.CATEGORY, "digital - event",
+                Event.ACTION, String.format("%s %s", "click on curated ", item.title),
+                Event.LABEL, String.format("%s - %s", item.title, position.toString()),
+                Ecommerce.KEY, DataLayer.mapOf(
+                Ecommerce.CURRENCY_CODE, "IDR",
+                Impression.KEY, DataLayer.listOf(getPromotionList(listItems))
+        )))
+    }
+
+    fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, position: Int) {
+        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                Event.KEY, "promoClick",
+                Event.CATEGORY, "digital - event",
+                Event.ACTION, String.format("%s %s", "click on curated ", item.title),
+                Event.LABEL, String.format("%s - %s", item.title, position.toString()),
+                Ecommerce.KEY, DataLayer.mapOf(
+                Promo.KEY_CLICK, DataLayer.mapOf(Promo.PROMOTION, DataLayer.listOf(getPromotionList(listItems)))
+        )))
+    }
+
+    fun clickSeeAllCuratedEventProduct(){
+        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                Event.KEY, "",
+                Event.CATEGORY, "",
+                Event.ACTION, "",
+                Event.LABEL, ""
+        ))
+    }
+
+    private fun getLocationList(items: List<EventItemLocationModel>): Any? {
+        var list = mutableListOf<Any>()
+        items.forEachIndexed { index, it ->
+            list.add(DataLayer.mapOf(
+                    Promo.ID, it.id,
+                    Promo.NAME, it.title,
+                    Promo.CREATIVE, it.title,
+                    Promo.CREATIVE_URL, it.imageUrl,
+                    Promo.POSITION, index + 1,
+                    Promo.PROMO_ID, "none",
+                    Promo.PROMO_CODE, ""
+            ))
+        }
+        return list
+    }
+
+    private fun getPromotionList(items: List<EventItemModel>): Any? {
+        var list = mutableListOf<Any>()
+        items.forEachIndexed { index, it ->
+            list.add(DataLayer.mapOf(
+                    Promo.ID, it.produkId,
+                    Promo.NAME, it.title,
+                    Promo.CREATIVE, it.title,
+                    Promo.CREATIVE_URL, it.imageUrl,
+                    Promo.POSITION, index + 1,
+                    Promo.PROMO_ID, "none",
+                    Promo.PROMO_CODE, ""
+            ))
+        }
+        return list
+    }
+
+    fun impressionLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int){
+        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                Event.KEY, "promoView",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click on section " + item.locationType,
                 Event.LABEL, String.format("%s - %s", item.title, position.toString()),
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_CLICK, DataLayer.mapOf(
-                Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
-                Promo.ID, item.id,
-                Promo.NAME, item.title,
-                Promo.CREATIVE, item.title,
-                Promo.CREATIVE_URL, item.imageUrl,
-                Promo.POSITION, position,
-                Promo.PROMO_ID, "none",
-                Promo.PROMO_CODE, "none"
-        ))))))
+                Promo.PROMOTION, DataLayer.listOf(getLocationList(listItems))
+        ))))
+    }
+
+    fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
+        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                Event.KEY, "promoClick",
+                Event.CATEGORY, "digital - event",
+                Event.ACTION, "click on section " + item.locationType,
+                Event.LABEL, String.format("%s - %s", item.title, position.toString()),
+                Ecommerce.KEY, DataLayer.mapOf(
+                Promo.KEY_CLICK, DataLayer.mapOf(
+                Promo.PROMOTION, DataLayer.listOf(getLocationList(listItems))
+        ))))
     }
 
     fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {

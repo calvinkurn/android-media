@@ -44,6 +44,8 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
 
     override fun bind(element: EventCarouselViewModel) {
         itemAdapter.items = element.items
+        element.items.forEachIndexed { index, eventItemModel -> itemAdapter.productNames.add(index,
+                eventItemModel.title) }
     }
 
     companion object {
@@ -61,6 +63,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
         lateinit var items: List<EventItemModel>
+        var productNames = mutableListOf<String>()
         var sdf = SimpleDateFormat("dd/MM/yy")
         var newsdf = SimpleDateFormat("dd\nMMM")
 
@@ -85,10 +88,12 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
             }
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context, item.appUrl)
-                EventHomePageTracking.getInstance().clickTopEventProduct(item, position + 1)
+                EventHomePageTracking.getInstance().clickTopEventProduct(item, productNames,
+                        position + 1)
             }
             holder.view.addOnImpressionListener(item, {
-                Log.d(EventGridEventViewHolder.TAG, "Impression On "+item.title)
+                EventHomePageTracking.getInstance().impressionTopEventProduct(item, productNames,
+                        position + 1);
             })
             holder.view.iv_favorite.setOnClickListener {
                 action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)

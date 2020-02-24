@@ -38,6 +38,9 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
     override fun bind(element: EventGridViewModel) {
         itemView.ent_title_card.text = element.title
         itemAdapter.items = element.items
+        itemView.btn_see_all.setOnClickListener {
+            EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct()
+        }
     }
 
     companion object {
@@ -76,10 +79,12 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
             }
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context, item.appUrl)
-                EventHomePageTracking.getInstance().clickRecomendationEventProduct(item, position + 1)
+                EventHomePageTracking.getInstance().clickSectionEventProduct(item, items,
+                        position + 1)
             }
             holder.view.addOnImpressionListener(item, {
-                Log.d(TAG, "Impression On "+item.title)
+                EventHomePageTracking.getInstance().impressionSectionEventProduct(item, items,
+                        position + 1)
             })
             holder.view.iv_favorite.setOnClickListener {
                 action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)

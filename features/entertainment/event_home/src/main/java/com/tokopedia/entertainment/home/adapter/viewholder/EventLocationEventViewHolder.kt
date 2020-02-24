@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adape
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventLocationEventViewHolder(itemView: View): HomeEventViewHolder<EventLocationViewModel>(itemView) {
+class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLocationViewModel>(itemView) {
 
     var itemAdapter = ItemAdapter()
 
@@ -46,24 +46,28 @@ class EventLocationEventViewHolder(itemView: View): HomeEventViewHolder<EventLoc
 
         class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-        lateinit var items : List<EventItemLocationModel>
+        lateinit var items: List<EventItemLocationModel>
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.ent_layout_viewholder_event_location_adaper_item, parent, false)
             return ItemViewHolder(view)
         }
+
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
             Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.image)
             holder.view.txt_title.text = items.get(position).title
             holder.view.txt_subtitle.text = items.get(position).tagline
             holder.view.addOnImpressionListener(items.get(position), {
-                Log.d(TAG, "Impression on "+items.get(position).title)
+                EventHomePageTracking.getInstance().impressionLocationEvent(items.get(position), items,
+                        position + 1)
             })
             holder.view.setOnClickListener {
-                EventHomePageTracking.getInstance().clickLocationEventProduct(items.get(position), position+1)
+                EventHomePageTracking.getInstance().clickLocationEvent(items.get(position), items,
+                        position + 1)
             }
         }
+
         override fun getItemCount() = items.size
     }
 

@@ -19,6 +19,7 @@ import com.tokopedia.entertainment.home.adapter.HomeEventAdapter
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
+import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.entertainment.home.data.ActionLikedResponse
 import com.tokopedia.entertainment.home.data.EventFavoriteResponse
 import com.tokopedia.entertainment.home.di.EventHomeComponent
@@ -72,6 +73,11 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(HomeEventViewModel::class.java)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        EventHomePageTracking.getInstance().openHomeEvent()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

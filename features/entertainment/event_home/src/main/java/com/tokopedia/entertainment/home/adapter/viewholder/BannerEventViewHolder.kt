@@ -59,7 +59,9 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
     }
 
     override fun onPromoScrolled(pos: Int) {
-
+        el?.let {
+            EventHomePageTracking.getInstance().impressionBanner(it.layout.items.get(pos), pos)
+        }
     }
 
     override fun onPromoDragEnd() {
