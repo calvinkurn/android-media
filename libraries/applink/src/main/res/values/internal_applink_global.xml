@@ -55,4 +55,8 @@
     <string name="path_email_register">/email-register</string>
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
     <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
+
+    <string name="path_chat">/topchat</string>
+    <string name="path_chat_room" translatable="false">/topchat/.*\</string>
+
 </resources>

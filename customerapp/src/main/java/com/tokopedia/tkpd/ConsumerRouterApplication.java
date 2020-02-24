@@ -85,7 +85,6 @@ import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.events.EventModuleRouter;
-import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
@@ -169,7 +168,6 @@ import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -193,7 +191,7 @@ import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
-import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
+import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -207,9 +205,6 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
-import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
-import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -267,8 +262,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactNativeRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
-        TopChatRouter,
-        SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
         OmsModuleRouter,
@@ -278,7 +271,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalBrowseRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
-        ScanQrCodeRouter,
         UnifiedOrderListRouter,
         RecentViewRouter,
         MerchantVoucherModuleRouter,
@@ -289,11 +281,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ResolutionRouter,
         ProductDetailRouter,
-        KYCRouter,
-        CustomerRouter.IrisInstallRouter {
-
-    public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
-    public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
+        KYCRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -387,6 +375,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getSplashScreenIntent(Context context) {
         return new Intent(context, ConsumerSplashScreen.class);
+    }
+
+    @Override
+    public void onNewIntent(Context context, Intent intent) {
+        NFCSubscriber.onNewIntent(context, intent);
     }
 
     @Override
@@ -683,16 +676,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customMessage, source, avatar);
+        return RouteManager.getIntent(context
+                , ApplinkConst.TOPCHAT_ASKBUYER
+                , toUserId
+                , customMessage
+                , source
+                , customerName
+                , avatar);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String customMessage, String source, String avatar) {
-
-        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                customMessage, source, avatar);
+        return RouteManager.getIntent(context
+                , ApplinkConst.TOPCHAT_ASKSELLER
+                , toShopId
+                , customMessage
+                , source
+                , shopName
+                , avatar);
 
     }
 
@@ -709,7 +711,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        return InboxChatActivity.getCallingIntent(context);
+        return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
     }
 
     @Override
@@ -906,10 +908,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
-    public Intent getInboxChannelsIntent(Context context) {
-        return InboxChatActivity.getChannelCallingIntent(context);
-    }
-
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
@@ -926,7 +924,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     }
 
-    @Override
     public boolean isIndicatorVisible() {
         return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
     }
@@ -1125,12 +1122,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
         return intent;
     }
-
-    @Override
-    public Intent gotoQrScannerPage(boolean needResult) {
-        return QrScannerActivity.newInstance(this, needResult);
-    }
-
 
     @Override
     public Fragment getHomeFragment(boolean scrollToRecommendList) {
@@ -1384,13 +1375,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
-    }
-
-    @Override
-    public void sendIrisInstallEvent() {
-        Map<String, Object> map = new HashMap<>();
-        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_INSTALL);
-        mIris.sendEvent(map);
     }
 
     @Override

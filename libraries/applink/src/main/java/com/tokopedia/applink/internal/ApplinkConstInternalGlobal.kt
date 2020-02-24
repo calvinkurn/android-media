@@ -405,6 +405,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 
+    // Topchat
+    @JvmField
+    val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
+
     // Phone Number Verification Activity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     @JvmField
