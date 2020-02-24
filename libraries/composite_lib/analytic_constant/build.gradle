@@ -9,7 +9,7 @@ project.ext {
     artifactId = 'analytic_constant'
     groupId = 'com.tokopedia.analytic_constant'
     versionName = "1.0.3"
-    artifactName = "analytic_constant"
+    artifactName = "analytic_constant-release"
 }
 
 apply from: '../publish_local.gradle'
