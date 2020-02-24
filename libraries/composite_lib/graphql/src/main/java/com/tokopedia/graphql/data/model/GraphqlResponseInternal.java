@@ -9,6 +9,8 @@ import java.util.ArrayList;
  */
 final public class GraphqlResponseInternal {
     private JsonArray originalResponse;
+    // isCached = true only if all of the gql is retrived from database.
+    // If there is a response coming from network, isCached should be false.
     private boolean isCached;
     private ArrayList<Integer> indexOfEmptyCached;
     private String mBeCache;
@@ -18,8 +20,8 @@ final public class GraphqlResponseInternal {
         this.isCached = isCached;
     }
 
-    public GraphqlResponseInternal(JsonArray originalResponse, boolean isCached, ArrayList<Integer> indexOfEmptyCached) {
-        this(originalResponse, isCached);
+    public GraphqlResponseInternal(JsonArray originalResponse, ArrayList<Integer> indexOfEmptyCached) {
+        this(originalResponse, indexOfEmptyCached == null || indexOfEmptyCached.size() == 0);
         this.indexOfEmptyCached = indexOfEmptyCached;
     }
 
@@ -34,10 +36,6 @@ final public class GraphqlResponseInternal {
 
     public JsonArray getOriginalResponse() {
         return originalResponse;
-    }
-
-    public void setOriginalResponse(JsonArray originalResponse) {
-        this.originalResponse = originalResponse;
     }
 
     public boolean isCached() {
