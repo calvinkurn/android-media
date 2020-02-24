@@ -98,13 +98,12 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
             private val LEGO_LANDSCAPE = R.layout.layout_lego_landscape
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
-            val layout = if(legoBannerType == TYPE_FOUR_GRID_LEGO) LEGO_LANDSCAPE else LEGO_SQUARE
-            val v = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             return LegoItemViewHolder(v)
         }
 
         override fun getItemViewType(position: Int): Int {
-            return R.layout.layout_lego_item
+            return if(legoBannerType == TYPE_FOUR_GRID_LEGO) LEGO_LANDSCAPE else LEGO_SQUARE
         }
 
         override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {
