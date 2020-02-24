@@ -15,7 +15,7 @@ import com.tokopedia.product.manage.list.constant.ProductManageStockDef
 import com.tokopedia.product.manage.list.constant.ProductManageWholesaleDef
 import com.tokopedia.product.manage.list.constant.option.StatusProductOption
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
-import com.tokopedia.seller.product.common.utils.CurrencyUtils
+import com.tokopedia.product.manage.list.utils.CurrencyUtils
 
 class ProductManageListViewHolder(view: View, checkableListener: CheckableInteractionListener,
                                   val listener: ProductManageViewHolderListener) :

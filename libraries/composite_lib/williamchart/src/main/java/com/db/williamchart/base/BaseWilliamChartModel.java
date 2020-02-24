@@ -11,6 +11,7 @@ import java.util.Arrays;
 public class BaseWilliamChartModel {
     private String[] labels;
     private float[] values;
+    private String[] customValues = new String[0];
 
     public BaseWilliamChartModel(String[] labels, float[] values) {
         if (labels == null)
@@ -20,6 +21,19 @@ public class BaseWilliamChartModel {
 
         this.labels = labels;
         this.values = values;
+    }
+
+    public BaseWilliamChartModel(String[] labels, float[] values, String[] customValues) {
+        if (labels == null)
+            throw new RuntimeException("unable to process null WilliamChartUtils mValues");
+        if (values == null)
+            throw new RuntimeException("unable to process null WilliamChartUtils mValues");
+        if (customValues == null)
+            throw new RuntimeException("unable to process null WilliamChartUtils customValues");
+
+        this.labels = labels;
+        this.values = values;
+        this.customValues = customValues;
     }
 
     public BaseWilliamChartModel(BaseWilliamChartModel baseWilliamChartModel) {
@@ -42,12 +56,20 @@ public class BaseWilliamChartModel {
         return values;
     }
 
+    public String[] getCustomValues() {
+        return customValues;
+    }
+
     public void setValues(float[] values) {
         this.values = values;
     }
 
     public int size() {
         return values.length;
+    }
+
+    public boolean hasCustomValues() {
+        return customValues.length > 0 && customValues.length == values.length;
     }
 
     public void increment(int increment) {

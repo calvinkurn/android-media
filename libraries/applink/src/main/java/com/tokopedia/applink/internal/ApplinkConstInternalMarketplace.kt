@@ -179,4 +179,46 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    // DashboardActivity
+    @JvmField
+    val SELLER_APP_DASHBOARD = "$INTERNAL_MARKETPLACE/sellerapp-dashboard"
+
+    // EtalaseDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/etalase-dynamic-picker
+    @JvmField
+    val ETALASE_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/etalase-dynamic-picker"
+
+
+    // CategoryDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/category-dynamic-picker
+    @JvmField
+    val CATEGORY_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/category-dynamic-picker"
+    // ActivitySellingTransaction
+    @JvmField
+    val SELLING_TRANSACTION = "$INTERNAL_MARKETPLACE/selling-transaction/{tab_position}/"
+
+    // ProductDraftListActivity
+    @JvmField
+    val PRODUCT_DRAFT_LIST = "$INTERNAL_MARKETPLACE/product-draft-list"
+
+    // GMStatisticDashboardActivity
+    @JvmField
+    val GOLD_MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-statistic-dashboard"
+
+    //MitraToppersDashboardActivity
+    @JvmField
+    val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"
+
+    //GMFeaturedProductActivity
+    @JvmField
+    val GOLD_MERCHANT_FEATURED_PRODUCT = "$INTERNAL_MARKETPLACE/gold-merchant-featured-product"
+
+    //SellerInfoActivity
+    @JvmField
+    val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
+
+    //SellerDashboardActivity
+    @JvmField
+    val SELLER_HOME = "$INTERNAL_MARKETPLACE/sellerhome"
+
 }
