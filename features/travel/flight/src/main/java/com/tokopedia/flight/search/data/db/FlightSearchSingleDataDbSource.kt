@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.data.db
 
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.tokopedia.common.travel.constant.TravelSortOption
+import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel
 import com.tokopedia.flight.search.presentation.model.FlightAirportViewModel
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
@@ -64,8 +65,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
         val query = buildQuery(sqlQuery, filterModel, flightSortOption)
         val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
+        val facilityFilterList = getFacilityFilter(filterModel.facilityList)
 
-        return filteredJourney.map {
+        return getJourneyFilteredByFacility(filteredJourney, facilityFilterList).map {
             populateCompactJourneyAndRoutesCoroutine(it)
         }.toList()
     }
@@ -143,13 +145,59 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     fun getSearchCountCoroutine(filterModel: FlightFilterModel): Int {
         val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
-            "SELECT COUNT(DISTINCT FlightJourneyTable.id) FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+            "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
                     "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
         } else {
-            "SELECT count(*) FROM FlightJourneyTable WHERE "
+            "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable WHERE "
         }
         val query = buildQuery(sqlQuery, filterModel, TravelSortOption.CHEAPEST)
-        return flightJourneyDao.getSearchCount(query)
+        val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
+        val facilityFilter = getFacilityFilter(filterModel.facilityList)
+
+        return getJourneyFilteredByFacility(filteredJourney, facilityFilter).size
+    }
+
+    private fun getFacilityFilter(facilityFilterList: List<FlightFilterFacilityEnum>): Map<FlightFilterFacilityEnum, Boolean> {
+        val map = mutableMapOf(
+                Pair(FlightFilterFacilityEnum.BAGGAGE, false),
+                Pair(FlightFilterFacilityEnum.MEAL, false)
+        )
+
+        for (facility in facilityFilterList) {
+            map[facility] = true
+        }
+
+        return map
+    }
+
+    private fun getJourneyFilteredByFacility(filteredJourney: List<JourneyAndRoutes>,
+                                             facilityFilter: Map<FlightFilterFacilityEnum, Boolean>)
+            : List<JourneyAndRoutes> {
+        return filteredJourney.filter {
+            var shouldCount = false
+
+            for (route in it.routes) {
+                if (facilityFilter[FlightFilterFacilityEnum.BAGGAGE] == true &&
+                        facilityFilter[FlightFilterFacilityEnum.MEAL] == true &&
+                        route.amenities.contains("baggage") &&
+                        route.amenities.contains("meal")) {
+                    shouldCount = true
+                    break
+                } else if (facilityFilter[FlightFilterFacilityEnum.BAGGAGE] == true &&
+                        route.amenities.contains("baggage")) {
+                    shouldCount = true
+                    break
+                } else if (facilityFilter[FlightFilterFacilityEnum.MEAL] == true &&
+                        route.amenities.contains("meal")) {
+                    shouldCount = true
+                } else if (facilityFilter[FlightFilterFacilityEnum.BAGGAGE] == false &&
+                        facilityFilter[FlightFilterFacilityEnum.MEAL] == false) {
+                    shouldCount = true
+                }
+            }
+
+            shouldCount
+        }.toList()
     }
 
     private fun buildQuery(sqlQuery: String, filterModel: FlightFilterModel, flightSortOption: Int): SimpleSQLiteQuery {
