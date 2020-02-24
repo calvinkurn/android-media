@@ -7,7 +7,6 @@ import com.google.android.gms.location.places.Places
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
-import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
@@ -22,8 +21,7 @@ import javax.inject.Inject
 class AddEditAddressPresenter
 @Inject constructor(private val context: Context,
                     private val addAddressUseCase: AddAddressUseCase,
-                    private val zipCodeUseCase: GetZipCodeUseCase,
-                    private val addAddressMapper: AddAddressMapper)
+                    private val zipCodeUseCase: GetZipCodeUseCase)
     : BaseDaggerPresenter<AddEditAddressListener>() {
     var googleApiClient: GoogleApiClient? = null
 
