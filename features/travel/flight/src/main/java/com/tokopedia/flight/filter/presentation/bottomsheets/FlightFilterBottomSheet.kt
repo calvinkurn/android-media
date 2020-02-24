@@ -46,6 +46,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     private lateinit var flightFilterComponent: FlightFilterComponent
     private lateinit var mChildView: View
 
+    lateinit var typeFactory: FlightFilterSortAdapterTypeFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -113,7 +115,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun initAdapter() {
-        val typeFactory = FlightFilterSortAdapterTypeFactory(this, getFlightSelectedSort(),
+        typeFactory = FlightFilterSortAdapterTypeFactory(this, getFlightSelectedSort(),
                 getFlightFilterModel() ?: FlightFilterModel())
         adapter = FlightFilterSortAdapter(typeFactory)
     }
@@ -178,6 +180,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightFilterViewModel.getAirlineList()
 
     private fun renderList(data: List<BaseFilterSortModel>) {
+        adapter?.typeFactory?.initialSortOption = SORT_DEFAULT_VALUE
+        adapter?.typeFactory?.filterModel = FlightFilterModel()
         adapter?.clearAllElements()
         adapter?.addElement(data)
         adapter?.notifyDataSetChanged()

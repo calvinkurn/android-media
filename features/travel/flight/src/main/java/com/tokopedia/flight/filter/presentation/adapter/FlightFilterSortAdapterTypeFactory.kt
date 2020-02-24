@@ -15,8 +15,8 @@ import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
  */
 
 class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
-                                         private val initialSortOption: Int,
-                                         private val filterModel: FlightFilterModel) :
+                                         var initialSortOption: Int,
+                                         var filterModel: FlightFilterModel) :
         BaseAdapterTypeFactory() {
 
     fun type(model: FlightSortModel): Int = TYPE_FLIGHT_SORT
