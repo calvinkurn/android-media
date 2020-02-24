@@ -11,6 +11,7 @@ import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -104,6 +105,8 @@ class FlightFilterViewModel @Inject constructor(
         // TODO: Reset Filter Value
     }
 
+    fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
+
     private fun mapStatisticToModel(statistic: FlightSearchStatisticModel?) {
         val items = arrayListOf<BaseFilterSortModel>()
 
@@ -121,10 +124,10 @@ class FlightFilterViewModel @Inject constructor(
             items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
 
             // Airline
-            items.add(AIRLINE_ORDER, PriceRangeModel())
+            items.add(AIRLINE_ORDER, FlightFilterAirlineModel())
 
             // Facility
-            items.add(FACILITY_ORDER, PriceRangeModel())
+            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
 
             // Price
             items.add(PRICE_ORDER, PriceRangeModel(
@@ -147,6 +150,6 @@ class FlightFilterViewModel @Inject constructor(
         const val FACILITY_ORDER = 5
         const val PRICE_ORDER = 6
 
-        const val DELAY_VALUE : Long = 2000
+        const val DELAY_VALUE: Long = 2000
     }
 }
