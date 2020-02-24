@@ -4,10 +4,12 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.logisticaddaddress.domain.executor.MainSchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
-import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
-import com.tokopedia.logisticaddaddress.domain.usecase.*
+import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
@@ -39,9 +41,8 @@ class AddNewAddressModule {
     fun provideAddEditAddressPresenter(
             @ApplicationContext context: Context,
             addAddressUseCase: AddAddressUseCase,
-            zipCodeUseCase: GetZipCodeUseCase,
-            addAddressMapper: AddAddressMapper): AddEditAddressPresenter {
-        return AddEditAddressPresenter(context, addAddressUseCase, zipCodeUseCase, addAddressMapper)
+            zipCodeUseCase: GetZipCodeUseCase): AddEditAddressPresenter {
+        return AddEditAddressPresenter(context, addAddressUseCase, zipCodeUseCase)
     }
 
     @Provides
