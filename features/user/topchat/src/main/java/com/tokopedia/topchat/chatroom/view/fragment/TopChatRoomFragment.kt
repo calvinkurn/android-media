@@ -661,7 +661,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        (viewState as TopChatViewState).sendAnalyticsClickATC(element)
+        analytics.eventClickAddToCartProductAttachment(element, session)
         val atcPageIntent = presenter.getAtcPageIntent(context, element)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }

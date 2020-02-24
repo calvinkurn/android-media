@@ -316,31 +316,17 @@ public class TopChatAnalytics {
         );
     }
 
-
-    public void eventClickAddToCartProductAttachment(String blastId, String productName, String productId, String productPrice, int quantity, String shopId, String shopName) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT_NAME, Name.EVENT_NAME_ATC,
+    // #AP7
+    public void eventClickAddToCartProductAttachment(
+            @NotNull ProductAttachmentViewModel product,
+            @NotNull UserSessionInterface user
+    ) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                EVENT_NAME, Name.CHAT_DETAIL,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_ATC_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("%s - %s", getField(blastId), String.valueOf(blastId)),
-                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
-                        "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", String.format("/%s", getField(blastId))),
-                                "products", DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                "name", productName,
-                                                "id", productId,
-                                                "price", productPrice,
-                                                "quantity", quantity,
-                                                "shop_id", shopId,
-                                                "shop_type", "",
-                                                "shop_name", shopName,
-                                                "category_id", "",
-                                                "dimension45", ""
-                                        )
-                                )
-                        )
-                )
+                EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
+                USER_ID, user.getUserId()
         ));
     }
 

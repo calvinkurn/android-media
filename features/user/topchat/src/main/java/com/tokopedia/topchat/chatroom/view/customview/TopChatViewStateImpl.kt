@@ -89,6 +89,8 @@ class TopChatViewStateImpl(
         initView()
     }
 
+    override fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel = chatRoomViewModel.headerModel
+
     override fun initView() {
         super.initView()
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
@@ -480,18 +482,6 @@ class TopChatViewStateImpl(
 
     override fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(
-                element.blastId.toString(),
-                element.productName,
-                element.productId.toString(),
-                element.productPrice,
-                1,
-                element.shopId.toString(),
-                chatRoomViewModel.headerModel.name
-        )
-    }
-
-    override fun sendAnalyticsClickATC(element: ProductAttachmentViewModel) {
-        analytics.eventClickAddToCartProductAttachment(
                 element.blastId.toString(),
                 element.productName,
                 element.productId.toString(),
