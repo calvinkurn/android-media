@@ -228,7 +228,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
-    private boolean isPerformanceMonitoringAttachedToRv = false;
 
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
@@ -638,21 +637,21 @@ public class HomeFragment extends BaseDaggerFragment implements
 
             adapter.submitList(data);
             if (homePerformanceMonitoringListener != null && !isCache && homePerformanceMonitoringListener.needToSubmitDynamicChannelCount()) {
-                Map<String, Integer> dynamicChannelList = new HashMap<>();
+                Map<String, Integer> layoutCounter = new HashMap<>();
                 for (Visitable visitable: data) {
                     if (visitable instanceof DynamicChannelViewModel) {
                         DynamicChannelViewModel dynamicChannelViewModel = (((DynamicChannelViewModel) visitable));
                         DynamicHomeChannel.Channels channel = dynamicChannelViewModel.getChannel();
-                        if (channel != null && dynamicChannelList.get(channel.getLayout()) != null) {
-                            int currentCount = dynamicChannelList.get(channel.getLayout());
-                            dynamicChannelList.put(channel.getLayout(), ++currentCount);
-                        } else if (dynamicChannelList.get(channel.getLayout()) == null) {
-                            dynamicChannelList.put(channel.getLayout(), 1);
+                        if (channel != null && layoutCounter.get(channel.getLayout()) != null) {
+                            int currentCount = layoutCounter.get(channel.getLayout());
+                            layoutCounter.put(channel.getLayout(), ++currentCount);
+                        } else if (layoutCounter.get(channel.getLayout()) == null) {
+                            layoutCounter.put(channel.getLayout(), 1);
                         }
                     }
                 }
 
-                homePerformanceMonitoringListener.submitDynamicChannelCount(dynamicChannelList);
+                homePerformanceMonitoringListener.submitDynamicChannelCount(layoutCounter);
             }
 
             if (isDataValid(data)) {
@@ -1041,7 +1040,6 @@ public class HomeFragment extends BaseDaggerFragment implements
                         homeRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
-        isPerformanceMonitoringAttachedToRv = true;
     }
 
     private void needToShowGeolocationComponent() {
@@ -1699,7 +1697,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private boolean needToPerformanceMonitoring() {
-        return homePerformanceMonitoringListener != null && isPerformanceMonitoringAttachedToRv;
+        return homePerformanceMonitoringListener != null;
     }
 
     private void showToaster(String message, int typeToaster){

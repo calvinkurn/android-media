@@ -31,7 +31,7 @@ public class PerformanceData {
 
     public int getJankyFramePercentage() {
         if (this.allFrames == 0) return 0;
-        return this.jankyFrames/this.allFrames * 100;
+        return (int)((float)this.jankyFrames/(float)this.allFrames * 100);
     }
 
     public void incrementAllFrames() {

@@ -390,8 +390,8 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        submitMainParentPerformanceMonitoring();
         stopFrameMetrics(this);
+        submitMainParentPerformanceMonitoring();
     }
 
     @Override
