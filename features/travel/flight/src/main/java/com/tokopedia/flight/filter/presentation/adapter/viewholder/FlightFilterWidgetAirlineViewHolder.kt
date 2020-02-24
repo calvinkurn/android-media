@@ -22,11 +22,14 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
             flight_sort_widget.titleText = getString(R.string.flight_search_filter_airplane)
             flight_sort_widget.isSelectOnlyOneChip = false
             flight_sort_widget.hasShowMore = true
-            flight_sort_widget.maxItemCount = 5
+            flight_sort_widget.maxItemCount = MAX_ITEM_SHOWED
             flight_sort_widget.isFlowLayout = true
             flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
-                    // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    selectedAirline = (items as List<FlightFilterAirlineModel>).map {
+                        it.airlineId
+                    }.toList()
+                    listener.onAirlineChanged(selectedAirline)
                 }
 
                 override fun onClickShowMore() {
@@ -39,15 +42,32 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
 
     fun onSelectedAirlineChanged(selectedAirline: List<String>) {
         this.selectedAirline = selectedAirline
-        itemView.flight_sort_widget.buildView(getItems())
+        itemView.flight_sort_widget.onResetChip()
+        for (selectedId in selectedAirline) {
+            if (getAirlinePosition(selectedId) in 0 until MAX_ITEM_SHOWED) {
+                itemView.flight_sort_widget.performClickOnChipWithPosition(getAirlinePosition(selectedId))
+            }
+        }
+    }
+
+    private fun getAirlinePosition(selectedId: String): Int {
+        for ((index, item) in getItems().withIndex()) {
+            if (item.airlineId == selectedId) return index
+        }
+        return -1
     }
 
     private fun getItems(): List<FlightFilterAirlineModel> {
         return listener.getAirlineList().map {
             FlightFilterAirlineModel(
+                    airlineId = it.airlineDB.id,
                     title = it.airlineDB.name,
                     isSelected = selectedAirline.contains(it.airlineDB.id)
             )
         }
+    }
+
+    companion object {
+        const val MAX_ITEM_SHOWED = 5
     }
 }

@@ -196,6 +196,10 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         adapter?.notifyDataSetChanged()
     }
 
+    override fun onAirlineChanged(checkedAirlines: List<String>) {
+        flightFilterViewModel.filterModel.value?.airlineList = checkedAirlines
+    }
+
     private fun showLoading() {
         with(mChildView) {
             containerLoading.visibility = View.VISIBLE

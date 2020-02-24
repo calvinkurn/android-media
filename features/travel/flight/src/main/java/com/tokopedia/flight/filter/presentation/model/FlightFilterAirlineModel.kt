@@ -6,6 +6,7 @@ import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterT
  * @author by furqan on 21/02/2020
  */
 class FlightFilterAirlineModel(
+        val airlineId: String = "",
         title: String = "",
         isSelected: Boolean = false)
     : BaseFilterSortModel(title, isSelected) {

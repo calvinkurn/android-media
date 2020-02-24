@@ -17,4 +17,5 @@ interface FlightFilterSortListener {
     fun onClickSeeAllAirline()
 
     fun getAirlineList(): List<AirlineStat>
+    fun onAirlineChanged(checkedAirlines: List<String>)
 }
