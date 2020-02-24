@@ -359,13 +359,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         super.onProductClicked(element)
-
-        analytics.eventClickProductThumbnailEE(element.blastId,
-                element.productId.toString(),
-                element.productName,
-                element.priceInt,
-                element.category, element.variants.toString())
-
+        analytics.eventClickProductThumbnailEE(element, session)
         analytics.trackProductAttachmentClicked()
     }
 
@@ -802,9 +796,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.detachView()
     }
 
-    override fun trackSeenProduct(element: ProductAttachmentViewModel, position: Int) {
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
-            analytics.eventSeenProductAttachment(element, session, position)
+            analytics.eventSeenProductAttachment(element, session)
         }
     }
 
