@@ -9,6 +9,7 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import androidx.annotation.ColorRes
 
 import androidx.core.content.ContextCompat
 
