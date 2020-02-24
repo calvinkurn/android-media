@@ -61,8 +61,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             if (arguments?.containsKey(ARG_FILTER_MODEL) == true) {
                 flightFilterViewModel.init(
                         arguments?.getInt(ARG_SORT) ?: SORT_DEFAULT_VALUE,
-                        arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel,
-                        arguments?.getBoolean(ARG_IS_RETURN) ?: false)
+                        arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel)
             }
         }
 
@@ -91,15 +90,16 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     override fun getFlightFilterModel(): FlightFilterModel? = flightFilterViewModel.filterModel.value
 
-    override fun getFlightSelectedSort(): Int = flightFilterViewModel.selectedSort.value ?: SORT_DEFAULT_VALUE
+    override fun getFlightSelectedSort(): Int = flightFilterViewModel.selectedSort.value
+            ?: SORT_DEFAULT_VALUE
 
     override fun onFlightFilterAirlineSaved(selectedAirlines: List<String>) {
-            flightFilterViewModel.filterAirlines(selectedAirlines)
-            with(rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder) {
-                flightFilterViewModel.filterModel.value?.let {
-                    this.onSelectedAirlineChanged(it.airlineList)
-                }
+        flightFilterViewModel.filterAirlines(selectedAirlines)
+        with(rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder) {
+            flightFilterViewModel.filterModel.value?.let {
+                this.onSelectedAirlineChanged(it.airlineList)
             }
+        }
     }
 
     private fun initInjector() {
@@ -195,7 +195,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     override fun getAirlineList(): List<AirlineStat> =
-        flightFilterViewModel.getAirlineList()
+            flightFilterViewModel.getAirlineList()
 
     private fun renderList(data: List<BaseFilterSortModel>) {
         adapter?.clearAllElements()
@@ -235,14 +235,12 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
         private const val ARG_SORT = "ARG_SORT"
         private const val ARG_FILTER_MODEL = "ARG_FILTER_MODEL"
-        private const val ARG_IS_RETURN = "ARG_IS_RETURN"
 
-        fun getInstance(selectedSortOption: Int, filterModel: FlightFilterModel, isReturn: Boolean = false): FlightFilterBottomSheet =
+        fun getInstance(selectedSortOption: Int, filterModel: FlightFilterModel): FlightFilterBottomSheet =
                 FlightFilterBottomSheet().also {
                     it.arguments = Bundle().apply {
                         putInt(ARG_SORT, selectedSortOption)
                         putParcelable(ARG_FILTER_MODEL, filterModel)
-                        putBoolean(ARG_IS_RETURN, isReturn)
                     }
                 }
     }

@@ -15,7 +15,6 @@ import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,8 +26,6 @@ class FlightFilterViewModel @Inject constructor(
         private val flightSearchStatisticUseCase: FlightSearchStatisticsUseCase,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
-
-    private var isReturn = false
 
     private val mutableSelectedSort = MutableLiveData<Int>()
     val selectedSort: LiveData<Int>
@@ -46,18 +43,21 @@ class FlightFilterViewModel @Inject constructor(
     val flightCount: LiveData<Int>
         get() = mediatorFlightCount
 
-    val filterViewData = MutableLiveData<List<BaseFilterSortModel>>()
+    val filterViewData = MediatorLiveData<List<BaseFilterSortModel>>()
 
     init {
-        mediatorFlightCount.addSource(filterModel) {
+        mediatorFlightCount.addSource(mutableFilterModel) {
             getFlightCount()
+        }
+
+        filterViewData.addSource(mutableStatisticModel) {
+            mapStatisticToModel()
         }
     }
 
-    fun init(selectedSort: Int, filterModel: FlightFilterModel, isReturn: Boolean) {
+    fun init(selectedSort: Int, filterModel: FlightFilterModel) {
         mutableSelectedSort.value = selectedSort
         mutableFilterModel.value = filterModel
-        this.isReturn = isReturn
 
         getStatistics()
         getFlightCount()
@@ -69,10 +69,6 @@ class FlightFilterViewModel @Inject constructor(
                 mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
                         flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
             }
-
-            delay(DELAY_VALUE)
-
-            mapStatisticToModel(statisticModel.value)
         }
     }
 
@@ -129,15 +125,14 @@ class FlightFilterViewModel @Inject constructor(
     fun resetFilter() {
         mutableSelectedSort.value = SORT_DEFAULT_VALUE
         mutableFilterModel.value = resetFilterModel()
-        mapStatisticToModel(statisticModel.value)
     }
 
     fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
 
-    private fun mapStatisticToModel(statistic: FlightSearchStatisticModel?) {
+    private fun mapStatisticToModel() {
         val items = arrayListOf<BaseFilterSortModel>()
 
-        statistic?.let {
+        statisticModel.value?.let {
             // Sort
             items.add(SORT_ORDER, FlightSortModel())
 
@@ -192,7 +187,7 @@ class FlightFilterViewModel @Inject constructor(
         const val FACILITY_ORDER = 5
         const val PRICE_ORDER = 6
 
-        const val DELAY_VALUE: Long = 1000
+        const val DELAY_VALUE: Long = 2000
 
         const val SORT_DEFAULT_VALUE = TravelSortOption.CHEAPEST
     }
