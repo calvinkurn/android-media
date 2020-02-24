@@ -25,7 +25,7 @@ class GetCardDataUseCase(
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetCardDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetCardDataResponse>()
+            val data: GetCardDataResponse = gqlResponse.getData(GetCardDataResponse::class.java)
             val widgetData = data.getCardData?.cardData.orEmpty()
             return cardMapper.mapRemoteModelToUiModel(widgetData)
         } else {

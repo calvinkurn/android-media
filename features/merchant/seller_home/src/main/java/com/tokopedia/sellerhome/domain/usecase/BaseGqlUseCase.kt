@@ -12,7 +12,7 @@ abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
-    protected inline fun <reified T> GraphqlResponse.getData(): T {
+    inline fun <reified T> GraphqlResponse.getData(): T {
         return this.getData<T>(T::class.java)
     }
 }
