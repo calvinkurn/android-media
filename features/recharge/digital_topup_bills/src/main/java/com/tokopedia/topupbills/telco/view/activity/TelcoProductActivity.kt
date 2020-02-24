@@ -80,6 +80,7 @@ class TelcoProductActivity : BaseTelcoActivity() {
         when (data?.path) {
             "/telco" -> actionHandled = true
             else -> actionHandled = false
+
         }
 
 
