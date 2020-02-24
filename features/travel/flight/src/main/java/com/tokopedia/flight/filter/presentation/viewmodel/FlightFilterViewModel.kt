@@ -55,7 +55,7 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     fun init(selectedSort: Int, filterModel: FlightFilterModel, isReturn: Boolean) {
-        mutableSelectedSort.postValue(selectedSort)
+        mutableSelectedSort.value = selectedSort
         mutableFilterModel.value = filterModel
         this.isReturn = isReturn
 
@@ -77,25 +77,25 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     fun setSelectedSort(selectedId: Int) {
-        mutableSelectedSort.postValue(selectedId)
+        mutableSelectedSort.value = selectedId
     }
 
     fun filterTransit(selectedTransits: List<TransitEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.transitTypeList = selectedTransits
-        mutableFilterModel.postValue(updatedFilterModel)
+        mutableFilterModel.value = updatedFilterModel
     }
 
     fun filterDepartureTime(selectedDepartureTimes: List<DepartureTimeEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.departureTimeList = selectedDepartureTimes
-        mutableFilterModel.postValue(updatedFilterModel)
+        mutableFilterModel.value = updatedFilterModel
     }
 
     fun filterArrivalTime(selectedArrivalTimes: List<DepartureTimeEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.arrivalTimeList = selectedArrivalTimes
-        mutableFilterModel.postValue(updatedFilterModel)
+        mutableFilterModel.value = updatedFilterModel
     }
 
     fun filterAirlines(selectedArlines: List<String>) {
@@ -117,9 +117,7 @@ class FlightFilterViewModel @Inject constructor(
         mutableFilterModel.value = updateFilterModel
     }
 
-    fun getSelectedSort(): Int = selectedSort.value ?: TravelSortOption.CHEAPEST
-
-    fun getFlightCount() {
+    private fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.run {
                 mediatorFlightCount.postValue(flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
@@ -129,8 +127,8 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     fun resetFilter() {
-        mutableSelectedSort.postValue(SORT_DEFAULT_VALUE)
-        mutableFilterModel.postValue(FlightFilterModel())
+        mutableSelectedSort.value = SORT_DEFAULT_VALUE
+        mutableFilterModel.value = resetFilterModel()
         mapStatisticToModel(statisticModel.value)
     }
 
@@ -168,6 +166,21 @@ class FlightFilterViewModel @Inject constructor(
         }
 
         filterViewData.postValue(items)
+    }
+
+    private fun resetFilterModel(): FlightFilterModel {
+        val filterModel = mutableFilterModel.value?.copy() ?: FlightFilterModel()
+        filterModel.setHasFilter(false)
+        filterModel.isSpecialPrice = false
+        filterModel.priceMin = Integer.MIN_VALUE
+        filterModel.priceMax = Integer.MAX_VALUE
+        filterModel.transitTypeList = arrayListOf()
+        filterModel.airlineList = arrayListOf()
+        filterModel.departureTimeList = arrayListOf()
+        filterModel.arrivalTimeList = arrayListOf()
+        filterModel.refundableTypeList = arrayListOf()
+        filterModel.facilityList = arrayListOf()
+        return filterModel
     }
 
     companion object {
