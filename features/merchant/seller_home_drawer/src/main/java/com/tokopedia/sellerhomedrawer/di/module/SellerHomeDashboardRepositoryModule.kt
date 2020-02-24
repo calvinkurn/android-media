@@ -11,6 +11,7 @@ import dagger.Provides
 @Module
 class SellerHomeDashboardRepositoryModule {
 
+    @SellerHomeDashboardScope
     @Provides
     fun provideNotificationRepository(notificationSourceFactory: NotificationSourceFactory): NotificationRepository {
         return NotificationRepositoryImpl(notificationSourceFactory)

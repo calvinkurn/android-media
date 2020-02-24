@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
-import com.tokopedia.sellerhomedrawer.data.SellerTokoCashData
 import com.tokopedia.sellerhomedrawer.data.constant.SellerDrawerActivityBroadcastReceiverConstant
 import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeFragmentBroadcastReceiverConstant
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerDeposit
@@ -31,17 +30,14 @@ import com.tokopedia.sellerhomedrawer.di.component.DaggerSellerHomeDrawerCompone
 import com.tokopedia.sellerhomedrawer.di.component.SellerHomeDrawerComponent
 import com.tokopedia.sellerhomedrawer.di.module.SellerHomeDashboardModule
 import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManager
-import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManagerImpl
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetSellerHomeUserAttributesUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
 import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sah_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_custom_actionbar_drawer_notification.view.*
-import rx.Observable
 import javax.inject.Inject
 
 abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
@@ -51,11 +47,8 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         private const val MAX_NOTIF = 999
     }
 
-    lateinit var sellerDrawerHelper: SellerDrawerHelper
+    var toolbarTitle: View? = null
 
-    lateinit var toolbarTitle: View
-
-    protected var drawerDataManager: SellerDrawerDataManager? = null
     private var isLogin: Boolean? = null
     private var drawerActivityBroadcastReceiver: BroadcastReceiver? = null
     private var broadcastReceiverTokoPoint: BroadcastReceiver? = null
@@ -64,11 +57,17 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     @Inject
     lateinit var getSellerHomeUserAttributesUseCase: GetSellerHomeUserAttributesUseCase
     @Inject
+    lateinit var sellerTokoCashUseCase : SellerTokoCashUseCase
+    @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var drawerCache: LocalCacheHandler
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
+    @Inject
+    lateinit var sellerDrawerHelper: SellerDrawerHelper
+    @Inject
+    lateinit var drawerDataManager: SellerDrawerDataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (!isSellerHome && GlobalConfig.isSellerApp()) {
@@ -94,14 +93,8 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     private fun setupDrawer() {
-
-        val sellerTokoCashObservable = Observable.just(SellerTokoCashData())
-        val sellerTokoCashUseCase = SellerTokoCashUseCase(sellerTokoCashObservable)
-
-        sellerDrawerHelper = SellerDrawerHelper(this, userSession, drawerCache, remoteConfig)
         sellerDrawerHelper.selectedPosition = setDrawerPosition()
         sellerDrawerHelper.initDrawer(this)
-        drawerDataManager = SellerDrawerDataManagerImpl(this, this, sellerTokoCashUseCase, getSellerHomeUserAttributesUseCase)
     }
 
     protected abstract fun setDrawerPosition(): Int
@@ -109,7 +102,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     protected open fun updateDrawerData() {
         if (userSession.isLoggedIn) {
             setDataDrawer()
-            drawerDataManager?.getSellerUserAttributes(userSession)
+            drawerDataManager.getSellerUserAttributes(userSession)
         }
     }
 

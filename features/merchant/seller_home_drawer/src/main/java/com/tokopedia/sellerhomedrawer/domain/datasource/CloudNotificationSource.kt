@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomedrawer.domain.datasource
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.TKPDMapParam
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
@@ -18,11 +19,11 @@ import javax.inject.Inject
  * Created by nisie on 5/5/17.
  */
 
-class CloudNotificationSource @Inject constructor(private val context: Context,
-                              private val notificationService: NotificationService,
-                              private val notificationMapper: NotificationMapper,
-                              private val drawerCache: LocalCacheHandler,
-                              private val userSession: UserSession) {
+class CloudNotificationSource @Inject constructor(@ApplicationContext val context: Context,
+                                                  val notificationService: NotificationService,
+                                                  val notificationMapper: NotificationMapper,
+                                                  val drawerCache: LocalCacheHandler,
+                                                  val userSession: UserSession) {
 
     fun getNotification(params: TKPDMapParam<String, Any>): Observable<NotificationModel> {
         return notificationService.notificationApi
@@ -54,8 +55,6 @@ class CloudNotificationSource @Inject constructor(private val context: Context,
                 drawerCache.putInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, notificationData.sales.salesShippingConfirm)
                 drawerCache.putInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_STATUS, notificationData.sales.salesShippingStatus)
 
-                //                    drawerCache.putInt(SellerDrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
-                //                    drawerCache.putInt(SellerDrawerNotification.IS_HAS_CART, notificationData.getTotalCart() > 0 ? 1 : 0);
                 drawerCache.putInt(SellerDrawerNotification.CACHE_TOTAL_NOTIF, notificationData
                         .totalNotif - notificationData.inbox.inboxMessage)
                 drawerCache.putInt(SellerDrawerNotification.CACHE_INCR_NOTIF, notificationData.incrNotif)

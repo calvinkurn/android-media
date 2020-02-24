@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomedrawer.domain.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.sellerhomedrawer.data.constant.SellerDrawerUrl;
 import com.tokopedia.usecase.RequestParams;
@@ -14,7 +15,7 @@ import rx.Observable;
 public class DeleteNotificationCacheUseCase extends CacheApiDataDeleteUseCase {
 
     @Inject
-    public DeleteNotificationCacheUseCase(@Named("application") Context context) {
+    public DeleteNotificationCacheUseCase(@ApplicationContext Context context) {
         super(context);
     }
 

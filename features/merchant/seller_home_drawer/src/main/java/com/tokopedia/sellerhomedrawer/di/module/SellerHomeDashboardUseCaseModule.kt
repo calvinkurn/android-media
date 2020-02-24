@@ -6,6 +6,7 @@ import com.tokopedia.sellerhomedrawer.di.SellerHomeDashboardScope
 import com.tokopedia.sellerhomedrawer.domain.usecase.FlashSaleGetSellerStatusUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetSellerHomeUserAttributesUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetShopStatusUseCase
+import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -32,5 +33,10 @@ class SellerHomeDashboardUseCaseModule {
     @Provides
     fun provideGetSellerHomeUserAttributesUseCase(graphqlUseCase: GraphqlUseCase, @Named(SellerHomeParamConstant.SELLER_DRAWER_DATA) rawQuery: String) :
             GetSellerHomeUserAttributesUseCase = GetSellerHomeUserAttributesUseCase(graphqlUseCase, rawQuery)
+
+    @SellerHomeDashboardScope
+    @Provides
+    fun provideSellerTokoCashUseCase(): SellerTokoCashUseCase =
+            SellerTokoCashUseCase()
 
 }

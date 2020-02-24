@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomedrawer.presentation.view.presenter
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
@@ -14,7 +15,7 @@ import javax.inject.Inject
 class SellerHomeDashboardDrawerPresenter @Inject constructor(val getShopStatusUseCase: GetShopStatusUseCase,
                                                              val flashSaleGetSellerStatusUseCase: FlashSaleGetSellerStatusUseCase,
                                                              val userSession: UserSessionInterface,
-                                                             val context: Context) : SellerHomeDashboardContract.Presenter {
+                                                             @ApplicationContext val context: Context) : SellerHomeDashboardContract.Presenter {
 
     init {
         flashSaleGetSellerStatusUseCase.isCached = true

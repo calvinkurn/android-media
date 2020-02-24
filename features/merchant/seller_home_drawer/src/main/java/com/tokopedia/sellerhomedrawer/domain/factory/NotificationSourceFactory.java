@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomedrawer.domain.factory;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.sellerhomedrawer.domain.datasource.CloudNotificationSource;
 import com.tokopedia.sellerhomedrawer.domain.mapper.NotificationMapper;
@@ -20,7 +21,7 @@ public class NotificationSourceFactory {
     private CloudNotificationSource cloudNotificationSource;
 
     @Inject
-    public NotificationSourceFactory(Context context,
+    public NotificationSourceFactory(@ApplicationContext Context context,
                                      NotificationService notificationService,
                                      NotificationMapper notificationMapper,
                                      LocalCacheHandler drawerCache,
