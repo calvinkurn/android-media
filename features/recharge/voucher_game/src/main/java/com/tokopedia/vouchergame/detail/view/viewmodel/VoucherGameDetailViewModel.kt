@@ -20,7 +20,7 @@ import javax.inject.Inject
  * Created by resakemal on 16/08/19.
  */
 class VoucherGameDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                     val dispatcher: CoroutineDispatcher)
+                                                     dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val voucherGameProducts = MutableLiveData<Result<VoucherGameDetailData>>()
