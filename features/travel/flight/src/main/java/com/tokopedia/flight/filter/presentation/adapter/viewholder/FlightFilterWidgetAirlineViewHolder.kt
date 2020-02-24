@@ -39,6 +39,7 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
 
     fun onSelectedAirlineChanged(selectedAirline: List<String>) {
         this.selectedAirline = selectedAirline
+        itemView.flight_sort_widget.buildView(getItems())
     }
 
     private fun getItems(): List<FlightFilterAirlineModel> {
