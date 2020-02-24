@@ -78,6 +78,23 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }.toList()
     }
 
+    fun getFilteredJourneysStatisticCoroutine(filterModel: FlightFilterModel, @TravelSortOption flightSortOption: Int):
+            List<JourneyAndRoutes> {
+        val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
+            "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+                    "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
+        } else {
+            "SELECT * FROM FlightJourneyTable WHERE "
+        }
+        val query = buildQueryStatistic(sqlQuery, filterModel, flightSortOption)
+        val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
+        val facilityFilterList = getFacilityFilter(filterModel.facilityList)
+
+        return getJourneyFilteredByFacility(filteredJourney, facilityFilterList).map {
+            populateCompactJourneyAndRoutesCoroutine(it)
+        }.toList()
+    }
+
     private fun populateCompactJourneyAndRoutes(journeyAndRoutes: JourneyAndRoutes): Observable<JourneyAndRoutes> {
         val journeyDepartureAirport = FlightAirportViewModel(journeyAndRoutes.flightJourneyTable.departureAirport,
                 journeyAndRoutes.flightJourneyTable.departureAirportName, journeyAndRoutes.flightJourneyTable.departureAirportCity)
@@ -217,6 +234,23 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
             shouldCount
         }.toList()
+    }
+
+    private fun buildQueryStatistic(sqlQuery: String, filterModel: FlightFilterModel, flightSortOption: Int): SimpleSQLiteQuery {
+        val sqlStringBuilder = StringBuilder()
+        sqlStringBuilder.append(sqlQuery)
+
+        val isBestPairing = if (filterModel.isBestPairing) 1 else 0
+        val isReturnInt = if (filterModel.isReturn) 1 else 0
+
+        if (filterModel.isReturn) {
+            sqlStringBuilder.append("FlightJourneyTable.isBestPairing = $isBestPairing AND ")
+        }
+        sqlStringBuilder.append("FlightJourneyTable.isReturn = $isReturnInt")
+
+        sqlStringBuilder.append(getOrderBy(flightSortOption))
+
+        return SimpleSQLiteQuery(sqlStringBuilder.toString())
     }
 
     private fun buildQuery(sqlQuery: String, filterModel: FlightFilterModel, flightSortOption: Int): SimpleSQLiteQuery {
