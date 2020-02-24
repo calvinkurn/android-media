@@ -42,6 +42,7 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
 
     fun onSelectedAirlineChanged(selectedAirline: List<String>) {
         this.selectedAirline = selectedAirline
+        itemView.flight_sort_widget.onResetChip()
         itemView.flight_sort_widget.getItems().let {
             for (item in it) {
                 item.isSelected = this.selectedAirline.contains((item as FlightFilterAirlineModel).airlineId)
