@@ -618,7 +618,7 @@ public class MainParentActivity extends BaseActivity implements
     @NotNull
     private boolean checkAppSignature(){
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
-//            finish();
+            finish();
         }
         return true;
     }
