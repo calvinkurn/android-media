@@ -12,4 +12,6 @@ interface OnFlightFilterListener {
 
     fun getFlightFilterModel(): FlightFilterModel?
 
+    fun getFlightSelectedSort(): Int
+
 }

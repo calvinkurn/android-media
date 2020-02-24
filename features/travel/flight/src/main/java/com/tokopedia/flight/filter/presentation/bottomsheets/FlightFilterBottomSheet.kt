@@ -9,8 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.di.DaggerFlightFilterComponent
@@ -22,6 +20,7 @@ import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterT
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_DEFAULT_VALUE
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
@@ -57,7 +56,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             flightFilterViewModel = viewModelProvider.get(FlightFilterViewModel::class.java)
             if (arguments?.containsKey(ARG_FILTER_MODEL) == true) {
                 flightFilterViewModel.init(
-                        arguments?.getInt(ARG_SORT) ?: TravelSortOption.CHEAPEST,
+                        arguments?.getInt(ARG_SORT) ?: SORT_DEFAULT_VALUE,
                         arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel,
                         arguments?.getBoolean(ARG_IS_RETURN) ?: false)
             }
@@ -88,6 +87,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     override fun getFlightFilterModel(): FlightFilterModel? = flightFilterViewModel.filterModel.value
 
+    override fun getFlightSelectedSort(): Int = flightFilterViewModel.selectedSort.value ?: SORT_DEFAULT_VALUE
+
     private fun initInjector() {
         if (!::flightFilterComponent.isInitialized) {
             flightFilterComponent = DaggerFlightFilterComponent.builder()
@@ -112,8 +113,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun initAdapter() {
-        val typeFactory = FlightFilterSortAdapterTypeFactory(this, flightFilterViewModel.getSelectedSort(),
-                flightFilterViewModel.filterModel.value ?: FlightFilterModel())
+        val typeFactory = FlightFilterSortAdapterTypeFactory(this, getFlightSelectedSort(),
+                getFlightFilterModel() ?: FlightFilterModel())
         adapter = FlightFilterSortAdapter(typeFactory)
     }
 
@@ -124,7 +125,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             rvFlightFilter.adapter = adapter
 
             btnFlightFilterSave.setOnClickListener {
-                listener?.onSaveFilter(flightFilterViewModel.getSelectedSort(), flightFilterViewModel.filterModel.value)
+                listener?.onSaveFilter(getFlightSelectedSort(), getFlightFilterModel())
                 dismiss()
             }
         }
@@ -142,7 +143,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     override fun onClickSeeAllSort() {
-        val flightSortBottomSheet = FlightSortBottomSheet.newInstance(flightFilterViewModel.getSelectedSort())
+        val flightSortBottomSheet = FlightSortBottomSheet.newInstance(getFlightSelectedSort())
         flightSortBottomSheet.listener = object : FlightSortBottomSheet.ActionListener {
             override fun onSortOptionClicked(selectedSortOption: Int) {
                 flightFilterViewModel.setSelectedSort(selectedSortOption)
@@ -168,7 +169,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     override fun onArrivalTimeFilterChanged(arrivalTimeList: List<DepartureTimeEnum>) {
         flightFilterViewModel.filterArrivalTime(arrivalTimeList)
     }
-
 
     override fun onClickSeeAllAirline() {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

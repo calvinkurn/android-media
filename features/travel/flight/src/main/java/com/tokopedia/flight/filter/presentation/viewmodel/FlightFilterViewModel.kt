@@ -90,9 +90,7 @@ class FlightFilterViewModel @Inject constructor(
         mutableFilterModel.postValue(updatedFilterModel)
     }
 
-    fun getSelectedSort(): Int = selectedSort.value ?: TravelSortOption.CHEAPEST
-
-    fun getFlightCount() {
+    private fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.run {
                 mutableFlightCount.postValue(flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
@@ -102,7 +100,9 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     fun resetFilter() {
-        // TODO: Reset Filter Value
+        mutableSelectedSort.postValue(SORT_DEFAULT_VALUE)
+        mutableFilterModel.postValue(FlightFilterModel())
+        mapStatisticToModel(statisticModel.value)
     }
 
     fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
@@ -151,5 +151,7 @@ class FlightFilterViewModel @Inject constructor(
         const val PRICE_ORDER = 6
 
         const val DELAY_VALUE: Long = 2000
+
+        const val SORT_DEFAULT_VALUE = TravelSortOption.CHEAPEST
     }
 }
