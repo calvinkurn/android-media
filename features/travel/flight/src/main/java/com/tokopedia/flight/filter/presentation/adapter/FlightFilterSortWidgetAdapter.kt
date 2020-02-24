@@ -21,7 +21,10 @@ class FlightFilterSortWidgetAdapter(val items: MutableList<BaseFilterSortModel>,
         if (position < maxItemCount) {
             holder.bind(items[position])
             holder.itemView.setOnClickListener {
-                if (isSelectOnlyOneChip) resetAllSelectedChip()
+                if (isSelectOnlyOneChip) {
+                    resetAllSelectedChip()
+                    notifyDataSetChanged()
+                }
                 holder.clickChip()
                 onChipStateChanged(position, holder.isSelected())
             }
@@ -47,7 +50,6 @@ class FlightFilterSortWidgetAdapter(val items: MutableList<BaseFilterSortModel>,
         for (item in items) {
             item.isSelected = false
         }
-        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = if (items.size > maxItemCount) maxItemCount else items.size
