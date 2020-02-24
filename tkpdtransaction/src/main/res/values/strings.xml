@@ -357,7 +357,7 @@ Anda di sini.</string>
     <string name="user_label">Data Pemegang E-tiket</string>
     <string name="booking_code_title">Kode Booking:</string>
     <string name="btn_redeem_ticket">Tutup</string>
-    <string name="voucher_code_title">Kode voucher:</string>
+    <string name="voucher_code_title">Kode Booking :</string>
     <string name="voucher_code_title_deals">Voucher Deals</string>
     <string name="redeem_deals_btn">Redeem</string>
     <string name="event_ticket_voucher_multiple">x E-Tiket</string>
@@ -383,6 +383,9 @@ Anda di sini.</string>
     <string name="tkpdtransaction_oms_retry_success">Hore! E-voucher kamu sudah terbit.</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil tersalin</string>
+
+    <string name="redeem_dialog_powered_by">Powered by  </string>
+    <string name="redeem_dialog_voucher_code">Kode Voucher</string>
 
 
     <string name="tkpdtransaction_filter_terapkan">Terapkan</string>

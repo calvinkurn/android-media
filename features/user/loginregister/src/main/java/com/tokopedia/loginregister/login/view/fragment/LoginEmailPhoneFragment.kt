@@ -462,36 +462,43 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>) {
 
-        val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        if (providers.isNotEmpty()) {
+            val layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-        layoutParams.setMargins(0, 10, 0, 10)
-        socmedButtonsContainer.removeAllViews()
-        providers.forEach {
-            val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
-            tv.tag = it.id
-            tv.setText(it.name)
-            if (userSession.name.isNotEmpty()) {
-                var name = userSession.name
-                if (name.split("\\s".toRegex()).size > 1)
-                    name = name.substring(0, name.indexOf(" "))
-                if ((it.id.equals(FACEBOOK, ignoreCase = true) &&
-                                userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
-                        (it.id.equals(GPLUS, ignoreCase = true) &&
-                                userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
-                    tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
+            layoutParams.setMargins(0, 10, 0, 10)
+            socmedButtonsContainer.removeAllViews()
+            providers.forEach {
+                val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
+                tv.tag = it.id
+                tv.setText(it.name)
+                if (userSession.name.isNotEmpty()) {
+                    var name = userSession.name
+                    if (name.split("\\s".toRegex()).size > 1)
+                        name = name.substring(0, name.indexOf(" "))
+                    if ((it.id.equals(FACEBOOK, ignoreCase = true) &&
+                                    userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                            (it.id.equals(GPLUS, ignoreCase = true) &&
+                                    userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                        tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
+                    }
                 }
-            }
-            if (!TextUtils.isEmpty(it.image)) {
-                tv.setImage(it.image)
-            } else if (it.imageResource != 0) {
-                tv.setImageResource(it.imageResource)
-            }
-            tv.setRoundCorner(10)
+                if (!TextUtils.isEmpty(it.image)) {
+                    tv.setImage(it.image)
+                } else if (it.imageResource != 0) {
+                    tv.setImageResource(it.imageResource)
+                }
+                tv.setRoundCorner(10)
 
-            setDiscoverListener(it, tv)
-            socmedButtonsContainer.addView(tv, socmedButtonsContainer.childCount, layoutParams)
+                setDiscoverListener(it, tv)
+                socmedButtonsContainer.addView(tv, socmedButtonsContainer.childCount, layoutParams)
+            }
+        } else {
+            onErrorDiscoverLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                    context)))
         }
+
     }
 
     private fun setDiscoverListener(discoverItemViewModel: DiscoverItemViewModel,
@@ -605,13 +612,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun onErrorDiscoverLogin(errorMessage: String) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage)
-        {
-            context?.run {
-                presenter.discoverLogin(this)
-            }
-        }.showRetrySnackbar()
+    override fun onErrorDiscoverLogin(throwable: Throwable) {
+        val forbiddenMessage = context?.getString(
+                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        if (errorMessage == forbiddenMessage) {
+            onGoToForbiddenPage()
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage)
+            {
+                context?.run {
+                    presenter.discoverLogin(this)
+                }
+            }.showRetrySnackbar()
+        }
     }
 
     override fun onSuccessLogin() {
@@ -885,7 +899,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
 
         }
     }
@@ -919,7 +933,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onGoToActivationPageAfterRelogin(): (MessageErrorException) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, false))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
         }
     }
 
@@ -934,7 +948,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onErrorReloginAfterSQ(validateToken: String): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            val errorMessage = ErrorHandlerSession.getErrorMessage(it, context, true)
+            val errorMessage = ErrorHandler.getErrorMessage(context, it)
             NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                 presenter.reloginAfterSQ(validateToken)
             }.showRetrySnackbar()
@@ -946,7 +960,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onErrorLoginFacebook(email: String): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
         }
     }
 
@@ -963,14 +977,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onErrorLoginFacebookPhone(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
         }
     }
 
     override fun onErrorLoginGoogle(email: String?): (Throwable) -> Unit {
         return {
             logoutGoogleAccountIfExist()
-            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
         }
     }
 
@@ -1259,7 +1273,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             it.printStackTrace()
             dismissLoadingLogin()
             view?.run {
-                val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
+                val errorMessage = ErrorHandler.getErrorMessage(context, it)
                 Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
             }
         }
