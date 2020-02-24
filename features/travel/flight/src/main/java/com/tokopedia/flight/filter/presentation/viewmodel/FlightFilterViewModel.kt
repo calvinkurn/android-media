@@ -14,6 +14,7 @@ import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -66,8 +67,11 @@ class FlightFilterViewModel @Inject constructor(
             filterModel.value?.let {
                 mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
                         flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
-                mapStatisticToModel(statisticModel.value)
             }
+
+            delay(DELAY_VALUE)
+
+            mapStatisticToModel(statisticModel.value)
         }
     }
 
@@ -152,5 +156,7 @@ class FlightFilterViewModel @Inject constructor(
         const val AIRLINE_ORDER = 4
         const val FACILITY_ORDER = 5
         const val PRICE_ORDER = 6
+
+        const val DELAY_VALUE: Long = 1000
     }
 }
