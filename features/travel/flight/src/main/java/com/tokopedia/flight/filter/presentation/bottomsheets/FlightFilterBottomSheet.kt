@@ -149,13 +149,33 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun resetFilter() {
-        (rvFlightFilter.findViewHolderForAdapterPosition(SORT_ORDER) as FlightSortViewHolder).performClickOnSortId(SORT_DEFAULT_VALUE)
-        (rvFlightFilter.findViewHolderForAdapterPosition(TRANSIT_ORDER) as FlightFilterTransitViewHolder).onResetChip()
-        (rvFlightFilter.findViewHolderForAdapterPosition(DEPARTURE_TIME_ORDER) as FlightFilterDepartureTimeViewHolder).onResetChip()
-        (rvFlightFilter.findViewHolderForAdapterPosition(ARRIVAL_TIME_ORDER) as FlightFilterArrivalTimeViewHolder).onResetChip()
-        (rvFlightFilter.findViewHolderForAdapterPosition(AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder).onResetChip()
-        (rvFlightFilter.findViewHolderForAdapterPosition(FACILITY_ORDER) as FlightFilterFacilityViewHolder).onResetChip()
-        (rvFlightFilter.findViewHolderForAdapterPosition(PRICE_ORDER) as FlightFilterPriceRangeViewHolder).onResetValue()
+        rvFlightFilter.findViewHolderForAdapterPosition(SORT_ORDER)?.let {
+            (it as FlightSortViewHolder).performClickOnSortId(SORT_DEFAULT_VALUE)
+        }
+
+        rvFlightFilter.findViewHolderForAdapterPosition(TRANSIT_ORDER)?.let {
+            (it as FlightFilterTransitViewHolder).onResetChip()
+        }
+
+        rvFlightFilter.findViewHolderForAdapterPosition(DEPARTURE_TIME_ORDER)?.let {
+            (it as FlightFilterDepartureTimeViewHolder).onResetChip()
+        }
+
+        rvFlightFilter.findViewHolderForAdapterPosition(ARRIVAL_TIME_ORDER)?.let {
+            (it as FlightFilterArrivalTimeViewHolder).onResetChip()
+        }
+
+        rvFlightFilter.findViewHolderForAdapterPosition(AIRLINE_ORDER)?.let {
+            (it as FlightFilterWidgetAirlineViewHolder).onResetChip()
+        }
+
+        rvFlightFilter.findViewHolderForAdapterPosition(FACILITY_ORDER)?.let {
+            (it as FlightFilterFacilityViewHolder).onResetChip()
+        }
+
+        rvFlightFilter.findViewHolderForAdapterPosition(PRICE_ORDER)?.let {
+            (it as FlightFilterPriceRangeViewHolder).onResetValue()
+        }
     }
 
     override fun onSortChanged(selectedSortOption: Int) {
