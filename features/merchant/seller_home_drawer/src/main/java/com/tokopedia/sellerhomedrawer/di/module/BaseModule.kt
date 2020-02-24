@@ -1,30 +1,29 @@
 package com.tokopedia.sellerhomedrawer.di.module
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.sellerhomedrawer.di.SellerHomeDashboardScope
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @SellerHomeDashboardScope
 @Module(includes = [RetrofitModule::class])
-class BaseModule(var context: Context) {
+class BaseModule(val context: Context) {
 
+    @SellerHomeDashboardScope
     @Provides
-    fun provideContext(): Context = context
+    fun provideDrawerCache(@ApplicationContext context: Context): LocalCacheHandler = LocalCacheHandler(context, SellerDrawerHelper.DRAWER_CACHE)
 
+    @SellerHomeDashboardScope
     @Provides
-    @Named("application")
-    fun provideApplicationContext(): Context = context.applicationContext
+    fun provideUserSession(@ApplicationContext context: Context): UserSession = UserSession(context)
 
+    @SellerHomeDashboardScope
+    @ApplicationContext
     @Provides
-    fun provideDrawerCache(context: Context): LocalCacheHandler = LocalCacheHandler(context.applicationContext, SellerDrawerHelper.DRAWER_CACHE)
-
-    @Provides
-    fun provideUserSession(context: Context): UserSession = UserSession(context)
-
+    fun provideContext(): Context = context.applicationContext
 
 }

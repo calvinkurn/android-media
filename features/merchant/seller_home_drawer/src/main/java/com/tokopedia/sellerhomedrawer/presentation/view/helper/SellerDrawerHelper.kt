@@ -41,11 +41,12 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
+import javax.inject.Inject
 
-class SellerDrawerHelper(val context: Activity,
-                         override val userSession: UserSessionInterface,
-                         val drawerCache: LocalCacheHandler,
-                         val remoteConfig: FirebaseRemoteConfigImpl) :
+class SellerDrawerHelper @Inject constructor(val context: Activity,
+                                             override val userSession: UserSessionInterface,
+                                             val drawerCache: LocalCacheHandler,
+                                             val remoteConfig: FirebaseRemoteConfigImpl) :
         SellerDrawerItemListener, SellerDrawerHeaderListener, SellerDrawerGroupListener ,
         DrawerHeaderListener, RetryTokoCashListener {
 

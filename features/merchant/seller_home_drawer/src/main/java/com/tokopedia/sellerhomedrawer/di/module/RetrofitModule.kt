@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomedrawer.di.module
 
 import android.content.Context
 import com.google.gson.GsonBuilder
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.network.NetworkRouter
@@ -27,8 +28,9 @@ class RetrofitModule {
 
     private val baseUrl = SellerDrawerUrl.User.URL_NOTIFICATION
 
+    @SellerHomeDashboardScope
     @Provides
-    fun provideRetrofit(@Named("application") context: Context,
+    fun provideRetrofit(@ApplicationContext context: Context,
                         networkRouter: NetworkRouter,
                         userSession: UserSession): Retrofit {
         val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").setPrettyPrinting().serializeNulls().create()
@@ -46,8 +48,9 @@ class RetrofitModule {
                 .build()
     }
 
+    @SellerHomeDashboardScope
     @Provides
-    fun provideNetworkRouter(context: Context): NetworkRouter {
-        return (context.applicationContext as NetworkRouter)
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return (context as NetworkRouter)
     }
 }

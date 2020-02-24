@@ -5,10 +5,10 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 
-class SellerTokoCashUseCase(private val sellerTokoCashData: Observable<SellerTokoCashData>): UseCase<SellerTokoCashData>() {
+class SellerTokoCashUseCase: UseCase<SellerTokoCashData>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<SellerTokoCashData> {
-        return sellerTokoCashData
+        return Observable.just(SellerTokoCashData())
     }
 
 }

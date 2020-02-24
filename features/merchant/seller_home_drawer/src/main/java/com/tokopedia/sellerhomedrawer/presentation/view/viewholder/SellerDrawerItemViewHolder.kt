@@ -14,7 +14,8 @@ class SellerDrawerItemViewHolder (itemView: View,
 
     companion object {
         val LAYOUT_RES = R.layout.sh_drawer_item
-        const val MAX_PLACEHOLDER = "999+"
+        private const val MAX_PLACEHOLDER = "999+"
+        private const val MAXIMUM_COUNTER = 999
     }
 
     override fun bind(sellerDrawerItem: SellerDrawerItem) {
@@ -31,13 +32,12 @@ class SellerDrawerItemViewHolder (itemView: View,
     }
 
     private fun setNotificationCounter(notificationCount: Int) {
-        val maximumCounter = 999
         val notif = itemView.notif
         notif.visibility = View.VISIBLE
         when {
             notificationCount > 0 ->
                 notif.text = notificationCount.toString()
-            notificationCount > maximumCounter ->
+            notificationCount > MAXIMUM_COUNTER ->
                 notif.text = MAX_PLACEHOLDER
             else -> notif.visibility = View.GONE
         }

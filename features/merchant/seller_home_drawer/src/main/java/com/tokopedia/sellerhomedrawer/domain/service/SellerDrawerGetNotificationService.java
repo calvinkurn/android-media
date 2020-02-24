@@ -79,7 +79,7 @@ public class SellerDrawerGetNotificationService extends JobIntentService {
     private void initInjector() {
         ServiceComponent serviceComponent = DaggerServiceComponent
                 .builder()
-                .baseModule(new BaseModule(getBaseContext()))
+                .baseModule(new BaseModule(this))
                 .build();
         serviceComponent.inject(this);
     }

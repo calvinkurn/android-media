@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.data.SellerUserData
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeParamConstant
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerDeposit
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
@@ -21,11 +22,13 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
+import javax.inject.Named
 
-class SellerDrawerDataManagerImpl(private val context: Context,
-                                  private val viewListener: SellerDrawerDataListener,
-                                  private val sellerTokoCashUseCase: SellerTokoCashUseCase,
-                                  private val getSellerHomeUserAttrUseCase: GetSellerHomeUserAttributesUseCase): SellerDrawerDataManager {
+class SellerDrawerDataManagerImpl(val context: Context,
+                                  val viewListener: SellerDrawerDataListener,
+                                  val sellerTokoCashUseCase: SellerTokoCashUseCase,
+                                  val getSellerHomeUserAttrUseCase: GetSellerHomeUserAttributesUseCase,
+                                  @Named(SellerHomeParamConstant.SELLER_DRAWER_DATA_QUERY) val query: String): SellerDrawerDataManager {
 
     companion object {
         @JvmStatic
@@ -41,8 +44,6 @@ class SellerDrawerDataManagerImpl(private val context: Context,
     }
 
     override fun getSellerUserAttributes(userSession: UserSessionInterface) {
-
-        val query = GraphqlHelper.loadRawString(viewListener.getActivity().resources, R.raw.sah_seller_drawer_data_query)
 
         getSellerHomeUserAttrUseCase.execute(GetSellerHomeUserAttributesUseCase.getUserAttrParams(userSession.userId, query), object : Subscriber<SellerUserData>() {
             override fun onNext(sellerUserData: SellerUserData) {
