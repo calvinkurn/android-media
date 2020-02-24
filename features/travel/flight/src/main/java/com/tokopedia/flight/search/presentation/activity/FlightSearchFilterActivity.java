@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterAirlineBottomSheet;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presentation.FlightFilterCountView;
@@ -259,9 +258,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     public void onAirlineLabelClicked() {
 //        replaceFragment(FlightFilterAirlineFragment.newInstance(), FlightFilterAirlineFragment.TAG);
-        FlightFilterAirlineBottomSheet filterAirlineBottomSheet = FlightFilterAirlineBottomSheet.Companion.getInstance();
-        filterAirlineBottomSheet.setListener(this);
-        filterAirlineBottomSheet.show(getSupportFragmentManager(), FlightFilterAirlineBottomSheet.TAG_FILTER_AIRLINE);
+//        FlightFilterAirlineBottomSheet filterAirlineBottomSheet = FlightFilterAirlineBottomSheet.Companion.getInstance();
+//        filterAirlineBottomSheet.setListener(this);
+//        filterAirlineBottomSheet.show(getSupportFragmentManager(), FlightFilterAirlineBottomSheet.TAG_FILTER_AIRLINE);
     }
 
     @Override
