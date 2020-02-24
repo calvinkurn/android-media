@@ -190,17 +190,29 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             for (route in it.routes) {
                 val amenities = Gson().fromJson<List<Amenity>>(route.amenities, type)
 
-                shouldCount = if (isBaggageFiltered && isMealFiltered) {
-                    ((amenities.size == 2)
-                            && (amenities[0].icon == "baggage" || amenities[0].icon == "meal")
-                            && (amenities[1].icon == "baggage" || amenities[1].icon == "meal"))
-                } else if (isBaggageFiltered) {
-                    amenities[0].icon == "baggage" || amenities[1].icon == "baggage"
-                } else if (isMealFiltered) {
-                    amenities[0].icon == "meal" || amenities[1].icon == "meal"
-                } else {
-                    true
-                }
+                if (amenities.isNotEmpty()) {
+                    if (isBaggageFiltered && isMealFiltered) {
+                        shouldCount = ((amenities.size == 2)
+                                && (amenities[0].icon == "baggage" || amenities[0].icon == "meal")
+                                && (amenities[1].icon == "baggage" || amenities[1].icon == "meal"))
+                    } else if (isBaggageFiltered) {
+                        for (amenity in amenities) {
+                            if (amenity.icon == "baggage") {
+                                shouldCount = true
+                                break
+                            }
+                        }
+                    } else if (isMealFiltered) {
+                        for (amenity in amenities) {
+                            if (amenity.icon == "meal") {
+                                shouldCount = true
+                                break
+                            }
+                        }
+                    } else {
+                        shouldCount = true
+                    }
+                } else shouldCount = !(isBaggageFiltered || isMealFiltered)
             }
 
             shouldCount
