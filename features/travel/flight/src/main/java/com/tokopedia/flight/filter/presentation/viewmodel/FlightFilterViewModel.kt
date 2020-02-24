@@ -125,6 +125,7 @@ class FlightFilterViewModel @Inject constructor(
     fun resetFilter() {
         mutableSelectedSort.value = SORT_DEFAULT_VALUE
         mutableFilterModel.value = resetFilterModel()
+        mapStatisticToModel()
     }
 
     fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
