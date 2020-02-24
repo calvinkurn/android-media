@@ -1,6 +1,7 @@
 package com.tokopedia.flight.filter.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelSortOption
@@ -40,11 +41,17 @@ class FlightFilterViewModel @Inject constructor(
     val statisticModel: LiveData<FlightSearchStatisticModel>
         get() = mutableStatisticModel
 
-    private val mutableFlightCount = MutableLiveData<Int>()
+    private val mediatorFlightCount = MediatorLiveData<Int>()
     val flightCount: LiveData<Int>
-        get() = mutableFlightCount
+        get() = mediatorFlightCount
 
     val filterViewData = MutableLiveData<List<BaseFilterSortModel>>()
+
+    init {
+        mediatorFlightCount.addSource(filterModel) {
+            getFlightCount()
+        }
+    }
 
     fun init(selectedSort: Int, filterModel: FlightFilterModel, isReturn: Boolean) {
         mutableSelectedSort.postValue(selectedSort)
@@ -95,7 +102,7 @@ class FlightFilterViewModel @Inject constructor(
     fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.run {
-                mutableFlightCount.postValue(flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
+                mediatorFlightCount.postValue(flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
                         .createRequestParams(filterModel.value!!)))
             }
         }
