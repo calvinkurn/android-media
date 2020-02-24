@@ -70,18 +70,11 @@ public class DeeplinkUTMUtils {
             for (String pair : pairs) {
                 int indexKey = pair.indexOf("=");
                 if (indexKey > 0 && indexKey + 1 <= pair.length()) {
-                    String key = "";
-                    String value = "";
                     try {
-                        key = pair.substring(0, indexKey);
-                        value = pair.substring(indexKey + 1);
-                        key = URLDecoder.decode(key, "UTF-8");
-                        value = URLDecoder.decode(value, "UTF-8");
+                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
+                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }
-                    if (!TextUtils.isEmpty(key) && !TextUtils.isEmpty(value)) {
-                        queryPairs.put(key, value);
                     }
                 }
             }
