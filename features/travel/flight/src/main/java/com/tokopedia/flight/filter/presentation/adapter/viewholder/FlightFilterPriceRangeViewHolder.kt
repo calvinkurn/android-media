@@ -25,8 +25,8 @@ class FlightFilterPriceRangeViewHolder(val view: View,
             startValue = element.initialStartValue
             endValue = element.selectedEndValue
 
-            etFlightLowestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.initialStartValue))
-            etFlightHighestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.initialEndValue))
+            etFlightLowestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.selectedStartValue))
+            etFlightHighestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.selectedEndValue))
             rsuFlightFilterPrice.updateStartValue(element.initialStartValue)
             rsuFlightFilterPrice.updateEndValue(element.initialEndValue)
             rsuFlightFilterPrice.setInitialValue(element.selectedStartValue, element.selectedEndValue)
