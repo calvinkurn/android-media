@@ -12,6 +12,6 @@ interface OnFlightFilterListener {
 
     fun getFlightFilterModel(): FlightFilterModel?
 
-    fun onFlightFilterAirlineSaved()
+    fun onFlightFilterAirlineSaved(selectedAirlines: List<String>)
 
 }

@@ -88,12 +88,13 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     override fun getFlightFilterModel(): FlightFilterModel? = flightFilterViewModel.filterModel.value
 
-    override fun onFlightFilterAirlineSaved() {
-        with(rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder) {
-            flightFilterViewModel.filterModel.value?.let {
-                this.onSelectedAirlineChanged(it.airlineList)
+    override fun onFlightFilterAirlineSaved(selectedAirlines: List<String>) {
+            flightFilterViewModel.filterAirlines(selectedAirlines)
+            with(rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder) {
+                flightFilterViewModel.filterModel.value?.let {
+                    this.onSelectedAirlineChanged(it.airlineList)
+                }
             }
-        }
     }
 
     private fun initInjector() {

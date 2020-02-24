@@ -117,14 +117,11 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
     }
 
     private fun saveAirlineFilter() {
-        val filterModel = listener.getFlightFilterModel()
-        val checkedAirlineList = adapter.checkedDataList
-
-        filterModel?.airlineList = checkedAirlineList.map {
+        val checkedAirlineList = adapter.checkedDataList.map {
             it.airlineDB.id
         }.toList()
 
-        listener.onFlightFilterAirlineSaved()
+        listener.onFlightFilterAirlineSaved(checkedAirlineList)
 
         if (isAdded) {
             dismiss()
