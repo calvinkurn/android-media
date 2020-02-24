@@ -69,7 +69,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
