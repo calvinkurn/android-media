@@ -18,10 +18,19 @@ import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.*
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterWidgetAirlineViewHolder
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.AIRLINE_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.ARRIVAL_TIME_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.DEPARTURE_TIME_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.FACILITY_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.PRICE_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_DEFAULT_VALUE
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_ORDER
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.TRANSIT_ORDER
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
@@ -47,6 +56,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     private lateinit var flightFilterComponent: FlightFilterComponent
     private lateinit var mChildView: View
 
+    lateinit var typeFactory: FlightFilterSortAdapterTypeFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,7 +68,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             flightFilterViewModel = viewModelProvider.get(FlightFilterViewModel::class.java)
             if (arguments?.containsKey(ARG_FILTER_MODEL) == true) {
                 flightFilterViewModel.init(
-                        arguments?.getInt(ARG_SORT) ?: TravelSortOption.CHEAPEST,
+                        arguments?.getInt(ARG_SORT) ?: SORT_DEFAULT_VALUE,
                         arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel,
                         arguments?.getBoolean(ARG_IS_RETURN) ?: false)
             }
@@ -87,6 +98,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     override fun getFlightSearchStaticticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value
 
     override fun getFlightFilterModel(): FlightFilterModel? = flightFilterViewModel.filterModel.value
+
+    override fun getFlightSelectedSort(): Int = flightFilterViewModel.selectedSort.value ?: SORT_DEFAULT_VALUE
 
     override fun onFlightFilterAirlineSaved(selectedAirlines: List<String>) {
             flightFilterViewModel.filterAirlines(selectedAirlines)
@@ -121,19 +134,20 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun initAdapter() {
-        val typeFactory = FlightFilterSortAdapterTypeFactory(this, flightFilterViewModel.getSelectedSort(),
-                flightFilterViewModel.filterModel.value ?: FlightFilterModel())
+        typeFactory = FlightFilterSortAdapterTypeFactory(this, getFlightSelectedSort(),
+                getFlightFilterModel() ?: FlightFilterModel())
         adapter = FlightFilterSortAdapter(typeFactory)
     }
 
     private fun initView() {
         with(mChildView) {
             rvFlightFilter.setHasFixedSize(true)
-            rvFlightFilter.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             rvFlightFilter.adapter = adapter
+            rvFlightFilter.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+            rvFlightFilter.setHasFixedSize(true)
 
             btnFlightFilterSave.setOnClickListener {
-                listener?.onSaveFilter(flightFilterViewModel.getSelectedSort(), flightFilterViewModel.filterModel.value)
+                listener?.onSaveFilter(getFlightSelectedSort(), getFlightFilterModel())
                 dismiss()
             }
         }
@@ -151,7 +165,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     override fun onClickSeeAllSort() {
-        val flightSortBottomSheet = FlightSortBottomSheet.newInstance(flightFilterViewModel.getSelectedSort())
+        val flightSortBottomSheet = FlightSortBottomSheet.newInstance(getFlightSelectedSort())
         flightSortBottomSheet.listener = object : FlightSortBottomSheet.ActionListener {
             override fun onSortOptionClicked(selectedSortOption: Int) {
                 flightFilterViewModel.setSelectedSort(selectedSortOption)
@@ -178,6 +192,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightFilterViewModel.filterArrivalTime(arrivalTimeList)
     }
 
+
     override fun onClickSeeAllAirline() {
         val filterAirlineBottomSheet = FlightFilterAirlineBottomSheet.getInstance()
         filterAirlineBottomSheet.listener = this
@@ -188,9 +203,11 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     override fun getAirlineList(): List<AirlineStat> =
-            flightFilterViewModel.getAirlineList()
+        flightFilterViewModel.getAirlineList()
 
     private fun renderList(data: List<BaseFilterSortModel>) {
+        adapter?.typeFactory?.initialSortOption = SORT_DEFAULT_VALUE
+        adapter?.typeFactory?.filterModel = FlightFilterModel()
         adapter?.clearAllElements()
         adapter?.addElement(data)
         adapter?.notifyDataSetChanged()

@@ -122,7 +122,9 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     fun resetFilter() {
-        // TODO: Reset Filter Value
+        mutableSelectedSort.postValue(SORT_DEFAULT_VALUE)
+        mutableFilterModel.postValue(FlightFilterModel())
+        mapStatisticToModel(statisticModel.value)
     }
 
     fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
@@ -171,5 +173,7 @@ class FlightFilterViewModel @Inject constructor(
         const val PRICE_ORDER = 6
 
         const val DELAY_VALUE: Long = 1000
+
+        const val SORT_DEFAULT_VALUE = TravelSortOption.CHEAPEST
     }
 }

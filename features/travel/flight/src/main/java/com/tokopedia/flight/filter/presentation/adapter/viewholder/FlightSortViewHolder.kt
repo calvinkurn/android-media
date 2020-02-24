@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  * @author by jessica on 2020-02-20
  */
 
-class FlightSortViewHolder(val view: View, val listener: FlightFilterSortListener, var selectedId: Int) : AbstractViewHolder<FlightSortModel>(view) {
+class FlightSortViewHolder(view: View, val listener: FlightFilterSortListener, var selectedId: Int) : AbstractViewHolder<FlightSortModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_flight_filter_sort

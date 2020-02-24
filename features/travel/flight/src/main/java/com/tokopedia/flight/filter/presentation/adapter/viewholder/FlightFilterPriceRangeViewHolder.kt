@@ -16,8 +16,14 @@ class FlightFilterPriceRangeViewHolder(val view: View,
                                        private val listener: FlightFilterSortListener)
     : AbstractViewHolder<PriceRangeModel>(view) {
 
+    var startValue: Int = 0
+    var endValue: Int = 0
+
     override fun bind(element: PriceRangeModel) {
         with(view) {
+
+            startValue = element.initialStartValue
+            endValue = element.selectedEndValue
 
             etFlightLowestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.initialStartValue))
             etFlightHighestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.initialEndValue))
@@ -33,6 +39,10 @@ class FlightFilterPriceRangeViewHolder(val view: View,
                 }
             }
         }
+    }
+
+    fun onResetValue() {
+        view.rsuFlightFilterPrice.setInitialValue(startValue, endValue)
     }
 
     companion object {
