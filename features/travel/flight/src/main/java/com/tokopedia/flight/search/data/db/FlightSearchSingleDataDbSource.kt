@@ -157,14 +157,16 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         return getJourneyFilteredByFacility(filteredJourney, facilityFilter).size
     }
 
-    private fun getFacilityFilter(facilityFilterList: List<FlightFilterFacilityEnum>): Map<FlightFilterFacilityEnum, Boolean> {
+    private fun getFacilityFilter(facilityFilterList: List<FlightFilterFacilityEnum>?): Map<FlightFilterFacilityEnum, Boolean> {
         val map = mutableMapOf(
                 Pair(FlightFilterFacilityEnum.BAGGAGE, false),
                 Pair(FlightFilterFacilityEnum.MEAL, false)
         )
 
-        for (facility in facilityFilterList) {
-            map[facility] = true
+        if (facilityFilterList != null) {
+            for (facility in facilityFilterList) {
+                map[facility] = true
+            }
         }
 
         return map
