@@ -86,8 +86,8 @@ class PlayCardViewHolder(
     private fun initView(model: PlayCardViewModel){
         model.playCardHome?.let{ playChannel ->
             handlingTracker(model)
-            title.setValue(model.channel.header.name)
-            description.setValue("")
+            title.setValue(model.channel.name)
+            description.setValue(model.channel.header.name)
 
             thumbnailView.show()
             thumbnailView.loadImage(playChannel.coverUrl, 350, 150, true)
