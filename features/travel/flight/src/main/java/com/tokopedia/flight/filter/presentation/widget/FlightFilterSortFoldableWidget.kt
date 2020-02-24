@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.layout_flight_filter_sort_chip.view.*
 import kotlinx.android.synthetic.main.widget_flight_filter_sort_foldable.view.*
 
 /**
@@ -90,6 +89,10 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
                 this.unselectChip()
             }
         }
+    }
+
+    fun resetAllSelectedChip() {
+        widgetAdapter.resetAllSelectedChip()
     }
 
     fun performClickOnChipWithPosition(position: Int) {

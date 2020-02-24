@@ -42,7 +42,7 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
 
     fun onSelectedAirlineChanged(selectedAirline: List<String>) {
         this.selectedAirline = selectedAirline
-        itemView.flight_sort_widget.onResetChip()
+        itemView.flight_sort_widget.resetAllSelectedChip()
         for (selectedId in selectedAirline) {
             if (getAirlinePosition(selectedId) in 0 until MAX_ITEM_SHOWED) {
                 itemView.flight_sort_widget.performClickOnChipWithPosition(getAirlinePosition(selectedId))
