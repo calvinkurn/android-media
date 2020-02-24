@@ -23,7 +23,7 @@ class ResponseVH(itemView: View, val itemClickCallback: (ResponseListData, Boole
 
     fun setData(data: ResponseListData) {
         tvQueryName.text = data.title
-        if (!TextUtils.isEmpty(data.customName)) {
+        if (!data.customName.isNullOrEmpty()) {
             tvCustomName.text = data.customName
             tvCustomName.visibility = View.VISIBLE
         } else {

@@ -18,7 +18,7 @@ class RestInterceptor(context: Context) : Interceptor {
             val buffer = Buffer()
             request.body()?.writeTo(buffer)
             val fakeResponse = requestParser.getFakeResponse(request.url(), request.method())
-            if (!TextUtils.isEmpty(fakeResponse)) {
+            if (!fakeResponse.isNullOrEmpty()) {
                 return createResponseFromFakeResponse(fakeResponse!!, request)
             }
         } catch (e: Exception) {

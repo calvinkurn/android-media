@@ -12,18 +12,16 @@ import kotlinx.coroutines.Dispatchers
 class AddGqlActivityProvider :
     DiProvider<AddGqlActivity> {
 
-    override fun inject(t: AddGqlActivity) {
+    override fun inject(activity: AddGqlActivity) {
         val workerDispatcher = Dispatchers.IO
 
-        val gqlDao = getDatabase(t).gqlDao()
+        val gqlDao = getDatabase(activity).gqlDao()
         val localRepository = LocalRepository(gqlDao)
         val addToDbUseCase = AddToDbUseCase(localRepository)
 
         val list = arrayOf(workerDispatcher, addToDbUseCase)
-        val vmFactory = ViewModelProvider(t,
-            VMFactory(t.application, list)
-        )
+        val vmFactory = ViewModelProvider(activity, VMFactory(activity.application, list))
         val vm = vmFactory[AddGqlVM::class.java]
-        t.viewModel = vm
+        activity.viewModel = vm
     }
 }
