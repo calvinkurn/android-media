@@ -387,6 +387,7 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.brandlist)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.libraries.iris)
