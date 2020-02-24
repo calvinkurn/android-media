@@ -48,17 +48,11 @@ class AddressListFragment : BaseDaggerFragment() {
         initViewModel()
 
         btn_save_address.setOnClickListener {
-            if(empty_state_order_list.visibility == View.VISIBLE) {
-                address_list_layout.visibility = View.VISIBLE
-                empty_state_order_list.visibility = View.GONE
-            } else {
-  /*              val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragment_layout_id, fragment)
-                transaction.commit()
-                supportFragmentManager.beginTransaction().replace(R.id.container, ShippingDurationFragment()).commit()*/
-/*
+            if(empty_state_order_list.visibility == View.GONE) {
                 address_list_layout.visibility = View.GONE
-                empty_state_order_list.visibility = View.VISIBLE*/
+                empty_state_order_list.visibility = View.VISIBLE
+            } else {
+                goToNextStep()
             }
         }
 
@@ -77,6 +71,8 @@ class AddressListFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditActivity) {
             parent.showStepper()
             parent.setStepperValue(25, true)
+            parent.setTitles(getString(R.string.activity_title_choose_address))
+            parent.setSubtitle(getString(R.string.activity_subtitle_choose_address))
         }
     }
 
@@ -84,7 +80,6 @@ class AddressListFragment : BaseDaggerFragment() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
             parent.addFragment(ShippingDurationFragment())
-            parent.setStepperValue(50, true)
         }
     }
 

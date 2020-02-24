@@ -35,7 +35,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment()).commit()
     }
 
-    fun setTitle(title: String) {
+    fun setTitles(title: String) {
         tv_title.text = title
     }
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import kotlinx.android.synthetic.main.fragment_shipping_duration.*
 import javax.inject.Inject
 
@@ -44,11 +45,21 @@ class ShippingDurationFragment : BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
+        setStep()
 
         shipping_duration_rv.adapter = adapter
         shipping_duration_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
 //        item_shipping_radio.isChecked = !item_shipping_radio.isChecked
+    }
+
+    private fun setStep(){
+        val parent = activity
+        if(parent is PreferenceEditActivity) {
+            parent.setStepperValue(50, true)
+            parent.setTitles(getString(R.string.activity_title_shipping_duration))
+            parent.setSubtitle(getString(R.string.activity_subtitle_shipping_address))
+        }
     }
 
 }
