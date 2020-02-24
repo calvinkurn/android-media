@@ -11,6 +11,21 @@ data class PromoEligibleHeaderUiModel(
         return typeFactory.type(this)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PromoEligibleHeaderUiModel
+
+        if (uiData != other.uiData) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return uiData.hashCode()
+    }
+
     data class UiData(
             var title: String = "",
             var subTitle: String = ""
