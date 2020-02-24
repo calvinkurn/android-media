@@ -198,8 +198,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightFilterViewModel.getAirlineList()
 
     private fun renderList(data: List<BaseFilterSortModel>) {
-        adapter?.typeFactory?.initialSortOption = SORT_DEFAULT_VALUE
-        adapter?.typeFactory?.filterModel = FlightFilterModel()
         adapter?.clearAllElements()
         adapter?.addElement(data)
         adapter?.notifyDataSetChanged()
