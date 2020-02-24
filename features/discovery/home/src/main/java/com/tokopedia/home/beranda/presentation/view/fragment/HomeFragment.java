@@ -228,6 +228,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
+    private boolean isPerformanceMonitoringAttachedToRv = false;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -618,6 +619,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
 
             adapter.submitList(data);
+            if (homePerformanceMonitoringListener != null && !isCache && homePerformanceMonitoringListener.needToSubmitDynamicChannelCount()) {
+                Map<String, Integer> dynamicChannelList = new HashMap<>();
+                for (Visitable visitable: data) {
+                    if (visitable instanceof DynamicChannelViewModel) {
+                        DynamicChannelViewModel dynamicChannelViewModel = (((DynamicChannelViewModel) visitable));
+                        DynamicHomeChannel.Channels channel = dynamicChannelViewModel.getChannel();
+                        if (channel != null && dynamicChannelList.get(channel.getLayout()) != null) {
+                            int currentCount = dynamicChannelList.get(channel.getLayout());
+                            dynamicChannelList.put(channel.getLayout(), ++currentCount);
+                        } else if (dynamicChannelList.get(channel.getLayout()) == null) {
+                            dynamicChannelList.put(channel.getLayout(), 1);
+                        }
+                    }
+                }
+
+                homePerformanceMonitoringListener.submitDynamicChannelCount(dynamicChannelList);
+            }
 
             if (isDataValid(data)) {
                 removeNetworkError();
@@ -1006,10 +1024,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         //dimensions of recyclerView and any child views are known.
                         //Remove listener after changed RecyclerView's height to prevent infinite loop
                         if (homePerformanceMonitoringListener != null) homePerformanceMonitoringListener.stopHomePerformanceMonitoring();
-                        homePerformanceMonitoringListener = null;
                         homeRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
+        isPerformanceMonitoringAttachedToRv = true;
     }
     @Override
     public boolean needToShowGeolocationComponent() {
@@ -1684,7 +1702,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private boolean needToPerformanceMonitoring() {
-        return homePerformanceMonitoringListener != null;
+        return homePerformanceMonitoringListener != null && isPerformanceMonitoringAttachedToRv;
     }
 
     private void showToaster(String message, int typeToaster){
