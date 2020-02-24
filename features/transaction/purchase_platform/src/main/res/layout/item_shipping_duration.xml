@@ -6,7 +6,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_shipping_duration"
@@ -20,12 +22,45 @@
         android:text="@string/text_shipping_duration"
         tools:text="@string/text_shipping_duration" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item_shipping_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_shipping_duration"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/text_shipping_price"
+        tools:text="@string/text_shipping_price" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item_shipping_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_shipping_price"
+        app:typographyType="small"
+        android:layout_marginTop="@dimen/dp_2"
+        android:text="@string/text_shipping_desc"
+        tools:text="@string/text_shipping_desc" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/Neutral_N100"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_shipping_desc"/>
+
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/item_shipping_radio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/item_shipping_duration"
-        app:layout_constraintRight_toRightOf="parent"/>
+        android:layout_marginTop="@dimen/dp_4"
+        android:gravity="center"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

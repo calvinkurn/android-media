@@ -277,10 +277,15 @@
     <string name="text_empty_address">Tambahkan alamat pengiriman barang untuk mempermudah proses pembelian</string>
     <string name="label_button_input_address">Masukkan alamat</string>
     <string name="activity_title_choose_address">Pilih Alamat Pengiriman</string>
+    <string name="activity_subtitle_choose_address">Langkah 1 dari 3</string>
 
     <!--Shipping Duration-->
     <string name="label_button_choose_shipping_duration">Pilih Metode Pembayaran</string>
     <string name="text_shipping_duration">Instan (3 jam)</string>
+    <string name="text_shipping_price">Rp15.000 - Rp17.000</string>
+    <string name="text_shipping_desc">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
+    <string name="activity_title_shipping_duration">Pilih Durasi Pengiriman</string>
+    <string name="activity_subtitle_shipping_address">Langkah 2 dari 3</string>
 
     <string name="one_click_checkout">Express Checkout</string>
 </resources>
