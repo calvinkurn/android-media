@@ -646,7 +646,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             }
 
             adapter.submitList(data);
-            if (homePerformanceMonitoringListener != null && !isCache && jankyFramesMonitoringListener.needToSubmitDynamicChannelCount()) {
+            if (jankyFramesMonitoringListener != null && !isCache && jankyFramesMonitoringListener.needToSubmitDynamicChannelCount()) {
                 Map<String, Integer> layoutCounter = new HashMap<>();
                 for (Visitable visitable: data) {
                     if (visitable instanceof DynamicChannelViewModel) {
