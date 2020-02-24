@@ -39,7 +39,7 @@ interface LoginEmailPhoneContract {
 
         fun dismissLoadingDiscover()
 
-        fun onErrorDiscoverLogin(errorMessage: String)
+        fun onErrorDiscoverLogin(throwable: Throwable)
 
         fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>)
 

@@ -15,11 +15,13 @@ import com.tokopedia.shop.newproduct.view.datamodel.EtalaseHighlightCarouselView
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseHighlightViewModel
 import com.tokopedia.shop.newproduct.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
+import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 
 import java.util.ArrayList
 
 class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
                                             shopProductClickedListener: ShopProductClickedListener?,
+                                            shopProductImpressionListener: ShopProductImpressionListener?,
                                             shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?) : AbstractViewHolder<ShopProductEtalaseHighlightViewModel>(itemView) {
 
     private var recyclerView: RecyclerView? = null
@@ -28,6 +30,7 @@ class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
     init {
         etalaseHighlightAdapter = EtalaseHighlightAdapter(
                 EtalaseHighlightAdapterTypeFactory(shopProductClickedListener,
+                        shopProductImpressionListener,
                         shopCarouselSeeAllClickedListener,
                         deviceWidth))
         findViews(itemView)
