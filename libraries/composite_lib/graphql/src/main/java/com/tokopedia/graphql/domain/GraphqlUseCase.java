@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -139,8 +140,6 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
                 doRefresh(graphqlResponse);
             }
         });
-
-        return graphqlRepository.getResponse(mRequests, mCacheStrategy);
     }
 
     @Override
