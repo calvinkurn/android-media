@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**

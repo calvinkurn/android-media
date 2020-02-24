@@ -1,6 +1,6 @@
 package com.tokopedia.common_digital.common
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse

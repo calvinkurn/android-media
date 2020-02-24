@@ -1,6 +1,6 @@
 package com.tokopedia.vouchergame.common
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

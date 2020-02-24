@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 

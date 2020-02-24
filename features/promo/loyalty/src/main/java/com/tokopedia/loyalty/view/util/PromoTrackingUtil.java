@@ -2,7 +2,7 @@ package com.tokopedia.loyalty.view.util;
 
 import android.content.Context;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.track.TrackApp;
 

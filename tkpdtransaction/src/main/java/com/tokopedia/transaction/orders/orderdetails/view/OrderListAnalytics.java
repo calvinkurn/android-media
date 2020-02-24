@@ -2,7 +2,7 @@ package com.tokopedia.transaction.orders.orderdetails.view;
 
 import javax.inject.Inject;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;

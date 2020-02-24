@@ -3,7 +3,7 @@ package com.tokopedia.discovery.intermediary.view;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;

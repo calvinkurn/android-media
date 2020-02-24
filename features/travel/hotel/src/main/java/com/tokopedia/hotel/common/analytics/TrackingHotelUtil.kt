@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.common.analytics
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil

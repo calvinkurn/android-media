@@ -1,6 +1,6 @@
 package com.tokopedia.salam.umrah.common.analytics
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.homepage.data.Products

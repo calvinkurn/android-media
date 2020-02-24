@@ -1,6 +1,6 @@
 package com.tokopedia.recentview.view.viewmodel;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory;
 

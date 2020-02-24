@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.view.analytics;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.tokopedia.profile.analytics
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.profile.analytics.ProfileAnalytics.Companion.PROMO_CLICK
 import com.tokopedia.profile.analytics.ProfileAnalytics.Companion.PROMO_VIEW
 import java.util.*

@@ -1,6 +1,6 @@
 package com.tokopedia.topupbills.common
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation

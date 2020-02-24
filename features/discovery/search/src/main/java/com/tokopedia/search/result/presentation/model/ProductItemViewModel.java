@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;

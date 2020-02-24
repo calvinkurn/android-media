@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.beranda.domain.gql.feed.Badge

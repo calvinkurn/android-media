@@ -1,6 +1,6 @@
 package com.tokopedia.rechargegeneral.util
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.rechargegeneral.util.RechargeGeneralEventTracking.*

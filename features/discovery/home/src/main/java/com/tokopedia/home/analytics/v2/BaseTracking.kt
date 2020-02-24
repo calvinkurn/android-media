@@ -1,6 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.kotlin.model.ImpressHolder
 
 abstract class BaseTracking {

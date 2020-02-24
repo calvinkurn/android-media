@@ -1,6 +1,6 @@
 package com.tokopedia.similarsearch.tracking
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

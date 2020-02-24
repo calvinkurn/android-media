@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.intermediary.domain.model;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 
 import java.util.ArrayList;

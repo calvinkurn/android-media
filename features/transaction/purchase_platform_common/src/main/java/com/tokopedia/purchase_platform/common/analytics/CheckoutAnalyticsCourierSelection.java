@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;

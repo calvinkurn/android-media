@@ -1,6 +1,6 @@
 package com.tokopedia.home.analytics
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 

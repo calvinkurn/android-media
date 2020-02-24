@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.analytics;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author;

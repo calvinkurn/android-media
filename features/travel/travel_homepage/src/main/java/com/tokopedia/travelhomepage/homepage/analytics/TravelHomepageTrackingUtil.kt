@@ -1,6 +1,6 @@
 package com.tokopedia.travelhomepage.homepage.analytics
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

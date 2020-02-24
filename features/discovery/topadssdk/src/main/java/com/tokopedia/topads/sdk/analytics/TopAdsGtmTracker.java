@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.topads.sdk.domain.model.CpmData;

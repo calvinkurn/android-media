@@ -2,7 +2,7 @@ package com.tokopedia.promocheckout.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 
 class PromoCheckoutAnalytics {
 

@@ -1,6 +1,6 @@
 package com.tokopedia.similarsearch.utils
 
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.similarsearch.tracking.ECommerce.Companion.NONE_OTHER
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product

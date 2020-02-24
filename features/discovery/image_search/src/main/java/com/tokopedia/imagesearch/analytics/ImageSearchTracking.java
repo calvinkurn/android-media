@@ -3,7 +3,7 @@ package com.tokopedia.imagesearch.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
