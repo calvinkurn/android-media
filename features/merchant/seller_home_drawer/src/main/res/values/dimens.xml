@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_med">20dp</dimen>
+
+    <!-- General Dimens -->
+    <dimen name="textsize">14sp</dimen>
+    <dimen name="fonts">14sp</dimen>
+    <dimen name="fontm">16sp</dimen>
+    <dimen name="fontxl">22sp</dimen>
+    <dimen name="fontvl">25sp</dimen>
+    <dimen name="font_medium">16sp</dimen>
+    <dimen name="fontvs">12sp</dimen>
+    <dimen name="fontvvs">10sp</dimen>
+    <dimen name="fontvvvs">8sp</dimen>
+
+    <dimen name="page_with_pad">290dp</dimen>
+    <dimen name="margin_vs">5dp</dimen>
+    <dimen name="margin_vvs">3.3dp</dimen>
+    <dimen name="margin_vvvs">2dp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_small_sm">12dp</dimen>
+    <dimen name="margin_sm">15dp</dimen>
+    <dimen name="margin_med">20dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_xlarge">35dp</dimen>
+    <dimen name="margin_vl">40dp</dimen>
+    <dimen name="margin_xl">45dp</dimen>
+    <dimen name="padding_vs">5dp</dimen>
+    <dimen name="padding_vvs">3dp</dimen>
+    <dimen name="padding_ms">8dp</dimen>
+    <dimen name="padding_small">10dp</dimen>
+
+    <dimen name="padding_small_sm">12dp</dimen>
+    <dimen name="med_dp">20dp</dimen>
+    <dimen name="large_dp">30dp</dimen>
+
+    <dimen name="text_size_xxsmall">10sp</dimen>
+    <dimen name="text_size_xsmall">11sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_l_medium">16sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+
+    <dimen name="drawer_avatar">64dp</dimen>
+    <dimen name="verified_icon_size">12dp</dimen>
+    <dimen name="drawer_cover_height">80dp</dimen>
+    <dimen name="drawer_icon">30dp</dimen>
+    <dimen name="drawer_item_height">48dp</dimen>
+    <dimen name="drawer_size">274dp</dimen>
+    <dimen name="fab_button_diameter">60dp</dimen>
+    <dimen name="notification_circle_size">22dp</dimen>
+    <dimen name="drawer_saldo_height">60dp</dimen>
+
+</resources>

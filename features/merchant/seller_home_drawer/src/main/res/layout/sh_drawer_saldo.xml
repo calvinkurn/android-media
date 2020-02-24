@@ -25,7 +25,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                app:srcCompat="@drawable/ic_icon_saldo" />
+                app:srcCompat="@drawable/sah_ic_icon_saldo" />
 
             <TextView
                 android:id="@+id/textViewSaldoSub"
@@ -84,7 +84,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                app:srcCompat="@drawable/ic_tokocash_icon" />
+                app:srcCompat="@drawable/sah_ic_tokocash_icon" />
 
             <TextView
                 android:id="@+id/toko_cash_label"
@@ -126,7 +126,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/padding_med"
                 android:layout_marginRight="@dimen/padding_med"
-                android:background="@drawable/button_rounded_corner"
+                android:background="@drawable/sah_button_rounded_corner"
                 android:padding="@dimen/margin_vs"
                 android:textColor="@color/white"
                 android:visibility="gone" />
@@ -150,7 +150,7 @@
                 android:layout_marginRight="@dimen/margin_med"
                 android:tint="@color/tkpd_main_green"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_new_action_refresh" />
+                app:srcCompat="@drawable/sah_ic_new_action_refresh" />
 
 
         </RelativeLayout>
@@ -168,7 +168,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                app:srcCompat="@drawable/ic_logo_toppoint" />
+                app:srcCompat="@drawable/sah_ic_logo_toppoint" />
 
             <TextView
                 android:id="@+id/textViewLoyaltySub"
@@ -229,7 +229,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                app:srcCompat="@drawable/ic_logo_toppoint" />
+                app:srcCompat="@drawable/sah_ic_logo_toppoint" />
 
             <TextView
                 android:id="@+id/textViewTokoCard"
@@ -252,7 +252,7 @@
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_toRightOf="@id/textViewTokoCard"
-                app:srcCompat="@drawable/ic_beta" />
+                app:srcCompat="@drawable/sah_ic_beta" />
 
 
         </RelativeLayout>

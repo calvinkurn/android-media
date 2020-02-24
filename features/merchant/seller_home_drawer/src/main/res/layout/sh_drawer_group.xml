@@ -16,8 +16,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/margin_small"
-        android:padding="@dimen/padding_vs"
-        tools:src="@drawable/forums" />
+        android:padding="@dimen/padding_vs" />
 
     <TextView
         android:id="@+id/toggle_notif"
@@ -49,7 +48,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_toLeftOf="@+id/arrow"
-        android:background="@drawable/border"
+        android:background="@drawable/sah_border"
         android:padding="@dimen/padding_vs"
         android:text="99+"
         android:visibility="visible" />
@@ -63,6 +62,6 @@
         android:layout_marginEnd="@dimen/margin_med"
         android:layout_marginRight="@dimen/margin_med"
         android:padding="@dimen/padding_vs"
-        tools:src="@drawable/right_arrow" />
+        tools:src="@drawable/sah_right_arrow" />
 
 </RelativeLayout>

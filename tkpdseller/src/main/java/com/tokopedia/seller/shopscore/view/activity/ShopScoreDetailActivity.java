@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -107,7 +108,7 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
     }
 
     private void openUrlWebView(String urlString) {
-        String webViewApplink = "tokopedia://webview?url=" + urlString;
+        String webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString;
         RouteManager.route(this, webViewApplink);
     }
 }
