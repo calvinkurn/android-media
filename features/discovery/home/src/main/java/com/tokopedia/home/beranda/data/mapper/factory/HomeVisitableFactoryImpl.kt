@@ -251,6 +251,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
         val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
         val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
+        val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
+
+        val VALUE_BANNER_UNKNOWN = "banner unknown"
+        val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
 
         if (!isCache) {
             if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
@@ -262,24 +266,26 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 channel.promoName = String.format(PROMO_NAME_LEGO_3_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_4_IMAGE, position.toString(), channel.header.name)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_ORGANIC) {
+                channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT) {
+                homeData?.spotlight?.promoName = String.format(PROMO_NAME_SPOTLIGHT_BANNER, position.toString())
+                homeData?.spotlight?.channelId = channel.id
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
+                channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC || channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
+                channel.promoName = String.format(PROMO_NAME_DC_MIX_BANNER, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_REVIEW) {
+                channel.setPosition(position)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF) {
+                channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.header.name)
+                channel.setPosition(position)
             } else {
-                if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_ORGANIC) {
-                    channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
-                    channel.setPosition(position)
-                } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT) {
-                    homeData?.spotlight?.promoName = String.format(PROMO_NAME_SPOTLIGHT_BANNER, position.toString())
-                    homeData?.spotlight?.channelId = channel.id
-                } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
-                    channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
-                } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC || channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
-                    channel.promoName = String.format(PROMO_NAME_DC_MIX_BANNER, position.toString(), channel.header.name)
-                    channel.setPosition(position)
-                } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_REVIEW) {
-                    channel.setPosition(position)
-                } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF) {
-                    channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.header.name)
-                    channel.setPosition(position)
-                }
+                val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name
+                val layoutType = if (channel.layout.isEmpty()) VALUE_BANNER_UNKNOWN_LAYOUT_TYPE else channel.layout
+                channel.promoName = String.format(PROMO_NAME_UNKNOWN, position.toString(), layoutType, headerName)
             }
         }
     }
