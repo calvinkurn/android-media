@@ -9,28 +9,20 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.di.DaggerFlightFilterComponent
 import com.tokopedia.flight.filter.di.FlightFilterComponent
+import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.*
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterWidgetAirlineViewHolder
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.AIRLINE_ORDER
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.ARRIVAL_TIME_ORDER
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.DEPARTURE_TIME_ORDER
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.FACILITY_ORDER
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.PRICE_ORDER
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_DEFAULT_VALUE
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_ORDER
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.TRANSIT_ORDER
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
@@ -215,6 +207,10 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     override fun onAirlineChanged(checkedAirlines: List<String>) {
         flightFilterViewModel.filterAirlines(checkedAirlines)
+    }
+
+    override fun onFacilityChanged(selectedFacilities: List<FlightFilterFacilityEnum>) {
+        flightFilterViewModel.filterFacilities(selectedFacilities)
     }
 
     override fun onPriceRangeChanged(minPrice: Int, maxPrice: Int) {

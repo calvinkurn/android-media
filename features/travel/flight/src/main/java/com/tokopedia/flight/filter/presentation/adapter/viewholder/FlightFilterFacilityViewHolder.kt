@@ -26,7 +26,8 @@ class FlightFilterFacilityViewHolder(view: View,
             flight_sort_widget.isFlowLayout = true
             flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
-//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    selectedFacility = (items as List<FlightFilterFacilityModel>).map { it.facilityEnum }.toList()
+                    listener.onFacilityChanged(selectedFacility)
                 }
 
                 override fun onClickShowMore() {

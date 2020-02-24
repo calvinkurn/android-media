@@ -17,5 +17,6 @@ interface FlightFilterSortListener {
     fun onClickSeeAllAirline()
     fun getAirlineList(): List<AirlineStat>
     fun onAirlineChanged(checkedAirlines: List<String>)
+    fun onFacilityChanged(selectedFacilities: List<FlightFilterFacilityEnum>)
     fun onPriceRangeChanged(minPrice: Int, maxPrice: Int)
 }

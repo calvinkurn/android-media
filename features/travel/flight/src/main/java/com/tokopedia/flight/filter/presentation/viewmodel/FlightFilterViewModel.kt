@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.*
 import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
@@ -100,6 +101,12 @@ class FlightFilterViewModel @Inject constructor(
     fun filterAirlines(selectedArlines: List<String>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.airlineList = selectedArlines
+        mutableFilterModel.value = updatedFilterModel
+    }
+
+    fun filterFacilities(selectedFacilities: List<FlightFilterFacilityEnum>) {
+        val updatedFilterModel = (filterModel.value as FlightFilterModel)
+        updatedFilterModel.facilityList = selectedFacilities
         mutableFilterModel.value = updatedFilterModel
     }
 
