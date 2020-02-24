@@ -623,7 +623,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     override fun onLoginFingerprintSuccess() {
-        onSuccessLogin()
+        presenter.getUserInfo()
+//        onSuccessLogin()
     }
 
     override fun onSuccessLogin() {
@@ -1264,39 +1265,34 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     private fun checkAdditionalLoginOptions() {
         if(ScanFingerprintDialog.isFingerprintAvailable(activity))
-//            onSuccessCheckStatusFingerprint()
-            presenter.checkStatusFingerprint(onSuccessCheckStatusFingerprint(), onErrorCheckStatusFingerprint())
+            presenter.checkStatusFingerprint()
         else
             presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
     }
 
     private fun checkAdditionalLoginOptionsAfterSQ() {
         if(ScanFingerprintDialog.isFingerprintAvailable(activity))
-            presenter.checkStatusFingerprint(onSuccessCheckStatusFingerprint(), onErrorCheckStatusFingerprint())
+            presenter.checkStatusFingerprint()
         else
             presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
     }
 
-    private fun onErrorCheckStatusFingerprint(): (Throwable) -> Unit {
-        return {
-            dismissLoadingLogin()
-            it.printStackTrace()
-            view?.run {
-                val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
-            }
+    override fun onErrorCheckStatusFingerprint(e: Throwable) {
+        dismissLoadingLogin()
+        e.printStackTrace()
+        view?.run {
+            val errorMessage = ErrorHandlerSession.getErrorMessage(context, e)
+            Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 
-    private fun onSuccessCheckStatusFingerprint(): (StatusFingerprint) -> Unit {
-        return {
+    override fun onSuccessCheckStatusFingerprint(data: StatusFingerprint) {
             dismissLoadingLogin()
-            if (!it.isValid && isFromAccountPage()) {
+            if (!data.isValid && isFromAccountPage()) {
                 RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
             } else {
                 onSuccessLogin()
             }
-        }
     }
 
     private fun onErrorCheckStatusPin(): (Throwable) -> Unit {

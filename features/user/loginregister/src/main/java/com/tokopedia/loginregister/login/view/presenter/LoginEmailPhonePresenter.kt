@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.loginfingerprint.data.preference.PreferenceHelper
+import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
@@ -52,7 +52,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
                                                    private val cryptographyUtils: CryptographyUtils,
-                                                   private val preferenceHelper: PreferenceHelper,
+                                                   private val fingerprintPreferenceHelper: FingerprintPreferenceHelper,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -65,7 +65,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         this.viewEmailPhone = viewEmailPhone
     }
 
-    fun isLastUserRegistered(): Boolean = preferenceHelper.isFingerprintRegistered()
+    fun isLastUserRegistered(): Boolean = fingerprintPreferenceHelper.isFingerprintRegistered()
 
     override fun discoverLogin(context: Context) {
         view?.let { view ->
@@ -270,9 +270,21 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         statusPinUseCase.executeCoroutines(onSuccess, onError)
     }
 
-    override fun checkStatusFingerprint(onSuccess: (StatusFingerprint) -> Unit, onError: (Throwable) -> Unit) {
+    override fun checkStatusFingerprint() {
         val signature = cryptographyUtils.generateFingerprintSignature(userId = userSession.userId, deviceId = userSession.deviceId)
-        statusFingerprintUseCase.executeCoroutines(onSuccess, onError, signature)
+        statusFingerprintUseCase.executeCoroutines({
+            onCheckStatusFingerprintSuccess(it)
+        }, {
+            view.onErrorCheckStatusFingerprint(it)
+        }, signature)
+    }
+
+    private fun onCheckStatusFingerprintSuccess(data: StatusFingerprint){
+        if(data.isValid) {
+            fingerprintPreferenceHelper.saveUserId(userSession.userId)
+            fingerprintPreferenceHelper.registerFingerprint()
+        }
+        view.onSuccessCheckStatusFingerprint(data)
     }
 
     override fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit) {

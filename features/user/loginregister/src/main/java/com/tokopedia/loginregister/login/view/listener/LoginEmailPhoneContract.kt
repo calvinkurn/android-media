@@ -100,6 +100,10 @@ interface LoginEmailPhoneContract {
         fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>)
 
         fun onErrorGetTickerInfo(error: Throwable)
+
+        fun onErrorCheckStatusFingerprint(e: Throwable)
+
+        fun onSuccessCheckStatusFingerprint(data: StatusFingerprint)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -125,7 +129,7 @@ interface LoginEmailPhoneContract {
 
         fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
 
-        fun checkStatusFingerprint(onSuccess: (StatusFingerprint) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+        fun checkStatusFingerprint()
 
         fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
     }
