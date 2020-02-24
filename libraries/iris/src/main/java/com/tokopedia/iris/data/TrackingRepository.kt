@@ -148,9 +148,7 @@ class TrackingRepository(
             val requestBody = ApiService.parse(request)
             val response = apiService.sendMultiEventAsync(requestBody)
             if (response.isSuccessful && response.code() == 200) {
-                IrisLogger.getInstance(context).putSendIrisEvent(data.size.toString() +
-                    " - " +
-                    request)
+                IrisLogger.getInstance(context).putSendIrisEvent(request, data.size)
                 delete(data)
                 totalSentData += data.size
 

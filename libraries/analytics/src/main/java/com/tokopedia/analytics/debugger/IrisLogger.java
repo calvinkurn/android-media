@@ -2,13 +2,17 @@ package com.tokopedia.analytics.debugger;
 
 import android.content.Context;
 
-import com.tokopedia.config.GlobalConfig;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tokopedia.analytics.database.IrisSaveLogDB;
 import com.tokopedia.analytics.database.IrisSendLogDB;
 import com.tokopedia.analytics.debugger.data.source.IrisSaveLogDBSource;
 import com.tokopedia.analytics.debugger.data.source.IrisSendLogDBSource;
 import com.tokopedia.analytics.debugger.ui.activity.AnalyticsIrisSaveDebuggerActivity;
 import com.tokopedia.analytics.debugger.ui.activity.AnalyticsIrisSendDebuggerActivity;
+import com.tokopedia.config.GlobalConfig;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -29,7 +33,7 @@ public class IrisLogger implements IrisLoggerInterface {
 
     public static IrisLoggerInterface getInstance(Context context) {
         if (instance == null) {
-            if(GlobalConfig.isAllowDebuggingTools()) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
                 instance = new IrisLogger(context);
             } else {
                 instance = emptyInstance();
@@ -60,8 +64,9 @@ public class IrisLogger implements IrisLoggerInterface {
 
     private static IrisLoggerInterface emptyInstance() {
         return new IrisLoggerInterface() {
+
             @Override
-            public void putSendIrisEvent(String data) {
+            public void putSendIrisEvent(String data, int rowCount) {
 
             }
 
@@ -85,19 +90,25 @@ public class IrisLogger implements IrisLoggerInterface {
     @Override
     public void putSaveIrisEvent(String data) {
         IrisSaveLogDB irisSaveLogDB = new IrisSaveLogDB();
-        irisSaveLogDB.setData(data);
+        irisSaveLogDB.setData(prettify(data));
         irisSaveLogDB.setTimestamp(System.currentTimeMillis());
         irisSaveLogDBSource.insertAll(irisSaveLogDB)
                 .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
     }
 
     @Override
-    public void putSendIrisEvent(String data) {
+    public void putSendIrisEvent(String data, int rowCount) {
         IrisSendLogDB irisSendLogDB = new IrisSendLogDB();
-        irisSendLogDB.setData(data);
+        irisSendLogDB.setData(rowCount + " - " + prettify(data));
         irisSendLogDB.setTimestamp(System.currentTimeMillis());
         irisSendLogDBSource.insertAll(irisSendLogDB)
                 .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
+    }
+
+    private String prettify(String jsonString) {
+        JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+        return gson.toJson(jsonObject);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.tokopedia.analytics.debugger.data.repository;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.analytics.database.GtmErrorLogDB;
 import com.tokopedia.analytics.database.IrisSaveLogDB;
-import com.tokopedia.analytics.debugger.data.source.GtmErrorLogDBSource;
 import com.tokopedia.analytics.debugger.data.source.IrisSaveLogDBSource;
 import com.tokopedia.analytics.debugger.ui.model.AnalyticsDebuggerViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -44,12 +42,14 @@ public class IrisSaveLogLocalRepository {
                 }).flatMap(new Func1<IrisSaveLogDB, Observable<Visitable>>() {
                     @Override
                     public Observable<Visitable> call(IrisSaveLogDB logDB) {
+                        String data = logDB.getData();
                         AnalyticsDebuggerViewModel viewModel = new AnalyticsDebuggerViewModel();
                         viewModel.setId(logDB.getTimestamp());
                         viewModel.setName("");
                         viewModel.setCategory("");
-                        viewModel.setData(logDB.getData());
-                        viewModel.setDataExcerpt(formatDataExcerpt(logDB.getData()));
+
+                        viewModel.setData(data);
+                        viewModel.setDataExcerpt(formatDataExcerpt(data));
                         viewModel.setTimestamp(dateFormat.format(new Date(logDB.getTimestamp())));
 
                         return Observable.just(viewModel);

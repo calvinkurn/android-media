@@ -61,7 +61,10 @@ public class GtmLogger implements AnalyticsLogger {
             AnalyticsLogData data = new AnalyticsLogData();
             data.setCategory((String) mapData.get("eventCategory"));
             data.setName(name);
-            data.setData(URLDecoder.decode(gson.toJson(mapData), "UTF-8"));
+            data.setData(URLDecoder.decode(gson.toJson(mapData)
+                    .replaceAll("%(?![0-9a-fA-F]{2})", "%25")
+                    .replaceAll("\\+", "%2B")
+                    , "UTF-8"));
 
             if (!TextUtils.isEmpty(data.getName()) && !data.getName().equals("null")) {
                 dbSource.insertAll(data).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
