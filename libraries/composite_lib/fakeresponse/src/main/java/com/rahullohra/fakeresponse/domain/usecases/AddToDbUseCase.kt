@@ -17,9 +17,9 @@ class AddToDbUseCase(val repository: LocalRepository) : BaseUseCase<LocalReposit
         return repository.addToDb(gqlDataToGql(data))
     }
 
-    fun updateRestRecord(data: AddGqlData) {
+    fun updateRestRecord(id:Int, data: AddGqlData) {
         validateData(data)
-        return repository.updateResponse(gqlDataToGql(data))
+        return repository.updateResponse(gqlDataToGql(data, id))
     }
 
     fun getRecordFromTable(id: Int): GqlRecord {
@@ -39,10 +39,11 @@ class AddToDbUseCase(val repository: LocalRepository) : BaseUseCase<LocalReposit
         }
     }
 
-    protected fun gqlDataToGql(data: AddGqlData): GqlRecord {
+    protected fun gqlDataToGql(data: AddGqlData, id:Int?=null): GqlRecord {
         val date = Date()
 
         val gql = GqlRecord(
+                id = id,
                 gqlOperationName = data.gqlQueryName!!,
                 javaQueryName = data.javaQueryName,
                 createdAt = date.time,

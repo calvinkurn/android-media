@@ -2,7 +2,6 @@ package com.rahullohra.fakeresponse.presentaiton.activities
 
 import android.os.Bundle
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.presentaiton.fragments.DownloadFragment
@@ -13,7 +12,7 @@ class FakeResponseActivity : BaseActivity() {
     lateinit var fm: FrameLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fake_response)
+        setContentView(R.layout.fake_activity_fake_response)
 
         fm = findViewById(R.id.fm)
 
@@ -38,15 +37,15 @@ class FakeResponseActivity : BaseActivity() {
         supportFragmentManager.popBackStack()
 
         supportFragmentManager
-            .beginTransaction()
-            .add(fm.id, fragment)
-            .addToBackStack(null)
-            .commit()
+                .beginTransaction()
+                .add(fm.id, fragment)
+                .addToBackStack(null)
+                .commit()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if(supportFragmentManager.backStackEntryCount == 0){
+        if (supportFragmentManager.backStackEntryCount == 0) {
             finish()
         }
     }

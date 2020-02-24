@@ -37,7 +37,7 @@ class HomeFragment : BaseFragment() {
 
     lateinit var viewModel: FakeResponseModel
 
-    override fun getLayout() = R.layout.fragment_home
+    override fun getLayout() = R.layout.fake_fragment_home
 
     override fun initVars() {
         dataList = ArrayList()

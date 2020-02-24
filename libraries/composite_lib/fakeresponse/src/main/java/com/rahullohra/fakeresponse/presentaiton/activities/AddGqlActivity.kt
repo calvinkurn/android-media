@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import com.rahullohra.fakeresponse.R
+import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.data.diProvider.activities.AddGqlActivityProvider
 import com.rahullohra.fakeresponse.db.entities.GqlRecord
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
@@ -23,8 +27,9 @@ class AddGqlActivity : BaseActivity() {
     lateinit var etResponse: EditText
     lateinit var toolbar: Toolbar
 
-    override fun getLayout() = R.layout.activity_add_gql
+    override fun getLayout() = R.layout.fake_activity_add_gql
     lateinit var viewModel: AddGqlVM
+    private val gson = GsonBuilder().setPrettyPrinting().create()
 
     var id: Int? = null
 
@@ -48,6 +53,8 @@ class AddGqlActivity : BaseActivity() {
         etCustomName = findViewById(R.id.etCustomName)
         etResponse = findViewById(R.id.etResponse)
         toolbar = findViewById(R.id.toolbar)
+
+        id = intent.extras?.get(Router.BUNDLE_ARGS_ID) as Int?
 
         setSupportActionBar(toolbar)
     }
@@ -105,6 +112,15 @@ class AddGqlActivity : BaseActivity() {
             R.id.gql_menu_save -> {
                 saveData()
             }
+            R.id.gql_menu_pretty -> {
+                try {
+                    var response = etResponse.text.toString()
+                    response = gson.toJson(JsonParser().parse(response))
+                    etResponse.setText(response)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Wrong Json", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
         return true
     }
@@ -118,7 +134,7 @@ class AddGqlActivity : BaseActivity() {
                 AddGqlData(gqlQueryName = gqlName, response = response, customTag = customName)
 
         if (isExistingRecord()) {
-            viewModel.updateRecord(addGqlData)
+            viewModel.updateRecord(id!!, addGqlData)
         } else {
             viewModel.addToDb(addGqlData)
         }

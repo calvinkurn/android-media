@@ -20,7 +20,7 @@ class AddRestDaoUseCase(val repository: RestRepository) : BaseUseCase<RestReposi
         validateData(data)
         val restResponse = getRecordFromTable(id)
         restResponse.httpMethod = data.methodName
-        return repository.updateResponse(gqlDataToRest(data))
+        return repository.updateResponse(gqlDataToRest(data, id))
     }
 
     private fun validateData(data: AddRestData) {
@@ -41,10 +41,11 @@ class AddRestDaoUseCase(val repository: RestRepository) : BaseUseCase<RestReposi
         return repository.getResponse(id)
     }
 
-    protected fun gqlDataToRest(data: AddRestData): RestRecord {
+    protected fun gqlDataToRest(data: AddRestData, id:Int? = null): RestRecord {
         val date = Date()
 
         return RestRecord(
+                id = id,
                 url = data.url!!,
                 httpMethod = data.methodName,
                 createdAt = date.time,

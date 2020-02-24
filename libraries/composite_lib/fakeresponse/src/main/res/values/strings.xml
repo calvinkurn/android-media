@@ -6,4 +6,5 @@
     <string name="gql_add_record">Add gql record</string>
     <string name="gql_add_rest_record">Add rest record</string>
     <string name="rahullohra_gql_testing" translatable="false">rahullohra_gql_testing</string>
+    <string name="gql_pretty" translatable="false">Pretty</string>
 </resources>

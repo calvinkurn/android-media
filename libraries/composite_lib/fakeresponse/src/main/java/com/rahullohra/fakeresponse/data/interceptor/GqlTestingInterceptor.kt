@@ -38,22 +38,14 @@ class GqlTestingInterceptor(context: Context) : Interceptor {
     }
 
     fun createResponseFromFakeResponse(fakeResponse: String, request: Request): Response {
-        val formattedResponse = getFormmatedResponseForGql(fakeResponse)
         val mediaType = MediaType.parse("application/json; charset=utf-8")
         return Response.Builder()
             .code(200)
             .message(fakeResponse)
             .request(request)
-            .body(ResponseBody.create(mediaType, formattedResponse))
+            .body(ResponseBody.create(mediaType, fakeResponse))
+            .protocol(Protocol.HTTP_2)
             .build()
-    }
-
-    fun getFormmatedResponseForGql(fakeResponse: String): String {
-        val array = JSONArray()
-        val firstObject = JSONObject()
-        firstObject.put("data", fakeResponse)
-        array.put(firstObject)
-        return array.toString()
     }
 
     fun isGqlRequest(request: Request): Boolean {

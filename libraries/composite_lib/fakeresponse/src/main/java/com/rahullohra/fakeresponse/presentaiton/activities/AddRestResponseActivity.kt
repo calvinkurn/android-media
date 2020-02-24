@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
+import com.google.gson.JsonParser
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.data.diProvider.activities.RestActivityDiProvider
@@ -107,6 +109,15 @@ class AddRestResponseActivity : BaseActivity() {
         when (item.itemId) {
             R.id.gql_menu_save -> {
                 saveData()
+            }
+            R.id.gql_menu_pretty -> {
+                try {
+                    var response = etResponse.text.toString()
+                    response = gson.toJson(JsonParser().parse(response))
+                    etResponse.setText(response)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Wrong Json", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         return true

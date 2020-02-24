@@ -14,7 +14,7 @@ class ResponseVH(itemView: View, val itemClickCallback: (ResponseListData, Boole
         RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        fun getLayout() = R.layout.item_response
+        fun getLayout() = R.layout.fake_item_response
     }
 
     val tvQueryName: TextView = itemView.findViewById(R.id.tvQueryName)

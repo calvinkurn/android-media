@@ -6,4 +6,9 @@
         android:title="@string/gql_save"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/gql_menu_pretty"
+        android:title="@string/gql_pretty"
+        app:showAsAction="always" />
+
 </menu>

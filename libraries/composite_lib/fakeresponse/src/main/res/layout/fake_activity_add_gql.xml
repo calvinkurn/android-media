@@ -34,7 +34,7 @@
 
             <EditText
                 android:id="@+id/etGql"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Gql Name"
                 android:paddingStart="10dp"
@@ -64,7 +64,7 @@
 
             <EditText
                 android:id="@+id/etCustomName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Custom Name"
                 android:paddingStart="10dp"
