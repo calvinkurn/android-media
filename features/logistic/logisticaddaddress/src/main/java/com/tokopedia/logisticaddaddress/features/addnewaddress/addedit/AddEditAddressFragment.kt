@@ -50,6 +50,7 @@ import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.response.Data
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
@@ -1074,8 +1075,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
     }
 
-    override fun showError(t: Throwable) {
-        Toast.makeText(context, getString(R.string.something_wrong_happened), Toast.LENGTH_SHORT).show()
+    override fun showError(t: Throwable?) {
+        val message = ErrorHandler.getErrorMessage(context, t)
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDetach() {

@@ -10,5 +10,5 @@ interface AddEditAddressListener : CustomerView {
     fun onSuccessAddAddress(saveAddressDataModel: SaveAddressDataModel)
     fun showZipCodes(zipcodes: List<String>)
     fun showManualZipCodes()
-    fun showError(t: Throwable)
+    fun showError(t: Throwable?)
 }
