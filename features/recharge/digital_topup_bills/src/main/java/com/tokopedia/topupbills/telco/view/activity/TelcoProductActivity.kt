@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.actions.SearchIntents
 import com.google.firebase.appindexing.Action
 import com.google.firebase.appindexing.FirebaseUserActions
-import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -97,13 +96,13 @@ class TelcoProductActivity : BaseTelcoActivity() {
             } else {
                 Action.Builder.STATUS_TYPE_FAILED
             }
-            val action = AssistActionBuilder()
-                    .setActionToken(actionToken)
-                    .setActionStatus(actionStatus)
-                    .build()
-
-            // Send the end action to the Firebase app indexing.
-            FirebaseUserActions.getInstance().end(action)
+//            val action = AssistActionBuilder()
+//                    .setActionToken(actionToken)
+//                    .setActionStatus(actionStatus)
+//                    .build()
+//
+//            // Send the end action to the Firebase app indexing.
+//            FirebaseUserActions.getInstance().end(action)
         }
     }
 }

@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.actions.SearchIntents
 import com.google.firebase.appindexing.Action
 import com.google.firebase.appindexing.FirebaseUserActions
-import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
@@ -129,13 +128,13 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
             } else {
                 Action.Builder.STATUS_TYPE_FAILED
             }
-            val action = AssistActionBuilder()
-                    .setActionToken(actionToken)
-                    .setActionStatus(actionStatus)
-                    .build()
-
-            // Send the end action to the Firebase app indexing.
-            FirebaseUserActions.getInstance().end(action)
+//            val action = AssistActionBuilder()
+//                    .setActionToken(actionToken)
+//                    .setActionStatus(actionStatus)
+//                    .build()
+//
+//            // Send the end action to the Firebase app indexing.
+//            FirebaseUserActions.getInstance().end(action)
         }
     }
 }
