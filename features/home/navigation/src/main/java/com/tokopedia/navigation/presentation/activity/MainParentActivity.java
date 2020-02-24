@@ -245,9 +245,7 @@ public class MainParentActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         startHomePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            startFrameMetrics(this);
-        }
+        startFrameMetrics(this);
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
@@ -393,6 +391,7 @@ public class MainParentActivity extends BaseActivity implements
     protected void onStop() {
         super.onStop();
         submitMainParentPerformanceMonitoring();
+        stopFrameMetrics(this);
     }
 
     @Override
@@ -1141,15 +1140,17 @@ public class MainParentActivity extends BaseActivity implements
 
     @TargetApi(Build.VERSION_CODES.N)
     public void startFrameMetrics(Activity activity) {
-        setupMetrics();
-        onFrameMetricAvailableListener = new Window.OnFrameMetricsAvailableListener() {
-            @Override
-            public void onFrameMetricsAvailable(Window window, FrameMetrics frameMetrics, int dropCountSinceLastInvocation) {
-                FrameMetrics frameMetricsCopy = new FrameMetrics(frameMetrics);
-                incrementAllFramesFragmentMetrics(frameMetricsCopy);
-            }
-        };
-        activity.getWindow().addOnFrameMetricsAvailableListener(onFrameMetricAvailableListener, new Handler());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setupMetrics();
+            onFrameMetricAvailableListener = new Window.OnFrameMetricsAvailableListener() {
+                @Override
+                public void onFrameMetricsAvailable(Window window, FrameMetrics frameMetrics, int dropCountSinceLastInvocation) {
+                    FrameMetrics frameMetricsCopy = new FrameMetrics(frameMetrics);
+                    incrementAllFramesFragmentMetrics(frameMetricsCopy);
+                }
+            };
+            activity.getWindow().addOnFrameMetricsAvailableListener(onFrameMetricAvailableListener, new Handler());
+        }
     }
 
     private void incrementAllFramesFragmentMetrics(FrameMetrics frameMetricsCopy) {
