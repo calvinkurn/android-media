@@ -13,6 +13,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import io.mockk.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -36,11 +37,11 @@ object AddEditAddressPresenterTest : Spek({
     }
 
     Feature("save address") {
+        val model = SaveAddressDataModel()
         Scenario("success from positive form") {
             val successGql = AddAddressResponse(KeroAddAddress(
                     Data(isSuccess = 1, addrId = 99)
             ))
-            val model = SaveAddressDataModel()
             Given("success answer") {
                 every { saveUseCase.execute(any()) } returns Observable.just(successGql)
             }
@@ -53,15 +54,15 @@ object AddEditAddressPresenterTest : Spek({
                 }
             }
             Then("view show success") {
+                assertEquals(successGql.keroAddAddress.data.addrId, model.id)
                 verify { view.onSuccessAddAddress(model) }
             }
         }
 
-        Scenario("error from negative form") {
+        Scenario("not success response from negative form") {
             val notSuccessResponse = AddAddressResponse(KeroAddAddress(
                     Data(isSuccess = 0)
             ))
-            val model = SaveAddressDataModel()
             Given("not success answer") {
                 every { saveUseCase.execute(any()) } returns Observable.just(notSuccessResponse)
             }
