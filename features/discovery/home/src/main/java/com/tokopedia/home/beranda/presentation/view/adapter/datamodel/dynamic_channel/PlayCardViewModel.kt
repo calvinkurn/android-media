@@ -20,6 +20,8 @@ data class PlayCardViewModel(
     override fun equalsWith(b: Any?): Boolean {
         if (b is PlayCardViewModel) {
             return channel.id == b.channel.id
+                    && channel.name == b.channel.name
+                    && channel.header.name == b.channel.header.name
                     && playCardHome == b.playCardHome
                     && playCardHome?.channelId == b.playCardHome?.channelId
                     && playCardHome?.coverUrl == b.playCardHome?.coverUrl
