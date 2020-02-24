@@ -73,7 +73,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     private fun handleDeepLink(data: Uri?) {
         var actionHandled = true
         when (data?.path) {
-            "/telco" -> actionHandled = true
+            "/recharge/home" -> actionHandled = true
             else -> actionHandled = false
 
         }
