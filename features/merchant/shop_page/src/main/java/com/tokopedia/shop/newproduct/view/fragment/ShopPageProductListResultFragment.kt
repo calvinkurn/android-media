@@ -456,7 +456,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int,
                                   productPosition: Int) {
-        shopPageTracking?.clickProduct(
+        shopPageTracking?.clickProductSearchResult(
                 isMyShop,
                 isLogin,
                 selectedEtalaseName,
@@ -480,7 +480,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onProductImpression(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
-        shopPageTracking?.impressionProductList(
+        shopPageTracking?.impressionProductListSearchResult(
                 isMyShop,
                 isLogin,
                 selectedEtalaseName,
