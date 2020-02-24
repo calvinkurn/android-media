@@ -48,7 +48,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         return when{
             intent.data != null -> {
                 if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
-                        if(isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0) ?: ""
+                        if(isNumber(intent.data?.pathSegments?.get(1) ?: "")) intent.data?.pathSegments?.get(1) ?: ""
                         else "", intent.data?.getQueryParameter("ref") ?: "null", intent.data?.query ?: "")
                 else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", intent.data?.query ?: "", intent.data?.getQueryParameter("ref") ?: "")
             }

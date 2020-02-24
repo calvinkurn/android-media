@@ -103,20 +103,15 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
             slidesList?.let {
                 HomeTrackingUtils.homeSlidingBannerImpression(context, it[position], position)
                 listener.onPromoScrolled(it[position])
-
-                if (!isCache) {
-                    if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO &&
-                            !it[position].isInvoke) {
-                        listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
-                                it[position]
-                        ))
-                        it[position].invoke()
-                    } else if (!it[position].isInvoke) {
-                        listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
-                                it[position]
-                        ))
-                        it[position].invoke()
-                    }
+                if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO &&
+                        !it[position].isInvoke) {
+                    listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
+                            it[position]
+                    ))
+                } else if (!it[position].isInvoke) {
+                    listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
+                            it[position]
+                    ))
                 }
             }
         }

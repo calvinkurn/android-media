@@ -10,7 +10,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -126,6 +125,16 @@ fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemoryCache: B
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .transform(CenterCrop(), RoundedCorners(15))
+            .placeholder(placeholder)
+            .into(this)
+}
+
+fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
+    Glide.with(context)
+            .load(url)
+            .format(DecodeFormat.PREFER_ARGB_8888)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .transform(CenterCrop())
             .placeholder(placeholder)
             .into(this)
 }

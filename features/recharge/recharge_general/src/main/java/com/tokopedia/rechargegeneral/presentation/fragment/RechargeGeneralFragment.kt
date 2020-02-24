@@ -98,9 +98,19 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var selectedProduct: RechargeGeneralProductSelectData? = null
         set(value) {
             field = value
-            productId = value?.id?.toIntOrNull() ?: 0
-            productName = value?.title ?: ""
-            price = value?.price?.toLongOrNull()
+            value?.run {
+                productId = id?.toIntOrNull() ?: 0
+                productName = title
+                price = price?.toLongOrNull()
+
+                // Show product info ticker
+                if (description.isNotEmpty()) {
+                    ticker_recharge_general_product_info.show()
+                    ticker_recharge_general_product_info.setHtmlDescription(description)
+                } else {
+                    ticker_recharge_general_product_info.hide()
+                }
+            }
         }
     private var operatorCluster: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
@@ -425,18 +435,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     selectedProduct = RechargeGeneralProductSelectData(
                             it.id,
                             desc,
-                            detail,
+                            detailCompact,
                             promo?.newPrice ?: price,
                             slashedPrice,
                             isPromo = promo != null)
-
-                    // Show product info ticker
-                    if (detailCompact.isNotEmpty()) {
-                        ticker_recharge_general_product_info.show()
-                        ticker_recharge_general_product_info.setHtmlDescription(detailCompact)
-                    } else {
-                        ticker_recharge_general_product_info.hide()
-                    }
                 }
             }
         }
@@ -449,6 +451,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         operatorId = 0
         selectedProduct = null
         inputData = hashMapOf()
+        // Reset product info ticker
+        ticker_recharge_general_product_info.hide()
         toggleEnquiryButton()
     }
 
@@ -645,8 +649,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 tab_layout.show()
 
                 // Hide widget title
-//                recentTransactionFragment?.run { toggleTitle(false) }
-//                promoListFragment?.run { toggleTitle(false) }
                 (product_view_pager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
                 (product_view_pager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
             }
