@@ -27,8 +27,6 @@ interface TopChatViewState : BaseChatViewState {
 
     fun focusOnReply()
 
-    fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel)
-
     fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel
 
 }

@@ -480,16 +480,4 @@ class TopChatViewStateImpl(
         replyEditText.requestFocus()
     }
 
-    override fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel) {
-        analytics.eventClickBuyProductAttachment(
-                element.blastId.toString(),
-                element.productName,
-                element.productId.toString(),
-                element.productPrice,
-                1,
-                element.shopId.toString(),
-                chatRoomViewModel.headerModel.name
-        )
-    }
 }
-

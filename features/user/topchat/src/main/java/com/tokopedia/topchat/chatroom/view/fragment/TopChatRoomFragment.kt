@@ -655,7 +655,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
-        (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
+        analytics.eventClickBuyProductAttachment(element)
         val buyPageIntent = presenter.getBuyPageIntent(context, element)
         startActivity(buyPageIntent)
     }
