@@ -70,11 +70,18 @@ public class DeeplinkUTMUtils {
             for (String pair : pairs) {
                 int indexKey = pair.indexOf("=");
                 if (indexKey > 0 && indexKey + 1 <= pair.length()) {
+                    String key = "";
+                    String value = "";
                     try {
-                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
-                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
+                        key = pair.substring(0, indexKey);
+                        value = pair.substring(indexKey + 1);
+                        key = URLDecoder.decode(key, "UTF-8");
+                        value = URLDecoder.decode(value, "UTF-8");
+                    } catch (Exception e) {
                         e.printStackTrace();
+                    }
+                    if (!TextUtils.isEmpty(key) && !TextUtils.isEmpty(value)) {
+                        queryPairs.put(key, value);
                     }
                 }
             }
@@ -113,7 +120,7 @@ public class DeeplinkUTMUtils {
             campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                     maps.get(AppEventTracking.GTM.UTM_TERM) : "");
 
-            if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+            if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                 campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
             }
 
@@ -136,7 +143,7 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
                     campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-                    if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
                     }
                     campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
@@ -156,7 +163,7 @@ public class DeeplinkUTMUtils {
                     campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
 
-                    if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
                     }
 
@@ -173,7 +180,7 @@ public class DeeplinkUTMUtils {
                                 maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
                         campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                                 maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-                        if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+                        if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                             campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
                         }
                         campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
@@ -193,7 +200,7 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
                     campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-                    if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
                     }
                     campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
@@ -227,7 +234,7 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
                     campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-                    if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
                     }
                     campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
@@ -250,7 +257,7 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
                     campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                             maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-                    if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
                         campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
                     }
                     campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
@@ -279,7 +286,7 @@ public class DeeplinkUTMUtils {
                 maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
         campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
                 maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-        if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+        if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
             campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
         }
 
