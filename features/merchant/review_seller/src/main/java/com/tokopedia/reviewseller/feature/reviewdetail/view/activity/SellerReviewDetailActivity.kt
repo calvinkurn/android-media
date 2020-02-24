@@ -8,5 +8,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerRevie
  * @author by milhamj on 2020-02-14.
  */
 class SellerReviewDetailActivity : BaseSimpleActivity() {
+
     override fun getNewFragment(): Fragment = SellerReviewDetailFragment()
+
 }

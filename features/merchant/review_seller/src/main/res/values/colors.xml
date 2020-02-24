@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="clr_31353b">#31353B</color>
+    <color name="typography_black">#F531353B</color>
+    <color name="progress_bar_green">#42B549</color>
+    <color name="progress_bar_empty">#E5E7E9</color>
 </resources>
