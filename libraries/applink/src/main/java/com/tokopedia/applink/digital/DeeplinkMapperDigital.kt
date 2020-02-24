@@ -26,7 +26,6 @@ object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
     const val MENU_ID_PARAM = "menu_id"
-    const val HOST_DIGITAL_PRODUCT = "form"
 
     private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
         if (whiteList == null) {
@@ -95,6 +94,6 @@ object DeeplinkMapperDigital {
         return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SMARTCARD_BRIZZI))
             UriUtil.buildUri(ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI, paramValue)
         else
-            UriUtil.buildUri(ApplinkConsInternalDigital.SMARTCARD_EMONEY, paramValue)
+            UriUtil.buildUri(ApplinkConsInternalDigital.SMARTCARD_WITH_EMONEY, paramValue)
     }
 }
