@@ -317,7 +317,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 isOwner,
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
-                joinDash(PRODUCT_LIST_IMPRESSION, etalaseEvent, loginNonLoginString),
+                joinDash(PRODUCT_LIST_IMPRESSION, etalaseEvent, loginNonLoginString, SEARCH_RESULT),
                 shopProductViewModel.getId(),
                 customDimensionShopPage,
                 shopProductViewModel,
