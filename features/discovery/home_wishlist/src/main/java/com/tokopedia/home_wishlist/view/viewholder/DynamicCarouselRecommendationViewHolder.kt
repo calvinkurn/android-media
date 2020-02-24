@@ -32,23 +32,11 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
         seeMore.setOnClickListener{
             RouteManager.route(it.context, element.seeMoreAppLink)
         }
-        carouselProductCardView.bindCarouselProductCardView(
-                parentView = view,
+        carouselProductCardView.bindCarouselProductCardViewGrid(
                 productCardModelList = convertIntoProductDataModel(element.list),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener{
                     override fun onItemClick(productCardModel: ProductCardModel, childPosition: Int) {
                         (listener as WishlistListener).onProductClick(element.list[childPosition], adapterPosition, childPosition)
-                    }
-                },
-                carouselProductCardOnWishlistItemClickListener = object : CarouselProductCardListener.OnWishlistItemClickListener{
-                    override fun onWishlistItemClick(productCardModel: ProductCardModel, childPosition: Int) {
-                        (listener as WishlistListener).onWishlistClick(adapterPosition, childPosition, productCardModel.isWishlisted)
-                        WishlistTracking.clickWishlistIconRecommendation(
-                                productId = element.list[childPosition].recommendationItem.productId.toString(),
-                                isAdd = !element.list[childPosition].recommendationItem.isWishlist,
-                                isTopAds = element.list[childPosition].recommendationItem.isTopAds,
-                                recomTitle = element.title
-                        )
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener{
@@ -56,10 +44,10 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                         return element.list[adapterPosition].recommendationItem
                     }
 
-                override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                    (listener as WishlistListener).onProductImpression(element.list[adapterPosition], adapterPosition)
+                    override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
+                        (listener as WishlistListener).onProductImpression(element.list[adapterPosition], adapterPosition)
+                    }
                 }
-            }
         )
     }
 

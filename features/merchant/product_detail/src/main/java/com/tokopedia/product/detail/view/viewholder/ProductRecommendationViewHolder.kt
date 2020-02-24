@@ -52,12 +52,8 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
-        view.rvProductRecom.bindCarouselProductCardView(
-                carouselCardSavedStatePosition = listener.getRecommendationCarouselSavedState(),
-                viewHolderPosition = adapterPosition,
-                parentView = view,
-                isScrollable = true,
-                carouselModelId = carouselModelId,
+        view.rvProductRecom.bindCarouselProductCardViewGrid(
+                scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
                 recyclerViewPool = listener.getParentRecyclerViewPool(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
