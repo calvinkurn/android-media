@@ -37,6 +37,10 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
         }
     }
 
+    fun onSelectedAirlineChanged(selectedAirline: List<String>) {
+        this.selectedAirline = selectedAirline
+    }
+
     private fun getItems(): List<FlightFilterAirlineModel> {
         return listener.getAirlineList().map {
             FlightFilterAirlineModel(

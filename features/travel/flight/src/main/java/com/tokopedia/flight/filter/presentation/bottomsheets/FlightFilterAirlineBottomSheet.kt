@@ -124,6 +124,8 @@ class FlightFilterAirlineBottomSheet : BottomSheetUnify(),
             it.airlineDB.id
         }.toList()
 
+        listener.onFlightFilterAirlineSaved()
+
         if (isAdded) {
             dismiss()
         }
