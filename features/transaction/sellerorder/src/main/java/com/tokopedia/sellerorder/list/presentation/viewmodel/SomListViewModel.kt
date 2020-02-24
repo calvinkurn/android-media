@@ -71,16 +71,12 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     }
 
     suspend fun getFilterList(rawQuery: String) {
-        launchCatchError(block = {
-            val filterListData = withContext(Dispatchers.IO) {
-                val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER)
-                graphqlRepository.getReseponse(listOf(filterRequest))
-                        .getSuccessData<SomListFilter.Data>()
-            }
-            _filterListResult.postValue(Success(filterListData.orderFilterSom.statusList.toMutableList()))
-        }, onError = {
-            _filterListResult.postValue(Fail(it))
-        })
+        val filterListData = withContext(Dispatchers.IO) {
+            val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER)
+            graphqlRepository.getReseponse(listOf(filterRequest))
+        }
+        val successGql = filterListData.getSuccessData<SomListFilter.Data>()
+        _filterListResult.postValue(Success(successGql.orderFilterSom.statusList.toMutableList()))
     }
 
     suspend fun getFilterStatusList(rawQuery: String) {

@@ -1,15 +1,17 @@
 package com.tokopedia.sellerorder.list
 
+import androidx.lifecycle.Observer
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerorder.InstantTaskExecutorRuleSpek
 import com.tokopedia.sellerorder.list.data.model.*
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.spekframework.spek2.Spek
@@ -24,7 +26,7 @@ object SomListViewModelTest: Spek({
     val dispatcher = Dispatchers.Unconfined
     val graphqlRepository: GraphqlRepository = mockk(relaxed = true)
     val viewModel = SomListViewModel(dispatcher, graphqlRepository)
-    val spy = spyk(viewModel)
+    val observerListFilter = mockk<Observer<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>>(relaxed = true)
     val queryFilterList = "query_filter_list"
     val queryStatusList = "query_status_list"
     val queryOrderList = "query_order_list"
@@ -40,10 +42,10 @@ object SomListViewModelTest: Spek({
     )
 
     Feature("SOM Order List") {
-        Scenario("Load Filter GQL") {
+        Scenario("Success Load Filter") {
+            val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(filterSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
+            val response = gson.fromJson(jsonResponse, SomListFilter::class.java)
             Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(filterSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomListFilter::class.java)
                 val gqlResponseSuccess = GraphqlResponse(
                         mapOf(SomListFilter::class.java to response),
                         mapOf(SomListFilter::class.java to listOf()), false)
@@ -52,16 +54,17 @@ object SomListViewModelTest: Spek({
 
             When("Load file GQLraw query filter") {
                 runBlocking {
-                    spy.loadFilterList(queryFilterList)
+                    viewModel.filterListResult.observeForever(observerListFilter)
+                    viewModel.getFilterList(queryFilterList)
                 }
             }
 
-            Then("Verify Func loadFilterList works as expected!") {
-                coVerify { spy.loadFilterList(queryFilterList) }
+            Then("Verify Func loadFilterList returns Success") {
+                coVerify { observerListFilter.onChanged(Success(response.data.orderFilterSom.statusList.toMutableList())) }
             }
         }
 
-        Scenario("Load Filter Status GQL") {
+        /*Scenario("Load Filter Status GQL") {
             Given("Return Success Data") {
                 val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(statusSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
                 val response = gson.fromJson(jsonResponse, SomListAllFilter.Data.OrderFilterSomSingle.StatusList::class.java)
@@ -122,6 +125,6 @@ object SomListViewModelTest: Spek({
             Then("Verify Func loadTickerList works as expected!") {
                 coVerify { spy.loadTickerList(queryTickerList) }
             }
-        }
+        }*/
     }
 })
