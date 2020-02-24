@@ -1,28 +1,69 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.fragment
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapterTypeFactory
+import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
+import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
+import javax.inject.Inject
+import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 
-class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>() {
+class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(), PromoCheckoutMarketplaceActionListener {
+
+    @Inject
+    lateinit var itemDecorator: PromoDecoration
+
+    private lateinit var recyclerView: RecyclerView
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_promo_checkout_marketplace, container, false)
+        recyclerView = getRecyclerView(view)
+        recyclerView.addItemDecoration(itemDecorator)
+        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
+        return view
+    }
 
     override fun getAdapterTypeFactory(): PromoCheckoutAdapterTypeFactory {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return PromoCheckoutMarketplaceAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ""
     }
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        activity?.let {
+            val baseAppComponent = it.application
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerPromoCheckoutMarketplaceComponent.builder()
+                        .baseAppComponent(baseAppComponent.baseAppComponent)
+                        .build()
+                        .inject(this)
+            }
+        }
+
     }
 
     override fun loadData(page: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
+
+    override fun onClickApplyManualInputPromo(promoCode: String) {
+
+    }
+
 }

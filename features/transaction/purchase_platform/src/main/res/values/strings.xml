@@ -260,4 +260,5 @@
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
 
+    <string name="checkout_module_promo_activity_title">Pakai Kupon/Promo</string>
 </resources>

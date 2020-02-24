@@ -1597,17 +1597,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun getIntentToPromoList(promo: Promo, activity: Activity): Intent {
-        return RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_MARKETPLACE).apply {
-            val bundle = Bundle().apply {
-                putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, cartListData?.isPromoCouponActive
-                        ?: false)
-                putString(PROMO_CODE, "")
-                putBoolean(ONE_CLICK_SHIPMENT, false)
-                putInt(PAGE_TRACKING, FROM_CART)
-                putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
-            }
-            putExtras(bundle)
-        }
+        return RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+//        return RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_MARKETPLACE).apply {
+//            val bundle = Bundle().apply {
+//                putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, cartListData?.isPromoCouponActive
+//                        ?: false)
+//                putString(PROMO_CODE, "")
+//                putBoolean(ONE_CLICK_SHIPMENT, false)
+//                putInt(PAGE_TRACKING, FROM_CART)
+//                putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
+//            }
+//            putExtras(bundle)
+//        }
     }
 
     private fun getIntentToPromoDetail(promo: Promo, promoStackingData: PromoStackingData, activity: Activity): Intent {

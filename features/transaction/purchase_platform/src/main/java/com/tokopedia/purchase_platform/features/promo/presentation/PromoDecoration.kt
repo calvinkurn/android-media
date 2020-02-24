@@ -5,8 +5,9 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.*
+import javax.inject.Inject
 
-class PromoDecoration : RecyclerView.ItemDecoration() {
+class PromoDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         when (parent.getChildViewHolder(view)) {
