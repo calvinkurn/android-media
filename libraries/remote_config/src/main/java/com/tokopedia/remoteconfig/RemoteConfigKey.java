@@ -209,5 +209,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_GTMREFRESH = "android_async_gtmrefresh";
     public static final String ENABLE_ASYNC_INSTALLTRACK = "android_async_installtrack";
     public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
+    public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
+    public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
 
 }

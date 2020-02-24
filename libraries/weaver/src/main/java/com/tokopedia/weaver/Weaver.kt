@@ -23,8 +23,10 @@ class Weaver{
             executeWeave(weaverInterface, weaverConditionCheckProvider, getasyncWeaveProvider())
         }
 
-        fun executeWeaveCoRoutineWithFirebase(weaverInterface: WeaveInterface, remoteConfigKey: String, context: Context) {
-            initFirebaseRemoteConfig(context, remoteConfigKey)
+        fun executeWeaveCoRoutineWithFirebase(weaverInterface: WeaveInterface, remoteConfigKey: String, context: Context?) {
+            if(!::weaverFirebaseConditionCheck.isInitialized) {
+                context?.let { initFirebaseRemoteConfig(it, remoteConfigKey) } ?: weaverInterface.execute()
+            }
             executeWeaveCoRoutine(weaverInterface, weaverFirebaseConditionCheck)
         }
 

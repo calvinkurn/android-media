@@ -592,15 +592,35 @@ public class MainParentActivity extends BaseActivity implements
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
 
-        addShortcuts();
+        WeaveInterface addShortcutsWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return addShortcuts();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(addShortcutsWeave, RemoteConfigKey.ENABLE_ASYNC_ADDSHORTCUTS, getContext());
 
         registerNewFeedClickedReceiver();
 
-        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
-            finish();
-        }
+        WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return checkAppSignature();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
 
         if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+    }
+
+    @NotNull
+    private boolean checkAppSignature(){
+        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
+//            finish();
+        }
+        return true;
     }
 
     @Override
@@ -927,7 +947,8 @@ public class MainParentActivity extends BaseActivity implements
         this.presenter = presenter;
     }
 
-    private void addShortcuts() {
+    @NotNull
+    private boolean addShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             try {
                 ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
@@ -1014,6 +1035,7 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
+        return true;
     }
 
     @Override
