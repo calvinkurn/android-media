@@ -28,6 +28,10 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopProductAdapterTypeFactory.attachAdapter(this)
     }
 
+    companion object{
+        const val ETALASE_ID_SOLD = "sold"
+    }
+
     val shopProductViewModelList: MutableList<ShopProductViewModel> = mutableListOf()
     val shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel?
         get() = mapOfDataModel[KEY_ETALASE_DATA_MODEL] as? ShopProductEtalaseListViewModel
@@ -456,7 +460,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         return shopProductEtalaseHighlightViewModel?.let {
             it.etalaseHighlightCarouselViewModelList.any {  etalaseHighlightCarouselViewModelList ->
                 etalaseHighlightCarouselViewModelList.shopProductViewModelList.any {shopProductViewModel ->
-                    etalaseHighlightCarouselViewModelList.shopEtalaseViewModel.etalaseId == "8" && shopProductViewModel.id == passedShopProductViewModel.id
+                    etalaseHighlightCarouselViewModelList.shopEtalaseViewModel.etalaseId == ETALASE_ID_SOLD && shopProductViewModel.id == passedShopProductViewModel.id
                 }
             }
         } ?: false

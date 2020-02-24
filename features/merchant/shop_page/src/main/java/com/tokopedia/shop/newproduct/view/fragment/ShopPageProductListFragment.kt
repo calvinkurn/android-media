@@ -161,13 +161,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.changeSelectedEtalaseId(shopProductEtalaseChipItemViewModel)
         selectedEtalaseId = shopProductEtalaseChipItemViewModel.etalaseId
         selectedEtalaseName = shopProductEtalaseChipItemViewModel.etalaseName
-        if (shopInfo != null) {
-            shopId = shopInfo!!.shopCore.shopID
+        shopInfo?.let {
+            shopId = it.shopCore.shopID
             shopPageTracking?.clickEtalaseChip(
                     isOwner,
                     selectedEtalaseName,
-                    CustomDimensionShopPage.create(shopId,
-                            shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
+                    CustomDimensionShopPage.create(
+                            shopId,
+                            it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1
+                    ))
         }
         if (recyclerView?.hasNestedScrollingParent(ViewCompat.TYPE_NON_TOUCH) != true) {
             recyclerView?.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH);
