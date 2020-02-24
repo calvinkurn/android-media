@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.actions.SearchIntents
 import com.google.firebase.appindexing.Action
 import com.google.firebase.appindexing.FirebaseUserActions
+import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -66,19 +67,15 @@ class TelcoProductActivity : BaseTelcoActivity() {
 
     private fun Intent.handleIntent() {
         when (action) {
-            // When the action is triggered by a deep-link, Intent.Action_VIEW will be used
             Intent.ACTION_VIEW -> handleDeepLink(data)
-            // When the action is triggered by the Google search action, the ACTION_SEARCH will be used
             SearchIntents.ACTION_SEARCH -> {
             }
-            // Otherwise start the app as you would normally do.
             else -> {
             }
         }
     }
 
     private fun handleDeepLink(data: Uri?) {
-        // path is normally used to indicate which view should be displayed
         var actionHandled = true
         when (data?.path) {
             "/telco" -> actionHandled = true
@@ -96,13 +93,12 @@ class TelcoProductActivity : BaseTelcoActivity() {
             } else {
                 Action.Builder.STATUS_TYPE_FAILED
             }
-//            val action = AssistActionBuilder()
-//                    .setActionToken(actionToken)
-//                    .setActionStatus(actionStatus)
-//                    .build()
-//
-//            // Send the end action to the Firebase app indexing.
-//            FirebaseUserActions.getInstance().end(action)
+            val action = AssistActionBuilder()
+                    .setActionToken(actionToken)
+                    .setActionStatus(actionStatus)
+                    .build()
+
+            FirebaseUserActions.getInstance().end(action)
         }
     }
 }

@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
+import com.google.firebase.appindexing.builders.AssistActionBuilder;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
@@ -122,10 +123,10 @@ public class DigitalProductActivity extends BaseSimpleActivity
 
     void notifyActionStatus(String status) {
         String actionToken = getIntent().getStringExtra(ACTION_TOKEN_EXTRA);
-//        final Action action = new AssistActionBuilder()
-//                .setActionToken(actionToken)
-//                .setActionStatus(status)
-//                .build();
-//        FirebaseUserActions.getInstance().end(action);
+        final Action action = new AssistActionBuilder()
+                .setActionToken(actionToken)
+                .setActionStatus(status)
+                .build();
+        FirebaseUserActions.getInstance().end(action);
     }
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.actions.SearchIntents
 import com.google.firebase.appindexing.Action
 import com.google.firebase.appindexing.FirebaseUserActions
+import com.google.firebase.appindexing.builders.AssistActionBuilder
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
@@ -98,20 +99,16 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
 
     private fun Intent.handleIntent() {
         when (action) {
-            // When the action is triggered by a deep-link, Intent.Action_VIEW will be used
             Intent.ACTION_VIEW -> handleDeepLink(data)
-            // When the action is triggered by the Google search action, the ACTION_SEARCH will be used
             SearchIntents.ACTION_SEARCH -> {
             }
-            // Otherwise start the app as you would normally do.
             else -> {
             }
         }
     }
 
     private fun handleDeepLink(data: Uri?) {
-        // path is normally used to indicate which view should be displayed
-        // i.e https://fit-actions.firebaseapp.com/start?exerciseType="Running" -> path = "start"
+
         var actionHandled = true
         when (data?.path) {
             "/getInvoice" -> actionHandled = true
@@ -128,13 +125,12 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
             } else {
                 Action.Builder.STATUS_TYPE_FAILED
             }
-//            val action = AssistActionBuilder()
-//                    .setActionToken(actionToken)
-//                    .setActionStatus(actionStatus)
-//                    .build()
-//
-//            // Send the end action to the Firebase app indexing.
-//            FirebaseUserActions.getInstance().end(action)
+            val action = AssistActionBuilder()
+                    .setActionToken(actionToken)
+                    .setActionStatus(actionStatus)
+                    .build()
+
+            FirebaseUserActions.getInstance().end(action)
         }
     }
 }
