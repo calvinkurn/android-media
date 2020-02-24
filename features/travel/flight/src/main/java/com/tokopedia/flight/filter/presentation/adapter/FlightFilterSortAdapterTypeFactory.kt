@@ -46,7 +46,7 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
                     ?: listOf())
             TYPE_FLIGHT_FILTER_FACILITY -> FlightFilterFacilityViewHolder(parent, listener, filterModel.facilityList
                     ?: listOf())
-            FlightFilterPriceRangeViewHolder.LAYOUT -> FlightFilterPriceRangeViewHolder(parent)
+            FlightFilterPriceRangeViewHolder.LAYOUT -> FlightFilterPriceRangeViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
