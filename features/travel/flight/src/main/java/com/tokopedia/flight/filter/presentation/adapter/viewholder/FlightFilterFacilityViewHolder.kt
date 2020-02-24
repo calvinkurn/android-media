@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
 class FlightFilterFacilityViewHolder(view: View,
                                      private val listener: FlightFilterSortListener,
                                      private var selectedFacility: List<FlightFilterFacilityEnum>)
-    : BaseFilterViewHolder<FlightFilterFacilityModel>(view) {
+    : AbstractViewHolder<FlightFilterFacilityModel>(view) {
 
     override fun bind(element: FlightFilterFacilityModel?) {
         with(itemView) {

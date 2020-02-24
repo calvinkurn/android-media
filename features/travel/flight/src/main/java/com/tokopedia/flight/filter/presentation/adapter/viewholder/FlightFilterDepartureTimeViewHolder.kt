@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  * @author by jessica on 2020-02-21
  */
 
-class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilterSortListener, var selectedDepartureTime: List<DepartureTimeEnum>) : BaseFilterViewHolder<DepartureTimeModel>(view) {
+class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilterSortListener, var selectedDepartureTime: List<DepartureTimeEnum>) : AbstractViewHolder<DepartureTimeModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_flight_filter_sort

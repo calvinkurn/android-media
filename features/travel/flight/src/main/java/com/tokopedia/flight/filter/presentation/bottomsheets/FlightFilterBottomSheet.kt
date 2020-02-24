@@ -115,7 +115,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         setTitle(getString(R.string.flight_filter_label))
         setAction(getString(R.string.flight_reset_label)) {
             flightFilterViewModel.resetFilter()
-            resetFilter()
         }
 
         mChildView = View.inflate(requireContext(), R.layout.fragment_flight_filter, null)
@@ -131,8 +130,9 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     private fun initView() {
         with(mChildView) {
             rvFlightFilter.setHasFixedSize(true)
-            rvFlightFilter.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             rvFlightFilter.adapter = adapter
+            rvFlightFilter.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+            rvFlightFilter.setHasFixedSize(true)
 
             btnFlightFilterSave.setOnClickListener {
                 listener?.onSaveFilter(getFlightSelectedSort(), getFlightFilterModel())
@@ -145,36 +145,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         with(mChildView) {
             btnFlightFilterSave.visibility = View.VISIBLE
             btnFlightFilterSave.text = getString(R.string.flight_there_has_x_flights, flightCount)
-        }
-    }
-
-    private fun resetFilter() {
-        rvFlightFilter.findViewHolderForAdapterPosition(SORT_ORDER)?.let {
-            (it as FlightSortViewHolder).performClickOnSortId(SORT_DEFAULT_VALUE)
-        }
-
-        rvFlightFilter.findViewHolderForAdapterPosition(TRANSIT_ORDER)?.let {
-            (it as FlightFilterTransitViewHolder).onResetChip()
-        }
-
-        rvFlightFilter.findViewHolderForAdapterPosition(DEPARTURE_TIME_ORDER)?.let {
-            (it as FlightFilterDepartureTimeViewHolder).onResetChip()
-        }
-
-        rvFlightFilter.findViewHolderForAdapterPosition(ARRIVAL_TIME_ORDER)?.let {
-            (it as FlightFilterArrivalTimeViewHolder).onResetChip()
-        }
-
-        rvFlightFilter.findViewHolderForAdapterPosition(AIRLINE_ORDER)?.let {
-            (it as FlightFilterWidgetAirlineViewHolder).onResetChip()
-        }
-
-        rvFlightFilter.findViewHolderForAdapterPosition(FACILITY_ORDER)?.let {
-            (it as FlightFilterFacilityViewHolder).onResetChip()
-        }
-
-        rvFlightFilter.findViewHolderForAdapterPosition(PRICE_ORDER)?.let {
-            (it as FlightFilterPriceRangeViewHolder).onResetValue()
         }
     }
 

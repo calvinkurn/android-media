@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
  * @author by jessica on 2020-02-21
  */
 
-class FlightFilterSortAdapter(val typeFactory: FlightFilterSortAdapterTypeFactory):
+class FlightFilterSortAdapter(var typeFactory: FlightFilterSortAdapterTypeFactory):
         BaseAdapter<FlightFilterSortAdapterTypeFactory>(typeFactory) {
 
     override fun onCreateViewItem(parent: ViewGroup, viewType: Int): View {
