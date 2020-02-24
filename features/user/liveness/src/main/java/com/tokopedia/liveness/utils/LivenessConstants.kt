@@ -1,7 +1,9 @@
 package com.tokopedia.liveness.utils
 
 object LivenessConstants {
+    const val KYC_BASE_URL = "https://accounts.tokopedia.com/"
     const val KYC_PARAMS = "[{\"kyc_type\": 1,\"param\": \"ktp_image\"},{\"kyc_type\": 2,\"param\": \"face_image\"}]\n"
+
     const val SCAN_FACE_FAIL_TIME = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_time.png"
     const val SCAN_FACE_FAIL_NETWORK = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_badnetwork.png"
     const val SCAN_FACE_FAIL_GENERAL = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_general.png"

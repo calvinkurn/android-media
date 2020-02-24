@@ -66,7 +66,7 @@ public class UserIdentificationFormFaceFragment extends
         } else {
             setLivenessViews();
         }
-
+        securityText.setSelected(true);
     }
 
     private void setKycSelfieViews(){

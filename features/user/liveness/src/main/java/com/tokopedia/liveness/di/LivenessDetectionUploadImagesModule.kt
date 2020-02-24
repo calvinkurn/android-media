@@ -10,6 +10,7 @@ import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.data.StringResponseConverter
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
+import com.tokopedia.liveness.utils.LivenessConstants.KYC_BASE_URL
 import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -55,7 +56,7 @@ class LivenessDetectionUploadImagesModule {
     @Provides
     fun provideWsV4RetrofitWithErrorHandler(okHttpClient: OkHttpClient,
                                             retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl("https://accounts.tokopedia.com/").client(okHttpClient).build()
+        return retrofitBuilder.baseUrl(KYC_BASE_URL).client(okHttpClient).build()
     }
 
     @LivenessDetectionScope

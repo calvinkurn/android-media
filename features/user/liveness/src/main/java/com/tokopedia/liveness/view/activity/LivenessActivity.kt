@@ -13,7 +13,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -32,8 +31,8 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
                 (application as BaseMainApplication).baseAppComponent).build()
     }
 
-    private var mLivenessFragment: LivenessFragment? = null
-    private var mErrorDialog: AlertDialog? = null
+    private var livenessFragment: LivenessFragment? = null
+    private var errorDialog: AlertDialog? = null
     private var extras = Bundle()
 
     private val requiredPermissions: Array<String>
@@ -70,15 +69,15 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
                 intent.extras?.let {
                     extras = it
                 }
-                mLivenessFragment = LivenessFragment.newInstance(extras)
-                if (mLivenessFragment?.isAdded == false) {
-                    mLivenessFragment?.let {fragment ->
+                livenessFragment = LivenessFragment.newInstance(extras)
+                if (livenessFragment?.isAdded == false) {
+                    livenessFragment?.let { fragment ->
                         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss()
                     }
                 }
             } else {
                 val errorMsg = getString(R.string.liveness_device_not_support)
-                mErrorDialog = AlertDialog.Builder(this)
+                errorDialog = AlertDialog.Builder(this)
                         .setCancelable(false)
                         .setMessage(errorMsg)
                         .setPositiveButton(R.string.liveness_perform) { dialog, which ->
@@ -86,15 +85,15 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
                             setResult(Activity.RESULT_OK)
                             finish()
                         }.create()
-                mErrorDialog?.show()
+                errorDialog?.show()
             }
         }
     }
 
     override fun onPause() {
-        if (mLivenessFragment != null && mLivenessFragment?.isAdded == true) {
-            mLivenessFragment?.release()
-            mLivenessFragment?.let {fragment ->
+        if (livenessFragment != null && livenessFragment?.isAdded == true) {
+            livenessFragment?.release()
+            livenessFragment?.let { fragment ->
                 supportFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
             }
         }
@@ -102,8 +101,8 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
     }
 
     override fun onDestroy() {
-        if (mErrorDialog != null && mErrorDialog?.isShowing == true) {
-            mErrorDialog?.dismiss()
+        if (errorDialog != null && errorDialog?.isShowing == true) {
+            errorDialog?.dismiss()
         }
         super.onDestroy()
     }
@@ -155,8 +154,8 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (mLivenessFragment != null && mLivenessFragment is OnBackListener) {
-            (mLivenessFragment as OnBackListener).trackOnBackPressed()
+        if (livenessFragment != null && livenessFragment is OnBackListener) {
+            (livenessFragment as OnBackListener).trackOnBackPressed()
         }
     }
 

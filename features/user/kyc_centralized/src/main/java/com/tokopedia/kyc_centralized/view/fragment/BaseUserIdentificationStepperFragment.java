@@ -46,6 +46,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     protected TextView button;
     protected ImageView correctImage;
     protected ImageView wrongImage;
+    protected TextView securityText;
     protected UserIdentificationCommonAnalytics analytics;
     protected int projectId;
 
@@ -96,6 +97,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         button = view.findViewById(R.id.button);
         correctImage = view.findViewById(R.id.image_selfie_correct);
         wrongImage = view.findViewById(R.id.image_selfie_wrong);
+        securityText = view.findViewById(R.id.security_textview);
     }
 
     @Override

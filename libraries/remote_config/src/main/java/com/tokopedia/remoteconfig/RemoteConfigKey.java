@@ -193,8 +193,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
-    public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
-
     public static final String ENABLE_NETWORK_CLIENT_INIT_ASYNC = "android_init_nwclient_async";
     public static final String ENABLE_SEQ1_ASYNC = "android_exec_seq1_async";
     public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
