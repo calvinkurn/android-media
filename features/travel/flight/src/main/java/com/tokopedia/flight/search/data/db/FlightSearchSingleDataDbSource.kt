@@ -1,8 +1,11 @@
 package com.tokopedia.flight.search.data.db
 
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
+import com.tokopedia.flight.search.data.api.single.response.Amenity
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel
 import com.tokopedia.flight.search.presentation.model.FlightAirportViewModel
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
@@ -47,7 +50,10 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                 "SELECT * FROM FlightJourneyTable WHERE "
             }
             val query = buildQuery(sqlQuery, filterModel, flightSortOption)
-            it.onNext(flightJourneyDao.findFilteredJourneys(query))
+            val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
+            val facilityFilterList = getFacilityFilter(filterModel.facilityList)
+
+            it.onNext(getJourneyFilteredByFacility(filteredJourney, facilityFilterList))
         }.flatMap { journeyAndRoutesList ->
             Observable.from(journeyAndRoutesList).flatMap { journeyAndRoutes ->
                 populateCompactJourneyAndRoutes(journeyAndRoutes)
@@ -177,24 +183,23 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             : List<JourneyAndRoutes> {
         return filteredJourney.filter {
             var shouldCount = false
+            val isBaggageFiltered = facilityFilter[FlightFilterFacilityEnum.BAGGAGE] ?: false
+            val isMealFiltered = facilityFilter[FlightFilterFacilityEnum.MEAL] ?: false
+            val type = object : TypeToken<List<Amenity>>() {}.type
 
             for (route in it.routes) {
-                if (facilityFilter[FlightFilterFacilityEnum.BAGGAGE] == true &&
-                        facilityFilter[FlightFilterFacilityEnum.MEAL] == true &&
-                        route.amenities.contains("baggage") &&
-                        route.amenities.contains("meal")) {
-                    shouldCount = true
-                    break
-                } else if (facilityFilter[FlightFilterFacilityEnum.BAGGAGE] == true &&
-                        route.amenities.contains("baggage")) {
-                    shouldCount = true
-                    break
-                } else if (facilityFilter[FlightFilterFacilityEnum.MEAL] == true &&
-                        route.amenities.contains("meal")) {
-                    shouldCount = true
-                } else if (facilityFilter[FlightFilterFacilityEnum.BAGGAGE] == false &&
-                        facilityFilter[FlightFilterFacilityEnum.MEAL] == false) {
-                    shouldCount = true
+                val amenities = Gson().fromJson<List<Amenity>>(route.amenities, type)
+
+                shouldCount = if (isBaggageFiltered && isMealFiltered) {
+                    ((amenities.size == 2)
+                            && (amenities[0].icon == "baggage" || amenities[0].icon == "meal")
+                            && (amenities[1].icon == "baggage" || amenities[1].icon == "meal"))
+                } else if (isBaggageFiltered) {
+                    amenities[0].icon == "baggage" || amenities[1].icon == "baggage"
+                } else if (isMealFiltered) {
+                    amenities[0].icon == "meal" || amenities[1].icon == "meal"
+                } else {
+                    true
                 }
             }
 
