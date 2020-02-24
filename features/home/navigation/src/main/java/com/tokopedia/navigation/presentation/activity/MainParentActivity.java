@@ -245,7 +245,9 @@ public class MainParentActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         startHomePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-        startFrameMetrics(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            startFrameMetrics(this);
+        }
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
