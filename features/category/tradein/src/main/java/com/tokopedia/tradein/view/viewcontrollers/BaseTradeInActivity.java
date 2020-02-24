@@ -169,7 +169,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     }
 
     private String getButtonStringOnError() {
-        return getString(R.string.close);
+        return getString(com.tokopedia.design.R.string.close);
     }
 
     @Override
