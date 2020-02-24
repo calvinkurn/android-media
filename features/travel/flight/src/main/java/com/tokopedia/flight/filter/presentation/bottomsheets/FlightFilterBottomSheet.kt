@@ -149,7 +149,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun resetFilter() {
-        (rvFlightFilter.findViewHolderForAdapterPosition(SORT_ORDER) as FlightSortViewHolder).onResetChip()
+        (rvFlightFilter.findViewHolderForAdapterPosition(SORT_ORDER) as FlightSortViewHolder).performClickOnSortId(SORT_DEFAULT_VALUE)
         (rvFlightFilter.findViewHolderForAdapterPosition(TRANSIT_ORDER) as FlightFilterTransitViewHolder).onResetChip()
         (rvFlightFilter.findViewHolderForAdapterPosition(DEPARTURE_TIME_ORDER) as FlightFilterDepartureTimeViewHolder).onResetChip()
         (rvFlightFilter.findViewHolderForAdapterPosition(ARRIVAL_TIME_ORDER) as FlightFilterArrivalTimeViewHolder).onResetChip()
