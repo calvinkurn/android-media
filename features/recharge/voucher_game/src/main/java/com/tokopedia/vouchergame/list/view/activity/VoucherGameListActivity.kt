@@ -60,11 +60,6 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent?.handleIntent()
-    }
-
-    override fun shouldShowOptionMenu(): Boolean {
-        return true
     }
 
     companion object {
