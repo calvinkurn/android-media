@@ -50,8 +50,6 @@ class MainSliceProvider : SliceProvider() {
 
     var recommendationModel: List<Recommendation>? = null
 
-    var userSessionInterface = UserSession(context)
-
     var loadString : String ? = "Loading..."
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
@@ -115,12 +113,14 @@ class MainSliceProvider : SliceProvider() {
                             )
                     )
                     recommendationModel?.indices?.let { recomRange ->
-                      var listData : MutableList<Product> = mutableListOf()
+                      var listProduct : MutableList<Product> = mutableListOf()
                         for (i in recomRange) {
                             row {
                                 setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
                                 recommendationModel.let {
-                                    //listData.add(Product(it?.get(i)?.categoryId,it?.get(i)?.productName,it?.get(i)?.))
+                                    it?.let {
+                                        listProduct.add(i, Product(it.get(i).categoryId.toString(), it.get(i).productName, it.get(i).title ))
+                                    }
                                     it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
                                     it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
                                 }
@@ -134,6 +134,9 @@ class MainSliceProvider : SliceProvider() {
                                 }
                             }
                         }
+                    var userSession = UserSession(contextNonNull)
+                    val trackingData = TrackingData(userSession.userId,listProduct)
+                    Timber.d("P2#ActionSlice_Impression_Recharge#$trackingData")
                     }
                 }
             //}
