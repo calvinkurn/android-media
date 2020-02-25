@@ -107,10 +107,6 @@ class ShopProductViewHolder(
         productCard.setOnClickListener {
             shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, adapterPosition)
         }
-//        productCard.setButtonWishlistOnClickListener {
-//            if (!shopProductViewModel.isSoldOut)
-//                shopProductClickedListener?.onWishListClicked(shopProductViewModel, shopTrackType)
-//        }
 
         productCard.setImageProductViewHintListener(shopProductViewModel, object: ViewHintListener{
             override fun onViewHint() {
