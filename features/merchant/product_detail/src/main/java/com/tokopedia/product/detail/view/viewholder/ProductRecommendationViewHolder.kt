@@ -19,14 +19,11 @@ import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
 class ProductRecommendationViewHolder(private val view: View,
                                       private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
-    var carouselModelId: String? = null
-
     companion object {
         val LAYOUT = R.layout.item_dynamic_recommendation
     }
 
     override fun bind(element: ProductRecommendationDataModel) {
-        this.carouselModelId = element.name
         view.rvProductRecom.gone()
         view.visible()
         view.loadingRecom.visible()
@@ -100,6 +97,7 @@ class ProductRecommendationViewHolder(private val view: View,
 
     override fun onViewRecycled() {
         listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
+        itemView.rvProductRecom?.recycle()
         super.onViewRecycled()
     }
 }
