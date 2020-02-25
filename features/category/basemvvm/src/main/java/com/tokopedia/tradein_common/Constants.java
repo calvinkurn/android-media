@@ -9,9 +9,7 @@ public class Constants {
     public static final String APPID = "1:109002668043:android:f4cc247c743f7921";
     public static final String ACTION_GO_TO_SHIPMENT = "ACTION_GO_TO_SHIPMENT";
     public static final String CAMPAIGN_ID_PROD = "tokopediaTradeInProduction";
-    public static final String CAMPAIGN_ID_PROD_MONEY_IN = "tokopediaMoneyInProduction";
     public static final String CAMPAIGN_ID_STAGING = "tokopediaSandbox";
-    public static final String CAMPAIGN_ID_STAGING_MONEY_IN = "tokopediaMoneyInSandbox";
     public static final int LOGIN_REQUIRED = 1;
     public static final int LOGEED_IN = 2;
 }

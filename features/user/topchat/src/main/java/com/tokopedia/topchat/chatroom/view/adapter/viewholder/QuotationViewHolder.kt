@@ -11,7 +11,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import kotlinx.android.synthetic.main.item_chat_quotation.view.*
 import kotlinx.android.synthetic.main.topchat_quotation_attachment.view.*
 
@@ -20,15 +20,15 @@ class QuotationViewHolder(
         private val chatLinkHandlerListener: ChatLinkHandlerListener,
         private val listener: QuotationListener
 
-) : BaseChatViewHolder<QuotationViewModel>(itemView) {
+) : BaseChatViewHolder<QuotationUiModel>(itemView) {
 
     interface QuotationListener {
-        fun trackClickQuotation(msg: QuotationViewModel)
+        fun trackClickQuotation(msg: QuotationUiModel)
     }
 
     private var chatStatus: ImageView? = null
 
-    override fun bind(message: QuotationViewModel?) {
+    override fun bind(message: QuotationUiModel?) {
         if (message == null) return
         super.bind(message)
         bindViewId()
@@ -54,7 +54,7 @@ class QuotationViewHolder(
         itemView.quotationAttachmentContainer?.background = getQuotationMessageBackground()
     }
 
-    private fun bindBubbleAlignment(message: QuotationViewModel) {
+    private fun bindBubbleAlignment(message: QuotationUiModel) {
         if (message.isSender) {
             setChatRight()
             bindChatReadStatus(message)
@@ -64,7 +64,7 @@ class QuotationViewHolder(
         }
     }
 
-    private fun bindProductImage(message: QuotationViewModel) {
+    private fun bindProductImage(message: QuotationUiModel) {
         ImageHandler.loadImageRounded2(
                 itemView.context,
                 itemView.ivThumbnail,
@@ -73,15 +73,15 @@ class QuotationViewHolder(
         )
     }
 
-    private fun bindProductTitle(message: QuotationViewModel) {
+    private fun bindProductTitle(message: QuotationUiModel) {
         itemView.tvQuotationName?.text = message.title
     }
 
-    private fun bindProductPrice(message: QuotationViewModel) {
+    private fun bindProductPrice(message: QuotationUiModel) {
         itemView.tvQuotationPrice?.text = message.price
     }
 
-    private fun bindClick(message: QuotationViewModel) {
+    private fun bindClick(message: QuotationUiModel) {
         itemView.quotationAttachmentContainer?.setOnClickListener {
             listener.trackClickQuotation(message)
             chatLinkHandlerListener.onGoToWebView(message.url, message.url)

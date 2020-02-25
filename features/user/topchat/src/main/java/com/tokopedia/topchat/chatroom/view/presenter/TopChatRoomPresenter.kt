@@ -47,11 +47,11 @@ import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -97,27 +97,25 @@ class TopChatRoomPresenter @Inject constructor(
         private var removeWishListUseCase: RemoveWishListUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
-    override fun clearText() {
-    }
+    var thisMessageId: String = ""
 
+    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var mSubscription: CompositeSubscription
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
-
     private lateinit var webSocketUrl: String
-    private lateinit var subject: PublishSubject<Boolean>
+    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
     private var isUploading: Boolean = false
     private var dummyList: ArrayList<Visitable<*>>
-    var thisMessageId: String = ""
-    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
-
-    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
 
     init {
         mSubscription = CompositeSubscription()
         compressImageSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
+    }
+
+    override fun clearText() {
     }
 
     override fun connectWebSocket(messageId: String) {
@@ -196,7 +194,6 @@ class TopChatRoomPresenter @Inject constructor(
         mSubscription.unsubscribe()
     }
 
-
     override fun mappingEvent(response: WebSocketResponse, messageId: String) {
         val pojo: ChatSocketPojo = Gson().fromJson(response.jsonObject, ChatSocketPojo::class.java)
 
@@ -238,7 +235,6 @@ class TopChatRoomPresenter @Inject constructor(
         ))
     }
 
-
     override fun loadPreviousChat(
             messageId: String,
             page: Int,
@@ -254,8 +250,8 @@ class TopChatRoomPresenter @Inject constructor(
     fun getTemplate(isSeller: Boolean) {
         getTemplateChatRoomUseCase.execute(
                 GetTemplateChatRoomUseCase.generateParam(isSeller),
-                object : Subscriber<GetTemplateViewModel>() {
-                    override fun onNext(t: GetTemplateViewModel?) {
+                object : Subscriber<GetTemplateUiModel>() {
+                    override fun onNext(t: GetTemplateUiModel?) {
                         val templateList = arrayListOf<Visitable<Any>>()
                         t?.let {
                             if (t.isEnabled) {
@@ -282,7 +278,6 @@ class TopChatRoomPresenter @Inject constructor(
     private fun readMessage() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
-
 
     override fun startCompressImages(it: ImageUploadViewModel) {
         if (validateImageAttachment(it.imageUrl)) {
@@ -573,14 +568,14 @@ class TopChatRoomPresenter @Inject constructor(
         val status = view.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
         val totalPriceAmount = view.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
 
-        val invoiceViewModel = InvoicePreviewViewModel(
-                id.toIntOrNull() ?: InvoicePreviewViewModel.INVALID_ID,
+        val invoiceViewModel = InvoicePreviewUiModel(
+                id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
                 invoiceCode,
                 productName,
                 date,
                 imageUrl,
                 invoiceUrl,
-                statusId.toIntOrNull() ?: InvoicePreviewViewModel.INVALID_ID,
+                statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
                 status,
                 totalPriceAmount
         )

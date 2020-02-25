@@ -65,8 +65,8 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
@@ -132,11 +132,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         initFireBase()
     }
 
-    private fun initFireBase() {
-        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPresenter(savedInstanceState)
@@ -182,6 +177,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onError(),
                     onSuccessGetMessageId())
         }
+    }
+
+    private fun initFireBase() {
+        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     private fun setupPresenter(savedInstanceState: Bundle?) {
@@ -851,7 +851,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
-        if (attachment is InvoicePreviewViewModel) {
+        if (attachment is InvoicePreviewUiModel) {
             analytics.invoiceAttachmentSent(attachment)
         } else if (attachment is SendableProductPreview) {
             analytics.trackSendProductAttachment()
@@ -982,7 +982,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         })
     }
 
-    override fun trackClickQuotation(msg: QuotationViewModel) {
+    override fun trackClickQuotation(msg: QuotationUiModel) {
         analytics.eventClickQuotation(msg)
     }
 

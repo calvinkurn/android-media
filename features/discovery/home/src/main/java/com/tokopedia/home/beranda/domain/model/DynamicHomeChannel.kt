@@ -105,8 +105,8 @@ class DynamicHomeChannel(
                             "id", grids[position].id,
                             "price", CurrencyFormatHelper.convertRupiahToInt(grids[position].price).toString(),
                             "list", "/ - p1 - lego product - " + header.name,
-                            "position", (position + 1).toString()),
-                            "dimension84", id
+                            "position", (position + 1).toString(),
+                            "dimension84", id)
             )
             )
             ),
