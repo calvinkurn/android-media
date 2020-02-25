@@ -1,7 +1,8 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet
 
 import android.view.View
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class OrderPriceSummaryBottomSheet {

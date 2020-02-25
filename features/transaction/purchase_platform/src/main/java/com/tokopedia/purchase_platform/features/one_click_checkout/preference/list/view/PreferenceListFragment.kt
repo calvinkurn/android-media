@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,11 +15,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.di.PreferenceListComponent
 import kotlinx.android.synthetic.main.fragment_preference_list.*
 import javax.inject.Inject
 
-class PreferenceListFragment : BaseDaggerFragment() {
+class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.PreferenceListAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -27,7 +30,7 @@ class PreferenceListFragment : BaseDaggerFragment() {
         ViewModelProviders.of(this, viewModelFactory)[PreferenceListViewModel::class.java]
     }
 
-    private val adapter = PreferenceListAdapter()
+    private val adapter = PreferenceListAdapter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,6 +43,13 @@ class PreferenceListFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(PreferenceListComponent::class.java).inject(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_EDIT_PREFERENCE) {
+            viewModel.getAllPreference()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,5 +92,24 @@ class PreferenceListFragment : BaseDaggerFragment() {
                 outRect.bottom = context?.resources?.getDimension(R.dimen.dp_8)?.toInt() ?: 0
             }
         })
+    }
+
+    override fun onPreferenceSelected(preference: Preference) {
+        viewModel.changeDefaultPreference(preference)
+    }
+
+    override fun onPreferenceEditClicked(preference: Preference) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+        intent.apply {
+            putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, 1)
+            putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, 1)
+            putExtra(PreferenceEditActivity.EXTRA_PAYMENT_ID, 1)
+        }
+        startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
+    }
+
+    companion object {
+
+        const val REQUEST_EDIT_PREFERENCE =  11
     }
 }

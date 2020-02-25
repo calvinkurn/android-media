@@ -211,7 +211,7 @@
             app:layout_constraintTop_toBottomOf="@+id/divider3"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Ganti Pilihan"
+            android:text="Ganti Pilihan"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

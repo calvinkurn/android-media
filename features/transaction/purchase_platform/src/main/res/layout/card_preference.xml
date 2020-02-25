@@ -22,19 +22,30 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_card_header"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:lines="1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
-            app:layout_constraintEnd_toStartOf="@+id/iv_edit_preference"
             app:layout_constraintStart_toStartOf="@+id/iv_card_header"
             app:layout_constraintTop_toTopOf="@+id/iv_card_header"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Preferensi Utama" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_main_preference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:labelTitle="Utama"
+            app:labelType="general_dark_green"
+            app:layout_constraintBottom_toBottomOf="@id/iv_card_header"
+            app:layout_constraintStart_toEndOf="@+id/tv_card_header"
+            app:layout_constraintTop_toTopOf="@id/iv_card_header" />
 
         <ImageView
             android:id="@+id/iv_edit_preference"

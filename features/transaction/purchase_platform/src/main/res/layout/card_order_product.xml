@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop"
@@ -11,9 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Toko: " />
@@ -24,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:ellipsize="end"
@@ -31,7 +34,7 @@
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_shop"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Toko Sepeda A" />
@@ -110,25 +113,65 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintBottom_toBottomOf="@+id/quantity_editor"
-        app:layout_constraintEnd_toStartOf="@+id/quantity_editor"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_qty_min"
+        app:layout_constraintEnd_toStartOf="@+id/btn_qty_min"
         app:layout_constraintStart_toStartOf="@+id/rv_product_variant"
         app:layout_constraintTop_toBottomOf="@+id/rv_product_variant"
         app:typographyType="body_3"
         tools:text="Stok terbatas! Tersedia &lt; 5" />
 
-    <com.tokopedia.unifycomponents.QuantityEditorUnify
-        android:id="@+id/quantity_editor"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/btn_qty_min"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_16"
+        android:padding="@dimen/dp_2"
+        app:layout_constraintEnd_toStartOf="@+id/et_qty"
+        app:layout_constraintTop_toBottomOf="@+id/rv_product_variant"
+        app:srcCompat="@drawable/bg_button_counter_minus_checkout"
+        tools:ignore="ContentDescription" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_qty"
+        android:layout_width="@dimen/dp_60"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:inputType="number"
+        android:maxLength="6"
+        android:textColor="@color/black_70"
+        android:textColorHighlight="@color/tkpd_main_green"
+        android:textSize="@dimen/sp_16"
+        app:backgroundTint="@color/tkpd_main_green"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_qty_plus"
+        app:layout_constraintEnd_toStartOf="@+id/btn_qty_plus"
+        app:layout_constraintTop_toTopOf="@+id/btn_qty_plus"
+        tools:text="10000" />
+
+    <ImageView
+        android:id="@+id/btn_qty_plus"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
+        android:padding="@dimen/dp_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_product_variant"
-        app:qty_default_value="1"
-        app:qty_max_value="1"
-        app:qty_min_value="1" />
+        app:srcCompat="@drawable/bg_button_counter_plus_checkout"
+        tools:ignore="ContentDescription" />
+
+<!--    <com.tokopedia.unifycomponents.QuantityEditorUnify-->
+<!--        android:id="@+id/quantity_editor"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="@dimen/dp_16"-->
+<!--        android:layout_marginEnd="@dimen/dp_24"-->
+<!--        android:layout_marginRight="@dimen/dp_24"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/rv_product_variant"-->
+<!--        app:qty_default_value="1"-->
+<!--        app:qty_max_value="10"-->
+<!--        app:qty_min_value="1" />-->
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_note_label"
@@ -143,7 +186,7 @@
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quantity_editor"
+        app:layout_constraintTop_toBottomOf="@+id/btn_qty_plus"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
@@ -179,4 +222,4 @@
         tools:text="60/140"
         tools:visibility="visible" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

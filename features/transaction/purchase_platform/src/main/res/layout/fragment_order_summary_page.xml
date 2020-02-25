@@ -32,14 +32,9 @@
                 tools:text="Barang yang dibeli" />
 
             <include
-                android:id="@+id/product_card"
                 layout="@layout/card_order_product"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_header" />
+                android:layout_height="wrap_content" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_header_2"
@@ -49,7 +44,7 @@
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/product_card"
+                app:layout_constraintTop_toBottomOf="@+id/tv_note_char_counter"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold"
                 tools:text="hi blablabla" />

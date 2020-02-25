@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
@@ -49,7 +48,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true)
         }
-        web_view.loadUrl("https://www.tokopedia.com")
+        web_view.loadUrl("https://pay-staging.tokopedia.com/dummy/payment/listing")
     }
 
     override fun getScreenName(): String {
@@ -57,6 +56,14 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            parent.setStepperValue(75, true)
+        }
     }
 
     inner class PaymentMethodWebViewClient : WebViewClient() {
@@ -71,8 +78,20 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             progress_bar.gone()
         }
 
-        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-            return super.shouldOverrideUrlLoading(view, url)
+        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+            val r1 = request
+            return super.shouldOverrideUrlLoading(view, request)
+        }
+
+        override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+            val r = request
+            return super.shouldInterceptRequest(view, request)
+        }
+
+        override fun onFormResubmission(view: WebView?, dontResend: Message?, resend: Message?) {
+            val m1 = dontResend
+            val m2 = resend
+            super.onFormResubmission(view, dontResend, resend)
         }
     }
 

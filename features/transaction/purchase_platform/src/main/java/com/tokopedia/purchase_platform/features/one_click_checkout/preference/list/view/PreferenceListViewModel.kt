@@ -12,4 +12,12 @@ class PreferenceListViewModel @Inject constructor(val useCase: GetPreferenceList
     private val _preferenceList: MutableLiveData<List<Preference>> = MutableLiveData(listOf(Preference(), Preference(), Preference(), Preference(), Preference()))
     val preferenceList: LiveData<List<Preference>>
         get() = _preferenceList
+
+    fun changeDefaultPreference(preference: Preference) {
+
+    }
+
+    fun getAllPreference() {
+
+    }
 }

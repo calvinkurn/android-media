@@ -229,4 +229,20 @@
         app:layout_constraintVertical_bias="1"
         tools:text="Simpan Preferensi" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/main_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tv_preference_name,tv_address_name,tv_address_receiver,tv_address_detail,btn_change_address,tv_shipping_name,tv_shipping_duration,btn_change_duration,iv_payment,tv_payment_name,tv_payment_detail,btn_change_payment,btn_save" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

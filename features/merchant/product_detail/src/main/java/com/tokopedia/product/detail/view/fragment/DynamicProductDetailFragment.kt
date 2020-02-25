@@ -1815,7 +1815,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 atcRequestParam.setQuantity(qty)
                 atcRequestParam.setWarehouseId(warehouseId)
 
-                val expressCheckoutUriString = ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
+                val expressCheckoutUriString = ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
                 val intent = RouteManager.getIntent(it, expressCheckoutUriString)
                 intent?.run {
                     putExtra(Constant.EXTRA_ATC_REQUEST, atcRequestParam)
@@ -1833,7 +1833,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun doBuy() {
         val isExpressCheckout = (viewModel.p2Login.value)?.isExpressCheckoutType
                 ?: false
-        if (isExpressCheckout) {
+        if (isExpressCheckout || true) {
             if (viewModel.isUserSessionActive) {
                 goToAtcExpress()
             } else {
