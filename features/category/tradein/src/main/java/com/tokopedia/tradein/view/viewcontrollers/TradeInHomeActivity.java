@@ -215,7 +215,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
                         });
                         if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
-                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                            sendIrisEvent(homeResult.maxPrice != null ? homeResult.maxPrice : 0 , homeResult.minPrice!= null ? homeResult.minPrice : 0 );
                         }
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
