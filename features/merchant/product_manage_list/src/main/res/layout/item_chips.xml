@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.product.manage.filter.presentation.widget.ChipWidget
+    <com.tokopedia.product.manage.feature.filter.presentation.widget.ChipWidget
         android:id="@+id/chips_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
