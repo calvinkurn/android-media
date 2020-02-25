@@ -29,7 +29,7 @@ class SendGiftActivity : BaseSimpleActivity(), HasComponent<TokoPointComponent?>
         }
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return SendGiftFragment.newInstance(intent.extras)
     }
 

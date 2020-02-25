@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -25,8 +26,8 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
 import com.tokopedia.tokopoints.view.contract.SendGiftContract
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.*
+import java.lang.Error
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {
     private var mContainerMain: ViewFlipper? = null
@@ -51,14 +52,12 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     }
 
     fun initView() {
-        tokoPointComponent = (activity as CouponCatalogDetailsActivity?)!!.component
-        tokoPointComponent!!.inject(this)
-        mPresenter!!.attachView(this)
+        tokoPointComponent = (activity as CouponCatalogDetailsActivity).component
+        tokoPointComponent?.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mPresenter!!.attachView(this)
         mContainerMain = view.findViewById(com.tokopedia.tokopoints.R.id.container_main)
         mContainerMain?.setDisplayedChild(CONTAINER_SEND_FORM)
         mEditEmail = view.findViewById(com.tokopedia.tokopoints.R.id.edit_email)
@@ -74,16 +73,47 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         mEditNotes?.addTextChangedListener(this)
         mBtnSendGift?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
         mBtnSendNow?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
+        addObserver()
     }
 
-    override fun onDestroy() {
-        mPresenter!!.destroyView()
-        super.onDestroy()
+    private fun addObserver() {
+        addSendGiftObserver()
+        addPreValidationObserver()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
+    private fun addPreValidationObserver() = mPresenter.prevalidateLiveData.observe(this , Observer {
+        it?.let {
+            when(it) {
+                is Loading -> showLoading()
+                is ErrorMessage -> {
+                    hideLoading()
+                    if (!it.data.isEmpty()) {
+                        onErrorPreValidate(it.data)
+                    }
+                }
+                is Success -> {
+                    hideLoading()
+                    openPreConfirmationWindow()
+                }
+            }
+        }
+    })
+
+    private fun addSendGiftObserver() = mPresenter.sendGiftLiveData.observe(this, Observer {
+        it?.let {
+            when(it) {
+                is Loading -> showLoadingSendNow()
+                is Success -> {
+                    hideLoadingSendNow()
+                    val title = if (it.data.title is Int) getString(it.data.title) else it.data.title.toString()
+                    val message = if (it.data.messsage is Int) getString(it.data.messsage) else it.data.messsage.toString()
+                    showPopup(title,message,it.data.success)
+                }
+                is ErrorMessage -> hideLoadingSendNow()
+            }
+        }
+    })
+
 
     override fun onClick(view: View) {
         if (view.id == com.tokopedia.tokopoints.R.id.button_send) {
@@ -96,7 +126,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             if (arguments == null || activity == null) {
                 return
             }
-            mPresenter!!.sendGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID),
+            mPresenter.sendGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID),
                     mEditEmail!!.text.toString(),
                     mEditNotes!!.text.toString())
             AnalyticsTrackerUtil.sendEvent(context,
