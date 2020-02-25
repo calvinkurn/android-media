@@ -16,3 +16,13 @@ internal const val LABEL_PRICE = "price"
 internal const val LABEL_GIMMICK = "gimmick"
 internal const val LABEL_INTEGRITY = "integrity"
 internal const val LABEL_SHIPPING = "shipping"
+
+internal const val TEXT_DARK_ORANGE = "textDarkOrange"
+internal const val TEXT_DARK_RED = "textDarkRed"
+internal const val TEXT_DARK_GREY = "textDarkGrey"
+internal const val TEXT_LIGHT_GREY = "textLightGrey"
+
+internal const val COLOR_TEXT_DARK_ORANGE = "#Y400"
+internal const val COLOR_TEXT_DARK_RED = "#R500"
+internal const val COLOR_TEXT_DARK_GREY = "#N70068"
+internal const val COLOR_TEXT_LIGHT_GREY = "#N70044"

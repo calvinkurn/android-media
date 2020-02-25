@@ -154,7 +154,17 @@ internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?)
 private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(labelGroup.title)
-        it.setTextColor(safeParseColor(labelGroup.type))
+        it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))
+    }
+}
+
+private fun String?.toUnifyTextColor(): String {
+    return when(this) {
+        TEXT_DARK_ORANGE -> COLOR_TEXT_DARK_ORANGE
+        TEXT_DARK_RED -> COLOR_TEXT_DARK_RED
+        TEXT_DARK_GREY -> COLOR_TEXT_DARK_GREY
+        TEXT_LIGHT_GREY -> COLOR_TEXT_LIGHT_GREY
+        else -> this ?: ""
     }
 }
 
