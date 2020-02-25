@@ -6,7 +6,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 /**
@@ -34,7 +34,8 @@ class RecommendationItemViewHolder(
                             ratingCount = element.productItem.rating,
                             shopLocation = element.productItem.location,
                             shopBadgeList = element.productItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.productItem.isFreeOngkirActive,

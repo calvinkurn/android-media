@@ -7,7 +7,7 @@ import com.tokopedia.discovery.categoryrevamp.data.productModel.FreeOngkir
 import com.tokopedia.discovery.categoryrevamp.data.productModel.LabelGroupsItem
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import kotlin.math.roundToInt
 
 abstract class ProductCardViewHolder(itemView: View,
@@ -27,7 +27,8 @@ abstract class ProductCardViewHolder(itemView: View,
                 shopLocation = shop.location,
                 ratingCount = rating.toRatingCount(isTopAds),
                 reviewCount = countReview,
-                freeOngkir = freeOngkir?.toProductCardModelFreeOngkir() ?: ProductCardModel.FreeOngkir(),
+                freeOngkir = freeOngkir?.toProductCardModelFreeOngkir()
+                        ?: ProductCardModel.FreeOngkir(),
                 isTopAds = isTopAds,
                 labelGroupList = labelGroups.toProductCardModelLabelGroup()
         )

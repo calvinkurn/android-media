@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel

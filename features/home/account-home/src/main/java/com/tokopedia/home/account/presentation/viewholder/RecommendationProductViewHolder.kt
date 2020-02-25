@@ -8,7 +8,7 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 
 /**
  * @author devarafikry on 24/07/19.
@@ -36,7 +36,8 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
                             isWishlistVisible = true,
                             isWishlisted = element.product.isWishlist,
                             shopBadgeList = element.product.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.product.isFreeOngkirActive,

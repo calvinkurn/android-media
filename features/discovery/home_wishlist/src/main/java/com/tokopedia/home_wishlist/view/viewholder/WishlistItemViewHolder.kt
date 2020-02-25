@@ -9,7 +9,7 @@ import com.tokopedia.home_wishlist.view.ext.setSafeOnClickListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardListView
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 

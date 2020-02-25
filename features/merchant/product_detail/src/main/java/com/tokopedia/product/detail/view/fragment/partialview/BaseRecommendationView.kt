@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRe
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_3
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_4
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifyprinciples.Typography
@@ -120,7 +120,8 @@ abstract class BaseRecommendationView(context: Context,
                             isWishlistVisible = false,
                             isWishlisted = it.isWishlist,
                             shopBadgeList = it.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = it.isFreeOngkirActive,

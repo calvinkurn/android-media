@@ -1,7 +1,7 @@
 package com.tokopedia.productcard.test
 
 import android.view.View
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import org.hamcrest.Matcher
 
 internal class ProductCardModelMatcher(

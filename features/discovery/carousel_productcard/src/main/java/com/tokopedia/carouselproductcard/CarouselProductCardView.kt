@@ -12,7 +12,7 @@ import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

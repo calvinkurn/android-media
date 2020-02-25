@@ -1,6 +1,6 @@
 package com.tokopedia.carouselproductcard.test
 
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 
 internal var productCardNameSuffix = 0
 

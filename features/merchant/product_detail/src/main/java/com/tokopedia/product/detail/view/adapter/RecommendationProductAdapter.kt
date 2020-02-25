@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.adapter
 
 import androidx.recyclerview.widget.RecyclerView
-import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
@@ -11,9 +10,8 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
-import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.utils.ImpresionTask
@@ -54,7 +52,8 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
                                 isWishlistVisible = false,
                                 isWishlisted = product.isWishlist,
                                 shopBadgeList = product.badgesUrl.map {
-                                    ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                    ProductCardModel.ShopBadge(imageUrl = it
+                                            ?: "")
                                 },
                                 freeOngkir = ProductCardModel.FreeOngkir(
                                         isActive = product.isFreeOngkirActive,

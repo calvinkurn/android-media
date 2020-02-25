@@ -3,7 +3,7 @@ package com.tokopedia.productcard.utils
 
 import android.content.Context
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.max

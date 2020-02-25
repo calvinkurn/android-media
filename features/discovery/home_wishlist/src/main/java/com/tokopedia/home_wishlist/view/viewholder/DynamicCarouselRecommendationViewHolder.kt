@@ -16,7 +16,7 @@ import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDat
 import com.tokopedia.home_wishlist.view.custom.SpaceItemDecoration
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 
@@ -81,13 +81,14 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                     isWishlistVisible = true,
                     isWishlisted = element.recommendationItem.isWishlist,
                     shopBadgeList = element.recommendationItem.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it?:"")
+                        ProductCardModel.ShopBadge(imageUrl = it
+                                ?: "")
                     },
                     freeOngkir = ProductCardModel.FreeOngkir(
                             isActive = element.recommendationItem.isFreeOngkirActive,
                             imageUrl = element.recommendationItem.freeOngkirImageUrl
                     ),
-                    labelGroupList = element.recommendationItem.labelGroupList.map {  recommendationLabel ->
+                    labelGroupList = element.recommendationItem.labelGroupList.map { recommendationLabel ->
                         ProductCardModel.LabelGroup(
                                 position = recommendationLabel.position,
                                 title = recommendationLabel.title,

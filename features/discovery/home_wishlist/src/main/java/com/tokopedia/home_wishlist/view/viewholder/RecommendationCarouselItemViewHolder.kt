@@ -7,7 +7,7 @@ import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDat
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
@@ -40,7 +40,8 @@ class RecommendationCarouselItemViewHolder(
                             isWishlistVisible = true,
                             isWishlisted = element.recommendationItem.isWishlist,
                             shopBadgeList = element.recommendationItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.recommendationItem.isFreeOngkirActive,

@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.Recommendation
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 /**
@@ -31,7 +31,8 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
                             ratingCount = element.recommendationItem.rating,
                             shopLocation = element.recommendationItem.location,
                             shopBadgeList = element.recommendationItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.recommendationItem.isFreeOngkirActive,

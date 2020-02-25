@@ -1,7 +1,6 @@
 package com.tokopedia.carouselproductcard.test
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.CarouselProductCardView
-import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.carouselproductcard.test.R
+import com.tokopedia.productcard.ProductCardModel
 
 
 internal class CarouselProductCardGridActivityTest: AppCompatActivity() {

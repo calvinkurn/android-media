@@ -10,7 +10,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 /**
@@ -76,13 +76,14 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                             isWishlistVisible = true,
                             isWishlisted = it.productItem.isWishlist,
                             shopBadgeList = it.productItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = it.productItem.isFreeOngkirActive,
                                     imageUrl = it.productItem.freeOngkirImageUrl
                             ),
-                            labelGroupList = it.productItem.labelGroupList.map {  recommendationLabel ->
+                            labelGroupList = it.productItem.labelGroupList.map { recommendationLabel ->
                                 ProductCardModel.LabelGroup(
                                         title = recommendationLabel.title, position = recommendationLabel.position, type = recommendationLabel.type
                                 )
