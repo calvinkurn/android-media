@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <actions>
     <action intentName="actions.intent.GET_INVOICE">
-<!--        <fulfillment-->
-<!--            fulfillmentMode="actions.fulfillment.SLICE"-->
-<!--            urlTemplate="content://com.tokopedia.recharge_slice/get_invoice">-->
-<!--        </fulfillment>-->
+
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.SLICE"
+            urlTemplate="content://com.tokopedia.recharge_slice/get_invoice/{serviceName}"
+            >
+            <parameter-mapping
+                intentParameter="invoice.forService.name"
+                required="true"
+                urlParameter="serviceName"/>
+        </fulfillment>
+
         <fulfillment
             fulfillmentMode="actions.fulfillment.DEEPLINK"
             urlTemplate="tokopedia://recharge/home" />
+
     </action>
 </actions>

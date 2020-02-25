@@ -27,12 +27,16 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.recharge_slice.data.Product
+import com.tokopedia.recharge_slice.data.TrackingData
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import timber.log.Timber
 
 /**
  * @author by M on 6/12/2019
@@ -46,15 +50,18 @@ class MainSliceProvider : SliceProvider() {
 
     var recommendationModel: List<Recommendation>? = null
 
+    var userSessionInterface = UserSession(context)
+
     var loadString : String ? = "Loading..."
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
-        return when (sliceUri.path) {
+       // return when (sliceUri.path) {
 //            "/get_invoice_v1" -> createGetInvoiceSlice(sliceUri)
 //            "/get_invoice_v2" -> createGetInvoiceV2Slice(sliceUri)
-            "/get_invoice" -> createGetInvoiceV3Slice(sliceUri)
-            else -> null
-        }
+            //"/get_invoice/" -> createGetInvoiceV3Slice(sliceUri)
+           // else -> null
+        //}
+        return createGetInvoiceV3Slice(sliceUri)
     }
 
     private fun createPendingIntent(id: Int?, applink: String?): PendingIntent? {
@@ -75,9 +82,9 @@ class MainSliceProvider : SliceProvider() {
                 RouteManager.getIntent(contextNonNull,ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME),
                 0
         )
-        if (sliceUri.getQueryParameter("serviceName") != null) {
-            return null
-        } else {
+//        if (sliceUri.getQueryParameter("serviceName") != null) {
+//            return null
+//        } else {
             if (recommendationModel == null) {
                     getData(sliceUri)
                     return list(contextNonNull, sliceUri, INFINITY) {
@@ -108,10 +115,12 @@ class MainSliceProvider : SliceProvider() {
                             )
                     )
                     recommendationModel?.indices?.let { recomRange ->
+                      var listData : MutableList<Product> = mutableListOf()
                         for (i in recomRange) {
                             row {
                                 setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
                                 recommendationModel.let {
+                                    //listData.add(Product(it?.get(i)?.categoryId,it?.get(i)?.productName,it?.get(i)?.))
                                     it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
                                     it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
                                 }
@@ -127,7 +136,7 @@ class MainSliceProvider : SliceProvider() {
                         }
                     }
                 }
-            }
+            //}
         }
     }
 
