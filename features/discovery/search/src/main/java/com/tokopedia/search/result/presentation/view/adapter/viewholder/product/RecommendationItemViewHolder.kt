@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel
@@ -29,27 +29,28 @@ class RecommendationItemViewHolder (
         val view = productCardViewHintListener ?: return
         val recommendationItem = recommendationItemViewModel.recommendationItem
         view.setProductModel(
-            ProductCardModel(
-                slashedPrice = recommendationItem.slashedPrice,
-                productName = recommendationItem.name,
-                formattedPrice = recommendationItem.price,
-                productImageUrl = recommendationItem.imageUrl,
-                isTopAds = recommendationItem.isTopAds,
-                discountPercentage = recommendationItem.discountPercentage.toString(),
-                reviewCount = recommendationItem.countReview,
-                ratingCount = recommendationItem.rating,
-                shopLocation = recommendationItem.location,
-                shopBadgeList = recommendationItem.badgesUrl.map {
-                    ProductCardModel.ShopBadge(imageUrl = it ?: "")
-                },
-                freeOngkir = ProductCardModel.FreeOngkir(
-                    isActive = recommendationItem.isFreeOngkirActive,
-                    imageUrl = recommendationItem.freeOngkirImageUrl
-                ),
-                labelGroupList = recommendationItem.labelGroupList.map {
-                    ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type)
-                }
-            )
+                ProductCardModel(
+                        slashedPrice = recommendationItem.slashedPrice,
+                        productName = recommendationItem.name,
+                        formattedPrice = recommendationItem.price,
+                        productImageUrl = recommendationItem.imageUrl,
+                        isTopAds = recommendationItem.isTopAds,
+                        discountPercentage = recommendationItem.discountPercentage.toString(),
+                        reviewCount = recommendationItem.countReview,
+                        ratingCount = recommendationItem.rating,
+                        shopLocation = recommendationItem.location,
+                        shopBadgeList = recommendationItem.badgesUrl.map {
+                            ProductCardModel.ShopBadge(imageUrl = it
+                                    ?: "")
+                        },
+                        freeOngkir = ProductCardModel.FreeOngkir(
+                                isActive = recommendationItem.isFreeOngkirActive,
+                                imageUrl = recommendationItem.freeOngkirImageUrl
+                        ),
+                        labelGroupList = recommendationItem.labelGroupList.map {
+                            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type)
+                        }
+                )
         )
 
         view.setOnClickListener {

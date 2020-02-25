@@ -7,7 +7,7 @@ import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.presentation.GamiPdpRecommendationListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 
 class RecommendationVH(itemView: View, val recommendationListener: GamiPdpRecommendationListener) : AbstractViewHolder<Recommendation>(itemView) {
     private val productCardView = itemView.findViewById<ProductCardGridView>(R.id.productCardView)
@@ -41,7 +41,8 @@ class RecommendationVH(itemView: View, val recommendationListener: GamiPdpRecomm
                 ratingCount = element.recommendationItem.rating,
                 shopLocation = element.recommendationItem.location,
                 shopBadgeList = element.recommendationItem.badgesUrl.map {
-                    ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                    ProductCardModel.ShopBadge(imageUrl = it
+                            ?: "")
                 },
                 freeOngkir = ProductCardModel.FreeOngkir(
                         isActive = element.recommendationItem.isFreeOngkirActive,

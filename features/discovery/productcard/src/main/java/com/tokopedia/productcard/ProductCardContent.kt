@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadIcon
 import com.tokopedia.productcard.utils.shouldShowWithAction
-import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {

@@ -1,7 +1,7 @@
 package com.tokopedia.carouselproductcard
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 
 interface CarouselProductCardListener {
 

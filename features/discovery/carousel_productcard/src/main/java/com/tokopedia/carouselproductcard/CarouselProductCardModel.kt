@@ -1,7 +1,7 @@
 package com.tokopedia.carouselproductcard
 
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 
 internal data class CarouselProductCardModel(
         val productCardModel: ProductCardModel,

@@ -6,7 +6,7 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.productcard.ProductCardGridView;
-import com.tokopedia.productcard.v2.ProductCardModel;
+import com.tokopedia.productcard.ProductCardModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;

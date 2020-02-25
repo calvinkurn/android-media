@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
@@ -33,7 +33,8 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                             ratingCount = element.recommendationItem.rating,
                             shopLocation = element.recommendationItem.location,
                             shopBadgeList = element.recommendationItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.recommendationItem.isFreeOngkirActive,

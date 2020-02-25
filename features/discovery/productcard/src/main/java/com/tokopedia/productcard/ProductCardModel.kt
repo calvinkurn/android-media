@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.v2
+package com.tokopedia.productcard
 
 import com.tokopedia.productcard.utils.*
 
