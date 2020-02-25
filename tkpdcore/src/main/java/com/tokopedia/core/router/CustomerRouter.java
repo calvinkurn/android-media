@@ -14,9 +14,4 @@ public class CustomerRouter {
     public static Intent getSplashScreenIntent(Context context) {
         return RouterUtils.getRouterFromContext(context).getSplashScreenIntent(context);
     }
-
-    public interface IrisInstallRouter {
-        void sendIrisInstallEvent();
-    }
-
 }

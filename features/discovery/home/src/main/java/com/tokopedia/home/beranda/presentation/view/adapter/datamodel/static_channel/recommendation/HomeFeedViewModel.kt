@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.beranda.domain.gql.feed.Badge
 import com.tokopedia.home.beranda.domain.gql.feed.Label
 import com.tokopedia.home.beranda.domain.gql.feed.LabelGroup
@@ -30,7 +31,10 @@ class HomeFeedViewModel(val productId: String,
                         val wishlistUrl: String,
                         var isWishList: Boolean,
                         val isFreeOngkirActive: Boolean,
-                        val freeOngkirImageUrl: String) : ImpressHolder(), Visitable<HomeFeedTypeFactory> {
+                        val freeOngkirImageUrl: String) :
+    Visitable<HomeFeedTypeFactory>,
+    BaseTracking.Product(productId, productName, priceNumber, "none / other", "none / other", categoryBreadcrumbs, position, isFreeOngkirActive)
+{
 
     override fun type(typeFactory: HomeFeedTypeFactory): Int {
         return typeFactory.type(this)

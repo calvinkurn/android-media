@@ -372,12 +372,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
             intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
                     context, linkSegment.get(1));
-        } else {
-            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
-                    context);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
         }
-        intent.putExtras(bundle);
-        context.startActivity(intent);
     }
 
     private void openDigitalPage(String applink) {
@@ -839,31 +836,31 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void processAFlistener() {
         AppsFlyerLib.getInstance().registerConversionListener(context, new AppsFlyerConversionListener() {
-            @Override
-            public void onInstallConversionDataLoaded(Map<String, String> map) {
-
-            }
-
-            @Override
-            public void onInstallConversionFailure(String s) {
-
-            }
-
-            @Override
-            public void onAppOpenAttribution(Map<String, String> map) {
-                if (map.size() > 0) {
-                    if (map.get("link") != null) {
-                        String oriUri = map.get("link");
-                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri));
+                    @Override
+                    public void onConversionDataSuccess(Map<String, Object> map) {
+                        if (map.size() > 0) {
+                            if (map.get("link") != null) {
+                                String oriUri = map.get("link").toString();
+                                processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri));
+                            }
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onAttributionFailure(String s) {
+                    @Override
+                    public void onConversionDataFail(String s) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onAppOpenAttribution(Map<String, String> map) {
+
+                    }
+
+                    @Override
+                    public void onAttributionFailure(String s) {
+
+                    }
+                });
     }
 
     @Override
