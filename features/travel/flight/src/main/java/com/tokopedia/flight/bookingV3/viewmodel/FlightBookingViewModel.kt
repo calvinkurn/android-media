@@ -170,7 +170,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val params = mapOf(PARAM_VERIFY_CART to bookingVerifyParam)
 
         launchCatchError(block = {
-            val flightVerifyData = withContext(this.coroutineContext) {
+            val flightVerifyData = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(query, FlightVerify.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightVerify.Response>().flightVerify
