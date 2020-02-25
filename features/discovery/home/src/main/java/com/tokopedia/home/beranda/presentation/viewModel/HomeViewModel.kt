@@ -44,6 +44,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -71,7 +72,7 @@ open class HomeViewModel @Inject constructor(
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
         private val popularKeywordUseCase: GetPopularKeywordUseCase,
         private val homeDataMapper: HomeDataMapper,
-        homeDispatcher: HomeDispatcherProvider
+        private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
     companion object {
@@ -807,10 +808,14 @@ open class HomeViewModel @Inject constructor(
                     val newHomeViewModel = _homeLiveData.value?.copy(
                             list = currentList
                     )
-                    _homeLiveData.postValue(newHomeViewModel)
+                    withContext(homeDispatcher.ui()) {
+                        _homeLiveData.value = newHomeViewModel
+                    }
                 }
             }
-        }){}
+        }){
+            it.printStackTrace()
+        }
     }
 
     private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordViewModel> {
