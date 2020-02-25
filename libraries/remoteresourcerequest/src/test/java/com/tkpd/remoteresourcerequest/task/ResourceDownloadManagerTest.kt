@@ -135,14 +135,14 @@ class ResourceDownloadManagerTest {
         val msg = Message()
         msg.obj = task
         mockkStatic(CallbackDispatcher::class)
-        every { CallbackDispatcher.dispatchLog(callback, "DECODE_FAILED ${task.getDownloadUrl()}") } just Runs
+        every { CallbackDispatcher.dispatchLog(callback, "DECODE_FAILED ${task.getDownloadUrl()}, startedFromWorker = ${task.isRequestedFromWorker} ") } just Runs
         msg.what = ResourceDownloadManager.DECODE_FAILED
         manager.setBaseAndRelativeUrl("www.abc.com/", "def/")
         manager.initialize(context, 1)
         manager.addDeferredCallback(callback)
         val value = manager.handleMessage(msg)
         verify(exactly = 3) { task.getDownloadUrl() }
-        verify { CallbackDispatcher.dispatchLog(callback, "DECODE_FAILED ${task.getDownloadUrl()}") }
+        verify { CallbackDispatcher.dispatchLog(callback, "DECODE_FAILED ${task.getDownloadUrl()}, startedFromWorker = ${task.isRequestedFromWorker} ") }
         assertTrue(value)
     }
 
@@ -152,7 +152,7 @@ class ResourceDownloadManagerTest {
         msg.obj = task
 
         mockkStatic(CallbackDispatcher::class)
-        every { CallbackDispatcher.dispatchLog(callback, "DOWNLOAD_FAILED ${task.getDownloadUrl()}") } just Runs
+        every { CallbackDispatcher.dispatchLog(callback, "DOWNLOAD_FAILED ${task.getDownloadUrl()},  startedFromWorker = ${task.isRequestedFromWorker} ") } just Runs
         msg.what = ResourceDownloadManager.DOWNLOAD_FAILED
         manager.setBaseAndRelativeUrl("www.abc.com/", "def/")
         manager.addDeferredCallback(callback)
@@ -160,7 +160,7 @@ class ResourceDownloadManagerTest {
         val value = manager.handleMessage(msg)
         verify(exactly = 4) { task.getDownloadUrl() }
 
-        verify { CallbackDispatcher.dispatchLog(callback, "DOWNLOAD_FAILED ${task.getDownloadUrl()}") }
+        verify { CallbackDispatcher.dispatchLog(callback, "DOWNLOAD_FAILED ${task.getDownloadUrl()},  startedFromWorker = ${task.isRequestedFromWorker} ") }
         assertTrue(value)
     }
 }

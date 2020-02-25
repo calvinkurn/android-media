@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -30,6 +31,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.SparseArray;
+import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,6 +70,8 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.analytics.performance.HomePerformanceData;
+import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -77,6 +82,7 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
@@ -94,6 +100,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -113,7 +120,8 @@ public class MainParentActivity extends BaseActivity implements
         CartNotifyListener,
         RefreshNotificationListener,
         MainParentStatusBarListener,
-        HomePerformanceMonitoringListener {
+        HomePerformanceMonitoringListener,
+        JankyFramesMonitoringListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -138,6 +146,10 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
+    private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
+    private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
+    private static final String FPM_METRIC_JANKY_FRAMES = "janky_frames";
+    private static final float DEFAULT_WARNING_LEVEL_MS = 17f;
 
     @Inject
     UserSessionInterface userSession;
@@ -152,6 +164,8 @@ public class MainParentActivity extends BaseActivity implements
     List<Fragment> fragmentList;
     private Notification notification;
     Fragment currentFragment;
+    private int currentSelectedFragmentPosition = HOME_MENU;
+    private SparseArray<PerformanceData> fragmentPerformanceDatas = new SparseArray<>();
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver newFeedClickedReceiver;
@@ -162,6 +176,9 @@ public class MainParentActivity extends BaseActivity implements
 
     private PerformanceMonitoring homePerformanceMonitoring;
 
+    private PerformanceMonitoring mainParentPerformanceMonitoring;
+
+    Window.OnFrameMetricsAvailableListener onFrameMetricAvailableListener;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -233,6 +250,8 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         startHomePerformanceMonitoring();
+        startMainParentPerformanceMonitoring();
+        startFrameMetrics(this);
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
@@ -400,6 +419,13 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        stopFrameMetrics(this);
+        submitMainParentPerformanceMonitoring();
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
@@ -440,6 +466,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int position = getPositionFragmentByMenu(item);
+        this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
             globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
         }
@@ -647,6 +674,37 @@ public class MainParentActivity extends BaseActivity implements
         super.onDestroy();
         if (presenter != null)
             presenter.onDestroy();
+    }
+
+    private void submitMainParentPerformanceMonitoring() {
+        if (fragmentPerformanceDatas.size() > 0) {
+            for(int i = 0; i < fragmentPerformanceDatas.size(); i++) {
+                int key = fragmentPerformanceDatas.keyAt(i);
+                // get the object by the key.
+                PerformanceData performanceData = fragmentPerformanceDatas.get(key);
+                if (performanceData instanceof HomePerformanceData) {
+                    Map<String, Integer> dynamicChannelList = ((HomePerformanceData) performanceData).getDynamicChannelList();
+                    if (dynamicChannelList != null) {
+                        for (Map.Entry<String,Integer> dynamicChannel : dynamicChannelList.entrySet()) {
+                            mainParentPerformanceMonitoring.putMetric(
+                                    dynamicChannel.getKey(), dynamicChannel.getValue()
+                            );
+                        }
+                    }
+                }
+                mainParentPerformanceMonitoring.putMetric(
+                        performanceData.getAllFramesTag(), performanceData.getAllFrames()
+                );
+                mainParentPerformanceMonitoring.putMetric(
+                        performanceData.getJankyFramesTag(), performanceData.getJankyFrames()
+                );
+                mainParentPerformanceMonitoring.putMetric(
+                        performanceData.getJankyFramesPercentageTag(), performanceData.getJankyFramePercentage()
+                );
+            }
+            mainParentPerformanceMonitoring.stopTrace();
+        }
+        fragmentPerformanceDatas.clear();
     }
 
     private void reloadPage() {
@@ -1103,11 +1161,77 @@ public class MainParentActivity extends BaseActivity implements
         homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
     }
 
+    private void startMainParentPerformanceMonitoring() {
+        mainParentPerformanceMonitoring = PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
+    }
+
+    @Override
+    public void submitDynamicChannelCount(Map<String, Integer> dynamicChannelList) {
+        PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
+        if (performanceData instanceof HomePerformanceData && !((HomePerformanceData) performanceData).isDataLocked()) {
+            ((HomePerformanceData) performanceData).setDynamicChannelList(dynamicChannelList);
+            ((HomePerformanceData) performanceData).lockData();
+        }
+    }
+
+    @Override
+    public Boolean needToSubmitDynamicChannelCount() {
+        PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
+        if (performanceData instanceof HomePerformanceData) {
+            return !((HomePerformanceData) performanceData).isDataLocked();
+        }
+        return false;
+    }
+
     @Override
     public void stopHomePerformanceMonitoring() {
         if (homePerformanceMonitoring != null) {
             homePerformanceMonitoring.stopTrace();
             homePerformanceMonitoring = null;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public void startFrameMetrics(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setupMetrics();
+            onFrameMetricAvailableListener = new Window.OnFrameMetricsAvailableListener() {
+                @Override
+                public void onFrameMetricsAvailable(Window window, FrameMetrics frameMetrics, int dropCountSinceLastInvocation) {
+                    FrameMetrics frameMetricsCopy = new FrameMetrics(frameMetrics);
+                    incrementAllFramesFragmentMetrics(frameMetricsCopy);
+                }
+            };
+            activity.getWindow().addOnFrameMetricsAvailableListener(onFrameMetricAvailableListener, new Handler());
+        }
+    }
+
+    private void incrementAllFramesFragmentMetrics(FrameMetrics frameMetricsCopy) {
+        PerformanceData performanceData = fragmentPerformanceDatas.get(currentSelectedFragmentPosition);
+        performanceData.incrementAllFrames();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            float totalDurationMs = (float) (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION));
+            if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
+                performanceData.incremenetJankyFrames();
+            }
+        }
+        fragmentPerformanceDatas.setValueAt(currentSelectedFragmentPosition, performanceData);
+    }
+
+    private void setupMetrics() {
+        fragmentPerformanceDatas.put(HOME_MENU, new HomePerformanceData("home_all_frames", "home_janky_frames", "home_janky_frames_percentage"));
+        fragmentPerformanceDatas.put(FEED_MENU, new PerformanceData("feed_all_frames", "feed_janky_frames", "feed_janky_frames_percentage"));
+        fragmentPerformanceDatas.put(OS_MENU, new PerformanceData("os_all_frames", "os_janky_frames", "os_janky_frames_percentage"));
+        fragmentPerformanceDatas.put(CART_MENU, new PerformanceData("cart_all_frames", "cart_janky_frames", "cart_janky_frames_percentage"));
+        fragmentPerformanceDatas.put(ACCOUNT_MENU, new PerformanceData("account_all_frames", "account_janky_frames", "account_janky_frames_percentage"));
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public void stopFrameMetrics(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (onFrameMetricAvailableListener != null) {
+                activity.getWindow().removeOnFrameMetricsAvailableListener(onFrameMetricAvailableListener);
+            }
         }
     }
          

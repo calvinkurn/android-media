@@ -2,6 +2,7 @@ package com.tokopedia.groupchat.chatroom.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.Nullable;
 
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
@@ -9,6 +10,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BanViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatPermitModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.FreezeViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
@@ -16,7 +18,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.KickViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 
@@ -56,6 +58,7 @@ public class ChannelInfoViewModel implements Parcelable {
     public OverlayViewModel overlayViewModel;
     private BackgroundViewModel backgroundViewModel;
     private FreezeViewModel freezeViewModel;
+    private ChatPermitViewModel chatPermitViewModel;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -129,7 +132,8 @@ public class ChannelInfoViewModel implements Parcelable {
                                 String videoId, Boolean videoLive, String infoUrl,
                                 SettingGroupChat settingGroupChat, OverlayViewModel overlayViewModel,
                                 BackgroundViewModel backgroundViewModel,
-                                FreezeViewModel freezeViewModel) {
+                                FreezeViewModel freezeViewModel,
+                                ChatPermitViewModel chatPermitViewModel) {
         this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
@@ -162,6 +166,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.overlayViewModel = overlayViewModel;
         this.backgroundViewModel = backgroundViewModel;
         this.freezeViewModel = freezeViewModel;
+        this.chatPermitViewModel = this.chatPermitViewModel;
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -199,6 +204,7 @@ public class ChannelInfoViewModel implements Parcelable {
         pinnedMessageViewModel = in.readParcelable(PinnedMessageViewModel.class.getClassLoader());
         exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
         quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
+        chatPermitViewModel = in.readParcelable(ChatPermitModel.class.getClassLoader());
     }
 
     @Override
@@ -236,6 +242,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(pinnedMessageViewModel, flags);
         dest.writeParcelable(exitMessage, flags);
         dest.writeTypedList(quickRepliesViewModel);
+        dest.writeParcelable(chatPermitViewModel, flags);
     }
 
     @Override
@@ -512,5 +519,9 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public void setInfoUrl(String infoUrl) {
         this.infoUrl = infoUrl;
+    }
+
+    public ChatPermitViewModel getChatPermitViewModel() {
+        return chatPermitViewModel;
     }
 }

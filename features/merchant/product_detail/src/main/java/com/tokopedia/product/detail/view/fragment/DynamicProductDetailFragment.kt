@@ -938,13 +938,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun showAlertCampaignEnded() {
+        dynamicAdapter.notifySnapshot(pdpHashMapUtil?.snapShotMap)
         activity?.let {
             Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
                 setTitle(getString(R.string.campaign_expired_title))
                 setDesc(getString(R.string.campaign_expired_descr))
                 setBtnOk(getString(R.string.exp_dialog_ok))
                 setBtnCancel(getString(R.string.close))
-                setOnCancelClickListener { loadData(0); dismiss() }
+                setOnCancelClickListener { loadProductData(true); dismiss() }
                 setOnOkClickListener { dismiss(); }
             }.show()
         }
@@ -1022,10 +1023,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun disscussionClicked() {
         activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, viewModel.getDynamicProductInfoP1?.basic?.productID)
-            }
+            val intent = RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalGlobal.PRODUCT_TALK,
+                    viewModel.getDynamicProductInfoP1?.basic?.productID
+            )
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
         }
     }
@@ -1184,6 +1186,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            updateProductId()
             pdpHashMapUtil?.updateDataP1(productInfo, viewModel.imageHeight)
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.isLeasing = productInfo.basic.isLeasing
@@ -1202,8 +1205,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 viewModel.hitAffiliateTracker(affiliateString
                         ?: "", viewModel.deviceId)
             }
-
-            assignDefaultVariantId(productInfo)
 
             activity?.invalidateOptionsMenu()
             renderList(data)
