@@ -132,8 +132,9 @@ object DeeplinkDFMapper {
                     it.startsWith(GENERAL_TEMPLATE) ||
                     it.startsWith(CAMERA_OCR) ||
                     it.startsWith(VOUCHER_GAME) ||
-                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART)}, DFM_BASE, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWithPattern(SMARTCARD_WITH_BRIZZI)}, DFM_EMONEY, R.string.title_digital_emoney))
+                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) ||
+                    it.startsWithPattern(SMARTCARD_WITH_BRIZZI)}, DFM_BASE, R.string.title_digital_subhomepage))
+//            add(DFP({ it.startsWithPattern(SMARTCARD_WITH_BRIZZI)}, DFM_EMONEY, R.string.title_digital_emoney))
 
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_BASE, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_BASE, R.string.title_digital_deals))
