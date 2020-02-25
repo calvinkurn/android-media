@@ -86,7 +86,14 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                     freeOngkir = ProductCardModel.FreeOngkir(
                             isActive = element.recommendationItem.isFreeOngkirActive,
                             imageUrl = element.recommendationItem.freeOngkirImageUrl
-                    )
+                    ),
+                    labelGroupList = element.recommendationItem.labelGroupList.map {  recommendationLabel ->
+                        ProductCardModel.LabelGroup(
+                                position = recommendationLabel.position,
+                                title = recommendationLabel.title,
+                                type = recommendationLabel.type
+                        )
+                    }
             )
         }
     }
