@@ -17,7 +17,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
 
     private int priceMin = Integer.MIN_VALUE;
     private int priceMax = Integer.MAX_VALUE;
-    private int durationMin = Integer.MIN_VALUE;
+    private int durationMin = 0;
     private int durationMax = Integer.MAX_VALUE;
     private List<TransitEnum> transitTypeList;
     private List<String> airlineList;

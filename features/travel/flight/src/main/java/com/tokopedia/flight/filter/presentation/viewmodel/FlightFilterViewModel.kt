@@ -168,8 +168,8 @@ class FlightFilterViewModel @Inject constructor(
         val filterModel = mutableFilterModel.value?.copy() ?: FlightFilterModel()
         filterModel.setHasFilter(false)
         filterModel.isSpecialPrice = false
-        filterModel.priceMin = Integer.MIN_VALUE
-        filterModel.priceMax = Integer.MAX_VALUE
+        filterModel.priceMin = mutableStatisticModel.value?.minPrice ?: 0
+        filterModel.priceMax = mutableStatisticModel.value?.maxPrice ?: Integer.MAX_VALUE
         filterModel.transitTypeList = arrayListOf()
         filterModel.airlineList = arrayListOf()
         filterModel.departureTimeList = arrayListOf()
