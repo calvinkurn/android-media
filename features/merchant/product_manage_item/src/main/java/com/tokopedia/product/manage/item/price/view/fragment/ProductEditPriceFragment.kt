@@ -132,7 +132,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun showDataPrice(productPrice: ProductPrice){
         selectedCurrencyType = productPrice.currencyType
         setPriceTextChangedListener()
-        counterEditText.textFieldInput.setText(productPrice.price.toString())
+        counterEditText.textFieldInput.setText(String.format("%.1f", productPrice.price))
         counterEditText.setError(false)
         wholesalePrice = productPrice.wholesalePrice
         setEditTextPriceState(wholesalePrice)
