@@ -81,6 +81,7 @@
                     android:textColor="#ffffff"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
+                    android:ellipsize="end"
                     tools:text="Ramadan Ekstra"/>
 
                 <LinearLayout
@@ -108,7 +109,8 @@
                         android:id="@+id/toolbar_live"
                         layout="@layout/play_live"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
             </RelativeLayout>
