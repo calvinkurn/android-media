@@ -17,6 +17,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.adapter.Promo
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoInputUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoRecommendationUiModel
 import javax.inject.Inject
 
 class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(), PromoCheckoutMarketplaceActionListener {
@@ -68,6 +69,17 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
 
     override fun loadData(page: Int) {
         hideLoading()
+        val promoRecommendationUiModel = PromoRecommendationUiModel(
+                uiData = PromoRecommendationUiModel.UiData().apply {
+                    title = "Title aaaaaa"
+                    subTitle = "Sub title aaaa"
+                },
+                uiState = PromoRecommendationUiModel.UiState().apply {
+                    isButtonSelectEnabled = true
+                }
+        )
+        adapter.addVisitable(promoRecommendationUiModel)
+
         val promoInputUiModel = PromoInputUiModel(
                 uiData = PromoInputUiModel.UiData().apply {
                     promoCode = ""
