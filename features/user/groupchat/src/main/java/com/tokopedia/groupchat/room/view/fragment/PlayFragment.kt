@@ -1,7 +1,10 @@
 package com.tokopedia.groupchat.room.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -411,8 +414,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         userSession.gcToken = groupChatToken
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     fun backPress() {
-        if (exitDialog != null && !viewState.errorViewShown()) {
+        if (activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE)
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        else if (exitDialog != null && !viewState.errorViewShown()) {
             exitDialog!!.show()
         } else {
             activity?.finish()
@@ -838,6 +844,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun getScreenName(): String {
         return ""
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        viewState.onOrientationChanged(newConfig.orientation)
     }
 
     fun dismissDialog() {
