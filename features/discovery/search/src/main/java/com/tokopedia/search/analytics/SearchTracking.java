@@ -3,7 +3,7 @@ package com.tokopedia.search.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.track.TrackApp;

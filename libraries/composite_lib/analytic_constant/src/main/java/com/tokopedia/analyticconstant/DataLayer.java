@@ -1,4 +1,4 @@
-package com.tokopedia.analytic_constant;
+package com.tokopedia.analyticconstant;
 
 import androidx.annotation.VisibleForTesting;
 

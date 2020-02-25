@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product.viewm
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.typefactory.CategoryProductListTypeFactory;
