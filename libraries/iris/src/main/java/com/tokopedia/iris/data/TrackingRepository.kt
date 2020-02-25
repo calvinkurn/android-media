@@ -3,7 +3,7 @@ package com.tokopedia.iris.data
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import com.tokopedia.analytics.debugger.IrisLogger
+import com.tokopedia.analyticsdebugger.debugger.IrisLogger
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao

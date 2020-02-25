@@ -233,7 +233,6 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-
         }
     }
 
@@ -295,7 +294,13 @@ android {
     }
 }
 
-
+task("configDebugTools") {
+    def rootTaskName = project.gradle.startParameter.taskNames[0]
+    rootProject.ext.debugToolsEnabled = rootTaskName == null ||
+            rootTaskName.toLowerCase().contains("debug") ||
+            rootTaskName.toLowerCase().contains("dev")
+}
+preBuild.dependsOn configDebugTools
 
 dependencies {
 
@@ -420,6 +425,11 @@ dependencies {
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.common_promo)

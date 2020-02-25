@@ -20,6 +20,8 @@ ext {
     libraries = [
             adapterDelegate         : ":libraries:adapter_delegate",
             analytics               : ":libraries:analytics",
+            analyticsDebugger       : ":libraries:analytics_debugger",
+            analyticsDebuggerNoop   : ":libraries:analytics_debugger_noop",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
             baseList                : ":libraries:base_list",
