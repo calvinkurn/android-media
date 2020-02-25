@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.item.DeletableItemView
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewholder.ItemClickListener
 import com.tokopedia.product.manage.oldlist.R
 
 class ChipsAdapter(private val listener: ItemClickListener) : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
@@ -40,4 +39,8 @@ class ChipsAdapter(private val listener: ItemClickListener) : RecyclerView.Adapt
             }
         }
     }
+}
+
+interface ItemClickListener {
+    fun onItemClicked()
 }

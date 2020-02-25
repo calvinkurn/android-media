@@ -5,9 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.product.manage.oldlist.R
-import kotlinx.android.synthetic.main.widget_header.view.*
 
-class HeaderWidget : BaseCustomView {
+class SeeAllWidget : BaseCustomView {
 
     constructor(context: Context) : super(context) {
         init()
@@ -22,10 +21,10 @@ class HeaderWidget : BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.widget_header, this)
+        View.inflate(context, R.layout.widget_see_all, this)
     }
+}
 
-    fun bind(title: String) {
-        tv_header.text = title
-    }
+interface SeeAllListener {
+    fun onSeeAll()
 }

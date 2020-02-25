@@ -9,20 +9,12 @@ data class CategoriesResponse(
 
 data class Categories(
         @SerializedName("categories")
-        val categories: Children = Children()
-)
-
-data class Children(
-        @SerializedName("children")
-        val categoriesLevelThree: CategoriesLevelThree = CategoriesLevelThree()
-)
-
-data class CategoriesLevelThree(
-        @SerializedName("children")
-        val children: List<Category> = listOf()
+        val categories: List<Category> = listOf()
 )
 
 data class Category(
+        @SerializedName("id")
+        val id: String = "",
         @SerializedName("name")
         val name: String = ""
 )

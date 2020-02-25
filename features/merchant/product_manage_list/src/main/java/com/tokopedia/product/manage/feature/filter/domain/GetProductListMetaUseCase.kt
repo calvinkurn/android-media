@@ -12,8 +12,10 @@ import javax.inject.Named
 class GetProductListMetaUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductListMetaResponse>() {
 
+    var params: RequestParams = RequestParams.EMPTY
+
     companion object {
-        private const val PARAM_SHOP_ID = "shopID"
+        const val PARAM_SHOP_ID = "shopID"
 
         @JvmStatic
         fun createRequestParams(shopId: String): RequestParams {
@@ -22,9 +24,11 @@ class GetProductListMetaUseCase @Inject constructor(
             return requestParams
         }
 
-        private val query = """
-            query ProductListMeta(${'$'}shopID : String!){
-                ProductListMeta(shopID:${'$'}shopID){
+        private val query by lazy {
+            val shopID = "\$shopID"
+            """
+            query ProductListMeta($shopID : String!){
+                ProductListMeta(shopID:$shopID){
                     header{
                         processTime
                         messages
@@ -51,10 +55,11 @@ class GetProductListMetaUseCase @Inject constructor(
                   }
                 }
         """.trimIndent()
+        }
     }
 
     override suspend fun executeOnBackground(): ProductListMetaResponse {
-        val gqlRequest = GraphqlRequest(query, ProductListMetaResponse::class.java)
+        val gqlRequest = GraphqlRequest(query, ProductListMetaResponse::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()

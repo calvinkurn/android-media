@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
@@ -16,9 +17,9 @@ import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterCompone
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapterTypeFactory
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewholder.ItemClickListener
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewholder.OnExpandListener
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.oldlist.R
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -27,7 +28,7 @@ import javax.inject.Inject
 
 class ProductManageFilterFragment : BaseDaggerFragment(),
         HasComponent<ProductManageFilterComponent>,
-        ItemClickListener, OnExpandListener {
+        SeeAllListener {
 
     companion object {
         fun createInstance() {
@@ -44,16 +45,24 @@ class ProductManageFilterFragment : BaseDaggerFragment(),
     private var filterAdapter: FilterAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
     private var recyclerView: RecyclerView? = null
+    private var savedInstanceManager: SaveInstanceCacheManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        savedInstanceManager?.onSave(outState)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_filter, container, false)
         layoutManager = LinearLayoutManager(this.context)
         recyclerView = view.findViewById(R.id.filter_recycler_view)
-        val adapterTypeFactory = FilterAdapterTypeFactory(this, this)
+        val adapterTypeFactory = FilterAdapterTypeFactory(this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = filterAdapter
@@ -61,16 +70,11 @@ class ProductManageFilterFragment : BaseDaggerFragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        productManageFilterViewModel.getProductListData(userSession.shopId)
-        observeProductListMeta()
-        observeShopEtalase()
-        observeCategories()
+        productManageFilterViewModel.getData(userSession.shopId)
+        observeCombinedResponse()
     }
 
     override fun onDestroy() {
-        productManageFilterViewModel.productListMetaData.removeObservers(this)
-        productManageFilterViewModel.categories.removeObservers(this)
-        productManageFilterViewModel.shopEtalase.removeObservers(this)
         productManageFilterViewModel.flush()
         super.onDestroy()
     }
@@ -93,48 +97,15 @@ class ProductManageFilterFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onItemClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onSeeAll() {
+        //TODO
     }
 
-    override fun onExpand() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun observeProductListMeta() {
-        productManageFilterViewModel.productListMetaData.observe(this, Observer {
+    private fun observeCombinedResponse() {
+        productManageFilterViewModel.combinedResponse.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    productManageFilterViewModel.getShopEtalase(userSession.shopId)
-                    filterAdapter?.updateSortData(ProductManageFilterMapper.mapMetaResponseToSortOptions(it.data))
-                }
-                is Fail -> {
-                    showErrorMessage()
-                }
-            }
-        })
-    }
-
-    private fun observeShopEtalase() {
-        productManageFilterViewModel.shopEtalase.observe(this, Observer {
-            when(it) {
-                is Success -> {
-                    productManageFilterViewModel.getCategories()
-                    filterAdapter?.updateEtalaseData(ProductManageFilterMapper.mapEtalaseResponseToEtalaseOptions(it.data))
-                }
-                is Fail -> {
-                    showErrorMessage()
-                }
-            }
-        })
-    }
-
-    private fun observeCategories() {
-        productManageFilterViewModel.categories.observe(this, Observer {
-            when(it) {
-                is Success -> {
-                    filterAdapter?.updateCategoryData(ProductManageFilterMapper.mapCategoryResponseToCategoryOptions(it.data))
-
+                    filterAdapter?.updateData(ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data))
                 }
                 is Fail -> {
                     showErrorMessage()

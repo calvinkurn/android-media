@@ -11,6 +11,8 @@ class GetCategoryListUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<CategoriesResponse>() {
 
+    var params = RequestParams.EMPTY
+
     companion object {
 
         const val PARAM_FILTER = "filter"
@@ -22,25 +24,23 @@ class GetCategoryListUseCase @Inject constructor(
             return requestParams
         }
 
-        private val query = """
-            query getCategoryListLite(${'$'}filter: String!){
-                getCategoryListLite(filter:${'$'}filter){
+        private val query by lazy {
+            val filter = "\$filter"
+            """
+            query getCategoryListLite($filter: String!){
+                getCategoryListLite(filter:$filter){
                     categories {
+                        id
                         name
-                        children {
-                            name
-                            children {
-                                name
-                            }
-                        }
                     }
                 }
             }
-        """.trimIndent()
+            """.trimIndent()
+        }
     }
 
     override suspend fun executeOnBackground(): CategoriesResponse {
-        val gqlRequest = GraphqlRequest(query, CategoriesResponse::class.java)
+        val gqlRequest = GraphqlRequest(query, CategoriesResponse::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
