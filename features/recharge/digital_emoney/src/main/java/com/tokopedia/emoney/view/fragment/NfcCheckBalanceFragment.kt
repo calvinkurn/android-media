@@ -227,22 +227,14 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     private fun executeBrizzi(refresh: Boolean, intent: Intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && isSupportBrizzi()) {
-            brizziBalanceViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
-
-            brizziBalanceViewModel.tokenBrizzi.observe(this, Observer { token ->
-                brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
-                brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
-
-                brizziBalanceViewModel.processBrizziTagIntent(intent, GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
-                        brizziInstance)
-            })
+            getTokenBrizzi(refresh, intent)
 
             brizziBalanceViewModel.emoneyInquiry.observe(this, Observer {
                 showCardLastBalance(it)
             })
 
             brizziBalanceViewModel.tokenNeedRefresh.observe(this, Observer {
-                brizziBalanceViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), true)
+                getTokenBrizzi(true, intent)
             })
 
             brizziBalanceViewModel.issuerId.observe(this, Observer {
@@ -262,6 +254,13 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
         } else {
             showError(resources.getString(R.string.emoney_device_isnot_supported))
         }
+    }
+
+    private fun getTokenBrizzi(refresh: Boolean, intent: Intent) {
+        brizziBalanceViewModel.getTokenBrizzi(brizziInstance,
+                GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi),
+                GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
+                intent, refresh)
     }
 
     private fun getOperatorName(issuerId: Int): String {

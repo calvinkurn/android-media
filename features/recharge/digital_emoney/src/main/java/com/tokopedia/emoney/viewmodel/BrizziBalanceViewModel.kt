@@ -3,6 +3,7 @@ package com.tokopedia.emoney.viewmodel
 import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.authentication.AuthKey
 import com.tokopedia.emoney.data.*
 import com.tokopedia.emoney.view.mapper.BrizziCardObjectMapper
 import com.tokopedia.graphql.GraphqlConstant
@@ -27,7 +28,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
     var inquiryIdBrizzi: Int = 0
 
-    val tokenBrizzi = MutableLiveData<String>()
     val issuerId = MutableLiveData<Int>()
     val emoneyInquiry = MutableLiveData<EmoneyInquiry>()
     val tokenNeedRefresh = MutableLiveData<Boolean>()
@@ -44,6 +44,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
                 issuerId.postValue(ISSUER_ID_BRIZZI)
+                cardIsBrizzi.postValue(true)
                 val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
                 balanceInquiry.attributesEmoneyInquiry?.let {
                     logBrizzi(0, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
@@ -113,13 +114,13 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     //token on server will refresh automatically per 30 minutes
-    fun getTokenBrizzi(rawQuery: String, refresh: Boolean) {
+    fun getTokenBrizzi(brizziInstance: Brizzi, rawTokenQuery: String, rawLogBrizzi: String, intent: Intent, refresh: Boolean) {
         launchCatchError(block = {
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam.put(REFRESH_TOKEN, refresh)
 
             val data = withContext(dispatcher) {
-                val graphqlRequest = GraphqlRequest(rawQuery, BrizziTokenResponse::class.java, mapParam)
+                val graphqlRequest = GraphqlRequest(rawTokenQuery, BrizziTokenResponse::class.java, mapParam)
                 if (refresh) {
                     graphqlRepository.getReseponse(listOf(graphqlRequest))
                 } else {
@@ -128,9 +129,11 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 }
             }.getSuccessData<BrizziTokenResponse>()
 
-            tokenBrizzi.value = data.tokenResponse.token
+            brizziInstance.Init(data.tokenResponse.token, AuthKey.BRIZZI_CLIENT_SECRET)
+            brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+            processBrizziTagIntent(intent, rawLogBrizzi, brizziInstance)
         }) {
-            tokenBrizzi.value = ""
+            errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
     }
 
