@@ -168,8 +168,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val params = mapOf(PARAM_VERIFY_CART to bookingVerifyParam)
 
         launchCatchError(block = {
+            val job = SupervisorJob()
             val data = async {
-                withContext(Dispatchers.Default) {
+                withContext(Dispatchers.Default + job) {
                     val graphqlRequest = GraphqlRequest(query, FlightVerify.Response::class.java, params)
                     graphqlRepository.getReseponse(listOf(graphqlRequest))
                 }.getSuccessData<FlightVerify.Response>().flightVerify
@@ -576,7 +577,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val flightPromoViewEntity = (flightPromoResult.value as FlightPromoViewEntity)
         val params = mapOf(PARAM_CART_ID to cartId, PARAM_VOUCHER_CODE to flightPromoViewEntity.promoData.promoCode)
         try {
-            val voucher = withContext(Dispatchers.Default) {
+            val job = SupervisorJob()
+            val voucher = withContext(Dispatchers.Default + job) {
                 val graphqlRequest = GraphqlRequest(query, FlightVoucher.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightVoucher.Response>().flightVoucher
