@@ -16,6 +16,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecorati
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibleHeaderUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoInputUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoRecommendationUiModel
 import javax.inject.Inject
@@ -89,10 +90,22 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
                 }
         )
         adapter.addVisitable(promoInputUiModel)
+
+        val promoEligibleHeaderUiModel = PromoEligibleHeaderUiModel(
+                uiData = PromoEligibleHeaderUiModel.UiData().apply {
+                    title = "Kamu bisa bisa bisa pakai promo"
+                    subTitle = "Pilih salah satu aja"
+                }
+        )
+        adapter.addVisitable(promoEligibleHeaderUiModel)
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
+    }
+
+    override fun onClickApplyRecommendedPromo() {
+
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
