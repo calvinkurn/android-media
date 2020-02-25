@@ -125,6 +125,17 @@ class VideoHorizontalHelper(
     }
 
     private fun doOnLandscape() {
+        val uiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE).let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) it or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            else it
+        }
+
+        activity.window.decorView.systemUiVisibility = uiVisibility
+
         activity.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         toolbar.gone()
         showVideoToggle.gone()
@@ -136,6 +147,8 @@ class VideoHorizontalHelper(
     }
 
     private fun doOnPortrait() {
+        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
         activity.window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         toolbar.show()
         showVideoToggle.gone()

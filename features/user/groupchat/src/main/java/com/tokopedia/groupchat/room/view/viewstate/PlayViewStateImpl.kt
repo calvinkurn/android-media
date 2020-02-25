@@ -1162,6 +1162,8 @@ open class PlayViewStateImpl(
             chatNotificationView.gone()
             stickyComponentHelper.hide()
             webviewIcon.gone()
+
+            backgroundHelper.setEmptyBackground()
         }
         else {
             showLoginButton(!userSession.isLoggedIn)
@@ -1171,6 +1173,10 @@ open class PlayViewStateImpl(
                     viewModel?.pinnedMessageViewModel?.title?.isNotBlank() == true) View.VISIBLE else View.GONE
             stickyComponentHelper.showIfNotEmpty()
             webviewIcon.visibility = if (webviewIcon.drawable == null) View.GONE else View.VISIBLE
+
+            val backgroundModel = backgroundHelper.backgroundViewModel
+            if (backgroundModel == null) backgroundHelper.setDefaultBackground()
+            else backgroundHelper.setBackground(backgroundModel)
         }
     }
 
