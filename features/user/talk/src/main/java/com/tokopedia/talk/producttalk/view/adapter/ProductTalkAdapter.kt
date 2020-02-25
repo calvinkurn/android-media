@@ -39,8 +39,10 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
 
     fun setList(list: ArrayList<Visitable<*>>, productTalkTitleViewModel: ProductTalkTitleViewModel) {
         this.visitables.clear()
-        this.visitables.add(productTalkTitleViewModel)
         this.visitables.addAll(list)
+        if (visitables.isNotEmpty()) {
+            visitables.add(1, productTalkTitleViewModel)
+        }
         notifyDataSetChanged()
     }
 
