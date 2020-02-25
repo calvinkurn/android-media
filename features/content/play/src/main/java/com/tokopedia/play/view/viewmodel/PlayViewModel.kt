@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
-import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.GetChannelInfoUseCase
 import com.tokopedia.play.domain.GetIsLikeUseCase
 import com.tokopedia.play.domain.GetPartnerInfoUseCase
@@ -54,8 +53,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableGetChannelInfo
     val observableVideoStream: LiveData<VideoStreamUiModel>
         get() = _observableVideoStream
-    val observableSocketInfo: LiveData<PlaySocketInfo>
-        get() = _observableSocketInfo
     val observableNewChat: LiveData<PlayChatUiModel>
         get() = _observableNewChat
     val observableTotalLikes: LiveData<TotalLikeUiModel>
@@ -79,7 +76,6 @@ class PlayViewModel @Inject constructor(
 
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
-    private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
     private val _observableIsLikeContent = MutableLiveData<Boolean>()
@@ -235,17 +231,16 @@ class PlayViewModel @Inject constructor(
             return
 
         val cleanMessage = message.trimMultipleNewlines()
-        playSocket.send(cleanMessage, onSuccess = {
-            _observableNewChat.value = mapPlayChat(
-                    PlayChat(
-                            message = cleanMessage,
-                            user = PlayChat.UserData(
-                                    id = userSession.userId,
-                                    name = userSession.name,
-                                    image = userSession.profilePicture)
-                    )
-            )
-        })
+        playSocket.send(cleanMessage)
+        _observableNewChat.value = mapPlayChat(
+                PlayChat(
+                        message = cleanMessage,
+                        user = PlayChat.UserData(
+                                id = userSession.userId,
+                                name = userSession.name,
+                                image = userSession.profilePicture)
+                )
+        )
     }
 
     fun changeLikeCount(shouldLike: Boolean) {
@@ -339,7 +334,6 @@ class PlayViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
             startWebSocket(channelId, gcToken, settings)
         })
     }
