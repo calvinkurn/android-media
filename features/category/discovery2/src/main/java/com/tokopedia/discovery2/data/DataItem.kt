@@ -68,7 +68,7 @@ data class DataItem(
         @SerializedName("applinks", alternate = ["applink"])
         var applinks: String? = "",
 
-        @SerializedName("name")
+        @SerializedName("name", alternate = ["text"])
         var name: String? = "",
 
         @SerializedName("action")
@@ -104,7 +104,7 @@ data class DataItem(
         @SerializedName("alternate_background_url_mobile")
         val alternateBackgroundUrlMobile: String? = "",
 
-        @SerializedName("box_color")
+        @SerializedName("box_color", alternate = ["background_color"])
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
@@ -113,10 +113,13 @@ data class DataItem(
         @field:SerializedName("button_text")
         var buttonText: String? = "",
 
+        @field:SerializedName("creative_name")
+        var creativeName: String? = "",
+
         @SerializedName("title")
         val title: String? = "",
 
-        @SerializedName("thumbnail_url_mobile", alternate = ["imageURL"])
+        @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
         val thumbnailUrlMobile: String? = "",
 
         @SerializedName("points_str")
