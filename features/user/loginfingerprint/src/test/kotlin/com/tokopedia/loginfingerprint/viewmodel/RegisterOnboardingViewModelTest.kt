@@ -7,7 +7,7 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelpe
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.util.InstantTaskExecutorRule
 import com.tokopedia.loginfingerprint.utils.CryptographyUtils
-import com.tokopedia.notifcenter.util.coroutines.TestDispatcherProvider
+import com.tokopedia.loginfingerprint.utils.TestDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

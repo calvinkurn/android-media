@@ -11,7 +11,7 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelpe
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
 import com.tokopedia.loginfingerprint.util.InstantTaskExecutorRule
 import com.tokopedia.loginfingerprint.utils.CryptographyUtils
-import com.tokopedia.notifcenter.util.coroutines.TestDispatcherProvider
+import com.tokopedia.loginfingerprint.utils.TestDispatcherProvider
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase

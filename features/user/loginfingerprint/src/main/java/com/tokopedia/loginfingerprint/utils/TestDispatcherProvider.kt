@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.util.coroutines
+package com.tokopedia.loginfingerprint.utils
 
 import com.tokopedia.loginfingerprint.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
