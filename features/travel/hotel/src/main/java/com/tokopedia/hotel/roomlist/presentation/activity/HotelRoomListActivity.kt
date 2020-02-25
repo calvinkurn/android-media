@@ -41,7 +41,12 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
 
     override fun shouldShowOptionMenu(): Boolean = false
 
+    override fun getScreenName(): String = ROOM_LIST_SCREEN_NAME
+
     companion object {
+
+        const val ROOM_LIST_SCREEN_NAME = "/hotel/roomlist"
+
         fun createInstance(context: Context, propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
                            totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0, destinationType: String, destinationName: String): Intent =
                 Intent(context, HotelRoomListActivity::class.java)

@@ -22,7 +22,7 @@ class ShopSearchProductDynamicResultViewHolder(
 
     override fun bind(element: ShopSearchProductDynamicResultDataModel) {
         with(view) {
-            ImageHandler.loadImage(context, iv_product, element.imageUri,R.drawable.ic_loading_image)
+            ImageHandler.LoadImage(iv_product, element.imageUri)
             val sourceString = element.name
             val targetString = element.searchQuery
             val isTargetStringExists = sourceString.indexOf(targetString, ignoreCase = true) != -1

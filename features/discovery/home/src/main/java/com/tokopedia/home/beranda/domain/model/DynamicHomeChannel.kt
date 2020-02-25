@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.domain.model
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tkpd.library.utils.CurrencyFormatHelper
@@ -105,8 +105,8 @@ class DynamicHomeChannel(
                             "id", grids[position].id,
                             "price", CurrencyFormatHelper.convertRupiahToInt(grids[position].price).toString(),
                             "list", "/ - p1 - lego product - " + header.name,
-                            "position", (position + 1).toString()),
-                            "dimension84", id
+                            "position", (position + 1).toString(),
+                            "dimension84", id)
             )
             )
             ),

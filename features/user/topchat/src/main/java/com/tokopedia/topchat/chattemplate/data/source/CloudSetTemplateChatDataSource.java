@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chattemplate.data.source;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 
 import rx.Observable;
@@ -21,7 +21,7 @@ public class CloudSetTemplateChatDataSource {
         this.chatApi = chatApi;
     }
 
-    public Observable<GetTemplateViewModel> setTemplate(JsonObject parameters, boolean isSeller) {
+    public Observable<GetTemplateUiModel> setTemplate(JsonObject parameters, boolean isSeller) {
         return chatApi.setTemplate(parameters, isSeller).map(templateChatMapper);
     }
 }

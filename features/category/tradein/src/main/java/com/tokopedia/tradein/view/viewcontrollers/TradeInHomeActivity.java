@@ -306,9 +306,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     private void getPriceFromSDK(Context context) {
-        String campaignId = TRADEIN_TYPE == TRADEIN_MONEYIN ? Constants.CAMPAIGN_ID_PROD_MONEY_IN : Constants.CAMPAIGN_ID_PROD;
+        String campaignId = Constants.CAMPAIGN_ID_PROD;
         if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
-            campaignId = TRADEIN_TYPE == TRADEIN_MONEYIN ? Constants.CAMPAIGN_ID_STAGING_MONEY_IN : Constants.CAMPAIGN_ID_STAGING;
+            campaignId = Constants.CAMPAIGN_ID_STAGING;
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
                 Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE);
         requestPermission();
