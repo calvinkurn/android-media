@@ -12,6 +12,7 @@ import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
@@ -74,5 +75,33 @@ class ProductCardListView: BaseCustomView {
     fun recycle() {
         Glide.with(context).clear(imageProduct)
         Glide.with(context).clear(imageFreeOngkirPromo)
+    }
+
+
+
+
+    /**
+     * Special cases for specific pages
+     * */
+    fun wishlistPage_hideCTAButton(isVisible: Boolean) {
+        buttonAddToCart?.showWithCondition(isVisible)
+        buttonRemoveFromWishlist?.showWithCondition(isVisible)
+    }
+
+    fun wishlistPage_enableButtonAddToCart(){
+        buttonAddToCart?.isEnabled = true
+        buttonAddToCart?.buttonVariant = UnifyButton.Variant.GHOST
+        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_list)
+    }
+
+    fun wishlistPage_disableButtonAddToCart(){
+        buttonAddToCart?.isEnabled = false
+        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_list)
+    }
+
+    fun wishlistPage_setOutOfStock(){
+        buttonAddToCart?.isEnabled = false
+        buttonAddToCart?.buttonVariant = UnifyButton.Variant.FILLED
+        buttonAddToCart?.text = context.getString(R.string.product_card_out_of_stock)
     }
 }

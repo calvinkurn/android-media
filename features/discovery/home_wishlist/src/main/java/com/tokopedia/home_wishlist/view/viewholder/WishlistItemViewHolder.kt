@@ -46,8 +46,8 @@ class WishlistItemViewHolder(
                                         type = labelGroup.type
                                 )
                             },
-                            hasAddToCartButton = true,
-                            hasRemoveFromWishlistButton = true
+                            hasAddToCartButton = !element.isOnBulkRemoveProgress,
+                            hasRemoveFromWishlistButton = !element.isOnBulkRemoveProgress
                     )
             )
             setImageProductViewHintListener(element, object: ViewHintListener {
@@ -55,13 +55,12 @@ class WishlistItemViewHolder(
                     (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
             })
-            //TODO:: Fix this
-//            if(!element.productItem.available){
-//                setOutOfStock()
-//            } else {
-//                if(element.isOnAddToCartProgress) disableAddToCartButton()
-//                else enableAddToCartButton()
-//            }
+            if(!element.productItem.available){
+                wishlistPage_setOutOfStock()
+            } else {
+                if(element.isOnAddToCartProgress) wishlistPage_disableButtonAddToCart()
+                else wishlistPage_enableButtonAddToCart()
+            }
             checkBox.isChecked = element.isOnChecked
             checkBox.visibility = if(element.isOnBulkRemoveProgress) View.VISIBLE else View.GONE
             checkBox.setOnClickListener {
@@ -95,22 +94,19 @@ class WishlistItemViewHolder(
             if(bundle.containsKey("isOnChecked")){
                 checkBox.isChecked = bundle.getBoolean("isOnChecked")
             }
-            // TODO:: Fix this
-//            if(bundle.containsKey("isOnAddToCartProgress")){
-//                element.isOnAddToCartProgress = bundle.getBoolean("isOnAddToCartProgress")
-//                if(bundle.getBoolean("isOnAddToCartProgress")){
-//                    productCardView.disableAddToCartButton()
-//                } else {
-//                    productCardView.enableAddToCartButton()
-//                }
-//
-//            }
+            if(bundle.containsKey("isOnAddToCartProgress")){
+                element.isOnAddToCartProgress = bundle.getBoolean("isOnAddToCartProgress")
+                if(bundle.getBoolean("isOnAddToCartProgress")){
+                    productCardView.wishlistPage_disableButtonAddToCart()
+                } else {
+                    productCardView.wishlistPage_enableButtonAddToCart()
+                }
+
+            }
             if(bundle.containsKey("isOnBulkRemoveProgress")){
                 element.isOnBulkRemoveProgress = bundle.getBoolean("isOnBulkRemoveProgress")
                 checkBox.visibility = if(bundle.getBoolean("isOnBulkRemoveProgress")) View.VISIBLE else View.GONE
-                // TODO:: Fix this
-//                productCardView.setAddToCartButtonVisible(!element.isOnBulkRemoveProgress)
-//                productCardView.setDeleteButtonVisible(!element.isOnBulkRemoveProgress)
+                productCardView.wishlistPage_hideCTAButton(!element.isOnBulkRemoveProgress)
                 productCardView.setOnClickListener {
                     if(element.isOnBulkRemoveProgress) (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, !checkBox.isChecked)
                     else (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)

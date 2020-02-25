@@ -8,5 +8,6 @@
     <string name="product_card_module_text_sold_out">Terjual Habis</string>
     <string name="product_card_module_text_pre_order">PO</string>
     <string name="product_card_module_text_wholesale">Grosir</string>
+    <string name="product_card_out_of_stock">Stok Habis</string>
 
 </resources>
