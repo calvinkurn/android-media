@@ -59,6 +59,7 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
+                    deeplink.startsWith(ApplinkConst.QRSCAN, true) -> ApplinkConstInternalMarketplace.QR_SCANNEER
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_SHOP, true) -> getRegisteredNavigationSalamUmrahShop(deeplink, context)
                     deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) ->
                         getChatbotDeeplink(deeplink)
@@ -78,7 +79,7 @@ object DeeplinkMapper {
                     deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL) ->
                         getRegisteredNavigationPlay(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
-                        getRegisteredHotlist(context, deeplink)
+                        getRegisteredHotlist(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)
@@ -95,10 +96,13 @@ object DeeplinkMapper {
                         getRegisteredNavigationSalamUmrah(deeplink, context)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL, true) ->
                         getRegisteredNavigationSalamUmrahOrderDetail(deeplink, context)
+                    deeplink.startsWith(ApplinkConst.BRAND_LIST, true) ->
+                        getBrandlistInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
                     isShopReview(deeplink) -> getRegisteredNavigationShopReview(deeplink)
+                    deeplink.startsWith(ApplinkConst.TOPCHAT_IDLESS) -> getRegisteredNavigationTopChat(deeplink)
                     deeplink.startsWith(ApplinkConst.TALK, true) -> getRegisteredNavigationTalk(deeplink)
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
@@ -183,6 +187,18 @@ object DeeplinkMapper {
         }
     }
 
+    private fun getRegisteredNavigationTopChat(deeplink: String): String {
+        val query = Uri.parse(deeplink).query
+        val path = Uri.parse(deeplink).path
+        var deepLinkInternal = ApplinkConstInternalGlobal.TOPCHAT
+        if(query?.isNotEmpty() == true || path?.isNotEmpty() == true){
+            deepLinkInternal = "$deepLinkInternal$path?$query"
+            return deepLinkInternal
+        } else {
+            return deepLinkInternal
+        }
+    }
+
     /**
      * Mapping http link to registered deplink in manifest (to deeplink tokopedia or tokopedia-android-internal)
      * Due to no differentiation structure link for shop, product with other link (www.tokopedia.com/{shop_domain}/{product_name})
@@ -263,6 +279,14 @@ object DeeplinkMapper {
                 && uri.pathSegments.size > 0
     }
 
+    private fun getBrandlistInternal(deeplink: String): String {
+        val parsedUri = Uri.parse(deeplink)
+        val segments = parsedUri.pathSegments
+
+        val categoryId = if (segments.size > 1) segments.last() else "0"
+        val completedURI = UriUtil.buildUri(ApplinkConstInternalMechant.BRANDLIST, categoryId)
+        return completedURI
+    }
     /**
      * Mapping sellerapp link to registered deplink in manifest if necessary
      * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item

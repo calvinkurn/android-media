@@ -17,10 +17,10 @@ data class DynamicPostViewModel(
         val postTag: PostTag = PostTag(),
         val footer: Footer = Footer(),
         val caption: Caption = Caption(),
-        var contentList: MutableList<BasePostViewModel> = ArrayList(),
+        var contentList: MutableList<BasePostViewModel> = mutableListOf(),
         val template: Template = Template(),
         val trackingPostModel: TrackingPostModel = TrackingPostModel(),
-        val tracking: MutableList<TrackingViewModel> = ArrayList(),
+        val tracking: MutableList<TrackingViewModel> = mutableListOf(),
         val feedType: String = "",
         val activityName: String = "",
         val impressHolder: ImpressHolder = ImpressHolder()
@@ -29,5 +29,27 @@ data class DynamicPostViewModel(
     
     override fun type(typeFactory: DynamicFeedTypeFactory?): Int {
         return typeFactory!!.type(this)
+    }
+
+    fun copy(): DynamicPostViewModel {
+        val newTrackingList: MutableList<TrackingViewModel> = arrayListOf()
+        for (track in tracking) {
+            newTrackingList.add(track.copy())
+        }
+        return DynamicPostViewModel(
+                id,
+                title.copy(),
+                header.copy(),
+                postTag.copy(),
+                footer.copy(),
+                caption.copy(),
+                contentList,
+                template,
+                trackingPostModel.copy(),
+                newTrackingList,
+                feedType,
+                activityName,
+                impressHolder
+        )
     }
 }

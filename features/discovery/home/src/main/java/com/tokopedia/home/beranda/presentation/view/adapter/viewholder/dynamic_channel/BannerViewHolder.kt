@@ -54,7 +54,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                 circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
                 indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
             }
-        }catch (e: Exception) {
+        }catch (e: Exception){
             e.printStackTrace()
         }
     }
@@ -113,7 +113,6 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                             it[position]
                     ))
                 }
-
             }
         }
     }
