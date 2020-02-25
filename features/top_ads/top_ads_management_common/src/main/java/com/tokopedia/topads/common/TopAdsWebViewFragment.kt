@@ -4,7 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 
 class TopAdsWebViewFragment: BaseSessionWebViewFragment(){
     companion object {

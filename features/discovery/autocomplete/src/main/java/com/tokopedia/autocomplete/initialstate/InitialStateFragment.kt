@@ -98,6 +98,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         adapter.clearData()
         val data = presenter.getInitialStateResult(initialStateViewModel.list, initialStateViewModel.searchTerm)
         adapter.addAll(data)
+
+        initialStateViewUpdateListener?.showInitialStateView()
     }
 
     private fun stopTracePerformanceMonitoring() {
@@ -121,7 +123,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
     fun search(searchParameter: SearchParameter) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
         presenter.search(searchParameter)
-        initialStateViewUpdateListener?.showInitialStateView()
     }
 
     fun deleteAllRecentSearch() {

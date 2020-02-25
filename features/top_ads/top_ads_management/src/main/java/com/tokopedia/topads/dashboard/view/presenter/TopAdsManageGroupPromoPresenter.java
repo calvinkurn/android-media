@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
 import com.tokopedia.topads.dashboard.data.model.request.MinimumBidRequest;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsManageGroupPromoView;

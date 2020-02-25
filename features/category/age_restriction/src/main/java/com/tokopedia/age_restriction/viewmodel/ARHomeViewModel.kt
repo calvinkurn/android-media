@@ -9,17 +9,19 @@ import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
+private const val minimumAdultAge = 21
+
 class ARHomeViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
 
     private var userDetailLiveData: UserDOBResponse? = null
     private val askUserLogin = MutableLiveData<Int>()
-    private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
     val notAdult = MutableLiveData<Int>()
     val notVerified = MutableLiveData<String>()
     val notFilled = MutableLiveData<Int>()
@@ -28,7 +30,7 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
     override fun doOnCreate() {
         super.doOnCreate()
         repository?.let {
-            if (!it.getUserLoginState()?.isLoggedIn)
+            if (!it.getUserLoginState().isLoggedIn)
                 askUserLogin.value = 1
             else {
                 fetchUserDOB()
@@ -49,10 +51,11 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
     }
 
     fun fetchUserDOB() {
+        val userDobQuery = TokopediaUrl.Companion.getInstance().ACCOUNTS.plus("userapp/api/v1/profile/get-dob")
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val response = getRepo().getRestData(USER_DOB_PATH,
+                    val response = getRepo().getRestData(userDobQuery,
                             object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
                             RequestType.GET,
                             RequestParams.EMPTY.parameters)
@@ -79,7 +82,7 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
     private fun processUserDOB(userDOBResponse: UserDOBResponse?) {
         userDOBResponse?.let {
             if (it.isDobVerified) {
-                if (it.isAdult || it.age >= 18)
+                if (it.isAdult || it.age >= minimumAdultAge)
                     userAdult.value = 1
                 else
                     notAdult.value = 1

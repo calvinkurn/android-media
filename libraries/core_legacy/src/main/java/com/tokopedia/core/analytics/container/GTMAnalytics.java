@@ -14,7 +14,6 @@ import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.analytics.debugger.AnalyticsLogger;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -48,7 +47,6 @@ import timber.log.Timber;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 public class GTMAnalytics extends ContextAnalytics {
-    private static final String TAG = GTMAnalytics.class.getSimpleName();
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 150; // 150 minutes (2.5 hours)
     private static final String KEY_GTM_EXPIRED_TIME = "android_gtm_expired_time";
 
@@ -327,11 +325,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 Double.valueOf(PriceUtil.from(doubleRaw));
     }
 
-    private double emptyInt(String intRaw) {
-        return TextUtils.isEmpty(intRaw) ? 0 :
-                Double.valueOf(PriceUtil.from(intRaw));
-    }
-
     private void transactionBundle(Bundle bundle, Map<String, Object> ecommerce) {
         Object promotionObj;
         Map<String, Object> purchase = (Map<String, Object>) ecommerce.remove("purchase");
@@ -579,18 +572,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         return new ViewProductResult(product1, list);
 
-    }
-
-    private String emptyString(Object string) {
-        if (string instanceof String) {
-            return emptyString(string);
-        } else {
-            return bruteForceCastToString(string);
-        }
-    }
-
-    private String emptyString(String string) {
-        return !TextUtils.isEmpty(string) ? string : "";
     }
 
     private Bundle atcMap(Map<String, Object> value) {
@@ -873,7 +854,7 @@ public class GTMAnalytics extends ContextAnalytics {
             }
         }
 
-        logEvent("openScreen", bundle, context);
+        pushEventV5("openScreen", bundle, context);
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
@@ -908,12 +889,17 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneral(map);
     }
 
-    private void log(Context context, String eventName, Bundle bundle) {
-        log(context, eventName, bundleToMap(bundle));
+    private void logV5(Context context, String eventName, Bundle bundle) {
+        log(context, eventName, bundleToMap(bundle), true);
     }
 
     private void log(Context context, String eventName, Map<String, Object> values) {
+        log(context, eventName, values, false);
+    }
+
+    private void log(Context context, String eventName, Map<String, Object> values, boolean isGtmV5) {
         String name = eventName == null ? (String) values.get("event") : eventName;
+        if (isGtmV5) name += " (v5)";
         GtmLogger.getInstance(context).save(name, values);
         if (tetraDebugger != null) {
             tetraDebugger.send(values);
@@ -962,17 +948,6 @@ public class GTMAnalytics extends ContextAnalytics {
         sendScreen(screenName, customDimension);
     }
 
-    public void sendScreenAuthenticated2(String screenName, String shopID, String shopType, String pageType, String productId) {
-        if (TextUtils.isEmpty(screenName)) return;
-        Map<String, String> customDimension = new HashMap<>();
-        customDimension.put(Authenticated.KEY_SHOP_ID_SELLER, shopID);
-        customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);
-        customDimension.put(Authenticated.KEY_SHOP_TYPE, shopType);
-        customDimension.put(Authenticated.KEY_PRODUCT_ID, productId);
-        eventAuthenticate(customDimension);
-        sendScreen(screenName, customDimension);
-    }
-
     public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
         if (TextUtils.isEmpty(screenName)) return;
         Map<String, String> customDimension = new HashMap<>();
@@ -1013,17 +988,6 @@ public class GTMAnalytics extends ContextAnalytics {
             map.putAll(customDimension);
         }
         pushEvent(Authenticated.KEY_CD_NAME, map);
-    }
-
-    public GTMAnalytics eventAddtoCart(GTMCart cart) {
-        pushEvent("addToCart", DataLayer.mapOf("ecommerce", cart.getCartMap()));
-        return this;
-    }
-
-    public GTMAnalytics clearAddtoCartDataLayer(String act) {
-        pushGeneral(DataLayer.mapOf("products", null,
-                "currencyCode", null, "addToCart", null, "ecommerce", null, act, null));
-        return this;
     }
 
     private static final String TRANSACTION = "transaction";
@@ -1071,7 +1035,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 keyEvent = FirebaseAnalytics.Event.ECOMMERCE_PURCHASE;
                 break;
         }
-        logEvent(keyEvent, bundle, context);
+        pushEventV5(keyEvent, bundle, context);
     }
 
     public void sendCampaign(Map<String, Object> param) {
@@ -1086,14 +1050,17 @@ public class GTMAnalytics extends ContextAnalytics {
 
         bundle.putString("screenName", (String) param.get("screenName"));
 
-        bundle.putString("gclid", (String) param.get(AppEventTracking.GTM.UTM_GCLID));
+        String gclid = (String) param.get(AppEventTracking.GTM.UTM_GCLID);
+        if(!TextUtils.isEmpty(gclid)) {
+            bundle.putString("gclid", gclid);
+        }
         bundle.putString("utmSource", (String) param.get(AppEventTracking.GTM.UTM_SOURCE));
         bundle.putString("utmMedium", (String) param.get(AppEventTracking.GTM.UTM_MEDIUM));
         bundle.putString("utmCampaign", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
         bundle.putString("utmContent", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
         bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
 
-        logEvent("campaignTrack", bundle, context);
+        pushEventV5("campaignTrack", bundle, context);
     }
 
     public static String GENERAL_EVENT_KEYS[] = new String[]{
@@ -1116,23 +1083,13 @@ public class GTMAnalytics extends ContextAnalytics {
                 bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
         }
 
-        logEvent(params.get(KEY_EVENT) + "", bundle, context);
+        pushEventV5(params.get(KEY_EVENT) + "", bundle, context);
     }
 
-    public void pushGeneralGtmV5Internal(String event, String category, String action, String label) {
-        sendGeneralEvent(event, category, action, label);
-
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_CATEGORY, category);
-        bundle.putString(KEY_ACTION, action);
-        bundle.putString(KEY_LABEL, label);
-
-        logEvent(event, bundle, context);
-    }
-
-    public void logEvent(String eventName, Bundle bundle, Context context) {
+    public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
+            logV5(context, eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1225,11 +1182,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 iris.saveEvent(values);
             }
         }
-    }
-
-    private static class GTMBody {
-        Map<String, Object> values;
-        String eventName;
     }
 
     private Subscriber<Boolean> getDefaultSubscriber() {

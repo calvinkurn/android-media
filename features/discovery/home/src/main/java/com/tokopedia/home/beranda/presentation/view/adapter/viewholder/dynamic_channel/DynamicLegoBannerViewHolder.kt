@@ -141,11 +141,11 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                     }
 
                     listener.onLegoBannerClicked(
-                            if (grid.applink.isEmpty()) grid.applink else grid.url,
+                            if (grid.applink.isNotEmpty()) grid.applink else grid.url,
                             channels.getHomeAttribution(position + 1, grid.attribution))
                     HomeTrackingUtils.homeDiscoveryWidgetClick(context,
                             parentPosition + 1, grid,
-                            if (grid.applink.isEmpty()) grid.applink else grid.url,
+                            if (grid.applink.isNotEmpty()) grid.applink else grid.url,
                             channels.type)
                 }
             } catch (e: Exception) {

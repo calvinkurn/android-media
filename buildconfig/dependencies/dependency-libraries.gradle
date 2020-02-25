@@ -4,16 +4,16 @@ ext {
     tkpdInternalLibDependencies = [
             authentication          : "com.tokopedia.authentication:authentication:1.0.8",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
-            cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.2",
+            cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.28",
-            network                 : "com.tokopedia.network:network:1.0.15",
+            graphql                 : "com.tokopedia.graphql:graphql:1.0.31",
+            network                 : "com.tokopedia.network:network:1.0.17",
             url                     : "com.tokopedia.url:url:1.0.3",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.6",
-            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.9",
+            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.11",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2",
-            williamchart            : "com.tokopedia.williamchart:williamchart:0.0.2"
+            williamchart            : "com.tokopedia.williamchart:williamchart:0.0.3"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -26,7 +26,7 @@ ext {
             baseListSeller          : ":libraries:base_list_seller",
             bannerDynamic           : ":libraries:banner_dynamic",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
-            cameraview              : ":libraries:cameraview",
+            circularViewPager       : ":libraries:circular_view_pager",
             cmPushNotifications     : ":libraries:cm_push_notifications",
             commonNetwork           : ":libraries:common_network",
             collapsingTabLayout     : ":libraries:collapsing_tab_layout",
@@ -48,6 +48,7 @@ ext {
             linker                  : ":libraries:linker",
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
+            mediauploader           : ":libraries:mediauploader",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
             playCore                : ":libraries:play_core",
@@ -57,6 +58,7 @@ ext {
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
             shakeDetect             : ":libraries:shake_detect",
             sharedata               : ":libraries:sharedata",
+            diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",
             travelCalendar          : ":libraries:travel_calendar",

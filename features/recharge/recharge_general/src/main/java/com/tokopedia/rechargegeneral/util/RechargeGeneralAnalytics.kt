@@ -53,7 +53,7 @@ class RechargeGeneralAnalytics {
     fun eventClickProductListDropdown(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_CATEGORY,
-                Category.DIGITAL_CATEGORY,
+                Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_PRODUCT_LIST_DROPDOWN,
                 "$categoryName - $operatorName"
         )
@@ -144,8 +144,8 @@ class RechargeGeneralAnalytics {
                  operatorName: String,
                  isInstantCheckout: Boolean,
                  enquiryData: TopupBillsEnquiry) {
-        val instantCheckoutValue = if (isInstantCheckout) "instant" else "no instant"
-        with (enquiryData.attributes) {
+        enquiryData.attributes?.run {
+            val instantCheckoutValue = if (isInstantCheckout) "instant" else "no instant"
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     DataLayer.mapOf(
                             TrackAppUtils.EVENT, Event.ADD_TO_CART,

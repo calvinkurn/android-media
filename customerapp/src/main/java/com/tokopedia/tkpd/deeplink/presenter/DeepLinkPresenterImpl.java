@@ -12,7 +12,7 @@ import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -42,7 +42,7 @@ import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
+import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
@@ -587,7 +587,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
-        viewListener.showLoading();
         getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0), userSession.getUserId(), userSession.getDeviceId()), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
@@ -596,13 +595,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             @Override
             public void onError(Throwable e) {
-                viewListener.finishLoading();
                 prepareOpenWebView(uriData);
             }
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
                     String shopId = shopInfo.getInfo().getShopId();
                     String lastSegment = linkSegment.get(linkSegment.size() - 1);
@@ -643,6 +640,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
+                || lastSegment.equals("discount")
                 || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
     }
 
@@ -686,7 +684,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             @Override
             public void onError(Throwable e) {
-                viewListener.finishLoading();
                 Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
                 context.startActivity(intent);
                 context.finish();
@@ -694,7 +691,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
                     //Add Affiliate string for tracking
                     String affiliateString = "";
@@ -740,10 +736,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openCatalogDetail(List<String> linkSegment) {
         try {
             String catalogId = linkSegment.get(1);
-            viewListener.inflateFragment(
-                    CatalogDetailListFragment.newInstance(catalogId),
-                    TAG_FRAGMENT_CATALOG_DETAIL
-            );
+            Intent intent = CatalogDetailPageActivity.createIntent(context, catalogId);
+            context.startActivity(intent);
         } catch (Exception e) {
             Crashlytics.log(e.getLocalizedMessage());
         }

@@ -44,7 +44,7 @@ class RechargeCameraModule {
 
     @RechargeCameraScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @RechargeCameraScope
     @Provides

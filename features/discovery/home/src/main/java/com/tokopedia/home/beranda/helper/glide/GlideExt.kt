@@ -28,9 +28,7 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
             .load(url)
-            .skipMemoryCache(true)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -53,8 +51,6 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
             .fitCenter()
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .skipMemoryCache(true)
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -70,20 +66,6 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
             .into(this)
 }
 
-
-fun ImageView.loadImageCrop(url: String){
-    Glide.with(context)
-            .load(url)
-            .centerCrop()
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .skipMemoryCache(true)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
-            .placeholder(R.drawable.loading_page)
-            .into(this)
-}
-
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
@@ -91,9 +73,7 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
             .format(DecodeFormat.PREFER_ARGB_8888)
             .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .skipMemoryCache(true)
             .transform(RoundedCorners(roundedRadius))
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -113,11 +93,8 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
     Glide.with(context)
             .load(url)
             .fitCenter()
-            .skipMemoryCache(true)
             .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .override(width, height)
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -137,9 +114,7 @@ fun ImageView.loadImageCenterCrop(url: String){
             .load(url)
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .skipMemoryCache(true)
             .transform(CenterCrop(), RoundedCorners(15))
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .placeholder(R.drawable.loading_page)
             .into(this)
 }
@@ -150,9 +125,7 @@ fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemoryCache: B
             .override(width, height)
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .skipMemoryCache(skipMemoryCache)
             .transform(CenterCrop(), RoundedCorners(15))
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .placeholder(placeholder)
             .into(this)
 }

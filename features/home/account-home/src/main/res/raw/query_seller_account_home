@@ -55,4 +55,18 @@ query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
           UpdateTime
         }
       }
+
+  CheckEligible{
+          status
+          message
+          data {
+              isPowerMerchant
+              copywriting {
+                  title
+                  subtitle
+                  cta
+                  url
+              }
+          }
+      }
 }

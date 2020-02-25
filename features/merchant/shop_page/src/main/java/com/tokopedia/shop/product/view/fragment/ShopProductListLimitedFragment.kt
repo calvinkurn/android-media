@@ -48,9 +48,9 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_PRODUCT
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.FEATURED_PRODUCT
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.*
@@ -102,7 +102,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: ShopProductLimitedViewModel
 
-    var shopPageTracking: ShopPageTrackingBuyer? = null
+    var shopPageTracking: OldShopPageTrackingBuyer? = null
     lateinit var merchantVoucherListPresenter: MerchantVoucherListPresenter
 
     private var progressDialog: ProgressDialog? = null
@@ -220,7 +220,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
         super.onCreate(savedInstanceState)
 
-        context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
+        context?.let { shopPageTracking = OldShopPageTrackingBuyer(TrackingQueue(it)) }
 
         val merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
@@ -863,7 +863,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             }
         }
         goToPDP(shopProductViewModel.id, attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName)
+                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.PRODUCT, selectedEtalaseName)
                         ?: "")
 
 
@@ -926,7 +926,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 promoClicked(urlNeedTobBeProceed)
             }
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK && data != null) {
-                val sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                val sortName = data.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 if (shopId == null)
                     return
 
@@ -1098,20 +1098,20 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onButtonClaimClicked(questId: Int) {
-        shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_COUPON_CLAIM)
+        shopPageTracking?.sendEventMembership(OldShopPageTrackingConstant.MEMBERSHIP_COUPON_CLAIM)
         lastQuestId = questId
         viewModel.claimMembershipBenefit(questId)
     }
 
     override fun goToVoucherOrRegister(url: String?, clickOrigin: String?) {
         val intent: Intent = if (url == null) {
-            shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_COUPON_CHECK)
+            shopPageTracking?.sendEventMembership(OldShopPageTrackingConstant.MEMBERSHIP_COUPON_CHECK)
             RouteManager.getIntent(context, ApplinkConst.COUPON_LISTING)
         } else {
             if (clickOrigin == GO_TO_MEMBERSHIP_DETAIL) {
-                shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_DETAIL_PAGE)
+                shopPageTracking?.sendEventMembership(OldShopPageTrackingConstant.MEMBERSHIP_DETAIL_PAGE)
             } else {
-                shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_CLICK_MEMBER)
+                shopPageTracking?.sendEventMembership(OldShopPageTrackingConstant.MEMBERSHIP_CLICK_MEMBER)
             }
 
             RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))

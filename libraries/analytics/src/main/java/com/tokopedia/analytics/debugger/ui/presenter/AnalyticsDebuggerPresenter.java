@@ -46,7 +46,7 @@ public class AnalyticsDebuggerPresenter implements AnalyticsDebugger.Presenter {
 
     @Override
     public void loadMore() {
-        setRequestParams(page++, keyword);
+        setRequestParams(++page, keyword);
         getGtmLogUseCase.execute(requestParams, loadMoreSubscriber());
     }
 

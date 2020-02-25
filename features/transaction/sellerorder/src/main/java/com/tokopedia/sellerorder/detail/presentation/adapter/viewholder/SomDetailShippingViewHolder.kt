@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.detail_shipping_item.view.*
 /**
  * Created by fwidjaja on 2019-10-04.
  */
-class SomDetailShippingViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+class SomDetailShippingViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
 
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailShipping) {
@@ -27,7 +27,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
             itemView.copy_address_btn.apply {
                 setOnClickListener {
-                    actionListener.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
+                    actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
                             "\n" + item.dataObject.receiverPhone +
                             "\n" + item.dataObject.receiverStreet +
                             "\n" + item.dataObject.receiverDistrict))
@@ -38,12 +38,12 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.label_harus_sesuai.visibility = View.VISIBLE
                 itemView.ic_harus_sesuai.visibility = View.VISIBLE
                 itemView.label_harus_sesuai.setOnClickListener {
-                    actionListener.onShowBottomSheetInfo(
+                    actionListener?.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier)
                 }
                 itemView.ic_harus_sesuai.setOnClickListener {
-                    actionListener.onShowBottomSheetInfo(
+                    actionListener?.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier)
                 }
@@ -68,7 +68,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 if (item.dataObject.driverPhone.isNotEmpty()) {
                     itemView.tv_driver_phone.text = item.dataObject.driverPhone
                     itemView.driver_call_btn.setOnClickListener {
-                        actionListener.onDialPhone(item.dataObject.driverPhone)
+                        actionListener?.onDialPhone(item.dataObject.driverPhone)
                     }
                 } else {
                     itemView.tv_driver_phone.visibility = View.GONE
@@ -92,7 +92,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     itemView.rl_booking_code.visibility = View.VISIBLE
 
                     itemView.rl_wajib_dicantumkan.setOnClickListener {
-                        actionListener.onShowBottomSheetInfo(
+                        actionListener?.onShowBottomSheetInfo(
                                 itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
                                 R.string.wajib_tulis_kode_booking_desc)
                     }
@@ -111,7 +111,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         itemView.booking_code_see_btn.apply {
                             visibility = View.VISIBLE
                             setOnClickListener {
-                                actionListener.onShowBookingCode(
+                                actionListener?.onShowBookingCode(
                                         item.dataObject.onlineBookingCode,
                                         item.dataObject.onlineBookingType)
                             }
@@ -136,7 +136,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.context.getString(R.string.coachmark_shipping),
                 itemView.context.getString(R.string.coachmark_shipping_info))
 
-        actionListener.onAddedCoachMarkShipping(
+        actionListener?.onAddedCoachMarkShipping(
                 coachmarkShipping
         )
 

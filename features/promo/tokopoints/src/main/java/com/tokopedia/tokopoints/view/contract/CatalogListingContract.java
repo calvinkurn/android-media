@@ -41,9 +41,6 @@ public interface CatalogListingContract {
 
         void refreshTab();
 
-
-        void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails);
-
         void onSuccessPoints(String rewardStr, int rewardValue, String membership, String eggUrl);
     }
 
