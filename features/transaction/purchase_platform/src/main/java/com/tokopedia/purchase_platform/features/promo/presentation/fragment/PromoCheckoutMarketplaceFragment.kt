@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
@@ -105,6 +106,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     title = "Ini promo global"
                     subTitle = "Pilih satu aja cuy"
                     promoType = PROMO_TYPE_GLOBAL
+                    identifierId = 1
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
                     isCollapsed = false
@@ -114,33 +116,33 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
         val promoListItemUiModel = PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
-
+                    parentIdentifierId = 1
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
 
                 }
         )
-//        adapter.addVisitable(promoListItemUiModel)
+        adapter.addVisitable(promoListItemUiModel)
 
         val promoListItemUiModel1 = PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
-
+                    parentIdentifierId = 1
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
 
                 }
         )
-//        adapter.addVisitable(promoListItemUiModel1)
+        adapter.addVisitable(promoListItemUiModel1)
 
         val promoListItemUiModel2 = PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
-
+                    parentIdentifierId = 1
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
 
                 }
         )
-//        adapter.addVisitable(promoListItemUiModel2)
+        adapter.addVisitable(promoListItemUiModel2)
 
         val promoListHeaderUiModel1 = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
@@ -152,7 +154,17 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     isCollapsed = true
                 }
         )
-//        adapter.addVisitable(promoListHeaderUiModel1)
+        adapter.addVisitable(promoListHeaderUiModel1)
+
+        val promoListItemUiModel3 = PromoListItemUiModel(
+                uiData = PromoListItemUiModel.UiData().apply {
+                    parentIdentifierId = 2
+                },
+                uiState = PromoListItemUiModel.UiState().apply {
+
+                }
+        )
+        adapter.addVisitable(promoListItemUiModel3)
 
         val promoListHeaderUiModel2 = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
@@ -184,17 +196,43 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         if (itemPosition < adapter.data.size) {
             val oldData = adapter.data[itemPosition]
             if (oldData is PromoListHeaderUiModel) {
-                val newData = PromoListHeaderUiModel(
-                        uiData = PromoListHeaderUiModel.UiData().apply {
-                            title = oldData.uiData.title
-                            subTitle = oldData.uiData.subTitle
-                            promoType = oldData.uiData.promoType
-                        },
-                        uiState = PromoListHeaderUiModel.UiState().apply {
-                            isCollapsed = oldData.uiState.isCollapsed.not()
-                        }
-                )
-                adapter.modifyData(itemPosition, newData)
+                if(!oldData.uiState.isCollapsed) {
+                    val newData = PromoListHeaderUiModel(
+                            uiData = PromoListHeaderUiModel.UiData().apply {
+                                title = oldData.uiData.title
+                                subTitle = oldData.uiData.subTitle
+                                promoType = oldData.uiData.promoType
+                            },
+                            uiState = PromoListHeaderUiModel.UiState().apply {
+                                isCollapsed = oldData.uiState.isCollapsed.not()
+                            }
+                    )
+                    adapter.modifyData(itemPosition, newData)
+
+                    val modifiedData = ArrayList<PromoListItemUiModel>()
+                    val startIndex = itemPosition + 1
+                    for (index in startIndex until adapter.data.size) {
+                        if (adapter.data[index] !is PromoListItemUiModel) break
+                        val oldPromoItem = adapter.data[index] as PromoListItemUiModel
+                        modifiedData.add(oldPromoItem)
+                    }
+                    newData.uiData.tmpPromoItemList = modifiedData
+                    adapter.removeList(modifiedData)
+                } else {
+                    val newData = PromoListHeaderUiModel(
+                            uiData = PromoListHeaderUiModel.UiData().apply {
+                                title = oldData.uiData.title
+                                subTitle = oldData.uiData.subTitle
+                                promoType = oldData.uiData.promoType
+                                tmpPromoItemList = emptyList()
+                            },
+                            uiState = PromoListHeaderUiModel.UiState().apply {
+                                isCollapsed = oldData.uiState.isCollapsed.not()
+                            }
+                    )
+                    adapter.modifyData(itemPosition, newData)
+                    adapter.addVisitableList(itemPosition + 1, oldData.uiData.tmpPromoItemList)
+                }
             }
         }
     }

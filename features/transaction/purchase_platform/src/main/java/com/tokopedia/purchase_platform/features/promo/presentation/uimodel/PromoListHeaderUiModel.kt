@@ -33,7 +33,9 @@ class PromoListHeaderUiModel(
     data class UiData(
             var title: String = "",
             var subTitle: String = "",
-            var promoType: Int = 0
+            var promoType: Int = 0,
+            var identifierId: Int = 0,
+            var tmpPromoItemList: List<PromoListItemUiModel> = emptyList()
     ) {
         companion object {
             const val PROMO_TYPE_GLOBAL = 1

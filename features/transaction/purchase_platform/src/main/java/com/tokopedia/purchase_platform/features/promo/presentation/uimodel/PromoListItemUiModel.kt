@@ -39,7 +39,8 @@ data class PromoListItemUiModel(
     )
 
     data class UiState(
-            var isSellected: Boolean = false
+            var isSellected: Boolean = false,
+            var isVisible: Boolean = true
     )
 
 }
