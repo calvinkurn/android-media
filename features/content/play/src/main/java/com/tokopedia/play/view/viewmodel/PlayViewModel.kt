@@ -212,7 +212,7 @@ class PlayViewModel @Inject constructor(
             _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
             _observableQuickReply.value = completeInfoUiModel.quickReply
             _observableVideoStream.value = completeInfoUiModel.videoStream
-            _observableEvent.value = mapEvent(channel)
+            _observableEvent.value = completeInfoUiModel.event
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
             if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
@@ -360,7 +360,8 @@ class PlayViewModel @Inject constructor(
                     channel.pinnedMessage
             ),
             quickReply = mapQuickReply(channel.quickReply),
-            totalView = mapTotalViews(channel.totalViews)
+            totalView = mapTotalViews(channel.totalViews),
+            event = mapEvent(channel)
     )
 
     private fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
@@ -417,8 +418,8 @@ class PlayViewModel @Inject constructor(
     )
 
     private fun mapEvent(channel: Channel) = EventUiModel(
-            isBanned = false,
-            isFreeze = channel.isFreeze,
+            isBanned = _observableEvent.value?.isBanned ?: false,
+            isFreeze = !channel.isActive || channel.isFreeze,
             bannedMessage = channel.banned.message,
             bannedTitle = channel.banned.title,
             bannedButtonTitle = channel.banned.buttonTitle,
@@ -442,7 +443,6 @@ class PlayViewModel @Inject constructor(
 
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
-        playManager.muteVideo(false)
         playManager.setRepeatMode(false)
     }
 
