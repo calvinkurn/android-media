@@ -32,10 +32,15 @@ class PromoListHeaderUiModel(
 
     data class UiData(
             var title: String = "",
-            var description: String = "",
-            var imageResourceUrl: String = "",
-            var identifierId: Int = 0
-    )
+            var subTitle: String = "",
+            var promoType: Int = 0
+    ) {
+        companion object {
+            const val PROMO_TYPE_GLOBAL = 1
+            const val PROMO_TYPE_MERCHANT_OFFICIAL = 2
+            const val PROMO_TYPE_POWER_MERCHANT = 3
+        }
+    }
 
     data class UiState(
             var isCollapsed: Boolean = false

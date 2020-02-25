@@ -18,6 +18,10 @@ import com.tokopedia.purchase_platform.features.promo.presentation.adapter.Promo
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibleHeaderUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoInputUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_GLOBAL
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_MERCHANT_OFFICIAL
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_POWER_MERCHANT
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoRecommendationUiModel
 import javax.inject.Inject
 
@@ -98,6 +102,43 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
                 }
         )
         adapter.addVisitable(promoEligibleHeaderUiModel)
+
+        val promoListHeaderUiModel = PromoListHeaderUiModel(
+                uiData = PromoListHeaderUiModel.UiData().apply {
+                    title = "Ini promo global"
+                    subTitle = "Pilih satu aja cuy"
+                    promoType = PROMO_TYPE_GLOBAL
+                },
+                uiState = PromoListHeaderUiModel.UiState().apply {
+                    isCollapsed = false
+                }
+        )
+        adapter.addVisitable(promoListHeaderUiModel)
+
+        val promoListHeaderUiModel1 = PromoListHeaderUiModel(
+                uiData = PromoListHeaderUiModel.UiData().apply {
+                    title = "Ini promo power merchant"
+                    subTitle = "Pilih satu aja cuy"
+                    promoType = PROMO_TYPE_POWER_MERCHANT
+                },
+                uiState = PromoListHeaderUiModel.UiState().apply {
+                    isCollapsed = false
+                }
+        )
+        adapter.addVisitable(promoListHeaderUiModel1)
+
+        val promoListHeaderUiModel2 = PromoListHeaderUiModel(
+                uiData = PromoListHeaderUiModel.UiData().apply {
+                    title = "Ini promo official store"
+                    subTitle = "Pilih satu aja cuy"
+                    promoType = PROMO_TYPE_MERCHANT_OFFICIAL
+                },
+                uiState = PromoListHeaderUiModel.UiState().apply {
+                    isCollapsed = false
+                }
+        )
+        adapter.addVisitable(promoListHeaderUiModel2)
+
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
