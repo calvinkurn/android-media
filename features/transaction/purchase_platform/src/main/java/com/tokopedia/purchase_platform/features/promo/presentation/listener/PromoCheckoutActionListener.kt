@@ -5,4 +5,6 @@ interface PromoCheckoutActionListener {
     fun onClickApplyManualInputPromo(promoCode: String)
 
     fun onClickApplyRecommendedPromo()
+
+    fun onClickPromoListHeader(itemPosition: Int)
 }

@@ -21,6 +21,13 @@ class PromoCheckoutAdapter(adapterTypeFactory: PromoCheckoutMarketplaceAdapterTy
         updateList(newList)
     }
 
+    fun modifyData(itemPosition: Int, visitable: Visitable<*>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.set(itemPosition, visitable)
+        updateList(newList)
+    }
+
     private fun updateList(newList: List<Visitable<*>>) {
         val diffResult = DiffUtil.calculateDiff(PromoDiffUtilCallback(list, newList))
 

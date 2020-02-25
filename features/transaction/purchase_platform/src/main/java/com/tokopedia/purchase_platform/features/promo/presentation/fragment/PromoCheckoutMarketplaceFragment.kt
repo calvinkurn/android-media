@@ -16,16 +16,13 @@ import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecorati
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibleHeaderUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoInputUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_GLOBAL
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_MERCHANT_OFFICIAL
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_POWER_MERCHANT
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoRecommendationUiModel
 import javax.inject.Inject
 
-class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(), PromoCheckoutMarketplaceActionListener {
+class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(), PromoCheckoutMarketplaceActionListener {
 
     @Inject
     lateinit var itemDecorator: PromoDecoration
@@ -83,7 +80,7 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
                     isButtonSelectEnabled = true
                 }
         )
-        adapter.addVisitable(promoRecommendationUiModel)
+//        adapter.addVisitable(promoRecommendationUiModel)
 
         val promoInputUiModel = PromoInputUiModel(
                 uiData = PromoInputUiModel.UiData().apply {
@@ -93,7 +90,7 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
                     isButtonSelectEnabled = false
                 }
         )
-        adapter.addVisitable(promoInputUiModel)
+//        adapter.addVisitable(promoInputUiModel)
 
         val promoEligibleHeaderUiModel = PromoEligibleHeaderUiModel(
                 uiData = PromoEligibleHeaderUiModel.UiData().apply {
@@ -101,7 +98,7 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
                     subTitle = "Pilih salah satu aja"
                 }
         )
-        adapter.addVisitable(promoEligibleHeaderUiModel)
+//        adapter.addVisitable(promoEligibleHeaderUiModel)
 
         val promoListHeaderUiModel = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
@@ -115,6 +112,36 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
         )
         adapter.addVisitable(promoListHeaderUiModel)
 
+        val promoListItemUiModel = PromoListItemUiModel(
+                uiData = PromoListItemUiModel.UiData().apply {
+
+                },
+                uiState = PromoListItemUiModel.UiState().apply {
+
+                }
+        )
+//        adapter.addVisitable(promoListItemUiModel)
+
+        val promoListItemUiModel1 = PromoListItemUiModel(
+                uiData = PromoListItemUiModel.UiData().apply {
+
+                },
+                uiState = PromoListItemUiModel.UiState().apply {
+
+                }
+        )
+//        adapter.addVisitable(promoListItemUiModel1)
+
+        val promoListItemUiModel2 = PromoListItemUiModel(
+                uiData = PromoListItemUiModel.UiData().apply {
+
+                },
+                uiState = PromoListItemUiModel.UiState().apply {
+
+                }
+        )
+//        adapter.addVisitable(promoListItemUiModel2)
+
         val promoListHeaderUiModel1 = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = "Ini promo power merchant"
@@ -122,10 +149,10 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
                     promoType = PROMO_TYPE_POWER_MERCHANT
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
-                    isCollapsed = false
+                    isCollapsed = true
                 }
         )
-        adapter.addVisitable(promoListHeaderUiModel1)
+//        adapter.addVisitable(promoListHeaderUiModel1)
 
         val promoListHeaderUiModel2 = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
@@ -134,10 +161,10 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
                     promoType = PROMO_TYPE_MERCHANT_OFFICIAL
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
-                    isCollapsed = false
+                    isCollapsed = true
                 }
         )
-        adapter.addVisitable(promoListHeaderUiModel2)
+//        adapter.addVisitable(promoListHeaderUiModel2)
 
     }
 
@@ -151,6 +178,25 @@ class PromoCheckoutMarketplaceFragment: BaseListFragment<Visitable<*>, PromoChec
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
 
+    }
+
+    override fun onClickPromoListHeader(itemPosition: Int) {
+        if (itemPosition < adapter.data.size) {
+            val oldData = adapter.data[itemPosition]
+            if (oldData is PromoListHeaderUiModel) {
+                val newData = PromoListHeaderUiModel(
+                        uiData = PromoListHeaderUiModel.UiData().apply {
+                            title = oldData.uiData.title
+                            subTitle = oldData.uiData.subTitle
+                            promoType = oldData.uiData.promoType
+                        },
+                        uiState = PromoListHeaderUiModel.UiState().apply {
+                            isCollapsed = oldData.uiState.isCollapsed.not()
+                        }
+                )
+                adapter.modifyData(itemPosition, newData)
+            }
+        }
     }
 
 }
