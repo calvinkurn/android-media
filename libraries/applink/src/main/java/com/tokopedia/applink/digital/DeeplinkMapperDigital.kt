@@ -49,9 +49,10 @@ object DeeplinkMapperDigital {
             if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) return getDigitalTemplateNavigation(context, deeplink)
             return if (!uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty()) getDigitalMenuNavigation(context, deeplink)
             else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
-        } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)){
-            return getDigitalSmartcardNavigation(context, deeplink)
         }
+//        else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)){
+//            return getDigitalSmartcardNavigation(context, deeplink)
+//        }
         return deeplink
     }
 
