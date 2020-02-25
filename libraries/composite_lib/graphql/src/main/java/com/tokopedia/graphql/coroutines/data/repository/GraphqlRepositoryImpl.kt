@@ -1,7 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
 import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
@@ -12,7 +11,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.model.GraphqlError
-import timber.log.Timber
 import java.lang.reflect.Type
 import kotlin.Exception
 
@@ -30,12 +28,12 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
             else -> {
                 try {
                     val responseCache = graphqlCacheDataStore.getResponse(requests, cacheStrategy)
-                    val tempRequestCloud =  ArrayList<GraphqlRequest>()
+                    val tempRequestCloud = ArrayList<GraphqlRequest>()
                     responseCache.indexOfEmptyCached.forEachIndexed { index, i ->
                         tempRequestCloud.add(requests.get(i))
                     }
-                    var responseCloud : GraphqlResponseInternal? = null
-                    if(!tempRequestCloud.isNullOrEmpty()){
+                    var responseCloud: GraphqlResponseInternal? = null
+                    if (!tempRequestCloud.isNullOrEmpty()) {
                         responseCloud = graphqlCloudDataStore.getResponse(tempRequestCloud, cacheStrategy);
                     }
                     responseCloud?.let {
@@ -50,11 +48,11 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
         }.toGraphqlResponse(requests)
     }
 
-    private fun List<GraphqlRequest>.regroup(indexOfEmptyCached: List<Int>?) : MutableList<GraphqlRequest>{
-        if(indexOfEmptyCached.isNullOrEmpty()) this.toMutableList()
+    private fun List<GraphqlRequest>.regroup(indexOfEmptyCached: List<Int>?): MutableList<GraphqlRequest> {
+        if (indexOfEmptyCached.isNullOrEmpty()) this.toMutableList()
 
-        val tempGraphqlRequest : MutableList<GraphqlRequest> = this.toMutableList()
-        indexOfEmptyCached?.sortedDescending()?.forEach{
+        val tempGraphqlRequest: MutableList<GraphqlRequest> = this.toMutableList()
+        indexOfEmptyCached?.sortedDescending()?.forEach {
             tempGraphqlRequest.removeAt(it)
         }
         indexOfEmptyCached?.forEach {
@@ -88,5 +86,4 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
 
         return GraphqlResponse(results, errors, isCached)
     }
-
 }
