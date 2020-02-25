@@ -10,8 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.SMARTCARD_WITH_EMONEY
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
@@ -132,7 +131,7 @@ object DeeplinkDFMapper {
                     it.startsWith(CAMERA_OCR) ||
                     it.startsWith(VOUCHER_GAME) ||
                     it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) }, DFM_BASE, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWithPattern(SMARTCARD_WITH_BRIZZI) }, DFM_EMONEY, R.string.title_digital_emoney))
+            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD) }, DFM_EMONEY, R.string.title_digital_emoney))
 
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_BASE, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_BASE, R.string.title_digital_deals))

@@ -19,7 +19,7 @@ import javax.inject.Inject
  * applink
  * tokopedia-android-internal://digital/smartcard/emoneybrizzi
  * or
- * RouteManager.route(this, ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI)
+ * RouteManager.route(this, ApplinkConsInternalDigital.INTERNAL_SMARTCARD)
  */
 
 class NfcCheckBalanceActivity : BaseSimpleActivity() {
