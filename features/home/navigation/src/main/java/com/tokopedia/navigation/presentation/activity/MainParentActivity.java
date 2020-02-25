@@ -174,7 +174,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
-    Window.OnFrameMetricsAvailableListener onFrameMetricAvailableListener;
+    Window.OnFrameMetricsAvailableListener onFrameMetricAvailableListener = null;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -1180,6 +1180,7 @@ public class MainParentActivity extends BaseActivity implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if (onFrameMetricAvailableListener != null) {
                 activity.getWindow().removeOnFrameMetricsAvailableListener(onFrameMetricAvailableListener);
+                onFrameMetricAvailableListener = null;
             }
         }
     }
