@@ -84,8 +84,6 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
     private fun showFingerprintDialog(){
         scanFingerprintDialog = ScanFingerprintDialog(activity!!, object: ScanFingerprintInterface {
             override fun onFingerprintValid() {
-                println("$TAG VALID FP")
-
                 showProgressBar()
                 viewModel.registerFingerprint()
                 scanFingerprintDialog?.dismiss()
@@ -96,9 +94,7 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
             }
 
             override fun onFingerprintError(msg: String, errCode: Int) {
-//                scanFingerprintDialog?.dismiss()
-//                onErrorRegisterFP(Throwable(message = msg))
-                println("$TAG ERROR ($msg)")
+                onErrorRegisterFP(Throwable(message = msg))
             }
         })
 
@@ -110,12 +106,10 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
 
     private fun onSuccessRegisterFP(){
         hideProgressBar()
-        println("$TAG : FP Signature Registered")
         activity?.finish()
     }
 
     private fun onErrorRegisterFP(throwable: Throwable) {
-        println("$TAG : FP Register Error (${throwable.message})")
         hideProgressBar()
         scanFingerprintDialog?.dismiss()
         Toaster.make(activity?.findViewById(android.R.id.content)!!, ErrorHandlerSession.getErrorMessage(context, throwable), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
