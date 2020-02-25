@@ -7,7 +7,6 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 repositories {
     maven { url 'https://hansel.io/maven' }
     mavenCentral()
-    maven { url 'https://dl.bintray.com/iamdangerous/FakeResponse/' }
 }
 
 buildscript {
@@ -52,21 +51,7 @@ dependencies {
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation project(rootProject.ext.libraries.translator)
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
-//    debugImplementation project(rootProject.ext.libraries.fakeresponse)
 
-//    debugImplementation(rootProject.ext.debugToolsDependencies.fakeResponse) {
-//        exclude group: 'androidx.test.ext'
-//        exclude group: 'androidx.test.espresso'
-//        exclude group: 'androidx.room'
-//        exclude group: 'com.google.android.material'
-//        exclude group: 'androidx.recyclerview'
-//        exclude group: 'androidx.lifecycle'
-//        exclude group: 'androidx.legacy'
-//        exclude group: 'androidx.constraintlayout'
-//        exclude group: 'androidx.core'
-//        exclude group: 'androidx.appcompat'
-//        exclude group: 'org.jetbrains.kotlin'
-//    }
 }
 
 project.ext {
