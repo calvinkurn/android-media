@@ -43,4 +43,8 @@ internal class CarouselProductCardViewHolder(
             onItemAddToCartListener?.onItemAddToCart(productCardModel, adapterPosition)
         }
     }
+
+    fun recycle() {
+        itemView.carouselProductCardItem?.recycle()
+    }
 }

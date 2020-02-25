@@ -8,8 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.test.R
+import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest
 import com.tokopedia.productcard.test.utils.ProductCardItemDecoration
 import com.tokopedia.productcard.v2.ProductCardModel
 
@@ -50,15 +52,26 @@ internal class ProductCardListActivityTest: AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.bind(productCardListTestData[position].productCardModel)
         }
+
+        override fun onViewRecycled(holder: ViewHolder) {
+            holder.recycle()
+            super.onViewRecycled(holder)
+        }
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bind(productCardModel: ProductCardModel) {
-            val productCardView = itemView.findViewById<ProductCardListView>(R.id.productCardList)
+        private val productCardView: ProductCardListView? by lazy {
+            itemView.findViewById<ProductCardListView>(R.id.productCardList)
+        }
 
+        fun bind(productCardModel: ProductCardModel) {
             productCardView?.setProductModel(productCardModel)
             productCardView?.setOnClickListener { Toast.makeText(itemView.context, adapterPosition.toString(), Toast.LENGTH_SHORT).show() }
+        }
+
+        fun recycle() {
+            productCardView?.recycle()
         }
     }
 }

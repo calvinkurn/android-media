@@ -40,6 +40,11 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.bind(carouselProductCardGridTestData[position])
         }
+
+        override fun onViewRecycled(holder: ViewHolder) {
+            holder.recycle()
+            super.onViewRecycled(holder)
+        }
     }
 
     internal class ViewHolder(itemView: View, private val recycledViewPool: RecyclerView.RecycledViewPool): RecyclerView.ViewHolder(itemView) {
@@ -48,12 +53,19 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
             val LAYOUT = R.layout.carousel_product_card_grid_item_test_layout
         }
 
+        private val item: CarouselProductCardView? by lazy {
+            itemView.findViewById<CarouselProductCardView>(R.id.carouselProductCard)
+        }
+
         fun bind(productCardModelList: List<ProductCardModel>) {
-            val item = itemView.findViewById<CarouselProductCardView>(R.id.carouselProductCard)
-            item.bindCarouselProductCardViewGrid(
+            item?.bindCarouselProductCardViewGrid(
                     productCardModelList = productCardModelList,
                     recyclerViewPool = recycledViewPool
             )
+        }
+
+        fun recycle() {
+            item?.recycle()
         }
     }
 }

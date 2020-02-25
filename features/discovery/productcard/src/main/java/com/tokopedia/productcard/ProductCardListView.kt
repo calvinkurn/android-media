@@ -3,6 +3,7 @@ package com.tokopedia.productcard
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.bumptech.glide.Glide
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -11,14 +12,8 @@ import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
-import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
-import kotlinx.android.synthetic.main.product_card_list_layout.view.cardViewProductCard
-import kotlinx.android.synthetic.main.product_card_list_layout.view.imageProduct
-import kotlinx.android.synthetic.main.product_card_list_layout.view.imageThreeDots
-import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
 
 class ProductCardListView: BaseCustomView {
 
@@ -74,5 +69,10 @@ class ProductCardListView: BaseCustomView {
         val layoutParams = cardViewProductCard?.layoutParams
         layoutParams?.height = height
         cardViewProductCard?.layoutParams = layoutParams
+    }
+
+    fun recycle() {
+        Glide.with(context).clear(imageProduct)
+        Glide.with(context).clear(imageFreeOngkirPromo)
     }
 }

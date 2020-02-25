@@ -141,7 +141,7 @@ internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
 
 private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
-        it.text = labelGroup.title
+        it.text = MethodChecker.fromHtml(labelGroup.title)
         it.setLabelType(labelGroup.type.toUnifyLabelType())
     }
 }
@@ -153,7 +153,7 @@ internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?)
 
 private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
-        it.text = labelGroup.title
+        it.text = MethodChecker.fromHtml(labelGroup.title)
         it.setTextColor(safeParseColor(labelGroup.type))
     }
 }

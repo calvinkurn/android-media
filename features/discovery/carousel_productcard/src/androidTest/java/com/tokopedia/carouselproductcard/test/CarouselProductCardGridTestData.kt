@@ -2,6 +2,8 @@ package com.tokopedia.carouselproductcard.test
 
 import com.tokopedia.productcard.v2.ProductCardModel
 
+internal var productCardNameSuffix = 0
+
 internal val carouselProductCardGridTestData = mutableListOf<List<ProductCardModel>>().also {
     it.add(createCarouselProductCardGrid())
     it.add(createCarouselProductCardGridWithButtonATC())
@@ -38,20 +40,22 @@ private fun createCarouselProductCardGrid(): List<ProductCardModel> {
         it.add(createProductCardTwoLinesProductName())
         it.add(createProductCardWithSlashPrice())
         it.add(createProductCardOneLineProductName())
-        it.add(createProductCardMaxInfoAndLabel("1"))
-        it.add(createProductCardMaxInfoAndLabel("2"))
-        it.add(createProductCardMaxInfoAndLabel("3"))
-        it.add(createProductCardMaxInfoAndLabel("4"))
+        it.add(createProductCardMaxInfoAndLabel())
+        it.add(createProductCardMaxInfoAndLabel())
+        it.add(createProductCardMaxInfoAndLabel())
+        it.add(createProductCardMaxInfoAndLabel())
     }
 }
 
-private fun createProductCardMaxInfoAndLabel(additionalName: String): ProductCardModel {
+private fun createProductCardMaxInfoAndLabel(): ProductCardModel {
+    productCardNameSuffix += 1
+
     val labelProductStatus = ProductCardModel.LabelGroup(position = "status", title = "Preorder", type = "darkGrey")
     val labelPrice = ProductCardModel.LabelGroup(position = "price", title = "Grosir", type = "lightGreen")
     val labelGimmick = ProductCardModel.LabelGroup(position = "gimmick", title = "Best Seller", type = "#FF8B00")
 
     return ProductCardModel(
-            productName = "$additionalName Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productName = "$productCardNameSuffix Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
@@ -72,8 +76,10 @@ private fun createProductCardMaxInfoAndLabel(additionalName: String): ProductCar
 }
 
 private fun createProductCardTwoLinesProductName(): ProductCardModel {
+    productCardNameSuffix += 1
+
     return ProductCardModel(
-            productName = "Two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productName = "$productCardNameSuffix Two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
@@ -88,8 +94,10 @@ private fun createProductCardTwoLinesProductName(): ProductCardModel {
 }
 
 private fun createProductCardWithSlashPrice(): ProductCardModel {
+    productCardNameSuffix += 1
+
     return ProductCardModel(
-            productName = "Slash price",
+            productName = "$productCardNameSuffix Slash price",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
@@ -103,8 +111,10 @@ private fun createProductCardWithSlashPrice(): ProductCardModel {
 }
 
 private fun createProductCardOneLineProductName(): ProductCardModel {
+    productCardNameSuffix += 1
+
     return ProductCardModel(
-            productName = "Product name",
+            productName = "$productCardNameSuffix Product name",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
@@ -120,20 +130,22 @@ private fun createCarouselProductCardGridWithButtonATC(): List<ProductCardModel>
         it.add(createProductCardTwoLinesProductNameATC())
         it.add(createProductCardWithSlashPriceATC())
         it.add(createProductCardOneLineProductNameATC())
-        it.add(createProductCardMaxInfoAndLabelATC("1"))
-        it.add(createProductCardMaxInfoAndLabelATC("2"))
-        it.add(createProductCardMaxInfoAndLabelATC("3"))
-        it.add(createProductCardMaxInfoAndLabelATC("4"))
+        it.add(createProductCardMaxInfoAndLabelATC())
+        it.add(createProductCardMaxInfoAndLabelATC())
+        it.add(createProductCardMaxInfoAndLabelATC())
+        it.add(createProductCardMaxInfoAndLabelATC())
     }
 }
 
-private fun createProductCardMaxInfoAndLabelATC(additionalName: String): ProductCardModel {
+private fun createProductCardMaxInfoAndLabelATC(): ProductCardModel {
+    productCardNameSuffix += 1
+
     val labelProductStatus = ProductCardModel.LabelGroup(position = "status", title = "Preorder", type = "darkGrey")
     val labelPrice = ProductCardModel.LabelGroup(position = "price", title = "Grosir", type = "lightGreen")
     val labelGimmick = ProductCardModel.LabelGroup(position = "gimmick", title = "Best Seller", type = "#FF8B00")
 
     return ProductCardModel(
-            productName = "$additionalName Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productName = "$productCardNameSuffix Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
@@ -154,8 +166,10 @@ private fun createProductCardMaxInfoAndLabelATC(additionalName: String): Product
 }
 
 private fun createProductCardTwoLinesProductNameATC(): ProductCardModel {
+    productCardNameSuffix += 1
+
     return ProductCardModel(
-            productName = "Two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productName = "$productCardNameSuffix Two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
@@ -170,8 +184,10 @@ private fun createProductCardTwoLinesProductNameATC(): ProductCardModel {
 }
 
 private fun createProductCardWithSlashPriceATC(): ProductCardModel {
+    productCardNameSuffix += 1
+
     return ProductCardModel(
-            productName = "Slash price",
+            productName = "$productCardNameSuffix Slash price",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
@@ -185,8 +201,10 @@ private fun createProductCardWithSlashPriceATC(): ProductCardModel {
 }
 
 private fun createProductCardOneLineProductNameATC(): ProductCardModel {
+    productCardNameSuffix += 1
+
     return ProductCardModel(
-            productName = "Product name",
+            productName = "$productCardNameSuffix Product name",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->

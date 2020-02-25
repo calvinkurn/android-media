@@ -123,6 +123,10 @@ class CarouselProductCardView: BaseCustomView {
         })
     }
 
+    fun recycle() {
+        carouselAdapter.submitList(null)
+    }
+
     /**
      * @param activity is used to determine device width.
      * @param parentView is used to measure view according to its parent.

@@ -50,15 +50,26 @@ internal class ProductCardGridActivityTest: AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.bind(productCardGridTestData[position].productCardModel)
         }
+
+        override fun onViewRecycled(holder: ViewHolder) {
+            holder.recycle()
+            super.onViewRecycled(holder)
+        }
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bind(productCardModel: ProductCardModel) {
-            val productCardView = itemView.findViewById<ProductCardGridView>(R.id.productCardGrid)
+        private val productCardView: ProductCardGridView? by lazy {
+            itemView.findViewById<ProductCardGridView>(R.id.productCardGrid)
+        }
 
+        fun bind(productCardModel: ProductCardModel) {
             productCardView?.setProductModel(productCardModel)
             productCardView?.setOnClickListener { Toast.makeText(itemView.context, adapterPosition.toString(), Toast.LENGTH_SHORT).show() }
+        }
+
+        fun recycle() {
+            productCardView?.recycle()
         }
     }
 }

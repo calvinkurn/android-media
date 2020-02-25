@@ -3,6 +3,7 @@ package com.tokopedia.productcard
 import android.graphics.Paint
 import android.view.View
 import androidx.annotation.DrawableRes
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.initLabelGroup
@@ -32,7 +33,7 @@ private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
 
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
-        it.text = productCardModel.productName
+        it.text = MethodChecker.fromHtml(productCardModel.productName)
     }
 }
 

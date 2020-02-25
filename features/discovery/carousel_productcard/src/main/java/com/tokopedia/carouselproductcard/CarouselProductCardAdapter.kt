@@ -22,6 +22,11 @@ internal class CarouselProductCardAdapter: ListAdapter<CarouselProductCardModel,
         carouselProductCardViewHolder.bind(getItem(position))
     }
 
+    override fun onViewRecycled(holder: CarouselProductCardViewHolder) {
+        holder.recycle()
+        super.onViewRecycled(holder)
+    }
+
     @Deprecated("Cannot update wishlist anymore")
     fun updateWishlist(index: Int, isWishlist: Boolean){
         getItem(index).productCardModel.isWishlisted = isWishlist
