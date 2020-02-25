@@ -5,13 +5,15 @@ object QueryDynamicBanner {
     private const val page = "\$page"
 
     fun getQuery(): String {
-        return "" +
-        "query getDynamicBanner($page: String!) {" +
-            "GetAuthBanner(page: $page) {" +
-                "banner_img_url" +
-                "success" +
-                "error_message " +
-            "} " +
-        "}".trimIndent()
+        return """
+            query getDynamicBanner($page: String!) {
+                GetBanner(page: $page) {
+                    URL
+                    enable
+                    message
+                    error_message
+                }
+            }
+        """.trimIndent()
     }
 }

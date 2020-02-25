@@ -1326,10 +1326,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onGetDynamicBannerSuccess(dynamicBannerDataModel: DynamicBannerDataModel) {
-        if (dynamicBannerDataModel.authBanner.isSuccess) {
+        if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
                 analytics.eventViewBanner()
-                ImageHandler.LoadImage(bannerLogin, dynamicBannerDataModel.authBanner.imgUrl)
+                ImageHandler.LoadImage(bannerLogin, dynamicBannerDataModel.banner.imgUrl)
                 bannerLogin.visibility = View.VISIBLE
             }
         } else {

@@ -32,7 +32,7 @@ class RegisterInitialUseCaseModule{
             : GraphqlUseCase<ActivateUserPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
-    fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase, rawQueries: Map<String, String>): DynamicBannerUseCase {
-        return DynamicBannerUseCase(graphqlUseCase, rawQueries)
+    fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): DynamicBannerUseCase {
+        return DynamicBannerUseCase(graphqlUseCase)
     }
 }

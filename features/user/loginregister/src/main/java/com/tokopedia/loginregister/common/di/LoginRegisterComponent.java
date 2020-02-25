@@ -12,7 +12,6 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.di.SessionCommonScope;
 import com.tokopedia.sessioncommon.di.SessionModule;
-import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
@@ -28,8 +27,7 @@ import retrofit2.Retrofit;
 @SessionCommonScope
 @Component(modules = {
         LoginRegisterModule.class,
-        SessionModule.class,
-        GqlRawQueryModule.class
+        SessionModule.class
 }, dependencies = {BaseAppComponent.class})
 public interface LoginRegisterComponent {
 

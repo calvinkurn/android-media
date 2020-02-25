@@ -9,14 +9,16 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class DynamicBannerDataModel(
-        @Expose @SerializedName("GetAuthBanner")
-        var authBanner: GetAuthBanner = GetAuthBanner()
+        @Expose @SerializedName("GetBanner")
+        var banner: GetBanner = GetBanner()
 ) {
-    data class GetAuthBanner(
-            @Expose @SerializedName("banner_img_url")
+    data class GetBanner(
+            @Expose @SerializedName("URL")
             val imgUrl : String = "",
-            @Expose @SerializedName("success")
-            val isSuccess : Boolean = false,
+            @Expose @SerializedName("enable")
+            val isEnable : Boolean = false,
+            @Expose @SerializedName("message")
+            val message : String = "",
             @Expose @SerializedName("error_message")
             val errorMessage : String = ""
     )

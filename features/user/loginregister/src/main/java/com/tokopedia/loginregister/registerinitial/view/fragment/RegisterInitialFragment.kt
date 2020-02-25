@@ -1242,10 +1242,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun setDynamicBannerView(dynamicBannerDataModel: DynamicBannerDataModel) {
-        if (dynamicBannerDataModel.authBanner.isSuccess) {
+        if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
                 registerAnalytics.eventViewBanner()
-                ImageHandler.LoadImage(bannerRegister, dynamicBannerDataModel.authBanner.imgUrl)
+                ImageHandler.LoadImage(bannerRegister, dynamicBannerDataModel.banner.imgUrl)
                 bannerRegister.visibility = View.VISIBLE
             }
         } else {

@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.loginregister.common.data.DynamicBannerConstant
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.query.QueryDynamicBanner
 import javax.inject.Inject
 
 /**
@@ -12,13 +13,11 @@ import javax.inject.Inject
  */
 
 class DynamicBannerUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        private val rawQueries: Map<String, String>
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ) : BaseDynamicBannerUseCase<DynamicBannerDataModel>() {
 
     override suspend fun executeOnBackground(): DynamicBannerDataModel {
-        val query = rawQueries[DynamicBannerConstant.Query.GET_AUTH_BANNER]
-        val request = GraphqlRequest(query, DynamicBannerDataModel::class.java, params)
+        val request = GraphqlRequest(QueryDynamicBanner.getQuery(), DynamicBannerDataModel::class.java, params)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)
