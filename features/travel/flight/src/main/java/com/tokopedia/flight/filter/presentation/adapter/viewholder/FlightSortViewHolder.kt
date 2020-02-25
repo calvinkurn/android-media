@@ -25,7 +25,7 @@ class FlightSortViewHolder(view: View, val listener: FlightFilterSortListener, v
             flight_sort_widget.titleText = resources.getString(R.string.flight_search_sort_dialog_title)
             flight_sort_widget.isSelectOnlyOneChip = true
             flight_sort_widget.hasShowMore = true
-            flight_sort_widget.maxItemCount = 5
+            flight_sort_widget.maxItemCount = 4
             flight_sort_widget.isFlowLayout = false
             flight_sort_widget.hasShowMore = true
             flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
