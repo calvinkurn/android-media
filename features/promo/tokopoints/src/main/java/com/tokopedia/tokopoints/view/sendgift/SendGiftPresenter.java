@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.presenter;
+package com.tokopedia.tokopoints.view.sendgift;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;

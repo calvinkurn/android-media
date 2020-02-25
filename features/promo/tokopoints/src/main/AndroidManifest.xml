@@ -91,7 +91,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.SendGiftActivity"
+            android:name=".view.sendgift.SendGiftActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
