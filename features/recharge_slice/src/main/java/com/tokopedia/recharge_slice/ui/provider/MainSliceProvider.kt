@@ -68,7 +68,19 @@ class MainSliceProvider : SliceProvider() {
                     contextNonNull,
                     it,
                     RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME),
-                    0
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+    }
+
+    private fun createPendingIntent(id: Int?, applink: String?, product: Product): PendingIntent? {
+        return id?.let {
+            PendingIntent.getActivity(
+                    contextNonNull,
+                    it,
+                    RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                            .putExtra(RECHARGE_PRODUCT_EXTRA, product),
+                    PendingIntent.FLAG_UPDATE_CURRENT
             )
         }
     }
@@ -92,6 +104,7 @@ class MainSliceProvider : SliceProvider() {
                         }
                     }
             } else {
+                var userSession = UserSession(contextNonNull)
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
@@ -115,16 +128,18 @@ class MainSliceProvider : SliceProvider() {
                     recommendationModel?.indices?.let { recomRange ->
                       var listProduct : MutableList<Product> = mutableListOf()
                         for (i in recomRange) {
+                            var product = Product()
                             row {
                                 setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
                                 recommendationModel.let {
                                     it?.let {
-                                        listProduct.add(i, Product(it.get(i).categoryId.toString(), it.get(i).productName, it.get(i).title ))
+                                        product = Product(it.get(i).categoryId.toString(), it.get(i).productName, it.get(i).title )
+                                        listProduct.add(i, product)
                                     }
                                     it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
                                     it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
                                 }
-                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)?.let {
+                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME, product)?.let {
                                     SliceAction.create(
                                             it,
                                             createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
@@ -134,7 +149,6 @@ class MainSliceProvider : SliceProvider() {
                                 }
                             }
                         }
-                    var userSession = UserSession(contextNonNull)
                     val trackingData = TrackingData(userSession.userId,listProduct)
                     Timber.d("P2#ActionSlice_Impression_Recharge#$trackingData")
                     }
@@ -319,6 +333,7 @@ class MainSliceProvider : SliceProvider() {
 
     companion object {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
+        const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
     }
 
 

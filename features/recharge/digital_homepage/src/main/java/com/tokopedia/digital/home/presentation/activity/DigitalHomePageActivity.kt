@@ -15,6 +15,8 @@ import com.tokopedia.digital.home.di.DigitalHomePageComponent
 import com.tokopedia.digital.home.di.DigitalHomePageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageFragment
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.recharge_slice.data.Product
+import timber.log.Timber
 
 /**
  * applink
@@ -32,7 +34,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         intent?.handleIntent()
-
+        intent?.handleExtra()
         GraphqlClient.init(this)
     }
 
@@ -67,6 +69,13 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
             }
             else -> {
             }
+        }
+    }
+
+    private fun Intent.handleExtra(){
+        if(intent.data != null) {
+            val product = intent.getParcelableExtra<Product>("RECHARGE_PRODUCT_EXTRA")
+            Timber.d("P2#ActionSlice_Click_Recharge#$product")
         }
     }
 
