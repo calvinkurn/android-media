@@ -1,8 +1,6 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.content.Intent
-import android.nfc.NfcAdapter
-import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -15,7 +13,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
@@ -32,66 +29,59 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
     private lateinit var isoDep: IsoDep
 
-    fun processEmoneyTagIntent(intent: Intent, balanceRawQuery: String, idCard: Int) {
-        val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-        if (tag != null) {
+    fun processEmoneyTagIntent(intent: Intent, isoDep: IsoDep, balanceRawQuery: String, idCard: Int) {
+        //do something with tagFromIntent
+        this.isoDep = isoDep
+        try {
+            isoDep.close()
+            isoDep.connect()
+            isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out
 
-            //do something with tagFromIntent
-            isoDep = IsoDep.get(tag)
+            val commandSelectEMoney = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_SELECT_EMONEY))
+            val commandCardAttribute = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_CARD_ATTRIBUTE))
+            val commandCardInfo = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_CARD_INFO))
+            val commandLastBalance = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_LAST_BALANCE))
 
-            try {
-                isoDep.close()
-                isoDep.connect()
-                isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out
+            run {
+                val cardUID = isoDep.tag.id
 
-                val commandSelectEMoney = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_SELECT_EMONEY))
-                val commandCardAttribute = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_CARD_ATTRIBUTE))
-                val commandCardInfo = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_CARD_INFO))
-                val commandLastBalance = isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_LAST_BALANCE))
+                val responseSelectEMoney = NFCUtils.toHex(commandSelectEMoney)
+                val responseCardAttribute = NFCUtils.toHex(commandCardAttribute)
+                val responseCardUID = NFCUtils.toHex(cardUID)
+                val responseCardInfo = NFCUtils.toHex(commandCardInfo)
+                val responseCardLastBalance = NFCUtils.toHex(commandLastBalance)
 
-                run {
-                    val cardUID = isoDep.tag.id
-
-                    val responseSelectEMoney = NFCUtils.toHex(commandSelectEMoney)
-                    val responseCardAttribute = NFCUtils.toHex(commandCardAttribute)
-                    val responseCardUID = NFCUtils.toHex(cardUID)
-                    val responseCardInfo = NFCUtils.toHex(commandCardInfo)
-                    val responseCardLastBalance = NFCUtils.toHex(commandLastBalance)
-
-                    //success scan card e-money
-                    if (responseSelectEMoney == COMMAND_SUCCESSFULLY_EXECUTED) {
-                        issuerId.postValue(ISSUER_ID_EMONEY)
-                        val mapAttributes = HashMap<String, Any>()
-                        mapAttributes[PARAM_CARD_ATTRIBUTE] = responseCardAttribute
-                        mapAttributes[PARAM_CARD_INFO] = responseCardInfo
-                        mapAttributes[PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
-                        mapAttributes[PARAM_CARD_UUID] = responseCardUID
-                        mapAttributes[PARAM_LAST_BALANCE] = responseCardLastBalance
-                        cardIsEmoney.postValue(true)
-                        getEmoneyInquiryBalance(intent, PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
-                    } else {
-                        isoDep.close()
-                        cardIsEmoney.postValue(false)
-                        issuerId.postValue(ISSUER_ID_EMONEY)
-                        errorCardMessage.postValue(NfcCardErrorTypeDef.CARD_NOT_FOUND)
-                    }
+                //success scan card e-money
+                if (responseSelectEMoney == COMMAND_SUCCESSFULLY_EXECUTED) {
+                    issuerId.postValue(ISSUER_ID_EMONEY)
+                    val mapAttributes = HashMap<String, Any>()
+                    mapAttributes[PARAM_CARD_ATTRIBUTE] = responseCardAttribute
+                    mapAttributes[PARAM_CARD_INFO] = responseCardInfo
+                    mapAttributes[PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
+                    mapAttributes[PARAM_CARD_UUID] = responseCardUID
+                    mapAttributes[PARAM_LAST_BALANCE] = responseCardLastBalance
+                    cardIsEmoney.postValue(true)
+                    getEmoneyInquiryBalance(intent, PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
+                } else {
+                    isoDep.close()
+                    cardIsEmoney.postValue(false)
+                    errorCardMessage.postValue(NfcCardErrorTypeDef.CARD_NOT_FOUND)
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
             }
+        } catch (e: IOException) {
+            errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
     }
 
     private fun getEmoneyInquiryBalance(intent: Intent, paramCommand: String, balanceRawQuery: String, idCard: Int,
-                                mapAttributesParam: HashMap<String, Any>) {
+                                        mapAttributesParam: HashMap<String, Any>) {
         launchCatchError(block = {
             var mapParam = HashMap<String, Any>()
             mapParam.put(TYPE_CARD, paramCommand)
             mapParam.put(ID_CARD, idCard)
             mapParam.put(ATTRIBUTES_CARD, mapAttributesParam)
 
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(balanceRawQuery, EmoneyInquiryResponse::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<EmoneyInquiryResponse>()
@@ -113,7 +103,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun writeBalanceToCard(intent: Intent, payload: String, balanceRawQuery: String, id: Int, mapAttributes: HashMap<String, Any>) {
-        if (isoDep != null && isoDep.isConnected) {
+        if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
                 val responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(payload))
 
@@ -126,7 +116,6 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                     }
                 }
             } catch (e: IOException) {
-                e.printStackTrace()
                 errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE)
             }
         } else {

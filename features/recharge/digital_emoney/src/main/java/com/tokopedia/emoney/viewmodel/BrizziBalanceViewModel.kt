@@ -3,8 +3,8 @@ package com.tokopedia.emoney.viewmodel
 import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.emoney.NFCUtils
 import com.tokopedia.emoney.data.*
+import com.tokopedia.emoney.view.mapper.BrizziCardObjectMapper
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -17,11 +17,11 @@ import id.co.bri.sdk.BrizziCardObject
 import id.co.bri.sdk.Callback
 import id.co.bri.sdk.exception.BrizziException
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                 val brizziCardObjectMapper: BrizziCardObjectMapper,
                                                  val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
@@ -35,7 +35,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     val errorCardMessage = MutableLiveData<String>()
 
     fun processBrizziTagIntent(intent: Intent, logRawQuery: String, brizziInstance: Brizzi) {
-        issuerId.postValue(ISSUER_ID_BRIZZI)
         brizziInstance.getBalanceInquiry(intent, object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
                 brizziException?.let {
@@ -44,15 +43,16 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                val balanceInquiry = mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
+                issuerId.postValue(ISSUER_ID_BRIZZI)
+                val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
                 balanceInquiry.attributesEmoneyInquiry?.let {
                     logBrizzi(0, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
-                }
 
-                if (brizziCardObject.pendingBalance.toInt() == 0) {
-                    emoneyInquiry.postValue(balanceInquiry)
-                } else {
-                    writeBalanceToCard(intent, logRawQuery, brizziInstance, "", 0, hashMapOf())
+                    if (balanceInquiry.attributesEmoneyInquiry.pendingBalance == 0) {
+                        emoneyInquiry.postValue(balanceInquiry)
+                    } else {
+                        writeBalanceToCard(intent, logRawQuery, brizziInstance)
+                    }
                 }
             }
         })
@@ -70,33 +70,17 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             val mapParamLog = HashMap<String, kotlin.Any>()
             mapParamLog.put(LOG_BRIZZI, mapParam)
 
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawString, BrizziInquiryLogResponse::class.java, mapParamLog)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<BrizziInquiryLogResponse>()
 
-            data.emoneyInquiryLog?.let {
+            data.brizziInquiryLog?.let {
                 inquiryIdBrizzi = it.inquiryId
             }
         }) {
             inquiryIdBrizzi = -1
         }
-    }
-
-    private fun mapperBrizzi(brizziCardObject: BrizziCardObject, error: EmoneyInquiryError): EmoneyInquiry {
-        return EmoneyInquiry(
-                attributesEmoneyInquiry = AttributesEmoneyInquiry(
-                        "Topup Sekarang",
-                        brizziCardObject.cardNumber,
-                        "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
-                        brizziCardObject.balance.toInt(),
-                        "",
-                        1,
-                        NFCUtils.formatCardUID(brizziCardObject.cardNumber),
-                        ISSUER_ID_BRIZZI,
-                        ETOLL_BRIZZI_OPERATOR_ID
-                ),
-                error = error)
     }
 
     private fun handleError(brizziException: BrizziException) {
@@ -107,7 +91,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    private fun writeBalanceToCard(intent: Intent, logRawQuery: String, brizziInstance: Brizzi, payload: String, id: Int, mapAttributes: HashMap<String, Any>) {
+    private fun writeBalanceToCard(intent: Intent, logRawQuery: String, brizziInstance: Brizzi) {
         brizziInstance.doUpdateBalance(intent, System.currentTimeMillis().toString(), object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
                 brizziException?.let {
@@ -116,7 +100,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                val balanceInquiry = mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Informasi saldo berhasil diperbarui"))
+                val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Informasi saldo berhasil diperbarui"))
 
                 if (inquiryIdBrizzi > -1) {
                     balanceInquiry.attributesEmoneyInquiry?.let {
@@ -134,7 +118,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam.put(REFRESH_TOKEN, refresh)
 
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, BrizziTokenResponse::class.java, mapParam)
                 if (refresh) {
                     graphqlRepository.getReseponse(listOf(graphqlRequest))

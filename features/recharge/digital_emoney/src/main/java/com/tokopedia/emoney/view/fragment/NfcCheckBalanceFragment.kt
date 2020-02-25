@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
+import android.nfc.Tag
+import android.nfc.tech.IsoDep
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -171,9 +173,12 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     private fun executeMandiri(intent: Intent) {
-        emoneyBalanceViewModel.processEmoneyTagIntent(intent,
-                GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
-                0)
+        val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+        if (tag != null) {
+            emoneyBalanceViewModel.processEmoneyTagIntent(intent, IsoDep.get(tag),
+                    GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
+                    0)
+        }
 
         emoneyBalanceViewModel.emoneyInquiry.observe(this, Observer { emoneyInquiry ->
             emoneyInquiry.attributesEmoneyInquiry?.let { attributes ->
