@@ -22,6 +22,7 @@ import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
 import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryModule
 import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
+import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.loginfingerprint.viewmodel.ScanFingerprintViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -71,6 +72,9 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var cryptographyUtils: CryptographyUtils
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
@@ -172,7 +176,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
 
     fun startListening() {
         cancellationSignal = CancellationSignal()
-        fingerprintManager?.authenticate(viewModel.cryptographyUtils.cryptoObject, 0, cancellationSignal, getAuthenticationCallback(), null)
+        fingerprintManager?.authenticate(cryptographyUtils.cryptoObject, 0, cancellationSignal, getAuthenticationCallback(), null)
     }
 
     fun stopListening() {

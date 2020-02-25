@@ -8,6 +8,7 @@ import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.CryptographyUtils
+import com.tokopedia.loginfingerprint.utils.DispatcherProvider
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
@@ -15,7 +16,6 @@ import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -23,21 +23,20 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
+class ScanFingerprintViewModel @Inject constructor(dispatcher: DispatcherProvider,
                                                    private val userSession: UserSessionInterface,
-                                                   val cryptographyUtils: CryptographyUtils,
+                                                   private val cryptographyUtils: CryptographyUtils,
                                                    private val fingerprintPreferenceHelper: FingerprintPreferenceHelper,
                                                    private val loginTokenUseCase: LoginTokenUseCase,
                                                    private val validateFingerprintUseCase: ValidateFingerprintUseCase)
-    : BaseViewModel(dispatcher) {
+    : BaseViewModel(dispatcher.io()) {
 
     private val mutableLoginFingerprintResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<LoginTokenPojo>>()
     val loginFingerprintResult: LiveData<com.tokopedia.usecase.coroutines.Result<LoginTokenPojo>>
         get() = mutableLoginFingerprintResult
 
-//    private val mutableValidateFingerprintResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<ValidateFingerprintResult>>()
-//    val validateFingerprintResult: LiveData<com.tokopedia.usecase.coroutines.Result<ValidateFingerprintResult>>
-//        get() = mutableValidateFingerprintResult
+    val loginSubscriber =  LoginTokenSubscriber(userSession, onSuccessLoginToken(),
+            onErrorValidateFP(), {}, {})
 
     fun validateFingerprint() {
         val signature = cryptographyUtils.generateFingerprintSignature(fingerprintPreferenceHelper.getFingerprintUserId(), userSession.deviceId)
@@ -45,11 +44,13 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
         validateFingerprintUseCase.executeUseCase(param, onSuccessValidateFP(), onErrorValidateFP())
     }
 
-    private fun loginToken(validateToken: String){
+    fun loginToken(validateToken: String){
         val param = LoginTokenUseCase.generateParamForFingerprint(validateToken, fingerprintPreferenceHelper.getFingerprintUserId())
-        loginTokenUseCase.executeLoginFingerprint(param, LoginTokenSubscriber(userSession,
-                { mutableLoginFingerprintResult.value = Success(it) },
-                onErrorValidateFP(), {}, {}))
+        loginTokenUseCase.executeLoginFingerprint(param, loginSubscriber)
+    }
+
+    private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
+        return { mutableLoginFingerprintResult.value = Success(it) }
     }
 
     private fun onSuccessValidateFP(): (ValidateFingerprintResult) -> Unit {
@@ -73,5 +74,4 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
             mutableLoginFingerprintResult.postValue(Fail(it))
         }
     }
-
 }
