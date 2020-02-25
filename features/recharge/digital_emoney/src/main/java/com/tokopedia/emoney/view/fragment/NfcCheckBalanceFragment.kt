@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.authentication.AuthKey
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.emoney.EmoneyAnalytics
@@ -47,7 +46,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import id.co.bri.sdk.Brizzi
-import kotlinx.android.synthetic.main.fragment_emoney_balance_nfc.*
+import kotlinx.android.synthetic.main.fragment_emoney_nfc_check_balance.*
 import javax.inject.Inject
 
 class NfcCheckBalanceFragment : BaseDaggerFragment() {
