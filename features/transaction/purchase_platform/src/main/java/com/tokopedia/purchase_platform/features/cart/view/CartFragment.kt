@@ -109,6 +109,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var cartRecyclerView: RecyclerView
     lateinit var btnToShipment: TextView
     lateinit var tvTotalPrice: TextView
+    lateinit var tvPromoBenefitInfo: TextView
+    lateinit var tvPromoUsageInfo: TextView
     lateinit var rlContent: RelativeLayout
     lateinit var cbSelectAll: CheckBox
     lateinit var llHeader: LinearLayout
@@ -372,6 +374,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecyclerView = view.findViewById(R.id.rv_cart)
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
+        tvPromoBenefitInfo = view.findViewById(R.id.tv_promo_benefit)
+        tvPromoUsageInfo = view.findViewById(R.id.tv_promo_usage)
         rlContent = view.findViewById(R.id.rl_content)
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
         cardHeader = view.findViewById(R.id.card_header)
@@ -1203,6 +1207,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.resetData()
 
             renderTickerAnnouncement(it)
+            renderPromoFunnel(it)
 
             if (it.shopGroupAvailableDataList.isEmpty() && it.shopGroupWithErrorDataList.isEmpty()) {
                 renderCartEmpty(it)
@@ -1283,6 +1288,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (tickerData?.isValid(CART_PAGE) == true) {
             cartAdapter.addCartTicker(TickerAnnouncementHolderData(tickerData.id.toString(), tickerData.message))
         }
+    }
+
+    private fun renderPromoFunnel(cartListData: CartListData) {
+        tvPromoBenefitInfo.text = cartListData.promoBenefitInfo
+        tvPromoUsageInfo.text = cartListData.promoUsageInfo
     }
 
     private fun renderPromoGlobal(promoStackingData: PromoStackingData) {

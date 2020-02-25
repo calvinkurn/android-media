@@ -261,4 +261,9 @@
     <string name="label_button_bottomsheet_close">Tutup</string>
 
     <string name="checkout_module_promo_activity_title">Pakai Kupon/Promo</string>
+
+    <string name="promo_funnel_icon_desc">promo_funnel_icon</string>
+    <string name="promo_funnel_label">Makin hemat pakai promo</string>
+    <string name="promo_benefit_info">3 promo dipakai</string>
+    <string name="promo_funnel_icon_chev_desc">promo_funnel_icon_2</string>
 </resources>
