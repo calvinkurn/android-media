@@ -115,22 +115,12 @@ class ShopProductViewHolder(
 
         })
 
-//        if (shopProductViewModel.isCarousel) {
-//            if (shopProductViewModel.rating <= 0 && totalReview <= 0) {
-//                productCard.setImageRatingInvisible(true)
-//                productCard.setReviewCountInvisible(true)
-//            }
-//
-//            if (!freeOngkirObject.isActive || freeOngkirObject.imageUrl.isEmpty()) {
-//                productCard.setFreeOngkirInvisible(true)
-//            }
-//            if (!shopProductViewModel.isPo && !shopProductViewModel.isWholesale) {
-//                productCard.setLabelPreOrderInvisible(true)
-//            }
-//            if (shopProductViewModel.discountPercentage.toIntOrZero() <= 0) {
-//                productCard.setlabelDiscountInvisible(true)
-//                productCard.setSlashedPriceInvisible(true)
-//            }
-//        }
+        if (shopProductViewModel.isCarousel) {
+            productCard.shopPage_carouselHideComponent(
+                    isInvisibleRatingAndReview = shopProductViewModel.rating <= 0 && totalReview <= 0,
+                    isInvisibleFreeOngkirBadge = !freeOngkirObject.isActive || freeOngkirObject.imageUrl.isEmpty(),
+                    isInvisibleDiscountAndSlashPrice = shopProductViewModel.discountPercentage.toIntOrZero() <= 0
+            )
+        }
     }
 }

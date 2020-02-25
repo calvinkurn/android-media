@@ -69,4 +69,21 @@ class ProductCardGridView: BaseCustomView {
         Glide.with(context).clear(imageProduct)
         Glide.with(context).clear(imageFreeOngkirPromo)
     }
+
+
+
+    /**
+    * Special cases for specific pages
+    * */
+    fun shopPage_carouselHideComponent(
+            isInvisibleRatingAndReview: Boolean,
+            isInvisibleFreeOngkirBadge: Boolean,
+            isInvisibleDiscountAndSlashPrice: Boolean
+    ) {
+        if (isInvisibleRatingAndReview) renderRatingAndReviewInvisible()
+
+        if (isInvisibleFreeOngkirBadge) renderFreeOngkirInvisible()
+
+        if (isInvisibleDiscountAndSlashPrice) renderDiscountInvisible()
+    }
 }
