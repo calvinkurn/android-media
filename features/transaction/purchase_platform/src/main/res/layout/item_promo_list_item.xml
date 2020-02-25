@@ -9,11 +9,19 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
 
-    <View
+    <LinearLayout
+        android:id="@+id/card_promo_item"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:background="@color/green_200"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

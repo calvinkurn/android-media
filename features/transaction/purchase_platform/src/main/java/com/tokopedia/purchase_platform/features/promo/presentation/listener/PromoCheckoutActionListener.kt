@@ -7,4 +7,6 @@ interface PromoCheckoutActionListener {
     fun onClickApplyRecommendedPromo()
 
     fun onClickPromoListHeader(itemPosition: Int)
+
+    fun onClickPromoListItem(itemPosition: Int)
 }

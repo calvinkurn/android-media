@@ -116,6 +116,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
         val promoListItemUiModel = PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
+                    promoId = 0
                     parentIdentifierId = 1
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
@@ -126,6 +127,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
         val promoListItemUiModel1 = PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
+                    promoId = 1
                     parentIdentifierId = 1
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
@@ -136,6 +138,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
         val promoListItemUiModel2 = PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
+                    promoId = 2
                     parentIdentifierId = 1
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
@@ -158,6 +161,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
         val promoListItemUiModel3 = PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
+                    promoId = 3
                     parentIdentifierId = 2
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
@@ -196,7 +200,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         if (itemPosition < adapter.data.size) {
             val oldData = adapter.data[itemPosition]
             if (oldData is PromoListHeaderUiModel) {
-                if(!oldData.uiState.isCollapsed) {
+                if (!oldData.uiState.isCollapsed) {
                     val newData = PromoListHeaderUiModel(
                             uiData = PromoListHeaderUiModel.UiData().apply {
                                 title = oldData.uiData.title
@@ -204,7 +208,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                                 promoType = oldData.uiData.promoType
                             },
                             uiState = PromoListHeaderUiModel.UiState().apply {
-                                isCollapsed = oldData.uiState.isCollapsed.not()
+                                isCollapsed = !oldData.uiState.isCollapsed
                             }
                     )
                     adapter.modifyData(itemPosition, newData)
@@ -214,13 +218,16 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     for (index in startIndex until adapter.data.size) {
                         if (adapter.data[index] !is PromoListItemUiModel) break
                         val oldPromoItem = adapter.data[index] as PromoListItemUiModel
-                        modifiedData.add(oldPromoItem)
+//                        if (oldPromoItem.uiData.parentIdentifierId == newData.uiData.identifierId) {
+                            modifiedData.add(oldPromoItem)
+//                        }
                     }
                     newData.uiData.tmpPromoItemList = modifiedData
                     adapter.removeList(modifiedData)
                 } else {
                     val newData = PromoListHeaderUiModel(
                             uiData = PromoListHeaderUiModel.UiData().apply {
+                                identifierId = oldData.uiData.identifierId
                                 title = oldData.uiData.title
                                 subTitle = oldData.uiData.subTitle
                                 promoType = oldData.uiData.promoType
@@ -237,4 +244,21 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         }
     }
 
+    override fun onClickPromoListItem(itemPosition: Int) {
+        if (itemPosition < adapter.data.size) {
+            val oldData = adapter.data[itemPosition]
+            if (oldData is PromoListItemUiModel) {
+                val newData = PromoListItemUiModel(
+                        uiData = PromoListItemUiModel.UiData().apply {
+                            promoId = oldData.uiData.promoId
+                            parentIdentifierId = oldData.uiData.parentIdentifierId
+                        },
+                        uiState = PromoListItemUiModel.UiState().apply {
+                            isSellected = !oldData.uiState.isSellected
+                        }
+                )
+                adapter.modifyData(itemPosition, newData)
+            }
+        }
+    }
 }
