@@ -73,13 +73,13 @@ class MainSliceProvider : SliceProvider() {
         }
     }
 
-    private fun createPendingIntent(id: Int?, applink: String?, product: Product): PendingIntent? {
+    private fun createPendingIntent(id: Int?, applink: String?, trackingClick:TrackingData): PendingIntent? {
         return id?.let {
             PendingIntent.getActivity(
                     contextNonNull,
                     it,
                     RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
-                            .putExtra(RECHARGE_PRODUCT_EXTRA, product),
+                            .putExtra(RECHARGE_PRODUCT_EXTRA, trackingClick),
                     PendingIntent.FLAG_UPDATE_CURRENT
             )
         }
@@ -139,7 +139,8 @@ class MainSliceProvider : SliceProvider() {
                                     it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
                                     it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
                                 }
-                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME, product)?.let {
+                                val trackingClick = TrackingData(userSession.userId, listOf(product))
+                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME, trackingClick)?.let {
                                     SliceAction.create(
                                             it,
                                             createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
@@ -149,8 +150,8 @@ class MainSliceProvider : SliceProvider() {
                                 }
                             }
                         }
-                    val trackingData = TrackingData(userSession.userId,listProduct)
-                    Timber.d("P2#ActionSlice_Impression_Recharge#$trackingData")
+                    val trackingImpression = TrackingData(userSession.userId,listProduct)
+                    Timber.d("P2#ActionSlice_Impression_Recharge#$trackingImpression")
                     }
                 }
             //}
@@ -334,6 +335,8 @@ class MainSliceProvider : SliceProvider() {
     companion object {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
+        const val RECHARGE_USER_EXTRA = "RECHARGE_USER_EXTRA"
+
     }
 
 

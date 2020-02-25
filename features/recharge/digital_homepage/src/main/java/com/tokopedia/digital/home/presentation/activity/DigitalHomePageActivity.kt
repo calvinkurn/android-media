@@ -16,6 +16,7 @@ import com.tokopedia.digital.home.di.DigitalHomePageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageFragment
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.recharge_slice.data.Product
+import com.tokopedia.recharge_slice.data.TrackingData
 import timber.log.Timber
 
 /**
@@ -58,6 +59,8 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     companion object {
         const val DIGITAL_HOMEPAGE_SCREEN_NAME = "/digital/subhomepage/topup"
+        const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
+        const val RECHARGE_USER_EXTRA = "RECHARGE_USER_EXTRA"
 
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageActivity::class.java)
     }
@@ -74,8 +77,8 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     private fun Intent.handleExtra(){
         if(intent.data != null) {
-            val product = intent.getParcelableExtra<Product>("RECHARGE_PRODUCT_EXTRA")
-            Timber.d("P2#ActionSlice_Click_Recharge#$product")
+            val trackingClick = intent.getParcelableExtra<TrackingData>(RECHARGE_PRODUCT_EXTRA)
+            Timber.d("P2#ActionSlice_Click_Recharge#$trackingClick")
         }
     }
 
