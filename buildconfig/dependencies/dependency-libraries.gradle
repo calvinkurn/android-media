@@ -12,7 +12,7 @@ ext {
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.6",
             akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.11",
-            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2",
+            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.3"
     ]
 

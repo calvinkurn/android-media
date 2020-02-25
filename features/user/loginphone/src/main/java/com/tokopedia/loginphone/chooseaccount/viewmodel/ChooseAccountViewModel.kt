@@ -56,7 +56,7 @@ class ChooseAccountViewModel @Inject constructor(
         get() = mutableLoginPhoneNumberResponse
 
     private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
-    val getUserInfoResponse: LiveData<com.tokopedia.usecase.coroutines.Result<ProfileInfo>>
+    val getUserInfoResponse: LiveData<Result<ProfileInfo>>
         get() = mutableGetUserInfoResponse
 
     private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
@@ -150,7 +150,7 @@ class ChooseAccountViewModel @Inject constructor(
                 mutableLoginPhoneNumberResponse.value = Success(it.loginToken)
             } else if (it.loginToken.errors.isNotEmpty() &&
                     it.loginToken.errors[0].message.isNotEmpty()) {
-                mutableLoginPhoneNumberResponse.value = Fail(com.tokopedia.network.exception.MessageErrorException(it.loginToken.errors[0].message))
+                mutableLoginPhoneNumberResponse.value = Fail(MessageErrorException(it.loginToken.errors[0].message))
             } else {
                 mutableLoginPhoneNumberResponse.value = Fail(RuntimeException())
             }
@@ -170,7 +170,7 @@ class ChooseAccountViewModel @Inject constructor(
                 mutableGetAccountListPhoneResponse.value = Success(it.accountList)
             } else if (it.accountList.errors[0].message.isNotEmpty()) {
                 mutableGetAccountListPhoneResponse.value =
-                        Fail(com.tokopedia.network.exception.MessageErrorException(it.accountList.errors[0].message))
+                        Fail(MessageErrorException(it.accountList.errors[0].message))
             } else {
                 mutableGetAccountListPhoneResponse.value = Fail(RuntimeException())
             }
@@ -189,7 +189,7 @@ class ChooseAccountViewModel @Inject constructor(
                 mutableGetAccountListFBResponse.value = Success(it.accountList)
             } else if (it.accountList.errors[0].message.isNotEmpty()) {
                 mutableGetAccountListFBResponse.value =
-                        Fail(com.tokopedia.network.exception.MessageErrorException(it.accountList.errors[0].message))
+                        Fail(MessageErrorException(it.accountList.errors[0].message))
             } else {
                 mutableGetAccountListFBResponse.value = Fail(RuntimeException())
             }

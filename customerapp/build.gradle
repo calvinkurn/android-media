@@ -392,6 +392,7 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.brandlist)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.libraries.iris)
@@ -480,6 +481,8 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation rootProject.ext.miscDependencies.lottie
+    implementation project(rootProject.ext.features.install_referral)
+
 
     implementation rootProject.ext.miscDependencies.bcaxcoWidget
     implementation rootProject.ext.firebase.config

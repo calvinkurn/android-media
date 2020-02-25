@@ -30,7 +30,6 @@ public class FingerPrint {
     private String packageName;
     private String androidId;
     private boolean isx86;
-    private int appsCount;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -57,7 +56,6 @@ public class FingerPrint {
         androidId = fingerPrintBuilder.androidId;
         isx86 = fingerPrintBuilder.isx86;
         packageName = fingerPrintBuilder.packageName;
-        appsCount = fingerPrintBuilder.appsCount;
     }
 
     public static class FingerPrintBuilder {
@@ -208,11 +206,6 @@ public class FingerPrint {
 
         public FingerPrintBuilder packageName(String packageName) {
             this.packageName = packageName;
-            return this;
-        }
-
-        public FingerPrintBuilder appsCount(int appsCount) {
-            this.appsCount = appsCount;
             return this;
         }
 
