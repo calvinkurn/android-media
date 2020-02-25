@@ -7,14 +7,14 @@ import com.tkpd.library.utils.CurrencyFormatHelper
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
 
-class DynamicHomeChannel(
+data class DynamicHomeChannel(
     @Expose
     @SerializedName("channels")
     var channels: List<Channels> = listOf()
 ) {
 
 
-    class Channels(
+    data class Channels(
             @Expose
             @SerializedName("id")
             val id: String = "",
@@ -560,7 +560,7 @@ class DynamicHomeChannel(
             val attribution: String = ""
     )
 
-    class Grid(
+    data class Grid(
             @Expose
             @SerializedName("id")
             val id: String = "",
@@ -608,7 +608,7 @@ class DynamicHomeChannel(
             val freeOngkir: FreeOngkir = FreeOngkir()
     )
 
-    class Header(
+    data class Header(
             @Expose
             @SerializedName("id")
             val id: String = "",
@@ -638,7 +638,7 @@ class DynamicHomeChannel(
             val textColor: String = ""
     )
 
-    class Banner(
+    data class Banner(
             @Expose
             @SerializedName("id")
             val id: String = "",
@@ -648,6 +648,9 @@ class DynamicHomeChannel(
             @Expose
             @SerializedName("description")
             val description: String = "",
+            @Expose
+            @SerializedName("back_color")
+            val backColor: String = "",
             @Expose
             @SerializedName("cta")
             val cta: CtaData = CtaData(),
@@ -668,7 +671,7 @@ class DynamicHomeChannel(
             val attribution: String = ""
     ) : ImpressHolder()
 
-    class CtaData(
+    data class CtaData(
             @Expose
             @SerializedName("type")
             val type: String = "",

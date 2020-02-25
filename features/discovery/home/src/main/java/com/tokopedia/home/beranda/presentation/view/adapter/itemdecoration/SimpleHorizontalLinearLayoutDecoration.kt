@@ -8,7 +8,7 @@ import android.view.View
 import com.tokopedia.home.R
 
 
-class BannerOrganicDecoration : RecyclerView.ItemDecoration() {
+class SimpleHorizontalLinearLayoutDecoration : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
                                 parent: RecyclerView,

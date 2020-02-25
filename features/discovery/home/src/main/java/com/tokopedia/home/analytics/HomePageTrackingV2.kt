@@ -2,6 +2,8 @@ package com.tokopedia.home.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.ContextAnalytics
 
 object HomePageTrackingV2 {
     private object Event{
@@ -293,7 +295,7 @@ object HomePageTrackingV2 {
                     )
                 }
         )
-        fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductClick(
+        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK_ON.format(RECOMMENDATION_LIST_CAROUSEL_PRODUCT),
@@ -317,7 +319,11 @@ object HomePageTrackingV2 {
                 )
         )
 
-        fun getRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
+        fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getRecommendationListClick(channel, grid, position))
+        }
+
+        private fun getRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
             return DataLayer.mapOf(
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
@@ -325,5 +331,13 @@ object HomePageTrackingV2 {
                     Label.KEY, channel.header.name
             ) as HashMap<String, Any>
         }
+
+        fun sendRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channel))
+        }
+    }
+
+    private fun getTracker(): ContextAnalytics {
+        return TrackApp.getInstance().gtm
     }
 }
