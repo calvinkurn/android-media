@@ -799,7 +799,7 @@ open class HomeViewModel @Inject constructor(
             val results = popularKeywordUseCase.executeOnBackground()
             if (results.data.keywords.size != 0) {
                 val resultList = convertPopularKeywordDataList(results.data.keywords)
-                val currentList = _homeLiveData.value?.list?.toMutableList()
+                val currentList = _homeLiveData.value?.list?.copy()?.toMutableList()
                 currentList?.let {
                     val oldData = currentList.find { it is PopularKeywordListViewModel }
                     if (oldData != null && oldData is PopularKeywordListViewModel) {
