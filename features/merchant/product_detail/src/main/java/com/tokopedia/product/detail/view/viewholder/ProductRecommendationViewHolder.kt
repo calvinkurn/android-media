@@ -5,12 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -33,6 +31,11 @@ class ProductRecommendationViewHolder(private val view: View,
         view.visible()
         view.loadingRecom.visible()
         element.recomWidgetData?.run {
+
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
+
             view.loadingRecom.gone()
             view.titleRecom.text = title
             view.rvProductRecom.show()
@@ -42,13 +45,13 @@ class ProductRecommendationViewHolder(private val view: View,
                 view.seeMoreRecom.hide()
             }
             view.seeMoreRecom.setOnClickListener {
-                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink)
+                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink, getComponentTrackData(element))
             }
-            initAdapter(this, element.cardModel)
+            initAdapter(this, element.cardModel, getComponentTrackData(element))
         }
     }
 
-    private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?) {
+    private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
         view.rvProductRecom.bindCarouselProductCardView(
                 carouselCardSavedStatePosition = listener.getRecommendationCarouselSavedState(),
                 viewHolderPosition = adapterPosition,
@@ -64,7 +67,7 @@ class ProductRecommendationViewHolder(private val view: View,
                             ImpresionTask().execute(topAdsClickUrl)
                         }
 
-                        listener.eventRecommendationClick(productRecommendation, adapterPosition, product.pageName, product.title)
+                        listener.eventRecommendationClick(productRecommendation, adapterPosition, product.pageName, product.title, componentTrackDataModel)
 
                         view.context?.run {
                             RouteManager.route(this,
@@ -89,12 +92,15 @@ class ProductRecommendationViewHolder(private val view: View,
                             listener.eventRecommendationImpression(productRecommendation,
                                     adapterPosition,
                                     product.pageName,
-                                    product.title)
+                                    product.title, componentTrackDataModel)
                         }
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf())
     }
+
+    private fun getComponentTrackData(element: ProductRecommendationDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "", element?.name ?: "", adapterPosition + 1)
 
     override fun onViewRecycled() {
         listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())

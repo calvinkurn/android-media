@@ -1,19 +1,9 @@
 package com.tokopedia.core.app;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
 
 /**
  * this code is bridging for old code and latest codes.

@@ -58,9 +58,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
 
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.tagManager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -148,6 +147,11 @@ project.ext {
     groupId = 'com.tokopedia.transaction'
     versionName = "0.0.1"
     artifactName = "purchase_platform-release"
+    unitTestKotlinIncludes = [
+            '**/CartListPresenter.*'
+    ]
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

@@ -18,6 +18,7 @@ open class ScanProjectTask : DefaultTask() {
     val projectToArtifactInfoList = hashMapOf<String, ArtifactInfo>()
     val artifactIdToProjectNameList = hashMapOf<String, String>()
     var versionConfigMap = mutableMapOf<String, Int>()
+    var versionSuffix = ""
 
     companion object {
         const val TOKOPEDIA = "tokopedia"

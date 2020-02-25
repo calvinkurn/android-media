@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.track.TrackApp;
@@ -33,19 +32,11 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_QTY;
 
 public class PurchaseTracking extends TrackingUtils {
     public static final String TRANSACTION = "transaction";
-    public static final String PURCHASE = "purchase";
     public static final String EVENT = "event";
     public static final String EVENT_CATEGORY = "order complete";
-    public static final String EVENT_ACTION_DEFAULT = "default";
     public static final String EVENT_ACTION_COD = "view thank you cod";
-    public static final String PAYMENT_ID = "payment_id";
-    public static final String PAYMENT_STATUS = "payment_status";
-    public static final String PAYMENT_TYPE = "payment_type";
     public static final String SHOP_ID = "shop_id";
-    public static final String LOGISTIC_TYPE = "logistic_type";
-    public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_LABEL = "";
-    public static final String ITEMS = "items";
 
     public static final String USER_ID = "userId";
 

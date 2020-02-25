@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;

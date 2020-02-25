@@ -4,5 +4,6 @@
     <color name="black_12">#1e000000</color>
     <color name="black_twenty_percent">#1F000000</color>
     <color name="tkpd_dark_red">#FF0000</color>
+    <color name="tkpdabstraction_green_600">#0a8f08</color>
 
 </resources>

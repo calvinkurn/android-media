@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -92,6 +92,18 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
     private var selectedProduct: RechargeGeneralProductSelectData? = null
+        set(value) {
+            field = value
+            value?.run {
+                // Show product info ticker
+                if (description.isNotEmpty()) {
+                    ticker_recharge_general_product_info.show()
+                    ticker_recharge_general_product_info.setHtmlDescription(description)
+                } else {
+                    ticker_recharge_general_product_info.hide()
+                }
+            }
+        }
     private var operatorCluster: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
     private var hasInputData = false
@@ -391,7 +403,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     selectedProduct = RechargeGeneralProductSelectData(
                             it.id,
                             desc,
-                            detail,
+                            detailCompact,
                             promo?.newPrice ?: price,
                             slashedPrice,
                             isPromo = promo != null)
@@ -407,6 +419,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         operatorId = 0
         selectedProduct = null
         inputData = hashMapOf()
+        // Reset product info ticker
+        ticker_recharge_general_product_info.hide()
         toggleEnquiryButton()
     }
 
@@ -664,7 +678,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (label.isNotEmpty() && input.isNotEmpty() && isManual) {
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
         }
-        updateInputData(label, input, position)
+        updateInputData(label, input)
     }
 
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget, position: Int, data: List<RechargeGeneralProductSelectData>?) {
@@ -676,7 +690,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun updateInputData(label: String, input: String, position: Int) {
+    private fun updateInputData(label: String, input: String) {
         if (label.isNotEmpty() && input.isNotEmpty()) {
             inputData[label] = input
         } else {
@@ -699,7 +713,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun validateEnquiry(): Boolean {
         return operatorId > 0 && selectedProduct != null
-                && ::inputDataKeys.isInitialized && inputData.keys.toList() == inputDataKeys
+                && ::inputDataKeys.isInitialized
+                && inputData.keys.toList().sorted() == inputDataKeys.sorted()
     }
 
     private fun enquire() {

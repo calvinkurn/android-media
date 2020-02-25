@@ -392,7 +392,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             if (isLoaded) {
                 float imageMatrixValues[] = new float[9];
                 ivContainer.getImageMatrix().getValues(imageMatrixValues);
-                widgetTokenView.initImageBound(imageMatrixValues[0], imageMatrixValues[5]);
+                widgetTokenView.initImageBound(ivContainer.getDrawable().getIntrinsicHeight(), imageMatrixValues[0], imageMatrixValues[5]);
             }
             return null;
         });

@@ -3,7 +3,7 @@ package com.tokopedia.discovery.intermediary.view;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -111,15 +111,9 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
 
         @Override
         public void onNext(Response<CategoryHadesModel> categoryHadesModelResponse) {
-            if (categoryHadesModelResponse.body().getData() != null &&
-                    categoryHadesModelResponse.body().getData().getIntermediary() &&
-                    categoryHadesModelResponse.body().getData().getTemplate().equals(IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE)) {
-                getIntermediaryCategoryUseCase.setCategoryId(categoryHadesModelResponse.body().getData().getId());
-                getIntermediaryCategoryUseCase.setCategoryHadesModel(categoryHadesModelResponse.body());
-                getIntermediaryCategoryUseCase.execute(RequestParams.EMPTY, new IntermediarySubscirber(categoryHadesModelResponse.body()));
-            } else {
-                getView().skipIntermediaryPage(categoryHadesModelResponse.body());
-            }
+            /*earlier we used to get intermediary true from backend for some cases but now it will be false permanently so
+            removing this code*/
+            getView().skipIntermediaryPage(categoryHadesModelResponse.body());
         }
 
     }

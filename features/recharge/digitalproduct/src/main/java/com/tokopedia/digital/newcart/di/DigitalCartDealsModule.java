@@ -3,7 +3,7 @@ package com.tokopedia.digital.newcart.di;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.newcart.data.DigitalDealsApi;
 import com.tokopedia.digital.newcart.data.DigitalDealsDataSourceFactory;
 import com.tokopedia.digital.newcart.data.DigitalDealsRepositoryImpl;

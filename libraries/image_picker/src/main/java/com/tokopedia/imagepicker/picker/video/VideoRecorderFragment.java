@@ -22,7 +22,7 @@ import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.gesture.Gesture;
 import com.otaliastudios.cameraview.gesture.GestureAction;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.VideoUtils;

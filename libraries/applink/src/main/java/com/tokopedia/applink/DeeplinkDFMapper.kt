@@ -17,10 +17,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
@@ -61,6 +61,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -188,11 +189,13 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_BASE, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DFM_BASE, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DFM_BASE, R.string.title_module_attachvoucher))
+            add(DFP({ it.startsWith(TOPCHAT_IDLESS) ||
+                    it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)}, DFM_BASE, R.string.title_topchat))
 
             add(DFP({ it.startsWith(INBOX_TALK) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(SHOP_TALK) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(PRODUCT_TALK) }, DFM_BASE, R.string.talk_title))
-            add(DFP({ it.startsWith(DETAIL_TALK) }, DFM_BASE, R.string.talk_title))
+            add(DFP({ it.startsWith(DETAIL_TALK_BASE) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(ADD_TALK) }, DFM_BASE, R.string.talk_title))
 
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))

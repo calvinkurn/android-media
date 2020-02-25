@@ -40,12 +40,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     testImplementation rootProject.ext.testDependencies.junit
@@ -62,3 +63,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+//apply from: '../../../jacoco_task.gradle'

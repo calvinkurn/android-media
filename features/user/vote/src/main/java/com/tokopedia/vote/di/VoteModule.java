@@ -4,12 +4,11 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
-import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.vote.data.VoteApi;
 import com.tokopedia.vote.data.VoteUrl;
 import com.tokopedia.vote.domain.source.VotingSource;

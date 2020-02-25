@@ -40,6 +40,7 @@
 /features/common/developer_options                  	@tokopedia/core-team
 /features/common/nps                                	@tokopedia/core-team
 /features/common/resources_common                   	@tokopedia/core-team
+/features/common/qr_scanner                   	        @tokopedia/core-team
 
 /features/discovery/category_common/                	@tokopedia/minion-stuart
 /features/discovery/flashsale_management/               @tokopedia/minion-stuart
@@ -48,6 +49,7 @@
 /features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
 
 /features/merchant/atc_variant/                         @tokopedia/minion-stuart
+/features/merchant/brandlist/                           @tokopedia/minion-stuart
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
 /features/merchant/gold_merchant_resource/              @tokopedia/minion-stuart
@@ -112,7 +114,7 @@
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
-/features/logistic/tracking/                    		@tokopedia/minion-bob
+/features/logistic/logisticorder/                    	@tokopedia/minion-bob
 /features/promo/promo_checkout/                 		@tokopedia/minion-bob
 /features/promo/promo_checkout_common/          		@tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob
@@ -125,7 +127,7 @@
 /features/user/profilecompletion/                       @tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
 /features/user/otp/                             		@tokopedia/minion-kevin
-/features/user/settingbank/                     		@tokopedia/minion-kevin
+/features/user/settingbank/                     		@tokopedia/minion-yoda
 /features/user/settingnotif/                    		@tokopedia/minion-kevin
 /features/user/changepassword/                  		@tokopedia/minion-kevin
 /features/user/logout/                          		@tokopedia/minion-kevin
@@ -164,9 +166,19 @@
 /features/promo/gamification            				@tokopedia/minion-solo
 /features/payment/withdraw/             				@tokopedia/minion-solo
 /features/kyc                           				@tokopedia/minion-yoda
+/features/promo/merchant_voucher                        @tokopedia/minion-solo
+/features/promo/promo_gamification_common               @tokopedia/minion-solo
+/features/promo/loyalty                                 @tokopedia/minion-solo
+/features/promo/loyalty_common                          @tokopedia/minion-solo
+/features/fintech/merchant_lending_widget               @tokopedia/minion-solo
+
 
 /features/im/challenges                 				@tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
+/features/im/common_promo                               @tokopedia/minion-yoda
+/features/ovop2p                                        @tokopedia/minion-yoda
+/features/payment/common_payment                        @tokopedia/minion-yoda
+
 
 /libraries/adapter_delegate/							@tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team

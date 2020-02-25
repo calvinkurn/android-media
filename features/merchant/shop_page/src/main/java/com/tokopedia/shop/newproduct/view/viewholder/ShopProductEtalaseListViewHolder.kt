@@ -97,11 +97,13 @@ class ShopProductEtalaseListViewHolder(
 
     override fun bind(shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel) {
         this.shopProductEtalaseListViewModel = shopProductEtalaseListViewModel
-        shopProductEtalaseListViewModel.recyclerViewState?.let{
+        shopProductEtalaseListViewModel.recyclerViewState?.let {
             recyclerView.layoutManager?.onRestoreInstanceState(it)
         }
         if (this.shopProductEtalaseListViewModel.isButtonEtalaseMoreShown) {
             buttonEtalaseMore.show()
+        } else {
+            buttonEtalaseMore.hide()
         }
         shopEtalaseAdapter.setElements(shopProductEtalaseListViewModel.etalaseModelList)
         val selectedEtalaseId = shopProductEtalaseListViewModel.selectedEtalaseId

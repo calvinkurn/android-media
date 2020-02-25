@@ -31,7 +31,7 @@ public class DeferredResourceInitializer implements DeferredCallback{
 
     @Override
     public void logDeferred(@NotNull String message) {
-        Timber.tag(ResourceDownloadManager.MANAGER_TAG).w(message);
+        Timber.tag(ResourceDownloadManager.MANAGER_TAG).d(message);
     }
 
     @Override

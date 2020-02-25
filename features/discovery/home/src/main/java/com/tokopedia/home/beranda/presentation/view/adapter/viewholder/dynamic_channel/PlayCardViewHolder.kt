@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.helper.glide.loadImageNoRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
@@ -45,7 +45,7 @@ class PlayCardViewHolder(
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
-        private const val DELAY_CLICKABLE = 1000L
+        private const val DELAY_CLICKABLE = 1500L
     }
 
     private var helper: HomePlayWidgetHelper? = null
@@ -61,8 +61,17 @@ class PlayCardViewHolder(
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.IO
 
-    override fun bind(element: PlayCardViewModel) {
-        container.hide()
+    override fun bind(element: PlayCardViewModel?) {
+        if(element?.playCardHome == null){
+            container.hide()
+        } else {
+            playCardViewModel = element
+            playCardViewModel?.let{ playCardViewModel ->
+                if (container.visibility == View.GONE) container.show()
+                initView(playCardViewModel)
+                playCardViewModel.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+            }
+        }
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
@@ -77,11 +86,11 @@ class PlayCardViewHolder(
     private fun initView(model: PlayCardViewModel){
         model.playCardHome?.let{ playChannel ->
             handlingTracker(model)
-            title.setValue(model.channel.header.name)
-            description.setValue("")
+            title.setValue(model.channel.name)
+            description.setValue(model.channel.header.name)
 
             thumbnailView.show()
-            thumbnailView.loadImage(playChannel.coverUrl, 350, 150, true)
+            thumbnailView.loadImageNoRounded(playChannel.coverUrl)
 
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
