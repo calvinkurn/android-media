@@ -138,37 +138,11 @@ class CryptographyUtils {
         val encoded = Base64.encodeToString(generatePublicKey()?.encoded, Base64.NO_WRAP)
         val publicKeyString = "-----BEGIN PUBLIC KEY-----\n$encoded\n-----END PUBLIC KEY-----"
         return publicKeyString
-//        return Base64.encodeToString(publicKeyString.toByteArray(), Base64.NO_WRAP)
     }
 
     fun generateFingerprintSignature(userId: String, deviceId: String): FingerprintSignature {
         val datetime = (System.currentTimeMillis()/1000).toString()
         return FingerprintSignature(signature = getSignature(userId + datetime + deviceId), datetime = datetime)
-    }
-
-    fun stringToSHA1(stringToEncrypt: String): String{
-        var sha1 = ""
-        try {
-            val crypt = MessageDigest.getInstance("SHA-1")
-            crypt.reset()
-            crypt.update(stringToEncrypt.toByteArray(Charsets.UTF_8))
-            sha1 = byteToHex(crypt.digest())
-        }
-        catch(e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        }
-        catch(e: UnsupportedEncodingException) {
-            e.printStackTrace()
-        }
-        return sha1
-    }
-
-    private fun byteToHex(hash: ByteArray): String {
-        val formatter = Formatter()
-        hash.forEach { formatter.format("%02x", it) }
-        val result = formatter.toString()
-        formatter.close()
-        return result
     }
 
     fun getSignature(textToEncrypt: String): String {
