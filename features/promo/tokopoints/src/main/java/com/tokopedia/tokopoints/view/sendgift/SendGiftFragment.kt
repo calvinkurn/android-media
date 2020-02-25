@@ -27,7 +27,6 @@ import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
 import com.tokopedia.tokopoints.view.contract.SendGiftContract
 import com.tokopedia.tokopoints.view.util.*
-import java.lang.Error
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {
     private var mContainerMain: ViewFlipper? = null
@@ -38,7 +37,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     private var mWrapperEmail: TkpdHintTextInputLayout? = null
     var tokoPointComponent: TokopointBundleComponent? = null
 
-    lateinit var mPresenter: SendGiftPresenter
+    lateinit var mViewModel: SendGiftViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +80,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         addPreValidationObserver()
     }
 
-    private fun addPreValidationObserver() = mPresenter.prevalidateLiveData.observe(this , Observer {
+    private fun addPreValidationObserver() = mViewModel.prevalidateLiveData.observe(this , Observer {
         it?.let {
             when(it) {
                 is Loading -> showLoading()
@@ -99,7 +98,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         }
     })
 
-    private fun addSendGiftObserver() = mPresenter.sendGiftLiveData.observe(this, Observer {
+    private fun addSendGiftObserver() = mViewModel.sendGiftLiveData.observe(this, Observer {
         it?.let {
             when(it) {
                 is Loading -> showLoadingSendNow()
@@ -121,12 +120,12 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
                 return
             }
             KeyboardHandler.hideSoftKeyboard(activity)
-            mPresenter!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mEditEmail!!.text.toString())
+            mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mEditEmail!!.text.toString())
         } else if (view.id == com.tokopedia.tokopoints.R.id.button_send_now) {
             if (arguments == null || activity == null) {
                 return
             }
-            mPresenter.sendGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID),
+            mViewModel.sendGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID),
                     mEditEmail!!.text.toString(),
                     mEditNotes!!.text.toString())
             AnalyticsTrackerUtil.sendEvent(context,

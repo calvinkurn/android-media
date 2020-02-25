@@ -12,13 +12,15 @@ import com.tokopedia.tokopoints.view.util.Loading
 import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
 import kotlinx.coroutines.Dispatchers
+import java.lang.NullPointerException
 import javax.inject.Inject
 
-class SendGiftPresenter @Inject constructor(private val repository: SendGiftRespository) : BaseViewModel(Dispatchers.Main), SendGiftContract.Presenter {
+class SendGiftViewModel @Inject constructor(private val repository: SendGiftRespository) : BaseViewModel(Dispatchers.Main), SendGiftContract.Presenter {
     private var success = 0
 
     val sendGiftLiveData = MutableLiveData<Resources<SendGiftData<out Any, out Any>>>()
     val prevalidateLiveData = MutableLiveData<Resources<Nothing?>>()
+
     override fun sendGift(id: Int?, email: String, notes: String) {
         launchCatchError(block = {
             sendGiftLiveData.value = Loading()
@@ -28,7 +30,7 @@ class SendGiftPresenter @Inject constructor(private val repository: SendGiftResp
                 val message = R.string.tp_send_gift_success_message
                 success = 1
                 sendGiftLiveData.value = Success(SendGiftData(title = title, messsage = message, success = success))
-            }
+            } else throw NullPointerException()
         }) {
             //show error
             if (it is MessageErrorException) {
@@ -60,7 +62,7 @@ class SendGiftPresenter @Inject constructor(private val repository: SendGiftResp
             val validateCoupon = repository.preValidateGift(id, email)
             if (validateCoupon.validateCoupon != null && validateCoupon.validateCoupon.isValid == 1) {
                 prevalidateLiveData.value = Success(null)
-            }
+            } else throw NullPointerException()
         }) {
             var msg : String? = null
             if (it is MessageErrorException) {
