@@ -120,6 +120,10 @@ class VideoHorizontalHelper(
         else (YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT or YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI)
     }
 
+    fun exitFullScreen() {
+        youTubePlayer?.setFullscreen(false)
+    }
+
     private fun setYoutubeLandscapeEnabled() {
         youTubePlayer?.setShowFullscreenButton(remoteConfig.getBoolean(RemoteConfigKey.PLAY_YOUTUBE_FULL_SCREEN))
     }
@@ -129,10 +133,7 @@ class VideoHorizontalHelper(
                 View.SYSTEM_UI_FLAG_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE).let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) it or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            else it
-        }
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
 
         activity.window.decorView.systemUiVisibility = uiVisibility
 

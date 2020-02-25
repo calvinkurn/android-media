@@ -1162,22 +1162,29 @@ open class PlayViewStateImpl(
             chatNotificationView.gone()
             stickyComponentHelper.hide()
             webviewIcon.gone()
+            login.gone()
 
             backgroundHelper.setEmptyBackground()
         }
         else {
-            showLoginButton(!userSession.isLoggedIn)
-            quickReplyRecyclerView.visibility = if (quickReplyAdapter.itemCount > 0) View.VISIBLE else View.GONE
-            pinnedMessageContainer.visibility = if (viewModel?.pinnedMessageViewModel != null &&
-                    viewModel?.pinnedMessageViewModel?.title?.isNotEmpty() == true &&
-                    viewModel?.pinnedMessageViewModel?.title?.isNotBlank() == true) View.VISIBLE else View.GONE
-            stickyComponentHelper.showIfNotEmpty()
-            webviewIcon.visibility = if (webviewIcon.drawable == null) View.GONE else View.VISIBLE
+            if (errorView.visibility != View.VISIBLE) {
+                showLoginButton(!userSession.isLoggedIn)
+                quickReplyRecyclerView.visibility = if (quickReplyAdapter.itemCount > 0) View.VISIBLE else View.GONE
+                pinnedMessageContainer.visibility = if (viewModel?.pinnedMessageViewModel != null &&
+                        viewModel?.pinnedMessageViewModel?.title?.isNotEmpty() == true &&
+                        viewModel?.pinnedMessageViewModel?.title?.isNotBlank() == true) View.VISIBLE else View.GONE
+                stickyComponentHelper.showIfNotEmpty()
+                webviewIcon.visibility = if (webviewIcon.drawable == null) View.GONE else View.VISIBLE
 
-            val backgroundModel = backgroundHelper.backgroundViewModel
-            if (backgroundModel == null) backgroundHelper.setDefaultBackground()
-            else backgroundHelper.setBackground(backgroundModel)
+                val backgroundModel = backgroundHelper.backgroundViewModel
+                if (backgroundModel == null) backgroundHelper.setDefaultBackground()
+                else backgroundHelper.setBackground(backgroundModel)
+            }
         }
+    }
+
+    override fun exitFullScreen() {
+        videoHorizontalHelper?.exitFullScreen()
     }
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {

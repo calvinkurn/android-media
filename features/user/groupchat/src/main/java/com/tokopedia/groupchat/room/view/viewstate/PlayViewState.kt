@@ -70,4 +70,5 @@ interface PlayViewState {
     fun onChatDisabledError(message: String, action: String)
 
     fun onOrientationChanged(orientation: Int)
+    fun exitFullScreen()
 }

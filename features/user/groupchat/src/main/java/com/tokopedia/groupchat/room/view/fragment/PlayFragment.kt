@@ -71,6 +71,16 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ChatroomContract.DynamicButtonItem.InteractiveButtonListener{
 
     private var snackBarWebSocket: Snackbar? = null
+    private var isSnackbarEnded = true
+
+    private val snackBarCallback = object: Snackbar.Callback() {
+        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+            isSnackbarEnded = true
+        }
+    }
+
+    private val isPortrait: Boolean
+        get() = activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_PORTRAIT
 
     companion object {
 
@@ -417,7 +427,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     @SuppressLint("SourceLockedOrientationActivity")
     fun backPress() {
         if (activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE)
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            viewState.exitFullScreen()
         else if (exitDialog != null && !viewState.errorViewShown()) {
             exitDialog!!.show()
         } else {
@@ -603,16 +613,22 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun setSnackBarConnectingWebSocket() {
         if (userSession.isLoggedIn && !viewState.errorViewShown()) {
             snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
+            isSnackbarEnded = false
+            snackBarWebSocket?.removeCallback(snackBarCallback)
+            snackBarWebSocket?.addCallback(snackBarCallback)
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
-                it.show()
+                if (isPortrait) it.show()
             }
         }
     }
 
     override fun setSnackBarRetryConnectingWebSocket() {
         if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
+            if (isPortrait) snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
+            isSnackbarEnded = false
+            snackBarWebSocket?.removeCallback(snackBarCallback)
+            snackBarWebSocket?.addCallback(snackBarCallback)
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry)) {
@@ -848,6 +864,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT && !isSnackbarEnded) snackBarWebSocket?.show()
+        else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) snackBarWebSocket?.dismiss()
+
         viewState.onOrientationChanged(newConfig.orientation)
     }
 
