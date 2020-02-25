@@ -29,6 +29,7 @@ import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
+import com.tokopedia.flight.filter.presentation.bottomsheets.FlightSortBottomSheet
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.di.FlightSearchComponent
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
@@ -601,7 +602,17 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private fun setUpBottomAction() {
         bottom_action_filter_sort.setButton2OnClickListener {
-            showFilterSortBottomSheet()
+            val flightSortBottomSheet = FlightSortBottomSheet.newInstance(selectedSortOption)
+            flightSortBottomSheet.listener = object : FlightSortBottomSheet.ActionListener {
+                override fun onSortOptionClicked(selectedId: Int) {
+                    selectedSortOption = selectedId
+                    flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
+                }
+            }
+            flightSortBottomSheet.setShowListener { flightSortBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+            fragmentManager?.let {
+                flightSortBottomSheet.show(it, TAG_FLIGHT_SORT)
+            }
         }
 
         setUIMarkSort()
