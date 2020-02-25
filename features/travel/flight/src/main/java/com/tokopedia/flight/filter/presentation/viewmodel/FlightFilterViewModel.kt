@@ -136,20 +136,8 @@ class FlightFilterViewModel @Inject constructor(
             // Sort
             items.add(SORT_ORDER, FlightSortModel())
 
-            // Transit
-            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
-
-            // Departure Time
-            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
-
-            // Arrival Time
-            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
-
             // Airline
             items.add(AIRLINE_ORDER, FlightFilterAirlineModel())
-
-            // Facility
-            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
 
             // Price
             items.add(PRICE_ORDER, PriceRangeModel(
@@ -158,6 +146,19 @@ class FlightFilterViewModel @Inject constructor(
                     selectedStartValue = filterModel.value?.priceMin ?: it.minPrice,
                     selectedEndValue = filterModel.value?.priceMax ?: it.maxPrice
             ))
+
+            // Departure Time
+            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
+
+            // Arrival Time
+            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
+
+            // Transit
+            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
+
+            // Facility
+            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
+
         }
 
         filterViewData.postValue(items)
@@ -180,12 +181,12 @@ class FlightFilterViewModel @Inject constructor(
 
     companion object {
         const val SORT_ORDER = 0
-        const val TRANSIT_ORDER = 1
-        const val DEPARTURE_TIME_ORDER = 2
-        const val ARRIVAL_TIME_ORDER = 3
-        const val AIRLINE_ORDER = 4
-        const val FACILITY_ORDER = 5
-        const val PRICE_ORDER = 6
+        const val AIRLINE_ORDER = 1
+        const val PRICE_ORDER = 2
+        const val DEPARTURE_TIME_ORDER = 3
+        const val ARRIVAL_TIME_ORDER = 4
+        const val TRANSIT_ORDER = 5
+        const val FACILITY_ORDER = 6
 
         const val SORT_DEFAULT_VALUE = TravelSortOption.CHEAPEST
     }
