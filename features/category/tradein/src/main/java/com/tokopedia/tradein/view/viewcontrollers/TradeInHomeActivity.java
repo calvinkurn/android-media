@@ -211,7 +211,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(R.string.moneyin_sell_now);
                         if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
-                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                            sendIrisEvent(homeResult.maxPrice != null ? homeResult.maxPrice : 0 , homeResult.minPrice!= null ? homeResult.minPrice : 0 );
                         }
                         mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal(homeResult.getDeviceDisplayName()));
                         goToHargaFinal(homeResult.getDeviceDisplayName());
@@ -229,7 +229,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
                         });
                         if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
-                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                            sendIrisEvent(homeResult.maxPrice != null ? homeResult.maxPrice : 0 , homeResult.minPrice!= null ? homeResult.minPrice : 0 );
                         }
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
