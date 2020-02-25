@@ -11,34 +11,46 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/umrah_search_recycler_view"
+            <include
+                android:id="@+id/partial_umrah_empty_search"
+                android:visibility="visible"
+                layout="@layout/partial_umrah_search_empty"
+                />
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingLeft="@dimen/dp_12"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_64" />
+                android:layout_height="wrap_content">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_umrah_search_message"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
-                android:layout_gravity="bottom|right"
-                android:layout_marginRight="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_12"
-                android:backgroundTint="@color/green_300"
-                android:clickable="true"
-                app:backgroundTint="@color/green_300"
-                app:fabCustomSize="@dimen/dp_48"
-                app:srcCompat="@drawable/ic_umrah_message" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/umrah_search_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingLeft="@dimen/dp_12"
+                    android:paddingTop="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_12"
+                    android:paddingBottom="@dimen/dp_64" />
 
-        </FrameLayout>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_umrah_search_message"
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginRight="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:backgroundTint="@color/green_300"
+                    android:clickable="true"
+                    app:backgroundTint="@color/green_300"
+                    app:fabCustomSize="@dimen/dp_48"
+                    app:srcCompat="@drawable/ic_umrah_message" />
+
+            </FrameLayout>
+        </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <com.tokopedia.design.button.BottomActionView

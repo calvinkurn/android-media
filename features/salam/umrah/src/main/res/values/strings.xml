@@ -257,4 +257,8 @@
     <string name="umrah_shop_name">Tokopedia Umroh</string>
     <string name="umrah_shop_link">Hai, Saya ingin bertanya mengenai paket umroh ini https://m.tokopedia.com/s/umroh/produk/%s</string>
     <string name="umrah_ticker_static_promo">Cashback akan dikirim saat pesanan selesai, pada hari keberangkatan umroh.</string>
+
+    <string name="umrah_search_empty_state_sub_title">Ubah detail pencarianmu dan cari sekali lagi.</string>
+    <string name="umrah_search_empty_state_title">Paket yang dicari belum tersedia</string>
+    <string name="umrah_search_empty_state_button">Cari Paket Umroh Lainnya</string>
 </resources>
