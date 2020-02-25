@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FlightFilterModel implements Parcelable, Cloneable {
 
-    private int priceMin = Integer.MIN_VALUE;
+    private int priceMin = 0;
     private int priceMax = Integer.MAX_VALUE;
     private int durationMin = 0;
     private int durationMax = Integer.MAX_VALUE;

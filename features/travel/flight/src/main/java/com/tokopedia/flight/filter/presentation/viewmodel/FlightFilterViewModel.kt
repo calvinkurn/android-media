@@ -140,11 +140,13 @@ class FlightFilterViewModel @Inject constructor(
             items.add(AIRLINE_ORDER, FlightFilterAirlineModel())
 
             // Price
+            val selectedMinPrice = filterModel.value?.priceMin ?: 0
+            val selectedMaxPrice = filterModel.value?.priceMax ?: Integer.MAX_VALUE
             items.add(PRICE_ORDER, PriceRangeModel(
                     initialStartValue = it.minPrice,
                     initialEndValue = it.maxPrice,
-                    selectedStartValue = filterModel.value?.priceMin ?: it.minPrice,
-                    selectedEndValue = filterModel.value?.priceMax ?: it.maxPrice
+                    selectedStartValue = if (selectedMinPrice > it.minPrice) selectedMinPrice else it.minPrice,
+                    selectedEndValue = if (selectedMaxPrice < it.maxPrice) selectedMaxPrice else it.maxPrice
             ))
 
             // Departure Time
