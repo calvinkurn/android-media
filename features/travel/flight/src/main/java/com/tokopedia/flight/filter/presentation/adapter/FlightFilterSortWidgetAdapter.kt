@@ -14,7 +14,7 @@ class FlightFilterSortWidgetAdapter(val items: MutableList<BaseFilterSortModel>,
                                     val listener: ActionListener)
     : RecyclerView.Adapter<FlightFilterSortWidgetViewHolder>() {
 
-    var maxItemCount: Int = 5
+    var maxItemCount: Int = 4
     var isSelectOnlyOneChip: Boolean = false
 
     override fun onBindViewHolder(holder: FlightFilterSortWidgetViewHolder, position: Int) {
