@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
 import com.tokopedia.product.detail.data.util.TobacoErrorException
@@ -21,7 +22,7 @@ object ErrorHelper {
     const val CODE_PRODUCT_ERR_DELETED = "3000"
     const val CODE_PRODUCT_ERR_KELONTONG = "3005"
 
-    fun getErrorType(context: Context, t: Throwable): PageErrorDataModel {
+    fun getErrorType(context: Context, t: Throwable, fromDeeplink: Boolean, deeplinkUrl: String): PageErrorDataModel {
         var shouldShowTobacoError = false
         var errorCode = "0"
         var tobacoErrorData: TobacoErrorData? = null
@@ -31,6 +32,10 @@ object ErrorHelper {
                 shouldShowTobacoError = false
                 errorCode = when (t.errorCode) {
                     CODE_PRODUCT_ERR_NOT_FOUND, CODE_PRODUCT_ERR_DELETED, CODE_PRODUCT_ERR_KELONTONG -> {
+                        if (fromDeeplink && t.errorCode == CODE_PRODUCT_ERR_NOT_FOUND) {
+                            logDeeplinkError(deeplinkUrl, t.errorCode.toInt())
+                        }
+
                         GlobalError.PAGE_NOT_FOUND.toString()
                     }
                     CODE_PRODUCT_ERR_BANNED -> {
@@ -59,7 +64,13 @@ object ErrorHelper {
                     ReponseStatus.INTERNAL_SERVER_ERROR -> {
                         GlobalError.SERVER_ERROR.toString()
                     }
-                    else -> GlobalError.SERVER_ERROR.toString()
+                    else -> {
+                        if (fromDeeplink && t.localizedMessage.toIntOrNull() == 400) {
+                            logDeeplinkError(deeplinkUrl, t.localizedMessage.toIntOrZero())
+                        }
+
+                        GlobalError.SERVER_ERROR.toString()
+                    }
                 }
             }
             else -> {
@@ -71,21 +82,7 @@ object ErrorHelper {
         return PageErrorDataModel(errorCode = errorCode, errorMessage = ErrorHandler.getErrorMessage(context, t), shouldShowTobacoError = shouldShowTobacoError, tobacoErrorData = tobacoErrorData)
     }
 
-    fun logDeeplinkError(t: Throwable, isFromDeeplink: Boolean = false, deeplinkUrl: String = "") {
-        val isConnectionException: Boolean = when {
-            t is RuntimeException -> {
-                val localizeCode = t.localizedMessage.toIntOrNull()
-                localizeCode == ReponseStatus.GATEWAY_TIMEOUT or ReponseStatus.REQUEST_TIMEOUT
-            }
-
-            (t is SocketTimeoutException) or (t is UnknownHostException) or (t is ConnectException) -> true
-
-            else -> false
-        }
-
-
-        if (isFromDeeplink && !isConnectionException) {
-            Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$deeplinkUrl")
-        }
+    private fun logDeeplinkError(deeplinkUrl: String = "", errorCode: Int) {
+        Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$deeplinkUrl;errorCode=$errorCode")
     }
 }
