@@ -30,10 +30,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     if (rootProject.ext.debugToolsEnabled) {
-        println("debug tools enabled true")
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {
-        println("debug tools enabled false")
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
     implementation project(rootProject.ext.libraries.pushNotification)
