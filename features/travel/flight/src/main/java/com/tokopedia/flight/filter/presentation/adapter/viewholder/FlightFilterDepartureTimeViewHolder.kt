@@ -6,6 +6,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.DepartureTimeModel
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.DEPARTURE_TIME_ORDER
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
@@ -41,6 +42,7 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
                     //do nothing
                 }
             }
+            if (listener.shouldReset(DEPARTURE_TIME_ORDER)) resetSelectedDepartureTime()
             flight_sort_widget.buildView(getItems())
         }
     }
@@ -60,12 +62,17 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
     }
 
     fun resetView() {
-        selectedDepartureTime = arrayListOf()
         for (item in itemView.flight_sort_widget.getItems()) {
             item.isSelected = false
         }
+        resetSelectedDepartureTime()
         itemView.flight_sort_widget.onResetChip()
         itemView.flight_sort_widget.notifyDataSetChanged()
+    }
+
+    private fun resetSelectedDepartureTime() {
+        selectedDepartureTime = arrayListOf()
+        listener.hasBeenReset(DEPARTURE_TIME_ORDER)
     }
 
 }

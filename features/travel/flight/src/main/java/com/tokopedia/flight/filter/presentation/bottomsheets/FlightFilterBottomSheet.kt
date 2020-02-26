@@ -213,6 +213,12 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightFilterViewModel.filterPrices(minPrice, maxPrice)
     }
 
+    override fun shouldReset(index: Int): Boolean = flightFilterViewModel.isShouldReset(index)
+
+    override fun hasBeenReset(index: Int) {
+        flightFilterViewModel.hasBeenReset(index)
+    }
+
     private fun showLoading() {
         with(mChildView) {
             containerLoading.visibility = View.VISIBLE

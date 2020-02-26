@@ -19,4 +19,7 @@ interface FlightFilterSortListener {
     fun onAirlineChanged(checkedAirlines: List<String>)
     fun onFacilityChanged(selectedFacilities: List<FlightFilterFacilityEnum>)
     fun onPriceRangeChanged(minPrice: Int, maxPrice: Int)
+
+    fun shouldReset(index: Int): Boolean
+    fun hasBeenReset(index: Int)
 }

@@ -6,6 +6,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.FlightFilterAirlineModel
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.AIRLINE_ORDER
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
 
@@ -36,6 +37,7 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
                     listener.onClickSeeAllAirline()
                 }
             }
+            if (listener.shouldReset(AIRLINE_ORDER)) resetSelectedAirlines()
             flight_sort_widget.buildView(getItems())
         }
     }
@@ -62,14 +64,17 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
     }
 
     fun resetView() {
-        this.selectedAirline = arrayListOf()
-        itemView.flight_sort_widget.getItems().let {
-            for (item in it) {
-                item.isSelected = false
-            }
+        for (item in itemView.flight_sort_widget.getItems()) {
+            item.isSelected = false
         }
+        resetSelectedAirlines()
         itemView.flight_sort_widget.onResetChip()
         itemView.flight_sort_widget.notifyDataSetChanged()
+    }
+
+    private fun resetSelectedAirlines() {
+        selectedAirline = arrayListOf()
+        listener.hasBeenReset(AIRLINE_ORDER)
     }
 
     companion object {
