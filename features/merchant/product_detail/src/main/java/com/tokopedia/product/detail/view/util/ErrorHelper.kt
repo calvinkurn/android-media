@@ -8,6 +8,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
 import com.tokopedia.product.detail.data.util.TobacoErrorException
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -68,5 +69,23 @@ object ErrorHelper {
         }
 
         return PageErrorDataModel(errorCode = errorCode, errorMessage = ErrorHandler.getErrorMessage(context, t), shouldShowTobacoError = shouldShowTobacoError, tobacoErrorData = tobacoErrorData)
+    }
+
+    fun logDeeplinkError(t: Throwable, isFromDeeplink: Boolean = false, deeplinkUrl: String = "") {
+        val isConnectionException: Boolean = when {
+            t is RuntimeException -> {
+                val localizeCode = t.localizedMessage.toIntOrNull()
+                localizeCode == ReponseStatus.GATEWAY_TIMEOUT or ReponseStatus.REQUEST_TIMEOUT
+            }
+
+            (t is SocketTimeoutException) or (t is UnknownHostException) or (t is ConnectException) -> true
+
+            else -> false
+        }
+
+
+        if (isFromDeeplink && !isConnectionException) {
+            Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$deeplinkUrl")
+        }
     }
 }

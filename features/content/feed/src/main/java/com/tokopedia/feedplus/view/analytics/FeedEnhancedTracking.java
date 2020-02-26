@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.analytics;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

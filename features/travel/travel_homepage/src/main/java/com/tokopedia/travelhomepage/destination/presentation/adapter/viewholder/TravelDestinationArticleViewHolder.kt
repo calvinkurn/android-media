@@ -28,46 +28,45 @@ class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolde
     override fun bind(element: TravelArticleModel) {
         if (element.isLoaded) {
             with(itemView) {
-                if (element.isSuccess) {
+                if (element.isSuccess && element.items.isNotEmpty()) {
                     layout_shimmering.hide()
                     layout_content.show()
                     tv_travel_destination_article_title.text = element.meta.title
                     tv_travel_destination_article_see_all.text = getString(R.string.travel_homepage_section_see_all)
-                    setOnClickListener {
+                    tv_travel_destination_article_see_all.setOnClickListener {
                         actionListener.onTrackArticleClickSeeAll()
                         actionListener.clickAndRedirect(element.meta.appUrl, element.meta.webUrl)
                     }
 
-                    if (element.items.isNotEmpty()) {
-                        iv_travel_destination_article_item.loadImage(element.items[0].imageUrl)
-                        tv_travel_destination_article_item_title.text = element.items[0].title
-                        tv_travel_destination_article_item_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, element.items[0].publishedDate))
-                        travel_destination_highlight_article.setOnClickListener {
-                            actionListener.onTrackArticleItemClick(element.items[0], adapterPosition)
-                            actionListener.clickAndRedirect(element.items[0].appUrl,
-                                    element.items[0].webUrl)
-                        }
+                    iv_travel_destination_article_item.loadImage(element.items[0].imageUrl)
+                    tv_travel_destination_article_item_title.text = element.items[0].title
+                    tv_travel_destination_article_item_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, element.items[0].publishedDate))
+                    travel_destination_highlight_article.setOnClickListener {
+                        actionListener.onTrackArticleItemClick(element.items[0], adapterPosition)
+                        actionListener.clickAndRedirect(element.items[0].appUrl,
+                                element.items[0].webUrl)
+                    }
 
-                        if (!::adapter.isInitialized) {
-                            adapter = TravelDestinationArticleAdapter(element.items.subList(1, element.items.size - 1), actionListener)
-                            val layoutManager = LinearLayoutManager(this.context, RecyclerView.HORIZONTAL, false)
-                            rv_travel_destination_article_item.layoutManager = layoutManager
-                            rv_travel_destination_article_item.adapter = adapter
-                            rv_travel_destination_article_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                                    super.onScrolled(recyclerView, dx, dy)
+                    if (!::adapter.isInitialized) {
+                        adapter = TravelDestinationArticleAdapter(element.items.subList(1, element.items.size - 1), actionListener)
+                        val layoutManager = LinearLayoutManager(this.context, RecyclerView.HORIZONTAL, false)
+                        rv_travel_destination_article_item.layoutManager = layoutManager
+                        rv_travel_destination_article_item.adapter = adapter
+                        rv_travel_destination_article_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                                super.onScrolled(recyclerView, dx, dy)
 
-                                    val firstVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                                    val lastVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                                    actionListener.onTrackArticleImpression(element.items.subList(firstVisibleIndex, lastVisibleIndex), firstVisibleIndex)
-                                }
-                            })
-                        } else {
-                            adapter.updateList(element.items.subList(1, element.items.size - 1))
-                        }
+                                val firstVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                                val lastVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                                actionListener.onTrackArticleImpression(element.items.subList(firstVisibleIndex, lastVisibleIndex), firstVisibleIndex)
+                            }
+                        })
+                    } else {
+                        adapter.updateList(element.items.subList(1, element.items.size - 1))
                     }
                 } else {
-                    hide()
+                    layout_shimmering.hide()
+                    layout_content.hide()
                 }
             }
         } else {

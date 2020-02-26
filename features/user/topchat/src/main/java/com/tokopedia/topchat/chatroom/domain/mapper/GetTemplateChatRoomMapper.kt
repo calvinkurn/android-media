@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import retrofit2.Response
 import rx.functions.Func1
@@ -14,9 +14,9 @@ import javax.inject.Inject
 /**
  * @author : Steven 03/01/19
  */
-class GetTemplateChatRoomMapper @Inject constructor() : Func1<Response<DataResponse<TemplateData>>, GetTemplateViewModel> {
+class GetTemplateChatRoomMapper @Inject constructor() : Func1<Response<DataResponse<TemplateData>>, GetTemplateUiModel> {
 
-    override fun call(response: Response<DataResponse<TemplateData>>): GetTemplateViewModel {
+    override fun call(response: Response<DataResponse<TemplateData>>): GetTemplateUiModel {
         val body = response.body()
         if(body != null) {
             if (body.header == null ||
@@ -32,8 +32,8 @@ class GetTemplateChatRoomMapper @Inject constructor() : Func1<Response<DataRespo
         }
     }
 
-    private fun convertToDomain(data: TemplateData): GetTemplateViewModel {
-        val model = GetTemplateViewModel()
+    private fun convertToDomain(data: TemplateData): GetTemplateUiModel {
+        val model = GetTemplateUiModel()
         val list = ArrayList<Visitable<*>>()
         if (data.templates != null) {
             for (i in 0 until data.templates.size) {

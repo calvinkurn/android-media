@@ -969,10 +969,12 @@ final class ProductListPresenter
             list.add(productViewModel.getQuickFilterModel());
         }
 
-        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
-            CpmViewModel cpmViewModel = new CpmViewModel();
-            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
-            list.add(cpmViewModel);
+        if (productViewModel.getCpmModel() != null && shouldShowCpmShop(productViewModel)) {
+            if (!isGlobalNavWidgetAvailable || productViewModel.getGlobalNavViewModel().getIsShowTopAds()) {
+                CpmViewModel cpmViewModel = new CpmViewModel();
+                cpmViewModel.setCpmModel(productViewModel.getCpmModel());
+                list.add(cpmViewModel);
+            }
         }
 
         productList = convertToListOfVisitable(productViewModel);

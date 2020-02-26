@@ -79,6 +79,8 @@ class RechargeGeneralViewModelTest {
 
     @Test
     fun getOperatorCluster_Fail() {
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+
         val observer = Observer<Result<RechargeGeneralOperatorCluster>> {
             assert(it is Fail)
             assertEquals((it as Fail).throwable.message, errorMessage)

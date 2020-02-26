@@ -173,7 +173,7 @@
             android:drawablePadding="@dimen/dp_8"
             android:gravity="center"
             android:padding="@dimen/dp_8"
-            android:text="@string/label_favorite"
+            android:text="@string/label_follow"
             android:textColor="@color/dark_primary"
             android:textSize="@dimen/sp_12"
             app:drawableLeftCompat="@drawable/ic_plus_add_white_24"

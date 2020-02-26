@@ -269,7 +269,8 @@ public interface ShipmentContract {
 
         void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
                              boolean isOneClickShipment, boolean isTradeIn,
-                             boolean isTradeInDropOff, String deviceId, String lesingId);
+                             boolean isTradeInDropOff, String deviceId,
+                             String cornerId, String leasingId);
 
         void checkPromoFinalStackShipment(Promo promo);
 
