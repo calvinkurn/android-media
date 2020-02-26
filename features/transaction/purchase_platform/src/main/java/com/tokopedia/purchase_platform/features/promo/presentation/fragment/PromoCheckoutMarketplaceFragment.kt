@@ -183,9 +183,11 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 uiData = PromoListItemUiModel.UiData().apply {
                     promoId = 0
                     parentIdentifierId = 1
+                    title = "Promo pertama"
+                    subTitle = "Berakhir 1 jam lagi"
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
-
+                    isEnabled = true
                 }
         )
         adapter.addVisitable(promoListItemUiModel)
@@ -194,9 +196,12 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 uiData = PromoListItemUiModel.UiData().apply {
                     promoId = 1
                     parentIdentifierId = 1
+                    title = "Promo kedua"
+                    subTitle = "Berakhir 2 jam lagi"
+                    errorMessage = "Kena Error"
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
-
+                    isEnabled = false
                 }
         )
         adapter.addVisitable(promoListItemUiModel1)
@@ -205,9 +210,11 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 uiData = PromoListItemUiModel.UiData().apply {
                     promoId = 2
                     parentIdentifierId = 1
+                    title = "Promo ketiga"
+                    subTitle = "Berakhir 3 jam lagi"
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
-
+                    isEnabled = true
                 }
         )
         adapter.addVisitable(promoListItemUiModel2)
@@ -230,7 +237,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     parentIdentifierId = 2
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
-
+                    isEnabled = true
                 }
         )
         adapter.addVisitable(promoListItemUiModel3)

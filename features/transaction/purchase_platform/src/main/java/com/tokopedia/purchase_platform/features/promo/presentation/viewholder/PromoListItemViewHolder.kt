@@ -1,14 +1,19 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 
+import android.content.Context
+import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.item_promo_list_item.view.*
 
 class PromoListItemViewHolder(private val view: View,
@@ -20,16 +25,46 @@ class PromoListItemViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoListItemUiModel) {
-        itemView.counter.text = element.uiData.promoId.toString()
+        ImageHandler.loadImageRounded2(itemView.context, itemView.image_promo_item, element.uiData.imageResourceUrl)
+
+        itemView.label_promo_item_title.text = element.uiData.title
+        itemView.label_promo_item_sub_title.text = element.uiData.subTitle
+        if (element.uiState.isEnabled) {
+            itemView.card_promo_item.isClickable = true
+            renderEnablePromoItem(element)
+        } else {
+            itemView.card_promo_item.isClickable = false
+            renderDisablePromoItem(element)
+        }
+
         itemView.card_promo_item.setOnClickListener {
             val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) listener.onClickPromoListItem(position)
+            if (position != RecyclerView.NO_POSITION && element.uiState.isEnabled) {
+                element.uiState.isSellected = !element.uiState.isSellected
+                renderEnablePromoItem(element)
+
+//                listener.onClickPromoListItem(position)
+            }
         }
+
+    }
+
+    private fun renderEnablePromoItem(element: PromoListItemUiModel) {
+        itemView.label_promo_item_error_message.gone()
         if (element.uiState.isSellected) {
-            itemView.card_promo_item.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.green_200))
+            itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER_ACTIVE
+            itemView.image_select_promo.show()
         } else {
-            itemView.card_promo_item.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.grey_500))
+            itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER
+            itemView.image_select_promo.gone()
         }
+    }
+
+    private fun renderDisablePromoItem(element: PromoListItemUiModel) {
+        itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER_DISABLED
+        itemView.label_promo_item_error_message.text = element.uiData.errorMessage
+        itemView.label_promo_item_error_message.show()
+        itemView.image_select_promo.gone()
     }
 
 }

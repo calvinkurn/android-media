@@ -33,12 +33,14 @@ data class PromoListItemUiModel(
     data class UiData(
             var promoId: Int = 0,
             var title: String = "",
-            var description: String = "",
+            var subTitle: String = "",
+            var errorMessage: String = "",
             var imageResourceUrl: String = "",
             var parentIdentifierId: Int = 0
     )
 
     data class UiState(
+            var isEnabled: Boolean = false,
             var isSellected: Boolean = false,
             var isVisible: Boolean = true
     )
