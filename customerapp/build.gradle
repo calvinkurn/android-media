@@ -296,9 +296,11 @@ android {
 
 task("configDebugTools") {
     def rootTaskName = project.gradle.startParameter.taskNames[0]
+    println(project.gradle.startParameter.taskNames)
     rootProject.ext.debugToolsEnabled = rootTaskName == null ||
             rootTaskName.toLowerCase().contains("debug") ||
             rootTaskName.toLowerCase().contains("dev")
+    println("debug tools set to " + rootProject.ext.debugToolsEnabled)
 }
 preBuild.dependsOn configDebugTools
 
