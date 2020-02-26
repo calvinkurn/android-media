@@ -42,6 +42,7 @@ import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -354,6 +355,7 @@ class ShopPageFragment :
     }
 
     private fun clickSort() {
+        shopPageTracking?.clickSort(isMyShop,customDimensionShopPage)
         openShopProductSortPage()
     }
 
@@ -461,6 +463,7 @@ class ShopPageFragment :
     }
 
     private fun clickSearch() {
+        shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
         redirectToShopSearchProduct()
     }
 
@@ -528,7 +531,12 @@ class ShopPageFragment :
                 button_chat.hide()
             }
             activity?.run {
-                shopPageTracking?.sendScreenShopPage(shopCore.shopID)
+                val shopType = when {
+                    isOfficialStore -> TrackShopTypeDef.OFFICIAL_STORE
+                    isGoldMerchant -> TrackShopTypeDef.GOLD_MERCHANT
+                    else -> TrackShopTypeDef.REGULAR_MERCHANT
+                }
+                shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
         }
@@ -695,6 +703,7 @@ class ShopPageFragment :
             data?.let {
                 val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
                 redirectToShopSearchProductResultPage(sortValue)
             }
         } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
