@@ -45,6 +45,7 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
     }
 
     private var productManageFilterModel: ProductManageFilterModel? = null
+    private var bottomSheet : com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment = com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.createInstance()
 
     fun onResetFilter() {
         productManageFilterModel?.reset()
@@ -100,7 +101,7 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         btn_submit_manage.setOnClickListener {
             onSubmitFilter()
         }
-
+        this.fragmentManager?.let { bottomSheet.show(it,"BottomSheetTag") }
     }
 
     private fun onSubmitFilter() {

@@ -2,7 +2,9 @@ package com.tokopedia.product.manage.feature.filter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase
+import com.tokopedia.product.manage.feature.filter.data.model.CombinedResponse
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
+import com.tokopedia.product.manage.feature.filter.domain.ProductManageFilterCombinedUseCase
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
@@ -21,13 +23,7 @@ import rx.Subscriber
 class ProductManageFilterViewModelTest {
 
     @RelaxedMockK
-    lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
-
-    @RelaxedMockK
-    lateinit var getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase
-
-    @RelaxedMockK
-    lateinit var getCategoryListUseCase: GetCategoryListUseCase
+    lateinit var getProductManageFilterCombinedUseCase: ProductManageFilterCombinedUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -40,7 +36,7 @@ class ProductManageFilterViewModelTest {
     }
 
     private val viewModel by lazy {
-        ProductManageFilterViewModel(getProductListMetaUseCase, getShopEtalaseByShopUseCase, getCategoryListUseCase, userSession, dispatchers)
+        ProductManageFilterViewModel(getProductManageFilterCombinedUseCase, userSession, dispatchers)
     }
 
     @Before
@@ -49,40 +45,14 @@ class ProductManageFilterViewModelTest {
     }
 
     @Test
-    fun `getProductListData should execute expected use case`() {
-        mockkObject(getProductListMetaUseCase)
+    fun `getCombined should execute expected use case`() {
+        mockkObject(getProductManageFilterCombinedUseCase)
         coEvery {
-            getProductListMetaUseCase.executeOnBackground()
+            getProductManageFilterCombinedUseCase.executeOnBackground()
         }
-        viewModel.getProductListData(0)
+        viewModel.getData("0")
         coVerify {
-            getProductListMetaUseCase.executeOnBackground()
-        }
-    }
-
-    @Test
-    fun `getShopetalaseData should execute expected use case`() {
-        val mockedSubscriber = mockk<Subscriber<ArrayList<ShopEtalaseModel>>>()
-        val mockedRequestParams = mockk<RequestParams>()
-        mockkObject(getProductListMetaUseCase)
-        coEvery {
-            getShopEtalaseByShopUseCase.execute(mockedRequestParams, mockedSubscriber)
-        }
-        viewModel.getShopEtalase(0)
-        coVerify {
-            getShopEtalaseByShopUseCase.execute(mockedRequestParams, mockedSubscriber)
-        }
-    }
-
-    @Test
-    fun `getCategoryList should execute expected use case`() {
-        mockkObject(getProductListMetaUseCase)
-        coEvery {
-            getCategoryListUseCase.executeOnBackground()
-        }
-        viewModel.getCategories()
-        coVerify {
-            getCategoryListUseCase.executeOnBackground()
+            getProductManageFilterCombinedUseCase.executeOnBackground()
         }
     }
 }

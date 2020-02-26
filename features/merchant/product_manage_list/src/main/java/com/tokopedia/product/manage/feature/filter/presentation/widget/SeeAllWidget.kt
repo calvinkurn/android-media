@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.oldlist.R
 
 class SeeAllWidget : BaseCustomView {
@@ -26,5 +27,5 @@ class SeeAllWidget : BaseCustomView {
 }
 
 interface SeeAllListener {
-    fun onSeeAll()
+    fun onSeeAll(element: FilterViewModel)
 }

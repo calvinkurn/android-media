@@ -12,8 +12,6 @@ import javax.inject.Named
 class GetProductListMetaUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductListMetaResponse>() {
 
-    var params: RequestParams = RequestParams.EMPTY
-
     companion object {
         const val PARAM_SHOP_ID = "shopID"
 
@@ -57,6 +55,8 @@ class GetProductListMetaUseCase @Inject constructor(
         """.trimIndent()
         }
     }
+
+    var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ProductListMetaResponse {
         val gqlRequest = GraphqlRequest(query, ProductListMetaResponse::class.java, params.parameters)

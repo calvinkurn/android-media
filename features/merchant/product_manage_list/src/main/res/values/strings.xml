@@ -106,5 +106,6 @@
     <string name="product_manage_title_share">Bagikan</string>
     <string name="filter_see_all">Lihat Semua</string>
     <string name="filter_button">Tampilkan Produk</string>
+    <string name="filter_search_bar">Cari Kategori</string>
 
 </resources>

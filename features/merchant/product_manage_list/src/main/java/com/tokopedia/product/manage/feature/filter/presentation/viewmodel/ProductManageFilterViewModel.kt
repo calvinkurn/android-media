@@ -24,8 +24,8 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageFilterViewModel @Inject constructor(
-        private val userSession: UserSessionInterface,
         private val productManageFilterCombinedUseCase: ProductManageFilterCombinedUseCase,
+        private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -34,7 +34,7 @@ class ProductManageFilterViewModel @Inject constructor(
         get() = _combinedResponse
 
     fun getData(shopId: String) {
-        ProductManageFilterCombinedUseCase.createRequestParams(shopId, isMyShop(shopId))
+        productManageFilterCombinedUseCase.params = ProductManageFilterCombinedUseCase.createRequestParams(shopId, isMyShop(shopId))
         launchCatchError(block = {
             val combinedResponse = productManageFilterCombinedUseCase.executeOnBackground()
             combinedResponse.let {
@@ -45,5 +45,5 @@ class ProductManageFilterViewModel @Inject constructor(
         }
     }
 
-    fun isMyShop(shopId: String) = userSession.shopId == shopId
+    private fun isMyShop(shopId: String) = userSession.shopId == shopId
 }

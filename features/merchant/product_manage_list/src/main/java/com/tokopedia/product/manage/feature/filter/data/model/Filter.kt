@@ -6,7 +6,7 @@ data class Filter(
         @SerializedName("id")
         val id: String = "",
         @SerializedName("value")
-        val value: String = "",
+        val value: List<String> = listOf(),
         @SerializedName("name")
         val name: String = ""
 )

@@ -4,14 +4,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.item.DeletableItemView
 import com.tokopedia.product.manage.oldlist.R
 
 class ChipsAdapter(private val listener: ItemClickListener) : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
     private var data: List<String> = listOf()
 
+    companion object {
+        const val MAXIMUM_CHIPS = 5
+    }
+
     fun setData(data: List<String>) {
-        this.data = data
+        if(data.size > MAXIMUM_CHIPS) {
+            this.data = data.subList(0,MAXIMUM_CHIPS-1)
+        } else {
+            this.data = data
+        }
         notifyDataSetChanged()
     }
 
@@ -30,13 +39,10 @@ class ChipsAdapter(private val listener: ItemClickListener) : RecyclerView.Adapt
     }
 
     inner class ItemViewHolder(itemView: View, private val clickListener: ItemClickListener) : RecyclerView.ViewHolder(itemView) {
-        private var textView: DeletableItemView = itemView.findViewById(R.id.chips_item)
+        private var chips: ChipWidget =  itemView.findViewById(R.id.chips_item)
 
         fun bind(name: String) {
-            textView.setItemName(name)
-            textView.setOnTextClickListener {
-                clickListener.onItemClicked()
-            }
+            chips.bind(name)
         }
     }
 }

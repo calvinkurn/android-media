@@ -5,14 +5,12 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAd
 
 class FilterViewModel (
         val title: String,
-        val names: List<String>
+        val names: List<String>,
+        val id: List<String>,
+        val values: List<String> = listOf()
 ) : Visitable <FilterAdapterTypeFactory> {
 
-    companion object {
-        val LAYOUT = 0
-    }
-
-    override fun type(typeFactory: FilterAdapterTypeFactory?): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun type(typeFactory: FilterAdapterTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }
