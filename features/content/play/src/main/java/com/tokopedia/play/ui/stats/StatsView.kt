@@ -23,18 +23,6 @@ class StatsView(container: ViewGroup) : UIView(container) {
 
     override val containerId: Int = view.id
 
-    private val tvTotalLikes = view.findViewById<Typography>(R.id.tv_total_likes)
-    private val tvTotalView = view.findViewById<Typography>(R.id.tv_total_views)
-
-    fun setTotalLikes(totalLikes: TotalLikeUiModel) {
-        tvTotalLikes.text = view.context.resources.getQuantityString(R.plurals.play_likes,
-                totalLikes.totalLike, totalLikes.totalLikeFormatted)
-    }
-
-    fun setTotalViews(totalView: TotalViewUiModel) {
-        tvTotalView.text = totalView.totalView
-    }
-
     override fun show() {
         view.show()
     }

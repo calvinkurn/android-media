@@ -34,13 +34,8 @@ open class ToolbarComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.show()
-                            is ScreenStateEvent.VideoPropertyChanged -> uiView.setLiveBadgeVisibility(it.videoProp.type.isLive)
-                            is ScreenStateEvent.SetChannelTitle ->
-                                uiView.setTitle(it.title)
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
-                            is ScreenStateEvent.VideoStreamChanged ->
-                                uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.show()
                             is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
