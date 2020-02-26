@@ -20,11 +20,11 @@ class FlightFilterFacilityViewHolder(view: View,
 
     override fun bind(element: FlightFilterFacilityModel?) {
         with(itemView) {
-            flight_sort_widget.titleText = getString(R.string.flight_search_filter_facility)
-            flight_sort_widget.isSelectOnlyOneChip = false
-            flight_sort_widget.hasShowMore = false
-            flight_sort_widget.isFlowLayout = true
-            flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
+            flightFilterSortWidget.titleText = getString(R.string.flight_search_filter_facility)
+            flightFilterSortWidget.isSelectOnlyOneChip = false
+            flightFilterSortWidget.hasShowMore = false
+            flightFilterSortWidget.isFlowLayout = true
+            flightFilterSortWidget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
                     selectedFacility = (items as List<FlightFilterFacilityModel>).map { it.facilityEnum }.toList()
                     listener.onFacilityChanged(selectedFacility)
@@ -34,7 +34,7 @@ class FlightFilterFacilityViewHolder(view: View,
                     // No Show More Action
                 }
             }
-            flight_sort_widget.buildView(getItems())
+            flightFilterSortWidget.buildView(getItems())
         }
     }
 
@@ -64,11 +64,11 @@ class FlightFilterFacilityViewHolder(view: View,
 
     fun resetView() {
         selectedFacility = arrayListOf()
-        for (item in itemView.flight_sort_widget.getItems()) {
+        for (item in itemView.flightFilterSortWidget.getItems()) {
             item.isSelected = false
         }
-        itemView.flight_sort_widget.onResetChip()
-        itemView.flight_sort_widget.notifyDataSetChanged()
+        itemView.flightFilterSortWidget.onResetChip()
+        itemView.flightFilterSortWidget.notifyDataSetChanged()
     }
 
 }

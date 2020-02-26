@@ -22,13 +22,13 @@ class FlightSortViewHolder(view: View, val listener: FlightFilterSortListener, v
 
     override fun bind(element: FlightSortModel) {
         with(itemView) {
-            flight_sort_widget.titleText = resources.getString(R.string.flight_search_sort_dialog_title)
-            flight_sort_widget.isSelectOnlyOneChip = true
-            flight_sort_widget.hasShowMore = true
-            flight_sort_widget.maxItemCount = 4
-            flight_sort_widget.isFlowLayout = false
-            flight_sort_widget.hasShowMore = true
-            flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
+            flightFilterSortWidget.titleText = resources.getString(R.string.flight_search_sort_dialog_title)
+            flightFilterSortWidget.isSelectOnlyOneChip = true
+            flightFilterSortWidget.hasShowMore = true
+            flightFilterSortWidget.maxItemCount = 4
+            flightFilterSortWidget.isFlowLayout = false
+            flightFilterSortWidget.hasShowMore = true
+            flightFilterSortWidget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
                     selectedId = (items[0] as FlightSortModel).selectedOption
                     listener.onSortChanged((items[0] as FlightSortModel).selectedOption)
@@ -39,12 +39,12 @@ class FlightSortViewHolder(view: View, val listener: FlightFilterSortListener, v
                 }
 
             }
-            flight_sort_widget.buildView(getSortItem())
+            flightFilterSortWidget.buildView(getSortItem())
         }
     }
 
     fun performClickOnSortId(selectedId: Int) {
-        itemView.flight_sort_widget.performClickOnChipWithPosition(getSortIdByPosition(selectedId))
+        itemView.flightFilterSortWidget.performClickOnChipWithPosition(getSortIdByPosition(selectedId))
     }
 
     private fun getSortIdByPosition(selectedId: Int): Int {

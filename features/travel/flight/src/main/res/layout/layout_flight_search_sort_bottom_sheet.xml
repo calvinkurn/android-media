@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/flight_sort_recycler_view"
+        android:id="@+id/rvFlightSort"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:background="@color/Green_G500" />

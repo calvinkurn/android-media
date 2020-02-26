@@ -19,12 +19,12 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
 
     override fun bind(element: FlightFilterAirlineModel) {
         with(itemView) {
-            flight_sort_widget.titleText = getString(R.string.flight_search_filter_airplane)
-            flight_sort_widget.isSelectOnlyOneChip = false
-            flight_sort_widget.hasShowMore = true
-            flight_sort_widget.maxItemCount = MAX_ITEM_SHOWED
-            flight_sort_widget.isFlowLayout = true
-            flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
+            flightFilterSortWidget.titleText = getString(R.string.flight_search_filter_airplane)
+            flightFilterSortWidget.isSelectOnlyOneChip = false
+            flightFilterSortWidget.hasShowMore = true
+            flightFilterSortWidget.maxItemCount = MAX_ITEM_SHOWED
+            flightFilterSortWidget.isFlowLayout = true
+            flightFilterSortWidget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
                     selectedAirline = (items as List<FlightFilterAirlineModel>).map {
                         it.airlineId
@@ -36,19 +36,19 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
                     listener.onClickSeeAllAirline()
                 }
             }
-            flight_sort_widget.buildView(getItems())
+            flightFilterSortWidget.buildView(getItems())
         }
     }
 
     fun onSelectedAirlineChanged(selectedAirline: List<String>) {
         this.selectedAirline = selectedAirline
-        itemView.flight_sort_widget.getItems().let {
+        itemView.flightFilterSortWidget.getItems().let {
             for (item in it) {
                 item.isSelected = this.selectedAirline.contains((item as FlightFilterAirlineModel).airlineId)
             }
         }
-        itemView.flight_sort_widget.onResetChip()
-        itemView.flight_sort_widget.notifyDataSetChanged()
+        itemView.flightFilterSortWidget.onResetChip()
+        itemView.flightFilterSortWidget.notifyDataSetChanged()
     }
 
     private fun getItems(): List<FlightFilterAirlineModel> {
@@ -63,11 +63,11 @@ class FlightFilterWidgetAirlineViewHolder(view: View,
 
     fun resetView() {
         selectedAirline = arrayListOf()
-        for (item in itemView.flight_sort_widget.getItems()) {
+        for (item in itemView.flightFilterSortWidget.getItems()) {
             item.isSelected = false
         }
-        itemView.flight_sort_widget.onResetChip()
-        itemView.flight_sort_widget.notifyDataSetChanged()
+        itemView.flightFilterSortWidget.onResetChip()
+        itemView.flightFilterSortWidget.notifyDataSetChanged()
     }
 
     companion object {

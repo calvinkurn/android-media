@@ -16,26 +16,26 @@ class FlightFilterSortWidgetViewHolder(itemView: View)
     : RecyclerView.ViewHolder(itemView) {
 
     fun bind(element: BaseFilterSortModel) {
-        itemView.chips.chipText = element.title
-        itemView.chips.chipType = ChipsUnify.TYPE_NORMAL
-        itemView.chips.chipSize = ChipsUnify.SIZE_MEDIUM
+        itemView.flightFilterSortChip.chipText = element.title
+        itemView.flightFilterSortChip.chipType = ChipsUnify.TYPE_NORMAL
+        itemView.flightFilterSortChip.chipSize = ChipsUnify.SIZE_MEDIUM
         if (element.isSelected) clickChip()
     }
 
     fun clickChip() {
         with(itemView) {
-            if (chips.chipType == ChipsUnify.TYPE_SELECTED) {
+            if (flightFilterSortChip.chipType == ChipsUnify.TYPE_SELECTED) {
                 unselectChip()
-            } else chips.chipType = ChipsUnify.TYPE_SELECTED
+            } else flightFilterSortChip.chipType = ChipsUnify.TYPE_SELECTED
         }
     }
 
-    fun isSelected(): Boolean = itemView.chips.chipType == ChipsUnify.TYPE_SELECTED
+    fun isSelected(): Boolean = itemView.flightFilterSortChip.chipType == ChipsUnify.TYPE_SELECTED
 
     fun unselectChip() {
         with(itemView) {
-            chips.chipType = ChipsUnify.TYPE_NORMAL
-            chips.chip_text.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            flightFilterSortChip.chipType = ChipsUnify.TYPE_NORMAL
+            flightFilterSortChip.chip_text.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
         }
     }
 

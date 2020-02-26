@@ -43,27 +43,27 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
 
 
     fun buildView(items: List<BaseFilterSortModel>) {
-        tv_title.text = titleText
+        tvFlightFilterSortWidgetTitle.text = titleText
 
         if (isFoldAble) {
-            ic_arrow_up.show()
-            ic_arrow_up.setOnClickListener {
+            icFlightFilterSortWidgetFoldIcon.show()
+            icFlightFilterSortWidgetFoldIcon.setOnClickListener {
                 if (child_view.isVisible) {
                     child_view.hide()
-                    ic_arrow_up.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24))
+                    icFlightFilterSortWidgetFoldIcon.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24))
                 } else {
                     child_view.show()
-                    ic_arrow_up.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_gray_24))
+                    icFlightFilterSortWidgetFoldIcon.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_gray_24))
                 }
             }
-        } else ic_arrow_up.hide()
+        } else icFlightFilterSortWidgetFoldIcon.hide()
 
         if (hasShowMore) {
-            tv_show_more.show()
-            tv_show_more.setOnClickListener {
+            tvFlightFilterSortWidgetSeeAll.show()
+            tvFlightFilterSortWidgetSeeAll.setOnClickListener {
                 listener?.onClickShowMore()
             }
-        } else tv_show_more.hide()
+        } else tvFlightFilterSortWidgetSeeAll.hide()
 
         if (!::widgetAdapter.isInitialized) {
             widgetAdapter = FlightFilterSortWidgetAdapter(items.toMutableList(), this)
@@ -71,22 +71,22 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
             widgetAdapter.maxItemCount = maxItemCount
 
             if (isFlowLayout) {
-                rv_flight_sort.layoutManager = ChipsLayoutManager.newBuilder(context)
+                rvFlightFilterSortWidget.layoutManager = ChipsLayoutManager.newBuilder(context)
                         .setOrientation(ChipsLayoutManager.HORIZONTAL)
                         .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                         .build()
             } else {
-                rv_flight_sort.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                rvFlightFilterSortWidget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
 
-            rv_flight_sort.adapter = widgetAdapter
+            rvFlightFilterSortWidget.adapter = widgetAdapter
         }
     }
 
     override fun onResetChip() {
         for (i in 0 until widgetAdapter.itemCount) {
             if (!widgetAdapter.items[i].isSelected) {
-                with(rv_flight_sort.findViewHolderForAdapterPosition(i) as FlightFilterSortWidgetViewHolder) {
+                with(rvFlightFilterSortWidget.findViewHolderForAdapterPosition(i) as FlightFilterSortWidgetViewHolder) {
                     this.unselectChip()
                 }
             }
@@ -94,7 +94,7 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
     }
 
     fun performClickOnChipWithPosition(position: Int) {
-        if (position < widgetAdapter.maxItemCount) (rv_flight_sort.findViewHolderForAdapterPosition(position) as FlightFilterSortWidgetViewHolder).itemView.performClick()
+        if (position < widgetAdapter.maxItemCount) (rvFlightFilterSortWidget.findViewHolderForAdapterPosition(position) as FlightFilterSortWidgetViewHolder).itemView.performClick()
         else widgetAdapter.resetAllSelectedChip()
     }
 

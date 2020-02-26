@@ -24,12 +24,12 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
 
     override fun bind(element: TransitModel) {
         with(itemView) {
-            flight_sort_widget.titleText = resources.getString(R.string.transit)
-            flight_sort_widget.isSelectOnlyOneChip = false
-            flight_sort_widget.hasShowMore = false
-            flight_sort_widget.maxItemCount = 5
-            flight_sort_widget.isFlowLayout = true
-            flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
+            flightFilterSortWidget.titleText = resources.getString(R.string.transit)
+            flightFilterSortWidget.isSelectOnlyOneChip = false
+            flightFilterSortWidget.hasShowMore = false
+            flightFilterSortWidget.maxItemCount = 5
+            flightFilterSortWidget.isFlowLayout = true
+            flightFilterSortWidget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
                     var transits = mutableListOf<TransitEnum>()
                     items.forEach {
@@ -43,7 +43,7 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
                     //do nothing
                 }
             }
-            flight_sort_widget.buildView(getTransitItem())
+            flightFilterSortWidget.buildView(getTransitItem())
         }
     }
 
@@ -73,11 +73,11 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
 
     fun resetView() {
         selectedTransits = arrayListOf()
-        for (item in itemView.flight_sort_widget.getItems()) {
+        for (item in itemView.flightFilterSortWidget.getItems()) {
             item.isSelected = false
         }
-        itemView.flight_sort_widget.onResetChip()
-        itemView.flight_sort_widget.notifyDataSetChanged()
+        itemView.flightFilterSortWidget.onResetChip()
+        itemView.flightFilterSortWidget.notifyDataSetChanged()
     }
 
 }

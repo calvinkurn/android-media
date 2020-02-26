@@ -41,11 +41,11 @@ class FlightSortAdapter(private val sortOptions: List<Pair<Int, String>>) : Recy
 
         fun bind(item: Pair<Int, String>, listener: OnClickItemListener?, selectedId: Int?) {
             with(itemView) {
-                sort_radio_button.isChecked = item.first == selectedId
-                if (sort_description.text.isEmpty()) {
-                    sort_description.text = item.second
+                flightSortRadioButton.isChecked = item.first == selectedId
+                if (tvFlightSortDescription.text.isEmpty()) {
+                    tvFlightSortDescription.text = item.second
                     setOnClickListener { listener?.onClickItemListener(item.first) }
-                    sort_radio_button.setOnClickListener { listener?.onClickItemListener(item.first) }
+                    flightSortRadioButton.setOnClickListener { listener?.onClickItemListener(item.first) }
                 }
             }
         }

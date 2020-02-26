@@ -22,12 +22,12 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
 
     override fun bind(element: DepartureTimeModel) {
         with(itemView) {
-            flight_sort_widget.titleText = resources.getString(R.string.flight_search_filter_departure_time)
-            flight_sort_widget.isSelectOnlyOneChip = false
-            flight_sort_widget.hasShowMore = false
-            flight_sort_widget.maxItemCount = 5
-            flight_sort_widget.isFlowLayout = false
-            flight_sort_widget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
+            flightFilterSortWidget.titleText = resources.getString(R.string.flight_search_filter_departure_time)
+            flightFilterSortWidget.isSelectOnlyOneChip = false
+            flightFilterSortWidget.hasShowMore = false
+            flightFilterSortWidget.maxItemCount = 5
+            flightFilterSortWidget.isFlowLayout = false
+            flightFilterSortWidget.listener = object : FlightFilterSortFoldableWidget.ActionListener {
                 override fun onChipStateChanged(items: List<BaseFilterSortModel>) {
                     var departureTimes = mutableListOf<DepartureTimeEnum>()
                     items.forEach {
@@ -41,7 +41,7 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
                     //do nothing
                 }
             }
-            flight_sort_widget.buildView(getItems())
+            flightFilterSortWidget.buildView(getItems())
         }
     }
 
@@ -72,11 +72,11 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
 
     fun resetView() {
         selectedDepartureTime = arrayListOf()
-        for (item in itemView.flight_sort_widget.getItems()) {
+        for (item in itemView.flightFilterSortWidget.getItems()) {
             item.isSelected = false
         }
-        itemView.flight_sort_widget.onResetChip()
-        itemView.flight_sort_widget.notifyDataSetChanged()
+        itemView.flightFilterSortWidget.onResetChip()
+        itemView.flightFilterSortWidget.notifyDataSetChanged()
     }
 
 }

@@ -54,8 +54,8 @@ class FlightSortBottomSheet : BottomSheetUnify() {
             sortAdapter = FlightSortAdapter(getSortItems())
             sortAdapter.selectedId = selectedSortOption
             val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            flight_sort_recycler_view.layoutManager = layoutManager
-            flight_sort_recycler_view.adapter = sortAdapter
+            rvFlightSort.layoutManager = layoutManager
+            rvFlightSort.adapter = sortAdapter
 
             sortAdapter.onClickItemListener = object : FlightSortAdapter.OnClickItemListener {
                 override fun onClickItemListener(selectedId: Int) {
