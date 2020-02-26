@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecorati
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
+import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_GLOBAL
@@ -25,7 +27,8 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.Promo
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_POWER_MERCHANT
 import javax.inject.Inject
 
-class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(), PromoCheckoutMarketplaceActionListener {
+class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(),
+        PromoCheckoutMarketplaceActionListener, ToolbarPromoCheckoutListener {
 
     @Inject
     lateinit var itemDecorator: PromoDecoration
@@ -46,6 +49,11 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_promo_checkout_marketplace, container, false)
         recyclerView = getRecyclerView(view)
@@ -59,7 +67,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view)
 //        button_apply_promo.setOnClickListener {
-            // Todo : add action to hit API
+        // Todo : add action to hit API
 //        }
     }
 
@@ -77,7 +85,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     private fun toolbarPromoCheckout(): ToolbarPromoCheckout? {
         activity?.let {
-            return ToolbarPromoCheckout(it)
+            return ToolbarPromoCheckout(it).apply {
+                listener = this@PromoCheckoutMarketplaceFragment
+            }
         }
 
         return null
@@ -218,6 +228,10 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         return false
     }
 
+    override fun onClickResetPromo() {
+
+    }
+
     override fun onClickApplyRecommendedPromo() {
 
     }
@@ -249,7 +263,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                         if (adapter.data[index] !is PromoListItemUiModel) break
                         val oldPromoItem = adapter.data[index] as PromoListItemUiModel
 //                        if (oldPromoItem.uiData.parentIdentifierId == newData.uiData.identifierId) {
-                            modifiedData.add(oldPromoItem)
+                        modifiedData.add(oldPromoItem)
 //                        }
                     }
                     newData.uiData.tmpPromoItemList = modifiedData

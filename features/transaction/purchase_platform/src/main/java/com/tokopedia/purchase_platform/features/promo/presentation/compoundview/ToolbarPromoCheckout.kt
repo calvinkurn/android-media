@@ -14,6 +14,7 @@ class ToolbarPromoCheckout : Toolbar {
     lateinit var buttonBack: ImageView
     lateinit var labelTitle: Typography
     lateinit var buttonResetPromo: Typography
+    lateinit var listener: ToolbarPromoCheckoutListener
 
     constructor(context: Context) : super(context) {
         init()
@@ -35,6 +36,10 @@ class ToolbarPromoCheckout : Toolbar {
 
         buttonBack.setOnClickListener {
             (context as Activity).finish()
+        }
+
+        buttonResetPromo.setOnClickListener {
+            listener.onClickResetPromo()
         }
     }
 
