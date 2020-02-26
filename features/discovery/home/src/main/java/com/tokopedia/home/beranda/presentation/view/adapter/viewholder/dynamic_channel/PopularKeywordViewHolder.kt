@@ -40,6 +40,11 @@ class PopularKeywordViewHolder (val view: View,
         initAdapter(element)
     }
 
+    override fun bind(element: PopularKeywordListViewModel, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        bind(element)
+    }
+
     private fun initAdapter(element: PopularKeywordListViewModel) {
         adapter = PopularKeywordAdapter(element.popularKeywordList, popularKeywordListener)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
