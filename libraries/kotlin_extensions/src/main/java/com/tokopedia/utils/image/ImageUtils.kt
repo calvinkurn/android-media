@@ -155,4 +155,30 @@ object ImageUtils {
                     }
                 })
     }
+
+    fun loadImageWithLoadedStatus(imageView: ImageView, url: String, isLoaded: (Boolean) -> Unit) {
+        if (url.isEmpty()) {
+            isLoaded(false)
+        } else {
+            Glide.with(imageView.context)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                            imageView.setImageDrawable(resource)
+                            isLoaded.invoke(true)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            imageView.setImageDrawable(null)
+                            isLoaded.invoke(false)
+                        }
+
+                        override fun onLoadFailed(errorDrawable: Drawable?) {
+                            super.onLoadFailed(errorDrawable)
+                            isLoaded.invoke(false)
+                        }
+                    })
+        }
+    }
 }
