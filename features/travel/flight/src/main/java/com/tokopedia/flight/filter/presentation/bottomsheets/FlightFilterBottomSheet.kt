@@ -232,27 +232,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     private fun resetAllView() {
         (rvFlightFilter.adapter as FlightFilterSortAdapter).resetFilter()
-//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.SORT_ORDER) != null) {
-//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.SORT_ORDER) as FlightSortViewHolder).resetView()
-//        }
-//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.TRANSIT_ORDER) != null) {
-//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.TRANSIT_ORDER) as FlightFilterTransitViewHolder).resetView()
-//        }
-//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.DEPARTURE_TIME_ORDER) != null) {
-//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.DEPARTURE_TIME_ORDER) as FlightFilterDepartureTimeViewHolder).resetView()
-//        }
-//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.ARRIVAL_TIME_ORDER) != null) {
-//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.ARRIVAL_TIME_ORDER) as FlightFilterArrivalTimeViewHolder).resetView()
-//        }
-//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) != null) {
-//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder).resetView()
-//        }
-//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.FACILITY_ORDER) != null) {
-//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.FACILITY_ORDER) as FlightFilterFacilityViewHolder).resetView()
-//        }
-//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.PRICE_ORDER) != null) {
-//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.PRICE_ORDER) as FlightFilterPriceRangeViewHolder).resetView()
-//        }
+        (rvFlightFilter.adapter as FlightFilterSortAdapter).typeFactory.filterModel =
+                getFlightFilterModel() ?: FlightFilterModel()
     }
 
     companion object {
