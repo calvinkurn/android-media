@@ -181,10 +181,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 view.showLoadingLogin()
                 loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                         email, password), LoginTokenSubscriber(userSession,
-                        {
-                            view.setSmartLock()
-                            getUserInfo()
-                        },
+                        { view.onSuccessLoginEmail() },
                         view.onErrorLoginEmail(email),
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email)))
@@ -246,6 +243,14 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         }
     }
 
+    override fun getUserInfoFingerprint() {
+        view?.let { view ->
+            getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                    { checkStatusFingerprint() },
+                    view.onErrorGetUserInfo()))
+        }
+    }
+
     override fun getTickerInfo() {
         tickerInfoUseCase.execute(TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE),
                 TickerInfoLoginSubscriber(viewEmailPhone))
@@ -261,14 +266,26 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             onCheckStatusFingerprintSuccess(it)
         }, {
             view.onErrorCheckStatusFingerprint(it)
+            view.onSuccessLogin()
         }, signature)
     }
 
-    private fun onCheckStatusFingerprintSuccess(data: StatusFingerprint){
+    private fun saveFingerprintStatus(data: StatusFingerprint){
         if(data.isValid) {
             fingerprintPreferenceHelper.saveUserId(userSession.userId)
             fingerprintPreferenceHelper.registerFingerprint()
+        }else {
+            removeFingerprintData()
         }
+    }
+
+    override fun removeFingerprintData(){
+        fingerprintPreferenceHelper.removeUserId()
+        fingerprintPreferenceHelper.unregisterFingerprint()
+    }
+
+    private fun onCheckStatusFingerprintSuccess(data: StatusFingerprint){
+        saveFingerprintStatus(data)
         view.onSuccessCheckStatusFingerprint(data)
     }
 

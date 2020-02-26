@@ -49,6 +49,7 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
+import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginregister.R
@@ -116,6 +117,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     @Inject
     lateinit var presenter: LoginEmailPhonePresenter
+
+    @Inject
+    lateinit var fingerprintPreferenceHelper: FingerprintPreferenceHelper
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -369,7 +373,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             }
         }
 
-        if(ScanFingerprintDialog.isFingerprintAvailable(activity) && presenter.isLastUserRegistered()){
+        if (ScanFingerprintDialog.isFingerprintAvailable(activity) && presenter.isLastUserRegistered()) {
             fingerprint_btn.visibility = View.VISIBLE
             fingerprint_btn.setOnClickListener {
                 activity?.run {
@@ -638,11 +642,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onLoginFingerprintSuccess() {
         presenter.getUserInfo()
-//        onSuccessLogin()
+    }
+
+    override fun onSuccessLoginEmail() {
+        setSmartLock()
+        if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
+        else presenter.getUserInfo()
     }
 
     override fun onSuccessLogin() {
         dismissLoadingLogin()
+
+        if(userSession.userId != fingerprintPreferenceHelper.getFingerprintUserId()){
+            presenter.removeFingerprintData()
+        }
 
         if (emailPhoneEditText.text.isNotBlank())
             userSession.autofillUserData = emailPhoneEditText.text.toString()
@@ -866,7 +879,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 val forbiddenMessage = context?.getString(
                         com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
                 val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                if (errorMessage == forbiddenMessage){
+                if (errorMessage == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
                     onErrorLogin(errorMessage)
@@ -889,7 +902,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
-
             if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
                 onGoToChangeName()
             } else {
@@ -900,7 +912,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onSuccessGetUserInfoAddPin(): (ProfilePojo) -> Unit {
         return {
-
             if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
                 onGoToChangeName()
             } else {
@@ -1275,14 +1286,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     private fun checkAdditionalLoginOptions() {
-        if(ScanFingerprintDialog.isFingerprintAvailable(activity))
+        if (ScanFingerprintDialog.isFingerprintAvailable(activity))
             presenter.checkStatusFingerprint()
         else
             presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
     }
 
     private fun checkAdditionalLoginOptionsAfterSQ() {
-        if(ScanFingerprintDialog.isFingerprintAvailable(activity))
+        if (ScanFingerprintDialog.isFingerprintAvailable(activity))
             presenter.checkStatusFingerprint()
         else
             presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
@@ -1297,13 +1308,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
+
     override fun onSuccessCheckStatusFingerprint(data: StatusFingerprint) {
-            dismissLoadingLogin()
-            if (!data.isValid && isFromAccountPage()) {
-                RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
-            } else {
-                onSuccessLogin()
-            }
+        dismissLoadingLogin()
+        if (!data.isValid && isFromAccountPage()) {
+            goToFingerprintRegisterPage()
+        } else {
+            onSuccessLogin()
+        }
+    }
+
+    override fun goToFingerprintRegisterPage() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
     }
 
     private fun onErrorCheckStatusPin(): (Throwable) -> Unit {

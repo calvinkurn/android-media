@@ -26,6 +26,10 @@ class FingerprintPreferenceHelper(context: Context) {
         prefs.edit().putString(LOGIN_FINGERPRINT_USER_ID_KEY, userId).apply()
     }
 
+    fun removeUserId(){
+        prefs.edit().putString(LOGIN_FINGERPRINT_USER_ID_KEY, "0").apply()
+    }
+
     fun getFingerprintUserId(): String = prefs.getString(LOGIN_FINGERPRINT_USER_ID_KEY, "0") ?: "0"
 
     fun unregisterFingerprint(){

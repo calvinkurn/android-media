@@ -35,6 +35,8 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
+        fun onSuccessLoginEmail()
+
         fun showLoadingDiscover()
 
         fun dismissLoadingDiscover()
@@ -104,6 +106,8 @@ interface LoginEmailPhoneContract {
         fun onErrorCheckStatusFingerprint(e: Throwable)
 
         fun onSuccessCheckStatusFingerprint(data: StatusFingerprint)
+
+        fun goToFingerprintRegisterPage()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -116,6 +120,8 @@ interface LoginEmailPhoneContract {
         fun getUserInfo()
 
         fun getUserInfoAddPin()
+
+        fun getUserInfoFingerprint()
 
         fun discoverLogin(context: Context)
 
@@ -132,5 +138,7 @@ interface LoginEmailPhoneContract {
         fun checkStatusFingerprint()
 
         fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+
+        fun removeFingerprintData()
     }
 }
