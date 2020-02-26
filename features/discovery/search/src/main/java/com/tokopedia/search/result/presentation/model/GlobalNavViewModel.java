@@ -17,6 +17,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
     private String background;
     private String seeAllApplink;
     private String seeAllUrl;
+    private boolean isShowTopAds;
     private List<Item> itemList;
 
     public GlobalNavViewModel(
@@ -27,6 +28,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             String background,
             String seeAllApplink,
             String seeAllUrl,
+            boolean isShowTopAds,
             List<Item> itemList
     ) {
         this.source = source;
@@ -36,6 +38,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
         this.background = background;
         this.seeAllApplink = seeAllApplink;
         this.seeAllUrl = seeAllUrl;
+        this.isShowTopAds = isShowTopAds;
         this.itemList = itemList;
     }
 
@@ -65,6 +68,10 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
 
     public String getSeeAllUrl() {
         return seeAllUrl;
+    }
+
+    public boolean getIsShowTopAds() {
+        return isShowTopAds;
     }
 
     public List<Item> getItemList() {
