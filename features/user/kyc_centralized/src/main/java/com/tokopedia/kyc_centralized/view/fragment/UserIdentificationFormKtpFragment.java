@@ -63,7 +63,6 @@ public class UserIdentificationFormKtpFragment extends
         onboardingImage.setPadding(0, (int) (paddingDp * scale + 0.5F), 0, 0);
         setTextView();
         setButtonView();
-        securityText.setSelected(true);
         ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_KTP);
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())

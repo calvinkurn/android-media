@@ -97,7 +97,7 @@
     <string name="user_identification_final_ktp_not_valid">Foto KTP belum terlihat jelas.</string>
     <string name="user_identification_final_retake_ktp">Ambil ulang foto sekarang.</string>
 
-    <string name="kyc_data_security">Kerahasiaan data kamu dijamin sistem Tokopedia</string>
+    <string name="kyc_data_security">Tokopedia menjamin keamanan datamu</string>
 
     <string name="upload_loading_title">Tunggu sebentar, ya…</string>
     <string name="upload_loading_subtitle">Dokumenmu sedang di-upload</string>

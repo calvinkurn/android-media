@@ -96,39 +96,29 @@
             app:layout_constraintLeft_toLeftOf="@id/subtitle"
             app:layout_constraintRight_toRightOf="@id/subtitle"/>
 
-        <LinearLayout
-            android:id="@+id/layout_security_info"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/security_shield"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:weightSum="6"
-            android:layout_marginTop="@dimen/spacing_lvl5"
-            android:layout_marginBottom="@dimen/kyc_centralized_17dp"
-            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="@id/security_textview"
+            app:layout_constraintBottom_toBottomOf="@id/security_textview"
+            app:layout_constraintRight_toLeftOf="@id/security_textview"
+            app:srcCompat="@drawable/ic_shield" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/security_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_info_bullet">
-
-                <ImageView
-                    android:id="@+id/security_shield"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_shield"
-                    android:paddingLeft="@dimen/spacing_lvl5"
-                    android:paddingStart="@dimen/spacing_lvl5"
-                    android:layout_weight="1"/>
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/security_textview"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="5"
-                    app:typographyType="body_3"
-                    android:layout_gravity="center"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:singleLine="true"
-                    android:text="@string/kyc_data_security" />
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/layout_info_bullet"
+            android:paddingLeft="@dimen/spacing_lvl3"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginBottom="@dimen/kyc_centralized_17dp"
+            android:drawablePadding="@dimen/spacing_lvl3"
+            android:text="@string/kyc_data_security" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button"
@@ -136,7 +126,7 @@
             android:layout_height="@dimen/layout_lvl6"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/layout_security_info"
+            app:layout_constraintTop_toBottomOf="@id/security_textview"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:text="Ambil Foto KTP" />
