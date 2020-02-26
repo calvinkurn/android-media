@@ -85,8 +85,7 @@
                     android:id="@+id/message_text_holder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/left_bubble"
-                    android:orientation="vertical">
+                    android:background="@drawable/left_bubble">
 
                     <com.tokopedia.chatbot.view.CustomTextViewForEllipsize
                         android:id="@+id/message"
@@ -111,11 +110,11 @@
 
                     <TextView
                         android:id="@+id/bottom_view"
-                        android:layout_width="270dp"
+                        android:layout_width="@dimen/max_width_chat_bubble"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/message"
                         android:background="@drawable/left_bubble_bottom_rounded"
-                        android:gravity="right"
+                        android:gravity="end"
                         android:maxWidth="@dimen/max_width_chat_bubble"
                         android:paddingStart="@dimen/dp_16"
                         android:paddingLeft="@dimen/dp_16"

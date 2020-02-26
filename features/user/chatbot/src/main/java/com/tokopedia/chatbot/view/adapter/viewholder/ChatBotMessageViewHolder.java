@@ -16,7 +16,7 @@ import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet;
 
 public class ChatBotMessageViewHolder extends MessageViewHolder {
 
-    public static final int MESSAGE_LENGTH = 170;
+    public static final int MESSAGE_LINE_COUNT = 5;
     private TextView mesageBottom;
     private String htmlMessage;
 
@@ -37,8 +37,8 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
     protected void setChatLeft(View chatBalloon) {
         super.setChatLeft(chatBalloon);
         message.post(() -> {
-            if (message.getLineCount() >= 5) {
-                MethodChecker.setBackground(chatBalloon, itemView.getContext().getResources().getDrawable(R.drawable.left_bubble_with_stroke));
+            if (message.getLineCount() >= MESSAGE_LINE_COUNT) {
+                MethodChecker.setBackground(chatBalloon, ContextCompat.getDrawable(itemView.getContext(),R.drawable.left_bubble_with_stroke));
                 mesageBottom.setVisibility(View.VISIBLE);
                 message.scrollTo(0, 0);
                 mesageBottom.setOnClickListener((View v) -> {
@@ -48,7 +48,7 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
 
             } else {
                 mesageBottom.setVisibility(View.GONE);
-                chatBalloon.setBackgroundDrawable(ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.chat_common.R.drawable.left_bubble));
+                MethodChecker.setBackground(chatBalloon, ContextCompat.getDrawable(itemView.getContext(),com.tokopedia.chat_common.R.drawable.left_bubble));
             }
         });
 

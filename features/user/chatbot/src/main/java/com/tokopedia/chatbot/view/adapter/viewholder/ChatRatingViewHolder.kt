@@ -1,15 +1,14 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import androidx.annotation.LayoutRes
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
@@ -20,8 +19,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet
-
-import java.util.Date
+import java.util.*
 
 /**
  * @author by yfsx on 14/05/18.
@@ -117,8 +115,8 @@ class ChatRatingViewHolder(itemView: View,
         if (!element.message.isEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
             message.post {
-                if (message.lineCount >= 5) {
-                    mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chatbot.R.drawable.left_bubble_with_stroke))
+                if (message.lineCount >= ChatBotMessageViewHolder.MESSAGE_LINE_COUNT) {
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
                     mesageBottom.visibility = View.VISIBLE
                     mesageBottom.setOnClickListener {
                         ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
@@ -126,7 +124,7 @@ class ChatRatingViewHolder(itemView: View,
 
                 } else {
                     mesageBottom.visibility = View.GONE
-                    mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.left_bubble))
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble))
                 }
             }
 

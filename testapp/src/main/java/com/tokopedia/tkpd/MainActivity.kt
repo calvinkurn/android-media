@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -31,8 +30,8 @@ class MainActivity : AppCompatActivity() {
 
         val editTextUser = findViewById<EditText>(R.id.editTextUser)
         val editTextPassword = findViewById<EditText>(R.id.editTextPassword)
-        editTextUser.setText("elly.susilowati+089@tokopedia.com")
-        editTextPassword.setText("tokopedia2015")
+        editTextUser.setText("fauzanofami.luthfi+01@tokopedia.com")
+        editTextPassword.setText("toped12345")
         val loginButton = findViewById<Button>(R.id.loginButton)
 
         // simplify login process without error handling/verify number/etc

@@ -43,8 +43,8 @@ class QuickReplyViewHolder(itemView: View,
         if (!element.message.isEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
             message.post {
-                if (message.lineCount >= 5) {
-                    mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chatbot.R.drawable.left_bubble_with_stroke))
+                if (message.lineCount >= ChatBotMessageViewHolder.MESSAGE_LINE_COUNT) {
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
                     mesageBottom.visibility = View.VISIBLE
                     mesageBottom.setOnClickListener {
                         ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
@@ -52,7 +52,7 @@ class QuickReplyViewHolder(itemView: View,
 
                 } else {
                     mesageBottom.visibility = View.GONE
-                    mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.left_bubble))
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble))
                 }
             }
 
@@ -64,9 +64,6 @@ class QuickReplyViewHolder(itemView: View,
     }
 
     companion object {
-
-        const val MESSAGE_LENGTH= 170
-
         val LAYOUT = R.layout.quick_reply_chat_layout
     }
 }
