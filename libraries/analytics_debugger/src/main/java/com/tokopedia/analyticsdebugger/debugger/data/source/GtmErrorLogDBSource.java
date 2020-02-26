@@ -2,7 +2,7 @@ package com.tokopedia.analyticsdebugger.debugger.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.analyticsdebugger.database.database.GtmErrorLogDB;
+import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB;
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase;
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst;
 

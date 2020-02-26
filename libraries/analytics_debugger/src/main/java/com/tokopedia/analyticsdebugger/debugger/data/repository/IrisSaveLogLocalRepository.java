@@ -1,7 +1,7 @@
 package com.tokopedia.analyticsdebugger.debugger.data.repository;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.analyticsdebugger.database.database.IrisSaveLogDB;
+import com.tokopedia.analyticsdebugger.database.IrisSaveLogDB;
 import com.tokopedia.analyticsdebugger.debugger.data.source.IrisSaveLogDBSource;
 import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewModel;
 import com.tokopedia.usecase.RequestParams;

@@ -12,7 +12,7 @@ import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerAct
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.analyticsdebugger.database.database.GtmErrorLogDB;
+import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB;
 
 import java.net.URLDecoder;
 import java.util.Map;

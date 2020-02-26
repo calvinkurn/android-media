@@ -3,10 +3,10 @@ package com.tokopedia.analyticsdebugger.debugger.data.source
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.tokopedia.analyticsdebugger.database.database.IrisSaveLogDB
-import com.tokopedia.analyticsdebugger.database.database.IrisSendLogDB
-import com.tokopedia.analyticsdebugger.database.database.SAVE_TABLE_IRIS_NAME
-import com.tokopedia.analyticsdebugger.database.database.SEND_TABLE_IRIS_NAME
+import com.tokopedia.analyticsdebugger.database.IrisSaveLogDB
+import com.tokopedia.analyticsdebugger.database.IrisSendLogDB
+import com.tokopedia.analyticsdebugger.database.SAVE_TABLE_IRIS_NAME
+import com.tokopedia.analyticsdebugger.database.SEND_TABLE_IRIS_NAME
 
 @Dao
 interface IrisLogSaveDao {

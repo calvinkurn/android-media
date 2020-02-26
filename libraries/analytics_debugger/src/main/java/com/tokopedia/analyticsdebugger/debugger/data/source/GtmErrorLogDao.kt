@@ -3,8 +3,8 @@ package com.tokopedia.analyticsdebugger.debugger.data.source
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.tokopedia.analyticsdebugger.database.database.GTM_ERROR_TABLE_NAME
-import com.tokopedia.analyticsdebugger.database.database.GtmErrorLogDB
+import com.tokopedia.analyticsdebugger.database.GTM_ERROR_TABLE_NAME
+import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
 
 @Dao
 interface GtmErrorLogDao {

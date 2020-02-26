@@ -1,7 +1,7 @@
 package com.tokopedia.analyticsdebugger.debugger.data.repository;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.analyticsdebugger.database.database.GtmErrorLogDB;
+import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB;
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDBSource;
 import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewModel;
 import com.tokopedia.usecase.RequestParams;

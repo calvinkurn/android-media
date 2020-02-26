@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.database.database
+package com.tokopedia.analyticsdebugger.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

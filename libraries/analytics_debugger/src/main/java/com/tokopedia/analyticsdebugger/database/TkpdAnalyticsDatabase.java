@@ -5,9 +5,6 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
-import com.tokopedia.analyticsdebugger.database.database.GtmErrorLogDB;
-import com.tokopedia.analyticsdebugger.database.database.IrisSaveLogDB;
-import com.tokopedia.analyticsdebugger.database.database.IrisSendLogDB;
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDao;
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao;
 import com.tokopedia.analyticsdebugger.debugger.data.source.IrisLogSaveDao;
