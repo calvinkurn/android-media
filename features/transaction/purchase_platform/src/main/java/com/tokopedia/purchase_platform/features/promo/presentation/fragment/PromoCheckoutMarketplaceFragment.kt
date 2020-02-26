@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
+import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_GLOBAL
@@ -31,6 +33,19 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
+    override fun initInjector() {
+        activity?.let {
+            val baseAppComponent = it.application
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerPromoCheckoutMarketplaceComponent.builder()
+                        .baseAppComponent(baseAppComponent.baseAppComponent)
+                        .build()
+                        .inject(this)
+            }
+        }
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_promo_checkout_marketplace, container, false)
         recyclerView = getRecyclerView(view)
@@ -38,6 +53,34 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupToolbar(view)
+//        button_apply_promo.setOnClickListener {
+            // Todo : add action to hit API
+//        }
+    }
+
+    private fun setupToolbar(view: View) {
+        activity?.let {
+            val appbar = view.findViewById<Toolbar>(R.id.toolbar)
+            appbar.removeAllViews()
+            val toolbar = toolbarPromoCheckout()
+            toolbar?.let {
+                appbar.addView(toolbar)
+                (activity as AppCompatActivity).setSupportActionBar(appbar)
+            }
+        }
+    }
+
+    private fun toolbarPromoCheckout(): ToolbarPromoCheckout? {
+        activity?.let {
+            return ToolbarPromoCheckout(it)
+        }
+
+        return null
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory> {
@@ -57,19 +100,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         return ""
     }
 
-    override fun initInjector() {
-        activity?.let {
-            val baseAppComponent = it.application
-            if (baseAppComponent is BaseMainApplication) {
-                DaggerPromoCheckoutMarketplaceComponent.builder()
-                        .baseAppComponent(baseAppComponent.baseAppComponent)
-                        .build()
-                        .inject(this)
-            }
-        }
-
-    }
-
     override fun loadData(page: Int) {
         hideLoading()
         val promoRecommendationUiModel = PromoRecommendationUiModel(
@@ -81,7 +111,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     isButtonSelectEnabled = true
                 }
         )
-//        adapter.addVisitable(promoRecommendationUiModel)
+        adapter.addVisitable(promoRecommendationUiModel)
 
         val promoInputUiModel = PromoInputUiModel(
                 uiData = PromoInputUiModel.UiData().apply {
@@ -91,7 +121,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     isButtonSelectEnabled = false
                 }
         )
-//        adapter.addVisitable(promoInputUiModel)
+        adapter.addVisitable(promoInputUiModel)
 
         val promoEligibleHeaderUiModel = PromoEligibleHeaderUiModel(
                 uiData = PromoEligibleHeaderUiModel.UiData().apply {
@@ -99,7 +129,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     subTitle = "Pilih salah satu aja"
                 }
         )
-//        adapter.addVisitable(promoEligibleHeaderUiModel)
+        adapter.addVisitable(promoEligibleHeaderUiModel)
 
         val promoListHeaderUiModel = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
@@ -180,7 +210,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     isCollapsed = true
                 }
         )
-//        adapter.addVisitable(promoListHeaderUiModel2)
+        adapter.addVisitable(promoListHeaderUiModel2)
 
     }
 

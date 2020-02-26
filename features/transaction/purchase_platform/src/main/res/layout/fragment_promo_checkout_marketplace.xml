@@ -6,10 +6,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:minHeight="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <FrameLayout
+        android:id="@+id/fl_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rl_bottom_action_container"
+        android:layout_below="@+id/app_bar_layout"
         android:background="@color/checkout_module_color_background">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -26,7 +46,7 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rl_bottom_action_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,42 +57,38 @@
         android:visibility="visible"
         tools:visibility="visible">
 
-        <LinearLayout
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_promo_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:text="Kamu bisa hemat"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_total_payment_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="Kamu bisa hemat"
-                app:typographyType="body_2"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_total_payment_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rp66.000"
-                app:typographyType="heading_3"
-                app:typographyWeight="bold" />
-
-        </LinearLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_promo_benefit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rp66.000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_total_promo_label"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_apply_promo"
-            android:layout_width="152dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:text="Pakai Promo (3)"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonVariant="filled" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </RelativeLayout>
