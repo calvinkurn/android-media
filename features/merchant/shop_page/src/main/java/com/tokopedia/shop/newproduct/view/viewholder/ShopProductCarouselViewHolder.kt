@@ -24,6 +24,7 @@ import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseChipItemVi
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductFeaturedViewModel
 import com.tokopedia.shop.newproduct.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
+import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -31,6 +32,7 @@ import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
 
 class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
                                     shopProductClickedListener: ShopProductClickedListener?,
+                                    shopProductImpressionListener: ShopProductImpressionListener?,
                                     titleString: String,
                                     @ShopTrackProductTypeDef shopTrackType: Int,
                                     private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?) : AbstractViewHolder<Visitable<*>>(itemView) {
@@ -43,7 +45,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
 
     init {
         shopProductCarouselAdapter = ShopProductAdapter(ShopProductAdapterTypeFactory(null,
-                shopProductClickedListener, null, null, null, null, null,
+                shopProductClickedListener, shopProductImpressionListener, null, null, null, null, null,
                 null, false, deviceWidth, shopTrackType))
         findViews(itemView)
         tvTitle!!.text = titleString

@@ -141,21 +141,20 @@ class FlightSearchRepositoryTest {
                 .insertList(Matchers.anyListOf(JourneyAndRoutes::class.java))
     }
 
-    @Test
-    fun get_search_combined() {
-        val flightDataResponse = createCombine()
-
-        `when`(flightSearchCombinedDataApiSource.getData(Mockito.any(FlightSearchCombinedApiRequestModel::class.java)))
-                .thenReturn(Observable.just(flightDataResponse))
-
-        val testSubscriber = TestSubscriber<Meta>()
-
-        val routes = listOf<FlightRouteModel>()
-        flightSearchRepository.getSearchCombined(FlightSearchCombinedApiRequestModel(routes, 0, 0, 0, 0))
-                .subscribe(testSubscriber)
-
-        verify(flightSearchCombinedDataDbSource, times(1))
-                .insert(Matchers.anyListOf(FlightComboTable::class.java))
-    }
+//    @Test
+//    fun get_search_combined() {
+//        val flightDataResponse = createCombine()
+//
+//        `when`(flightSearchCombinedDataApiSource.getData(Mockito.any(FlightSearchCombinedApiRequestModel::class.java)))
+//                .thenReturn(Observable.just(flightDataResponse))
+//
+//        val testSubscriber = TestSubscriber<Meta>()
+//
+//        val routes = listOf<FlightRouteModel>()
+//        flightSearchRepository.getSearchCombined(FlightSearchCombinedApiRequestModel(routes, 0, 0, 0, 0))
+//                .subscribe(testSubscriber)
+//
+//        verify(flightSearchCombinedDataDbSource, times(1)).insert(Matchers.anyListOf(FlightComboTable::class.java))
+//    }
 
 }*/
