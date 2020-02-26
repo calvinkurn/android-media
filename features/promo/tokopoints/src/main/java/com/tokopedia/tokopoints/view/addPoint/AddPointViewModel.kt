@@ -10,7 +10,7 @@ import com.tokopedia.tokopoints.view.util.Success
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class AddPointViewModel @Inject constructor(val rewardUsecase: RewardUseCase) : BaseViewModel(Dispatchers.Main), TokopointAddPointContract.Presenter {
+class AddPointViewModel @Inject constructor(private val rewardUsecase: RewardUseCase) : BaseViewModel(Dispatchers.Main), TokopointAddPointContract.Presenter {
 
 
     val sheetLiveData = MutableLiveData<Resources<SheetHowToGetV2>>()
