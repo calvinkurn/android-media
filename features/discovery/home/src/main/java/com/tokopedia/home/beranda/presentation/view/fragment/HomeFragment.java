@@ -115,6 +115,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -1362,12 +1363,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Header header) {
+    public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Channels channel) {
         viewModel.getPopularKeywordData();
+        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickReload(channel));
     }
 
     @Override
-    public void onPopularKeywordItemClicked(@NotNull String applink) {
+    public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel) {
         RouteManager.route(getContext(),applink);
     }
 

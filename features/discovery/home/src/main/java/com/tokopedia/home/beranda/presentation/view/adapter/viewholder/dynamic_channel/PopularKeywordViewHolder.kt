@@ -46,7 +46,7 @@ class PopularKeywordViewHolder (val view: View,
     }
 
     private fun initAdapter(element: PopularKeywordListViewModel) {
-        adapter = PopularKeywordAdapter(element.popularKeywordList, popularKeywordListener)
+        adapter = PopularKeywordAdapter(element.popularKeywordList, popularKeywordListener, element.channel)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
         recyclerView.adapter = adapter
@@ -58,7 +58,7 @@ class PopularKeywordViewHolder (val view: View,
             val tvReloadStub: View? = itemView.findViewById(R.id.tv_reload)
             val ivReloadStub: View? = itemView.findViewById(R.id.iv_reload)
             channelTitleStub?.let {
-                if (element.header.name.isNotEmpty()) {
+                if (element.channel.header.name.isNotEmpty()) {
                     it.visibility = View.VISIBLE
                     channelTitle = if (channelTitleStub is ViewStub &&
                             !isViewStubHasBeenInflated(channelTitleStub)) {
@@ -67,10 +67,10 @@ class PopularKeywordViewHolder (val view: View,
                     } else {
                         itemView.findViewById(R.id.channel_title)
                     }
-                    channelTitle?.text = element.header.name
+                    channelTitle?.text = element.channel.header.name
                     channelTitle?.visibility = View.VISIBLE
                     channelTitle?.setTextColor(
-                            if(element.header.textColor.isNotEmpty()) Color.parseColor(element.header.textColor)
+                            if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor)
                             else ContextCompat.getColor(view.context, R.color.Neutral_N700)
                     )
                 } else {
@@ -110,12 +110,12 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun reloadClickListener(element: PopularKeywordListViewModel): View.OnClickListener {
         return View.OnClickListener {
-            popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.header)
+            popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.channel)
         }
     }
 
     interface PopularKeywordListener {
-        fun onPopularKeywordSectionReloadClicked(position: Int, header: DynamicHomeChannel.Header)
-        fun onPopularKeywordItemClicked(applink: String)
+        fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels)
+        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels)
     }
 }

@@ -382,7 +382,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
-        visitableList.add(PopularKeywordListViewModel(mutableListOf(), channel.header))
+        visitableList.add(PopularKeywordListViewModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

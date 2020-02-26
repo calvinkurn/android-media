@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
  */
 data class PopularKeywordListViewModel(
         var popularKeywordList: MutableList<PopularKeywordViewModel> = mutableListOf(),
-        val header: DynamicHomeChannel.Header =  DynamicHomeChannel.Header(),
+        val channel : DynamicHomeChannel.Channels = DynamicHomeChannel.Channels(),
         var position:Int = 0
 ) : HomeVisitable, ImpressHolder() {
 

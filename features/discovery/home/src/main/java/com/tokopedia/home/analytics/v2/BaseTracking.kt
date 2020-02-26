@@ -35,6 +35,7 @@ abstract class BaseTracking {
         const val CATEGORY_LABEL = "categoryId"
         const val SHOP_LABEL = "shopId"
         const val NONE = ""
+        const val FORMAT_2_ITEMS = "%s - %s"
     }
 
     protected object Ecommerce {
@@ -58,6 +59,8 @@ abstract class BaseTracking {
         private const val KEY_NAME = "name"
         private const val KEY_CREATIVE = "creative"
         private const val KEY_CREATIVE_URL = "creative_url"
+        private const val KEY_PROMO_ID = "promo_id"
+        private const val KEY_PROMO_CODE = "promo_code"
         private const val KEY_PRICE = "price"
         private const val KEY_BRAND = "brand"
         private const val KEY_VARIANT = "variant"
@@ -127,6 +130,8 @@ abstract class BaseTracking {
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_CREATIVE_URL] = promotion.creativeUrl
             map[KEY_POSITION] = promotion.position
+            map[KEY_PROMO_ID] = promotion.promoIds
+            map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
         }
 
@@ -157,7 +162,7 @@ abstract class BaseTracking {
         }
     }
 
-    class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String)
+    class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String, val promoIds: String = "", val promoCodes: String = "")
     open class Product(val id: String, val name: String, val productPrice: Int, val brand: String, val variant: String, val category: String, val productPosition: Int, val freeOngkir: Boolean): ImpressHolder()
 
     open fun getBasicPromotionView(
