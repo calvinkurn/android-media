@@ -8,19 +8,22 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.product.manage.list.constant.AppScreen;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
+import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by zulfikarrahman on 9/25/17.
  */
-public class ProductManageActivity extends BaseSimpleActivity {
+public class ProductManageActivity extends BaseSellerReceiverDrawerActivity {
 
     public UserSessionInterface userSession;
 
@@ -28,7 +31,8 @@ public class ProductManageActivity extends BaseSimpleActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
-        setupLayout(savedInstanceState);
+        if (!GlobalConfig.isSellerApp())
+            setupLayout(savedInstanceState);
     }
 
     @Nullable
@@ -63,6 +67,11 @@ public class ProductManageActivity extends BaseSimpleActivity {
             RouteManager.route(this, ApplinkConst.HOME);
             finish();
         }
+    }
+
+    @Override
+    protected int setDrawerPosition() {
+        return TkpdState.DrawerPosition.MANAGE_PRODUCT;
     }
 
     @Override
