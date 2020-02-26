@@ -1,4 +1,4 @@
-package com.tokopedia.emoney
+package com.tokopedia.emoney.util
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

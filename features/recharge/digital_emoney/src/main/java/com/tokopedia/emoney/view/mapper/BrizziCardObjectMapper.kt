@@ -1,6 +1,6 @@
 package com.tokopedia.emoney.view.mapper
 
-import com.tokopedia.emoney.NFCUtils
+import com.tokopedia.emoney.util.NFCUtils
 import com.tokopedia.emoney.data.AttributesEmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiryError

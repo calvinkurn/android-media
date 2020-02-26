@@ -2,7 +2,7 @@ package com.tokopedia.emoney.viewmodel
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.emoney.NFCUtils
+import com.tokopedia.emoney.util.NFCUtils
 import com.tokopedia.emoney.data.*
 import com.tokopedia.emoney.view.mapper.BrizziCardObjectMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

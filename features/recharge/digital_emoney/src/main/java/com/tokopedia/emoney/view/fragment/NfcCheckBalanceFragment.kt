@@ -29,7 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
-import com.tokopedia.emoney.EmoneyAnalytics
+import com.tokopedia.emoney.util.EmoneyAnalytics
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.data.EmoneyInquiry
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent

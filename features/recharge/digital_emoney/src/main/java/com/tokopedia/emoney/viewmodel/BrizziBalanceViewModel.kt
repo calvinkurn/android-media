@@ -1,10 +1,10 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.content.Intent
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthKey
 import com.tokopedia.emoney.data.*
+import com.tokopedia.emoney.util.SingleLiveEvent
 import com.tokopedia.emoney.view.mapper.BrizziCardObjectMapper
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -28,11 +28,11 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
     var inquiryIdBrizzi: Int = 0
 
-    val issuerId = MutableLiveData<Int>()
-    val emoneyInquiry = MutableLiveData<EmoneyInquiry>()
-    val tokenNeedRefresh = MutableLiveData<Boolean>()
-    val cardIsBrizzi = MutableLiveData<Boolean>()
-    val errorCardMessage = MutableLiveData<String>()
+    val issuerId = SingleLiveEvent<Int>()
+    val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
+    val tokenNeedRefresh = SingleLiveEvent<Boolean>()
+    val cardIsBrizzi = SingleLiveEvent<Boolean>()
+    val errorCardMessage = SingleLiveEvent<String>()
 
     fun processBrizziTagIntent(intent: Intent, logRawQuery: String, brizziInstance: Brizzi) {
         brizziInstance.getBalanceInquiry(intent, object : Callback {

@@ -2,12 +2,12 @@ package com.tokopedia.emoney.viewmodel
 
 import android.content.Intent
 import android.nfc.tech.IsoDep
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.emoney.NFCUtils
 import com.tokopedia.emoney.data.EmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiryResponse
 import com.tokopedia.emoney.data.NfcCardErrorTypeDef
+import com.tokopedia.emoney.util.NFCUtils
+import com.tokopedia.emoney.util.SingleLiveEvent
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -21,11 +21,11 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                                                  val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val cardIsEmoney = MutableLiveData<Boolean>()
-    val issuerId = MutableLiveData<Int>()
-    val errorCardMessage = MutableLiveData<String>()
-    val emoneyInquiry = MutableLiveData<EmoneyInquiry>()
-    val errorInquiryBalance = MutableLiveData<Throwable>()
+    val cardIsEmoney = SingleLiveEvent<Boolean>()
+    val issuerId = SingleLiveEvent<Int>()
+    val errorCardMessage = SingleLiveEvent<String>()
+    val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
+    val errorInquiryBalance = SingleLiveEvent<Throwable>()
 
     private lateinit var isoDep: IsoDep
 
