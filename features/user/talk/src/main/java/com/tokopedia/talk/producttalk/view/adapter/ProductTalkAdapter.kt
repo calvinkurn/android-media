@@ -180,6 +180,11 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
             visitables[index] is LoadingMoreModel
         } else false
     }
+
+    fun removeElement(position: Int) {
+        visitables.removeAt(position)
+        notifyItemRemoved(position)
+    }
 }
 
 

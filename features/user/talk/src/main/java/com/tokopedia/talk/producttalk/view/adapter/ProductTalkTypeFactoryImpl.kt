@@ -23,7 +23,8 @@ class ProductTalkTypeFactoryImpl(private val talkItemListener: ProductTalkThread
                                  private val talkProductAttachmentListener:
                                  TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
                                  private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener,
-                                 private val qaTalkListener: EmptyProductTalkViewHolder.TalkItemListener) :
+                                 private val qaTalkListener: EmptyProductTalkViewHolder.TalkItemListener,
+                                 private val talkChatTickerListener: ChatBannerTalkViewHolder.Listener) :
         BaseAdapterTypeFactory(),
         ProductTalkListTypeFactory {
     override fun type(emptyProductTalkViewModel: EmptyProductTalkViewModel): Int {
@@ -52,7 +53,7 @@ class ProductTalkTypeFactoryImpl(private val talkItemListener: ProductTalkThread
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
-            ChatBannerTalkViewHolder.LAYOUT -> ChatBannerTalkViewHolder(view)
+            ChatBannerTalkViewHolder.LAYOUT -> ChatBannerTalkViewHolder(view, talkChatTickerListener)
             EmptyTalksViewHolder.LAYOUT -> EmptyTalksViewHolder(view)
             EmptyProductTalkViewHolder.LAYOUT -> EmptyProductTalkViewHolder(view, qaTalkListener)
             ProductTalkTitleViewHolder.LAYOUT -> ProductTalkTitleViewHolder(view)

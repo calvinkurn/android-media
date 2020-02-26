@@ -27,6 +27,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.common.adapter.viewholder.ChatBannerTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
@@ -63,7 +64,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         CommentTalkViewHolder.TalkCommentItemListener,
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         EmptyProductTalkViewHolder.TalkItemListener,
-        LoadMoreCommentTalkViewHolder.LoadMoreListener {
+        LoadMoreCommentTalkViewHolder.LoadMoreListener, ChatBannerTalkViewHolder.Listener {
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -230,7 +231,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
 
     private fun setUpView(view: View) {
-        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this)
+        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -772,4 +773,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         return uri.host != null && uri.host == BRANCH_IO_HOST
     }
 
+    override fun onDismissChatTicker(position: Int) {
+        adapter.removeElement(position)
+    }
 }
