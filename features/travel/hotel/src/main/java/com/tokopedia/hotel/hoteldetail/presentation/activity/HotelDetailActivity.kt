@@ -77,7 +77,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = PDP_SCREEN_NAME
 
     companion object {
 
@@ -95,6 +95,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val PARAM_SHOW_ROOM = "show_room"
         const val PARAM_ROOM_COUNT = "room"
         const val PARAM_ADULT_COUNT = "adult"
+
+        const val PDP_SCREEN_NAME = "/hotel/pdp"
 
         fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
                              adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean = true): Intent =
