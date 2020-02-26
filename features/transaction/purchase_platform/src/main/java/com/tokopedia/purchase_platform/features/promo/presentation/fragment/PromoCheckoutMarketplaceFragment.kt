@@ -263,7 +263,28 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     // --- FRAGMENT LEVEL ACTION
 
     override fun onClickResetPromo() {
-
+        val promoList = HashMap<Int, PromoListItemUiModel>()
+        adapter.data.forEach {
+            if (it is PromoListItemUiModel && it.uiState.isSellected) {
+                val newData = PromoListItemUiModel(
+                        uiData = PromoListItemUiModel.UiData().apply {
+                            promoId = it.uiData.promoId
+                            title = it.uiData.title
+                            subTitle = it.uiData.subTitle
+                            errorMessage = it.uiData.errorMessage
+                            imageResourceUrl = it.uiData.imageResourceUrl
+                            parentIdentifierId = it.uiData.parentIdentifierId
+                        },
+                        uiState = PromoListItemUiModel.UiState().apply {
+                            isEnabled = it.uiState.isEnabled
+                            isSellected = false
+                            isVisible = it.uiState.isVisible
+                        }
+                )
+                promoList.put(adapter.data.indexOf(it), newData)
+            }
+        }
+        adapter.modifyDataList(promoList)
     }
 
     // --- END OF FRAGMENT LEVEL ACTION
