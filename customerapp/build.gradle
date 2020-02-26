@@ -107,7 +107,7 @@ project.ext {
     defaultVersionName = "3.41";
     react = [
             nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
-            enableHermes: true,
+            enableHermes         : true,
     ]
 }
 
@@ -209,9 +209,9 @@ android {
             }
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
-            if(isFirebasePerformanceLogEnabled().toBoolean()){
+            if (isFirebasePerformanceLogEnabled().toBoolean()) {
                 minifyEnabled false
-            }else{
+            } else {
                 minifyEnabled true
             }
 
@@ -249,7 +249,7 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
-        manifestPlaceholders = [firebasePerformanceLogEnabled:isFirebasePerformanceLogEnabled()]
+        manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
     }
 
     dexOptions {
@@ -295,12 +295,18 @@ android {
 }
 
 task("configDebugTools") {
-    def rootTaskName = project.gradle.startParameter.taskNames[0]
-    println(project.gradle.startParameter.taskNames)
-    rootProject.ext.debugToolsEnabled = rootTaskName == null ||
-            rootTaskName.toLowerCase().contains("debug") ||
-            rootTaskName.toLowerCase().contains("dev")
-    println("debug tools set to " + rootProject.ext.debugToolsEnabled)
+    def taskNames = project.gradle.startParameter.taskNames
+    if (taskNames==null || taskNames.size() == 0) {
+        rootProject.ext.debugToolsEnabled = true
+    } else {
+        taskNames.each { taskName ->
+            if (taskName != "clean") {
+                rootProject.ext.debugToolsEnabled = taskName == null ||
+                        taskName.toLowerCase().contains("debug") ||
+                        taskName.toLowerCase().contains("dev")
+            }
+        }
+    }
 }
 preBuild.dependsOn configDebugTools
 

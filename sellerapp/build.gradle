@@ -234,10 +234,18 @@ android {
 }
 
 task("configDebugTools") {
-    def rootTaskName = project.gradle.startParameter.taskNames[0]
-    rootProject.ext.debugToolsEnabled = rootTaskName == null ||
-            rootTaskName.toLowerCase().contains("debug") ||
-            rootTaskName.toLowerCase().contains("dev")
+    def taskNames = project.gradle.startParameter.taskNames
+    if (taskNames==null || taskNames.size() == 0) {
+        rootProject.ext.debugToolsEnabled = true
+    } else {
+        taskNames.each { taskName ->
+            if (taskName != "clean") {
+                rootProject.ext.debugToolsEnabled = taskName == null ||
+                        taskName.toLowerCase().contains("debug") ||
+                        taskName.toLowerCase().contains("dev")
+            }
+        }
+    }
 }
 preBuild.dependsOn configDebugTools
 
@@ -374,7 +382,7 @@ dependencies {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
-    implementation(rootProject.ext.analyticsDependencies.moengage) 
+    implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation project(rootProject.ext.libraries.playCore)
@@ -423,7 +431,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    
 
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
