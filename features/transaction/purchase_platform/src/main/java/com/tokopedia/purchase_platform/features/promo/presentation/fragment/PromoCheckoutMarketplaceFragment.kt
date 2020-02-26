@@ -25,6 +25,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_GLOBAL
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_MERCHANT_OFFICIAL
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_POWER_MERCHANT
+import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import javax.inject.Inject
 
 class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(),
@@ -66,9 +67,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view)
-//        button_apply_promo.setOnClickListener {
-        // Todo : add action to hit API
-//        }
+        button_apply_promo.setOnClickListener {
+            // Todo : add action to hit API
+        }
     }
 
     private fun setupToolbar(view: View) {
@@ -228,13 +229,27 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         return false
     }
 
+    // --- FRAGMENT LEVEL ACTION
+
     override fun onClickResetPromo() {
 
     }
 
-    override fun onClickApplyRecommendedPromo() {
+    // --- END OF FRAGMENT LEVEL ACTION
 
+
+    // --- RECOMMENDATION SECTION
+
+    override fun onClickApplyRecommendedPromo() {
+        // Todo : get recommendation promo from current list
+        // Todo : hit API
+        // Todo : if success >> update recommendation layout; if failed >> show toast error
     }
+
+    // --- END OF RECOMMENDATION SECTION
+
+
+    // --- PROMO LIST SECTION
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
 
@@ -262,9 +277,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     for (index in startIndex until adapter.data.size) {
                         if (adapter.data[index] !is PromoListItemUiModel) break
                         val oldPromoItem = adapter.data[index] as PromoListItemUiModel
-//                        if (oldPromoItem.uiData.parentIdentifierId == newData.uiData.identifierId) {
                         modifiedData.add(oldPromoItem)
-//                        }
                     }
                     newData.uiData.tmpPromoItemList = modifiedData
                     adapter.removeList(modifiedData)
@@ -305,4 +318,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             }
         }
     }
+
+    // -- END OF PROMO LIST SECTION
 }
