@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
@@ -19,6 +18,7 @@ import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
@@ -113,16 +113,16 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
             show()
             showTextAnimation(data)
             data.thumbnailUrlMobile?.let { showImageOnFab(context, it) }
-            setClick(data.applinks)
+            setClick(data.applinks?.toEmptyStringIfNull().toString(), data.shopId?.toIntOrNull()
+                    ?: 0)
         }
     }
 
-    private fun setClick(appLinks: String?) {
-        if (!appLinks.isNullOrEmpty()) {
-            mDiscoveryFab.setOnClickListener {
-                RouteManager.route(context, appLinks)
+    private fun setClick(appLinks: String, shopId: Int) {
+        mDiscoveryFab.getFabButton().setOnClickListener {
+            if (appLinks.isNotEmpty() && shopId != 0) {
+                activity?.let { it1 -> mDiscoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
         }
     }
-
 }

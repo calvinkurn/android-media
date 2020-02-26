@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
+import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
+import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
@@ -36,6 +38,12 @@ class DiscoveryModule {
     @Provides
     fun provideCpmTopAdsGQLRepository(@ApplicationContext context: Context): CpmTopAdsRepository {
         return CpmTopAdsGQLRepository(provideGetStringMethod(context))
+    }
+
+    @DiscoveryScope
+    @Provides
+    fun provideCustomTopChatRepository(@ApplicationContext context: Context): CustomTopChatRepository {
+        return CustomTopChatGqlRepository(provideGetStringMethod(context))
     }
 
     @DiscoveryScope

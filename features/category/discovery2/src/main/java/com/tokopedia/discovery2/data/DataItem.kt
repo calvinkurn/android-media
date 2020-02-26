@@ -165,7 +165,10 @@ data class DataItem(
         val categoryLabel: String = "",
 
         @SerializedName("ID")
-        val id: String? = ""
+        val id: String? = "",
+
+        @SerializedName("shop_id")
+        val shopId: String? = ""
 
 ) {
     val leftMargin: Int

@@ -5,10 +5,10 @@ import android.graphics.Color
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import android.view.animation.TranslateAnimation
+import android.view.animation.ScaleAnimation
 import android.widget.ImageButton
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
@@ -49,24 +48,23 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun inFromRightAnimation(): Animation? {
-        val inFromRight: Animation = TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, +1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f)
+        val inFromRight: Animation = ScaleAnimation(
+                0.0f, 1.0f, 1.0f, 1.0f,
+                Animation.RELATIVE_TO_SELF, 1.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f)
         inFromRight.duration = 1000
-        inFromRight.interpolator = AccelerateInterpolator()
+        inFromRight.interpolator = DecelerateInterpolator()
         return inFromRight
     }
 
     private fun outToRightAnimation(): Animation? {
-        val outToRight: Animation = TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, +1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f)
+        val outToRight: Animation = ScaleAnimation(
+                1.0f, 0.0f, 1.0f, 1.0f,
+                Animation.RELATIVE_TO_SELF, 1.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f)
         outToRight.duration = 1000
-        outToRight.interpolator = AccelerateInterpolator()
+        outToRight.fillAfter = true
+        outToRight.interpolator = DecelerateInterpolator()
         return outToRight
     }
 
@@ -99,7 +97,6 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
         slideLeft(topChatBackground)
         Handler().postDelayed({
             slideRight(topChatBackground)
-            topChatBackground.hide()
         }, 3000)
     }
 
@@ -121,6 +118,10 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
                 topChatBackground.setCardBackgroundColor(Color.parseColor(it))
             }
         }
+    }
+
+    fun getFabButton(): ImageButton {
+        return topChatFabButton
     }
 
     inner class CustomTopChatOnScrollListener(val view: View) : RecyclerView.OnScrollListener() {
