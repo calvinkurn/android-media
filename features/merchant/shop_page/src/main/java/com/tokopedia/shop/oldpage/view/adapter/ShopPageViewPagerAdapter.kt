@@ -15,6 +15,7 @@ import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                                var titles: Array<String>,
                                var shopId: String?,
+                               var shopRef: String,
                                val shopAttribution: String?,
                                private val shopPageActivity: ShopPageActivity) : FragmentStatePagerAdapter(fragmentManager) {
 
@@ -46,7 +47,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                 return f
             }
             1 -> {
-                val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                val f = ShopProductListLimitedFragment.createInstance(shopAttribution, shopRef)
                 shopPageActivity.getShopInfoData()?.run {
                     f.setShopInfo(this)
                 }
@@ -73,7 +74,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                 return f
             }
             1 -> {
-                val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                val f = ShopProductListLimitedFragment.createInstance(shopAttribution, shopRef)
                 shopPageActivity.getShopInfoData()?.run {
                     f.setShopInfo(this)
                 }
@@ -96,7 +97,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
     private fun renderTabFeed(position: Int): Fragment {
         return when (position) {
             ShopPageActivity.TAB_POSITION_HOME -> {
-                val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                val f = ShopProductListLimitedFragment.createInstance(shopAttribution, shopRef)
                 shopPageActivity.getShopInfoData()?.run {
                     f.setShopInfo(this)
                 }
@@ -119,7 +120,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
     private fun renderTabDefault(position: Int): Fragment {
         return when (position) {
             0 -> {
-                val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                val f = ShopProductListLimitedFragment.createInstance(shopAttribution, shopRef)
                 shopPageActivity.getShopInfoData()?.run {
                     f.setShopInfo(this)
                 }

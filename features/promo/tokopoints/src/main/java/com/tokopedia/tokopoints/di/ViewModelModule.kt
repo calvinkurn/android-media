@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogViewModel
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingViewModel
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailViewModel
 import com.tokopedia.tokopoints.view.couponlisting.CouponLisitingStackedViewModel
 import com.tokopedia.tokopoints.view.couponlisting.StackedCouponActivtyViewModel
@@ -50,5 +51,11 @@ abstract class ViewModelModule {
     @TokoPointScope
     @ViewModelKey(CouponCatalogViewModel::class)
     abstract fun getCouponCAtalogViewModel(viewModel: CouponCatalogViewModel) : ViewModel
+
+    @IntoMap
+    @Binds
+    @TokoPointScope
+    @ViewModelKey(CatalogListingViewModel::class)
+    abstract fun getCatalogListingViewModel(viewModel: CatalogListingViewModel) : ViewModel
 
 }

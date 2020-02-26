@@ -10,6 +10,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import javax.inject.Named
 
 @Module
 class TokopointsQueryModule {
@@ -21,8 +22,8 @@ class TokopointsQueryModule {
     fun getRepository() = Interactor.getInstance().graphqlRepository
 
     @Provides
-    @IntoMap
-    @StringKey(CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS)
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS)
     fun getGQLCurrentPoint(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_current_points)
     }
@@ -136,6 +137,34 @@ class TokopointsQueryModule {
     fun getGQLCatalogDetail(context: Context) : String {
         return GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.tp_gql_catalog_detail)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_CATALOG_BANNER)
+    fun getGQLCataloganner(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_catalog_banners)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_DETAIL)
+    fun getGQLTOkopointDetail(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_tokopoint_detail)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_CATALOG_FILTER)
+    fun getGQLCatalogFilter(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_catalog_filter)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_LUCKY_EGG_DETAILS)
+    fun getGQLLuckyEggDetail(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_lucky_egg_details)
     }
 
 }

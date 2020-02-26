@@ -36,6 +36,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
     override fun shouldShowOptionMenu(): Boolean = false
 
+    override fun getScreenName(): String = SEARCH_SCREEN_NAME
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val uri = intent.data
@@ -131,7 +133,6 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
 
     companion object {
-
         const val PARAM_HOTEL_ID = "hotel_id"
         const val PARAM_HOTEL_NAME = "hotel_name"
         const val PARAM_DISTRICT_ID = "district_id"
@@ -149,6 +150,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         const val TYPE_DISTRICT = "district"
         const val TYPE_CITY = "city"
         const val TYPE_PROPERTY = "property"
+
+        const val SEARCH_SCREEN_NAME = "/hotel/searchresult"
 
         fun createIntent(context: Context, destinationName: String = "", destinationID: Int = 0, type: String = "",
                          latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
