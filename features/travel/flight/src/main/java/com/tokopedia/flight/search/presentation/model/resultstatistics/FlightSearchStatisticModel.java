@@ -16,6 +16,7 @@ public class FlightSearchStatisticModel {
     private List<TransitStat> transitTypeStatList;
     private List<AirlineStat> airlineStatList;
     private List<DepartureStat> departureTimeStatList;
+    private List<DepartureStat> arrivalTimeStatList;
     private List<RefundableStat> refundableTypeStatList;
     private boolean isHaveSpecialPrice;
     private boolean isHaveBaggage;
@@ -23,8 +24,9 @@ public class FlightSearchStatisticModel {
 
     public FlightSearchStatisticModel(int minPrice, int maxPrice, int minDuration, int maxDuration,
                                       List<TransitStat> transitTypeStatList, List<AirlineStat> airlineStatList,
-                                      List<DepartureStat> departureTimeStatList, List<RefundableStat> refundableTypeStatList,
-                                      boolean isHaveSpecialPrice, boolean isHaveBaggage, boolean isHaveInFlightMeal) {
+                                      List<DepartureStat> departureTimeStatList, List<DepartureStat> arrivalTimeStatList,
+                                      List<RefundableStat> refundableTypeStatList, boolean isHaveSpecialPrice,
+                                      boolean isHaveBaggage, boolean isHaveInFlightMeal) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.minDuration = minDuration;
@@ -32,6 +34,7 @@ public class FlightSearchStatisticModel {
         this.transitTypeStatList = transitTypeStatList;
         this.airlineStatList = airlineStatList;
         this.departureTimeStatList = departureTimeStatList;
+        this.arrivalTimeStatList = arrivalTimeStatList;
         this.refundableTypeStatList = refundableTypeStatList;
         this.isHaveSpecialPrice = isHaveSpecialPrice;
         this.isHaveBaggage = isHaveBaggage;
@@ -60,7 +63,7 @@ public class FlightSearchStatisticModel {
 
     public FlightAirlineViewModel getAirline(String airlineID) {
         List<AirlineStat> airlineStatList = getAirlineStatList();
-        if (airlineStatList!= null) {
+        if (airlineStatList != null) {
             for (int i = 0, sizei = airlineStatList.size(); i < sizei; i++) {
                 FlightAirlineViewModel flightAirlineDB = airlineStatList.get(i).getAirlineDB();
                 if (airlineID.equals(flightAirlineDB.getId())) {

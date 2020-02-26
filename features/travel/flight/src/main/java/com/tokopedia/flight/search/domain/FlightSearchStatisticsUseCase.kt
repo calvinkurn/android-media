@@ -45,11 +45,13 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         val transitTypeStatList = ArrayList<TransitStat>()
         val airlineStatList = ArrayList<AirlineStat>()
         val departureTimeStatList = ArrayList<DepartureStat>()
+        val arrivalTimeStatList = ArrayList<DepartureStat>()
         val refundableTypeStatList = ArrayList<RefundableStat>()
 
         val transitIDTrackArray = SparseIntArray()
         val airlineIDTrackArray = HashMap<String, Int>()
         val departureIDTrackArray = SparseIntArray()
+        val arrivalIDTrackArray = SparseIntArray()
         val refundableTrackArray = SparseIntArray()
 
         var isHaveSpecialPrice = false
@@ -73,6 +75,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
             if (duration > maxDuration) {
                 maxDuration = duration
             }
+
             // populate total transit and minprice per each transit
             val transitTypeDef = when (journeyAndRoutes.flightJourneyTable.totalTransit) {
                 0 -> TransitEnum.DIRECT
@@ -132,6 +135,26 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                 }
             }
 
+            // populate arrivalTime and minprice per each time
+            val arrivalTimeDef = when (journeyAndRoutes.flightJourneyTable.arrivalTimeInt) {
+                in 0..559 -> DepartureTimeEnum._00
+                in 600..1159 -> DepartureTimeEnum._06
+                in 1200..1759 -> DepartureTimeEnum._12
+                else -> DepartureTimeEnum._18
+            }
+
+            if (arrivalIDTrackArray.get(arrivalTimeDef.id, -1) == -1) {
+                arrivalTimeStatList.add(DepartureStat(arrivalTimeDef, price, priceString))
+                arrivalIDTrackArray.put(arrivalTimeDef.id, arrivalTimeStatList.size - 1)
+            } else {
+                val index = arrivalIDTrackArray.get(arrivalTimeDef.id)
+                val prevArrivalStat = arrivalTimeStatList[index]
+                if (price < prevArrivalStat.minPrice) {
+                    prevArrivalStat.minPrice = price
+                    prevArrivalStat.minPriceString = priceString
+                }
+            }
+
             // populate distinct refundable
             val refundable = journeyAndRoutes.flightJourneyTable.isRefundable
             if (refundableTrackArray.get(refundable.id, -1) == -1) {
@@ -166,10 +189,12 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         transitTypeStatList.sortWith(Comparator { o1, o2 -> o1.transitType.id - o2.transitType.id })
         airlineStatList.sortWith(Comparator { o1, o2 -> o1.airlineDB.name.compareTo(o2.airlineDB.name) })
         departureTimeStatList.sortWith(Comparator { o1, o2 -> o1.departureTime.id - o2.departureTime.id })
+        arrivalTimeStatList.sortWith(Comparator { o1, o2 -> o1.departureTime.id - o2.departureTime.id })
         refundableTypeStatList.sortWith(Comparator { o1, o2 -> o1.refundableEnum.id - o2.refundableEnum.id })
 
         return FlightSearchStatisticModel(minPrice, maxPrice, minDuration, maxDuration, transitTypeStatList,
-                airlineStatList, departureTimeStatList, refundableTypeStatList, isHaveSpecialPrice, isHaveBaggage, isHaveInFlightMeal)
+                airlineStatList, departureTimeStatList, arrivalTimeStatList, refundableTypeStatList,
+                isHaveSpecialPrice, isHaveBaggage, isHaveInFlightMeal)
     }
 
     fun createRequestParams(flightFilterModel: FlightFilterModel): RequestParams {

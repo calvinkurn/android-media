@@ -192,6 +192,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         }
     }
 
+    override fun getStatisticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value
+
     override fun getAirlineList(): List<AirlineStat> =
             flightFilterViewModel.getAirlineList()
 
