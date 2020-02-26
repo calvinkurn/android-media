@@ -238,11 +238,12 @@ task("configDebugTools") {
     if (taskNames==null || taskNames.size() == 0) {
         rootProject.ext.debugToolsEnabled = true
     } else {
-        taskNames.each { taskName ->
-            if (taskName != "clean") {
-                rootProject.ext.debugToolsEnabled = taskName == null ||
-                        taskName.toLowerCase().contains("debug") ||
-                        taskName.toLowerCase().contains("dev")
+        rootProject.ext.debugToolsEnabled = false
+        for ( taskName in taskNames ) {
+            if ( taskName.toLowerCase().contains("debug") ||
+                    taskName.toLowerCase().contains("dev") ) {
+                rootProject.ext.debugToolsEnabled = true
+                break
             }
         }
     }
