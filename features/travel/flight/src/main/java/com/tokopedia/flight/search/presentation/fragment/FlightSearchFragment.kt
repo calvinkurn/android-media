@@ -92,8 +92,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             isCombineDone = savedInstanceState.getBoolean(SAVED_IS_COMBINE_DONE, false)
         }
 
-        performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
-        performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
+        performanceMonitoringP1 = PerformanceMonitoring.start(context, FLIGHT_SEARCH_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(context, FLIGHT_SEARCH_P2_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =

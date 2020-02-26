@@ -332,7 +332,7 @@ internal class ShopListFragment:
     }
 
     private fun startPerformanceMonitoring() {
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(context, SEARCH_SHOP_TRACE)
     }
 
     private fun stopPerformanceMonitoring() {

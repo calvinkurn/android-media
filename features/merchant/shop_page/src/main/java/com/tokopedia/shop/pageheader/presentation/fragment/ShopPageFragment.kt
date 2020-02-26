@@ -268,7 +268,7 @@ class ShopPageFragment :
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
-            performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
+            performanceMonitoring = PerformanceMonitoring.start(context, SHOP_TRACE)
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID)

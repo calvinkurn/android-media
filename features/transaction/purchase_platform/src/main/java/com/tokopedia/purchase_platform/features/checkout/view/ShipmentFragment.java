@@ -309,7 +309,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false);
 
         shipmentPresenter.attachView(this);
-        shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
+        shipmentTracePerformance = PerformanceMonitoring.start(getContext(), SHIPMENT_TRACE);
     }
 
     @Override

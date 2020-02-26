@@ -147,7 +147,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        performanceMonitoring = PerformanceMonitoring.start(FPM_TOKOPOINT);
+        performanceMonitoring = PerformanceMonitoring.start(getContext(), FPM_TOKOPOINT);
         super.onCreate(savedInstanceState);
     }
 

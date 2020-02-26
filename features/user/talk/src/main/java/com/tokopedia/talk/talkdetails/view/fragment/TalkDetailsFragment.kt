@@ -119,7 +119,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        performanceMonitoring = PerformanceMonitoring.start(TALK_DETAILS_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(context, TALK_DETAILS_TRACE)
         savedInstanceState?.run {
             talkId = savedInstanceState.getString(TalkDetailsActivity.THREAD_TALK_ID, "")
             shopId = savedInstanceState.getString(TalkDetailsActivity.SHOP_ID, "")

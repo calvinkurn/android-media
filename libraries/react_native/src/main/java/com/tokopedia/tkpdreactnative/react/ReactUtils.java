@@ -36,7 +36,7 @@ public class ReactUtils {
 
     public static void startTracing(String tracerName) {
         if (perfMonitor == null) {
-            perfMonitor = PerformanceMonitoring.start(tracerName);
+            perfMonitor = PerformanceMonitoring.start(getCurrentReactContext(), tracerName);
         }
     }
 

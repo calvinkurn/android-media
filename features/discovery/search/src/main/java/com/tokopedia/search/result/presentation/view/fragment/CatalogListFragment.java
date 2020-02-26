@@ -358,7 +358,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
     }
 
     private void requestCatalogList() {
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_CATALOG_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(getContext(), SEARCH_CATALOG_TRACE);
         presenter.requestCatalogList();
     }
 

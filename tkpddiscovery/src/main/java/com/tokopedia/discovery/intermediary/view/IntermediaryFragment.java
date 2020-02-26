@@ -194,7 +194,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_INTERMEDIARY);
+        performanceMonitoring = PerformanceMonitoring.start(getContext(), PERFORMANCE_TRACE_INTERMEDIARY);
     }
 
     @Nullable

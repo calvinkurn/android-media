@@ -151,7 +151,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_HOMEPAGE_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(getContext(), FLIGHT_HOMEPAGE_TRACE);
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 

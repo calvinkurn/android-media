@@ -70,7 +70,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         trackingQueue = TrackingQueue(activity!!)
-        performanceMonitoring = PerformanceMonitoring.start(BROWSE_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(context, BROWSE_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
@@ -108,7 +109,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
-        performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_PROMO_LIST);
+        performanceMonitoring.startTrace(getContext(), FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_PROMO_LIST);
     }
 
     @Nullable

@@ -71,7 +71,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(appContext)
-        fpmDetailTokopoint = PerformanceMonitoring.start(FPM_DETAIL_TOKOPOINT)
+        fpmDetailTokopoint = PerformanceMonitoring.start(context, FPM_DETAIL_TOKOPOINT)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }

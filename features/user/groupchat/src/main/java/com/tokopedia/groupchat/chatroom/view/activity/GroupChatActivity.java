@@ -215,7 +215,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(PLAY_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(this, PLAY_TRACE);
         if (savedInstanceState != null) {
             initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
         } else if (getIntent().getExtras() != null) {

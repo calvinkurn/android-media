@@ -176,7 +176,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
+        chooseAddressTracePerformance = PerformanceMonitoring.start(getContext(), CHOOSE_ADDRESS_TRACE);
         if (getArguments() != null) {
             mCurrentAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
             isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false);

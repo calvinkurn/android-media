@@ -149,7 +149,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void startPerformanceMonitoring() {
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(this, SEARCH_RESULT_TRACE);
     }
 
     private void setStatusBarColor() {

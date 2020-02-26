@@ -121,7 +121,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
     }
 
     fun search(searchParameter: SearchParameter) {
-        performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
+        performanceMonitoring = PerformanceMonitoring.start(context, MP_SEARCH_AUTOCOMPLETE)
         presenter.search(searchParameter)
     }
 

@@ -91,7 +91,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        performanceMonitoring = PerformanceMonitoring.start(FAVORITE_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(getContext(), FAVORITE_TRACE);
         super.onCreate(savedInstanceState);
     }
 

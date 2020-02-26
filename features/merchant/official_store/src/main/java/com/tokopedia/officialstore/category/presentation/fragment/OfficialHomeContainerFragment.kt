@@ -70,7 +70,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
+        categoryPerformanceMonitoring = PerformanceMonitoring.start(context, FirebasePerformanceMonitoringConstant.CATEGORY)
         arguments?.let {
             keyCategory = it.getString(KEY_CATEGORY, "0")
         }

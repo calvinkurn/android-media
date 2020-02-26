@@ -148,7 +148,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_CATEGORY);
+        performanceMonitoring = PerformanceMonitoring.start(this, PERFORMANCE_TRACE_CATEGORY);
         initInjector();
         setPresenter(categoryPresenter);
         categoryPresenter.attachView(this);

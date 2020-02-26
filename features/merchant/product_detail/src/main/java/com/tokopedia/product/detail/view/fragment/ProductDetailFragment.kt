@@ -470,13 +470,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         super.onViewCreated(view, savedInstanceState)
         productInfoViewModel.deviceId = TradeInUtils.getDeviceId(context) ?: productInfoViewModel.userSessionInterface.deviceId
 
-        performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
-        performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
-        performanceMonitoringP2General = PerformanceMonitoring.start(PDP_P2_GENERAL_TRACE)
+        performanceMonitoringP1 = PerformanceMonitoring.start(context, PDP_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(context, PDP_P2_TRACE)
+        performanceMonitoringP2General = PerformanceMonitoring.start(context, PDP_P2_GENERAL_TRACE)
 
         if (productInfoViewModel.isUserSessionActive()) {
-            performanceMonitoringP2Login = PerformanceMonitoring.start(PDP_P2_LOGIN_TRACE)
-            performanceMonitoringFull = PerformanceMonitoring.start(PDP_P3_TRACE)
+            performanceMonitoringP2Login = PerformanceMonitoring.start(context, PDP_P2_LOGIN_TRACE)
+            performanceMonitoringFull = PerformanceMonitoring.start(context, PDP_P3_TRACE)
         }
 
         initializePartialView(view)

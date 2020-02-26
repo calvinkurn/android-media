@@ -137,7 +137,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void startWarmStart() {
-        warmTrace = PerformanceMonitoring.start(WARM_TRACE);
+        warmTrace = PerformanceMonitoring.start(this, WARM_TRACE);
     }
 
     private void finishWarmStart() {
@@ -145,7 +145,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void startSplashTrace() {
-        splashTrace = PerformanceMonitoring.start(SPLASH_TRACE);
+        splashTrace = PerformanceMonitoring.start(this, SPLASH_TRACE);
     }
 
     private void finishSplashTrace() {

@@ -665,7 +665,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         saveButton.setOnClickListener(view -> {
             if (isValidAddress()) {
                 updateAddress();
-                performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_SUBMIT_ADD_ADDRESS);
+                performanceMonitoring.startTrace(getContext(), FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_SUBMIT_ADD_ADDRESS);
                 mPresenter.saveAddress();
             }
         });

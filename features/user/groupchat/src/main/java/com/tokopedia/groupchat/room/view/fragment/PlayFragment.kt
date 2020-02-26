@@ -119,7 +119,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(GroupChatAnalytics.PLAY_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(context, GroupChatAnalytics.PLAY_TRACE)
         setNetworkPreference(savedInstanceState)
 
         setHasOptionsMenu(true)

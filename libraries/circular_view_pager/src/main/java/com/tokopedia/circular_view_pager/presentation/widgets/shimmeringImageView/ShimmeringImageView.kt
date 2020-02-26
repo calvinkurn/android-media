@@ -65,7 +65,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
         val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
 
 
-        performanceMonitoring = PerformanceMonitoring.start(FPM_HOMEPAGE_BANNER)
+        performanceMonitoring = PerformanceMonitoring.start(context, FPM_HOMEPAGE_BANNER)
         performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
 
         return performanceMonitoring

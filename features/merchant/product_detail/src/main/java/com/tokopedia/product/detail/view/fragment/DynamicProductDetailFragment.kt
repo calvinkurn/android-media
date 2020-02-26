@@ -1760,13 +1760,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun initPerformanceMonitoring() {
-        performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
-        performanceMonitoringP2 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_TRACE)
-        performanceMonitoringP2General = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_GENERAL_TRACE)
+        performanceMonitoringP1 = PerformanceMonitoring.start(context, ProductDetailConstant.PDP_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(context, ProductDetailConstant.PDP_P2_TRACE)
+        performanceMonitoringP2General = PerformanceMonitoring.start(context, ProductDetailConstant.PDP_P2_GENERAL_TRACE)
 
         if (viewModel.isUserSessionActive) {
-            performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
-            performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
+            performanceMonitoringP2Login = PerformanceMonitoring.start(context, ProductDetailConstant.PDP_P2_LOGIN_TRACE)
+            performanceMonitoringFull = PerformanceMonitoring.start(context, ProductDetailConstant.PDP_P3_TRACE)
         }
     }
 
