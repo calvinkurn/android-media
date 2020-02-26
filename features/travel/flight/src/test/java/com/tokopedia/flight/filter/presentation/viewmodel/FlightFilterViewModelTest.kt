@@ -26,7 +26,7 @@ import org.junit.Test
  * @author by jessica on 2020-02-26
  */
 
-class FlightFilterViewModelTestNew {
+class FlightFilterViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
