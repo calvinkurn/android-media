@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Response
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.PreferenceListModelMapper
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.PreferenceListResponseModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.PreferenceListResponseModel
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
