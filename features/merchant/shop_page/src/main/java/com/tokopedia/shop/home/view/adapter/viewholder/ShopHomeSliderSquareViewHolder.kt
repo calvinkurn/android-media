@@ -9,7 +9,7 @@ import com.tokopedia.shop.home.WidgetSliderSquareBanner
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
 import com.tokopedia.shop.home.view.model.WidgetModel
-import kotlinx.android.synthetic.main.widget_shop_page_home_slider_banner.view.*
+import kotlinx.android.synthetic.main.widget_shop_page_home_slider_square.view.*
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
@@ -19,7 +19,7 @@ class ShopHomeSliderSquareViewHolder(itemView: View) : AbstractViewHolder<Widget
 
     companion object {
         @LayoutRes
-        val LAYOUT_RES = R.layout.widget_shop_page_home_slider_banner
+        val LAYOUT_RES = R.layout.widget_shop_page_home_slider_square
     }
 
     private val shopHomeSliderSquareAdapter by lazy { ShopHomeSliderSquareAdapter() }
