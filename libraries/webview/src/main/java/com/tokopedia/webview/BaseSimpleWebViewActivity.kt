@@ -140,7 +140,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
      * https://www.tokopedia.com/help?a=b&c=d
      */
     private fun String.validateAnd(): String {
-        var url = replaceFirst("&&", "&")
+        var url = replace("&&", "&")
         val indexQuestionAnd = url.indexOf("?&")
         if (indexQuestionAnd > -1) {
             val indexQuestion = url.indexOf("?")
