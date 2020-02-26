@@ -61,6 +61,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -1210,6 +1211,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
             actionButtonView.renderData(!p1.basic.isActive(),
@@ -1221,8 +1223,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
+                val context = getContext()
+                var irisSessionId = ""
+                if(context != null){
+                    irisSessionId = IrisSession(context)   .getSessionId()
+                }
 
                 DynamicProductDetailTracking.sendScreen(
+                        irisSessionId,
                         shopInfo.shopCore.shopID,
                         shopInfo.goldOS.shopTypeString,
                         productId ?: "")
@@ -1729,7 +1737,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                val irisSessionId:String = context?.let {
+                    IrisSession(it).getSessionId()?:""
+                } ?: ""
+                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListName, productInfo, shopInfo, trackerAttribution,
                         isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
                 return
             }
@@ -2027,7 +2038,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         actionButtonView.addToCartClick = {
             viewModel.getDynamicProductInfoP1?.let {
                 if (viewModel.isUserSessionActive) {
-                    DynamicProductDetailTracking.Click.eventAddToCart(viewModel.getDynamicProductInfoP1,
+                    val irisSessionId:String = context?.let {
+                        IrisSession(it).getSessionId()?:""
+                    } ?: ""
+                    DynamicProductDetailTracking.Click.eventAddToCart(irisSessionId, viewModel.getDynamicProductInfoP1,
                             it.data.variant.isVariant)
                 } else {
                     DynamicProductDetailTracking.Click.eventAddToCartBeforeLogin(viewModel.getDynamicProductInfoP1)
