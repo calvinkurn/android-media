@@ -75,6 +75,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         }
 
         initFragmentUiModel()
+        checkHasPromoSellected()
         renderFragmentState()
     }
 
@@ -88,7 +89,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     private fun renderFragmentState() {
-        checkHasPromoSellected()
         if (fragmentUiModel.uiState.hasAnyPromoSellected) {
             toolbar?.enableResetButton()
         } else {
@@ -296,6 +296,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                                 title = oldData.uiData.title
                                 subTitle = oldData.uiData.subTitle
                                 promoType = oldData.uiData.promoType
+                                identifierId = oldData.uiData.identifierId
                             },
                             uiState = PromoListHeaderUiModel.UiState().apply {
                                 isCollapsed = !oldData.uiState.isCollapsed
@@ -333,6 +334,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     override fun onClickPromoListItem(element: PromoListItemUiModel) {
+        // Update header sub total
         var oldData: PromoListHeaderUiModel? = null
         adapter.data.forEach {
             if (it is PromoListHeaderUiModel && it.uiData.identifierId == element.uiData.parentIdentifierId) {
@@ -357,7 +359,42 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                         isCollapsed = it.uiState.isCollapsed
                     }
             )
-            adapter.modifyData(adapter.data.indexOf(oldData), newData)
+            renderFragmentState()
+            val headerIndex = adapter.data.indexOf(oldData)
+            adapter.modifyData(headerIndex, newData)
+
+            // Un check other
+            var unCheckIndex = 0
+            var newPromoItemData: PromoListItemUiModel? = null
+            for (index in headerIndex + 1 until adapter.data.size) {
+                if (adapter.data[index] !is PromoListItemUiModel) {
+                    break
+                } else {
+                    val promoItem = adapter.data[index] as PromoListItemUiModel
+                    if (promoItem.uiData.promoId != element.uiData.promoId && promoItem.uiState.isSellected) {
+                        newPromoItemData = PromoListItemUiModel(
+                                uiData = PromoListItemUiModel.UiData().apply {
+                                    promoId = promoItem.uiData.promoId
+                                    title = promoItem.uiData.title
+                                    subTitle = promoItem.uiData.subTitle
+                                    errorMessage = promoItem.uiData.errorMessage
+                                    imageResourceUrl = promoItem.uiData.imageResourceUrl
+                                    parentIdentifierId = promoItem.uiData.parentIdentifierId
+                                },
+                                uiState = PromoListItemUiModel.UiState().apply {
+                                    isSellected = false
+                                    isEnabled = promoItem.uiState.isEnabled
+                                    isVisible = promoItem.uiState.isVisible
+                                }
+                        )
+                        unCheckIndex = index
+                        break
+                    }
+                }
+            }
+            newPromoItemData?.let { promoListItemUiModel ->
+                adapter.modifyData(unCheckIndex, promoListItemUiModel)
+            }
         }
     }
 
