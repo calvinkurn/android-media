@@ -266,21 +266,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         val promoList = HashMap<Int, PromoListItemUiModel>()
         adapter.data.forEach {
             if (it is PromoListItemUiModel && it.uiState.isSellected) {
-                val newData = PromoListItemUiModel(
-                        uiData = PromoListItemUiModel.UiData().apply {
-                            promoId = it.uiData.promoId
-                            title = it.uiData.title
-                            subTitle = it.uiData.subTitle
-                            errorMessage = it.uiData.errorMessage
-                            imageResourceUrl = it.uiData.imageResourceUrl
-                            parentIdentifierId = it.uiData.parentIdentifierId
-                        },
-                        uiState = PromoListItemUiModel.UiState().apply {
-                            isEnabled = it.uiState.isEnabled
-                            isSellected = false
-                            isVisible = it.uiState.isVisible
-                        }
-                )
+                val newData = PromoListItemUiModel.clone(it)
+                newData.uiState.isSellected = false
                 promoList.put(adapter.data.indexOf(it), newData)
             }
         }
