@@ -66,6 +66,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewMo
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
@@ -266,9 +267,7 @@ open class PlayViewStateImpl(
                 setChatListHasSpaceOnTop(),
                 backgroundHelper,
                 analytics,
-                gradientBackground,
-                liveIndicator
-
+                gradientBackground
         )
         videoHorizontalHelper = VideoHorizontalHelper(
                 viewModel,
@@ -277,7 +276,6 @@ open class PlayViewStateImpl(
                 videoHorizontalContainer,
                 youTubePlayer,
                 setChatListHasSpaceOnTop(),
-                liveIndicator,
                 analytics,
                 activity
         )
@@ -753,6 +751,7 @@ open class PlayViewStateImpl(
 
     override fun onVideoVerticalUpdated(it: VideoStreamViewModel) {
         videoVerticalHelper.setData(it)
+        setLiveLabel(it.isLive)
         if(it.isActive && it.androidStreamSD.isNotBlank()) {
             videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
             overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
@@ -802,12 +801,13 @@ open class PlayViewStateImpl(
     }
 
     private fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
+        setLiveLabel(isVideoLive)
         videoHorizontalHelper.hideVideoAndToggle()
         if(!videoId.isNullOrBlank()){
             videoVerticalHelper.releasePlayer()
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
-                videoHorizontalHelper.showVideoOnly(isVideoLive)
+                videoHorizontalHelper.showVideoOnly()
                 sponsorHelper.hideSponsor()
                 youTubePlayer?.let {
                     it.cueVideo(videoId)
@@ -1427,4 +1427,6 @@ open class PlayViewStateImpl(
             sendMessage(pendingChatViewModel)
         }
     }
+
+    private fun setLiveLabel(isLive: Boolean) = liveIndicator.showWithCondition(isLive)
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.common.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -64,6 +64,10 @@ class TrackingHotelUtil {
         )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun hotelClickChangeDestination() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_WIDGET_SELECT_DESTINATION, HOTEL_LABEL)
     }
 
     fun hotelSelectDestination(destType: String, destination: String) {
@@ -257,6 +261,41 @@ class TrackingHotelUtil {
                 IMPRESSIONS_LABEL, getViewHotelListRoom(roomList)
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun hotelViewRoomDetail(roomDetail: HotelRoom, addToCartParam: HotelAddCartParam, position: Int) {
+
+        val duration = HotelUtils.countDayDifference(addToCartParam.checkIn, addToCartParam.checkOut)
+
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = VIEW_PRODUCT
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = VIEW_ROOM_DETAILS
+        map[EVENT_LABEL] = "$HOTEL_LABEL - ${addToCartParam.destinationType} - ${addToCartParam.destinationName} - ${addToCartParam.roomCount} - ${addToCartParam.adult} - ${convertDate(addToCartParam.checkIn)} - $duration - ${addToCartParam.propertyId}"
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
+                CURRENCY_LABEL, IDR_LABEL,
+                DETAIL_LABEL, DataLayer.mapOf(ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL),
+                PRODUCTS_LABEL, getRoomDetailData(roomDetail, position))
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getRoomDetailData(room: HotelRoom, position: Int) : List<Any> {
+        val list = ArrayList<Map<String, Any>>()
+
+        val map = HashMap<String, Any>()
+        map[NAME_LABEL] = room.roomInfo.name
+        map[ID_LABEL] = room.roomId
+        map[POSITION_LABEL] = position
+        map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
+        map[PRICE_LABEL] = room.roomPrice.priceAmount.roundToLong()
+        map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
+        map[VARIANT_LABEL] = "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}"
+
+        list.add(map)
+
+        return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
     private fun getViewHotelListRoom(roomList: List<HotelRoom>): List<Any> {

@@ -61,20 +61,22 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
 
         Timber.d("Appsflyer login userid " + userID);
-
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
+
             @Override
-            public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
+            public void onConversionDataSuccess(Map<String, Object> conversionData) {
                 if (isAppsflyerCallbackHandled) return;
                 isAppsflyerCallbackHandled = true;
 
                 try {
-                    //get first launch and deeplink
-                    String isFirstLaunch = conversionData.get("is_first_launch");
-                    String deeplink = conversionData.get("af_dp");
+                    String isFirstLaunch = null;
+                    String deeplink = null;
+                    if (conversionData.containsKey("is_first_launch"))
+                        isFirstLaunch = (String) conversionData.get("is_first_launch");
+                    if (conversionData.containsKey("af_dp"))
+                        deeplink = (String) conversionData.get("af_dp");
 
                     if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
-                        //open deeplink
                         setDefferedDeeplinkPathIfExists(deeplink);
                     }
                 } catch (ActivityNotFoundException ex) {
@@ -83,8 +85,8 @@ public class AppsflyerAnalytics extends ContextAnalytics {
             }
 
             @Override
-            public void onInstallConversionFailure(String s) {
-                // @TODO
+            public void onConversionDataFail(String s) {
+
             }
 
             @Override
@@ -94,7 +96,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
             @Override
             public void onAttributionFailure(String s) {
-                // @TODO
+
             }
         };
 
@@ -169,7 +171,6 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().setCurrencyCode("IDR");
         setUserID(userID);
         AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
-        AppsFlyerLib.getInstance().setGCMProjectNumber(GCM_PROJECT_NUMBER);
         if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
             AppsFlyerLib.getInstance().setPreinstallAttribution(
                     com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,

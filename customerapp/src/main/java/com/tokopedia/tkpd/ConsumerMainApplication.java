@@ -38,25 +38,27 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.timber.UserIdChangeCallback;
 import com.tokopedia.tkpd.timber.UserIdSubscriber;
@@ -66,6 +68,11 @@ import com.tokopedia.tkpd.utils.DeviceUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -77,14 +84,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
-
-import com.tokopedia.weaver.WeaveInterface;
-import com.tokopedia.weaver.Weaver;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
-import org.jetbrains.annotations.NotNull;
 
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
@@ -137,20 +137,25 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initGqlNWClient();
         createAndCallPostSeq();
         createAndCallFontLoad();
+
         ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
             }
         });
+        registerActivityLifecycleCallbacks(shakeSubscriber);
+
         UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
             @Override
             public void onUserIdChanged() {
                 TimberWrapper.init(ConsumerMainApplication.this);
             }
         });
-        registerActivityLifecycleCallbacks(shakeSubscriber);
         registerActivityLifecycleCallbacks(userIdSubscriber);
+
+        NFCSubscriber nfcSubscriber = new NFCSubscriber();
+        registerActivityLifecycleCallbacks(nfcSubscriber);
     }
 
     private void createAndCallPreSeq(){

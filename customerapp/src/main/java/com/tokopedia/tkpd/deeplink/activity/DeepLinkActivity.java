@@ -7,10 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
@@ -54,6 +56,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         checkUrlMapToApplink();
         isAllowFetchDepartmentView = true;
         presenter.sendAuthenticatedEvent(uriData, getScreenName());
+
+        ImageView loadingView = findViewById(R.id.iv_loading);
+        ImageHandler.loadGif(loadingView, R.drawable.ic_loading_indeterminate, -1);
     }
 
     private void checkUrlMapToApplink() {
