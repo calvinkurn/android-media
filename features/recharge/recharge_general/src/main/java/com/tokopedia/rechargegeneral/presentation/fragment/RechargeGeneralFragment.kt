@@ -92,6 +92,18 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
     private var selectedProduct: RechargeGeneralProductSelectData? = null
+        set(value) {
+            field = value
+            value?.run {
+                // Show product info ticker
+                if (description.isNotEmpty()) {
+                    ticker_recharge_general_product_info.show()
+                    ticker_recharge_general_product_info.setHtmlDescription(description)
+                } else {
+                    ticker_recharge_general_product_info.hide()
+                }
+            }
+        }
     private var operatorCluster: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
     private var hasInputData = false
@@ -391,18 +403,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     selectedProduct = RechargeGeneralProductSelectData(
                             it.id,
                             desc,
-                            detail,
+                            detailCompact,
                             promo?.newPrice ?: price,
                             slashedPrice,
                             isPromo = promo != null)
-
-                    // Show product info ticker
-                    if (detailCompact.isNotEmpty()) {
-                        ticker_recharge_general_product_info.show()
-                        ticker_recharge_general_product_info.setHtmlDescription(detailCompact)
-                    } else {
-                        ticker_recharge_general_product_info.hide()
-                    }
                 }
             }
         }
@@ -415,6 +419,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         operatorId = 0
         selectedProduct = null
         inputData = hashMapOf()
+        // Reset product info ticker
+        ticker_recharge_general_product_info.hide()
         toggleEnquiryButton()
     }
 

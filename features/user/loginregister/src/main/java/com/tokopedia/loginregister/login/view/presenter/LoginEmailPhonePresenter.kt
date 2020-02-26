@@ -20,7 +20,6 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
@@ -70,27 +69,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 override fun onError(e: Throwable) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
-                    ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-                        override fun onForbidden() {
-                            view.onGoToForbiddenPage()
-                        }
-
-                        override fun onError(errorMessage: String) {
-                            view.onErrorDiscoverLogin(errorMessage)
-                        }
-                    }, e, context)
+                    view.onErrorDiscoverLogin(e)
                 }
 
                 override fun onNext(discoverViewModel: DiscoverViewModel) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
-                    if (!discoverViewModel.providers.isEmpty()) {
-                        view.onSuccessDiscoverLogin(discoverViewModel.providers)
-                    } else {
-                        view.onErrorDiscoverLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                                ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-                                context))
-                    }
+                    view.onSuccessDiscoverLogin(discoverViewModel.providers)
                 }
             })
         }
