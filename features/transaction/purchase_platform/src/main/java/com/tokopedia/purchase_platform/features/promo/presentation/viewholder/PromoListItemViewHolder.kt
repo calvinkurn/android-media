@@ -25,7 +25,12 @@ class PromoListItemViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoListItemUiModel) {
-        ImageHandler.loadImageRounded2(itemView.context, itemView.image_promo_item, element.uiData.imageResourceUrl)
+        if (element.uiData.imageResourceUrl.isNotBlank()) {
+            ImageHandler.loadImageRounded2(itemView.context, itemView.image_promo_item, element.uiData.imageResourceUrl)
+            itemView.image_promo_item.show()
+        } else {
+            itemView.image_promo_item.gone()
+        }
 
         itemView.label_promo_item_title.text = element.uiData.title
         itemView.label_promo_item_sub_title.text = element.uiData.subTitle
@@ -43,7 +48,7 @@ class PromoListItemViewHolder(private val view: View,
                 element.uiState.isSellected = !element.uiState.isSellected
                 renderEnablePromoItem(element)
 
-//                listener.onClickPromoListItem(position)
+                listener.onClickPromoListItem(element)
             }
         }
 

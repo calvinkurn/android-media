@@ -75,7 +75,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         }
 
         initFragmentUiModel()
-        checkHasPromoSellected()
         renderFragmentState()
     }
 
@@ -89,6 +88,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     private fun renderFragmentState() {
+        checkHasPromoSellected()
         if (fragmentUiModel.uiState.hasAnyPromoSellected) {
             toolbar?.enableResetButton()
         } else {
@@ -168,8 +168,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
         val promoListHeaderUiModel = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
-                    title = "Ini promo global"
-                    subTitle = "Pilih satu aja cuy"
+                    title = "Kupon saya global"
+                    subTitle = "Hanya bisa pilih 1 kupon"
                     promoType = PROMO_TYPE_GLOBAL
                     identifierId = 1
                 },
@@ -222,7 +222,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         val promoListHeaderUiModel1 = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = "Ini promo power merchant"
-                    subTitle = "Pilih satu aja cuy"
+                    subTitle = "Hanya bisa pilih 1 kupon"
                     promoType = PROMO_TYPE_POWER_MERCHANT
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
@@ -245,7 +245,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         val promoListHeaderUiModel2 = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = "Ini promo official store"
-                    subTitle = "Pilih satu aja cuy"
+                    subTitle = "Hanya bisa pilih 1 kupon"
                     promoType = PROMO_TYPE_MERCHANT_OFFICIAL
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
@@ -332,28 +332,36 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         }
     }
 
-    override fun onClickPromoListItem(itemPosition: Int) {
-        if (itemPosition < adapter.data.size) {
-            val oldData = adapter.data[itemPosition]
-            if (oldData is PromoListItemUiModel) {
-                val newData = PromoListItemUiModel(
-                        uiData = PromoListItemUiModel.UiData().apply {
-                            promoId = oldData.uiData.promoId
-                            parentIdentifierId = oldData.uiData.parentIdentifierId
-                        },
-                        uiState = PromoListItemUiModel.UiState().apply {
-                            isSellected = !oldData.uiState.isSellected
-                        }
-                )
-                adapter.modifyData(itemPosition, newData)
-
-                checkHasPromoSellected()
-                renderFragmentState()
+    override fun onClickPromoListItem(element: PromoListItemUiModel) {
+        var oldData: PromoListHeaderUiModel? = null
+        adapter.data.forEach {
+            if (it is PromoListHeaderUiModel && it.uiData.identifierId == element.uiData.parentIdentifierId) {
+                oldData = it
+                return@forEach
             }
+        }
+        oldData?.let {
+            val hasSelectPromo = checkHasPromoSellected(it.uiData.identifierId)
+            val newData = PromoListHeaderUiModel(
+                    uiData = PromoListHeaderUiModel.UiData().apply {
+                        title = it.uiData.title
+                        if (hasSelectPromo) {
+                            subTitle = "Promo dipilih"
+                        } else {
+                            subTitle = "Hanya bisa pilih 1 kupon"
+                        }
+                        promoType = it.uiData.promoType
+                        identifierId = it.uiData.identifierId
+                    },
+                    uiState = PromoListHeaderUiModel.UiState().apply {
+                        isCollapsed = it.uiState.isCollapsed
+                    }
+            )
+            adapter.modifyData(adapter.data.indexOf(oldData), newData)
         }
     }
 
-    private fun checkHasPromoSellected() {
+    private fun checkHasPromoSellected(): Boolean {
         var hasAnyPromoSellected = false
         adapter.list.forEach {
             if (it is PromoListItemUiModel && it.uiState.isSellected) {
@@ -362,6 +370,21 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             }
         }
         fragmentUiModel.uiState.hasAnyPromoSellected = hasAnyPromoSellected
+
+        return hasAnyPromoSellected
+    }
+
+    private fun checkHasPromoSellected(parentIdentifierId: Int): Boolean {
+        var hasAnyPromoSellected = false
+        adapter.list.forEach {
+            if (it is PromoListItemUiModel && it.uiState.isSellected && it.uiData.parentIdentifierId == parentIdentifierId) {
+                hasAnyPromoSellected = true
+                return@forEach
+            }
+        }
+        fragmentUiModel.uiState.hasAnyPromoSellected = hasAnyPromoSellected
+
+        return hasAnyPromoSellected
     }
 
     // -- END OF PROMO LIST SECTION
