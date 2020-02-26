@@ -88,8 +88,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val url2 = url.substringAfter("$KEY_URL=", "")
             if (url2.isNotEmpty()) {
                 val url2BeforeAnd = url2.substringBefore("&")
-                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "")
-                    .replaceFirst("&&", "&").replaceFirst("?&", "&"))
+                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd() )
                 uriFromUrl.buildUpon()
                     .appendQueryParameter(KEY_URL, url2.encodeOnce())
                     .build().toString()
@@ -126,6 +125,32 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 url
             }
         }
+    }
+
+    /**
+     * trim invalid &
+     * Example:
+     * https://www.tokopedia.com/help?&a=b
+     * https://www.tokopedia.com/help?a=b
+     *
+     * https://www.tokopedia.com/help?a=b&&c=d
+     * https://www.tokopedia.com/help?a=b&c=d
+     *
+     * https://www.tokopedia.com/help?a=b?&c=d
+     * https://www.tokopedia.com/help?a=b&c=d
+     */
+    private fun String.validateAnd(): String {
+        var url = replaceFirst("&&", "&")
+        val indexQuestionAnd = url.indexOf("?&")
+        if (indexQuestionAnd > -1) {
+            val indexQuestion = url.indexOf("?")
+            if (indexQuestion == indexQuestionAnd) {
+                url = url.replaceFirst("?&", "?")
+            } else {
+                url = url.replaceFirst("?&", "&")
+            }
+        }
+        return url
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
