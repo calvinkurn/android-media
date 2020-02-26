@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.customview
 import android.content.Context
 import android.view.View
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.topchat.R
 import javax.inject.Inject
 
 /**
@@ -17,10 +16,10 @@ class TopChatRoomDialog @Inject constructor() {
                 onOkListener: View.OnClickListener
         ): Dialog {
 
-            alertDialog.setTitle(context.getString(R.string.exit_chat_title))
-            alertDialog.setDesc(context.getString(R.string.exit_chat_body))
-            alertDialog.setBtnCancel(context.getString(R.string.button_cancel))
-            alertDialog.setBtnOk(context.getString(R.string.exit_chat_yes))
+            alertDialog.setTitle(context.getString(com.tokopedia.chat_common.R.string.exit_chat_title))
+            alertDialog.setDesc(context.getString(com.tokopedia.chat_common.R.string.exit_chat_body))
+            alertDialog.setBtnCancel(context.getString(com.tokopedia.design.R.string.button_cancel))
+            alertDialog.setBtnOk(context.getString(com.tokopedia.chat_common.R.string.exit_chat_yes))
             alertDialog.setOnCancelClickListener {
                 alertDialog.dismiss()
             }

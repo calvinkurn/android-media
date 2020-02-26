@@ -2,13 +2,14 @@ package com.tokopedia.home.beranda.presentation.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -21,6 +22,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.helper.HomeFeedEndlessScrollListener;
@@ -30,25 +32,24 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedAdapter;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedViewHolder;
-import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
-import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFactory>, HomeFeedTypeFactory>
         implements HomeFeedContract.View {
@@ -327,21 +328,29 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     public void onProductImpression(HomeFeedViewModel model, int position) {
         if (model.isTopAds()) {
-            Product p = new Product();
-            p.setId(model.getProductId());
-            p.setName(model.getProductName());
-            p.setPriceFormat(model.getPrice());
-            p.setFreeOngkir(new FreeOngkir(
-                    model.isFreeOngkirActive(),
-                    model.getFreeOngkirImageUrl()
-            ));
-            new ImpresionTask().execute(model.getTrackerImageUrl());
-            TopAdsGtmTracker.getInstance().addRecomendationProductViewImpressions(p,
-                    model.getCategoryBreadcrumbs(), tabName.toLowerCase(),
-                    model.getRecommendationType(), userSession.isLoggedIn(),
-                    model.getPosition());
+            if(userSession.isLoggedIn()){
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLoginTopAds(
+                        tabName.toLowerCase(),
+                        model
+                ));
+            } else {
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductViewNonLoginTopAds(
+                        tabName.toLowerCase(),
+                        model
+                ));
+            }
         } else {
-            hitHomeFeedImpressionTracker(model);
+            if(userSession.isLoggedIn()){
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLogin(
+                        tabName.toLowerCase(),
+                        model
+                ));
+            } else {
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductViewNonLogin(
+                        tabName.toLowerCase(),
+                        model
+                ));
+            }
         }
     }
 
@@ -352,14 +361,15 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                                 @NotNull Function2<? super Boolean, ? super Throwable, Unit> responseWishlist) {
         if(presenter.isLogin()) {
             if (isAddWishlist) {
-                HomePageTracking.eventClickWishlistOnProductRecommendation(getActivity(), tabName);
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationAddWishlistLogin(homeFeedViewModel.getProductId(), tabName));
                 presenter.addWishlist(homeFeedViewModel, responseWishlist);
             } else {
                 HomePageTracking.eventClickRemoveWishlistOnProductRecommendation(getActivity(), tabName);
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationRemoveWishlistLogin(homeFeedViewModel.getProductId(), tabName));
                 presenter.removeWishlist(homeFeedViewModel, responseWishlist);
             }
         }else {
-            HomePageTracking.eventClickWishlistOnProductRecommendationForNonLogin(getActivity(), tabName);
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationAddWishlistNonLogin(homeFeedViewModel.getProductId(), tabName));
             RouteManager.route(getContext(), ApplinkConst.LOGIN);
         }
     }
@@ -368,36 +378,28 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     public void onProductClick(HomeFeedViewModel homeFeedViewModel, int position) {
         if (userSession.isLoggedIn()) {
             if (!homeFeedViewModel.isTopAds()) {
-                HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
-                        getActivity(),
-                        homeFeedViewModel,
-                        tabName.toLowerCase()
-                );
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickLogin(
+                        tabName.toLowerCase(),
+                        homeFeedViewModel
+                ));
+            } else {
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickLoginTopAds(
+                        tabName.toLowerCase(),
+                        homeFeedViewModel
+                ));
             }
         } else {
             if (!homeFeedViewModel.isTopAds()) {
-                HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
-                        getActivity(),
-                        homeFeedViewModel,
-                        tabName.toLowerCase()
-                );
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickNonLogin(
+                        tabName.toLowerCase(),
+                        homeFeedViewModel
+                ));
+            } else {
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickNonLoginTopAds(
+                        tabName.toLowerCase(),
+                        homeFeedViewModel
+                ));
             }
-        }
-        if (homeFeedViewModel.isTopAds()) {
-            new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
-            Product p = new Product();
-            p.setId(homeFeedViewModel.getProductId());
-            p.setName(homeFeedViewModel.getProductName());
-            p.setPriceFormat(homeFeedViewModel.getPrice());
-            p.setFreeOngkir(new FreeOngkir(
-                    homeFeedViewModel.isFreeOngkirActive(),
-                    homeFeedViewModel.getFreeOngkirImageUrl()
-            ));
-            TopAdsGtmTracker.getInstance().eventRecomendationProductClick(getContext(), p,
-                    tabName.toLowerCase(), homeFeedViewModel.getRecommendationType(),
-                    homeFeedViewModel.getCategoryBreadcrumbs(),
-                    userSession.isLoggedIn(),
-                    homeFeedViewModel.getPosition());
         }
         goToProductDetail(homeFeedViewModel.getProductId(), position);
     }

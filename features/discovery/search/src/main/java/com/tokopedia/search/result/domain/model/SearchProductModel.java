@@ -894,6 +894,9 @@ public class SearchProductModel {
         @SerializedName("see_all_url")
         private String seeAllUrl = "";
 
+        @SerializedName("show_topads")
+        private boolean isShowTopAds = false;
+
         @SerializedName("list")
         private List<GlobalNavItem> globalNavItems = new ArrayList<>();
 
@@ -923,6 +926,10 @@ public class SearchProductModel {
 
         public String getSeeAllUrl() {
             return seeAllUrl;
+        }
+
+        public boolean getIsShowTopAds() {
+            return isShowTopAds;
         }
 
         public List<GlobalNavItem> getGlobalNavItems() {

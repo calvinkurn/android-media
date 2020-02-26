@@ -119,8 +119,6 @@ public interface TkpdCoreRouter {
 
     Intent getGroupChatIntent(Context context, String channelUrl);
 
-    Intent getInboxChannelsIntent(Context context);
-
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent getManageAdressIntent(Context context);
