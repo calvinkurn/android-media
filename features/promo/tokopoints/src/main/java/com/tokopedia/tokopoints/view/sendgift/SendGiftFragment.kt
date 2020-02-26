@@ -25,7 +25,6 @@ import com.tokopedia.design.R
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
-import com.tokopedia.tokopoints.view.contract.SendGiftContract
 import com.tokopedia.tokopoints.view.util.*
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {

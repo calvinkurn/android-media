@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.fragment
+package com.tokopedia.tokopoints.view.addPoint
 
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -16,21 +16,27 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
 import com.tokopedia.tokopoints.view.adapter.AddPointGridViewHolder
 import com.tokopedia.tokopoints.view.adapter.AddPointsAdapter
-import com.tokopedia.tokopoints.view.contract.TokopointAddPointContract
 import com.tokopedia.tokopoints.view.model.addpointsection.SectionsItem
 import com.tokopedia.tokopoints.view.model.addpointsection.SheetHowToGetV2
-import com.tokopedia.tokopoints.view.presenter.AddPointPresenter
 import kotlinx.android.synthetic.main.tp_add_point_section.*
 import kotlinx.android.synthetic.main.tp_add_point_section.view.*
 import javax.inject.Inject
 import android.widget.GridLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
+import com.tokopedia.tokopoints.view.util.Loading
+import com.tokopedia.tokopoints.view.util.Success
 import kotlin.math.roundToInt
 
 
 class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract.View, AddPointGridViewHolder.ListenerItemClick {
 
     @Inject
-    lateinit var addPointPresenter: AddPointPresenter
+    lateinit var factory : ViewModelFactory
+
+    private val  viewModel: AddPointViewModel by lazy { ViewModelProviders.of(this,factory).get(AddPointViewModel::class.java) }
 
     private val addPointsAdapter: AddPointsAdapter by lazy { AddPointsAdapter(ArrayList(), this) }
 
@@ -58,10 +64,26 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        addPointPresenter.attachView(this)
         initView(view)
-        addPointPresenter.getRewardPoint(resources)
+        viewModel.getRewardPoint()
+        addObserver()
     }
+
+    private fun addObserver() {
+        addSheetObserver()
+    }
+
+    private fun addSheetObserver() = viewModel.sheetLiveData.observe(this , Observer {
+        it?.let {
+            when(it){
+                is Loading -> inflateContainerLayout(false)
+                is Success -> {
+                    inflateContainerLayout(true)
+                    inflatePointsData(it.data)
+                }
+            }
+        }
+    })
 
     private fun initView(view: View) {
         view.rv_section.layoutManager = LinearLayoutManager(context)
@@ -100,15 +122,10 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
     }
 
     fun initInjector() {
-        DaggerTokoPointComponent.builder()
+        DaggerTokopointBundleComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-    }
-
-    override fun onDestroy() {
-        addPointPresenter.detachView()
-        super.onDestroy()
     }
 
     override fun onClickItem(appLink: String?) {

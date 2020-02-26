@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.subscriber
+package com.tokopedia.tokopoints.view.tokopointhome
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopoints.notification.model.TokoPointDetailEntity

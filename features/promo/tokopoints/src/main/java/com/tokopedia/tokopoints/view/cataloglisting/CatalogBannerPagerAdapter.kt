@@ -11,7 +11,6 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.contract.CatalogListingContract
 import com.tokopedia.tokopoints.view.model.CatalogBanner
 
 class CatalogBannerPagerAdapter(context: Context?, private val mItems: List<CatalogBanner>, view: CatalogListingContract.View) : PagerAdapter() {

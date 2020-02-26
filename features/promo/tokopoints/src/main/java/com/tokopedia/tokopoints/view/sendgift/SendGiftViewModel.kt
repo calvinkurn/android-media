@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.contract.SendGiftContract
-import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity
 import com.tokopedia.tokopoints.view.util.ErrorMessage
 import com.tokopedia.tokopoints.view.util.Loading
 import com.tokopedia.tokopoints.view.util.Resources
